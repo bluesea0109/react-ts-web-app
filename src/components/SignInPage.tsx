@@ -4,8 +4,23 @@ import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import firebase from 'firebase';
 import { useDispatch } from "react-redux";
 import { signIn } from '../store/auth/actions';
+import { Grid, makeStyles, Theme, createStyles } from '@material-ui/core';
 
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    loginCol: {
+    },
+    root: {
+      height: '100vh'
+    },
+    filler: {
+      background: 'linear-gradient(45deg, #1565c0 30%, #00c853 90%)'
+    }
+  }));
+  
 function SignInPage(props: any) {
+  const classes = useStyles();
+
   const dispatch = useDispatch()
   const auth = firebase.auth();
   const history = useHistory();
@@ -48,9 +63,12 @@ function SignInPage(props: any) {
   };
 
   return (
-    <div>
-      <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()}></StyledFirebaseAuth>
-    </div>
+    <Grid container className={classes.root}>
+      <Grid item container xs={4} justify="center" alignItems="center" className={classes.loginCol}>
+        <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()}></StyledFirebaseAuth>
+      </Grid>
+      <Grid item xs={8} className={classes.filler}></Grid>
+    </Grid>
   );
 };
 

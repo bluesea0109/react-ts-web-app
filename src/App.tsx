@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -11,9 +11,13 @@ import clsx from 'clsx';
 import {
   BrowserRouter as Router, Switch, Route,
 } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { getAuthState } from './store/selectors';
 import SignInPage from "./components/SignInPage";
+import { signIn } from './store/auth/actions';
+import firebase from 'firebase';
+import ContentLoading from './components/ContentLoading';
+import QuestionAnswering from './components/question-answering'
 
 const drawerWidth = 240;
 
@@ -82,6 +86,7 @@ const useStyles = makeStyles((theme: Theme) =>
 function App() {
   const classes = useStyles();
   const authState = useSelector(getAuthState);
+  const dispatch = useDispatch();
 
   const [state, setState] = React.useState({
     drawerOpen: false
@@ -95,6 +100,27 @@ function App() {
     setState({ ...state, drawerOpen: false });
   }
 
+  useEffect(() => {
+    console.log('test');
+    const unregisterAuthObserver = firebase.auth().onAuthStateChanged(
+      (user) => {
+        if (user) {
+          dispatch(signIn(user))
+        } else {
+          dispatch(signIn(null))
+        }
+      }
+    );
+  
+    return function cleanup() {
+      unregisterAuthObserver();
+    };
+  }, [dispatch]);
+
+
+  if (authState.isFetching) {
+    return <ContentLoading/>
+  } 
   if (!authState.user) {
     return (
       <Router>
@@ -138,6 +164,9 @@ function App() {
         >
           <div className={classes.drawerHeader} />
           <Switch>
+            <Route path="/qa">
+              <QuestionAnswering/>
+            </Route>
             <Route path="/image-labeling">
               <div><p>image labeling</p></div>
             </Route>
