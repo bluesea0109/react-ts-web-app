@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Button, TextField, Grid } from '@material-ui/core';
-import { ApolloClient, HttpLink, InMemoryCache, gql, useLazyQuery } from '@apollo/client';
+import { ApolloClient, HttpLink, InMemoryCache, gql } from '@apollo/client';
 import ContentLoading from '../ContentLoading';
 import config from '../../config';
 
@@ -39,43 +39,40 @@ export default function BasicTextFields() {
   const [state, setState] = useState({
     context: 'The man went to the store to buy a gallon of milk.',
     question: 'What did the man buy?',
+    answer: '',
+    loading: false,
   });
-
-  const [getAnswer, { called, loading, data }] = useLazyQuery(query, {
-    variables: {
-      context: state.context,
-      question: state.question
-    },
-    client,
-    fetchPolicy: 'network-only'
-  });
-
 
   const onSubmitClick = async () => {
-    getAnswer();
+    setState({ ...state, loading: true });
+
+    const res = await client.query({
+      query,
+      variables: {
+        context: state.context,
+        question: state.question
+      },
+    })
+
+    setState({ ...state, loading: false, answer: res.data.bertQa });
   }
 
   let answer: any = null;
 
-  if (called && loading) {
+  if (state.loading) {
     answer = <ContentLoading />;
   }
   else {
-    let answerVal: any = '';
-    if (data && data.bertQa) {
-      answerVal = data.bertQa;
-    }
-
     answer = (
       <React.Fragment>
         <Grid item xs={12} sm={6}>
           <TextField
             className={classes.textArea}
             id="answer"
-            label="answer"
+            label="Answer"
             multiline
-            rows={4}
-            value={answerVal}
+            rows={8}
+            value={state.answer}
             variant="outlined"
           />
         </Grid>
@@ -88,20 +85,19 @@ export default function BasicTextFields() {
   return (
     <form className={classes.root} noValidate autoComplete="off">
       <Grid container spacing={2}>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={12}>
           <TextField
             className={classes.textArea}
             id="context"
             label="Context"
             multiline
-            rows={4}
-            defaultValue="Default Value"
+            rows={8}
             variant="outlined"
             onChange={(e) => setState({ ...state, context: e.target.value })}
             value={state.context}
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid container item xs={12} sm={12} >
           <TextField
             className={classes.textArea}
             id="question"

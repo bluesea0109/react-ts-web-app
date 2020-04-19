@@ -1,7 +1,8 @@
 import React from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
+import 'firebase/auth';
 import { useDispatch } from "react-redux";
 import { signIn } from '../store/auth/actions';
 import { Grid, makeStyles, Theme, createStyles } from '@material-ui/core';

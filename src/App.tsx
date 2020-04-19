@@ -15,7 +15,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getAuthState } from './store/selectors';
 import SignInPage from "./components/SignInPage";
 import { signIn } from './store/auth/actions';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
+import 'firebase/auth';
 import ContentLoading from './components/ContentLoading';
 import QuestionAnswering from './components/question-answering'
 
