@@ -59,6 +59,14 @@ function CustomDrawer(props: CustomDrawerProps) {
         </ListItem>
         <ListItem
           component={Link}
+          to="/account"
+          selected={location.pathname === "/account"}
+          button
+        >
+          <ListItemText primary="Account" />
+        </ListItem>
+        <ListItem
+          component={Link}
           to="/qa"
           selected={location.pathname === "/qa"}
           button
