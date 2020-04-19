@@ -1,0 +1,57 @@
+version: 2
+references:
+  default_config: &default_config
+    docker:
+      - image: gcr.io/bavard-infra/devops:1.0.0
+        auth:
+          username: _json_key  # default username when using a JSON key file to authenticate
+          password: $GOOGLE_CREDENTIALS  # JSON service account you created
+
+  deploy-dev: &deploy-dev
+    <<: *default_config
+    steps:
+      - checkout
+      - run:
+          name: deploy
+          command: |
+            echo $GOOGLE_CREDENTIALS | gcloud auth activate-service-account --key-file=-
+            gcloud config set project bavard-dev
+            gcloud config set compute/zone us-west3-a
+            ./deploy-dev.sh
+
+  deploy-prod: &deploy-prod
+    <<: *default_config
+    steps:
+      - checkout
+      - run:
+          name: deploy
+          command: |
+            echo $GOOGLE_CREDENTIALS | gcloud auth activate-service-account --key-file=-
+            gcloud config set project bavard-dev
+            gcloud config set compute/zone us-west3-a
+            ./deploy-prod.sh
+jobs:
+  deploy-dev:
+    <<: *deploy-dev
+  deploy-prod:
+    <<: *deploy-prod
+workflows:
+  version: 2
+  deploy:
+    jobs:
+      - deploy-dev:
+          context: bavard
+          filters:
+            branches:
+              only: master
+      - hold:
+          type: approval
+          requires:
+           - deploy-dev
+      - deploy-prod:
+          context: bavard
+          filters:
+            branches:
+              only: master
+          requires:
+          - hold

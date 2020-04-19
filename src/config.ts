@@ -3,6 +3,7 @@ import firebase from 'firebase/app';
 const dev = {
   projectId: "bavard-dev",
   apiUrl: "https://bavard-dev.appspot.com/graphql",
+  predictionServiceUrl: 'https://prediction-service-dot-bavard-dev.appspot.com/graphql',
   firebase: {
     apiKey: "AIzaSyDwt9YZ88n3dsp2bHS0nV7uU2oUULQLdo0",
     authDomain: "bavard-dev.firebaseapp.com",
@@ -18,6 +19,7 @@ const dev = {
 const prod = {
   projectId: "bavard-prod",
   apiUrl: "https://bavard-prod.appspot.com/graphql",
+  predictionServiceUrl: 'https://prediction-service-dot-bavard-prod.appspot.com/graphql',
   firebase: {
     apiKey: "AIzaSyDwt9YZ88n3dsp2bHS0nV7uU2oUULQLdo0",
     authDomain: "bavard-dev.firebaseapp.com",
@@ -33,6 +35,7 @@ const prod = {
 const local = {
   projectId: "bavard-dev",
   apiUrl: "http://localhost:8080/graphql",
+  predictionServiceUrl: 'https://prediction-service-dot-bavard-dev.appspot.com/graphql',
   firebase: {
     apiKey: "AIzaSyDwt9YZ88n3dsp2bHS0nV7uU2oUULQLdo0",
     authDomain: "bavard-dev.firebaseapp.com",

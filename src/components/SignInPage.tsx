@@ -22,7 +22,6 @@ function SignInPage(props: any) {
   const classes = useStyles();
 
   const dispatch = useDispatch()
-  const auth = firebase.auth();
   const history = useHistory();
   const location = useLocation();
 

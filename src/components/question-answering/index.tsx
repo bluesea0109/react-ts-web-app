@@ -3,11 +3,12 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Button, TextField, Grid } from '@material-ui/core';
 import { ApolloClient, HttpLink, InMemoryCache, gql, useLazyQuery } from '@apollo/client';
 import ContentLoading from '../ContentLoading';
+import config from '../../config';
 
 const client = new ApolloClient({
   cache: new InMemoryCache(),
   link: new HttpLink({
-    uri: 'https://prediction-service-dot-bavard-dev.appspot.com/graphql',
+    uri: config.predictionServiceUrl
   })
 });
 
