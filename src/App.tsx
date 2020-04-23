@@ -19,6 +19,7 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import ContentLoading from './components/ContentLoading';
 import QuestionAnswering from './components/question-answering'
+import TextSummarization from './components/text-summarization'
 
 const drawerWidth = 240;
 
@@ -167,6 +168,9 @@ function App() {
           <Switch>
             <Route path="/qa">
               <QuestionAnswering/>
+            </Route>
+            <Route path="/text-summarization">
+              <TextSummarization/>
             </Route>
             <Route path="/image-labeling">
               <div><p>image labeling</p></div>

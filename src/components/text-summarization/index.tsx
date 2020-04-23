@@ -28,18 +28,18 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const query = gql`
-query ($context: String, $question: String) {
-  bertQa(context: $context, question: $question)
-}
+  query ($article: String, $maxWords: Int) {
+    bertExtractiveSummary(article: $article, maxWords: $maxWords)
+  }
 `;
 
 export default function BasicTextFields() {
   const classes = useStyles();
 
   const [state, setState] = useState({
-    context: 'The man went to the store to buy a gallon of milk.',
-    question: 'What did the man buy?',
-    answer: '',
+    article: '',
+    summary: '',
+    maxWords: 200,
     loading: false,
   });
 
@@ -49,34 +49,32 @@ export default function BasicTextFields() {
     const res = await client.query({
       query,
       variables: {
-        context: state.context,
-        question: state.question
+        article: state.article,
+        maxWords: state.maxWords
       },
     })
 
-    setState({ ...state, loading: false, answer: res.data.bertQa });
+    setState({ ...state, loading: false, summary: res.data.bertExtractiveSummary });
   }
 
-  let answer: any = null;
+  let summary: any = null;
 
   if (state.loading) {
-    answer = <ContentLoading />;
+    summary = <ContentLoading />;
   }
   else {
-    answer = (
+    summary = (
       <React.Fragment>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={12}>
           <TextField
             className={classes.textArea}
-            id="answer"
-            label="Answer"
+            id="summary"
+            label="Summary"
             multiline
             rows={8}
-            value={state.answer}
+            value={state.summary}
             variant="outlined"
           />
-        </Grid>
-        <Grid item xs={12} sm={6}>
         </Grid>
       </React.Fragment>
     )
@@ -84,38 +82,40 @@ export default function BasicTextFields() {
 
   return (
     <form className={classes.root} noValidate autoComplete="off">
+
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Typography variant="h4">{"Question Answering"}</Typography>
+          <Typography variant="h4">{"Extractive Text Summarization"}</Typography>
         </Grid>
         <Grid item xs={12} sm={12}>
           <TextField
             className={classes.textArea}
-            id="context"
-            label="Context"
+            id="article"
+            label="Text"
             multiline
-            rows={8}
+            rows={12}
             variant="outlined"
-            onChange={(e) => setState({ ...state, context: e.target.value })}
-            value={state.context}
+            onChange={(e) => setState({ ...state, article: e.target.value })}
+            value={state.article}
           />
         </Grid>
-        <Grid container item xs={12} sm={12} >
+        <Grid item xs={12} sm={12}>
           <TextField
-            className={classes.textArea}
-            id="question"
-            label="Question"
-            multiline
-            rows={4}
+            id="max-words"
+            label="Max Words"
+            type="number"
+            InputLabelProps={{
+              shrink: true,
+            }}
             variant="outlined"
-            onChange={(e) => setState({ ...state, question: e.target.value })}
-            value={state.question}
+            onChange={(e) => setState({ ...state, maxWords: parseInt(e.target.value) })}
+            value={state.maxWords}
           />
         </Grid>
         <Grid item xs={12}>
           <Button variant="contained" onClick={onSubmitClick}>{"Submit"}</Button>
         </Grid>
-        {answer}
+        {summary}
       </Grid>
     </form>
   );

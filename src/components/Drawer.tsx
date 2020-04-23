@@ -75,6 +75,14 @@ function CustomDrawer(props: CustomDrawerProps) {
         </ListItem>
         <ListItem
           component={Link}
+          to="/text-summarization"
+          selected={location.pathname === "/text-summarization"}
+          button
+        >
+          <ListItemText primary="Text Summarization" />
+        </ListItem>
+        <ListItem
+          component={Link}
           to="/text-labeling"
           selected={location.pathname === "/text-labeling"}
           button
