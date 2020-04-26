@@ -6,6 +6,9 @@ import 'firebase/auth';
 import { useDispatch } from "react-redux";
 import { signIn } from '../store/auth/actions';
 import { Grid, makeStyles, Theme, createStyles } from '@material-ui/core';
+import axios from "axios";
+import config from '../config';
+
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -18,7 +21,24 @@ const useStyles = makeStyles((theme: Theme) =>
       background: 'linear-gradient(45deg, #1565c0 30%, #00c853 90%)'
     }
   }));
-  
+
+function getCookie(name: string) {
+  var v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+  return v ? v[2] : null;
+}
+
+var postIdTokenToSessionLogin = function(idToken: any, csrfToken: any) {
+  return axios({
+    method: 'post',
+    url: `${config.apiBaseUrl}/sessionLogin`,
+    data: {
+      idToken,
+      csrfToken
+    },
+  });
+};
+
+
 function SignInPage(props: any) {
   const classes = useStyles();
 
@@ -48,6 +68,15 @@ function SignInPage(props: any) {
         // If a user signed in with email link, ?showPromo=1234 can be obtained from
         // window.location.href.
         dispatch(signIn(authResult.user));
+
+        authResult.user.getIdToken().then((idToken: any) => {
+          // Session login endpoint is queried and the session cookie is set.
+          // CSRF protection should be taken into account.
+          // ...
+          const csrfToken = getCookie('csrfToken')
+          return postIdTokenToSessionLogin(idToken, csrfToken);
+        });
+
 
         const state: any = location.state;
 

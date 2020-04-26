@@ -20,6 +20,8 @@ import 'firebase/auth';
 import ContentLoading from './components/ContentLoading';
 import QuestionAnswering from './components/question-answering'
 import TextSummarization from './components/text-summarization'
+import axios from "axios";
+import config from "./config";
 
 const drawerWidth = 240;
 
@@ -85,6 +87,22 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
+function getCookie(name: string) {
+  var v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+  return v ? v[2] : null;
+}
+
+var postIdTokenToSessionLogin = function(idToken: any, csrfToken: any) {
+  return axios({
+    method: 'post',
+    url: `${config.apiBaseUrl}/sessionLogin`,
+    data: {
+      idToken,
+      csrfToken
+    },
+  });
+};
+
 function App() {
   const classes = useStyles();
   const authState = useSelector(getAuthState);
@@ -106,8 +124,17 @@ function App() {
     console.log('test');
     const unregisterAuthObserver = firebase.auth().onAuthStateChanged(
       (user) => {
+
         if (user) {
           dispatch(signIn(user))
+
+          user.getIdToken().then((idToken: any) => {
+            // Session login endpoint is queried and the session cookie is set.
+            // CSRF protection should be taken into account.
+            // ...
+            const csrfToken = getCookie('csrfToken')
+            return postIdTokenToSessionLogin(idToken, csrfToken);
+          });
         } else {
           dispatch(signIn(null))
         }

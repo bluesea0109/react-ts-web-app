@@ -17,6 +17,7 @@
     "@types/react-redux": "^7.1.7",
     "@types/react-router": "^5.1.5",
     "@types/react-router-dom": "^5.1.4",
+    "axios": "^0.19.2",
     "firebase": "^7.14.1",
     "graphql": "^15.0.0",
     "install": "^0.13.0",
