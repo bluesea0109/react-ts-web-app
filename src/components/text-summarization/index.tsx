@@ -1,16 +1,10 @@
 import React, { useState } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Button, TextField, Grid, Typography } from '@material-ui/core';
-import { ApolloClient, HttpLink, InMemoryCache, gql } from '@apollo/client';
+import { gql } from '@apollo/client';
 import ContentLoading from '../ContentLoading';
-import config from '../../config';
+import client from "../../apollo-client";
 
-const client = new ApolloClient({
-  cache: new InMemoryCache(),
-  link: new HttpLink({
-    uri: config.predictionServiceUrl
-  })
-});
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
