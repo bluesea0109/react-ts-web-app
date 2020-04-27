@@ -46,9 +46,13 @@ export default function BasicTextFields() {
         context: state.context,
         question: state.question
       },
-    })
+    });
 
-    setState({ ...state, loading: false, answer: res.data.bertQa });
+    if (res.errors) {
+      setState({ ...state, loading: false, answer: JSON.stringify(res.errors, null, 2) });
+    } else {
+      setState({ ...state, loading: false, answer: res.data.bertQa });
+    }
   }
 
   let answer: any = null;
