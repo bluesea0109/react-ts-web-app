@@ -20,6 +20,7 @@ import 'firebase/auth';
 import ContentLoading from './components/ContentLoading';
 import QuestionAnswering from './components/question-answering'
 import TextSummarization from './components/text-summarization'
+import Home from './components/Home';
 
 const drawerWidth = 240;
 
@@ -170,6 +171,9 @@ function App() {
         >
           <div className={classes.drawerHeader} />
           <Switch>
+            <Route path="/">
+              <Home/>
+            </Route>
             <Route path="/qa">
               <QuestionAnswering/>
             </Route>
