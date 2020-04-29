@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '100vh'
     },
     filler: {
-      background: 'linear-gradient(45deg, #1565c0 30%, #00c853 90%)'
+      background: 'linear-gradient(45deg, #1565c0 30%, #29b6f6 90%)'
     }
   }));
 
