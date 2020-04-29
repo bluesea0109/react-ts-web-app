@@ -83,6 +83,14 @@ function CustomDrawer(props: CustomDrawerProps) {
         </ListItem>
         <ListItem
           component={Link}
+          to="/chabot-builder"
+          selected={location.pathname === "/chatbot-builder"}
+          button
+        >
+          <ListItemText primary="Chatbot Builder" />
+        </ListItem>
+        <ListItem
+          component={Link}
           to="/text-labeling"
           selected={location.pathname === "/text-labeling"}
           button

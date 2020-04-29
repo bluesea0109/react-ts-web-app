@@ -6,7 +6,7 @@ import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 const link = new HttpLink({ uri: config.apiUrl });
 
 console.log("API URL:", config.apiUrl);
-console.log("project id:", config.projectId);
+console.log("Project Id:", config.projectId);
 
 const getIdToken = async () => {
   const user = firebase.auth().currentUser;
