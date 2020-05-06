@@ -1,14 +1,5 @@
-
-import { createSelector } from 'reselect';
 import { AppState } from "..";
-const organisations = (state: AppState) => state.organisations;
 
-export const selectOrganisations = createSelector(
-  [organisations],
-  organisations => organisations.data
-)
-
-export const selectOrganisationFetching = createSelector(
-  [organisations],
-  organisations => organisations.isFetching
-)
+export const getOrganisations = (store: AppState) => store.organisations.data;
+export const getFetchingOrganisations = (store: AppState) => store.organisations.isFetching;
+export const getNewOrgLoader = (store: AppState) => store.organisations.loader.newOrg;

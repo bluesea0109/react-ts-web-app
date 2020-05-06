@@ -1,62 +1,62 @@
 
-import { Button, createStyles, makeStyles, TextField, Theme } from '@material-ui/core';
+import { Button, Card, createStyles, LinearProgress, makeStyles, TextField, Theme, Typography } from '@material-ui/core';
+import clsx from "clsx";
 import React, { useState } from "react";
-import { connect, ConnectedProps } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
-import { AppState } from '../../store';
+import { connect, ConnectedProps, useSelector } from 'react-redux';
 import { createOrg } from "../../store/organisations/actions";
+import { getNewOrgLoader } from "../../store/organisations/selector";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      display: "flex",
+      padding: theme.spacing(3),
     },
+    inputBox: {
+      margin: theme.spacing(1),
+    },
+    button: {
+      margin: theme.spacing(1),
+    }
   })
 );
 
 function NewOrganisation(props: NewOrganisationProps) {
-
+  const classes = useStyles();
   const [state, setState] = useState({
-    name: ''
+    name: ""
   });
-
+  const orgLoader = useSelector(getNewOrgLoader)
   const submit = () => {
     props.createOrg(state.name);
   }
 
   return (
-    <div>
-      New Organisations
+    <Card className={clsx(classes.root)}>
+      {orgLoader && <LinearProgress />}
+      <Typography variant="h4">{"New Organisation"}</Typography>
       <br />
       <TextField
         id="name"
         label="Organisation Name"
         type="string"
+        value={state.name || ''}
         variant="outlined"
         onChange={(e: any) => setState({ ...state, name: (e.target.value) })}
+        className={clsx(classes.inputBox)}
       />
       <br />
-      <Button variant="contained" color="primary" onClick={submit}>{"Submit"}</Button>
-    </div>
+      <Button className={clsx(classes.button)} disabled={orgLoader} variant="contained" color="primary" onClick={submit}>{"Submit"}</Button>
+    </Card>
   )
 }
 
-type PropsType = {
-
-}
-
-const mapStateToProps = () => createStructuredSelector<AppState, PropsType>({
-
-});
+const mapStateToProps = () => ({})
 
 const mapDispatchToProps = (dispatch: any) => ({
   createOrg: (name: string) => dispatch(createOrg(name)),
 })
 
 const connector = connect(mapStateToProps, mapDispatchToProps)
-type PropsFromRedux = ConnectedProps<typeof connector>
-interface NewOrganisationProps extends PropsFromRedux {
-
-}
+type NewOrganisationProps = ConnectedProps<typeof connector>
 
 export default connector(NewOrganisation)

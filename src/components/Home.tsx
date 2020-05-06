@@ -1,13 +1,11 @@
 import { Grid, Typography } from '@material-ui/core';
 import 'firebase/auth';
 import React from 'react';
-import { connect, ConnectedProps } from "react-redux";
-import { createStructuredSelector } from "reselect";
-import { AppState } from '../store';
-import { selectCurrentUser } from "../store/selectors";
+import { useSelector } from "react-redux";
+import { getCurrentUser } from "../store/selectors";
 
-function Home(props: PropsFromRedux) {
-  const { user } = props;
+function Home() {
+  const user = useSelector(getCurrentUser);
 
   const userName = user.displayName;
   let welcomeMsg = `Welcome, back.`;
@@ -25,19 +23,4 @@ function Home(props: PropsFromRedux) {
   );
 };
 
-type PropsType = {
-  user: any
-}
-
-const mapStateToProps = () => createStructuredSelector<AppState, PropsType>({
-  user: selectCurrentUser
-})
-
-const mapDispatchToProps = (dispatch: any) => ({
-
-})
-
-const connector = connect(mapStateToProps, mapDispatchToProps)
-type PropsFromRedux = ConnectedProps<typeof connector>
-
-export default connector(Home);
+export default Home;

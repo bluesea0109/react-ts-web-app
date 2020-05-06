@@ -1,18 +1,8 @@
-import { createSelector } from 'reselect';
+
+// auth
 import { AppState } from ".";
-const auth = (state: AppState) => state.auth;
 
-export const selectAuth = createSelector(
-  [auth],
-  auth => auth
-)
-
-export const selectCurrentUser = createSelector(
-  [auth],
-  auth => auth.user
-)
-
-export const selectActiveOrg = createSelector(
-  [auth],
-  auth => auth.activeOrg
-)
+export const getAuthState = (store: AppState) => store.auth;
+export const getCurrentUser = (store: AppState) => store.auth.user;
+export const getActiveOrg = (store: AppState) => store.auth.activeOrg;
+export const getActiveProject = (store: AppState) => store.auth.activeProject;

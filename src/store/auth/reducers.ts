@@ -1,10 +1,11 @@
-import { AuthActionTypes, AuthState, SET_ACTIVE_ORG, SIGN_IN, SIGN_OUT } from "./types";
+import { AuthActionTypes, AuthState, SET_ACTIVE_ORG, SET_ACTIVE_PROJECT, SIGN_IN, SIGN_OUT } from "./types";
 
 const initialState: AuthState = {
   user: null,
   isFetching: true,
   isLoggedIn: false,
-  activeOrg: null
+  activeOrg: null,
+  activeProject: null
 };
 
 export const authReducer = (state = initialState, action: AuthActionTypes): AuthState => {
@@ -31,6 +32,13 @@ export const authReducer = (state = initialState, action: AuthActionTypes): Auth
       return {
         ...state,
         activeOrg: orgId
+      }
+    }
+    case SET_ACTIVE_PROJECT: {
+      const { projectId } = action.payload;
+      return {
+        ...state,
+        activeProject: projectId
       }
     }
     default:

@@ -16,3 +16,10 @@ mutation ($name: String!) {
   }
 }
 `
+export const updateActiveProject = gql`
+mutation ($orgId: String!, $projectId: String!) {
+  updateUserActiveOrg(orgId: $orgId,projectId: $projectId) {
+    uid
+  }
+}
+`

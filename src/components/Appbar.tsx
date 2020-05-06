@@ -7,16 +7,13 @@ import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import MenuIcon from "@material-ui/icons/Menu";
-import React, { useEffect } from 'react';
-import { connect, ConnectedProps } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
-import { AppState } from '../store';
-import { setActiveOrg } from "../store/auth/actions";
+import clsx from "clsx";
+import React, { useCallback, useEffect } from 'react';
+import { connect, ConnectedProps, useSelector } from 'react-redux';
+import { initialise, setActiveOrg } from "../store/auth/actions";
 import { fetchOrgs } from "../store/organisations/actions";
-import { selectOrganisationFetching, selectOrganisations } from "../store/organisations/selector";
-import { OrgType } from '../store/organisations/types';
-import { selectActiveOrg } from '../store/selectors';
-
+import { getFetchingOrganisations, getOrganisations } from "../store/organisations/selector";
+import { getActiveOrg } from '../store/selectors';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     menuButton: {
@@ -25,27 +22,50 @@ const useStyles = makeStyles((theme: Theme) =>
     title: {
       flexGrow: 1,
     },
+    selectInput: {
+      background: "primary",
+      color: "white",
+      borderRadius: 4,
+      borderColor: 'white',
+    }, icon: {
+      fill: 'white',
+    },
+    border: {
+      borderBottom: '1px solid white',
+    },
   })
 );
 
 function CustomAppbar(props: CustomAppbarProps) {
   const classes = useStyles();
+  const activeOrg = useSelector(getActiveOrg);
+  const organisations = useSelector(getOrganisations);
+  const organisationsFetching = useSelector(getFetchingOrganisations);
+  const fetchorgs = useCallback(props.fetchorgs, []);
+  const initialise = useCallback(props.initialise, []);
 
   useEffect(() => {
-    props.fetchOrgs()
-  }, [])
+    fetchorgs();
+    initialise();
+  }, [initialise, fetchorgs])
 
   const renderProjects = () => {
-    if (props.organisationsFetching) {
+    if (organisationsFetching) {
       return <CircularProgress color="secondary" />
     } return (
       <>
         < Select
-          value={props.activeOrg}
-          onChange={(e) => props.setActiveOrg(String(e.target.value))
-          }
+          value={activeOrg || ""}
+          onChange={(e) => props.setactiveorg(String(e.target.value))}
+          className={clsx(classes.selectInput)}
+          inputProps={{
+            classes: {
+              root: classes.border,
+              icon: classes.icon,
+            },
+          }}
         >
-          {props.organisations.map(org => <MenuItem value={org.id}>{org.name}</MenuItem>)}
+          {organisations.map(org => <MenuItem key={org.id} value={org.id}>{org.name}</MenuItem>)}
         </Select >
       </>
     )
@@ -53,7 +73,8 @@ function CustomAppbar(props: CustomAppbarProps) {
 
   return (
     <AppBar
-      {...props}
+      position={props.position}
+      className={props.className}
     >
       <Toolbar>
         <IconButton
@@ -75,27 +96,18 @@ function CustomAppbar(props: CustomAppbarProps) {
   );
 }
 
-type PropsType = {
-  organisations: Array<OrgType>,
-  organisationsFetching: boolean,
-  activeOrg: string | null
-}
-
-const mapStateToProps = () => createStructuredSelector<AppState, PropsType>({
-  organisations: selectOrganisations,
-  organisationsFetching: selectOrganisationFetching,
-  activeOrg: selectActiveOrg
-});
+const mapStateToProps = () => ({})
 
 const mapDispatchToProps = (dispatch: any) => ({ //TODO: add type checking to dispatch
-  fetchOrgs: () => dispatch(fetchOrgs()),
-  setActiveOrg: (orgId: string) => dispatch(setActiveOrg(orgId))
+  fetchorgs: () => dispatch(fetchOrgs()),
+  setactiveorg: (orgId: string) => dispatch(setActiveOrg(orgId)),
+  initialise: () => dispatch(initialise())
 })
 
 const connector = connect(mapStateToProps, mapDispatchToProps)
 type PropsFromRedux = ConnectedProps<typeof connector>
 
-interface CustomAppbarProps extends AppBarProps, PropsFromRedux {
+interface CustomAppbarProps extends PropsFromRedux, AppBarProps {
   onMenuClick: () => void;
 }
 

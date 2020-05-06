@@ -4,9 +4,8 @@ import clsx from "clsx";
 import firebase from "firebase/app";
 import "firebase/auth";
 import React, { useEffect } from "react";
-import { connect, ConnectedProps, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { createStructuredSelector } from "reselect";
 import Account from "./components/account";
 import AppBar from "./components/Appbar";
 import ContentLoading from "./components/ContentLoading";
@@ -15,10 +14,8 @@ import Home from "./components/Home";
 import QuestionAnswering from "./components/question-answering";
 import SignInPage from "./components/SignInPage";
 import TextSummarization from "./components/text-summarization";
-import { AppState } from './store';
 import { signIn } from "./store/auth/actions";
-import { AuthState } from "./store/auth/types";
-import { selectAuth } from "./store/selectors";
+import { getAuthState } from "./store/selectors";
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -77,9 +74,9 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-function App(props: PropsFromRedux) {
+function App() {
   const classes = useStyles();
-  const authState = props.authState;
+  const authState = useSelector(getAuthState);
   const dispatch = useDispatch();
 
   const [state, setState] = React.useState({
@@ -176,19 +173,4 @@ function App(props: PropsFromRedux) {
   );
 }
 
-type PropsType = {
-  authState: AuthState
-}
-
-const mapStateToProps = () => createStructuredSelector<AppState, PropsType>({
-  authState: selectAuth
-})
-
-const mapDispatchToProps = (dispatch: any) => ({
-
-})
-
-const connector = connect(mapStateToProps, mapDispatchToProps)
-type PropsFromRedux = ConnectedProps<typeof connector>
-
-export default connector(App);
+export default App;

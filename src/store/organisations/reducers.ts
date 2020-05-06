@@ -1,8 +1,11 @@
-import { ADD_ORG, FETCH_ORGS, OrgActionTypes, OrgState } from "./types";
+import { ADD_ORG, FETCH_ORGS, OrgActionTypes, OrgState, SET_NEW_ORG_LOADER } from "./types";
 
 const initialState: OrgState = {
   isFetching: true,
   data: [],
+  loader: {
+    newOrg: false
+  }
 };
 
 export const orgReducer = (state = initialState, action: OrgActionTypes): OrgState => {
@@ -20,6 +23,15 @@ export const orgReducer = (state = initialState, action: OrgActionTypes): OrgSta
       return {
         ...state,
         data: [...state.data, { id, name, members }]
+      }
+    }
+    case SET_NEW_ORG_LOADER: {
+      return {
+        ...state,
+        loader: {
+          ...state.loader,
+          newOrg: action.payload
+        }
       }
     }
     default:
