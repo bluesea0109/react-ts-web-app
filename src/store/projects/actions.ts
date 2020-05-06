@@ -12,7 +12,13 @@ export const createProject = (name: string, orgId: string) => async (dispatch: a
     variables: {
       name,
       orgId
-    }
+    },
+    refetchQueries: [{
+      query: fetchAll,
+      variables: {
+        orgId
+      }
+    }]
   })
   dispatch({
     type: ADD_PROJECT,
