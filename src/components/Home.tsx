@@ -1,14 +1,10 @@
-import React from 'react';
-import 'firebase/auth';
-import { useSelector } from "react-redux";
-import { getCurrentUser } from "../store/selectors"
 import { Grid, Typography } from '@material-ui/core';
+import 'firebase/auth';
+import React from 'react';
+import { useSelector } from "react-redux";
+import { getCurrentUser } from "../store/selectors";
 
-// const useStyles = makeStyles((theme: Theme) =>
-//   createStyles({
-//   }));
-
-export default function Home(props: any) {
+function Home() {
   const user = useSelector(getCurrentUser);
 
   const userName = user.displayName;
@@ -17,7 +13,7 @@ export default function Home(props: any) {
   if (userName) {
     const firstName = userName.split(' ')[0];
     welcomeMsg = `Welcome, ${firstName}`;
-  } 
+  }
   return (
     <Grid container>
       <Grid item alignItems="center">
@@ -26,3 +22,5 @@ export default function Home(props: any) {
     </Grid>
   );
 };
+
+export default Home;
