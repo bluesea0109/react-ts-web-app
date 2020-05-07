@@ -1,7 +1,7 @@
 import { ADD_PROJECT, FETCH_PROJECTS, ProjectActionType, ProjectState, SET_NEW_PROJECT_LOADER, SET_PROJECT_FETCHING, SET_UPDATE_PROJECT_LOADER } from "./types";
 
 const initialState: ProjectState = {
-  isFetching: true,
+  isFetching: false,
   data: [],
   loader: {
     newProject: false,

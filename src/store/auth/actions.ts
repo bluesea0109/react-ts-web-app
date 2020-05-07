@@ -1,8 +1,9 @@
 import client from "../../apollo-client";
 import { fetchProjects } from "../projects/actions";
 import { SET_PROJECT_FETCHING } from "../projects/types";
-import { fetch, updateActiveOrg } from "./queries";
+import { currentUser, updateActiveOrg } from "./queries";
 import { SET_ACTIVE_ORG, SET_ACTIVE_PROJECT, SIGN_IN, SIGN_OUT } from "./types";
+
 export const signIn = (user: any) => {
   return {
     type: SIGN_IN,
@@ -14,8 +15,9 @@ export const signIn = (user: any) => {
 
 export const initialise = () => async (dispatch: any) => {
   const res = await client.query({
-    query: fetch
+    query: currentUser
   })
+
   dispatch({
     type: SET_ACTIVE_ORG,
     payload: {
@@ -28,7 +30,10 @@ export const initialise = () => async (dispatch: any) => {
       projectId: res.data.currentUser.activeProjectId
     }
   })
-  dispatch(fetchProjects(res.data.currentUser.activeOrgId));
+
+  if (res.data.currentUser.activeOrgId) {
+    dispatch(fetchProjects(res.data.currentUser.activeOrgId));
+  }
 }
 
 export const signOut = () => ({ type: SIGN_OUT, payload: null });

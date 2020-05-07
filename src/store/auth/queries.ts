@@ -7,11 +7,11 @@ mutation ($orgId: String!) {
   }
 }
 `
-export const fetch = gql`
-query {
-  currentUser{
-    activeOrgId
-    activeProjectId
+export const currentUser = gql`
+  query {
+    currentUser{
+      activeOrgId
+      activeProjectId
+    }
   }
-}
 `

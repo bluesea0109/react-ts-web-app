@@ -22,9 +22,9 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const query = gql`
-query ($context: String, $question: String) {
-  bertQa(context: $context, question: $question)
-}
+  query ($context: String, $question: String) {
+    bertQa(context: $context, question: $question)
+  }
 `;
 
 export default function BasicTextFields() {
