@@ -1,21 +1,17 @@
-
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import clsx from "clsx";
-import firebase from "firebase/app";
 import "firebase/auth";
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from 'react-redux';
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import React from "react";
+import { Route, Switch, useLocation, useHistory } from "react-router-dom";
 import Account from "./components/account";
 import AppBar from "./components/Appbar";
-import ContentLoading from "./components/ContentLoading";
 import Drawer from "./components/Drawer";
 import Home from "./components/Home";
 import QuestionAnswering from "./components/question-answering";
-import SignInPage from "./components/SignInPage";
 import TextSummarization from "./components/text-summarization";
-import { signIn } from "./store/auth/actions";
-import { getAuthState } from "./store/selectors";
+import { useQuery, gql } from "@apollo/client";
+import ContentLoading from "./components/ContentLoading";
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -74,10 +70,25 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+const GET_DATA = gql`
+  query {
+    currentUser {
+      activeOrgId
+      activeProjectId
+    }
+  }
+`
+
+function useQueryParams() {
+  return new URLSearchParams(useLocation().search);
+}
+
 function App() {
+  const history = useHistory();
+  const location = useLocation();
+  const query = useQueryParams();
   const classes = useStyles();
-  const authState = useSelector(getAuthState);
-  const dispatch = useDispatch();
+  const { loading, error, data } = useQuery(GET_DATA);
 
   const [state, setState] = React.useState({
     drawerOpen: false,
@@ -91,85 +102,73 @@ function App() {
     setState({ ...state, drawerOpen: false });
   };
 
-  useEffect(() => {
-    const unregisterAuthObserver = firebase
-      .auth()
-      .onAuthStateChanged(async (user) => {
-        if (user) {
-          dispatch(signIn(user));
-          const token = await user.getIdToken();
-          console.log(`Bearer ${token}`);
-        } else {
-          dispatch(signIn(null));
-        }
-      });
-
-    return function cleanup() {
-      unregisterAuthObserver();
-    };
-  }, [dispatch]);
-
-  if (authState.isFetching) {
-    return <ContentLoading />;
+  if (error) {
+    console.log(error);
   }
-  if (!authState.user) {
-    return (
-      <Router>
-        <SignInPage />
-      </Router>
-    );
+
+  if (loading) {
+    return <ContentLoading/>
+  }
+  
+  const orgParam = query.get('org');
+  if (!orgParam && data) {
+    console.log(data);
+    history.push({
+      pathname: location.pathname,
+      search: `?org=${data.currentUser.activeOrgId}`,
+    });
+  } else {
+    // TODO: set active org id if different from current active org id
   }
 
   return (
-    <Router>
-      <div className={classes.root}>
-        <AppBar
-          position="fixed"
-          className={clsx(classes.appBar, {
-            [classes.appBarShift]: state.drawerOpen,
-          })}
-          onMenuClick={onMenuClick}
-        />
-        <Drawer
-          className={classes.drawer}
-          variant="persistent"
-          anchor="left"
-          classes={{
-            paper: classes.drawerPaper,
-          }}
-          open={state.drawerOpen}
-          onClose={onDrawerClose}
-        ></Drawer>
-        <main
-          className={clsx(classes.content, {
-            [classes.contentShift]: state.drawerOpen,
-          })}
-        >
-          <div className={classes.drawerHeader} />
-          <Switch>
-            <Route exact path="/">
-              <Home />
-            </Route>
-            <Route path="/account">
-              <Account />
-            </Route>
-            <Route path="/qa">
-              <QuestionAnswering />
-            </Route>
-            <Route path="/text-summarization">
-              <TextSummarization />
-            </Route>
-            <Route path="/image-labeling">
-              <div>
-                <p>image labeling</p>
-              </div>
-            </Route>
-            <Route path="/text-labeling"></Route>
-            <Route path="/"></Route>
-          </Switch>
-        </main>
-      </div>
-    </Router>
+    <div className={classes.root}>
+      <AppBar
+        position="fixed"
+        className={clsx(classes.appBar, {
+          [classes.appBarShift]: state.drawerOpen,
+        })}
+        onMenuClick={onMenuClick}
+      />
+      <Drawer
+        className={classes.drawer}
+        variant="persistent"
+        anchor="left"
+        classes={{
+          paper: classes.drawerPaper,
+        }}
+        open={state.drawerOpen}
+        onClose={onDrawerClose}
+      ></Drawer>
+      <main
+        className={clsx(classes.content, {
+          [classes.contentShift]: state.drawerOpen,
+        })}
+      >
+        <div className={classes.drawerHeader} />
+        <Switch>
+          <Route exact path="/">
+            <Home />
+          </Route>
+          <Route path="/account">
+            <Account />
+          </Route>
+          <Route path="/qa">
+            <QuestionAnswering />
+          </Route>
+          <Route path="/text-summarization">
+            <TextSummarization />
+          </Route>
+          <Route path="/image-labeling">
+            <div>
+              <p>image labeling</p>
+            </div>
+          </Route>
+          <Route path="/text-labeling"></Route>
+          <Route path="/"></Route>
+        </Switch>
+      </main>
+    </div>
   );
 }
 
