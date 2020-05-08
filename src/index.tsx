@@ -2,18 +2,25 @@ import './config'; // initializes firebase
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { Provider } from "react-redux";
 import configureStore from "./store";
+import { BrowserRouter as Router } from "react-router-dom";
+import { ApolloProvider } from '@apollo/client';
+import client from "./apollo-client";
+import AppAuthWrapper from './AppAuthWrapper';
 
 const store = configureStore();
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
+    <ApolloProvider client={client}>
+      <Provider store={store}>
+        <Router>
+          <AppAuthWrapper />
+        </Router>
+      </Provider>
+    </ApolloProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
