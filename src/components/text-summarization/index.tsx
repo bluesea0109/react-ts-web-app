@@ -2,7 +2,7 @@ import { gql } from '@apollo/client';
 import { Button, Grid, TextField, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { useState } from 'react';
-import client from "../../apollo-client";
+import { useApolloClient } from '@apollo/client';
 import ContentLoading from '../ContentLoading';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -26,7 +26,8 @@ const query = gql`
   }
 `;
 
-export default function BasicTextFields() {
+export default function TextSummarization() {
+  const client = useApolloClient();
   const classes = useStyles();
 
   const [state, setState] = useState({
