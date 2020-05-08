@@ -3,7 +3,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Button, TextField, Grid, Typography } from '@material-ui/core';
 import { gql } from '@apollo/client';
 import ContentLoading from '../ContentLoading';
-import client from "../../apollo-client";
+import { useApolloClient } from '@apollo/client';
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -27,8 +27,9 @@ const query = gql`
   }
 `;
 
-export default function BasicTextFields() {
+export default function QuestionAnswering() {
   const classes = useStyles();
+  const client = useApolloClient();
 
   const [state, setState] = useState({
     context: 'The man went to the store to buy a gallon of milk.',

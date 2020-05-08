@@ -1,7 +1,7 @@
 import { setContext } from '@apollo/link-context'
 import firebase from 'firebase/app';
 import config from "./config";
-import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
+import { ApolloClient, HttpLink, NormalizedCacheObject, InMemoryCache } from '@apollo/client';
 
 const link = new HttpLink({ uri: config.apiUrl });
 
@@ -28,7 +28,7 @@ const authLink = setContext((_, { headers }) => {
   });
 });
 
-export default new ApolloClient({
+export default new ApolloClient<NormalizedCacheObject>({
   link: authLink.concat(link),
   cache: new InMemoryCache(),
 });
