@@ -9,8 +9,9 @@ import Drawer from "./components/Drawer";
 import Home from "./components/Home";
 import QuestionAnswering from "./components/question-answering";
 import TextSummarization from "./components/text-summarization";
-import { useQuery, gql } from "@apollo/client";
+import { useQuery, gql, useMutation } from "@apollo/client";
 import ContentLoading from "./components/ContentLoading";
+import { UPDATE_ACTIVE_ORG } from "./gql-queries";
 
 const drawerWidth = 240;
 
@@ -70,11 +71,19 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const GET_DATA = gql`
+const GET_CURRENT_USER = gql`
   query {
     currentUser {
-      activeOrgId
-      activeProjectId
+      name,
+      email,
+      activeOrg {
+        id,
+        name
+      },
+      activeProject {
+        id,
+        name
+      }
     }
   }
 `
@@ -88,7 +97,8 @@ function App() {
   const location = useLocation();
   const query = useQueryParams();
   const classes = useStyles();
-  const { loading, error, data } = useQuery(GET_DATA);
+  const { loading, error, data } = useQuery(GET_CURRENT_USER);
+  const [updateActiveOrg, updateActiveOrgResult] = useMutation(UPDATE_ACTIVE_ORG);
 
   const [state, setState] = React.useState({
     drawerOpen: false,
@@ -106,19 +116,29 @@ function App() {
     console.log(error);
   }
 
-  if (loading) {
-    return <ContentLoading/>
+  if (loading || updateActiveOrgResult.loading) {
+    return <ContentLoading />
   }
-  
+
   const orgParam = query.get('org');
   if (!orgParam && data) {
     console.log(data);
+    let search = `?org=${data.currentUser.activeOrg.id}`;
+    if (data.currentUser.activeProject) {
+      search += `&project=${data.currentUser.activeProject.id}`
+    }
     history.push({
       pathname: location.pathname,
-      search: `?org=${data.currentUser.activeOrgId}`,
+      search,
     });
-  } else {
+  } else if (data) {
     // TODO: set active org id if different from current active org id
+    updateActiveOrg({
+      variables: {
+        orgId: data.currentUser.activeOrg.id,
+        ...data.currentUser.activeProject && { projectId: data.currentUser.activeProject.id}
+      }
+    });
   }
 
   return (

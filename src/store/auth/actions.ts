@@ -21,18 +21,18 @@ export const initialise = () => async (dispatch: any) => {
   dispatch({
     type: SET_ACTIVE_ORG,
     payload: {
-      orgId: res.data.currentUser.activeOrgId
+      orgId: res.data.currentUser.activeOrg.id
     }
   })
   dispatch({
     type: SET_ACTIVE_PROJECT,
     payload: {
-      projectId: res.data.currentUser.activeProjectId
+      projectId: res.data.currentUser.activeProject.id
     }
   })
 
-  if (res.data.currentUser.activeOrgId) {
-    dispatch(fetchProjects(res.data.currentUser.activeOrgId));
+  if (res.data.currentUser.activeOrg.id) {
+    dispatch(fetchProjects(res.data.currentUser.activeOrg.id));
   }
 }
 

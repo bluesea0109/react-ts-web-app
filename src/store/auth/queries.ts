@@ -10,8 +10,8 @@ mutation ($orgId: String!) {
 export const currentUser = gql`
   query {
     currentUser{
-      activeOrgId
-      activeProjectId
+      activeOrg
+      activeProject
     }
   }
 `

@@ -8,12 +8,29 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import MenuIcon from "@material-ui/icons/Menu";
 import clsx from "clsx";
-import React, { useCallback, useEffect } from 'react';
-import { connect, ConnectedProps, useSelector } from 'react-redux';
-import { initialise, setActiveOrg } from "../store/auth/actions";
-import { fetchOrgs } from "../store/organisations/actions";
-import { getFetchingOrganisations, getOrganisations } from "../store/organisations/selector";
-import { getActiveOrg } from '../store/selectors';
+import React from 'react';
+import { useQuery, gql } from "@apollo/client";
+import { useHistory, useLocation } from 'react-router-dom';
+
+const GET_ORGS = gql`
+  query {
+    currentUser {
+      activeOrg {
+        id,
+        name
+      }
+      activeProject {
+        id,
+        name
+      }
+    }
+    orgs{
+      id
+      name
+    }
+  }
+`;
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     menuButton: {
@@ -38,25 +55,40 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function CustomAppbar(props: CustomAppbarProps) {
   const classes = useStyles();
-  const activeOrg = useSelector(getActiveOrg);
-  const organisations = useSelector(getOrganisations);
-  const organisationsFetching = useSelector(getFetchingOrganisations);
-  const fetchorgs = useCallback(props.fetchorgs, []);
-  const initialise = useCallback(props.initialise, []);
-
-  useEffect(() => {
-    fetchorgs();
-    initialise();
-  }, [initialise, fetchorgs])
+  const { loading, error, data } = useQuery(GET_ORGS);
+  const history = useHistory();
+  const location = useLocation();
+  
+  const setActiveOrg = (orgId: string) => {
+    if (!data) return;
+    let search = `?org=${orgId}`;
+    history.push({
+      pathname: location.pathname,
+      search,
+    });
+    window.location.reload(false);
+  };
 
   const renderProjects = () => {
-    if (organisationsFetching) {
+    if (loading) {
       return <CircularProgress color="secondary" />
-    } return (
+    }
+
+    if (error) {
+      // TODO: handle errors
+      return <p>{JSON.stringify(error, null, 2)}</p>;
+    }
+
+    let activeOrgName = null;
+    if (data.currentUser.activeOrg) {
+      activeOrgName = data.currentUser.activeOrg.name;
+    }
+
+    return (
       <>
         < Select
-          value={activeOrg || ""}
-          onChange={(e) => props.setactiveorg(String(e.target.value))}
+          value={activeOrgName || ""}
+          onChange={(e) => setActiveOrg(String(e.target.value))}
           className={clsx(classes.selectInput)}
           inputProps={{
             classes: {
@@ -65,7 +97,7 @@ function CustomAppbar(props: CustomAppbarProps) {
             },
           }}
         >
-          {organisations.map(org => <MenuItem key={org.id} value={org.id}>{org.name}</MenuItem>)}
+          {data.orgs.map((org: any) => <MenuItem key={org.name} value={org.name}>{org.name}</MenuItem>)}
         </Select >
       </>
     )
@@ -96,19 +128,8 @@ function CustomAppbar(props: CustomAppbarProps) {
   );
 }
 
-const mapStateToProps = () => ({})
-
-const mapDispatchToProps = (dispatch: any) => ({ //TODO: add type checking to dispatch
-  fetchorgs: () => dispatch(fetchOrgs()),
-  setactiveorg: (orgId: string) => dispatch(setActiveOrg(orgId)),
-  initialise: () => dispatch(initialise())
-})
-
-const connector = connect(mapStateToProps, mapDispatchToProps)
-type PropsFromRedux = ConnectedProps<typeof connector>
-
-interface CustomAppbarProps extends PropsFromRedux, AppBarProps {
+interface CustomAppbarProps extends AppBarProps {
   onMenuClick: () => void;
 }
 
-export default connector(CustomAppbar);
+export default CustomAppbar;
