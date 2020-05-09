@@ -55,17 +55,18 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function CustomAppbar(props: CustomAppbarProps) {
   const classes = useStyles();
-  const { loading, error, data } = useQuery(GET_ORGS);
+  const { loading, error, data, refetch } = useQuery(GET_ORGS);
   const history = useHistory();
   const location = useLocation();
   
-  const setActiveOrg = (orgId: string) => {
-    if (!data) return;
+  const setActiveOrg = async (orgId: string) => {
+    console.log("orgId: ", orgId);
     let search = `?org=${orgId}`;
     history.push({
       pathname: location.pathname,
       search,
     });
+    await refetch();
     window.location.reload(false);
   };
 
@@ -79,15 +80,13 @@ function CustomAppbar(props: CustomAppbarProps) {
       return <p>{JSON.stringify(error, null, 2)}</p>;
     }
 
-    let activeOrgName = null;
-    if (data.currentUser.activeOrg) {
-      activeOrgName = data.currentUser.activeOrg.name;
-    }
+    const activeOrg = data.currentUser.activeOrg;
+    console.log("activeOrg: ", activeOrg ? activeOrg.id : null);
 
     return (
       <>
         < Select
-          value={activeOrgName || ""}
+          value={activeOrg ? activeOrg.id : ""}
           onChange={(e) => setActiveOrg(String(e.target.value))}
           className={clsx(classes.selectInput)}
           inputProps={{
@@ -97,7 +96,7 @@ function CustomAppbar(props: CustomAppbarProps) {
             },
           }}
         >
-          {data.orgs.map((org: any) => <MenuItem key={org.name} value={org.name}>{org.name}</MenuItem>)}
+          {data.orgs.map((org: any) => <MenuItem key={org.id} value={org.id}>{org.name}</MenuItem>)}
         </Select >
       </>
     )

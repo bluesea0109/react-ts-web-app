@@ -133,12 +133,15 @@ function App() {
     });
   } else if (data) {
     // TODO: set active org id if different from current active org id
-    updateActiveOrg({
-      variables: {
-        orgId: data.currentUser.activeOrg.id,
-        ...data.currentUser.activeProject && { projectId: data.currentUser.activeProject.id}
-      }
-    });
+
+    if (orgParam !== data.currentUser.activeOrg.id) {
+      updateActiveOrg({
+        variables: {
+          orgId: orgParam,
+          ...data.currentUser.activeProject && { projectId: data.currentUser.activeProject.id}
+        }
+      });
+    }
   }
 
   return (

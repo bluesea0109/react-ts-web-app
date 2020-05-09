@@ -1,86 +1,66 @@
 
-import { Button, Card, CardActions, CardContent, createStyles, Grid, LinearProgress, makeStyles, Theme, Typography } from '@material-ui/core';
-import clsx from "clsx";
+// import { createStyles, makeStyles, Theme } from '@material-ui/core';
 import React from "react";
-import { connect, ConnectedProps, useSelector } from 'react-redux';
-import { setActiveProject } from "../../store/organisations/actions";
-import { getFetchingProjects, getProjects, getUpdateProjectLoader } from "../../store/projects/selector";
-import { ProjectType } from "../../store/projects/types";
-import { getActiveOrg, getActiveProject } from "../../store/selectors";
 import ContentLoading from '../ContentLoading';
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        root: {
-            padding: theme.spacing(3),
-        },
-        title: {
-            fontSize: 20,
-        }
-    })
-);
+import { useQuery, gql } from '@apollo/client';
 
-function Projects(props: ProjectProps) {
-    const classes = useStyles();
-    const projects = useSelector(getProjects);
-    const projectsLoading = useSelector(getFetchingProjects);
-    const activeOrg = useSelector(getActiveOrg);
-    const activeProject = useSelector(getActiveProject);
-    const updateProjectLoader = useSelector(getUpdateProjectLoader);
-
-    const getButton = (id: string) => {
-        if (activeProject !== id)
-            return <Button variant="contained" color="primary" onClick={() => props.setActiveProject(String(activeOrg), id)}>Make Active</Button>
-        return <Button variant="contained" color="secondary" disabled onClick={() => props.setActiveProject(String(activeOrg), id)}>Active</Button>
+const GET_USER = gql`
+  query {
+    currentUser {
+      activeOrg {
+        id,
+        name
+      }
+      activeProject {
+        id,
+        name
+      }
     }
+  }
+`;
 
-    const getCard = (project: ProjectType) => {
-        return (
-            <Grid key={project.id} item xs={12} sm={3}>
-                <Card>
-                    {project.id === activeProject && updateProjectLoader && <LinearProgress />}
-                    <CardContent>
-                        <Typography className={classes.title} color="textPrimary" gutterBottom>
-                            {project.name}
-                        </Typography>
-                    </CardContent>
-                    <CardActions>
-                        {getButton(project.id)}
-                    </CardActions>
-                </Card>
-            </Grid >
-        )
-    }
+// const GET_PROJECTS = gql`
+//   query ($orgId: String!) {
+//     projects(orgId: $orgId) {
+//       id
+//       name
+//     }
+//   }
+// `;
 
-    const renderProjects = () => {
-        if (projectsLoading) {
-            return <ContentLoading />
-        }
-        if (projects.length === 0) {
-            return <Typography align='center' variant="h6">{"No projects found"}</Typography>
-        }
-        return <Grid container spacing={1}>
-            {projects.map((project) => getCard(project))}
-        </Grid>
-    }
+// const useStyles = makeStyles((theme: Theme) =>
+//   createStyles({
+//     root: {
+//       padding: theme.spacing(3),
+//     },
+//     title: {
+//       fontSize: 20,
+//     }
+//   })
+// );
 
-    return (
-        <div>
-            <Card className={clsx(classes.root)}>
-                <Typography variant="h4">{"Projects"}</Typography>
-                {renderProjects()}
-            </Card>
-        </div>
-    )
-}
+function Projects() {
+  // const classes = useStyles();
+  const getUser = useQuery(GET_USER);
+  // const [getProjects, getprojectsResult] = useLazyQuery(GET_PROJECTS);
 
-const mapStateToProps = () => ({})
+  if (getUser.loading) {
+    return <ContentLoading/>;
+  }
 
-const mapDispatchToProps = (dispatch: any) => ({
-    setActiveProject: (orgId: string, projectId: string) => dispatch(setActiveProject(orgId, projectId)),
-})
+  if (getUser.error) {
+      // TODO: handle errors
+      return <p>{JSON.stringify(getUser.error, null, 2)}</p>;
+  }
 
-const connector = connect(mapStateToProps, mapDispatchToProps)
-type ProjectProps = ConnectedProps<typeof connector>
+  const activeOrg = getUser.data.currentUser.activeOrg;
+  if (!activeOrg) {
+    return null;
+  }
 
-export default connector(Projects)
+  // const activeProject = getUser.data.currentUser.activeProject;
 
+  return <p>TODO</p>
+};
+
+export default Projects;

@@ -2,63 +2,90 @@
 import { Button, Card, createStyles, LinearProgress, makeStyles, TextField, Theme, Typography } from '@material-ui/core';
 import clsx from "clsx";
 import React, { useState } from "react";
-import { connect, ConnectedProps, useSelector } from 'react-redux';
-import { createProject } from "../../store/projects/actions";
-import { getNewProjectLoader } from "../../store/projects/selector";
-import { getActiveOrg } from "../../store/selectors";
+import { CREATE_PROJECT } from '../../gql-queries';
+import { useMutation, gql, useQuery } from '@apollo/client';
+
+const GET_USER = gql`
+  query {
+    currentUser {
+      activeOrg {
+        id,
+        name
+      }
+      activeProject {
+        id,
+        name
+      }
+    }
+  }
+`;
 
 const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        root: {
-            padding: theme.spacing(3),
-        },
-        inputBox: {
-            margin: theme.spacing(1),
-        },
-        button: {
-            margin: theme.spacing(1),
-        }
-    })
+  createStyles({
+    root: {
+      padding: theme.spacing(3),
+    },
+    inputBox: {
+      margin: theme.spacing(1),
+    },
+    button: {
+      margin: theme.spacing(1),
+    }
+  })
 );
 
-function NewProject(props: NewProjectProps) {
-    const classes = useStyles();
-    const [state, setState] = useState({
-        name: ""
-    });
-    const projectLoader = useSelector(getNewProjectLoader);
-    const activeOrg = useSelector(getActiveOrg);
-    const submit = () => {
-        props.createProject(state.name, String(activeOrg));
-    }
+function NewProject() {
+  const classes = useStyles();
+  const [state, setState] = useState({
+    name: ""
+  });
 
-    return (
-        <Card className={clsx(classes.root)}>
-            {projectLoader && <LinearProgress />}
-            <Typography variant="h4">{"New Project"}</Typography>
-            <br />
-            <TextField
-                id="name"
-                label="Project Name"
-                type="string"
-                value={state.name || ''}
-                variant="outlined"
-                onChange={(e: any) => setState({ ...state, name: (e.target.value) })}
-                className={clsx(classes.inputBox)}
-            />
-            <br />
-            <Button className={clsx(classes.button)} disabled={projectLoader} variant="contained" color="primary" onClick={submit}>{"Submit"}</Button>
-        </Card>
-    )
+  const getUser = useQuery(GET_USER);
+
+  const [createProject, createProjectResult] = useMutation(CREATE_PROJECT, {
+    refetchQueries: [{
+      query: GET_USER
+    }]
+  });
+
+  const loading = getUser.loading || createProjectResult.loading;
+
+  if (getUser.error) {
+    // TODO: handle errors
+    return <p>{JSON.stringify(getUser.error, null, 2)}</p>;
+  }
+
+  if (createProjectResult.error) {
+    // TODO: handle errors
+    return <p>{JSON.stringify(createProjectResult.error, null, 2)}</p>;
+  }
+
+  const submit = () => {
+    if (!getUser.data.currentUser.activeOrg) {
+      alert("User must have active org to create a project");
+      return;
+    }
+    createProject({ variables: { orgId: getUser.data.currentUser.activeOrg.id, name: state.name } })
+  }
+
+  return (
+    <Card className={clsx(classes.root)}>
+      {loading && <LinearProgress />}
+      <Typography variant="h4">{"New Project"}</Typography>
+      <br />
+      <TextField
+        id="name"
+        label="Project Name"
+        type="string"
+        value={state.name || ''}
+        variant="outlined"
+        onChange={(e: any) => setState({ ...state, name: (e.target.value) })}
+        className={clsx(classes.inputBox)}
+      />
+      <br />
+      <Button className={clsx(classes.button)} disabled={loading} variant="contained" color="primary" onClick={submit}>{"Submit"}</Button>
+    </Card>
+  )
 }
 
-const mapStateToProps = () => ({});
-
-const mapDispatchToProps = (dispatch: any) => ({
-    createProject: (name: string, orgId: string) => dispatch(createProject(name, orgId)),
-})
-
-const connector = connect(mapStateToProps, mapDispatchToProps)
-type NewProjectProps = ConnectedProps<typeof connector>
-
-export default connector(NewProject)
+export default NewProject;

@@ -25,3 +25,22 @@ export const UPDATE_ACTIVE_ORG = gql`
     }
   }
 `
+
+export const GET_PROJECTS = gql`
+  query ($orgId: String!) {
+    projects(orgId: $orgId) {
+      id
+      name
+    }
+  }
+`;
+
+export const CREATE_PROJECT = gql`
+  mutation ($orgId: String!, $name: String!) {
+    createProject(orgId: $orgId, name: $name) {
+      id
+      name
+      orgId
+    }
+  }
+`
