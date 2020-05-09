@@ -121,8 +121,9 @@ function App() {
   }
 
   const orgParam = query.get('org');
+  const projectParam = query.get('project');
+
   if (!orgParam && data) {
-    console.log(data);
     let search = `?org=${data.currentUser.activeOrg.id}`;
     if (data.currentUser.activeProject) {
       search += `&project=${data.currentUser.activeProject.id}`
@@ -138,7 +139,7 @@ function App() {
       updateActiveOrg({
         variables: {
           orgId: orgParam,
-          ...data.currentUser.activeProject && { projectId: data.currentUser.activeProject.id}
+          ...projectParam && { projectId: projectParam}
         }
       });
     }

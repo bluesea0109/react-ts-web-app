@@ -55,18 +55,16 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function CustomAppbar(props: CustomAppbarProps) {
   const classes = useStyles();
-  const { loading, error, data, refetch } = useQuery(GET_ORGS);
+  const { loading, error, data } = useQuery(GET_ORGS);
   const history = useHistory();
   const location = useLocation();
   
   const setActiveOrg = async (orgId: string) => {
-    console.log("orgId: ", orgId);
     let search = `?org=${orgId}`;
     history.push({
       pathname: location.pathname,
       search,
     });
-    await refetch();
     window.location.reload(false);
   };
 
@@ -81,7 +79,6 @@ function CustomAppbar(props: CustomAppbarProps) {
     }
 
     const activeOrg = data.currentUser.activeOrg;
-    console.log("activeOrg: ", activeOrg ? activeOrg.id : null);
 
     return (
       <>
