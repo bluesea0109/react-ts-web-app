@@ -24,7 +24,7 @@ const GET_ORGS = gql`
         name
       }
     }
-    orgs{
+    orgs {
       id
       name
     }

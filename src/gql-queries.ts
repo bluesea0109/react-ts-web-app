@@ -1,5 +1,14 @@
 import { gql } from "@apollo/client";
 
+export const CREATE_ORG = gql`
+  mutation ($name: String!) {
+    createOrg(name: $name) {
+      id
+      name
+    }
+  }
+`;
+
 export const UPDATE_ACTIVE_ORG = gql`
   mutation($orgId: String!, $projectId: String) {
     updateUserActiveOrg(orgId: $orgId, projectId: $projectId) {

@@ -6,6 +6,7 @@ import React from "react";
 import NewOrganisation from "./NewOrganisation";
 import NewProject from "./NewProject";
 import Projects from './Projects';
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -13,6 +14,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }
   })
 );
+
 function Account() {
   const classes = useStyles();
   return (

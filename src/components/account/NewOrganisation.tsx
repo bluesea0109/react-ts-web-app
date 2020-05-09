@@ -2,9 +2,8 @@
 import { Button, Card, createStyles, LinearProgress, makeStyles, TextField, Theme, Typography } from '@material-ui/core';
 import clsx from "clsx";
 import React, { useState } from "react";
-import { connect, ConnectedProps, useSelector } from 'react-redux';
-import { createOrg } from "../../store/organisations/actions";
-import { getNewOrgLoader } from "../../store/organisations/selector";
+import { CREATE_ORG } from '../../gql-queries';
+import { useMutation, gql } from '@apollo/client';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -20,19 +19,45 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-function NewOrganisation(props: NewOrganisationProps) {
+function NewOrganisation() {
   const classes = useStyles();
   const [state, setState] = useState({
     name: ""
   });
-  const orgLoader = useSelector(getNewOrgLoader)
+  const [createOrg, { loading, error }] = useMutation(CREATE_ORG, {
+    refetchQueries: [{
+      query: gql`
+        query {
+          currentUser {
+            activeOrg {
+              id,
+              name
+            }
+            activeProject {
+              id,
+              name
+            }
+          }
+          orgs {
+            id
+            name
+          }
+        }`
+      }]
+  });
+
+  if (error) {
+    // TODO: handle errors
+    return <p>{JSON.stringify(error, null, 2)}</p>;
+  }
+
   const submit = () => {
-    props.createOrg(state.name);
+    createOrg({ variables: { name: state.name } })
   }
 
   return (
     <Card className={clsx(classes.root)}>
-      {orgLoader && <LinearProgress />}
+      {loading && <LinearProgress />}
       <Typography variant="h4">{"New Organisation"}</Typography>
       <br />
       <TextField
@@ -45,18 +70,9 @@ function NewOrganisation(props: NewOrganisationProps) {
         className={clsx(classes.inputBox)}
       />
       <br />
-      <Button className={clsx(classes.button)} disabled={orgLoader} variant="contained" color="primary" onClick={submit}>{"Submit"}</Button>
+      <Button className={clsx(classes.button)} disabled={loading} variant="contained" color="primary" onClick={submit}>{"Submit"}</Button>
     </Card>
   )
 }
 
-const mapStateToProps = () => ({})
-
-const mapDispatchToProps = (dispatch: any) => ({
-  createOrg: (name: string) => dispatch(createOrg(name)),
-})
-
-const connector = connect(mapStateToProps, mapDispatchToProps)
-type NewOrganisationProps = ConnectedProps<typeof connector>
-
-export default connector(NewOrganisation)
+export default NewOrganisation;
