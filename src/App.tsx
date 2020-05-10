@@ -9,9 +9,9 @@ import Drawer from "./components/Drawer";
 import Home from "./components/Home";
 import QuestionAnswering from "./components/question-answering";
 import TextSummarization from "./components/text-summarization";
-import { useQuery, gql, useMutation } from "@apollo/client";
+import { useQuery, useMutation } from "@apollo/client";
 import ContentLoading from "./components/ContentLoading";
-import { UPDATE_ACTIVE_ORG } from "./gql-queries";
+import { UPDATE_ACTIVE_ORG, GET_CURRENT_USER } from "./gql-queries";
 
 const drawerWidth = 240;
 
@@ -70,23 +70,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
-
-const GET_CURRENT_USER = gql`
-  query {
-    currentUser {
-      name,
-      email,
-      activeOrg {
-        id,
-        name
-      },
-      activeProject {
-        id,
-        name
-      }
-    }
-  }
-`
 
 function useQueryParams() {
   return new URLSearchParams(useLocation().search);

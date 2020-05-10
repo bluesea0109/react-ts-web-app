@@ -4,11 +4,10 @@ import React from "react";
 import ContentLoading from '../ContentLoading';
 import { gql, useQuery, useApolloClient } from '@apollo/client';
 import { useHistory, useLocation } from 'react-router';
-import { useQueryParams } from "../../utils";
 import assert from "assert";
 import clsx from "clsx";
 import { UPDATE_ACTIVE_ORG } from '../../gql-queries';
-
+import { withActiveOrg } from "../WithActiveOrg";
 
 const GET_USER = gql`
   query {
@@ -57,17 +56,6 @@ const useStyles = makeStyles((theme: Theme) =>
     }
   })
 );
-
-function ProjectsWrapper() {
-  const query = useQueryParams();
-  const orgParam = query.get('org');
-  const projectParam = query.get('project');
-  if (!orgParam) {
-    return <Typography>{"No organization is active. Please create or select and organization."}</Typography>;
-  }
-
-  return <Projects orgId={orgParam} projectId={projectParam}></Projects>
-}
 
 interface IProjectProps {
   orgId: string,
@@ -169,4 +157,4 @@ function Projects(props: IProjectProps) {
   )
 };
 
-export default ProjectsWrapper;
+export default withActiveOrg(Projects);
