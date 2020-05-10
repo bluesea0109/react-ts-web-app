@@ -51,7 +51,10 @@ function CustomDrawer(props: CustomDrawerProps) {
       <List>
         <ListItem
           component={Link}
-          to="/"
+          to={{
+            pathname: "/",
+            search: location.search,
+          }}
           selected={location.pathname === "/"}
           button
         >
@@ -59,7 +62,10 @@ function CustomDrawer(props: CustomDrawerProps) {
         </ListItem>
         <ListItem
           component={Link}
-          to="/account"
+          to={{
+            pathname: "/account",
+            search: location.search,
+          }}
           selected={location.pathname === "/account"}
           button
         >
@@ -67,7 +73,10 @@ function CustomDrawer(props: CustomDrawerProps) {
         </ListItem>
         <ListItem
           component={Link}
-          to="/qa"
+          to={{
+            pathname: "/qa",
+            search: location.search,
+          }}
           selected={location.pathname === "/qa"}
           button
         >
@@ -75,7 +84,10 @@ function CustomDrawer(props: CustomDrawerProps) {
         </ListItem>
         <ListItem
           component={Link}
-          to="/text-summarization"
+          to={{
+            pathname: "/text-summarization",
+            search: location.search,
+          }}
           selected={location.pathname === "/text-summarization"}
           button
         >
@@ -83,7 +95,10 @@ function CustomDrawer(props: CustomDrawerProps) {
         </ListItem>
         <ListItem
           component={Link}
-          to="/chabot-builder"
+          to={{
+            pathname: "/chatbot-builder",
+            search: location.search,
+          }}
           selected={location.pathname === "/chatbot-builder"}
           button
         >
@@ -91,7 +106,10 @@ function CustomDrawer(props: CustomDrawerProps) {
         </ListItem>
         <ListItem
           component={Link}
-          to="/text-labeling"
+          to={{
+            pathname: "/text-labeling",
+            search: location.search,
+          }}
           selected={location.pathname === "/text-labeling"}
           button
         >
@@ -99,7 +117,10 @@ function CustomDrawer(props: CustomDrawerProps) {
         </ListItem>
         <ListItem
           component={Link}
-          to="/image-labeling"
+          to={{
+            pathname: "/image-labeling",
+            search: location.search,
+          }}
           selected={location.pathname === "/image-labeling"}
           button
         >

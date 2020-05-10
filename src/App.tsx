@@ -106,25 +106,33 @@ function App() {
   const orgParam = query.get('org');
   const projectParam = query.get('project');
 
-  if (!orgParam && data) {
-    let search = `?org=${data.currentUser.activeOrg.id}`;
-    if (data.currentUser.activeProject) {
-      search += `&project=${data.currentUser.activeProject.id}`
-    }
-    history.push({
-      pathname: location.pathname,
-      search,
-    });
-  } else if (data) {
-    // TODO: set active org id if different from current active org id
+  if (data) {
+    const { activeOrg, activeProject } = data.currentUser;
+    const activeOrgId = activeOrg ? activeOrg.id : null;
+    const activeProjectId = activeProject ? activeProject.id : null;
 
-    if (orgParam !== data.currentUser.activeOrg.id) {
+    // If one param is null but it's corresponding user value is not null, update the url
+    if ((orgParam == null && activeOrgId) || (projectParam == null && activeProjectId)) {
+      let search = `?org=${activeOrgId}`;
+      if (activeProjectId) {
+        search += `&project=${data.currentUser.activeProject.id}`
+      }
+      history.push({ pathname: location.pathname, search });
+      console.log('updated url');
+      window.location.reload(false);
+      return <ContentLoading />;
+    } 
+    
+    // If org or project params differ from the current user values, update the active org
+    if (orgParam !== activeOrgId || projectParam !== activeProjectId) {
+      // todo: If updateActiveOrg returns an error, show a proper error page.
       updateActiveOrg({
         variables: {
-          orgId: orgParam,
-          ...projectParam && { projectId: projectParam}
+          orgId: orgParam || activeOrgId,
+          projectId: projectParam || activeProjectId
         }
       });
+      return <ContentLoading />
     }
   }
 

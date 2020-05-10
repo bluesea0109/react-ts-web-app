@@ -6,6 +6,7 @@ import React from "react";
 import NewOrganisation from "./NewOrganisation";
 import NewProject from "./NewProject";
 import Projects from './Projects';
+import { withActiveOrg, IWithActiveOrgProps } from '../WithActiveOrg';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -15,7 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-function Account() {
+function Account(props: IWithActiveOrgProps) {
   const classes = useStyles();
   return (
     <>
@@ -26,14 +27,18 @@ function Account() {
             <NewOrganisation />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <NewProject />
+            {props.orgId ? (
+              <NewProject />
+            ) : null}
           </Grid>
           <Grid item xs={12} sm={12}>
-            <Projects />
+            {props.orgId ? (
+              <Projects />
+            ) : null}
           </Grid>
         </Grid>
       </div>
     </>
   );
 }
-export default Account;
+export default withActiveOrg(Account);

@@ -62,6 +62,13 @@ interface IProjectProps {
   projectId: string | null,
 }
 
+function ProjectsWrapper(props: IProjectProps) {
+  if (!props.orgId) {
+    return <Typography>{"No organization is active."}</Typography>
+  }
+  return <Projects {...props}/>
+}
+
 function Projects(props: IProjectProps) {
   const classes = useStyles();
   const history = useHistory();
@@ -84,7 +91,7 @@ function Projects(props: IProjectProps) {
 
   console.log("activeProjectId", activeProjectId);
   assert.equal(activeOrg.id, props.orgId);
-  //assert.equal(activeProjectId, props.projectId);
+  assert.equal(activeProjectId, props.projectId);
 
   const setActiveProject = async (orgId: string, projectId: string) => {
     const res = await client.mutate({
@@ -106,7 +113,7 @@ function Projects(props: IProjectProps) {
         pathname: location.pathname,
         search,
       });
-      //window.location.reload(false);
+      window.location.reload(false);
     }
   };
 
@@ -157,4 +164,4 @@ function Projects(props: IProjectProps) {
   )
 };
 
-export default withActiveOrg(Projects);
+export default withActiveOrg(ProjectsWrapper);

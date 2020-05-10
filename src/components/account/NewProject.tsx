@@ -4,6 +4,7 @@ import clsx from "clsx";
 import React, { useState } from "react";
 import { CREATE_PROJECT } from '../../gql-queries';
 import { useMutation, gql, useQuery } from '@apollo/client';
+import { withActiveOrg, IWithActiveOrgProps } from '../WithActiveOrg';
 
 const GET_USER = gql`
   query {
@@ -34,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-function NewProject() {
+function NewProject(props: IWithActiveOrgProps) {
   const classes = useStyles();
   const [state, setState] = useState({
     name: ""
@@ -88,4 +89,4 @@ function NewProject() {
   )
 }
 
-export default NewProject;
+export default withActiveOrg(NewProject);
