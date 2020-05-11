@@ -6,7 +6,7 @@ import React from "react";
 import NewOrganisation from "./NewOrganisation";
 import NewProject from "./NewProject";
 import Projects from './Projects';
-import { withActiveOrg, IWithActiveOrgProps } from '../WithActiveOrg';
+import { useActiveOrg } from '../UseActiveOrg';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -16,8 +16,10 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-function Account(props: IWithActiveOrgProps) {
+function Account() {
   const classes = useStyles();
+  const { orgId } = useActiveOrg();
+
   return (
     <>
       <Typography variant="h4">{"Accounts section"}</Typography>
@@ -27,12 +29,12 @@ function Account(props: IWithActiveOrgProps) {
             <NewOrganisation />
           </Grid>
           <Grid item xs={12} sm={6}>
-            {props.orgId ? (
+            {orgId ? (
               <NewProject />
             ) : null}
           </Grid>
           <Grid item xs={12} sm={12}>
-            {props.orgId ? (
+            {orgId ? (
               <Projects />
             ) : null}
           </Grid>
@@ -41,4 +43,4 @@ function Account(props: IWithActiveOrgProps) {
     </>
   );
 }
-export default withActiveOrg(Account);
+export default Account;

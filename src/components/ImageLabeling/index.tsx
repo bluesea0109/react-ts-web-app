@@ -1,19 +1,25 @@
 import { makeStyles, Grid, Typography, Toolbar, Theme, createStyles } from '@material-ui/core';
 import React from "react";
-import { withActiveOrg } from "../WithActiveOrg";
 import Collections from './Collections';
 import CreateCollection from './CreateCollection';
+import { useActiveOrg } from '../UseActiveOrg';
 
 interface IProjectProps {
   orgId: string,
-  projectId: string | null,
+  projectId: string,
 }
 
-function ImageLabelingPageWrapper(props: IProjectProps) {
-  if (!props.projectId) {
+function ImageLabelingPageWrapper() {
+  const { orgId, projectId } = useActiveOrg();
+
+  if (!orgId) {
+    return <Typography>{"No org is active."}</Typography>
+  }
+  if (!projectId) {
     return <Typography>{"No project is active."}</Typography>
   }
-  return <ImageLabelingPage {...props} />
+
+  return <ImageLabelingPage orgId={orgId} projectId={projectId} />
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -43,4 +49,4 @@ function ImageLabelingPage(props: IProjectProps) {
   );
 };
 
-export default withActiveOrg(ImageLabelingPageWrapper);
+export default ImageLabelingPageWrapper;

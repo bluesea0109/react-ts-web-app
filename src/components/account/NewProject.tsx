@@ -3,8 +3,8 @@ import { Button, Card, createStyles, LinearProgress, makeStyles, TextField, Them
 import clsx from "clsx";
 import React, { useState } from "react";
 import { CREATE_PROJECT } from '../../gql-queries';
-import { useMutation, gql, useQuery } from '@apollo/client';
-import { withActiveOrg, IWithActiveOrgProps } from '../WithActiveOrg';
+import { useMutation, gql } from '@apollo/client';
+import { useActiveOrg } from '../UseActiveOrg';
 
 const GET_USER = gql`
   query {
@@ -37,13 +37,12 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-function NewProject(props: IWithActiveOrgProps) {
+function NewProject() {
   const classes = useStyles();
   const [state, setState] = useState({
     name: ""
   });
-
-  const getUser = useQuery(GET_USER);
+  const { orgId } = useActiveOrg();
 
   const [createProject, createProjectResult] = useMutation(CREATE_PROJECT, {
     refetchQueries: [{
@@ -51,12 +50,7 @@ function NewProject(props: IWithActiveOrgProps) {
     }]
   });
 
-  const loading = getUser.loading || createProjectResult.loading;
-
-  if (getUser.error) {
-    // TODO: handle errors
-    return <p>{JSON.stringify(getUser.error, null, 2)}</p>;
-  }
+  const loading = createProjectResult.loading;
 
   if (createProjectResult.error) {
     // TODO: handle errors
@@ -64,11 +58,11 @@ function NewProject(props: IWithActiveOrgProps) {
   }
 
   const submit = () => {
-    if (!getUser.data.currentUser.activeOrg) {
+    if (!orgId) {
       alert("User must have active org to create a project");
       return;
     }
-    createProject({ variables: { orgId: getUser.data.currentUser.activeOrg.id, name: state.name } })
+    createProject({ variables: { orgId, name: state.name } })
   }
 
   return (
@@ -91,4 +85,4 @@ function NewProject(props: IWithActiveOrgProps) {
   )
 }
 
-export default withActiveOrg(NewProject);
+export default NewProject;

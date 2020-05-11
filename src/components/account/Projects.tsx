@@ -7,7 +7,7 @@ import { useHistory, useLocation } from 'react-router';
 import assert from "assert";
 import clsx from "clsx";
 import { UPDATE_ACTIVE_ORG } from '../../gql-queries';
-import { withActiveOrg } from "../WithActiveOrg";
+import { useActiveOrg } from '../UseActiveOrg';
 
 const GET_USER = gql`
   query {
@@ -64,11 +64,12 @@ interface IProjectProps {
   projectId: string | null,
 }
 
-function ProjectsWrapper(props: IProjectProps) {
-  if (!props.orgId) {
-    return <Typography>{"No organization is active."}</Typography>
+function ProjectsWrapper() {
+  const { orgId, projectId } = useActiveOrg();
+  if (!orgId) {
+    return <Typography>{"No org is active."}</Typography>
   }
-  return <Projects {...props}/>
+  return <Projects orgId={orgId} projectId={projectId} />
 }
 
 function Projects(props: IProjectProps) {
@@ -166,4 +167,4 @@ function Projects(props: IProjectProps) {
   )
 };
 
-export default withActiveOrg(ProjectsWrapper);
+export default ProjectsWrapper;

@@ -7,9 +7,9 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { Typography, Button } from '@material-ui/core';
 import gql from "graphql-tag";
 import IconButtonAdd from '../IconButtonAdd';
-import { withActiveOrg, IWithActiveOrgProps } from '../WithActiveOrg';
 import { useMutation } from '@apollo/client';
 import ContentLoading from '../ContentLoading';
+import { useActiveOrg } from '../UseActiveOrg';
 
 const CREATE_COLLECTION = gql`
   mutation ($projectId: String!, $name: String!) {
@@ -31,18 +31,18 @@ const GET_COLLECTIONS = gql`
   }
 `;
 
-interface ICreateCollectionProps extends IWithActiveOrgProps {
+interface ICreateCollectionProps {
   onCompleted?(): any,
 }
 
 function CreateCollection(props: ICreateCollectionProps) {
-
+  const { projectId } = useActiveOrg();
   const [createCollection, { loading, error, data }] = useMutation(CREATE_COLLECTION,
     {
       onCompleted: () => {
         handleClose();
       },
-      refetchQueries: [{ query: GET_COLLECTIONS, variables: { projectId: props.projectId }}],
+      refetchQueries: [{ query: GET_COLLECTIONS, variables: { projectId: projectId }}],
       awaitRefetchQueries: true,
     });
 
@@ -67,11 +67,11 @@ function CreateCollection(props: ICreateCollectionProps) {
   };
 
   const handleCreate = () => {
-    if (state.name && props.projectId) {
+    if (state.name && projectId) {
       createCollection({
         variables: {
           name: state.name,
-          projectId: props.projectId,
+          projectId: projectId,
         },
       });
     }
@@ -139,4 +139,4 @@ function CreateCollection(props: ICreateCollectionProps) {
   );
 }
 
-export default withActiveOrg(CreateCollection);
+export default CreateCollection;

@@ -3,7 +3,7 @@ import { makeStyles, Typography, Table, TableHead, TableRow, TableCell, TableBod
 import React from "react";
 import ContentLoading from '../ContentLoading';
 import { gql, useQuery } from '@apollo/client';
-import { withActiveOrg } from "../WithActiveOrg";
+import { useActiveOrg } from '../UseActiveOrg';
 
 const GET_COLLECTIONS = gql`
   query($projectId: String!) {
@@ -26,11 +26,16 @@ interface IProjectProps {
   projectId: string | null,
 }
 
-function CollectionsListWrapper(props: IProjectProps) {
-  if (!props.projectId) {
+function CollectionsListWrapper() {
+  const { orgId, projectId } = useActiveOrg();
+
+  if (!orgId) {
+    return <Typography>{"No org is active."}</Typography>
+  }
+  if (!projectId) {
     return <Typography>{"No project is active."}</Typography>
   }
-  return <CollectionsList {...props} />
+  return <CollectionsList orgId={orgId} projectId={projectId} />
 }
 
 function CollectionsList(props: IProjectProps) {
@@ -70,4 +75,4 @@ function CollectionsList(props: IProjectProps) {
   );
 }
 
-export default withActiveOrg(CollectionsListWrapper);
+export default CollectionsListWrapper;

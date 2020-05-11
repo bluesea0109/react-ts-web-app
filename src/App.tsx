@@ -14,6 +14,8 @@ import { useQuery, useMutation } from "@apollo/client";
 import ContentLoading from "./components/ContentLoading";
 import { UPDATE_ACTIVE_ORG, GET_CURRENT_USER } from "./gql-queries";
 import { Typography } from "@material-ui/core";
+import assert from "assert";
+import { useActiveOrg } from "./components/UseActiveOrg";
 
 const drawerWidth = 240;
 
@@ -73,15 +75,11 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-function useQueryParams() {
-  return new URLSearchParams(useLocation().search);
-}
-
 function App() {
   const history = useHistory();
   const location = useLocation();
-  const query = useQueryParams();
   const classes = useStyles();
+  const { orgId, projectId } = useActiveOrg();
   const { loading, error, data } = useQuery(GET_CURRENT_USER);
   const [updateActiveOrg, updateActiveOrgResult] = useMutation(UPDATE_ACTIVE_ORG,
     {
@@ -115,42 +113,43 @@ function App() {
     return <ContentLoading />
   }
 
-  const orgParam = query.get('org');
-  const projectParam = query.get('project');
-
   if (data) {
     const { activeOrg, activeProject } = data.currentUser;
     const activeOrgId = activeOrg ? activeOrg.id : null;
     const activeProjectId = activeProject ? activeProject.id : null;
 
     // If one param is null but it's corresponding user value is not null, update the url
-    if ((orgParam == null && activeOrgId)) {
+    if (orgId == null && activeOrgId) {
       let search = `?org=${activeOrgId}`;
       if (activeProjectId) {
         search += `&project=${activeProjectId}`
       }
       history.push({ pathname: location.pathname, search });
       console.log('updated url');
-      window.location.reload(false);
       return <ContentLoading />;
     }
 
     // If org or project params differ from the current user values, update the active org
-    if (orgParam !== activeOrgId || projectParam !== activeProjectId) {
+    if (orgId !== activeOrgId || projectId !== activeProjectId) {
       // todo: If updateActiveOrg returns an error, show a proper error page.
-      console.log("project param", projectParam);
+      console.log("project param", projectId);
       console.log("project id", activeProjectId);
 
       console.log('Updating active org/project');
       updateActiveOrg({
         variables: {
-          orgId: orgParam,
-          projectId: projectParam
+          orgId,
+          projectId,
         }
       });
       return <ContentLoading/>
     }
+
+    assert.equal(orgId, activeOrgId);
+    assert.equal(projectId, activeProjectId);
   }
+
+  assert.notEqual(data, null);
 
   return (
     <div className={classes.root}>
