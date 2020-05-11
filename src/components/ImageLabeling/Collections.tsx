@@ -1,5 +1,5 @@
 
-import { createStyles, makeStyles, Theme, Typography, List, ListItem, ListItemText } from '@material-ui/core';
+import { makeStyles, Typography, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
 import React from "react";
 import ContentLoading from '../ContentLoading';
 import { gql, useQuery } from '@apollo/client';
@@ -15,16 +15,11 @@ const GET_COLLECTIONS = gql`
   }
 `;
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(3),
-    },
-    title: {
-      fontSize: 20,
-    }
-  })
-);
+const useStyles = makeStyles({
+  table: {
+    minWidth: 650,
+  },
+});
 
 interface IProjectProps {
   orgId: string,
@@ -40,10 +35,10 @@ function CollectionsListWrapper(props: IProjectProps) {
 
 function CollectionsList(props: IProjectProps) {
   const classes = useStyles();
-  const { loading, error, data } = useQuery(GET_COLLECTIONS, { variables: { projectId: props.projectId }});
+  const { loading, error, data } = useQuery(GET_COLLECTIONS, { variables: { projectId: props.projectId } });
 
   if (loading) {
-    return <ContentLoading/>
+    return <ContentLoading />
   }
 
   if (error) {
@@ -54,14 +49,24 @@ function CollectionsList(props: IProjectProps) {
   const collections = data.ImageLabelingService_collections;
 
   return (
-    <List className={classes.root} subheader={<li />}>
-      {collections.map((col: any, i: number) => (
-        <ListItem key={i}>
-          <ListItemText primary={`Name: ${col.name}`} />
-          <ListItemText secondary={`Id: ${col.id}`} />
-        </ListItem>
-      ))}
-    </List>
+      <Table className={classes.table} aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            <TableCell>Name</TableCell>
+            <TableCell>Id</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {collections.map((collection: any, i: number) => (
+            <TableRow key={i}>
+              <TableCell>
+                {collection.name}
+              </TableCell>
+              <TableCell>{collection.id}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
   );
 }
 

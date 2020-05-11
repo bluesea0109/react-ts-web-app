@@ -7,9 +7,9 @@ import Account from "./components/account";
 import AppBar from "./components/Appbar";
 import Drawer from "./components/Drawer";
 import Home from "./components/Home";
-import QuestionAnswering from "./components/question-answering";
-import TextSummarization from "./components/text-summarization";
-import ImageLabeling from "./components/image-labeling";
+import QuestionAnswering from "./components/QuestionAnswering";
+import TextSummarization from "./components/TextSummarization";
+import ImageLabeling from "./components/ImageLabeling";
 import { useQuery, useMutation } from "@apollo/client";
 import ContentLoading from "./components/ContentLoading";
 import { UPDATE_ACTIVE_ORG, GET_CURRENT_USER } from "./gql-queries";
@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     content: {
       flexGrow: 1,
-      padding: theme.spacing(3),
+      padding: theme.spacing(2),
       transition: theme.transitions.create("margin", {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
@@ -83,7 +83,11 @@ function App() {
   const query = useQueryParams();
   const classes = useStyles();
   const { loading, error, data } = useQuery(GET_CURRENT_USER);
-  const [updateActiveOrg, updateActiveOrgResult] = useMutation(UPDATE_ACTIVE_ORG);
+  const [updateActiveOrg, updateActiveOrgResult] = useMutation(UPDATE_ACTIVE_ORG,
+    {
+      refetchQueries: [{ query: GET_CURRENT_USER }],
+      awaitRefetchQueries: true
+    });
 
   const [state, setState] = React.useState({
     drawerOpen: false,
@@ -120,28 +124,31 @@ function App() {
     const activeProjectId = activeProject ? activeProject.id : null;
 
     // If one param is null but it's corresponding user value is not null, update the url
-    if ((orgParam == null && activeOrgId) || (projectParam == null && activeProjectId)) {
+    if ((orgParam == null && activeOrgId)) {
       let search = `?org=${activeOrgId}`;
       if (activeProjectId) {
         search += `&project=${activeProjectId}`
       }
       history.push({ pathname: location.pathname, search });
       console.log('updated url');
-      //window.location.reload(false);
+      window.location.reload(false);
       return <ContentLoading />;
-    } 
-    
+    }
+
     // If org or project params differ from the current user values, update the active org
     if (orgParam !== activeOrgId || projectParam !== activeProjectId) {
       // todo: If updateActiveOrg returns an error, show a proper error page.
+      console.log("project param", projectParam);
+      console.log("project id", activeProjectId);
+
       console.log('Updating active org/project');
       updateActiveOrg({
         variables: {
-          orgId: orgParam || activeOrgId,
-          projectId: projectParam || activeProjectId
+          orgId: orgParam,
+          projectId: projectParam
         }
       });
-      return <ContentLoading />
+      return <ContentLoading/>
     }
   }
 
