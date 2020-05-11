@@ -29,6 +29,8 @@ const GET_USER = gql`
 const GET_DATA = gql`
   query($orgId: String!) {
     currentUser {
+      name,
+      email,
       activeOrg {
         id,
         name

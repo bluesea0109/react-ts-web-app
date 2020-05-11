@@ -9,9 +9,11 @@ import Drawer from "./components/Drawer";
 import Home from "./components/Home";
 import QuestionAnswering from "./components/question-answering";
 import TextSummarization from "./components/text-summarization";
+import ImageLabeling from "./components/image-labeling";
 import { useQuery, useMutation } from "@apollo/client";
 import ContentLoading from "./components/ContentLoading";
 import { UPDATE_ACTIVE_ORG, GET_CURRENT_USER } from "./gql-queries";
+import { Typography } from "@material-ui/core";
 
 const drawerWidth = 240;
 
@@ -97,6 +99,12 @@ function App() {
 
   if (error) {
     console.log(error);
+    return <Typography>{"Unkown error occurred"}</Typography>
+  }
+
+  if (updateActiveOrgResult.error) {
+    console.log(updateActiveOrgResult.error);
+    return <Typography>{"Unkown error occurred"}</Typography>
   }
 
   if (loading || updateActiveOrgResult.loading) {
@@ -115,17 +123,18 @@ function App() {
     if ((orgParam == null && activeOrgId) || (projectParam == null && activeProjectId)) {
       let search = `?org=${activeOrgId}`;
       if (activeProjectId) {
-        search += `&project=${data.currentUser.activeProject.id}`
+        search += `&project=${activeProjectId}`
       }
       history.push({ pathname: location.pathname, search });
       console.log('updated url');
-      window.location.reload(false);
+      //window.location.reload(false);
       return <ContentLoading />;
     } 
     
     // If org or project params differ from the current user values, update the active org
     if (orgParam !== activeOrgId || projectParam !== activeProjectId) {
       // todo: If updateActiveOrg returns an error, show a proper error page.
+      console.log('Updating active org/project');
       updateActiveOrg({
         variables: {
           orgId: orgParam || activeOrgId,
@@ -175,9 +184,7 @@ function App() {
             <TextSummarization />
           </Route>
           <Route path="/image-labeling">
-            <div>
-              <p>image labeling</p>
-            </div>
+            <ImageLabeling />
           </Route>
           <Route path="/text-labeling"></Route>
           <Route path="/"></Route>

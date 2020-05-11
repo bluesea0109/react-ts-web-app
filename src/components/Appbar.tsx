@@ -15,6 +15,8 @@ import { useHistory, useLocation } from 'react-router-dom';
 const GET_ORGS = gql`
   query {
     currentUser {
+      name,
+      email,
       activeOrg {
         id,
         name

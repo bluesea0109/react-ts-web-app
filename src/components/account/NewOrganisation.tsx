@@ -29,6 +29,8 @@ function NewOrganisation() {
       query: gql`
         query {
           currentUser {
+            name,
+            email,
             activeOrg {
               id,
               name
