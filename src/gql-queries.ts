@@ -3,14 +3,14 @@ import { gql } from "@apollo/client";
 export const GET_CURRENT_USER = gql`
   query {
     currentUser {
-      name,
-      email,
+      name
+      email
       activeOrg {
-        id,
+        id
         name
-      },
+      }
       activeProject {
-        id,
+        id
         name
       }
     }
@@ -18,7 +18,7 @@ export const GET_CURRENT_USER = gql`
 `;
 
 export const CREATE_ORG = gql`
-  mutation ($name: String!) {
+  mutation($name: String!) {
     createOrg(name: $name) {
       id
       name
@@ -29,22 +29,22 @@ export const CREATE_ORG = gql`
 export const UPDATE_ACTIVE_ORG = gql`
   mutation($orgId: String!, $projectId: String) {
     updateUserActiveOrg(orgId: $orgId, projectId: $projectId) {
-      name,
-      email,
+      name
+      email
       activeOrg {
-        id,
+        id
         name
-      },
+      }
       activeProject {
-        id,
+        id
         name
       }
     }
   }
-`
+`;
 
 export const GET_PROJECTS = gql`
-  query ($orgId: String!) {
+  query($orgId: String!) {
     projects(orgId: $orgId) {
       id
       name
@@ -52,12 +52,23 @@ export const GET_PROJECTS = gql`
   }
 `;
 
+export const GET_ORGS = gql`
+  query($id: String) {
+    orgs(id: $id) {
+      id
+      name
+      members
+      projects
+    }
+  }
+`;
+
 export const CREATE_PROJECT = gql`
-  mutation ($orgId: String!, $name: String!) {
+  mutation($orgId: String!, $name: String!) {
     createProject(orgId: $orgId, name: $name) {
       id
       name
       orgId
     }
   }
-`
+`;

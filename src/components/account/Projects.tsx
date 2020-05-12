@@ -1,25 +1,34 @@
-
-import { createStyles, makeStyles, Theme, Button, Grid, Card, CardContent, Typography, CardActions } from '@material-ui/core';
-import React from "react";
+import {
+  createStyles,
+  makeStyles,
+  Theme,
+  Button,
+  Grid,
+  Card,
+  CardContent,
+  Typography,
+  CardActions,
+} from '@material-ui/core';
+import React from 'react';
 import ContentLoading from '../ContentLoading';
 import { gql, useQuery, useApolloClient } from '@apollo/client';
 import { useHistory, useLocation } from 'react-router';
-import assert from "assert";
-import clsx from "clsx";
+import assert from 'assert';
+import clsx from 'clsx';
 import { UPDATE_ACTIVE_ORG } from '../../gql-queries';
 import { useActiveOrg } from '../UseActiveOrg';
 
 const GET_USER = gql`
   query {
     currentUser {
-      name,
-      email,
+      name
+      email
       activeOrg {
-        id,
+        id
         name
       }
       activeProject {
-        id,
+        id
         name
       }
     }
@@ -29,14 +38,14 @@ const GET_USER = gql`
 const GET_DATA = gql`
   query($orgId: String!) {
     currentUser {
-      name,
-      email,
+      name
+      email
       activeOrg {
-        id,
+        id
         name
       }
       activeProject {
-        id,
+        id
         name
       }
     }
@@ -55,31 +64,35 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     title: {
       fontSize: 20,
-    }
+    },
   })
 );
 
 interface IProjectProps {
-  orgId: string,
-  projectId: string | null,
+  orgId: string;
+  projectId: string | null;
 }
 
 function ProjectsWrapper() {
   const { orgId, projectId } = useActiveOrg();
-  if (!orgId) {
-    return <Typography>{"No org is active."}</Typography>
-  }
-  return <Projects orgId={orgId} projectId={projectId} />
+
+  return orgId ? (
+    <Projects orgId={orgId} projectId={projectId} />
+  ) : (
+    <Typography>{'No org is active.'}</Typography>
+  );
 }
 
 function Projects(props: IProjectProps) {
   const classes = useStyles();
   const history = useHistory();
   const location = useLocation();
-  const getDataResult = useQuery(GET_DATA, { variables: { orgId: props.orgId }});
+  const getDataResult = useQuery(GET_DATA, {
+    variables: { orgId: props.orgId },
+  });
   const client = useApolloClient();
 
-  if (getDataResult.loading) {
+  if (getDataResult.loading) {    
     return <ContentLoading />;
   }
 
@@ -92,7 +105,7 @@ function Projects(props: IProjectProps) {
   const { projects } = getDataResult.data;
   const activeProjectId = activeProject ? activeProject.id : null;
 
-  console.log("activeProjectId", activeProjectId);
+  console.log('activeProjectId', activeProjectId);
   assert.equal(activeOrg.id, props.orgId);
   assert.equal(activeProjectId, props.projectId);
 
@@ -101,11 +114,13 @@ function Projects(props: IProjectProps) {
       mutation: UPDATE_ACTIVE_ORG,
       variables: {
         orgId,
-        projectId
+        projectId,
       },
-      refetchQueries: [{
-        query: GET_USER,
-      }]
+      refetchQueries: [
+        {
+          query: GET_USER,
+        },
+      ],
     });
 
     if (res.errors) {
@@ -122,49 +137,67 @@ function Projects(props: IProjectProps) {
 
   const getButton = (projectId: string) => {
     if (props.projectId !== projectId) {
-      return <Button variant="contained" color="primary" onClick={() => setActiveProject(props.orgId, projectId)}>Make Active</Button>
+      return (
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => setActiveProject(props.orgId, projectId)}>
+          Make Active
+        </Button>
+      );
     }
 
-    return <Button variant="contained" color="secondary" disabled>Active</Button>
-  }
+    return (
+      <Button variant="contained" color="secondary" disabled>
+        Active
+      </Button>
+    );
+  };
 
   const getCard = (project: any) => {
     return (
       <Grid key={project.id} item xs={12} sm={3}>
         <Card>
           <CardContent>
-            <Typography className={classes.title} color="textPrimary" gutterBottom>
+            <Typography
+              className={classes.title}
+              color="textPrimary"
+              gutterBottom>
               {`Name: ${project.name}`}
             </Typography>
             <Typography color="textPrimary" gutterBottom>
               {`Id: ${project.id}`}
             </Typography>
           </CardContent>
-          <CardActions>
-            {getButton(project.id)}
-          </CardActions>
+          <CardActions>{getButton(project.id)}</CardActions>
         </Card>
-      </Grid >
-    )
-  }
+      </Grid>
+    );
+  };
 
   const renderProjects = () => {
     if (projects.length === 0) {
-      return <Typography align='center' variant="h6">{"No projects found"}</Typography>
+      return (
+        <Typography align="center" variant="h6">
+          {'No projects found'}
+        </Typography>
+      );
     }
-    return <Grid container spacing={1}>
-      {projects.map((project: any) => getCard(project))}
-    </Grid>
-  }
+    return (
+      <Grid container spacing={1}>
+        {projects.map((project: any) => getCard(project))}
+      </Grid>
+    );
+  };
 
   return (
     <div>
       <Card className={clsx(classes.root)}>
-        <Typography variant="h4">{"Projects"}</Typography>
+        <Typography variant="h4">{'Projects'}</Typography>
         {renderProjects()}
       </Card>
     </div>
-  )
-};
+  );
+}
 
 export default ProjectsWrapper;
