@@ -2,7 +2,7 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import clsx from "clsx";
 import "firebase/auth";
 import React from "react";
-import { Route, Switch, useLocation, useHistory } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import Account from "./components/account";
 import AppBar from "./components/Appbar";
 import Drawer from "./components/Drawer";
@@ -10,12 +10,12 @@ import Home from "./components/Home";
 import QuestionAnswering from "./components/QuestionAnswering";
 import TextSummarization from "./components/TextSummarization";
 import ImageLabeling from "./components/ImageLabeling";
-import { useQuery, useMutation } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import ContentLoading from "./components/ContentLoading";
-import { UPDATE_ACTIVE_ORG, GET_CURRENT_USER } from "./gql-queries";
+import { GET_CURRENT_USER } from "./gql-queries";
 import { Typography } from "@material-ui/core";
 import assert from "assert";
-import { useActiveOrg } from "./components/UseActiveOrg";
+import { useUpdateActiveOrg } from "./components/useUpdateActiveOrg";
 
 const drawerWidth = 240;
 
@@ -75,17 +75,26 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+function AppActiveOrgWrapper() {
+  // makes sure the url search params are set properly,
+
+  const { loading, error } = useUpdateActiveOrg(); 
+
+  if (error) {
+    console.error(error);
+    return <Typography>{"Unkown error occurred"}</Typography>
+  }
+
+  if (loading) {
+    return <ContentLoading/>
+  }
+
+  return <App/>;
+}
+
 function App() {
-  const history = useHistory();
-  const location = useLocation();
   const classes = useStyles();
-  const { orgId, projectId } = useActiveOrg();
   const { loading, error, data } = useQuery(GET_CURRENT_USER);
-  const [updateActiveOrg, updateActiveOrgResult] = useMutation(UPDATE_ACTIVE_ORG,
-    {
-      refetchQueries: [{ query: GET_CURRENT_USER }],
-      awaitRefetchQueries: true
-    });
 
   const [state, setState] = React.useState({
     drawerOpen: false,
@@ -104,49 +113,8 @@ function App() {
     return <Typography>{"Unkown error occurred"}</Typography>
   }
 
-  if (updateActiveOrgResult.error) {
-    console.log(updateActiveOrgResult.error);
-    return <Typography>{"Unkown error occurred"}</Typography>
-  }
-
-  if (loading || updateActiveOrgResult.loading) {
-    return <ContentLoading />
-  }
-
-  if (data) {
-    const { activeOrg, activeProject } = data.currentUser;
-    const activeOrgId = activeOrg ? activeOrg.id : null;
-    const activeProjectId = activeProject ? activeProject.id : null;
-
-    // If one param is null but it's corresponding user value is not null, update the url
-    if (orgId == null && activeOrgId) {
-      let search = `?org=${activeOrgId}`;
-      if (activeProjectId) {
-        search += `&project=${activeProjectId}`
-      }
-      history.push({ pathname: location.pathname, search });
-      console.log('updated url');
-      return <ContentLoading />;
-    }
-
-    // If org or project params differ from the current user values, update the active org
-    if (orgId !== activeOrgId || projectId !== activeProjectId) {
-      // todo: If updateActiveOrg returns an error, show a proper error page.
-      console.log("project param", projectId);
-      console.log("project id", activeProjectId);
-
-      console.log('Updating active org/project');
-      updateActiveOrg({
-        variables: {
-          orgId,
-          projectId,
-        }
-      });
-      return <ContentLoading/>
-    }
-
-    assert.equal(orgId, activeOrgId);
-    assert.equal(projectId, activeProjectId);
+  if (loading) {
+    return <ContentLoading/>;
   }
 
   assert.notEqual(data, null);
@@ -200,4 +168,4 @@ function App() {
   );
 }
 
-export default App;
+export default AppActiveOrgWrapper;
