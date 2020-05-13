@@ -157,7 +157,7 @@ function App() {
           <Route path="/text-summarization">
             <TextSummarization />
           </Route>
-          <Route path="/image-labeling">
+          <Route path="/image-labeling/:tab">
             <ImageLabeling />
           </Route>
           <Route path="/text-labeling"></Route>

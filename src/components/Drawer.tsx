@@ -118,7 +118,7 @@ function CustomDrawer(props: CustomDrawerProps) {
         <ListItem
           component={Link}
           to={{
-            pathname: "/image-labeling",
+            pathname: "/image-labeling/collections",
             search: location.search,
           }}
           selected={location.pathname === "/image-labeling"}
