@@ -104,4 +104,12 @@ export const CREATE_CATEGORY_SET = gql`
   }
 `;
 
-
+export const DELETE_CATEGORY_SET = gql`
+  mutation($categorySetId: Int!) {
+    ImageLabelingService_deleteCategorySet(categorySetId: $categorySetId) {
+      id
+      projectId
+      name
+    }
+  }
+`;

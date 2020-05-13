@@ -122,12 +122,12 @@ function CreateCategorySetDialog() {
   }
 
   const createDisabled = () => {
-    return (!state.categorySetName || state.categories.length === 0)
+    return (loading || !state.categorySetName || state.categories.length === 0)
   }
 
   const handleCategoriesChange = (e: any) => {
     const txt = e.target.value;
-    const categories = e.target.value.trim().split('\n').map((x: string) => x.trim());
+    const categories = e.target.value.trim().split('\n').map((x: string) => x.trim()).filter((x: string) => x !== '');
     setState({
       ...state,
       txt,
@@ -208,10 +208,10 @@ function CreateCategorySetDialog() {
         </DialogTitle>
         {dialogContent}
         <DialogActions>
-          <Button onClick={handleClose}>
+          <Button color="primary" onClick={handleClose} disabled={loading}>
             {"Cancel"}
           </Button>
-          <Button disabled={createDisabled()} onClick={handleCreate}>
+          <Button color="secondary" disabled={createDisabled()} onClick={handleCreate}>
             {"Create"}
           </Button>
         </DialogActions>

@@ -16,6 +16,7 @@ import { useQuery } from '@apollo/client';
 import { GET_CATEGORY_SETS } from '../../../gql-queries';
 import { useActiveOrg } from '../../UseActiveOrg';
 import CreateCategorySetDialog from './CreateCategorySetDialog';
+import DeleteCategorySetDialog from './DeleteCategorySetDialog';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -85,7 +86,7 @@ function CategorySets() {
 
                   </TableCell>
                   <TableCell>
-                    {/* <CategorySetDelete categorySet={set} refetch={refetch} /> */}
+                    <DeleteCategorySetDialog name={set.name} categorySetId={set.id} />
                   </TableCell>
                 </TableRow>
               );

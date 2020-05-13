@@ -126,10 +126,10 @@ function CreateCollection(props: ICreateCollectionProps) {
         <DialogTitle id="form-dialog-title">{"New Collection"}</DialogTitle>
         {dialogConent}
         <DialogActions>
-          <Button disabled={loading} onClick={handleClose}>
+          <Button color="primary" disabled={loading} onClick={handleClose}>
             {"Cancel"}
           </Button>
-          <Button disabled={loading || error != null} onClick={handleCreate}>
+          <Button color="secondary" disabled={loading || error != null} onClick={handleCreate}>
             {"Create"}
           </Button>
         </DialogActions>
