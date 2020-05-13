@@ -15,7 +15,7 @@ import ContentLoading from "./components/ContentLoading";
 import { GET_CURRENT_USER } from "./gql-queries";
 import { Typography } from "@material-ui/core";
 import assert from "assert";
-import { useUpdateActiveOrg } from "./components/useUpdateActiveOrg";
+import { useUpdateActiveOrg } from "./components/UseUpdateActiveOrg";
 
 const drawerWidth = 240;
 
