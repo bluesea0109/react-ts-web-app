@@ -16,6 +16,7 @@ import { GET_CURRENT_USER } from "./gql-queries";
 import { Typography } from "@material-ui/core";
 import assert from "assert";
 import { useUpdateActiveOrg } from "./components/UseUpdateActiveOrg";
+import ImageCollectionPage from "./components/ImageLabeling/ImageCollectionPage/ImageCollectionPage";
 
 const drawerWidth = 240;
 
@@ -157,8 +158,11 @@ function App() {
           <Route path="/text-summarization">
             <TextSummarization />
           </Route>
-          <Route path="/image-labeling/:tab">
+          <Route exact path="/image-labeling/:tab">
             <ImageLabeling />
+          </Route>
+          <Route exact path="/image-labeling/collections/:collectionId/:tab">
+            <ImageCollectionPage />
           </Route>
           <Route path="/text-labeling"></Route>
           <Route path="/"></Route>

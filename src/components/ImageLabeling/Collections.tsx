@@ -4,6 +4,7 @@ import React from "react";
 import ContentLoading from '../ContentLoading';
 import { gql, useQuery } from '@apollo/client';
 import { useActiveOrg } from '../UseActiveOrg';
+import { useHistory, useLocation } from 'react-router-dom';
 
 const GET_COLLECTIONS = gql`
   query($projectId: String!) {
@@ -40,6 +41,8 @@ function CollectionsListWrapper() {
 
 function CollectionsList(props: IProjectProps) {
   const classes = useStyles();
+  const history = useHistory();
+  const location = useLocation();
   const { loading, error, data } = useQuery(GET_COLLECTIONS, { variables: { projectId: props.projectId } });
 
   if (loading) {
@@ -49,6 +52,13 @@ function CollectionsList(props: IProjectProps) {
   if (error) {
     console.error(error);
     return <Typography>{"Unknown error occured"}</Typography>
+  }
+
+  const onSelectCollection = (collectionId: string) => () => {
+    history.push({
+      pathname: `/image-labeling/collections/${collectionId}/images`,
+      search: location.search
+    });
   }
 
   const collections = data.ImageLabelingService_collections;
@@ -63,7 +73,7 @@ function CollectionsList(props: IProjectProps) {
         </TableHead>
         <TableBody>
           {collections.map((collection: any, i: number) => (
-            <TableRow key={i}>
+            <TableRow key={i} onClick={onSelectCollection(collection.id)} hover={true}>
               <TableCell>
                 {collection.name}
               </TableCell>
