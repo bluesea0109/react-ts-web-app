@@ -13,6 +13,10 @@ import { useQuery } from '@apollo/client';
 import { GET_ORGS } from '../../gql-queries';
 import ContentLoading from '../ContentLoading';
 
+interface IReceivedData {
+  orgs: IOrg[];
+}
+
 interface IOrg {
   id: string;
   name: string;
@@ -38,8 +42,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function Orgs() {
   const classes = useStyles();
-  const { loading, data, error } = useQuery<IOrg[]>(GET_ORGS);
-  const orgs = useMemo(() => data, [data, loading, error]);
+  const { loading, data, error } = useQuery<IReceivedData>(GET_ORGS);
+  const orgs = useMemo(() => data?.orgs, [data]);
 
   const getCard = (org: IOrg) => {
     return (

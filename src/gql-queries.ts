@@ -57,8 +57,11 @@ export const GET_ORGS = gql`
     orgs(id: $id) {
       id
       name
-      members
-      projects
+      members {
+        orgId
+        uid
+        memberType
+      }
     }
   }
 `;

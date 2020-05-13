@@ -26,15 +26,15 @@ function Account() {
       <div className={classes.root}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
+            {orgId ? <NewProject /> : null}
+          </Grid>
+          <Grid item xs={12} sm={6}>
             <NewOrganisation />
           </Grid>
           <Grid item xs={12} sm={6}>
-            {orgId ? <NewProject /> : null}
-          </Grid>
-          <Grid item xs={12} sm={12}>
             <Projects />
           </Grid>
-          <Grid item xs={12} sm={12}>
+          <Grid item xs={12} sm={6}>
             <Orgs />
           </Grid>
         </Grid>
