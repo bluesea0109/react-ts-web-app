@@ -4,6 +4,7 @@ import Collections from './Collections';
 import CreateCollection from './CreateCollection';
 import { useActiveOrg } from '../UseActiveOrg';
 import { useParams, useLocation, useHistory } from 'react-router';
+import CategorySets from './CategorySets/CategorySets';
 
 interface IProjectProps {
   orgId: string,
@@ -81,9 +82,7 @@ function ImageLabelingPage(props: IProjectProps) {
         </Grid>
       )}
       {tab === 'category-sets' && (
-        <Typography>
-          {"Category Sets"}
-        </Typography>
+        <CategorySets/>
       )}
     </div>
   );
