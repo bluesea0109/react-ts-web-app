@@ -31,6 +31,9 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
     },
+    toolbar: {
+      paddingLeft: theme.spacing(2)
+    },
   })
 );
 
@@ -66,7 +69,7 @@ function ImageLabelingPage(props: IProjectProps) {
       {tab === 'collections' && (
         <Grid container>
           <Grid item xs={12}>
-            <Toolbar variant="dense" disableGutters={true}>
+            <Toolbar variant="dense" disableGutters={true} className={classes.toolbar}>
               <Typography variant="h6">
                 {"Collections"}
               </Typography>

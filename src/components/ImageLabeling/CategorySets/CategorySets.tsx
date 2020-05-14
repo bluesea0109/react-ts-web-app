@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
     },
     toolbar: {
-      paddingLeft: theme.spacing(1)
+      paddingLeft: theme.spacing(2)
     },
     list: {
       overflow: 'auto',

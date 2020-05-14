@@ -6,6 +6,9 @@ import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import { useParams, useHistory, useLocation } from 'react-router-dom';
+import { Link } from '@material-ui/core';
+import { Link as RouterLink } from "react-router-dom";
+import ImagesTable from './ImagesTable';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -20,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function ImageCollectionPage() {
   // eslint-disable-next-line
-  const classes = useStyles(); 
+  const classes = useStyles();
   const { collectionId, tab } = useParams();
   const history = useHistory();
   const location = useLocation();
@@ -45,12 +48,16 @@ function ImageCollectionPage() {
             <Tab label="Images" value="images" />
             <Tab label="Review Queues" value="review-queues" />
           </Tabs>
+          <Typography className={classes.root}>
+            <Link component={RouterLink} to="/image-labeling/collections">
+              {"All collections"}
+            </Link>
+          </Typography>
         </Toolbar>
-
       </Paper>
       {tab === 'images' && (
-        <Typography>{"Images"}</Typography>
-        )}
+        <ImagesTable collectionId={collectionId} />
+      )}
       {tab === 'review-queues' && (
         <Typography>{"Review Queues"}</Typography>
       )}

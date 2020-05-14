@@ -21,26 +21,24 @@ function Account() {
   const { orgId } = useActiveOrg();
 
   return (
-    <>
+    <div className={classes.root}>
       <Typography variant="h4">{"Accounts section"}</Typography>
-      <div className={classes.root}>
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
-            <NewOrganisation />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            {orgId ? (
-              <NewProject />
-            ) : null}
-          </Grid>
-          <Grid item xs={12} sm={12}>
-            {orgId ? (
-              <Projects />
-            ) : null}
-          </Grid>
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={6}>
+          <NewOrganisation />
         </Grid>
-      </div>
-    </>
+        <Grid item xs={12} sm={6}>
+          {orgId ? (
+            <NewProject />
+          ) : null}
+        </Grid>
+        <Grid item xs={12} sm={12}>
+          {orgId ? (
+            <Projects />
+          ) : null}
+        </Grid>
+      </Grid>
+    </div>
   );
 }
 export default Account;
