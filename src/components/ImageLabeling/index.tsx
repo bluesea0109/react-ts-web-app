@@ -1,7 +1,18 @@
-import { createStyles, Grid, makeStyles, Paper, Tab, Tabs, Theme, Toolbar, Typography } from '@material-ui/core';
+import {
+  createStyles,
+  Grid,
+  makeStyles,
+  Paper,
+  Tab,
+  Tabs,
+  Theme,
+  Toolbar,
+  Typography,
+} from '@material-ui/core';
 import React from 'react';
 import { useHistory, useLocation, useParams } from 'react-router';
 import { useActiveOrg } from '../UseActiveOrg';
+import CategorySets from './CategorySets/CategorySets';
 import Collections from './Collections';
 import CreateCollection from './CreateCollection';
 
@@ -30,14 +41,11 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
     },
-    toolbar: {
-    },
-    tabRoot: {
-    },
   }),
 );
 
 function ImageLabelingPage(props: IProjectProps) {
+  // eslint-disable-next-line
   const classes = useStyles();
   const { tab } = useParams();
   const history = useHistory();
@@ -51,9 +59,9 @@ function ImageLabelingPage(props: IProjectProps) {
   };
 
   return (
-    <div >
-      <Paper className={classes.tabRoot}>
-        <Toolbar variant="dense" disableGutters={true} className={classes.toolbar}>
+    <div>
+      <Paper>
+        <Toolbar variant="dense" disableGutters={true}>
           <Tabs
             value={tab}
             onChange={handleChangeTab}
@@ -68,10 +76,8 @@ function ImageLabelingPage(props: IProjectProps) {
       {tab === 'collections' && (
         <Grid container={true}>
           <Grid item={true} xs={12}>
-            <Toolbar variant="dense" disableGutters={true} className={classes.toolbar}>
-              <Typography variant="h6">
-                {'Collections'}
-              </Typography>
+            <Toolbar variant="dense" disableGutters={true}>
+              <Typography variant="h6">{'Collections'}</Typography>
               <CreateCollection />
             </Toolbar>
           </Grid>
@@ -80,11 +86,7 @@ function ImageLabelingPage(props: IProjectProps) {
           </Grid>
         </Grid>
       )}
-      {tab === 'category-sets' && (
-        <Typography>
-          {'Category Sets'}
-        </Typography>
-      )}
+      {tab === 'category-sets' && <CategorySets />}
     </div>
   );
 }

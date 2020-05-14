@@ -12,6 +12,7 @@ import ContentLoading from './components/ContentLoading';
 import Drawer from './components/Drawer';
 import Home from './components/Home';
 import ImageLabeling from './components/ImageLabeling';
+import ImageCollectionPage from './components/ImageLabeling/ImageCollectionPage/ImageCollectionPage';
 import QuestionAnswering from './components/QuestionAnswering';
 import TextSummarization from './components/TextSummarization';
 import { useUpdateActiveOrg } from './components/UseUpdateActiveOrg';
@@ -157,8 +158,11 @@ function App() {
           <Route path="/text-summarization">
             <TextSummarization />
           </Route>
-          <Route path="/image-labeling/:tab">
+          <Route exact={true} path="/image-labeling/:tab">
             <ImageLabeling />
+          </Route>
+          <Route exact={true} path="/image-labeling/collections/:collectionId/:tab">
+            <ImageCollectionPage />
           </Route>
           <Route path="/text-labeling"/>
           <Route path="/"/>

@@ -75,3 +75,41 @@ export const CREATE_PROJECT = gql`
     }
   }
 `;
+
+export const GET_CATEGORY_SETS = gql`
+  query($projectId: String!) {
+    ImageLabelingService_categorySets(projectId: $projectId) {
+      id
+      projectId
+      name
+      categories {
+        categorySetId
+        name
+      }
+    }
+  }
+`;
+
+export const CREATE_CATEGORY_SET = gql`
+  mutation($projectId: String!, $name: String!, $categories: [String!]!) {
+    ImageLabelingService_createCategorySet(projectId: $projectId, name: $name, categories: $categories) {
+      id
+      projectId
+      name
+      categories {
+        categorySetId
+        name
+      }
+    }
+  }
+`;
+
+export const DELETE_CATEGORY_SET = gql`
+  mutation($categorySetId: Int!) {
+    ImageLabelingService_deleteCategorySet(categorySetId: $categorySetId) {
+      id
+      projectId
+      name
+    }
+  }
+`;

@@ -12,7 +12,7 @@ import IconButtonAdd from '../IconButtonAdd';
 import { useActiveOrg } from '../UseActiveOrg';
 
 const CREATE_COLLECTION = gql`
-  mutation ($projectId: String!, $name: String!) {
+  mutation($projectId: String!, $name: String!) {
     ImageLabelingService_createCollection(projectId: $projectId, name: $name) {
       id
       projectId
@@ -37,14 +37,16 @@ interface ICreateCollectionProps {
 
 function CreateCollection(props: ICreateCollectionProps) {
   const { projectId } = useActiveOrg();
-  const [createCollection, { loading, error, data }] = useMutation(CREATE_COLLECTION,
+  const [createCollection, { loading, error, data }] = useMutation(
+    CREATE_COLLECTION,
     {
       onCompleted: () => {
         handleClose();
       },
-      refetchQueries: [{ query: GET_COLLECTIONS, variables: { projectId }}],
+      refetchQueries: [{ query: GET_COLLECTIONS, variables: { projectId } }],
       awaitRefetchQueries: true,
-    });
+    },
+  );
 
   const [state, setState] = useState({
     name: '',
@@ -126,10 +128,14 @@ function CreateCollection(props: ICreateCollectionProps) {
         <DialogTitle id="form-dialog-title">{'New Collection'}</DialogTitle>
         {dialogConent}
         <DialogActions>
-          <Button disabled={loading} onClick={handleClose}>
+          <Button color="primary" disabled={loading} onClick={handleClose}>
             {'Cancel'}
           </Button>
-          <Button disabled={loading || error != null} onClick={handleCreate}>
+          <Button
+            color="secondary"
+            disabled={loading || error != null}
+            onClick={handleCreate}
+          >
             {'Create'}
           </Button>
         </DialogActions>

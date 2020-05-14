@@ -2,6 +2,7 @@
 import { gql, useQuery } from '@apollo/client';
 import { makeStyles, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core';
 import React from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 import ContentLoading from '../ContentLoading';
 import { useActiveOrg } from '../UseActiveOrg';
 
@@ -40,6 +41,8 @@ function CollectionsListWrapper() {
 
 function CollectionsList(props: IProjectProps) {
   const classes = useStyles();
+  const history = useHistory();
+  const location = useLocation();
   const { loading, error, data } = useQuery(GET_COLLECTIONS, { variables: { projectId: props.projectId } });
 
   if (loading) {
@@ -50,6 +53,13 @@ function CollectionsList(props: IProjectProps) {
     console.error(error);
     return <Typography>{'Unknown error occured'}</Typography>;
   }
+
+  const onSelectCollection = (collectionId: number) => () => {
+    history.push({
+      pathname: `/image-labeling/collections/${collectionId}/images`,
+      search: location.search,
+    });
+  };
 
   const collections = data.ImageLabelingService_collections;
 
@@ -63,7 +73,7 @@ function CollectionsList(props: IProjectProps) {
         </TableHead>
         <TableBody>
           {collections.map((collection: any, i: number) => (
-            <TableRow key={i}>
+            <TableRow key={i} onClick={onSelectCollection(collection.id)} hover={true}>
               <TableCell>
                 {collection.name}
               </TableCell>
