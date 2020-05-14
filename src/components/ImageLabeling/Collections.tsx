@@ -54,7 +54,7 @@ function CollectionsList(props: IProjectProps) {
     return <Typography>{"Unknown error occured"}</Typography>
   }
 
-  const onSelectCollection = (collectionId: string) => () => {
+  const onSelectCollection = (collectionId: number) => () => {
     history.push({
       pathname: `/image-labeling/collections/${collectionId}/images`,
       search: location.search
