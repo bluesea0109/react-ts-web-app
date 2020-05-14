@@ -1,9 +1,9 @@
 
+import { gql, useMutation } from '@apollo/client';
 import { Button, Card, createStyles, LinearProgress, makeStyles, TextField, Theme, Typography } from '@material-ui/core';
-import clsx from "clsx";
-import React, { useState } from "react";
+import clsx from 'clsx';
+import React, { useState } from 'react';
 import { CREATE_PROJECT } from '../../gql-queries';
-import { useMutation, gql } from '@apollo/client';
 import { useActiveOrg } from '../UseActiveOrg';
 
 const GET_USER = gql`
@@ -33,21 +33,21 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     button: {
       margin: theme.spacing(1),
-    }
-  })
+    },
+  }),
 );
 
 function NewProject() {
   const classes = useStyles();
   const [state, setState] = useState({
-    name: ""
+    name: '',
   });
   const { orgId } = useActiveOrg();
 
   const [createProject, createProjectResult] = useMutation(CREATE_PROJECT, {
     refetchQueries: [{
-      query: GET_USER
-    }]
+      query: GET_USER,
+    }],
   });
 
   const loading = createProjectResult.loading;
@@ -59,16 +59,16 @@ function NewProject() {
 
   const submit = () => {
     if (!orgId) {
-      alert("User must have active org to create a project");
+      alert('User must have active org to create a project');
       return;
     }
-    createProject({ variables: { orgId, name: state.name } })
-  }
+    createProject({ variables: { orgId, name: state.name } });
+  };
 
   return (
     <Card className={clsx(classes.root)}>
       {loading && <LinearProgress />}
-      <Typography variant="h4">{"New Project"}</Typography>
+      <Typography variant="h4">{'New Project'}</Typography>
       <br />
       <TextField
         id="name"
@@ -80,9 +80,9 @@ function NewProject() {
         className={clsx(classes.inputBox)}
       />
       <br />
-      <Button className={clsx(classes.button)} disabled={loading} variant="contained" color="primary" onClick={submit}>{"Submit"}</Button>
+      <Button className={clsx(classes.button)} disabled={loading} variant="contained" color="primary" onClick={submit}>{'Submit'}</Button>
     </Card>
-  )
+  );
 }
 
 export default NewProject;

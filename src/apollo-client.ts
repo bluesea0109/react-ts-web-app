@@ -1,12 +1,12 @@
-import { setContext } from '@apollo/link-context'
+import { ApolloClient, HttpLink, InMemoryCache, NormalizedCacheObject } from '@apollo/client';
+import { setContext } from '@apollo/link-context';
 import firebase from 'firebase/app';
-import config from "./config";
-import { ApolloClient, HttpLink, NormalizedCacheObject, InMemoryCache } from '@apollo/client';
+import config from './config';
 
 const link = new HttpLink({ uri: config.apiUrl });
 
-console.log("API URL:", config.apiUrl);
-console.log("Project Id:", config.projectId);
+console.log('API URL:', config.apiUrl);
+console.log('Project Id:', config.projectId);
 
 const getIdToken = async () => {
   const user = firebase.auth().currentUser;
@@ -15,15 +15,15 @@ const getIdToken = async () => {
     return token;
   }
   throw new Error('Failed to get firebase id token');
-}
+};
 
 const authLink = setContext((_, { headers }) => {
   return getIdToken().then(token => {
     return {
       headers: {
         ...headers,
-        authorization: `Bearer ${token}`
-      }
+        authorization: `Bearer ${token}`,
+      },
     };
   });
 });

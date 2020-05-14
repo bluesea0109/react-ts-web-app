@@ -1,7 +1,7 @@
-export const SIGN_IN = "SIGN_IN";
-export const SIGN_OUT = "SIGN_OUT";
-export const SET_ACTIVE_ORG = "SET_ACTIVE_ORG";
-export const SET_ACTIVE_PROJECT = "SET_ACTIVE_PROJECT";
+export const SIGN_IN = 'SIGN_IN';
+export const SIGN_OUT = 'SIGN_OUT';
+export const SET_ACTIVE_ORG = 'SET_ACTIVE_ORG';
+export const SET_ACTIVE_PROJECT = 'SET_ACTIVE_PROJECT';
 
 export interface AuthState {
   isLoggedIn: boolean;
@@ -22,8 +22,8 @@ export interface SignOutAction {
 }
 
 export interface SetActiveOrgAction {
-  type: typeof SET_ACTIVE_ORG,
-  payload: { orgId: string }
+  type: typeof SET_ACTIVE_ORG;
+  payload: { orgId: string };
 }
 
 export interface SetActiveProject {

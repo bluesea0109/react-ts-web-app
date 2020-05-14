@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
+import { useApolloClient } from '@apollo/client';
 import { Button, Grid, TextField, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { useState } from 'react';
-import { useApolloClient } from '@apollo/client';
 import ContentLoading from '../ContentLoading';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -11,12 +11,12 @@ const useStyles = makeStyles((theme: Theme) =>
 
     },
     textArea: {
-      width: '100%'
+      width: '100%',
     },
     divider: {
       height: 2,
-      background: 'black'
-    }
+      background: 'black',
+    },
   }),
 );
 
@@ -44,56 +44,55 @@ export default function TextSummarization() {
       query,
       variables: {
         article: state.article,
-        maxWords: state.maxWords
+        maxWords: state.maxWords,
       },
-    })
+    });
 
     setState({ ...state, loading: false, summary: res.data.bertExtractiveSummary });
-  }
+  };
 
   let summary: any = null;
 
   if (state.loading) {
     summary = <ContentLoading />;
-  }
-  else {
+  } else {
     summary = (
       <React.Fragment>
-        <Grid item xs={12} sm={12}>
+        <Grid item={true} xs={12} sm={12}>
           <TextField
             className={classes.textArea}
             id="summary"
             label="Summary"
-            multiline
+            multiline={true}
             rows={8}
             value={state.summary}
             variant="outlined"
           />
         </Grid>
       </React.Fragment>
-    )
+    );
   }
 
   return (
-    <form className={classes.root} noValidate autoComplete="off">
+    <form className={classes.root} noValidate={true} autoComplete="off">
 
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Typography variant="h4">{"Extractive Text Summarization"}</Typography>
+      <Grid container={true} spacing={2}>
+        <Grid item={true} xs={12}>
+          <Typography variant="h4">{'Extractive Text Summarization'}</Typography>
         </Grid>
-        <Grid item xs={12} sm={12}>
+        <Grid item={true} xs={12} sm={12}>
           <TextField
             className={classes.textArea}
             id="article"
             label="Text"
-            multiline
+            multiline={true}
             rows={12}
             variant="outlined"
             onChange={(e) => setState({ ...state, article: e.target.value })}
             value={state.article}
           />
         </Grid>
-        <Grid item xs={12} sm={12}>
+        <Grid item={true} xs={12} sm={12}>
           <TextField
             id="max-words"
             label="Max Words"
@@ -106,8 +105,8 @@ export default function TextSummarization() {
             value={state.maxWords}
           />
         </Grid>
-        <Grid item xs={12}>
-          <Button variant="contained" onClick={onSubmitClick}>{"Submit"}</Button>
+        <Grid item={true} xs={12}>
+          <Button variant="contained" onClick={onSubmitClick}>{'Submit'}</Button>
         </Grid>
         {summary}
       </Grid>

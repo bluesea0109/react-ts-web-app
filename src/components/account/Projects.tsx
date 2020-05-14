@@ -1,21 +1,21 @@
+import { gql, useApolloClient, useQuery } from '@apollo/client';
 import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
   createStyles,
+  Grid,
   makeStyles,
   Theme,
-  Button,
-  Grid,
-  Card,
-  CardContent,
   Typography,
-  CardActions,
 } from '@material-ui/core';
-import React from 'react';
-import ContentLoading from '../ContentLoading';
-import { gql, useQuery, useApolloClient } from '@apollo/client';
-import { useHistory, useLocation } from 'react-router';
 import assert from 'assert';
 import clsx from 'clsx';
+import React from 'react';
+import { useHistory, useLocation } from 'react-router';
 import { UPDATE_ACTIVE_ORG } from '../../gql-queries';
+import ContentLoading from '../ContentLoading';
 import { useActiveOrg } from '../UseActiveOrg';
 
 const GET_USER = gql`
@@ -65,7 +65,7 @@ const useStyles = makeStyles((theme: Theme) =>
     title: {
       fontSize: 20,
     },
-  })
+  }),
 );
 
 interface IProjectProps {
@@ -92,7 +92,7 @@ function Projects(props: IProjectProps) {
   });
   const client = useApolloClient();
 
-  if (getDataResult.loading) {    
+  if (getDataResult.loading) {
     return <ContentLoading />;
   }
 
@@ -126,7 +126,7 @@ function Projects(props: IProjectProps) {
     if (res.errors) {
       // TODO: handle error
     } else {
-      let search = `?org=${orgId}&project=${projectId}`;
+      const search = `?org=${orgId}&project=${projectId}`;
       history.push({
         pathname: location.pathname,
         search,
@@ -148,7 +148,7 @@ function Projects(props: IProjectProps) {
     }
 
     return (
-      <Button variant="contained" color="secondary" disabled>
+      <Button variant="contained" color="secondary" disabled={true}>
         Active
       </Button>
     );
@@ -156,16 +156,16 @@ function Projects(props: IProjectProps) {
 
   const getCard = (project: any) => {
     return (
-      <Grid key={project.id} item xs={12} sm={3}>
+      <Grid key={project.id} item={true} xs={12} sm={3}>
         <Card>
           <CardContent>
             <Typography
               className={classes.title}
               color="textPrimary"
-              gutterBottom>
+              gutterBottom={true}>
               {`Name: ${project.name}`}
             </Typography>
-            <Typography color="textPrimary" gutterBottom>
+            <Typography color="textPrimary" gutterBottom={true}>
               {`Id: ${project.id}`}
             </Typography>
           </CardContent>
@@ -184,7 +184,7 @@ function Projects(props: IProjectProps) {
       );
     }
     return (
-      <Grid container spacing={1}>
+      <Grid container={true} spacing={1}>
         {projects.map((project: any) => getCard(project))}
       </Grid>
     );

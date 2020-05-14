@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
 
 export const updateActiveOrg = gql`
 mutation ($orgId: String!) {
@@ -6,7 +6,7 @@ mutation ($orgId: String!) {
     uid
   }
 }
-`
+`;
 export const currentUser = gql`
   query {
     currentUser{
@@ -14,4 +14,4 @@ export const currentUser = gql`
       activeProject
     }
   }
-`
+`;

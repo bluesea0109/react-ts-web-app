@@ -1,43 +1,43 @@
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import clsx from "clsx";
-import "firebase/auth";
-import React from "react";
-import { Route, Switch } from "react-router-dom";
-import Account from "./components/account";
-import AppBar from "./components/Appbar";
-import Drawer from "./components/Drawer";
-import Home from "./components/Home";
-import QuestionAnswering from "./components/QuestionAnswering";
-import TextSummarization from "./components/TextSummarization";
-import ImageLabeling from "./components/ImageLabeling";
-import { useQuery } from "@apollo/client";
-import ContentLoading from "./components/ContentLoading";
-import { GET_CURRENT_USER } from "./gql-queries";
-import { Typography } from "@material-ui/core";
-import assert from "assert";
-import { useUpdateActiveOrg } from "./components/UseUpdateActiveOrg";
+import { useQuery } from '@apollo/client';
+import { Typography } from '@material-ui/core';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import assert from 'assert';
+import clsx from 'clsx';
+import 'firebase/auth';
+import React from 'react';
+import { Route, Switch } from 'react-router-dom';
+import Account from './components/account';
+import AppBar from './components/Appbar';
+import ContentLoading from './components/ContentLoading';
+import Drawer from './components/Drawer';
+import Home from './components/Home';
+import ImageLabeling from './components/ImageLabeling';
+import QuestionAnswering from './components/QuestionAnswering';
+import TextSummarization from './components/TextSummarization';
+import { useUpdateActiveOrg } from './components/UseUpdateActiveOrg';
+import { GET_CURRENT_USER } from './gql-queries';
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      display: "flex",
+      display: 'flex',
     },
     hide: {
-      display: "none",
+      display: 'none',
     },
     drawer: {
       width: drawerWidth,
       flexShrink: 0,
     },
     drawerHeader: {
-      display: "flex",
-      alignItems: "center",
+      display: 'flex',
+      alignItems: 'center',
       padding: theme.spacing(0, 1),
       // necessary for content to be below app bar
       ...theme.mixins.toolbar,
-      justifyContent: "flex-end",
+      justifyContent: 'flex-end',
     },
     drawerPaper: {
       width: drawerWidth,
@@ -45,21 +45,21 @@ const useStyles = makeStyles((theme: Theme) =>
     content: {
       flexGrow: 1,
       padding: theme.spacing(2),
-      transition: theme.transitions.create("margin", {
+      transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
       }),
       marginLeft: -drawerWidth,
     },
     contentShift: {
-      transition: theme.transitions.create("margin", {
+      transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.easeOut,
         duration: theme.transitions.duration.enteringScreen,
       }),
       marginLeft: 0,
     },
     appBar: {
-      transition: theme.transitions.create(["margin", "width"], {
+      transition: theme.transitions.create(['margin', 'width'], {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
       }),
@@ -67,26 +67,26 @@ const useStyles = makeStyles((theme: Theme) =>
     appBarShift: {
       width: `calc(100% - ${drawerWidth}px)`,
       marginLeft: drawerWidth,
-      transition: theme.transitions.create(["margin", "width"], {
+      transition: theme.transitions.create(['margin', 'width'], {
         easing: theme.transitions.easing.easeOut,
         duration: theme.transitions.duration.enteringScreen,
       }),
     },
-  })
+  }),
 );
 
 function AppActiveOrgWrapper() {
   // makes sure the url search params are set properly,
 
-  const { loading, error } = useUpdateActiveOrg(); 
+  const { loading, error } = useUpdateActiveOrg();
 
   if (error) {
     console.error(error);
-    return <Typography>{"Unkown error occurred"}</Typography>
+    return <Typography>{'Unkown error occurred'}</Typography>;
   }
 
   if (loading) {
-    return <ContentLoading/>
+    return <ContentLoading/>;
   }
 
   return <App/>;
@@ -110,7 +110,7 @@ function App() {
 
   if (error) {
     console.log(error);
-    return <Typography>{"Unkown error occurred"}</Typography>
+    return <Typography>{'Unkown error occurred'}</Typography>;
   }
 
   if (loading) {
@@ -137,7 +137,7 @@ function App() {
         }}
         open={state.drawerOpen}
         onClose={onDrawerClose}
-      ></Drawer>
+      />
       <main
         className={clsx(classes.content, {
           [classes.contentShift]: state.drawerOpen,
@@ -145,7 +145,7 @@ function App() {
       >
         <div className={classes.drawerHeader} />
         <Switch>
-          <Route exact path="/">
+          <Route exact={true} path="/">
             <Home />
           </Route>
           <Route path="/account">
@@ -160,8 +160,8 @@ function App() {
           <Route path="/image-labeling/:tab">
             <ImageLabeling />
           </Route>
-          <Route path="/text-labeling"></Route>
-          <Route path="/"></Route>
+          <Route path="/text-labeling"/>
+          <Route path="/"/>
         </Switch>
       </main>
     </div>

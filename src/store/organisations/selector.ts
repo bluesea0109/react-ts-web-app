@@ -1,4 +1,4 @@
-import { AppState } from "..";
+import { AppState } from '..';
 
 export const getOrganisations = (store: AppState) => store.organisations.data;
 export const getFetchingOrganisations = (store: AppState) => store.organisations.isFetching;

@@ -1,18 +1,18 @@
-export const FETCH_ORGS = "FETCH_ORGS";
-export const ADD_ORG = "ADD_ORG";
-export const SET_NEW_ORG_LOADER = "SET_NEW_ORG_LOADER";
+export const FETCH_ORGS = 'FETCH_ORGS';
+export const ADD_ORG = 'ADD_ORG';
+export const SET_NEW_ORG_LOADER = 'SET_NEW_ORG_LOADER';
 
 export interface OrgState {
   isFetching: boolean;
   loader: {
     newOrg: boolean;
   };
-  data: Array<OrgType>;
+  data: OrgType[];
 }
 export interface OrgType {
   id: string;
   name: string;
-  members: Array<OrgMember>
+  members: OrgMember[];
 }
 export interface OrgMember {
   orgId: string;
@@ -36,4 +36,4 @@ export interface ToggleNewOrgLoaderAction {
   payload: boolean;
 }
 
-export type OrgActionTypes = FetchOrgAction | AddOrgAction | ToggleNewOrgLoaderAction
+export type OrgActionTypes = FetchOrgAction | AddOrgAction | ToggleNewOrgLoaderAction;

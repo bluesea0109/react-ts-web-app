@@ -1,8 +1,8 @@
-import { useLocation } from "react-router";
+import { useLocation } from 'react-router';
 
 export interface IActiveOrg {
-  orgId: string | null,
-  projectId: string | null,
+  orgId: string | null;
+  projectId: string | null;
 }
 
 export const useActiveOrg = (): IActiveOrg => {
@@ -12,5 +12,5 @@ export const useActiveOrg = (): IActiveOrg => {
   return {
     orgId: orgParam,
     projectId: projectParam,
-  }
+  };
 };

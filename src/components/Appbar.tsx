@@ -1,15 +1,15 @@
+import { gql, useQuery } from '@apollo/client';
 import { CircularProgress, createStyles, IconButton, Theme } from '@material-ui/core';
 import AppBar, { AppBarProps } from '@material-ui/core/AppBar';
-import Button from "@material-ui/core/Button";
+import Button from '@material-ui/core/Button';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import { makeStyles } from '@material-ui/core/styles';
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import MenuIcon from "@material-ui/icons/Menu";
-import clsx from "clsx";
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import MenuIcon from '@material-ui/icons/Menu';
+import clsx from 'clsx';
 import React from 'react';
-import { useQuery, gql } from "@apollo/client";
 import { useHistory, useLocation } from 'react-router-dom';
 
 const GET_ORGS = gql`
@@ -42,8 +42,8 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
     },
     selectInput: {
-      background: "primary",
-      color: "white",
+      background: 'primary',
+      color: 'white',
       borderRadius: 4,
       borderColor: 'white',
     }, icon: {
@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme: Theme) =>
     border: {
       borderBottom: '1px solid white',
     },
-  })
+  }),
 );
 
 function CustomAppbar(props: CustomAppbarProps) {
@@ -60,9 +60,9 @@ function CustomAppbar(props: CustomAppbarProps) {
   const { loading, error, data } = useQuery(GET_ORGS);
   const history = useHistory();
   const location = useLocation();
-  
+
   const setActiveOrg = async (orgId: string) => {
-    let search = `?org=${orgId}`;
+    const search = `?org=${orgId}`;
     history.push({
       pathname: location.pathname,
       search,
@@ -72,7 +72,7 @@ function CustomAppbar(props: CustomAppbarProps) {
 
   const renderProjects = () => {
     if (loading) {
-      return <CircularProgress color="secondary" />
+      return <CircularProgress color="secondary" />;
     }
 
     if (error) {
@@ -85,7 +85,7 @@ function CustomAppbar(props: CustomAppbarProps) {
     return (
       <>
         < Select
-          value={activeOrg ? activeOrg.id : ""}
+          value={activeOrg ? activeOrg.id : ''}
           onChange={(e) => setActiveOrg(String(e.target.value))}
           className={clsx(classes.selectInput)}
           inputProps={{
@@ -98,8 +98,8 @@ function CustomAppbar(props: CustomAppbarProps) {
           {data.orgs.map((org: any) => <MenuItem key={org.id} value={org.id}>{org.name}</MenuItem>)}
         </Select >
       </>
-    )
-  }
+    );
+  };
 
   return (
     <AppBar
@@ -117,7 +117,7 @@ function CustomAppbar(props: CustomAppbarProps) {
           <MenuIcon />
         </IconButton>
         <Typography variant="h6" className={classes.title}>
-          {"Bavard AI"}
+          {'Bavard AI'}
         </Typography>
         {renderProjects()}
         <Button color="inherit">Logout</Button>

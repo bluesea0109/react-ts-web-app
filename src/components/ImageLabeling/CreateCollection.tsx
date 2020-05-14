@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import TextField from '@material-ui/core/TextField';
+import { useMutation } from '@apollo/client';
+import { Button, Typography } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { Typography, Button } from '@material-ui/core';
-import gql from "graphql-tag";
-import IconButtonAdd from '../IconButtonAdd';
-import { useMutation } from '@apollo/client';
+import TextField from '@material-ui/core/TextField';
+import gql from 'graphql-tag';
+import React, { useState } from 'react';
 import ContentLoading from '../ContentLoading';
+import IconButtonAdd from '../IconButtonAdd';
 import { useActiveOrg } from '../UseActiveOrg';
 
 const CREATE_COLLECTION = gql`
@@ -32,7 +32,7 @@ const GET_COLLECTIONS = gql`
 `;
 
 interface ICreateCollectionProps {
-  onCompleted?(): any,
+  onCompleted?(): any;
 }
 
 function CreateCollection(props: ICreateCollectionProps) {
@@ -42,7 +42,7 @@ function CreateCollection(props: ICreateCollectionProps) {
       onCompleted: () => {
         handleClose();
       },
-      refetchQueries: [{ query: GET_COLLECTIONS, variables: { projectId: projectId }}],
+      refetchQueries: [{ query: GET_COLLECTIONS, variables: { projectId }}],
       awaitRefetchQueries: true,
     });
 
@@ -71,7 +71,7 @@ function CreateCollection(props: ICreateCollectionProps) {
       createCollection({
         variables: {
           name: state.name,
-          projectId: projectId,
+          projectId,
         },
       });
     }
@@ -86,12 +86,12 @@ function CreateCollection(props: ICreateCollectionProps) {
   let dialogConent = (
     <DialogContent>
       <TextField
-        autoFocus
+        autoFocus={true}
         margin="dense"
         id="name"
         label="Collection Name"
         type="string"
-        fullWidth
+        fullWidth={true}
         value={state.name}
         onChange={handleChange('name')}
       />
@@ -110,7 +110,7 @@ function CreateCollection(props: ICreateCollectionProps) {
     console.error(error);
     dialogConent = (
       <DialogContent>
-        <Typography>{"Error"}</Typography>
+        <Typography>{'Error'}</Typography>
       </DialogContent>
     );
   }
@@ -123,14 +123,14 @@ function CreateCollection(props: ICreateCollectionProps) {
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">{"New Collection"}</DialogTitle>
+        <DialogTitle id="form-dialog-title">{'New Collection'}</DialogTitle>
         {dialogConent}
         <DialogActions>
           <Button disabled={loading} onClick={handleClose}>
-            {"Cancel"}
+            {'Cancel'}
           </Button>
           <Button disabled={loading || error != null} onClick={handleCreate}>
-            {"Create"}
+            {'Create'}
           </Button>
         </DialogActions>
       </Dialog>

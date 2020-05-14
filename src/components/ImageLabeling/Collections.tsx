@@ -1,8 +1,8 @@
 
-import { makeStyles, Typography, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
-import React from "react";
-import ContentLoading from '../ContentLoading';
 import { gql, useQuery } from '@apollo/client';
+import { makeStyles, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core';
+import React from 'react';
+import ContentLoading from '../ContentLoading';
 import { useActiveOrg } from '../UseActiveOrg';
 
 const GET_COLLECTIONS = gql`
@@ -22,20 +22,20 @@ const useStyles = makeStyles({
 });
 
 interface IProjectProps {
-  orgId: string,
-  projectId: string | null,
+  orgId: string;
+  projectId: string | null;
 }
 
 function CollectionsListWrapper() {
   const { orgId, projectId } = useActiveOrg();
 
   if (!orgId) {
-    return <Typography>{"No org is active."}</Typography>
+    return <Typography>{'No org is active.'}</Typography>;
   }
   if (!projectId) {
-    return <Typography>{"No project is active."}</Typography>
+    return <Typography>{'No project is active.'}</Typography>;
   }
-  return <CollectionsList orgId={orgId} projectId={projectId} />
+  return <CollectionsList orgId={orgId} projectId={projectId} />;
 }
 
 function CollectionsList(props: IProjectProps) {
@@ -43,12 +43,12 @@ function CollectionsList(props: IProjectProps) {
   const { loading, error, data } = useQuery(GET_COLLECTIONS, { variables: { projectId: props.projectId } });
 
   if (loading) {
-    return <ContentLoading />
+    return <ContentLoading />;
   }
 
   if (error) {
     console.error(error);
-    return <Typography>{"Unknown error occured"}</Typography>
+    return <Typography>{'Unknown error occured'}</Typography>;
   }
 
   const collections = data.ImageLabelingService_collections;

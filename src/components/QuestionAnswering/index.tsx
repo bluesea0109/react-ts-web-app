@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Button, TextField, Grid, Typography } from '@material-ui/core';
 import { gql } from '@apollo/client';
-import ContentLoading from '../ContentLoading';
 import { useApolloClient } from '@apollo/client';
-
+import { Button, Grid, TextField, Typography } from '@material-ui/core';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import React, { useState } from 'react';
+import ContentLoading from '../ContentLoading';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -12,12 +11,12 @@ const useStyles = makeStyles((theme: Theme) =>
 
     },
     textArea: {
-      width: '100%'
+      width: '100%',
     },
     divider: {
       height: 2,
-      background: 'black'
-    }
+      background: 'black',
+    },
   }),
 );
 
@@ -45,7 +44,7 @@ export default function QuestionAnswering() {
       query,
       variables: {
         context: state.context,
-        question: state.question
+        question: state.question,
       },
     });
 
@@ -54,65 +53,63 @@ export default function QuestionAnswering() {
     } else {
       setState({ ...state, loading: false, answer: res.data.bertQa });
     }
-  }
+  };
 
   let answer: any = null;
 
   if (state.loading) {
     answer = <ContentLoading />;
-  }
-  else {
+  } else {
     answer = (
       <React.Fragment>
-        <Grid item xs={12} sm={6}>
+        <Grid item={true} xs={12} sm={6}>
           <TextField
             className={classes.textArea}
             id="answer"
             label="Answer"
-            multiline
+            multiline={true}
             rows={8}
             value={state.answer}
             variant="outlined"
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
-        </Grid>
+        <Grid item={true} xs={12} sm={6}/>
       </React.Fragment>
-    )
+    );
   }
 
   return (
-    <form className={classes.root} noValidate autoComplete="off">
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Typography variant="h4">{"Question Answering"}</Typography>
+    <form className={classes.root} noValidate={true} autoComplete="off">
+      <Grid container={true} spacing={2}>
+        <Grid item={true} xs={12}>
+          <Typography variant="h4">{'Question Answering'}</Typography>
         </Grid>
-        <Grid item xs={12} sm={12}>
+        <Grid item={true} xs={12} sm={12}>
           <TextField
             className={classes.textArea}
             id="context"
             label="Context"
-            multiline
+            multiline={true}
             rows={8}
             variant="outlined"
             onChange={(e) => setState({ ...state, context: e.target.value })}
             value={state.context}
           />
         </Grid>
-        <Grid container item xs={12} sm={12} >
+        <Grid container={true} item={true} xs={12} sm={12} >
           <TextField
             className={classes.textArea}
             id="question"
             label="Question"
-            multiline
+            multiline={true}
             rows={4}
             variant="outlined"
             onChange={(e) => setState({ ...state, question: e.target.value })}
             value={state.question}
           />
         </Grid>
-        <Grid item xs={12}>
-          <Button variant="contained" onClick={onSubmitClick}>{"Submit"}</Button>
+        <Grid item={true} xs={12}>
+          <Button variant="contained" onClick={onSubmitClick}>{'Submit'}</Button>
         </Grid>
         {answer}
       </Grid>

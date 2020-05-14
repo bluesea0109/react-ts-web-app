@@ -1,15 +1,15 @@
-import React, { useMemo } from 'react';
+import { useQuery } from '@apollo/client';
 import {
-  createStyles,
-  makeStyles,
-  Theme,
-  Grid,
   Card,
   CardContent,
+  createStyles,
+  Grid,
+  makeStyles,
+  Theme,
   Typography,
 } from '@material-ui/core';
 import clsx from 'clsx';
-import { useQuery } from '@apollo/client';
+import React, { useMemo } from 'react';
 import { GET_ORGS } from '../../gql-queries';
 import ContentLoading from '../ContentLoading';
 
@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
     title: {
       fontSize: 20,
     },
-  })
+  }),
 );
 
 function Orgs() {
@@ -47,16 +47,16 @@ function Orgs() {
 
   const getCard = (org: IOrg) => {
     return (
-      <Grid key={org.id} item xs={12} sm={3}>
+      <Grid key={org.id} item={true} xs={12} sm={3}>
         <Card>
           <CardContent>
             <Typography
               className={classes.title}
               color="textPrimary"
-              gutterBottom>
+              gutterBottom={true}>
               {`Name: ${org.name}`}
             </Typography>
-            <Typography color="textPrimary" gutterBottom>
+            <Typography color="textPrimary" gutterBottom={true}>
               {`Id: ${org.id}`}
             </Typography>
           </CardContent>
@@ -67,7 +67,7 @@ function Orgs() {
 
   const renderOrgs = () => {
     return orgs ? (
-      <Grid container spacing={1}>
+      <Grid container={true} spacing={1}>
         {orgs.map(getCard)}
       </Grid>
     ) : (

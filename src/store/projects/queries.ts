@@ -17,4 +17,4 @@ mutation ($orgId: String!, $name: String!) {
     orgId
   }
 }
-`
+`;

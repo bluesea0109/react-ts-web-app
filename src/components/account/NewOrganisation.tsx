@@ -1,9 +1,9 @@
 
+import { gql, useMutation } from '@apollo/client';
 import { Button, Card, createStyles, LinearProgress, makeStyles, TextField, Theme, Typography } from '@material-ui/core';
-import clsx from "clsx";
-import React, { useState } from "react";
+import clsx from 'clsx';
+import React, { useState } from 'react';
 import { CREATE_ORG } from '../../gql-queries';
-import { useMutation, gql } from '@apollo/client';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -15,14 +15,14 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     button: {
       margin: theme.spacing(1),
-    }
-  })
+    },
+  }),
 );
 
 function NewOrganisation() {
   const classes = useStyles();
   const [state, setState] = useState({
-    name: ""
+    name: '',
   });
   const [createOrg, { loading, error }] = useMutation(CREATE_ORG, {
     refetchQueries: [{
@@ -44,8 +44,8 @@ function NewOrganisation() {
             id
             name
           }
-        }`
-      }]
+        }`,
+      }],
   });
 
   if (error) {
@@ -54,13 +54,13 @@ function NewOrganisation() {
   }
 
   const submit = () => {
-    createOrg({ variables: { name: state.name } })
-  }
+    createOrg({ variables: { name: state.name } });
+  };
 
   return (
     <Card className={clsx(classes.root)}>
       {loading && <LinearProgress />}
-      <Typography variant="h4">{"New Organisation"}</Typography>
+      <Typography variant="h4">{'New Organisation'}</Typography>
       <br />
       <TextField
         id="name"
@@ -72,9 +72,9 @@ function NewOrganisation() {
         className={clsx(classes.inputBox)}
       />
       <br />
-      <Button className={clsx(classes.button)} disabled={loading} variant="contained" color="primary" onClick={submit}>{"Submit"}</Button>
+      <Button className={clsx(classes.button)} disabled={loading} variant="contained" color="primary" onClick={submit}>{'Submit'}</Button>
     </Card>
-  )
+  );
 }
 
 export default NewOrganisation;

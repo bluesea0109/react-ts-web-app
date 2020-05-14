@@ -28,23 +28,24 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   }));
 
-interface CustomDrawerProps extends DrawerProps {
-
-}
-
-function CustomDrawer(props: CustomDrawerProps) {
+function CustomDrawer(props: DrawerProps) {
   const classes = useStyles();
-  const location = useLocation()
+  const location = useLocation();
   const theme = useTheme();
 
   const list = () => (
-    <div
-      className={classes.list}
-      role="presentation"
-    >
+    <div className={classes.list} role="presentation">
       <div className={classes.drawerHeader}>
-        <IconButton onClick={(ev) => props.onClose ? props.onClose(ev, 'backdropClick') : null}>
-          {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+        <IconButton
+          onClick={(ev) =>
+            props.onClose ? props.onClose(ev, 'backdropClick') : null
+          }
+        >
+          {theme.direction === 'ltr' ? (
+            <ChevronLeftIcon />
+          ) : (
+            <ChevronRightIcon />
+          )}
         </IconButton>
       </div>
       <Divider />
@@ -52,77 +53,77 @@ function CustomDrawer(props: CustomDrawerProps) {
         <ListItem
           component={Link}
           to={{
-            pathname: "/",
+            pathname: '/',
             search: location.search,
           }}
-          selected={location.pathname === "/"}
-          button
+          selected={location.pathname === '/'}
+          button={true}
         >
           <ListItemText primary="Home" />
         </ListItem>
         <ListItem
           component={Link}
           to={{
-            pathname: "/account",
+            pathname: '/account',
             search: location.search,
           }}
-          selected={location.pathname === "/account"}
-          button
+          selected={location.pathname === '/account'}
+          button={true}
         >
           <ListItemText primary="Account" />
         </ListItem>
         <ListItem
           component={Link}
           to={{
-            pathname: "/qa",
+            pathname: '/qa',
             search: location.search,
           }}
-          selected={location.pathname === "/qa"}
-          button
+          selected={location.pathname === '/qa'}
+          button={true}
         >
           <ListItemText primary="Question Answering" />
         </ListItem>
         <ListItem
           component={Link}
           to={{
-            pathname: "/text-summarization",
+            pathname: '/text-summarization',
             search: location.search,
           }}
-          selected={location.pathname === "/text-summarization"}
-          button
+          selected={location.pathname === '/text-summarization'}
+          button={true}
         >
           <ListItemText primary="Text Summarization" />
         </ListItem>
         <ListItem
           component={Link}
           to={{
-            pathname: "/chatbot-builder",
+            pathname: '/chatbot-builder',
             search: location.search,
           }}
-          selected={location.pathname === "/chatbot-builder"}
-          button
+          selected={location.pathname === '/chatbot-builder'}
+          button={true}
         >
           <ListItemText primary="Chatbot Builder" />
         </ListItem>
         <ListItem
           component={Link}
           to={{
-            pathname: "/text-labeling",
+            pathname: '/text-labeling',
             search: location.search,
           }}
-          selected={location.pathname === "/text-labeling"}
-          button
+          selected={location.pathname === '/text-labeling'}
+          button={true}
         >
           <ListItemText primary="Text Labeling" />
         </ListItem>
         <ListItem
           component={Link}
           to={{
-            pathname: "/image-labeling/collections",
+            pathname: '/image-labeling/collections',
             search: location.search,
           }}
-          selected={location.pathname === "/image-labeling"}
-          button
+          selected={location.pathname === '/image-labeling'}
+          button={true}
         >
           <ListItemText primary="Image Labeling" />
         </ListItem>

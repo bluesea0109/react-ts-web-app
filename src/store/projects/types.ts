@@ -1,16 +1,16 @@
-export const FETCH_PROJECTS = "FETCH_PROJECTS";
-export const ADD_PROJECT = "ADD_PROJECT";
-export const SET_NEW_PROJECT_LOADER = "SET_NEW_PROJECT_LOADER";
-export const SET_PROJECT_FETCHING = "SET_PROJECT_FETCHING";
-export const SET_UPDATE_PROJECT_LOADER = "SET_UPDATE_PROJECT_LOADER"
+export const FETCH_PROJECTS = 'FETCH_PROJECTS';
+export const ADD_PROJECT = 'ADD_PROJECT';
+export const SET_NEW_PROJECT_LOADER = 'SET_NEW_PROJECT_LOADER';
+export const SET_PROJECT_FETCHING = 'SET_PROJECT_FETCHING';
+export const SET_UPDATE_PROJECT_LOADER = 'SET_UPDATE_PROJECT_LOADER';
 
 export interface ProjectState {
   isFetching: boolean;
-  data: Array<ProjectType>;
+  data: ProjectType[];
   loader: {
     newProject: boolean;
     updateProject: boolean;
-  }
+  };
 }
 
 export interface ProjectType {
@@ -43,4 +43,9 @@ export interface SetProjectUpdating {
   payload: boolean;
 }
 
-export type ProjectActionType = FetchProjectAction | AddProjectAction | ToggleNewProjectLoaderAction | SetProjectFetching | SetProjectUpdating;
+export type ProjectActionType =
+  | FetchProjectAction
+  | AddProjectAction
+  | ToggleNewProjectLoaderAction
+  | SetProjectFetching
+  | SetProjectUpdating;
