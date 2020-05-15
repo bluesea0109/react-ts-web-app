@@ -9,8 +9,9 @@ import Typography from "@material-ui/core/Typography";
 import MenuIcon from "@material-ui/icons/Menu";
 import clsx from "clsx";
 import React from 'react';
-import { useQuery, gql } from "@apollo/client";
+import { useQuery } from "@apollo/react-hooks";
 import { useHistory, useLocation } from 'react-router-dom';
+import gql from "graphql-tag"
 
 const GET_ORGS = gql`
   query {

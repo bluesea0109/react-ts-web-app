@@ -1,9 +1,9 @@
-import { setContext } from '@apollo/link-context'
+import { setContext } from 'apollo-link-context'
 import firebase from 'firebase/app';
 import config from "./config";
-import { ApolloClient, HttpLink, NormalizedCacheObject, InMemoryCache } from '@apollo/client';
-
-const link = new HttpLink({ uri: config.apiUrl });
+import { createUploadLink } from 'apollo-upload-client'
+import { ApolloClient } from 'apollo-client';
+import { InMemoryCache } from 'apollo-cache-inmemory';
 
 console.log("API URL:", config.apiUrl);
 console.log("Project Id:", config.projectId);
@@ -28,7 +28,7 @@ const authLink = setContext((_, { headers }) => {
   });
 });
 
-export default new ApolloClient<NormalizedCacheObject>({
-  link: authLink.concat(link),
+export default new ApolloClient({
+  link: authLink.concat(createUploadLink({ uri: config.apiUrl })),
   cache: new InMemoryCache(),
 });

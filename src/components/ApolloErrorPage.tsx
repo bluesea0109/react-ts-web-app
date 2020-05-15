@@ -2,7 +2,8 @@ import React from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import { ApolloError } from '@apollo/client';
+import { ApolloError } from 'apollo-client'
+import { GraphQLError } from 'graphql';
 
 const styles = makeStyles((theme: Theme) =>
   createStyles({
@@ -31,7 +32,7 @@ export default function ApolloErrorPage(props: IErrorPageProps) {
     <Grid container className={classes.root}>
       <Grid item xs={12}>
         {error && error.graphQLErrors.length ? (
-          error.graphQLErrors.map(e => {
+          error.graphQLErrors.map((e: GraphQLError) => {
             if (!e.extensions) {
               return defaultMessage;
             }

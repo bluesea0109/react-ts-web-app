@@ -12,7 +12,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/react-hooks';
 import { GET_CATEGORY_SETS } from '../../../gql-queries';
 import { useActiveOrg } from '../../UseActiveOrg';
 import CreateCategorySetDialog from './CreateCategorySetDialog';

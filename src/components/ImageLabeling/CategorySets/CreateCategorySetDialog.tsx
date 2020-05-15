@@ -11,7 +11,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import AddIcon from '@material-ui/icons/Add';
 import { GET_CATEGORY_SETS, CREATE_CATEGORY_SET } from '../../../gql-queries';
 import { useActiveOrg } from '../../UseActiveOrg';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/react-hooks'
 import ContentLoading from '../../ContentLoading';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -181,7 +181,7 @@ function CreateCategorySetDialog() {
   if (error) {
     dialogContent = (
       <DialogContent>
-        <Typography>{"Unkown error occurred"}</Typography>>
+        <Typography>{"Unkown error occurred"}</Typography>
       </DialogContent>
     );
   }

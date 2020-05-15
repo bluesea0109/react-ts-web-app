@@ -1,9 +1,9 @@
-import { gql } from '@apollo/client';
 import { Button, Grid, TextField, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { useState } from 'react';
-import { useApolloClient } from '@apollo/client';
+import { useApolloClient } from '@apollo/react-hooks';
 import ContentLoading from '../ContentLoading';
+import gql from 'graphql-tag';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

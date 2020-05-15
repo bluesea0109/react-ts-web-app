@@ -7,7 +7,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { Typography, Button } from '@material-ui/core';
 import gql from "graphql-tag";
 import IconButtonAdd from '../IconButtonAdd';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/react-hooks';
 import ContentLoading from '../ContentLoading';
 import { useActiveOrg } from '../UseActiveOrg';
 
