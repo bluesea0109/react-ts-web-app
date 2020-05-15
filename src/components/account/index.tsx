@@ -1,24 +1,28 @@
 import { Grid, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import 'firebase/auth';
-import React from 'react';
+import React, { useState } from 'react';
 import { useActiveOrg } from '../UseActiveOrg';
 import NewOrganisation from './NewOrganisation';
 import NewProject from './NewProject';
 import Orgs from './Orgs';
 import Projects from './Projects';
+import { IAccountProps } from './types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       padding: theme.spacing(3),
     },
-  }),
+  })
 );
 
-function Account() {
+const Account: React.FC<IAccountProps> = ({ user }) => {
   const classes = useStyles();
   const { orgId } = useActiveOrg();
+  const [activeOrg, setActiveOrg] = useState<string | null | undefined>(
+    orgId ?? user?.activeOrg?.id
+  );
 
   return (
     <>
@@ -41,5 +45,6 @@ function Account() {
       </div>
     </>
   );
-}
+};
+
 export default Account;

@@ -12,22 +12,8 @@ import clsx from 'clsx';
 import React, { useMemo } from 'react';
 import { GET_ORGS } from '../../gql-queries';
 import ContentLoading from '../ContentLoading';
-
-interface IReceivedData {
-  orgs: IOrg[];
-}
-
-interface IOrg {
-  id: string;
-  name: string;
-  members: IMember[];
-}
-
-interface IMember {
-  orgId?: string;
-  uid: string;
-  memberType: string;
-}
+import { IReceivedData } from './types';
+import { IOrg } from '../../models';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -37,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
     title: {
       fontSize: 20,
     },
-  }),
+  })
 );
 
 function Orgs() {
@@ -53,7 +39,8 @@ function Orgs() {
             <Typography
               className={classes.title}
               color="textPrimary"
-              gutterBottom={true}>
+              gutterBottom={true}
+            >
               {`Name: ${org.name}`}
             </Typography>
             <Typography color="textPrimary" gutterBottom={true}>

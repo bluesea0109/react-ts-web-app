@@ -17,6 +17,11 @@ import QuestionAnswering from './components/QuestionAnswering';
 import TextSummarization from './components/TextSummarization';
 import { useUpdateActiveOrg } from './components/UseUpdateActiveOrg';
 import { GET_CURRENT_USER } from './gql-queries';
+import { IUser } from './models';
+
+interface IGetCurrentUser {
+  currentUser: IUser;
+}
 
 const drawerWidth = 240;
 
@@ -73,7 +78,7 @@ const useStyles = makeStyles((theme: Theme) =>
         duration: theme.transitions.duration.enteringScreen,
       }),
     },
-  }),
+  })
 );
 
 function AppActiveOrgWrapper() {
@@ -87,15 +92,15 @@ function AppActiveOrgWrapper() {
   }
 
   if (loading) {
-    return <ContentLoading/>;
+    return <ContentLoading />;
   }
 
-  return <App/>;
+  return <App />;
 }
 
 function App() {
   const classes = useStyles();
-  const { loading, error, data } = useQuery(GET_CURRENT_USER);
+  const { loading, error, data } = useQuery<IGetCurrentUser>(GET_CURRENT_USER);
 
   const [state, setState] = React.useState({
     drawerOpen: false,
@@ -114,13 +119,11 @@ function App() {
     return <Typography>{'Unkown error occurred'}</Typography>;
   }
 
-  if (loading) {
-    return <ContentLoading/>;
-  }
-
   assert.notEqual(data, null);
 
-  return (
+  return !data && loading ? (
+    <ContentLoading />
+  ) : (
     <div className={classes.root}>
       <AppBar
         position="fixed"
@@ -150,7 +153,7 @@ function App() {
             <Home />
           </Route>
           <Route path="/account">
-            <Account />
+            <Account user={data?.currentUser} />
           </Route>
           <Route path="/qa">
             <QuestionAnswering />
@@ -161,11 +164,14 @@ function App() {
           <Route exact={true} path="/image-labeling/:tab">
             <ImageLabeling />
           </Route>
-          <Route exact={true} path="/image-labeling/collections/:collectionId/:tab">
+          <Route
+            exact={true}
+            path="/image-labeling/collections/:collectionId/:tab"
+          >
             <ImageCollectionPage />
           </Route>
-          <Route path="/text-labeling"/>
-          <Route path="/"/>
+          <Route path="/text-labeling" />
+          <Route path="/" />
         </Switch>
       </main>
     </div>
