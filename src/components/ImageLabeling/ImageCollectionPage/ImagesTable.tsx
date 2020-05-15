@@ -193,15 +193,6 @@ function ImagesTable(props: IImagesTableProps) {
     });
   }
 
-  // const handleFiles = async (e) => {
-  //   const files = e.target.files;
-  //   setState({
-  //     ...state,
-  //     files: files,
-  //     uploadDialogOpen: true
-  //   });
-  // }
-
   if (error) {
     return <ApolloErrorPage error={error} />
 

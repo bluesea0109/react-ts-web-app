@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -13,15 +13,17 @@ import { useApolloClient } from '@apollo/react-hooks';
 import _ from "lodash";
 import { GraphQLError } from 'graphql';
 import { Typography, Button } from '@material-ui/core';
+import axios from "axios";
 
 interface IUploadImagesDialogProps {
   collectionId: number
 }
 
 export default function UploadImagesDialog(props: IUploadImagesDialogProps) {
+  let cancelled = false;
+
   interface IState {
     open: boolean,
-    cancelled: boolean,
     progress: number,
     numCompleted: number,
     total: number,
@@ -30,57 +32,14 @@ export default function UploadImagesDialog(props: IUploadImagesDialogProps) {
   }
   const [state, setState] = useState<IState>({
     open: false,
-    cancelled: false,
     progress: 0.0,
     numCompleted: 0,
     total: 1,
     error: null,
     files: null,
   });
+
   const client = useApolloClient();
-
-  useEffect(() => {
-
-    const uploadChunk = async () => {
-      if (!state.files || state.error) {
-        return;
-      }
-      if (state.numCompleted === state.files.length || state.cancelled) {
-        handleClose();
-        return;
-      }
-      else if (state.numCompleted < state.files.length) {
-        const chunk = _.slice(state.files, state.numCompleted, state.numCompleted + 4);
-        try {
-          await Promise.all(chunk.map(async file => {
-            console.log('file', file);
-            const res = await client.mutate({
-              mutation: UPLOAD_IMAGE,
-              variables: {
-                collectionId: props.collectionId,
-                file
-              }
-            });
-          }));
-        } catch (e) {
-          setState({
-            ...state,
-            error: e,
-          })
-          return;
-        }
-
-        const numCompleted = state.numCompleted + chunk.length;
-        setState({
-          ...state,
-          numCompleted,
-          progress: numCompleted / state.files.length,
-        });
-      }
-    }
-    uploadChunk();
-  }, [state.files, state.numCompleted])
-
 
   const handleClose = () => {
     setState({
@@ -91,11 +50,42 @@ export default function UploadImagesDialog(props: IUploadImagesDialogProps) {
     });
   };
 
+  const uploadSingle = async (file: File) => {
+    const res = await client.query({
+      query: GET_UPLOAD_URL,
+      variables: {
+        collectionId: props.collectionId,
+        filename: file.name,
+      }
+    });
+
+    if (res.errors?.[0]) {
+      cancelled = true;
+      console.error(res.errors[0]);
+      setState(s => ({
+        ...s,
+        error: res.errors?.[0] ?? null
+      }));
+      return;
+    }
+
+    const uploadUrl = res.data.ImageLabelingService_uploadUrl;
+
+    await axios.put(uploadUrl, file, {
+      headers: {
+        'Content-Type': file.type
+      }
+    });
+
+    setState(s => ({
+      ...s,
+      progress: (s.numCompleted + 1) / s.total,
+      numCompleted: s.numCompleted + 1
+    }));
+  }
+
   const cancel = () => {
-    setState({
-      ...state,
-      cancelled: true
-    })
+    cancelled = true;
   }
 
   const handleFiles = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,9 +95,34 @@ export default function UploadImagesDialog(props: IUploadImagesDialogProps) {
     setState({
       ...state,
       open: true,
+      total: files.length,
       files,
-    });
-  };
+    })
+    const chunks = _.chunk(files, 5);
+    for (const chunk of chunks) {
+      if (cancelled) {
+        break;
+      }
+
+      try {
+        await Promise.all(chunk.map(file => {
+          return uploadSingle(file);
+        }));
+      } catch (e) {
+        console.error(e);
+        cancelled = true;
+        setState(s => ({
+          ...s,
+          error: e
+        }));
+        return;
+      }
+    }
+
+    if (!cancelled && !state.error) {
+      handleClose();
+    }
+  }
 
   let dialogContent = (
     <DialogContent>
@@ -136,7 +151,7 @@ export default function UploadImagesDialog(props: IUploadImagesDialogProps) {
         <DialogTitle>{"Uploading Images"}</DialogTitle>
         {dialogContent}
         <DialogActions>
-          <Button color="secondary" onClick={handleClose}>
+          <Button color="secondary" onClick={cancel}>
             {"Cancel"}
           </Button>
         </DialogActions>
@@ -159,13 +174,8 @@ export default function UploadImagesDialog(props: IUploadImagesDialogProps) {
   );
 }
 
-const UPLOAD_IMAGE = gql`
-  mutation ($collectionId: Int!, $file: Upload!) {
-    ImageLabelingService_uploadImage(collectionId: $collectionId, file: $file) {
-      name
-      collectionId
-      digest
-      size
-    }
+const GET_UPLOAD_URL = gql`
+  query ($filename: String!, $collectionId: Int!) {
+    ImageLabelingService_uploadUrl(filename: $filename, collectionId: $collectionId)
   }
 `;
