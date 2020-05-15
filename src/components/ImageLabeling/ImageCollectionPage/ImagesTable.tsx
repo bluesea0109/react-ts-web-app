@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles, createStyles, Theme, useTheme } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Table from '@material-ui/core/Table';
@@ -126,7 +126,7 @@ function ImagesTable(props: IImagesTableProps) {
     uploadDialogOpen: false,
     files: []
   });
-  const { loading, error, data, fetchMore } = useQuery(
+  const { loading, error, data, fetchMore, startPolling, stopPolling } = useQuery(
     GET_COLLECTION_DATA,
     {
       variables: {
@@ -134,13 +134,20 @@ function ImagesTable(props: IImagesTableProps) {
         offset: 0,
         limit: state.rowsPerPage
       },
-      fetchPolicy: "network-only"
+      fetchPolicy: "network-only",
     }
   );
-
   const client = useApolloClient();
   const history = useHistory();
   const location = useLocation();
+
+  useEffect(() => {
+    startPolling(3000);
+    return function cleanUp() {
+      console.log('Stop polling');
+      stopPolling();
+    }
+  }, [startPolling, stopPolling]);
   
   const startLabeling = async () => {
     const { data } = await client.mutate({
