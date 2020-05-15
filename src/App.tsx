@@ -10,7 +10,7 @@ import Home from "./components/Home";
 import QuestionAnswering from "./components/QuestionAnswering";
 import TextSummarization from "./components/TextSummarization";
 import ImageLabeling from "./components/ImageLabeling";
-import { useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/react-hooks";
 import ContentLoading from "./components/ContentLoading";
 import { GET_CURRENT_USER } from "./gql-queries";
 import { Typography } from "@material-ui/core";

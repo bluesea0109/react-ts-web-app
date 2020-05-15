@@ -3,7 +3,8 @@ import { Button, Card, createStyles, LinearProgress, makeStyles, TextField, Them
 import clsx from "clsx";
 import React, { useState } from "react";
 import { CREATE_ORG } from '../../gql-queries';
-import { useMutation, gql } from '@apollo/client';
+import { useMutation } from '@apollo/react-hooks';
+import gql from "graphql-tag";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

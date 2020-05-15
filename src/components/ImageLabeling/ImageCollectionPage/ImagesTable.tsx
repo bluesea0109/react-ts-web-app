@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles, createStyles, Theme, useTheme } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Table from '@material-ui/core/Table';
@@ -17,11 +17,12 @@ import LastPageIcon from '@material-ui/icons/LastPage';
 import Paper from '@material-ui/core/Paper';
 import CheckIcon from '@material-ui/icons/CheckCircle';
 import RemoveIcon from '@material-ui/icons/RemoveCircle';
-import { useApolloClient, useQuery } from '@apollo/client';
+import { useApolloClient, useQuery } from '@apollo/react-hooks';
 import { useHistory, useLocation } from 'react-router';
 import IconButtonPlay from '../../IconButtonPlay';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
+import UploadImagesDialog from './UploadImagesDialog';
 
 const paginationStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -125,7 +126,7 @@ function ImagesTable(props: IImagesTableProps) {
     uploadDialogOpen: false,
     files: []
   });
-  const { loading, error, data, fetchMore } = useQuery(
+  const { loading, error, data, fetchMore, startPolling, stopPolling } = useQuery(
     GET_COLLECTION_DATA,
     {
       variables: {
@@ -133,20 +134,28 @@ function ImagesTable(props: IImagesTableProps) {
         offset: 0,
         limit: state.rowsPerPage
       },
-      fetchPolicy: "network-only"
+      fetchPolicy: "network-only",
     }
   );
-
   const client = useApolloClient();
   const history = useHistory();
   const location = useLocation();
+
+  useEffect(() => {
+    startPolling(3000);
+    return function cleanUp() {
+      console.log('Stop polling');
+      stopPolling();
+    }
+  }, [startPolling, stopPolling]);
   
   const startLabeling = async () => {
     const { data } = await client.mutate({
       mutation: NEXT_LABEL_QUEUE_IMAGE,
       variables: {
         collectionId,
-      }
+      },
+      errorPolicy: "ignore"
     });
 
     if (data && data.ImageLabelingService_nextLabelQueueImage) {
@@ -174,7 +183,7 @@ function ImagesTable(props: IImagesTableProps) {
       variables: {
         offset: page * 5
       },
-      updateQuery: (prev, { fetchMoreResult }) => {
+      updateQuery: (prev: any, { fetchMoreResult }: { fetchMoreResult?: any }) => {
         if (!fetchMoreResult) return prev;
         return fetchMoreResult
       }
@@ -191,15 +200,6 @@ function ImagesTable(props: IImagesTableProps) {
     });
   }
 
-  // const handleFiles = async (e) => {
-  //   const files = e.target.files;
-  //   setState({
-  //     ...state,
-  //     files: files,
-  //     uploadDialogOpen: true
-  //   });
-  // }
-
   if (error) {
     return <ApolloErrorPage error={error} />
 
@@ -208,15 +208,11 @@ function ImagesTable(props: IImagesTableProps) {
     return <ContentLoading />;
   }
 
-  const collection = data.ImageLabelingService_collections[0];
+  const collection = data.ImageLabelingService_collectionById;
   const pageImages = data.ImageLabelingService_images;
 
   const imageUploadDialog = (
-    // <ImageUploadDialog
-    //   files={state.files}
-    //   collectionId={collectionId}
-    // />
-    null // TODO
+    <UploadImagesDialog collectionId={collectionId} />
   );
 
   return (
@@ -290,7 +286,7 @@ function ImagesTable(props: IImagesTableProps) {
 
 const NEXT_LABEL_QUEUE_IMAGE = gql`
   mutation($collectionId: Int!) {
-    nextLabelQueueImage(collectionId: $collectionId) {
+    ImageLabelingService_nextLabelQueueImage(collectionId: $collectionId) {
       imageId
     }
   }
@@ -299,13 +295,11 @@ const NEXT_LABEL_QUEUE_IMAGE = gql`
 
 const GET_COLLECTION_DATA = gql`
   query ($collectionId: Int!, $offset: Int!, $limit: Int!) {
-    ImageLabelingService_collections(id: $collectionId) {
+    ImageLabelingService_collectionById(collectionId: $collectionId) {
       id
       projectId
-      type
       name
       imageCount
-      storageGb
       labeledImageCount
     }
 

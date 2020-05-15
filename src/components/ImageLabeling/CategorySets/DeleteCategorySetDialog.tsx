@@ -9,7 +9,7 @@ import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ContentLoading from '../../ContentLoading';
 import { useActiveOrg } from '../../UseActiveOrg';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/react-hooks';
 import { DELETE_CATEGORY_SET, GET_CATEGORY_SETS } from '../../../gql-queries';
 import { Button } from '@material-ui/core';
 

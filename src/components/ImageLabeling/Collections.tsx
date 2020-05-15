@@ -2,9 +2,10 @@
 import { makeStyles, Typography, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
 import React from "react";
 import ContentLoading from '../ContentLoading';
-import { gql, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/react-hooks';
 import { useActiveOrg } from '../UseActiveOrg';
 import { useHistory, useLocation } from 'react-router-dom';
+import gql from "graphql-tag";
 
 const GET_COLLECTIONS = gql`
   query($projectId: String!) {

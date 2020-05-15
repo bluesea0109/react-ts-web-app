@@ -2,12 +2,13 @@
 import { createStyles, makeStyles, Theme, Button, Grid, Card, CardContent, Typography, CardActions } from '@material-ui/core';
 import React from "react";
 import ContentLoading from '../ContentLoading';
-import { gql, useQuery, useApolloClient } from '@apollo/client';
+import { useQuery, useApolloClient } from '@apollo/react-hooks';
 import { useHistory, useLocation } from 'react-router';
 import assert from "assert";
 import clsx from "clsx";
 import { UPDATE_ACTIVE_ORG } from '../../gql-queries';
 import { useActiveOrg } from '../UseActiveOrg';
+import gql from "graphql-tag";
 
 const GET_USER = gql`
   query {

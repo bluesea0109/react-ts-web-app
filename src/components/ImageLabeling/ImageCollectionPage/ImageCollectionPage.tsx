@@ -56,7 +56,7 @@ function ImageCollectionPage() {
         </Toolbar>
       </Paper>
       {tab === 'images' && (
-        <ImagesTable collectionId={collectionId} />
+        <ImagesTable collectionId={parseInt(collectionId, 10)} />
       )}
       {tab === 'review-queues' && (
         <Typography>{"Review Queues"}</Typography>
