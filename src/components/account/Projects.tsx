@@ -18,7 +18,6 @@ import {
   Paper,
 } from '@material-ui/core';
 import assert from 'assert';
-import clsx from 'clsx';
 import React from 'react';
 import { useHistory, useLocation } from 'react-router';
 import { UPDATE_ACTIVE_ORG } from '../../gql-queries';
@@ -75,20 +74,6 @@ interface IGetData {
   projects: IProject[];
 }
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(3),
-    },
-    title: {
-      fontSize: 20,
-    },
-    table: {
-      minWidth: 650,
-    },
-  })
-);
-
 function ProjectsWrapper() {
   const { orgId, projectId } = useActiveOrg();
 
@@ -100,7 +85,6 @@ function ProjectsWrapper() {
 }
 
 const Projects: React.FC<IProjectProps> = ({ orgId, projectId }) => {
-  const classes = useStyles();
   const history = useHistory();
   const location = useLocation();
   const { loading, error, data } = useQuery<IGetData>(GET_DATA, {
@@ -153,88 +137,53 @@ const Projects: React.FC<IProjectProps> = ({ orgId, projectId }) => {
   };
 
   const getButton = (_projectId: string) => {
-    if (projectId !== _projectId) {
-      return (
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => setActiveProject(orgId, _projectId)}
-        >
-          Make Active
-        </Button>
-      );
-    }
-
-    return (
+    return projectId !== _projectId ? (
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => setActiveProject(orgId, _projectId)}
+      >
+        Make Active
+      </Button>
+    ) : (
       <Button variant="contained" color="secondary" disabled={true}>
         Active
       </Button>
     );
   };
 
-  const getCard = (project: any) => {
-    return (
-      <Grid key={project.id} item={true} xs={12} sm={3}>
-        <Card>
-          <CardContent>
-            <Typography
-              className={classes.title}
-              color="textPrimary"
-              gutterBottom={true}
-            >
-              {`Name: ${project.name}`}
-            </Typography>
-            <Typography color="textPrimary" gutterBottom={true}>
-              {`Id: ${project.id}`}
-            </Typography>
-          </CardContent>
-          <CardActions>{getButton(project.id)}</CardActions>
-        </Card>
-      </Grid>
-    );
-  };
-
-  const renderProjects = () => {
-    return projects?.length !== 0 ? (
-      // <Grid container={true} spacing={1}>
-      //   {projects.map((project: any) => getCard(project))}
-      // </Grid>
-      <TableContainer component={Paper}>
-        <Table className={classes.table}>
-          <TableHead>
-            <TableRow>
-              <TableCell align="right">Project id</TableCell>
-              <TableCell align="right">Name</TableCell>
-              <TableCell align="right">Status</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {projects.map((project) => (
-              <TableRow key={project.id}>
-                <TableCell component="th" scope="row">
-                  {project.id}
-                </TableCell>
-                <TableCell align="right">{project.name}</TableCell>
-                <TableCell align="right">{getButton(project.id)}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    ) : (
-      <Typography align="center" variant="h6">
-        {'No projects found'}
-      </Typography>
-    );
-  };
-
   return (
-    <div>
-      <Card className={clsx(classes.root)}>
-        <Typography variant="h4">{'Projects'}</Typography>
-        {renderProjects()}
-      </Card>
-    </div>
+    <>
+      <Typography variant="h4">{'Projects'}</Typography>
+      {projects?.length !== 0 ? (
+        <TableContainer component={Paper} aria-label="Projects">
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell align="left">Project id</TableCell>
+                <TableCell align="left">Name</TableCell>
+                <TableCell align="left">Status</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {projects.map((project) => (
+                <TableRow key={project.id}>
+                  <TableCell component="th" scope="row">
+                    {project.id}
+                  </TableCell>
+                  <TableCell align="left">{project.name}</TableCell>
+                  <TableCell align="left">{getButton(project.id)}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      ) : (
+        <Typography align="center" variant="h6">
+          {'No projects found'}
+        </Typography>
+      )}
+    </>
   );
 };
 
