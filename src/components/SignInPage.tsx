@@ -3,8 +3,6 @@ import { useHistory, useLocation } from 'react-router-dom';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import firebase from 'firebase/app';
 import 'firebase/auth';
-import { useDispatch } from "react-redux";
-import { signIn } from '../store/auth/actions';
 import { Grid, makeStyles, Theme, createStyles } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -21,8 +19,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function SignInPage(props: any) {
   const classes = useStyles();
-
-  const dispatch = useDispatch()
   const history = useHistory();
   const location = useLocation();
 
@@ -45,10 +41,6 @@ function SignInPage(props: any) {
     ],
     callbacks: {
       signInSuccessWithAuthResult: function (authResult: any, redirectUrl?: string) {
-        // If a user signed in with email link, ?showPromo=1234 can be obtained from
-        // window.location.href.
-        dispatch(signIn(authResult.user));
-
         const state: any = location.state;
 
         if (history.action === 'REPLACE' && state && state.referrer) {

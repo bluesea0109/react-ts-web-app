@@ -1,8 +1,6 @@
 import { Grid, Typography, makeStyles, createStyles, Theme } from '@material-ui/core';
-import 'firebase/auth';
 import React from 'react';
-import { useSelector } from "react-redux";
-import { getCurrentUser } from "../store/selectors";
+import firebase from 'firebase';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -13,7 +11,12 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function Home() {
   const classes = useStyles();
-  const user = useSelector(getCurrentUser);
+  const user = firebase.auth().currentUser;
+  if (!user) {
+    // this shouldn't happen
+    console.error('No user signed in');
+    return <Typography>{"No user is signed in."}</Typography>
+  }
 
   const userName = user.displayName;
   let welcomeMsg = `Welcome, back.`;
