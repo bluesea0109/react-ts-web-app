@@ -248,15 +248,15 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
     });
   }
 
-  const toggleLabelVisible = (label: ImageCategoricalLabel) => () => {
-    label.visible = !label.visible;
-    setState(state);
-  };
+  // const toggleLabelVisible = (label: ImageCategoricalLabel) => () => {
+  //   label.visible = !label.visible;
+  //   setState(state);
+  // };
 
-  const toggleLabelExpand = (label: ImageCategoricalLabel) => () => {
-    label.open = !label.open;
-    setState(state);
-  };
+  // const toggleLabelExpand = (label: ImageCategoricalLabel) => () => {
+  //   label.open = !label.open;
+  //   setState(state);
+  // };
 
   const prevImage = async () => {
     const { data } = await client.query({
