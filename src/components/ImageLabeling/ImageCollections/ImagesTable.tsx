@@ -126,17 +126,19 @@ function ImagesTable(props: IImagesTableProps) {
     uploadDialogOpen: false,
     files: []
   });
-  const { loading, error, data, fetchMore, startPolling, stopPolling } = useQuery(
+
+  const { loading, error, data, refetch, fetchMore, startPolling, stopPolling } = useQuery(
     GET_COLLECTION_DATA,
     {
       variables: {
         collectionId,
-        offset: 0,
+        offset: state.offset,
         limit: state.rowsPerPage
       },
       fetchPolicy: "network-only",
     }
   );
+
   const client = useApolloClient();
   const history = useHistory();
   const location = useLocation();
@@ -149,7 +151,7 @@ function ImagesTable(props: IImagesTableProps) {
       stopPolling();
     }
   }, [startPolling, stopPolling]);
-  
+
   const startLabeling = async () => {
     const { data } = await client.mutate({
       mutation: NEXT_LABEL_QUEUE_IMAGE,
@@ -176,10 +178,20 @@ function ImagesTable(props: IImagesTableProps) {
   }
 
   const handleChangePage = async (event: React.MouseEvent<HTMLButtonElement> | null, page: number) => {
+    stopPolling();
+
     setState({
       ...state,
+      offset: page * 5,
       page
     })
+
+    refetch({
+      collectionId,
+      offset: page * 5,
+      limit: state.rowsPerPage,
+    });
+    
     fetchMore({
       variables: {
         offset: page * 5
@@ -189,6 +201,8 @@ function ImagesTable(props: IImagesTableProps) {
         return fetchMoreResult
       }
     });
+
+    startPolling(3000);
   };
 
   const handleChangeRowsPerPage = (

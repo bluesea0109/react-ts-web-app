@@ -44,7 +44,7 @@ const GET_DATA = gql`
 `;
 
 const ImageViewer: React.FC = () => {
-  const { collectionId, imageId } = useParams();
+  const { imageId } = useParams();
   const { projectId } = useActiveOrg();
   const { loading, error, data } = useQuery(GET_DATA, {
     variables: {

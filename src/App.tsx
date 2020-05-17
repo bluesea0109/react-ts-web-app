@@ -17,6 +17,7 @@ import { Typography } from "@material-ui/core";
 import assert from "assert";
 import { useUpdateActiveOrg } from "./components/UseUpdateActiveOrg";
 import ImageCollectionPage from "./components/ImageLabeling/ImageCollections/ImageCollectionPage";
+import ImageViewer from "./components/ImageLabeling/ImageCollections/ImageViewer";
 
 const drawerWidth = 240;
 
@@ -162,6 +163,9 @@ function App() {
           </Route>
           <Route exact path="/image-labeling/collections/:collectionId/:tab">
             <ImageCollectionPage />
+          </Route>
+          <Route exact path="/image-labeling/collections/:collectionId/images/:imageId">
+            <ImageViewer />
           </Route>
           <Route path="/text-labeling"></Route>
           <Route path="/"></Route>
