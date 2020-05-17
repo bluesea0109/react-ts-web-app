@@ -142,6 +142,7 @@ function ImagesTable(props: IImagesTableProps) {
   const location = useLocation();
 
   useEffect(() => {
+    console.log('start polling');
     startPolling(3000);
     return function cleanUp() {
       console.log('Stop polling');
@@ -169,7 +170,7 @@ function ImagesTable(props: IImagesTableProps) {
 
   const handleImageClick = (imageId: number) => () => {
     history.push({
-      pathname: `/image-labeling/collections/${collectionId}/view-images/${imageId}`,
+      pathname: `/image-labeling/collections/${collectionId}/images/${imageId}`,
       search: location.search
     });
   }
@@ -236,7 +237,7 @@ function ImagesTable(props: IImagesTableProps) {
         <TableBody>
           {pageImages.map((image: any, i: number) => {
             return (
-              <TableRow key={i} onClick={handleImageClick(image)} hover>
+              <TableRow key={i} onClick={handleImageClick(image.id)} hover>
                 <TableCell>
                   {image.id}
                 </TableCell>
