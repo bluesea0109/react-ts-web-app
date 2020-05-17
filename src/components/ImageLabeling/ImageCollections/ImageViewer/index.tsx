@@ -12,6 +12,7 @@ const GET_DATA = gql`
   query ($projectId: String!, $imageId: Int!) {
     ImageLabelingService_image(imageId: $imageId) {
       collectionId
+      id
       name
       url
       maskUrl

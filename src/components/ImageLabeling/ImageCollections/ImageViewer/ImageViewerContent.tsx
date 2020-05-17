@@ -18,32 +18,16 @@ import { GraphQLError } from 'graphql';
 import ContentLoading from '../../../ContentLoading';
 
 const NEXT_IMAGE = gql`
-  query ($imageId: Int!) {
-    ImageLabelingService_nextImage(imageId: $imageId) {
+  query ($imageId: Int!, $unlabeled: Boolean) {
+    ImageLabelingService_nextImage(imageId: $imageId, unlabeled: $unlabeled) {
       id
     }
   }
 `;
 
 const PREV_IMAGE = gql`
-  query ($imageId: Int!) {
-    ImageLabelingService_prevImage(imageId: $imageId) {
-      id
-    }
-  }
-`;
-
-const NEXT_UNLABELED_IMAGE = gql`
-  query ($imageId: Int!) {
-    ImageLabelingService_nextUnlabeledImage(imageId: $imageId) {
-      id
-    }
-  }
-`;
-
-const PREV_UNLABELED_IMAGE = gql`
-  query ($imageId: Int!) {
-    ImageLabelingService_prevUnlabeledImage(imageId: $imageId) {
+  query ($imageId: Int!, $unlabeled: Boolean) {
+    ImageLabelingService_prevImage(imageId: $imageId, unlabeled: $unlabeled) {
       id
     }
   }
@@ -258,21 +242,30 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
   //   setState(state);
   // };
 
-  const prevImage = async () => {
-    const { data } = await client.query({
+  const prevImage = async (unlabeled: boolean | null = null) => {
+    setState({
+      ...state,
+      loading: true
+    })
+
+    const { data, errors } = await client.query({
       query: PREV_IMAGE,
-      variables: {
-        imageId
-      }
+      variables: { imageId, unlabeled },
+      fetchPolicy: 'network-only'
     });
 
-    if (data && data.ImageLabelingService_prevImage) {
-      const prevId = data.ImageLabelingService_prevImage.id
-      goToImage(prevId);
+    if (errors?.[0]) {
+      setState(s => ({
+        ...s,
+        loading: false,
+        error: errors[0]
+      }));
+    } else {
+      goToImage(data.ImageLabelingService_prevImage?.id);
     }
   }
 
-  const nextImage = async () => {
+  const nextImage = async (unlabeled: boolean | null = null) => {
     setState({
       ...state,
       loading: true
@@ -280,27 +273,18 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
 
     const { data, errors } = await client.query({
       query: NEXT_IMAGE,
-      variables: { imageId }
+      variables: { imageId, unlabeled },
+      fetchPolicy: 'network-only'
     });
-
-    setState(s => ({
-      ...s,
-      loading: false
-    }));
 
     if (errors?.[0]) {
       setState(s => ({
         ...s,
+        loading: false,
         error: errors[0]
       }));
     } else {
-      if (data.nextItem) {
-        const nextImageId = data.ImageLabelingService_nextImage.id;
-        history.push({
-          pathname: `/image-labeling/collections/${collectionId}/images/${nextImageId}`,
-          search: location.search
-        });
-      }
+      goToImage(data.ImageLabelingService_nextImage?.id);
     }
   }
 
@@ -310,49 +294,6 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
         pathname: `/image-labeling/collections/${collectionId}/images/${imageId}`,
         search: location.search
       });
-    }
-  }
-
-  const runQuery = async (query: any, variables: any) => {
-    setState(s => ({
-      ...s,
-      loading: true
-    }));
-    const { data, errors } = await client.query({
-      query,
-      variables,
-      fetchPolicy: 'network-only'
-    });
-
-    setState(s => ({
-      ...s,
-      loading: false
-    }));
-
-    if (errors?.[0]) {
-      setState(s => ({
-        ...s,
-        error: errors[0]
-      }));
-      return;
-    }
-    return data;
-  }
-
-  const prevUnlabeledImage = async () => {
-    const data = await runQuery(PREV_UNLABELED_IMAGE, { imageId })
-
-    if (data && data.ImageLabelingService_prevUnlabeledImage) {
-      const prevId = data.ImageLabelingService_prevUnlabeledImage.id;
-      goToImage(prevId);
-    }
-  }
-
-  const nextUnlablledImage = async () => {
-    const data = await runQuery(NEXT_UNLABELED_IMAGE, { imageId })
-    if (data && data.ImageLabelingService_nextUnlabeledImage) {
-      const id = data.ImageLabelingService_nextUnlabeledImage.id;
-      goToImage(id);
     }
   }
 
@@ -457,16 +398,16 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
             <Button size="small" variant="contained" className={classes.marginRight} onClick={zoomOut} color="secondary">
               <ZoomOutIcon />
             </Button>
-            <Button size="small" color="secondary" className={classes.marginRight} variant="contained" onClick={prevImage}>
+            <Button size="small" color="secondary" className={classes.marginRight} variant="contained" onClick={() => prevImage()}>
               <NavigateBeforeIcon />
             </Button>
-            <Button color="secondary" size="small" className={classes.marginRight} variant="contained" onClick={nextImage}>
+            <Button color="secondary" size="small" className={classes.marginRight} variant="contained" onClick={() => nextImage()}>
               <NavigateNextIcon />
             </Button>
-            <Button color="secondary" size="small" className={classes.marginRight} variant="contained" onClick={prevUnlabeledImage}>
+            <Button color="secondary" size="small" className={classes.marginRight} variant="contained" onClick={() => prevImage(true)}>
               <NavigateBeforeIcon />{"Unlabeled"}
             </Button>
-            <Button color="secondary" size="small" className={classes.marginRight} variant="contained" onClick={nextUnlablledImage}>
+            <Button color="secondary" size="small" className={classes.marginRight} variant="contained" onClick={() => nextImage(true)}>
               {"Unlabeled"}<NavigateNextIcon />
             </Button>
             <FormControlLabel
