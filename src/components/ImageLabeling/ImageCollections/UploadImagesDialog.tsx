@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -9,94 +9,63 @@ import IconButton from '@material-ui/core/IconButton';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import Tooltip from '@material-ui/core/Tooltip';
 import gql from "graphql-tag";
-import { useApolloClient } from '@apollo/react-hooks';
 import _ from "lodash";
 import { GraphQLError } from 'graphql';
 import { Typography, Button } from '@material-ui/core';
 import axios from "axios";
-
-// eslint-disable-next-line import/no-webpack-loader-syntax
-// import Worker from 'worker-loader!./worker';
+import { withApollo } from 'react-apollo';
+import ApolloClient from 'apollo-client';
 
 interface IUploadImagesDialogProps {
-  collectionId: number
+  collectionId: number,
+  client: ApolloClient<object>
 }
 
-export default function UploadImagesDialog(props: IUploadImagesDialogProps) {
-  let cancelled = false;
+interface IUploadImagesDialogState {
+  open: boolean,
+  progress: number,
+  numCompleted: number,
+  total: number,
+  error: GraphQLError | null,
+}
 
-  interface IState {
-    open: boolean,
-    cancelled: boolean,
-    progress: number,
-    numCompleted: number,
-    total: number,
-    error: GraphQLError | null,
-    files: FileList | null
+class UploadImagesDialog extends React.Component<IUploadImagesDialogProps, IUploadImagesDialogState> {
+  constructor(props: IUploadImagesDialogProps) {
+    super(props);
+
+    this.state = {
+      open: false,
+      progress: 0.0,
+      numCompleted: 0,
+      total: 1,
+      error: null,
+    };  
   }
-  const [state, setState] = useState<IState>({
-    open: false,
-    cancelled: false,
-    progress: 0.0,
-    numCompleted: 0,
-    total: 1,
-    error: null,
-    files: null,
-  });
-  const client = useApolloClient();
-  console.log('test');
-  useEffect(() => {
-    if (state.files) {
-      // const uploadFiles = async () => {
-      //   if (!state.files) return;
-      //   console.log('uploading files');
-      //   let numCompleted = 0;
-      //   const uploadWorker = await spawn<UploadWorker>(new TWorker("./upload-worker.ts", { type: 'module' }));
-      //   const worker = uploadWorker(props.collectionId, client, state.files);
-      //   worker.subscribe((uploadCount: unknown) => {
-      //     numCompleted += uploadCount as number;
-      //     setState(s => ({
-      //       ...s,
-      //       numCompleted,
-      //     }));
-      //   });
-      //   await worker;
-      // }
 
-      // uploadFiles();
+  cancelled = false;
 
-      console.log('starting worker');
-      // const worker = new Worker()
-      // worker.postMessage('test');
-    }
-  }, [state.files])
-
-
-  const handleClose = () => {
-    setState({
-      ...state,
+  handleClose = () => {
+    this.setState({
       open: false,
       numCompleted: 0,
       total: 1,
     });
   };
 
-  const uploadSingle = async (file: File) => {
-    const res = await client.query({
+  uploadSingle = async (file: File) => {
+    const res = await this.props.client.query({
       query: GET_UPLOAD_URL,
       variables: {
-        collectionId: props.collectionId,
+        collectionId: this.props.collectionId,
         filename: file.name,
       }
     });
 
     if (res.errors?.[0]) {
-      cancelled = true;
       console.error(res.errors[0]);
-      setState(s => ({
-        ...s,
-        error: res.errors?.[0] ?? null
-      }));
+      this.setState({
+        error: res.errors[0]
+      });
       return;
     }
 
@@ -108,111 +77,106 @@ export default function UploadImagesDialog(props: IUploadImagesDialogProps) {
       }
     });
 
-    setState(s => ({
-      ...s,
+    this.setState((s) => ({
       progress: (s.numCompleted + 1) / s.total,
       numCompleted: s.numCompleted + 1
     }));
   }
 
-  const onCancel = () => {
-    setState(s => ({
-      ...s,
-      cancelled: true
-    }));
+  onCancel = () => {
+    console.log('cancelling'); 
+    this.cancelled = true
   }
 
-  console.log('test');
-
-  const handleFiles = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('test');
-
+  handleFiles = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files) return;
 
     console.log('setting files');
-    setState({
-      ...state,
+    this.setState({
       open: true,
       total: files.length,
-      files,
     })
 
-    // const chunks = _.chunk(files, 3);
-    // for (const chunk of chunks) {
-    //   if (state.cancelled) {
-    //     break;
-    //   }
+    const chunks = _.chunk(files, 3);
+    for (const chunk of chunks) {
+      if (this.cancelled || this.state.error) {
+        break;
+      }
 
-    //   try {
-    //     await Promise.all(chunk.map(file => {
-    //       return uploadSingle(file);
-    //     }));
-    //   } catch (e) {
-    //     console.error(e);
-    //     cancelled = true;
-    //     setState(s => ({
-    //       ...s,
-    //       error: e
-    //     }));
-    //     return;
-    //   }
-    // }
+      try {
+        await Promise.all(chunk.map(file => {
+          return this.uploadSingle(file);
+        }));
+      } catch (e) {
+        console.error(e);
+        this.setState({
+          error: e
+        });
+        return;
+      }
+    }
 
-    // if (!state.error) {
-    //   handleClose();
-    // }
+    if (!this.state.error) {
+      this.handleClose();
+    }
   }
 
-  let dialogContent = (
-    <DialogContent>
-      <DialogContentText>
-        {`Uploaded ${state.numCompleted} out of ${state.total} images.`}
-      </DialogContentText>
-      <LinearProgress color="secondary" variant="determinate" value={state.progress * 100} />
-    </DialogContent>
-  );
+  render() {
+    const state = this.state;
 
-  if (state.error) {
-    dialogContent = (
+    let dialogContent = (
       <DialogContent>
-        <Typography>{state.error.message}</Typography>
+        <DialogContentText>
+          {`Uploaded ${state.numCompleted} out of ${state.total} images.`}
+        </DialogContentText>
+        <LinearProgress color="secondary" variant="determinate" value={state.progress * 100} />
       </DialogContent>
-    )
-  }
+    );
 
-  return (
-    <React.Fragment>
-      <Dialog
-        open={state.open}
-        onClose={handleClose}
-        fullWidth={true}
-      >
-        <DialogTitle>{"Uploading Images"}</DialogTitle>
-        {dialogContent}
-        <DialogActions>
-          <Button color="secondary" onClick={onCancel}>
-            {"Cancel"}
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <IconButton component="label" style={{ padding: 6 }}>
-        <Tooltip title="Upload Images" disableFocusListener={true}>
-          <CloudUploadIcon color="secondary"></CloudUploadIcon>
-        </Tooltip>
-        <input
-          name="image"
-          id="image"
-          accept="image/png, image/jpeg"
-          type="file"
-          style={{ display: "none" }}
-          multiple
-          onChange={handleFiles}
-        />
-      </IconButton>
-    </React.Fragment>
-  );
+    if (state.error) {
+      dialogContent = (
+        <DialogContent>
+          <Typography>{state.error.message}</Typography>
+        </DialogContent>
+      )
+    }
+
+    return (
+      <React.Fragment>
+        <Dialog
+          open={state.open}
+          onClose={this.handleClose}
+          fullWidth={true}
+        >
+          <DialogTitle>{"Uploading Images"}</DialogTitle>
+          {dialogContent}
+          <DialogActions>
+            <Button color="secondary" onClick={this.onCancel}>
+              {"Cancel"}
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <IconButton component="label" style={{ padding: 6 }}>
+          <Tooltip title="Upload Images" disableFocusListener={true}>
+            <CloudUploadIcon color="secondary"></CloudUploadIcon>
+          </Tooltip>
+          <input
+            name="image"
+            id="image"
+            accept="image/png, image/jpeg"
+            type="file"
+            style={{ display: "none" }}
+            multiple
+            onChange={this.handleFiles}
+          />
+        </IconButton>
+      </React.Fragment>
+    );
+  }
 }
+
+export default withApollo<IUploadImagesDialogProps>(UploadImagesDialog);
 
 const GET_UPLOAD_URL = gql`
   query ($filename: String!, $collectionId: Int!) {

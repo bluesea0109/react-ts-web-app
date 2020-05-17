@@ -16,7 +16,7 @@ import { GET_CURRENT_USER } from "./gql-queries";
 import { Typography } from "@material-ui/core";
 import assert from "assert";
 import { useUpdateActiveOrg } from "./components/UseUpdateActiveOrg";
-import ImageCollectionPage from "./components/ImageLabeling/ImageCollectionPage/ImageCollectionPage";
+import ImageCollectionPage from "./components/ImageLabeling/ImageCollections/ImageCollectionPage";
 
 const drawerWidth = 240;
 
