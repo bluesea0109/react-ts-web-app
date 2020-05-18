@@ -43,11 +43,9 @@ function CustomDrawer(props: CustomDrawerProps) {
 
   }
 
-  const projectLinksDisabled = user.activeOrg == null || user.activeProject == null;
-
   const createPath = (pageName: string): string => {
     if (!user.activeProject) {
-      return "/";
+      return "/no-project";
     }
     return `/orgs/${user.activeProject.orgId}/projects/${user.activeProject.id}/${pageName}`
   }
@@ -117,7 +115,7 @@ function CustomDrawer(props: CustomDrawerProps) {
         >
           <ListItemText primary="Dashboard" />
         </ListItem>
-        {projectLinksDisabled ? null : requiresActiveProjectListItems}
+        {requiresActiveProjectListItems}
       </List>
     </div >
   );

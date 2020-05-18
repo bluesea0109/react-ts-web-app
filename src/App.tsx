@@ -72,6 +72,9 @@ const useStyles = makeStyles((theme: Theme) =>
         duration: theme.transitions.duration.enteringScreen,
       }),
     },
+    container: {
+      padding: theme.spacing(2)
+    }
   })
 );
 
@@ -95,7 +98,7 @@ function App() {
   };
 
   if (loading) {
-    return <ContentLoading/>;
+    return <ContentLoading />;
   }
 
   if (error || !data) {
@@ -154,7 +157,9 @@ function App() {
           </Route>
           <Route path="/orgs/:orgId/projects/:projectId/text-labeling"></Route>
           <Route exact path="/no-project">
-            <Typography>{"No project is active. Please create or activate one."}</Typography>
+            <div className={classes.container}>
+              <Typography>{"No project is active. Please create or activate one."}</Typography>
+            </div>
           </Route>
         </Switch>
       </main>
