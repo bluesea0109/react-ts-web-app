@@ -1,7 +1,7 @@
 import { Grid, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import 'firebase/auth';
-import React, { useState } from 'react';
+import React from 'react';
 import { useActiveOrg } from '../UseActiveOrg';
 import NewOrganisation from './NewOrganisation';
 import NewProject from './NewProject';
@@ -20,9 +20,6 @@ const useStyles = makeStyles((theme: Theme) =>
 const Account: React.FC<IAccountProps> = ({ user }) => {
   const classes = useStyles();
   const { orgId } = useActiveOrg();
-  const [activeOrg, setActiveOrg] = useState<string | null | undefined>(
-    orgId ?? user?.activeOrg?.id
-  );
 
   return (
     <>

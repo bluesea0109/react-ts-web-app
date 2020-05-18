@@ -1,15 +1,15 @@
-import firebase from "firebase/app";
-import "firebase/auth";
-import React, { useEffect, useState } from "react";
-import App from "./App";
-import SignInPage from "./components/SignInPage";
-import ContentLoading from "./components/ContentLoading";
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import React, { useEffect, useState } from 'react';
+import App from './App';
+import ContentLoading from './components/ContentLoading';
+import SignInPage from './components/SignInPage';
 
 function AppAuthWrapper() {
   const [state, setState] = useState({
     loading: true,
     isSignedIn: false,
-  })
+  });
 
   useEffect(() => {
     const unregisterAuthObserver = firebase
@@ -18,15 +18,15 @@ function AppAuthWrapper() {
         if (user) {
           setState({
             loading: false,
-            isSignedIn: true
-          })
+            isSignedIn: true,
+          });
           const token = await user.getIdToken();
           console.log(`Bearer ${token}`);
         } else {
           setState({
             loading: false,
-            isSignedIn: false
-          })
+            isSignedIn: false,
+          });
         }
       });
 

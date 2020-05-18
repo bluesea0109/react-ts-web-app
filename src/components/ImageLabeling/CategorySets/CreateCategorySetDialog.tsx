@@ -16,9 +16,9 @@ import TextField from '@material-ui/core/TextField';
 import Tooltip from '@material-ui/core/Tooltip';
 import AddIcon from '@material-ui/icons/Add';
 import React, { useState } from 'react';
-import { GET_CATEGORY_SETS, CREATE_CATEGORY_SET } from '../../../gql-queries';
-import { useActiveOrg } from '../../UseActiveOrg';
+import { CREATE_CATEGORY_SET, GET_CATEGORY_SETS } from '../../../gql-queries';
 import ContentLoading from '../../ContentLoading';
+import { useActiveOrg } from '../../UseActiveOrg';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -64,7 +64,7 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: 'inherit',
       padding: 0,
     },
-  })
+  }),
 );
 
 function CreateCategorySetDialog() {
@@ -84,7 +84,7 @@ function CreateCategorySetDialog() {
       },
       refetchQueries: [{ query: GET_CATEGORY_SETS, variables: { projectId } }],
       awaitRefetchQueries: true,
-    }
+    },
   );
 
   const handleOpen = () => {

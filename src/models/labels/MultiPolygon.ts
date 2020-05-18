@@ -1,10 +1,10 @@
-import { MultiShape, Shape } from "./MultiShape";
-import isEqual from 'lodash/isEqual'
+import isEqual from 'lodash/isEqual';
+import { MultiShape, Shape } from './MultiShape';
 
 class Polygon extends Shape {
-  constructor(public points: number[][] = []) { 
+  constructor(public points: number[][] = []) {
     super();
-  } 
+  }
 
   get isClosed(): boolean {
     if (this.points.length < 3) {
@@ -13,11 +13,11 @@ class Polygon extends Shape {
     const first = this.points[0];
     const last = this.points[this.points.length - 1];
     return isEqual(first, last);
-  } 
+  }
 
   addPoint(point: number[]): void {
     if (this.isClosed) {
-      throw new Error("The polygon is closed");
+      throw new Error('The polygon is closed');
     }
     this.points.push(point);
   }
@@ -30,7 +30,7 @@ class Polygon extends Shape {
 
   close(): void {
     if (this.points.length < 3) {
-      throw new Error("Need at least 3 points to close the polygon");
+      throw new Error('Need at least 3 points to close the polygon');
     }
 
     const [x , y] = this.points[0];
@@ -38,13 +38,12 @@ class Polygon extends Shape {
   }
 
   draw(ctx: any, zoom: number): void {
-    ctx.fillStyle = "rgba(0, 0, 255, 0.1)";
+    ctx.fillStyle = 'rgba(0, 0, 255, 0.1)';
     ctx.strokeStyle = 'white';
     ctx.lineWidth = 2;
-    
 
     const points = this.points.map(([x, y]) => {
-      return { x: x*zoom, y: y*zoom }
+      return { x: x * zoom, y: y * zoom };
     });
 
     if (points && points.length > 0) {
@@ -63,8 +62,8 @@ class Polygon extends Shape {
 
       for (const { x, y } of points) {
         // draw dot
-        ctx.fillStyle = "white";
-        ctx.strokeStyle = "white";
+        ctx.fillStyle = 'white';
+        ctx.strokeStyle = 'white';
         ctx.beginPath();
         ctx.arc(x, y, 3, 0, 2 * Math.PI, true);
         ctx.stroke();
@@ -74,21 +73,21 @@ class Polygon extends Shape {
   }
 
   get displayString(): string {
-    return "polygon";
+    return 'polygon';
   }
 }
 
-class MultiPolygon extends MultiShape { 
-  polygons: Array<Polygon>;
-  currentPolygon: Polygon | null
-  constructor(json?: string) { 
+class MultiPolygon extends MultiShape {
+  polygons: Polygon[];
+  currentPolygon: Polygon | null;
+  constructor(json?: string) {
     super();
-    this.polygons = []
-    this.currentPolygon = null
+    this.polygons = [];
+    this.currentPolygon = null;
     if (json) {
       this.loadJson(json);
     }
-  } 
+  }
 
   deleteShape(i: number): void {
     this.polygons.splice(i, 1);
@@ -101,13 +100,13 @@ class MultiPolygon extends MultiShape {
     });
   }
 
-  getShapes(): Array<Polygon> {
+  getShapes(): Polygon[] {
     return this.polygons;
   }
 
   endPolygon = () => {
     if (this.currentPolygon == null) {
-      throw new Error("no polygon has been started")
+      throw new Error('no polygon has been started');
     }
     this.currentPolygon.close();
     this.polygons.push(this.currentPolygon);
@@ -122,7 +121,7 @@ class MultiPolygon extends MultiShape {
   }
 
   draw(ctx: any, zoom: number): void {
-    
+
     for (const poly of this.polygons) {
       poly.draw(ctx, zoom);
     }
@@ -134,18 +133,18 @@ class MultiPolygon extends MultiShape {
 
   coordinates = (): number[][][] => {
     return this.polygons.map(x => x.points);
-  };
+  }
 
   toJson(): string {
     const feature = {
-      type: "Feature",
+      type: 'Feature',
       geometry: {
-        type: "MultiPolygon",
-        coordinates: this.coordinates()
+        type: 'MultiPolygon',
+        coordinates: this.coordinates(),
       },
       properties: {
-        type: "MultiPolygon",
-      }
+        type: 'MultiPolygon',
+      },
     };
     return JSON.stringify(feature, null, 2);
   }

@@ -1,14 +1,14 @@
 import { useMutation } from '@apollo/react-hooks';
-import { Button, Typography, TextField } from '@material-ui/core';
+import { Button, TextField, Typography } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import gql from 'graphql-tag';
-import IconButtonAdd from '../IconButtonAdd';
-import ContentLoading from '../ContentLoading';
-import { useActiveOrg } from '../UseActiveOrg';
 import React, { useState } from 'react';
+import ContentLoading from '../ContentLoading';
+import IconButtonAdd from '../IconButtonAdd';
+import { useActiveOrg } from '../UseActiveOrg';
 
 const CREATE_COLLECTION = gql`
   mutation($projectId: String!, $name: String!) {
@@ -44,7 +44,7 @@ function CreateCollection(props: ICreateCollectionProps) {
       },
       refetchQueries: [{ query: GET_COLLECTIONS, variables: { projectId } }],
       awaitRefetchQueries: true,
-    }
+    },
   );
 
   const [state, setState] = useState({

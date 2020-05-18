@@ -1,23 +1,23 @@
 import { useApolloClient, useQuery } from '@apollo/react-hooks';
 import {
   Button,
-  Typography,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
+  Typography,
 } from '@material-ui/core';
 import assert from 'assert';
+import gql from 'graphql-tag';
 import React from 'react';
 import { useHistory, useLocation } from 'react-router';
 import { UPDATE_ACTIVE_ORG } from '../../gql-queries';
+import { IProject, IUser } from '../../models';
 import ContentLoading from '../ContentLoading';
 import { useActiveOrg } from '../UseActiveOrg';
-import { IUser, IProject } from '../../models';
-import gql from 'graphql-tag';
 
 const GET_USER = gql`
   query {

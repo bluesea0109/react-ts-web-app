@@ -1,21 +1,21 @@
-import MultiPolygon from "./MultiPolygon";
-import MultiRectangle from "./MultiRectangle";
-import { MultiShape, Shape } from "./MultiShape";
+import MultiPolygon from './MultiPolygon';
+import MultiRectangle from './MultiRectangle';
+import { MultiShape, Shape } from './MultiShape';
 
 class ImageCategoricalLabel {
   shape: MultiShape | null = null;
   visible: boolean;
-  open: boolean = false;
-  modified: boolean = false;
+  open = false;
+  modified = false;
 
   constructor(
     public id: number | null,
-    public shapeName: string, 
+    public shapeName: string,
     public categorySet: any | null,
     public category: string | null,
-    public approvedBy: Array<String> = [],
+    public approvedBy: string[] = [],
     shapeJson?: string,
-    ) { 
+    ) {
     if (shapeName === 'polygon') {
       this.shape = new MultiPolygon(shapeJson);
     } else if (shapeName === 'box') {
@@ -25,7 +25,7 @@ class ImageCategoricalLabel {
   }
 
   deleteShape (i: number): void {
-    if (this.shape) this.shape.deleteShape(i);
+    if (this.shape) { this.shape.deleteShape(i); }
     this.modified = true;
   }
 
@@ -46,29 +46,29 @@ class ImageCategoricalLabel {
     return 'None';
   }
 
-  getShapes(): Array<Shape> {
+  getShapes(): Shape[] {
     return this.shape ? this.shape.getShapes() : [];
   }
 
   draw(ctx: any, zoom: number): void {
-    if (this.shape) this.shape.draw(ctx, zoom);
+    if (this.shape) { this.shape.draw(ctx, zoom); }
   }
 
-  toJson(): string{
-    return this.shape ? this.shape.toJson() : "";
+  toJson(): string {
+    return this.shape ? this.shape.toJson() : '';
   }
 
   static fromServerData(data: any): ImageCategoricalLabel {
     const shapeJson = data.value;
     const label = new ImageCategoricalLabel(
-      data.id, 
-      data.shape, 
+      data.id,
+      data.shape,
       data.categorySet,
-      data.category, 
+      data.category,
       data.approvedBy,
-      shapeJson
+      shapeJson,
     );
-    
+
     return label;
   }
 }

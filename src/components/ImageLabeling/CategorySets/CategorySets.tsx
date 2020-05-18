@@ -1,5 +1,5 @@
-import React from 'react';
 import { useQuery } from '@apollo/react-hooks';
+import { Typography } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -11,12 +11,12 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Toolbar from '@material-ui/core/Toolbar';
+import React from 'react';
 import { GET_CATEGORY_SETS } from '../../../gql-queries';
 import ContentLoading from '../../ContentLoading';
 import { useActiveOrg } from '../../UseActiveOrg';
 import CreateCategorySetDialog from './CreateCategorySetDialog';
 import DeleteCategorySetDialog from './DeleteCategorySetDialog';
-import { Typography } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
       overflow: 'auto',
       maxHeight: 100,
     },
-  })
+  }),
 );
 
 function CategorySets() {

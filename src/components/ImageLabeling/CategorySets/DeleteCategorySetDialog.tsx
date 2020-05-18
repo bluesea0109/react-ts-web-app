@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
     cancel: {
       backgroundColor: '#ef9a9a',
     },
-  })
+  }),
 );
 
 interface IDeleteCategorySetProps {
@@ -50,7 +50,7 @@ function DeleteCategorySetDialog(props: IDeleteCategorySetProps) {
       },
       refetchQueries: [{ query: GET_CATEGORY_SETS, variables: { projectId } }],
       awaitRefetchQueries: true,
-    }
+    },
   );
 
   const handleOpen = () => {

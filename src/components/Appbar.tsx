@@ -14,9 +14,9 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import MenuIcon from '@material-ui/icons/Menu';
 import clsx from 'clsx';
+import gql from 'graphql-tag';
 import React from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import gql from 'graphql-tag';
 
 const GET_ORGS = gql`
   query {
@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme: Theme) =>
     border: {
       borderBottom: '1px solid white',
     },
-  })
+  }),
 );
 
 function CustomAppbar(props: CustomAppbarProps) {

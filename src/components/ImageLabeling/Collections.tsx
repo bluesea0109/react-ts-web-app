@@ -1,18 +1,18 @@
+import { useQuery } from '@apollo/react-hooks';
 import {
   makeStyles,
-  Typography,
   Table,
+  TableBody,
+  TableCell,
   TableHead,
   TableRow,
-  TableCell,
-  TableBody,
+  Typography,
 } from '@material-ui/core';
-import React from 'react';
-import ContentLoading from '../ContentLoading';
-import { useQuery } from '@apollo/react-hooks';
-import { useActiveOrg } from '../UseActiveOrg';
-import { useHistory, useLocation } from 'react-router-dom';
 import gql from 'graphql-tag';
+import React from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
+import ContentLoading from '../ContentLoading';
+import { useActiveOrg } from '../UseActiveOrg';
 
 const GET_COLLECTIONS = gql`
   query($projectId: String!) {

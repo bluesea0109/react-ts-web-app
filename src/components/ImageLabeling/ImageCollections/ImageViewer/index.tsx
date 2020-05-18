@@ -1,11 +1,11 @@
-import React from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import React from 'react';
 import { useParams } from 'react-router';
-import { useActiveOrg } from '../../../UseActiveOrg';
-import ContentLoading from '../../../ContentLoading';
-import ApolloErrorPage from '../../../ApolloErrorPage';
 import ImageCategoricalLabel from '../../../../models/labels/ImageLabel';
+import ApolloErrorPage from '../../../ApolloErrorPage';
+import ContentLoading from '../../../ContentLoading';
+import { useActiveOrg } from '../../../UseActiveOrg';
 import ImageViewerContent from './ImageViewerContent';
 
 const GET_DATA = gql`

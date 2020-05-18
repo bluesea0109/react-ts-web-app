@@ -1,6 +1,6 @@
 
 export abstract class Shape {
-  _isVisible: boolean = true;
+  _isVisible = true;
 
   abstract draw(ctx: any, zoom: number): void;
   abstract get displayString(): string;
@@ -10,8 +10,8 @@ export abstract class Shape {
   }
 }
 
-export abstract class MultiShape { 
-  abstract getShapes (): Array<Shape>;
+export abstract class MultiShape {
+  abstract getShapes (): Shape[];
   abstract draw(ctx: any, zoom: number): void;
   abstract toJson(): string;
   abstract deleteShape(i: number): void;

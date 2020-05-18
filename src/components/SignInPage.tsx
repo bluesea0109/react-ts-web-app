@@ -1,9 +1,9 @@
+import { createStyles, Grid, makeStyles, Theme } from '@material-ui/core';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import React from 'react';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import { useHistory, useLocation } from 'react-router-dom';
-import { Grid, makeStyles, Theme, createStyles } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme: Theme) =>
     filler: {
       background: 'linear-gradient(45deg, #1565c0 30%, #29b6f6 90%)',
     },
-  })
+  }),
 );
 
 function SignInPage(props: any) {
@@ -40,9 +40,9 @@ function SignInPage(props: any) {
       firebase.auth.EmailAuthProvider.PROVIDER_ID,
     ],
     callbacks: {
-      signInSuccessWithAuthResult: function (
+      signInSuccessWithAuthResult (
         authResult: any,
-        redirectUrl?: string
+        redirectUrl?: string,
       ) {
         const state: any = location.state;
 

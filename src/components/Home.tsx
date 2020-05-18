@@ -1,11 +1,11 @@
-import { Grid, Typography, makeStyles, createStyles, Theme } from '@material-ui/core';
-import React from 'react';
+import { createStyles, Grid, makeStyles, Theme, Typography } from '@material-ui/core';
 import firebase from 'firebase';
+import React from 'react';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      padding: theme.spacing(2)
+      padding: theme.spacing(2),
     },
   }));
 
@@ -15,7 +15,7 @@ function Home() {
   if (!user) {
     // this shouldn't happen
     console.error('No user signed in');
-    return <Typography>{"No user is signed in."}</Typography>
+    return <Typography>{'No user is signed in.'}</Typography>;
   }
 
   const userName = user.displayName;

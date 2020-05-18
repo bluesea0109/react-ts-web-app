@@ -1,9 +1,9 @@
-import React from 'react';
+import { Link, Tabs, Toolbar, Typography } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Tab from '@material-ui/core/Tab';
-import { useParams, useHistory, useLocation } from 'react-router-dom';
-import { Link, Toolbar, Tabs, Typography } from '@material-ui/core';
+import React from 'react';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { Link as RouterLink } from 'react-router-dom';
 import ImagesTable from './ImagesTable';
 
@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
     },
-  })
+  }),
 );
 
 function ImageCollectionPage() {

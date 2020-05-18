@@ -1,3 +1,4 @@
+import { useMutation } from '@apollo/react-hooks';
 import {
   Button,
   Card,
@@ -9,10 +10,9 @@ import {
   Typography,
 } from '@material-ui/core';
 import clsx from 'clsx';
+import gql from 'graphql-tag';
 import React, { useState } from 'react';
 import { CREATE_ORG } from '../../gql-queries';
-import { useMutation } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) =>
     button: {
       margin: theme.spacing(1),
     },
-  })
+  }),
 );
 
 function NewOrganisation() {

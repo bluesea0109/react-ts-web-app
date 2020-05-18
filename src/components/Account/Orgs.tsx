@@ -1,35 +1,20 @@
 import { useQuery } from '@apollo/react-hooks';
 import {
-  createStyles,
-  makeStyles,
-  Theme,
-  Typography,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
+  Typography,
 } from '@material-ui/core';
 import React, { useMemo } from 'react';
 import { GET_ORGS } from '../../gql-queries';
 import ContentLoading from '../ContentLoading';
 import { IReceivedData } from './types';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(3),
-    },
-    title: {
-      fontSize: 20,
-    },
-  })
-);
-
 function Orgs() {
-  const classes = useStyles();
   const { loading, data } = useQuery<IReceivedData>(GET_ORGS);
   const orgs = useMemo(() => data?.orgs, [data]);
 

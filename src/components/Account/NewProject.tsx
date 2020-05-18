@@ -10,10 +10,10 @@ import {
   Typography,
 } from '@material-ui/core';
 import clsx from 'clsx';
+import gql from 'graphql-tag';
 import React, { useState } from 'react';
 import { CREATE_PROJECT } from '../../gql-queries';
 import { useActiveOrg } from '../UseActiveOrg';
-import gql from 'graphql-tag';
 
 const GET_USER = gql`
   query {
@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme: Theme) =>
     button: {
       margin: theme.spacing(1),
     },
-  })
+  }),
 );
 
 function NewProject() {

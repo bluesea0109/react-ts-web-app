@@ -1,20 +1,20 @@
-import React from 'react';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import { ApolloError } from 'apollo-client'
+import { ApolloError } from 'apollo-client';
 import { GraphQLError } from 'graphql';
+import React from 'react';
 
 const styles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      padding: theme.spacing(1)
-    }
-  })
+      padding: theme.spacing(1),
+    },
+  }),
 );
 
 interface IErrorPageProps {
-  error: ApolloError,
+  error: ApolloError;
 }
 
 export default function ApolloErrorPage(props: IErrorPageProps) {
@@ -24,13 +24,13 @@ export default function ApolloErrorPage(props: IErrorPageProps) {
 
   const defaultMessage = (
     <Typography variant="body1">
-      {"An unexpected error occurred. Please refresh the page and try again. If the problem persists, please email support@bavard.ai."}
+      {'An unexpected error occurred. Please refresh the page and try again. If the problem persists, please email support@bavard.ai.'}
     </Typography>
   );
 
   return (
-    <Grid container className={classes.root}>
-      <Grid item xs={12}>
+    <Grid container={true} className={classes.root}>
+      <Grid item={true} xs={12}>
         {error && error.graphQLErrors.length ? (
           error.graphQLErrors.map((e: GraphQLError) => {
             if (!e.extensions) {
@@ -58,7 +58,7 @@ export default function ApolloErrorPage(props: IErrorPageProps) {
               default: {
                 return (
                   <Typography variant="body1">
-                    {"An unexpected error occurred. Please refresh the page and try again. If the problem persists, please email support@bavard.ai."}
+                    {'An unexpected error occurred. Please refresh the page and try again. If the problem persists, please email support@bavard.ai.'}
                   </Typography>
                 );
               }

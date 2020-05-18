@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Button, TextField, Grid, Typography } from '@material-ui/core';
-import ContentLoading from '../ContentLoading';
 import { useApolloClient } from '@apollo/react-hooks';
+import { Button, Grid, TextField, Typography } from '@material-ui/core';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import gql from 'graphql-tag';
+import React, { useState } from 'react';
+import ContentLoading from '../ContentLoading';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      padding: theme.spacing(2)
+      padding: theme.spacing(2),
     },
     textArea: {
       width: '100%',

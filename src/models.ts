@@ -4,7 +4,7 @@ export interface IUser {
   name: string;
   orgs: IOrg[];
   activeOrg: IOrg;
-  activeProject: IProject
+  activeProject: IProject;
 }
 
 export interface IOrg {

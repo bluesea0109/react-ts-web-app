@@ -33,11 +33,11 @@
 //   cache: new InMemoryCache(),
 // });
 
+import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloClient } from 'apollo-client';
 import { setContext } from 'apollo-link-context';
-import { InMemoryCache } from 'apollo-cache-inmemory';
-import firebase from 'firebase/app';
 import { createUploadLink } from 'apollo-upload-client';
+import firebase from 'firebase/app';
 import config from './config';
 
 console.log('API URL:', config.apiUrl);
