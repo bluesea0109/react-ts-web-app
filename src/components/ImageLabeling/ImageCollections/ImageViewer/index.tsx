@@ -4,8 +4,8 @@ import gql from "graphql-tag";
 import { useParams } from 'react-router';
 import ContentLoading from '../../../ContentLoading';
 import ApolloErrorPage from '../../../ApolloErrorPage';
-import ImageCategoricalLabel from '../../../../models/labels/ImageLabel';
 import ImageViewerContent from './ImageViewerContent';
+import ImageCategoricalLabel from '../../models/labels/ImageLabel';
 
 const GET_DATA = gql`
   query ($projectId: String!, $imageId: Int!) {
@@ -20,9 +20,8 @@ const GET_DATA = gql`
         id
         imageId
         shape
-        category
-        categorySet {
-          id
+        category {
+          categorySetId
           name
         }
         value
@@ -37,6 +36,7 @@ const GET_DATA = gql`
       id
       name
       categories {
+        categorySetId
         name
       }
     }

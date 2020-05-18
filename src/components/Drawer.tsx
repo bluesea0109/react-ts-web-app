@@ -60,14 +60,14 @@ function CustomDrawer(props: CustomDrawerProps) {
       >
         <ListItemText primary="Question Answering" />
       </ListItem>
-      <ListItem
+      {/* <ListItem
         component={Link}
         to={createPath("text-summarization")}
         selected={location.pathname.includes("text-summarization")}
         button
       >
         <ListItemText primary="Text Summarization" />
-      </ListItem>
+      </ListItem> */}
       <ListItem
         component={Link}
         to={createPath("chatbot-builder")}

@@ -7,7 +7,6 @@ import Dashboard from "./components/Dashboard";
 import AppBar from "./components/Appbar";
 import Drawer from "./components/Drawer";
 import QuestionAnswering from "./components/QuestionAnswering";
-import TextSummarization from "./components/TextSummarization";
 import ImageLabeling from "./components/ImageLabeling";
 import { useQuery } from "@apollo/react-hooks";
 import ContentLoading from "./components/ContentLoading";
@@ -17,6 +16,7 @@ import assert from "assert";
 import ImageCollectionPage from "./components/ImageLabeling/ImageCollections/ImageCollectionPage";
 import ImageViewer from "./components/ImageLabeling/ImageCollections/ImageViewer";
 import { IUser } from "./models";
+import ImageLabeler from "./components/ImageLabeling/ImageCollections/ImageLabeler";
 
 const drawerWidth = 240;
 
@@ -143,9 +143,9 @@ function App() {
           <Route path="/orgs/:orgId/projects/:projectId/qa">
             <QuestionAnswering />
           </Route>
-          <Route path="/orgs/:orgId/projects/:projectId/text-summarization">
+          {/* <Route path="/orgs/:orgId/projects/:projectId/text-summarization">
             <TextSummarization />
-          </Route>
+          </Route> */}
           <Route exact path="/orgs/:orgId/projects/:projectId/image-labeling/:tab">
             <ImageLabeling />
           </Route>
@@ -154,6 +154,9 @@ function App() {
           </Route>
           <Route exact path="/orgs/:orgId/projects/:projectId/image-labeling/collections/:collectionId/images/:imageId">
             <ImageViewer />
+          </Route>
+          <Route exact path="/orgs/:orgId/projects/:projectId/image-labeling/collections/:collectionId/label-image/:imageId">
+            <ImageLabeler />
           </Route>
           <Route path="/orgs/:orgId/projects/:projectId/text-labeling"></Route>
           <Route exact path="/no-project">

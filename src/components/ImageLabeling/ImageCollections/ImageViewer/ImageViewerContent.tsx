@@ -13,9 +13,9 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import { useApolloClient } from 'react-apollo';
 import ImageCanvas from './ImageCanvas';
-import ImageCategoricalLabel from '../../../../models/labels/ImageLabel';
 import { GraphQLError } from 'graphql';
 import ContentLoading from '../../../ContentLoading';
+import ImageCategoricalLabel from '../../models/labels/ImageLabel';
 
 const NEXT_IMAGE = gql`
   query ($imageId: Int!, $unlabeled: Boolean) {

@@ -5,6 +5,7 @@ import ContentLoading from '../ContentLoading';
 import { useQuery } from '@apollo/react-hooks';
 import { useHistory, useParams } from 'react-router-dom';
 import gql from "graphql-tag";
+import { IImageCollection } from '../../models';
 
 const GET_COLLECTIONS = gql`
   query($projectId: String!) {
@@ -42,16 +43,23 @@ function CollectionsListWrapper() {
 function CollectionsList(props: IProjectProps) {
   const classes = useStyles();
   const history = useHistory();
-  const { loading, error, data } = useQuery(GET_COLLECTIONS, { variables: { projectId: props.projectId } });
+
+  interface GetImageCollections {
+    ImageLabelingService_collections: IImageCollection[]
+  }
+
+  const { loading, error, data } = useQuery<GetImageCollections>(GET_COLLECTIONS, { variables: { projectId: props.projectId } });
   const { orgId, projectId } = useParams();
 
-  if (loading) {
-    return <ContentLoading />
-  }
+
 
   if (error) {
     console.error(error);
     return <Typography>{"Unknown error occured"}</Typography>
+  }
+
+  if (loading || !data) {
+    return <ContentLoading />
   }
 
   const onSelectCollection = (collectionId: number) => () => {

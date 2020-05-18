@@ -12,7 +12,7 @@ class ImageCategoricalLabel {
     public id: number | null,
     public shapeName: string, 
     public categorySet: any | null,
-    public category: string | null,
+    public category: string | undefined,
     public approvedBy: Array<String> = [],
     shapeJson?: string,
     ) { 
