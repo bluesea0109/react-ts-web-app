@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/react-hooks';
 import { Button } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
     cancel: {
       backgroundColor: '#ef9a9a',
     },
-  }),
+  })
 );
 
 interface IDeleteCategorySetProps {
@@ -42,14 +42,16 @@ function DeleteCategorySetDialog(props: IDeleteCategorySetProps) {
     open: false,
   });
   const { projectId } = useActiveOrg();
-  const [deleteCategorySet, { loading, error }] = useMutation(DELETE_CATEGORY_SET,
+  const [deleteCategorySet, { loading, error }] = useMutation(
+    DELETE_CATEGORY_SET,
     {
       onCompleted: () => {
         handleClose();
       },
       refetchQueries: [{ query: GET_CATEGORY_SETS, variables: { projectId } }],
       awaitRefetchQueries: true,
-    });
+    }
+  );
 
   const handleOpen = () => {
     setState({ ...state, open: true });
@@ -69,15 +71,9 @@ function DeleteCategorySetDialog(props: IDeleteCategorySetProps) {
 
   let dialogContent = (
     <DialogContent>
-      <Typography variant="h6">
-        {'Category Set'}
-      </Typography>
-      <Typography>
-        {`Name: ${props.name}`}
-      </Typography>
-      <Typography>
-        {`Id: ${props.categorySetId}`}
-      </Typography>
+      <Typography variant="h6">{'Category Set'}</Typography>
+      <Typography>{`Name: ${props.name}`}</Typography>
+      <Typography>{`Id: ${props.categorySetId}`}</Typography>
     </DialogContent>
   );
 
@@ -99,12 +95,10 @@ function DeleteCategorySetDialog(props: IDeleteCategorySetProps) {
 
   return (
     <React.Fragment>
-      <Dialog
-        fullWidth={true}
-        open={state.open}
-        onClose={handleClose}
-      >
-        <DialogTitle>{'Are you sure you want to delete this category set?'}</DialogTitle>
+      <Dialog fullWidth={true} open={state.open} onClose={handleClose}>
+        <DialogTitle>
+          {'Are you sure you want to delete this category set?'}
+        </DialogTitle>
         {dialogContent}
         <DialogActions>
           <Button color="primary" disabled={loading} onClick={handleClose}>

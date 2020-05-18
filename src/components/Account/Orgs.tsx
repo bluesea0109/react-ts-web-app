@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/react-hooks';
 import {
   createStyles,
   makeStyles,

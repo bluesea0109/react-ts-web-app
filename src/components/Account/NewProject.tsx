@@ -1,24 +1,31 @@
-
-import { gql, useMutation } from '@apollo/client';
-import { Button, Card, createStyles, LinearProgress, makeStyles, TextField, Theme, Typography } from '@material-ui/core';
+import { useMutation } from '@apollo/react-hooks';
+import {
+  Button,
+  Card,
+  createStyles,
+  LinearProgress,
+  makeStyles,
+  TextField,
+  Theme,
+  Typography,
+} from '@material-ui/core';
 import clsx from 'clsx';
 import React, { useState } from 'react';
 import { CREATE_PROJECT } from '../../gql-queries';
-import { useMutation } from '@apollo/react-hooks';
 import { useActiveOrg } from '../UseActiveOrg';
-import gql from "graphql-tag";
+import gql from 'graphql-tag';
 
 const GET_USER = gql`
   query {
     currentUser {
-      name,
-      email,
+      name
+      email
       activeOrg {
-        id,
+        id
         name
       }
       activeProject {
-        id,
+        id
         name
       }
     }
@@ -36,7 +43,7 @@ const useStyles = makeStyles((theme: Theme) =>
     button: {
       margin: theme.spacing(1),
     },
-  }),
+  })
 );
 
 function NewProject() {
@@ -47,9 +54,11 @@ function NewProject() {
   const { orgId } = useActiveOrg();
 
   const [createProject, createProjectResult] = useMutation(CREATE_PROJECT, {
-    refetchQueries: [{
-      query: GET_USER,
-    }],
+    refetchQueries: [
+      {
+        query: GET_USER,
+      },
+    ],
   });
 
   const loading = createProjectResult.loading;
@@ -78,11 +87,19 @@ function NewProject() {
         type="string"
         value={state.name || ''}
         variant="outlined"
-        onChange={(e: any) => setState({ ...state, name: (e.target.value) })}
+        onChange={(e: any) => setState({ ...state, name: e.target.value })}
         className={clsx(classes.inputBox)}
       />
       <br />
-      <Button className={clsx(classes.button)} disabled={loading} variant="contained" color="primary" onClick={submit}>{'Submit'}</Button>
+      <Button
+        className={clsx(classes.button)}
+        disabled={loading}
+        variant="contained"
+        color="primary"
+        onClick={submit}
+      >
+        {'Submit'}
+      </Button>
     </Card>
   );
 }

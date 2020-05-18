@@ -42,12 +42,6 @@ const Account: React.FC<IAccountProps> = ({ user }) => {
             <Orgs />
           </Grid>
         </Grid>
-        <Grid item xs={12} sm={6}>
-          {orgId ? <NewProject /> : null}
-        </Grid>
-        <Grid item xs={12} sm={12}>
-          {orgId ? <Projects /> : null}
-        </Grid>
       </div>
     </>
   );

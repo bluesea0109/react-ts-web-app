@@ -1,5 +1,11 @@
-import { useMutation } from '@apollo/client';
-import { Button, createStyles, makeStyles, Theme, Typography } from '@material-ui/core';
+import { useMutation } from '@apollo/react-hooks';
+import {
+  Button,
+  createStyles,
+  makeStyles,
+  Theme,
+  Typography,
+} from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -58,7 +64,7 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: 'inherit',
       padding: 0,
     },
-  }),
+  })
 );
 
 function CreateCategorySetDialog() {
@@ -70,14 +76,16 @@ function CreateCategorySetDialog() {
     categories: [],
   });
   const { projectId } = useActiveOrg();
-  const [createCategorySet, { loading, error }] = useMutation(CREATE_CATEGORY_SET,
+  const [createCategorySet, { loading, error }] = useMutation(
+    CREATE_CATEGORY_SET,
     {
       onCompleted: () => {
         handleClose();
       },
       refetchQueries: [{ query: GET_CATEGORY_SETS, variables: { projectId } }],
       awaitRefetchQueries: true,
-    });
+    }
+  );
 
   const handleOpen = () => {
     setState({ ...state, open: true });
@@ -111,7 +119,10 @@ function CreateCategorySetDialog() {
     const reader = new FileReader();
     reader.onload = (e: any) => {
       const txt = e.target.result.trim();
-      const categories = txt.trim().split('\n').map((x: string) => x.trim());
+      const categories = txt
+        .trim()
+        .split('\n')
+        .map((x: string) => x.trim());
       setState({
         ...state,
         categories,
@@ -122,12 +133,16 @@ function CreateCategorySetDialog() {
   };
 
   const createDisabled = () => {
-    return (loading || !state.categorySetName || state.categories.length === 0);
+    return loading || !state.categorySetName || state.categories.length === 0;
   };
 
   const handleCategoriesChange = (e: any) => {
     const txt = e.target.value;
-    const categories = e.target.value.trim().split('\n').map((x: string) => x.trim()).filter((x: string) => x !== '');
+    const categories = e.target.value
+      .trim()
+      .split('\n')
+      .map((x: string) => x.trim())
+      .filter((x: string) => x !== '');
     setState({
       ...state,
       txt,
@@ -181,7 +196,7 @@ function CreateCategorySetDialog() {
   if (error) {
     dialogContent = (
       <DialogContent>
-        <Typography>{"Unkown error occurred"}</Typography>
+        <Typography>{'Unkown error occurred'}</Typography>
       </DialogContent>
     );
   } else if (loading) {
@@ -201,16 +216,18 @@ function CreateCategorySetDialog() {
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle disableTypography={true}>
-          <Typography variant="h6">
-            {'New Category Set'}
-          </Typography>
+          <Typography variant="h6">{'New Category Set'}</Typography>
         </DialogTitle>
         {dialogContent}
         <DialogActions>
           <Button color="primary" onClick={handleClose} disabled={loading}>
             {'Cancel'}
           </Button>
-          <Button color="secondary" disabled={createDisabled()} onClick={handleCreate}>
+          <Button
+            color="secondary"
+            disabled={createDisabled()}
+            onClick={handleCreate}
+          >
             {'Create'}
           </Button>
         </DialogActions>

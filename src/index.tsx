@@ -6,7 +6,7 @@ import * as serviceWorker from './serviceWorker';
 import { Provider } from 'react-redux';
 import configureStore from './store';
 import { BrowserRouter as Router } from 'react-router-dom';
-import client from './apollo-client';
+import { client } from './apollo-client';
 import AppAuthWrapper from './AppAuthWrapper';
 import { ApolloProvider } from 'react-apollo';
 

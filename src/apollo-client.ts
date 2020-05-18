@@ -37,11 +37,11 @@ import { ApolloClient } from 'apollo-client';
 import { setContext } from 'apollo-link-context';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import firebase from 'firebase/app';
-import { createUploadLink } from 'apollo-upload-client'
-import config from "./config";
+import { createUploadLink } from 'apollo-upload-client';
+import config from './config';
 
-console.log("API URL:", config.apiUrl);
-console.log("project id:", config.projectId);
+console.log('API URL:', config.apiUrl);
+console.log('project id:', config.projectId);
 
 const getIdToken = async () => {
   const user = firebase.auth().currentUser;
@@ -53,7 +53,7 @@ const getIdToken = async () => {
 };
 
 const authLink = setContext((_, { headers }) => {
-  return getIdToken().then(token => {
+  return getIdToken().then((token) => {
     return {
       headers: {
         ...headers,
@@ -63,7 +63,7 @@ const authLink = setContext((_, { headers }) => {
   });
 });
 
-export default new ApolloClient({
+export const client = new ApolloClient({
   link: authLink.concat(createUploadLink({ uri: config.apiUrl })),
   cache: new InMemoryCache(),
 });

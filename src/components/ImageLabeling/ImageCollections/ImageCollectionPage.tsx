@@ -1,9 +1,10 @@
+import React from 'react';
 import Paper from '@material-ui/core/Paper';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Tab from '@material-ui/core/Tab';
 import { useParams, useHistory, useLocation } from 'react-router-dom';
-import { Link } from '@material-ui/core';
-import { Link as RouterLink } from "react-router-dom";
+import { Link, Toolbar, Tabs, Typography } from '@material-ui/core';
+import { Link as RouterLink } from 'react-router-dom';
 import ImagesTable from './ImagesTable';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -13,7 +14,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
     },
-  }),
+  })
 );
 
 function ImageCollectionPage() {
@@ -45,22 +46,15 @@ function ImageCollectionPage() {
           </Tabs>
           <Typography className={classes.root}>
             <Link component={RouterLink} to="/image-labeling/collections">
-              {"All collections"}
+              {'All collections'}
             </Link>
           </Typography>
         </Toolbar>
       </Paper>
       {tab === 'images' && (
-<<<<<<< HEAD:src/components/ImageLabeling/ImageCollectionPage/ImageCollectionPage.tsx
-        <Typography>{'Images'}</Typography>
-        )}
-=======
         <ImagesTable collectionId={parseInt(collectionId, 10)} />
       )}
->>>>>>> fab415f13a77234d88c5c79591b91e65eb1c58b8:src/components/ImageLabeling/ImageCollections/ImageCollectionPage.tsx
-      {tab === 'review-queues' && (
-        <Typography>{'Review Queues'}</Typography>
-      )}
+      {tab === 'review-queues' && <Typography>{'Review Queues'}</Typography>}
     </div>
   );
 }

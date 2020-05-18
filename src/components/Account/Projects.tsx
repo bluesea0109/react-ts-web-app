@@ -1,4 +1,4 @@
-import { gql, useApolloClient, useQuery } from '@apollo/client';
+import { useApolloClient, useQuery } from '@apollo/react-hooks';
 import {
   Button,
   Typography,
@@ -17,6 +17,7 @@ import { UPDATE_ACTIVE_ORG } from '../../gql-queries';
 import ContentLoading from '../ContentLoading';
 import { useActiveOrg } from '../UseActiveOrg';
 import { IUser, IProject } from '../../models';
+import gql from 'graphql-tag';
 
 const GET_USER = gql`
   query {
