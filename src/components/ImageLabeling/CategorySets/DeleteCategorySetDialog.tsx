@@ -8,10 +8,10 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ContentLoading from '../../ContentLoading';
-import { useActiveOrg } from '../../UseActiveOrg';
 import { useMutation } from '@apollo/react-hooks';
 import { DELETE_CATEGORY_SET, GET_CATEGORY_SETS } from '../../../gql-queries';
 import { Button } from '@material-ui/core';
+import { useParams } from 'react-router';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -41,7 +41,7 @@ function DeleteCategorySetDialog(props: IDeleteCategorySetProps) {
   const [state, setState] = useState({
     open: false,
   });
-  const { projectId } = useActiveOrg();
+  const { projectId } = useParams();
   const [deleteCategorySet, { loading, error }] = useMutation(DELETE_CATEGORY_SET,
     {
       onCompleted: () => {

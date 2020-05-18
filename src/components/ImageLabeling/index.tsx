@@ -2,8 +2,7 @@ import { makeStyles, Grid, Typography, Toolbar, Theme, createStyles, Tab, Tabs, 
 import React from "react";
 import Collections from './Collections';
 import CreateCollection from './CreateCollection';
-import { useActiveOrg } from '../UseActiveOrg';
-import { useParams, useLocation, useHistory } from 'react-router';
+import { useParams, useHistory } from 'react-router';
 import CategorySets from './CategorySets/CategorySets';
 
 interface IProjectProps {
@@ -12,7 +11,7 @@ interface IProjectProps {
 }
 
 function ImageLabelingPageWrapper() {
-  const { orgId, projectId } = useActiveOrg();
+  const { orgId, projectId } = useParams();
 
   if (!orgId) {
     return <Typography>{"No org is active."}</Typography>
@@ -40,14 +39,12 @@ const useStyles = makeStyles((theme: Theme) =>
 function ImageLabelingPage(props: IProjectProps) {
   // eslint-disable-next-line
   const classes = useStyles();
-  const { tab } = useParams();
+  const { orgId, projectId, tab } = useParams();
   const history = useHistory();
-  const location = useLocation();
 
   const handleChangeTab = (event: any, value: any) => {
     history.push({
-      pathname: `/image-labeling/${value}`,
-      search: location.search
+      pathname: `/orgs/${orgId}/projects/${projectId}/image-labeling/${value}`
     });
   };
 
@@ -82,7 +79,7 @@ function ImageLabelingPage(props: IProjectProps) {
         </Grid>
       )}
       {tab === 'category-sets' && (
-        <CategorySets/>
+        <CategorySets />
       )}
     </div>
   );

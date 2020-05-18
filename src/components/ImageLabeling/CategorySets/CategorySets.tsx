@@ -14,9 +14,9 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { useQuery } from '@apollo/react-hooks';
 import { GET_CATEGORY_SETS } from '../../../gql-queries';
-import { useActiveOrg } from '../../UseActiveOrg';
 import CreateCategorySetDialog from './CreateCategorySetDialog';
 import DeleteCategorySetDialog from './DeleteCategorySetDialog';
+import { useParams } from 'react-router';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function CategorySets() {
   const classes = useStyles();
-  const { projectId } = useActiveOrg();
+  const { projectId } = useParams();
   const categorySets = useQuery(GET_CATEGORY_SETS, { variables: { projectId, } });
   if (categorySets.loading) {
     return <ContentLoading />
