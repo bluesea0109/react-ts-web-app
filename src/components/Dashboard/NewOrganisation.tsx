@@ -2,9 +2,9 @@
 import { Button, Card, createStyles, LinearProgress, makeStyles, TextField, Theme, Typography } from '@material-ui/core';
 import clsx from "clsx";
 import React, { useState } from "react";
-import { CREATE_ORG } from '../../gql-queries';
+import { CREATE_ORG, GET_CURRENT_USER } from '../../gql-queries';
 import { useMutation } from '@apollo/react-hooks';
-import gql from "graphql-tag";
+import ApolloErrorPage from '../ApolloErrorPage';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,37 +25,22 @@ function NewOrganisation() {
   const [state, setState] = useState({
     name: ""
   });
+
   const [createOrg, { loading, error }] = useMutation(CREATE_ORG, {
     refetchQueries: [{
-      query: gql`
-        query {
-          currentUser {
-            name,
-            email,
-            activeOrg {
-              id,
-              name
-            }
-            activeProject {
-              id,
-              name
-            }
-          }
-          orgs {
-            id
-            name
-          }
-        }`
-      }]
+      query: GET_CURRENT_USER,
+    }],
+    awaitRefetchQueries: true,
   });
 
   if (error) {
     // TODO: handle errors
-    return <p>{JSON.stringify(error, null, 2)}</p>;
+    return <ApolloErrorPage error={error}/>
   }
 
   const submit = () => {
     createOrg({ variables: { name: state.name } })
+    setState({ name: ''})
   }
 
   return (
@@ -73,7 +58,7 @@ function NewOrganisation() {
         className={clsx(classes.inputBox)}
       />
       <br />
-      <Button className={clsx(classes.button)} disabled={loading} variant="contained" color="primary" onClick={submit}>{"Submit"}</Button>
+      <Button className={clsx(classes.button)} disabled={loading || !state.name} variant="contained" color="primary" onClick={submit}>{"Submit"}</Button>
     </Card>
   )
 }

@@ -3,10 +3,9 @@ import clsx from "clsx";
 import "firebase/auth";
 import React from "react";
 import { Route, Switch } from "react-router-dom";
-import Account from "./components/Account";
+import Dashboard from "./components/Dashboard";
 import AppBar from "./components/Appbar";
 import Drawer from "./components/Drawer";
-import Home from "./components/Home";
 import QuestionAnswering from "./components/QuestionAnswering";
 import TextSummarization from "./components/TextSummarization";
 import ImageLabeling from "./components/ImageLabeling";
@@ -15,9 +14,9 @@ import ContentLoading from "./components/ContentLoading";
 import { GET_CURRENT_USER } from "./gql-queries";
 import { Typography } from "@material-ui/core";
 import assert from "assert";
-import { useUpdateActiveOrg } from "./components/UseUpdateActiveOrg";
 import ImageCollectionPage from "./components/ImageLabeling/ImageCollections/ImageCollectionPage";
 import ImageViewer from "./components/ImageLabeling/ImageCollections/ImageViewer";
+import { IUser } from "./models";
 
 const drawerWidth = 240;
 
@@ -76,26 +75,12 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-function AppActiveOrgWrapper() {
-  // makes sure the url search params are set properly,
-
-  const { loading, error } = useUpdateActiveOrg(); 
-
-  if (error) {
-    console.error(error);
-    return <Typography>{"Unkown error occurred"}</Typography>
-  }
-
-  if (loading) {
-    return <ContentLoading/>
-  }
-
-  return <App/>;
-}
-
 function App() {
   const classes = useStyles();
-  const { loading, error, data } = useQuery(GET_CURRENT_USER);
+  interface IGetCurrentUser {
+    currentUser: IUser;
+  }
+  const { loading, error, data } = useQuery<IGetCurrentUser>(GET_CURRENT_USER);
 
   const [state, setState] = React.useState({
     drawerOpen: false,
@@ -109,27 +94,30 @@ function App() {
     setState({ ...state, drawerOpen: false });
   };
 
-  if (error) {
+  if (loading) {
+    return <ContentLoading/>;
+  }
+
+  if (error || !data) {
     console.log(error);
     return <Typography>{"Unkown error occurred"}</Typography>
   }
 
-  if (loading) {
-    return <ContentLoading/>;
-  }
+
 
   assert.notEqual(data, null);
 
   return (
     <div className={classes.root}>
       <AppBar
+        user={data.currentUser}
         position="fixed"
         className={clsx(classes.appBar, {
           [classes.appBarShift]: state.drawerOpen,
         })}
         onMenuClick={onMenuClick}
       />
-      <Drawer
+      <Drawer user={data.currentUser}
         className={classes.drawer}
         variant="persistent"
         anchor="left"
@@ -147,32 +135,31 @@ function App() {
         <div className={classes.drawerHeader} />
         <Switch>
           <Route exact path="/">
-            <Home />
+            <Dashboard user={data.currentUser} />
           </Route>
-          <Route path="/account">
-            <Account />
-          </Route>
-          <Route path="/qa">
+          <Route path="/orgs/:orgId/projects/:projectId/qa">
             <QuestionAnswering />
           </Route>
-          <Route path="/text-summarization">
+          <Route path="/orgs/:orgId/projects/:projectId/text-summarization">
             <TextSummarization />
           </Route>
-          <Route exact path="/image-labeling/:tab">
+          <Route exact path="/orgs/:orgId/projects/:projectId/image-labeling/:tab">
             <ImageLabeling />
           </Route>
-          <Route exact path="/image-labeling/collections/:collectionId/:tab">
+          <Route exact path="/orgs/:orgId/projects/:projectId/image-labeling/collections/:collectionId/:tab">
             <ImageCollectionPage />
           </Route>
-          <Route exact path="/image-labeling/collections/:collectionId/images/:imageId">
+          <Route exact path="/orgs/:orgId/projects/:projectId/image-labeling/collections/:collectionId/images/:imageId">
             <ImageViewer />
           </Route>
-          <Route path="/text-labeling"></Route>
-          <Route path="/"></Route>
+          <Route path="/orgs/:orgId/projects/:projectId/text-labeling"></Route>
+          <Route exact path="/no-project">
+            <Typography>{"No project is active. Please create or activate one."}</Typography>
+          </Route>
         </Switch>
       </main>
     </div>
   );
 }
 
-export default AppActiveOrgWrapper;
+export default App;

@@ -2,7 +2,6 @@ import React from 'react';
 import { useQuery } from "react-apollo";
 import gql from "graphql-tag";
 import { useParams } from 'react-router';
-import { useActiveOrg } from '../../../UseActiveOrg';
 import ContentLoading from '../../../ContentLoading';
 import ApolloErrorPage from '../../../ApolloErrorPage';
 import ImageCategoricalLabel from '../../../../models/labels/ImageLabel';
@@ -46,7 +45,7 @@ const GET_DATA = gql`
 
 const ImageViewer: React.FC = () => {
   const { imageId } = useParams();
-  const { projectId } = useActiveOrg();
+  const { projectId } = useParams();
   const { loading, error, data } = useQuery(GET_DATA, {
     variables: {
       projectId,

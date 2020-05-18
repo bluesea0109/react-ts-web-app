@@ -10,9 +10,9 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import AddIcon from '@material-ui/icons/Add';
 import { GET_CATEGORY_SETS, CREATE_CATEGORY_SET } from '../../../gql-queries';
-import { useActiveOrg } from '../../UseActiveOrg';
 import { useMutation } from '@apollo/react-hooks'
 import ContentLoading from '../../ContentLoading';
+import { useParams } from 'react-router';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -69,7 +69,7 @@ function CreateCategorySetDialog() {
     categorySetName: '',
     categories: []
   });
-  const { projectId } = useActiveOrg();
+  const { projectId } = useParams();
   const [createCategorySet, { loading, error }] = useMutation(CREATE_CATEGORY_SET,
     {
       onCompleted: () => {

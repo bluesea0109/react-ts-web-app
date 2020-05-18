@@ -9,7 +9,7 @@ import gql from "graphql-tag";
 import IconButtonAdd from '../IconButtonAdd';
 import { useMutation } from '@apollo/react-hooks';
 import ContentLoading from '../ContentLoading';
-import { useActiveOrg } from '../UseActiveOrg';
+import { useParams } from 'react-router';
 
 const CREATE_COLLECTION = gql`
   mutation ($projectId: String!, $name: String!) {
@@ -36,7 +36,7 @@ interface ICreateCollectionProps {
 }
 
 function CreateCollection(props: ICreateCollectionProps) {
-  const { projectId } = useActiveOrg();
+  const { projectId } = useParams();
   const [createCollection, { loading, error, data }] = useMutation(CREATE_COLLECTION,
     {
       onCompleted: () => {

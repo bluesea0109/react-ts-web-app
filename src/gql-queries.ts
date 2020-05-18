@@ -5,12 +5,25 @@ export const GET_CURRENT_USER = gql`
     currentUser {
       name
       email
+      orgs {
+        id
+        name
+        projects {
+          id
+          name
+        }
+      }
       activeOrg {
         id
         name
+        projects {
+          id
+          name
+        }
       }
       activeProject {
         id
+        orgId
         name
       }
     }
