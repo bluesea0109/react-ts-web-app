@@ -1,3 +1,4 @@
+import React from 'react';
 import { useQuery } from '@apollo/client';
 import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
@@ -10,32 +11,32 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import React from 'react';
 import { GET_CATEGORY_SETS } from '../../../gql-queries';
 import ContentLoading from '../../ContentLoading';
 import { useActiveOrg } from '../../UseActiveOrg';
 import CreateCategorySetDialog from './CreateCategorySetDialog';
 import DeleteCategorySetDialog from './DeleteCategorySetDialog';
+import { Typography } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-    },
+    root: {},
     toolbar: {
-      paddingLeft: theme.spacing(1),
+      paddingLeft: theme.spacing(2),
     },
     list: {
       overflow: 'auto',
       maxHeight: 100,
     },
-  }),
+  })
 );
 
 function CategorySets() {
   const classes = useStyles();
   const { projectId } = useActiveOrg();
-  const categorySets = useQuery(GET_CATEGORY_SETS, { variables: { projectId } });
+  const categorySets = useQuery(GET_CATEGORY_SETS, {
+    variables: { projectId },
+  });
   if (categorySets.loading) {
     return <ContentLoading />;
   }
@@ -49,10 +50,12 @@ function CategorySets() {
   console.log('catSets', catSets);
   return (
     <Grid container={true} className={classes.root}>
-      <Toolbar variant="dense" disableGutters={true} className={classes.toolbar}>
-        <Typography variant="h6">
-          {'Category Sets'}
-        </Typography>
+      <Toolbar
+        variant="dense"
+        disableGutters={true}
+        className={classes.toolbar}
+      >
+        <Typography variant="h6">{'Category Sets'}</Typography>
         <Typography style={{ padding: 2 }} />
         <CreateCategorySetDialog />
       </Toolbar>
@@ -82,10 +85,12 @@ function CategorySets() {
                         </ListItem>
                       ))}
                     </List>
-
                   </TableCell>
                   <TableCell>
-                    <DeleteCategorySetDialog name={set.name} categorySetId={set.id} />
+                    <DeleteCategorySetDialog
+                      name={set.name}
+                      categorySetId={set.id}
+                    />
                   </TableCell>
                 </TableRow>
               );

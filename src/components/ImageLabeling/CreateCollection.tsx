@@ -4,9 +4,10 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import TextField from '@material-ui/core/TextField';
+import { Typography, Button } from '@material-ui/core';
 import gql from 'graphql-tag';
-import React, { useState } from 'react';
+import IconButtonAdd from '../IconButtonAdd';
+import { useMutation } from '@apollo/react-hooks';
 import ContentLoading from '../ContentLoading';
 import IconButtonAdd from '../IconButtonAdd';
 import { useActiveOrg } from '../UseActiveOrg';
@@ -45,7 +46,7 @@ function CreateCollection(props: ICreateCollectionProps) {
       },
       refetchQueries: [{ query: GET_COLLECTIONS, variables: { projectId } }],
       awaitRefetchQueries: true,
-    },
+    }
   );
 
   const [state, setState] = useState({

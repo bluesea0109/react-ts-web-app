@@ -1,9 +1,18 @@
-
-import { gql, useMutation } from '@apollo/client';
-import { Button, Card, createStyles, LinearProgress, makeStyles, TextField, Theme, Typography } from '@material-ui/core';
+import {
+  Button,
+  Card,
+  createStyles,
+  LinearProgress,
+  makeStyles,
+  TextField,
+  Theme,
+  Typography,
+} from '@material-ui/core';
 import clsx from 'clsx';
 import React, { useState } from 'react';
 import { CREATE_ORG } from '../../gql-queries';
+import { useMutation } from '@apollo/react-hooks';
+import gql from 'graphql-tag';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -16,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) =>
     button: {
       margin: theme.spacing(1),
     },
-  }),
+  })
 );
 
 function NewOrganisation() {
@@ -25,27 +34,30 @@ function NewOrganisation() {
     name: '',
   });
   const [createOrg, { loading, error }] = useMutation(CREATE_ORG, {
-    refetchQueries: [{
-      query: gql`
-        query {
-          currentUser {
-            name,
-            email,
-            activeOrg {
-              id,
+    refetchQueries: [
+      {
+        query: gql`
+          query {
+            currentUser {
               name
+              email
+              activeOrg {
+                id
+                name
+              }
+              activeProject {
+                id
+                name
+              }
             }
-            activeProject {
-              id,
+            orgs {
+              id
               name
             }
           }
-          orgs {
-            id
-            name
-          }
-        }`,
-      }],
+        `,
+      },
+    ],
   });
 
   if (error) {
@@ -68,11 +80,19 @@ function NewOrganisation() {
         type="string"
         value={state.name || ''}
         variant="outlined"
-        onChange={(e: any) => setState({ ...state, name: (e.target.value) })}
+        onChange={(e: any) => setState({ ...state, name: e.target.value })}
         className={clsx(classes.inputBox)}
       />
       <br />
-      <Button className={clsx(classes.button)} disabled={loading} variant="contained" color="primary" onClick={submit}>{'Submit'}</Button>
+      <Button
+        className={clsx(classes.button)}
+        disabled={loading}
+        variant="contained"
+        color="primary"
+        onClick={submit}
+      >
+        {'Submit'}
+      </Button>
     </Card>
   );
 }

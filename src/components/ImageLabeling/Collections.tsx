@@ -1,10 +1,18 @@
-
-import { gql, useQuery } from '@apollo/client';
-import { makeStyles, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core';
+import {
+  makeStyles,
+  Typography,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+} from '@material-ui/core';
 import React from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
 import ContentLoading from '../ContentLoading';
+import { useQuery } from '@apollo/react-hooks';
 import { useActiveOrg } from '../UseActiveOrg';
+import { useHistory, useLocation } from 'react-router-dom';
+import gql from 'graphql-tag';
 
 const GET_COLLECTIONS = gql`
   query($projectId: String!) {
@@ -43,7 +51,9 @@ function CollectionsList(props: IProjectProps) {
   const classes = useStyles();
   const history = useHistory();
   const location = useLocation();
-  const { loading, error, data } = useQuery(GET_COLLECTIONS, { variables: { projectId: props.projectId } });
+  const { loading, error, data } = useQuery(GET_COLLECTIONS, {
+    variables: { projectId: props.projectId },
+  });
 
   if (loading) {
     return <ContentLoading />;
@@ -64,24 +74,26 @@ function CollectionsList(props: IProjectProps) {
   const collections = data.ImageLabelingService_collections;
 
   return (
-      <Table className={classes.table} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Id</TableCell>
+    <Table className={classes.table} aria-label="simple table">
+      <TableHead>
+        <TableRow>
+          <TableCell>Name</TableCell>
+          <TableCell>Id</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {collections.map((collection: any, i: number) => (
+          <TableRow
+            key={i}
+            onClick={onSelectCollection(collection.id)}
+            hover={true}
+          >
+            <TableCell>{collection.name}</TableCell>
+            <TableCell>{collection.id}</TableCell>
           </TableRow>
-        </TableHead>
-        <TableBody>
-          {collections.map((collection: any, i: number) => (
-            <TableRow key={i} onClick={onSelectCollection(collection.id)} hover={true}>
-              <TableCell>
-                {collection.name}
-              </TableCell>
-              <TableCell>{collection.id}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+        ))}
+      </TableBody>
+    </Table>
   );
 }
 

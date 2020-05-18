@@ -1,5 +1,10 @@
 import { gql, useQuery } from '@apollo/client';
-import { CircularProgress, createStyles, IconButton, Theme } from '@material-ui/core';
+import {
+  CircularProgress,
+  createStyles,
+  IconButton,
+  Theme,
+} from '@material-ui/core';
 import AppBar, { AppBarProps } from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -15,14 +20,14 @@ import { useHistory, useLocation } from 'react-router-dom';
 const GET_ORGS = gql`
   query {
     currentUser {
-      name,
-      email,
+      name
+      email
       activeOrg {
-        id,
+        id
         name
       }
       activeProject {
-        id,
+        id
         name
       }
     }
@@ -46,13 +51,14 @@ const useStyles = makeStyles((theme: Theme) =>
       color: 'white',
       borderRadius: 4,
       borderColor: 'white',
-    }, icon: {
+    },
+    icon: {
       fill: 'white',
     },
     border: {
       borderBottom: '1px solid white',
     },
-  }),
+  })
 );
 
 function CustomAppbar(props: CustomAppbarProps) {
@@ -84,7 +90,7 @@ function CustomAppbar(props: CustomAppbarProps) {
 
     return (
       <>
-        < Select
+        <Select
           value={activeOrg ? activeOrg.id : ''}
           onChange={(e) => setActiveOrg(String(e.target.value))}
           className={clsx(classes.selectInput)}
@@ -95,17 +101,18 @@ function CustomAppbar(props: CustomAppbarProps) {
             },
           }}
         >
-          {data.orgs.map((org: any) => <MenuItem key={org.id} value={org.id}>{org.name}</MenuItem>)}
-        </Select >
+          {data.orgs.map((org: any) => (
+            <MenuItem key={org.id} value={org.id}>
+              {org.name}
+            </MenuItem>
+          ))}
+        </Select>
       </>
     );
   };
 
   return (
-    <AppBar
-      position={props.position}
-      className={props.className}
-    >
+    <AppBar position={props.position} className={props.className}>
       <Toolbar>
         <IconButton
           edge="start"

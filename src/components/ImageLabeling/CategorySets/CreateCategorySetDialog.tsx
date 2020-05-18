@@ -10,9 +10,9 @@ import TextField from '@material-ui/core/TextField';
 import Tooltip from '@material-ui/core/Tooltip';
 import AddIcon from '@material-ui/icons/Add';
 import React, { useState } from 'react';
-import { CREATE_CATEGORY_SET, GET_CATEGORY_SETS } from '../../../gql-queries';
-import ContentLoading from '../../ContentLoading';
+import { GET_CATEGORY_SETS, CREATE_CATEGORY_SET } from '../../../gql-queries';
 import { useActiveOrg } from '../../UseActiveOrg';
+import ContentLoading from '../../ContentLoading';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -181,7 +181,7 @@ function CreateCategorySetDialog() {
   if (error) {
     dialogContent = (
       <DialogContent>
-        <Typography>{'Unkown error occurred'}</Typography>>
+        <Typography>{"Unkown error occurred"}</Typography>
       </DialogContent>
     );
   } else if (loading) {

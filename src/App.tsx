@@ -1,22 +1,23 @@
-import { useQuery } from '@apollo/client';
-import { Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import assert from 'assert';
 import clsx from 'clsx';
 import 'firebase/auth';
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import Account from './components/account';
+import Account from './components/Account';
 import AppBar from './components/Appbar';
-import ContentLoading from './components/ContentLoading';
 import Drawer from './components/Drawer';
 import Home from './components/Home';
-import ImageLabeling from './components/ImageLabeling';
-import ImageCollectionPage from './components/ImageLabeling/ImageCollectionPage/ImageCollectionPage';
 import QuestionAnswering from './components/QuestionAnswering';
 import TextSummarization from './components/TextSummarization';
-import { useUpdateActiveOrg } from './components/UseUpdateActiveOrg';
+import ImageLabeling from './components/ImageLabeling';
+import { useQuery } from '@apollo/react-hooks';
+import ContentLoading from './components/ContentLoading';
 import { GET_CURRENT_USER } from './gql-queries';
+import { Typography } from '@material-ui/core';
+import assert from 'assert';
+import { useUpdateActiveOrg } from './components/UseUpdateActiveOrg';
+import ImageCollectionPage from './components/ImageLabeling/ImageCollections/ImageCollectionPage';
+import ImageViewer from './components/ImageLabeling/ImageCollections/ImageViewer';
 import { IUser } from './models';
 
 interface IGetCurrentUser {
@@ -50,7 +51,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     content: {
       flexGrow: 1,
-      padding: theme.spacing(2),
       transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
@@ -170,8 +170,14 @@ function App() {
           >
             <ImageCollectionPage />
           </Route>
-          <Route path="/text-labeling" />
-          <Route path="/" />
+          <Route
+            exact
+            path="/image-labeling/collections/:collectionId/images/:imageId"
+          >
+            <ImageViewer />
+          </Route>
+          <Route path="/text-labeling"></Route>
+          <Route path="/"></Route>
         </Switch>
       </main>
     </div>

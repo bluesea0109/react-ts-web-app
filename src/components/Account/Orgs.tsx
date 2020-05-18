@@ -1,11 +1,6 @@
 import { useQuery } from '@apollo/client';
 import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
   createStyles,
-  Grid,
   makeStyles,
   Theme,
   Typography,
@@ -17,12 +12,10 @@ import {
   TableRow,
   Paper,
 } from '@material-ui/core';
-import clsx from 'clsx';
 import React, { useMemo } from 'react';
 import { GET_ORGS } from '../../gql-queries';
 import ContentLoading from '../ContentLoading';
 import { IReceivedData } from './types';
-import { IOrg } from '../../models';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
