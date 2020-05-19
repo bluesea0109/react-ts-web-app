@@ -13,8 +13,8 @@ import gql from 'graphql-tag';
 import React, { useState } from 'react';
 import { useApolloClient } from 'react-apollo';
 import { useHistory, useParams } from 'react-router-dom';
-import ImageCategoricalLabel from '../../../../models/labels/ImageLabel';
 import ContentLoading from '../../../ContentLoading';
+import ImageCategoricalLabel from '../../models/labels/ImageLabel';
 import ImageCanvas from './ImageCanvas';
 
 const NEXT_IMAGE = gql`
@@ -40,6 +40,12 @@ const styles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
     },
+    content: {
+      display: 'flex',
+      flexDirection: 'row',
+      flexWrap: 'nowrap',
+      flex: 1,
+    },
     canvasHeader: {
       marginTop: theme.spacing(1),
     },
@@ -56,13 +62,6 @@ const styles = makeStyles((theme: Theme) =>
     nested: {
       paddingLeft: theme.spacing(1) * 8,
     },
-    content: {
-      display: 'flex',
-      flexDirection: 'row',
-      flexWrap: 'nowrap',
-      flex: 1,
-      // flexGrow: 1,
-    },
     labelTools: {
       padding: theme.spacing(1),
       flex: 1,
@@ -77,7 +76,9 @@ const styles = makeStyles((theme: Theme) =>
       marginRight: theme.spacing(1),
       display: 'flex',
       flexDirection: 'column',
+      overflow: 'auto',
       flexGrow: 10,
+      flex: 1,
     },
     canvasContainer: {
       backgroundImage: 'linear-gradient(to right, #757575 50%, #a4a4a4 50%), linear-gradient(to bottom, #757575 50%, #a4a4a4 50%)',
@@ -318,7 +319,7 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
     }
 
     history.push({
-      pathname: `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/images/${imageId}`,
+      pathname: `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/label-image/${imageId}`,
     });
   };
 
@@ -441,7 +442,7 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
 
 const SET_LABEL_QUEUE_IMAGE_IN_PROGRESS = gql`
   mutation ($imageId: Int!) {
-    ImageLabelingService_labelQueueImageInProgress(imageId: $imageId) {
+    ImageLabelingService_selectLabelQueueImage(imageId: $imageId) {
       imageId
       status
       labeler

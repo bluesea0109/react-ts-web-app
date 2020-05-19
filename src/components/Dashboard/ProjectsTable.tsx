@@ -12,7 +12,7 @@ import ContentLoading from '../ContentLoading';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      padding: theme.spacing(3),
+      margin: theme.spacing(3),
     },
     paper: {
       padding: theme.spacing(2),

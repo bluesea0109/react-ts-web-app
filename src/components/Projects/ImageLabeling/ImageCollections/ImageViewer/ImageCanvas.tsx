@@ -1,6 +1,6 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core';
 import React, { useState } from 'react';
-import ImageCategoricalLabel from '../../models/labels/ImageLabel';
+import ImageCategoricalLabel from '../../../../ImageLabeling/models/labels/ImageLabel';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

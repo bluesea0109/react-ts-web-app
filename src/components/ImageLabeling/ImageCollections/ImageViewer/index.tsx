@@ -2,9 +2,9 @@ import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import React from 'react';
 import { useParams } from 'react-router';
-import ImageCategoricalLabel from '../../../../models/labels/ImageLabel';
 import ApolloErrorPage from '../../../ApolloErrorPage';
 import ContentLoading from '../../../ContentLoading';
+import ImageCategoricalLabel from '../../models/labels/ImageLabel';
 import ImageViewerContent from './ImageViewerContent';
 
 const GET_DATA = gql`
@@ -20,9 +20,8 @@ const GET_DATA = gql`
         id
         imageId
         shape
-        category
-        categorySet {
-          id
+        category {
+          categorySetId
           name
         }
         value
@@ -37,6 +36,7 @@ const GET_DATA = gql`
       id
       name
       categories {
+        categorySetId
         name
       }
     }

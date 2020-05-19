@@ -11,6 +11,7 @@ import {
 import gql from 'graphql-tag';
 import React from 'react';
 import { useHistory, useParams } from 'react-router-dom';
+import { IImageCollection } from '../../models';
 import ContentLoading from '../ContentLoading';
 
 const GET_COLLECTIONS = gql`
@@ -49,16 +50,21 @@ function CollectionsListWrapper() {
 function CollectionsList(props: IProjectProps) {
   const classes = useStyles();
   const history = useHistory();
-  const { loading, error, data } = useQuery(GET_COLLECTIONS, { variables: { projectId: props.projectId } });
-  const { orgId, projectId } = useParams();
 
-  if (loading) {
-    return <ContentLoading />;
+  interface GetImageCollections {
+    ImageLabelingService_collections: IImageCollection[];
   }
+
+  const { loading, error, data } = useQuery<GetImageCollections>(GET_COLLECTIONS, { variables: { projectId: props.projectId } });
+  const { orgId, projectId } = useParams();
 
   if (error) {
     console.error(error);
     return <Typography>{'Unknown error occured'}</Typography>;
+  }
+
+  if (loading || !data) {
+    return <ContentLoading />;
   }
 
   const onSelectCollection = (collectionId: number) => () => {

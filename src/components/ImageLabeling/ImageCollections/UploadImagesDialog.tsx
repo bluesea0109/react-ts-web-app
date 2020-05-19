@@ -159,7 +159,7 @@ class UploadImagesDialog extends React.Component<IUploadImagesDialogProps, IUplo
         </Dialog>
         <IconButton component="label" style={{ padding: 6 }}>
           <Tooltip title="Upload Images" disableFocusListener={true}>
-            <CloudUploadIcon color="secondary"/>
+            <CloudUploadIcon color="secondary" />
           </Tooltip>
           <input
             name="image"
