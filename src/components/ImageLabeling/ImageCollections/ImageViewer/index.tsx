@@ -2,10 +2,10 @@ import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import React from 'react';
 import { useParams } from 'react-router';
-import ContentLoading from '../../../ContentLoading';
 import ApolloErrorPage from '../../../ApolloErrorPage';
-import ImageViewerContent from './ImageViewerContent';
+import ContentLoading from '../../../ContentLoading';
 import ImageCategoricalLabel from '../../models/labels/ImageLabel';
+import ImageViewerContent from './ImageViewerContent';
 
 const GET_DATA = gql`
   query($projectId: String!, $imageId: Int!) {

@@ -52,13 +52,11 @@ function CollectionsList(props: IProjectProps) {
   const history = useHistory();
 
   interface GetImageCollections {
-    ImageLabelingService_collections: IImageCollection[]
+    ImageLabelingService_collections: IImageCollection[];
   }
 
   const { loading, error, data } = useQuery<GetImageCollections>(GET_COLLECTIONS, { variables: { projectId: props.projectId } });
   const { orgId, projectId } = useParams();
-
-
 
   if (error) {
     console.error(error);
@@ -66,7 +64,7 @@ function CollectionsList(props: IProjectProps) {
   }
 
   if (loading || !data) {
-    return <ContentLoading />
+    return <ContentLoading />;
   }
 
   const onSelectCollection = (collectionId: number) => () => {

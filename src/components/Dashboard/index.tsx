@@ -50,10 +50,10 @@ function Account(props: IAccountProps) {
         <Grid xs={12}>
           <Typography variant="h6">{welcomeMsg}</Typography>
         </Grid>
-        <Grid container xs={12} spacing={2}>
-          <Grid item xs={12} sm={6}>
+        <Grid container={true} xs={12} spacing={2}>
+          <Grid item={true} xs={12} sm={6}>
             <Paper className={classes.paper}>
-              <Typography variant="h5">{"Your organizations"}</Typography>
+              <Typography variant="h5">{'Your organizations'}</Typography>
               {orgs ? (
                 <TableContainer component={Paper} aria-label="Orgs">
                   <Table>
@@ -80,19 +80,19 @@ function Account(props: IAccountProps) {
                 )}
             </Paper>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item={true} xs={12} sm={6}>
             <Paper>
               {activeOrg ? (
                 <ProjectsTable activeOrg={activeOrg} activeProject={props.user.activeProject} />
               ) : (
-                  <Typography>{"No organization is active."}</Typography>
+                  <Typography>{'No organization is active.'}</Typography>
                 )}
             </Paper>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item={true} xs={12} sm={6}>
             <NewOrganisation />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item={true} xs={12} sm={6}>
             {orgId ? (
               <NewProject activeOrg={activeOrg} />
             ) : null}

@@ -1,12 +1,12 @@
+import gql from 'graphql-tag';
 import React from 'react';
-import { useQuery } from "react-apollo";
-import gql from "graphql-tag";
-import ImageLabelingPageContent from './ImageLabelerContent';
+import { useQuery } from 'react-apollo';
 import { useParams } from 'react-router';
-import ImageCategoricalLabel from '../../models/labels/ImageLabel';
-import { IImageLabel, ILabelQueueImage, IImage, ICategorySet } from '../../../../models';
-import ContentLoading from '../../../ContentLoading';
+import { ICategorySet, IImage, IImageLabel, ILabelQueueImage } from '../../../../models';
 import ApolloErrorPage from '../../../ApolloErrorPage';
+import ContentLoading from '../../../ContentLoading';
+import ImageCategoricalLabel from '../../models/labels/ImageLabel';
+import ImageLabelingPageContent from './ImageLabelerContent';
 
 const GET_DATA = gql`
   query ($imageId: Int!, $projectId: String!) {
@@ -47,10 +47,15 @@ const GET_DATA = gql`
   }
 `;
 
-
 function ImageLabeler() {
-  let { projectId, imageId } = useParams();
-  imageId = parseInt(imageId, 10);
+  const params = useParams<{ projectId: string, imageId?: string}>();
+  const { projectId, imageId: imageIdStr } = params;
+
+  if (!imageIdStr) {
+    throw new Error('imageId url params is required');
+  }
+
+  const imageId = parseInt(imageIdStr, 0);
 
   interface IGetData {
     ImageLabelingService_image: IImage;
@@ -61,13 +66,13 @@ function ImageLabeler() {
   const { loading, error, data } = useQuery<IGetData>(GET_DATA, {
     variables: {
       projectId,
-      imageId
+      imageId,
     },
-    fetchPolicy: 'network-only'
-  })
+    fetchPolicy: 'network-only',
+  });
 
   if (error) {
-    return <ApolloErrorPage error={error} />
+    return <ApolloErrorPage error={error} />;
   }
 
   if (loading || !data) {
@@ -81,9 +86,9 @@ function ImageLabeler() {
       labels.push(label);
     }
     return labels;
-  }
+  };
 
-  console.log('label queue image', data.ImageLabelingService_labelQueueImage)
+  console.log('label queue image', data.ImageLabelingService_labelQueueImage);
 
   return (
     <ImageLabelingPageContent

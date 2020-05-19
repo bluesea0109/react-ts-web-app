@@ -192,7 +192,7 @@ function ImagesTable(props: IImagesTableProps) {
     if (data && data.ImageLabelingService_nextLabelQueueImage) {
       const { imageId } = data.ImageLabelingService_nextLabelQueueImage;
       history.push({
-        pathname: `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/label-image/${imageId}`
+        pathname: `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/label-image/${imageId}`,
       });
     }
   };

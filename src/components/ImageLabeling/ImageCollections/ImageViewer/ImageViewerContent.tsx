@@ -14,8 +14,8 @@ import React, { useState } from 'react';
 import { useApolloClient } from 'react-apollo';
 import { useHistory, useParams } from 'react-router-dom';
 import ContentLoading from '../../../ContentLoading';
-import ImageCanvas from './ImageCanvas';
 import ImageCategoricalLabel from '../../models/labels/ImageLabel';
+import ImageCanvas from './ImageCanvas';
 
 const NEXT_IMAGE = gql`
   query ($imageId: Int!, $unlabeled: Boolean) {
@@ -78,7 +78,7 @@ const styles = makeStyles((theme: Theme) =>
       flexDirection: 'column',
       overflow: 'auto',
       flexGrow: 10,
-      flex: 1
+      flex: 1,
     },
     canvasContainer: {
       backgroundImage: 'linear-gradient(to right, #757575 50%, #a4a4a4 50%), linear-gradient(to bottom, #757575 50%, #a4a4a4 50%)',

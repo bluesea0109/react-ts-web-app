@@ -1,16 +1,16 @@
-import React from 'react';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
-import Collapse from '@material-ui/core/Collapse';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import DeleteIcon from '@material-ui/icons/Delete';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
-import DeleteIcon from '@material-ui/icons/Delete';
-import VisibilityIcon from '@material-ui/icons/VisibilitySharp';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOffSharp';
+import VisibilityIcon from '@material-ui/icons/VisibilitySharp';
+import React from 'react';
 import ImageCategoricalLabel from '../../models/labels/ImageLabel';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -23,37 +23,36 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(2),
     },
     selected: {
-      //background: `${theme.palette.secondary.main} !important`,
+      // background: `${theme.palette.secondary.main} !important`,
       border: `1px solid ${theme.palette.secondary.main}`,
     },
     listItemModified: {
       borderLeft: `2px solid red !important`,
-      //background: `#d50000 !important`
+      // background: `#d50000 !important`
     },
     margin: {
-      margin: theme.spacing(1)
+      margin: theme.spacing(1),
     },
     marginRight: {
-      marginRight: theme.spacing(1)
+      marginRight: theme.spacing(1),
     },
     checkbox: {
-      padding: 0
+      padding: 0,
     },
     iconButton: {
       marginLeft: theme.spacing(1),
-      marginRight: theme.spacing(1)
+      marginRight: theme.spacing(1),
     },
     grow: {
       flexGrow: 1,
     },
-  })
+  }),
 );
-
 
 interface IImageLabelListItemProps {
   label: ImageCategoricalLabel;
-  labelIndex: number,
-  isSelected: boolean,
+  labelIndex: number;
+  isSelected: boolean;
   onSelect?(labelIndex: number): void;
   onChange?(labelIndex: number): void;
   onDelete?(labelIndex: number): void;
@@ -82,25 +81,25 @@ function ImageLabelListItem(props: IImageLabelListItemProps) {
     props.onChange?.(labelIndex);
     e.preventDefault();
     e.stopPropagation();
-  }
+  };
 
   const listItemClasses = {
     selected: classes.selected,
-    root: label.modified ? classes.listItemModified : undefined
+    root: label.modified ? classes.listItemModified : undefined,
   };
 
   const onSelect = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     props.onSelect?.(labelIndex);
-  }
+  };
 
   const onDelete = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     props.onDelete?.(labelIndex);
-  }
+  };
 
   return (
     <React.Fragment>
       <ListItem
-        disableRipple
+        disableRipple={true}
         classes={listItemClasses}
         button={true}
         dense={true}
@@ -112,7 +111,7 @@ function ImageLabelListItem(props: IImageLabelListItemProps) {
         ) : (
             <VisibilityOffIcon color="secondary" onClick={toggleLabelVisible(label)} fontSize="small" />
           )}
-        <ListItemText color="inherit" primaryTypographyProps={{ variant: "body2" }}
+        <ListItemText color="inherit" primaryTypographyProps={{ variant: 'body2' }}
           primary={label.category ? `${label.categorySetName}:${label.category}` : ''}
           secondary={label.displayType} />
           <IconButton size="small" color="default" style={{ padding: 6 }} onClick={onDelete}>
@@ -127,8 +126,8 @@ function ImageLabelListItem(props: IImageLabelListItemProps) {
           }
         </ListItemSecondaryAction>
       </ListItem>
-      <Collapse in={label.open} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding dense>
+      <Collapse in={label.open} timeout="auto" unmountOnExit={true}>
+        <List component="div" disablePadding={true} dense={true}>
           {label.getShapes().map((shape, i) => (
             <ListItem key={i} className={classes.nested}>
               {label.visible ? (
@@ -136,7 +135,7 @@ function ImageLabelListItem(props: IImageLabelListItemProps) {
               ) : (
                   <VisibilityOffIcon color="secondary" fontSize="small" />
                 )}
-              <ListItemText inset primary={shape.displayString} primaryTypographyProps={{ variant: "body2" }} />
+              <ListItemText inset={true} primary={shape.displayString} primaryTypographyProps={{ variant: 'body2' }} />
               <IconButton size="small" color="default" onClick={deleteLabelShape(label, i)} style={{ padding: 6 }} >
                 <DeleteIcon color="secondary" fontSize="small" />
               </IconButton>
