@@ -1,11 +1,11 @@
-import { Grid, Typography, Paper, TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import "firebase/auth";
-import React from "react";
-import NewOrganisation from "./NewOrganisation";
-import NewProject from "./NewProject";
+import { Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@material-ui/core';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import firebase from 'firebase';
+import 'firebase/auth';
+import React from 'react';
 import { IUser } from '../../models';
-import firebase from "firebase";
+import NewOrganisation from './NewOrganisation';
+import NewProject from './NewProject';
 import ProjectsTable from './ProjectsTable';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -14,13 +14,13 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(3),
     },
     paper: {
-      padding: theme.spacing(2)
-    }
-  })
+      padding: theme.spacing(2),
+    },
+  }),
 );
 
 interface IAccountProps {
-  user: IUser
+  user: IUser;
 }
 
 function Account(props: IAccountProps) {
@@ -30,7 +30,7 @@ function Account(props: IAccountProps) {
   if (!firebaseUser) {
     // this shouldn't happen
     console.error('No user signed in');
-    return <Typography>{"No user is signed in."}</Typography>
+    return <Typography>{'No user is signed in.'}</Typography>;
   }
 
   const userName = firebaseUser.displayName;
@@ -45,14 +45,14 @@ function Account(props: IAccountProps) {
   const activeOrg = props.user.activeOrg;
 
   return (
-    <Grid container spacing={2} className={classes.root}>
+    <Grid container={true} spacing={2} className={classes.root}>
       <Grid xs={12}>
         <Typography variant="h6">{welcomeMsg}</Typography>
       </Grid>
-      <Grid container xs={12} spacing={2}>
-        <Grid item xs={12} sm={6}>
+      <Grid container={true} xs={12} spacing={2}>
+        <Grid item={true} xs={12} sm={6}>
           <Paper className={classes.paper}>
-            <Typography variant="h5">{"Your organizations"}</Typography>
+            <Typography variant="h5">{'Your organizations'}</Typography>
             {orgs ? (
               <TableContainer component={Paper} aria-label="Orgs">
                 <Table>
@@ -79,19 +79,19 @@ function Account(props: IAccountProps) {
               )}
           </Paper>
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item={true} xs={12} sm={6}>
           <Paper>
             {activeOrg ? (
               <ProjectsTable activeOrg={activeOrg} activeProject={props.user.activeProject} />
             ) : (
-                <Typography>{"No organization is active."}</Typography>
+                <Typography>{'No organization is active.'}</Typography>
               )}
           </Paper>
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item={true} xs={12} sm={6}>
           <NewOrganisation />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item={true} xs={12} sm={6}>
           {orgId ? (
             <NewProject activeOrg={activeOrg} />
           ) : null}

@@ -1,14 +1,14 @@
+import { useQuery } from '@apollo/react-hooks';
+import gql from 'graphql-tag';
 import React from 'react';
-import { useQuery } from "react-apollo";
-import gql from "graphql-tag";
 import { useParams } from 'react-router';
-import ContentLoading from '../../../ContentLoading';
-import ApolloErrorPage from '../../../ApolloErrorPage';
 import ImageCategoricalLabel from '../../../../models/labels/ImageLabel';
+import ApolloErrorPage from '../../../ApolloErrorPage';
+import ContentLoading from '../../../ContentLoading';
 import ImageViewerContent from './ImageViewerContent';
 
 const GET_DATA = gql`
-  query ($projectId: String!, $imageId: Int!) {
+  query($projectId: String!, $imageId: Int!) {
     ImageLabelingService_image(imageId: $imageId) {
       collectionId
       id
@@ -49,17 +49,17 @@ const ImageViewer: React.FC = () => {
   const { loading, error, data } = useQuery(GET_DATA, {
     variables: {
       projectId,
-      imageId: parseInt(imageId, 10)
+      imageId: parseInt(imageId, 10),
     },
-    fetchPolicy: "network-only",
+    fetchPolicy: 'network-only',
   });
 
   if (loading) {
-    return <ContentLoading />
+    return <ContentLoading />;
   }
 
   if (error) {
-    return <ApolloErrorPage error={error} />
+    return <ApolloErrorPage error={error} />;
   }
 
   const image = data.ImageLabelingService_image;
@@ -79,6 +79,6 @@ const ImageViewer: React.FC = () => {
       categorySets={categorySets}
     />
   );
-}
+};
 
 export default ImageViewer;

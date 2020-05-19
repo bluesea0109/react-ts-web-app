@@ -1,63 +1,63 @@
-import React from 'react';
-import Typography from '@material-ui/core/Typography';
+import { useQuery } from '@apollo/react-hooks';
+import { Typography } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import ContentLoading from '../../ContentLoading';
 import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import { useQuery } from '@apollo/react-hooks';
+import React from 'react';
+import { useParams } from 'react-router';
 import { GET_CATEGORY_SETS } from '../../../gql-queries';
+import ContentLoading from '../../ContentLoading';
 import CreateCategorySetDialog from './CreateCategorySetDialog';
 import DeleteCategorySetDialog from './DeleteCategorySetDialog';
-import { useParams } from 'react-router';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-    },
+    root: {},
     toolbar: {
-      paddingLeft: theme.spacing(2)
+      paddingLeft: theme.spacing(2),
     },
     list: {
       overflow: 'auto',
       maxHeight: 100,
     },
-  })
+  }),
 );
-
 
 function CategorySets() {
   const classes = useStyles();
   const { projectId } = useParams();
-  const categorySets = useQuery(GET_CATEGORY_SETS, { variables: { projectId, } });
+  const categorySets = useQuery(GET_CATEGORY_SETS, { variables: { projectId } });
   if (categorySets.loading) {
-    return <ContentLoading />
+    return <ContentLoading />;
   }
 
   if (categorySets.error) {
     console.error(categorySets.error);
-    return <Typography>{"Unknown error occurred"}</Typography>;
+    return <Typography>{'Unknown error occurred'}</Typography>;
   }
 
   const catSets = categorySets.data.ImageLabelingService_categorySets;
   console.log('catSets', catSets);
   return (
-    <Grid container className={classes.root}>
-      <Toolbar variant="dense" disableGutters={true} className={classes.toolbar}>
-        <Typography variant="h6">
-          {"Category Sets"}
-        </Typography>
+    <Grid container={true} className={classes.root}>
+      <Toolbar
+        variant="dense"
+        disableGutters={true}
+        className={classes.toolbar}
+      >
+        <Typography variant="h6">{'Category Sets'}</Typography>
         <Typography style={{ padding: 2 }} />
         <CreateCategorySetDialog />
       </Toolbar>
-      <Grid container item xs={12}>
+      <Grid container={true} item={true} xs={12}>
         <Table>
           <TableHead>
             <TableRow>
@@ -83,10 +83,12 @@ function CategorySets() {
                         </ListItem>
                       ))}
                     </List>
-
                   </TableCell>
                   <TableCell>
-                    <DeleteCategorySetDialog name={set.name} categorySetId={set.id} />
+                    <DeleteCategorySetDialog
+                      name={set.name}
+                      categorySetId={set.id}
+                    />
                   </TableCell>
                 </TableRow>
               );

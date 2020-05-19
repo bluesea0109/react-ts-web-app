@@ -1,17 +1,22 @@
-import { CircularProgress, createStyles, IconButton, Theme } from '@material-ui/core';
+import { useMutation } from '@apollo/react-hooks';
+import {
+  CircularProgress,
+  createStyles,
+  IconButton,
+  Theme,
+} from '@material-ui/core';
 import AppBar, { AppBarProps } from '@material-ui/core/AppBar';
-import Button from "@material-ui/core/Button";
+import Button from '@material-ui/core/Button';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import { makeStyles } from '@material-ui/core/styles';
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import MenuIcon from "@material-ui/icons/Menu";
-import clsx from "clsx";
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import MenuIcon from '@material-ui/icons/Menu';
+import clsx from 'clsx';
 import React from 'react';
-import { useMutation } from "@apollo/react-hooks";
 import { useHistory } from 'react-router-dom';
-import { UPDATE_ACTIVE_ORG, GET_CURRENT_USER } from '../gql-queries';
+import { GET_CURRENT_USER, UPDATE_ACTIVE_ORG } from '../gql-queries';
 import { IUser } from '../models';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -23,17 +28,18 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
     },
     selectInput: {
-      background: "primary",
-      color: "white",
+      background: 'primary',
+      color: 'white',
       borderRadius: 4,
       borderColor: 'white',
-    }, icon: {
+    },
+    icon: {
       fill: 'white',
     },
     border: {
       borderBottom: '1px solid white',
     },
-  })
+  }),
 );
 
 function CustomAppbar(props: CustomAppbarProps) {
@@ -45,8 +51,8 @@ function CustomAppbar(props: CustomAppbarProps) {
       refetchQueries: [{ query: GET_CURRENT_USER }],
       awaitRefetchQueries: true,
       onCompleted: () => {
-        history.push("/"); // back to dashboard. TODO: keep the user on their current tab.
-      }
+        history.push('/'); // back to dashboard. TODO: keep the user on their current tab.
+      },
     });
 
   const setActiveOrg = async (orgId: string) => {
@@ -57,28 +63,28 @@ function CustomAppbar(props: CustomAppbarProps) {
     updateActiveOrg({
       variables: {
         orgId,
-        ...projectId && { projectId }
+        ...projectId && { projectId },
       },
     });
   };
 
   const renderProjects = () => {
     if (loading) {
-      return <CircularProgress color="secondary" />
+      return <CircularProgress color="secondary" />;
     }
 
     if (error) {
       // TODO: handle errors
       console.error(error);
-      return <Typography>{"Error"}</Typography>
+      return <Typography>{'Error'}</Typography>;
     }
 
     const activeOrg = props.user.activeOrg;
 
     return (
       <>
-        < Select
-          value={activeOrg ? activeOrg.id : ""}
+        <Select
+          value={activeOrg ? activeOrg.id : ''}
           onChange={(e) => setActiveOrg(String(e.target.value))}
           className={clsx(classes.selectInput)}
           inputProps={{
@@ -91,14 +97,11 @@ function CustomAppbar(props: CustomAppbarProps) {
           {props.user.orgs.map((org: any) => <MenuItem key={org.id} value={org.id}>{org.name}</MenuItem>)}
         </Select >
       </>
-    )
-  }
+    );
+  };
 
   return (
-    <AppBar
-      position={props.position}
-      className={props.className}
-    >
+    <AppBar position={props.position} className={props.className}>
       <Toolbar>
         <IconButton
           edge="start"
@@ -110,7 +113,7 @@ function CustomAppbar(props: CustomAppbarProps) {
           <MenuIcon />
         </IconButton>
         <Typography variant="h6" className={classes.title}>
-          {"Bavard AI"}
+          {'Bavard AI'}
         </Typography>
         {renderProjects()}
         <Button color="inherit">Logout</Button>

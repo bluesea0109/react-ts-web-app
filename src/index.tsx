@@ -1,14 +1,14 @@
-import './config'; // initializes firebase
 import React from 'react';
+import { ApolloProvider } from 'react-apollo';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { client } from './apollo-client';
+import AppAuthWrapper from './AppAuthWrapper';
+import './config'; // initializes firebase
 import './index.css';
 import * as serviceWorker from './serviceWorker';
-import { Provider } from "react-redux";
-import configureStore from "./store";
-import { BrowserRouter as Router } from "react-router-dom";
-import client from "./apollo-client";
-import AppAuthWrapper from './AppAuthWrapper';
-import { ApolloProvider } from 'react-apollo';
+import configureStore from './store';
 
 const store = configureStore();
 
@@ -22,7 +22,7 @@ ReactDOM.render(
       </Provider>
     </ApolloProvider>
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById('root'),
 );
 
 // If you want your app to work offline and load faster, you can change

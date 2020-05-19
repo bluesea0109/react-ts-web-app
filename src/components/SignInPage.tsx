@@ -1,21 +1,21 @@
-import React from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
-import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
+import { createStyles, Grid, makeStyles, Theme } from '@material-ui/core';
 import firebase from 'firebase/app';
 import 'firebase/auth';
-import { Grid, makeStyles, Theme, createStyles } from '@material-ui/core';
+import React from 'react';
+import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
+import { useHistory, useLocation } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    loginCol: {
-    },
+    loginCol: {},
     root: {
-      height: '100vh'
+      height: '100vh',
     },
     filler: {
-      background: 'linear-gradient(45deg, #1565c0 30%, #29b6f6 90%)'
-    }
-  }));
+      background: 'linear-gradient(45deg, #1565c0 30%, #29b6f6 90%)',
+    },
+  }),
+);
 
 function SignInPage(props: any) {
   const classes = useStyles();
@@ -34,34 +34,46 @@ function SignInPage(props: any) {
         customParameters: {
           // Forces account selection even when one account
           // is available.
-          prompt: 'select_account'
-        }
+          prompt: 'select_account',
+        },
       },
-      firebase.auth.EmailAuthProvider.PROVIDER_ID
+      firebase.auth.EmailAuthProvider.PROVIDER_ID,
     ],
     callbacks: {
-      signInSuccessWithAuthResult: function (authResult: any, redirectUrl?: string) {
+      signInSuccessWithAuthResult (
+        authResult: any,
+        redirectUrl?: string,
+      ) {
         const state: any = location.state;
 
         if (history.action === 'REPLACE' && state && state.referrer) {
           history.push(state.referrer);
-        }
-        else if (!redirectUrl) {
-          props.history.push("/");
+        } else if (!redirectUrl) {
+          props.history.push('/');
         }
         return false;
-      }
+      },
     },
   };
 
   return (
-    <Grid container className={classes.root}>
-      <Grid item container xs={4} justify="center" alignItems="center" className={classes.loginCol}>
-        <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()}></StyledFirebaseAuth>
+    <Grid container={true} className={classes.root}>
+      <Grid
+        item={true}
+        container={true}
+        xs={4}
+        justify="center"
+        alignItems="center"
+        className={classes.loginCol}
+      >
+        <StyledFirebaseAuth
+          uiConfig={uiConfig}
+          firebaseAuth={firebase.auth()}
+        />
       </Grid>
-      <Grid item xs={8} className={classes.filler}></Grid>
+      <Grid item={true} xs={8} className={classes.filler} />
     </Grid>
   );
-};
+}
 
 export default SignInPage;

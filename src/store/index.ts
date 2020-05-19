@@ -1,10 +1,8 @@
-import { applyMiddleware, combineReducers, createStore } from "redux";
-import { composeWithDevTools } from "redux-devtools-extension";
-import thunkMiddleware from "redux-thunk";
+import { applyMiddleware, combineReducers, createStore } from 'redux';
+import { composeWithDevTools } from 'redux-devtools-extension';
+import thunkMiddleware from 'redux-thunk';
 
-const rootReducer = combineReducers({
-
-});
+const rootReducer = combineReducers({});
 
 export type AppState = ReturnType<typeof rootReducer>;
 
@@ -14,7 +12,7 @@ export default function configureStore() {
 
   const store = createStore(
     rootReducer,
-    composeWithDevTools(middleWareEnhancer)
+    composeWithDevTools(middleWareEnhancer),
   );
 
   return store;

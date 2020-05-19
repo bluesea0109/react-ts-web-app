@@ -1,44 +1,51 @@
-import React, { useState } from 'react';
-import TextField from '@material-ui/core/TextField';
+import { useMutation } from '@apollo/react-hooks';
+import {
+  Button,
+  createStyles,
+  makeStyles,
+  Theme,
+  Typography,
+} from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import FormControl from '@material-ui/core/FormControl';
-import { Typography, makeStyles, createStyles, Theme, Button } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
+import TextField from '@material-ui/core/TextField';
 import Tooltip from '@material-ui/core/Tooltip';
 import AddIcon from '@material-ui/icons/Add';
-import { GET_CATEGORY_SETS, CREATE_CATEGORY_SET } from '../../../gql-queries';
-import { useMutation } from '@apollo/react-hooks'
-import ContentLoading from '../../ContentLoading';
+import { useState } from 'react';
+import React from 'react';
 import { useParams } from 'react-router';
+import { CREATE_CATEGORY_SET, GET_CATEGORY_SETS } from '../../../gql-queries';
+import ContentLoading from '../../ContentLoading';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       display: 'flex',
-      padding: theme.spacing(1)
+      padding: theme.spacing(1),
     },
     menu: {
       width: 200,
     },
     selectEmpty: {
-      marginTop: theme.spacing(1)
+      marginTop: theme.spacing(1),
     },
     button: {
-      boxShadow: 'none'
+      boxShadow: 'none',
     },
     cancel: {
-      backgroundColor: '#ef9a9a'
+      backgroundColor: '#ef9a9a',
     },
     formControl: {
       marginLeft: theme.spacing(1),
-      marginRight: theme.spacing(1)
+      marginRight: theme.spacing(1),
     },
     textField: {
       minWidth: 120,
-      width: 200
+      width: 200,
     },
     paper: {
       marginLeft: theme.spacing(1),
@@ -52,13 +59,13 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.background.paper,
       position: 'relative',
       overflow: 'auto',
-      maxHeight: 200
+      maxHeight: 200,
     },
     ul: {
       backgroundColor: 'inherit',
       padding: 0,
     },
-  })
+  }),
 );
 
 function CreateCategorySetDialog() {
@@ -67,7 +74,7 @@ function CreateCategorySetDialog() {
     open: false,
     txt: '',
     categorySetName: '',
-    categories: []
+    categories: [],
   });
   const { projectId } = useParams();
   const [createCategorySet, { loading, error }] = useMutation(CREATE_CATEGORY_SET,
@@ -77,7 +84,8 @@ function CreateCategorySetDialog() {
       },
       refetchQueries: [{ query: GET_CATEGORY_SETS, variables: { projectId } }],
       awaitRefetchQueries: true,
-    });
+    },
+  );
 
   const handleOpen = () => {
     setState({ ...state, open: true });
@@ -100,8 +108,8 @@ function CreateCategorySetDialog() {
         variables: {
           name: state.categorySetName,
           projectId,
-          categories: state.categories
-        }
+          categories: state.categories,
+        },
       });
     }
   };
@@ -111,29 +119,36 @@ function CreateCategorySetDialog() {
     const reader = new FileReader();
     reader.onload = (e: any) => {
       const txt = e.target.result.trim();
-      const categories = txt.trim().split('\n').map((x: string) => x.trim());
+      const categories = txt
+        .trim()
+        .split('\n')
+        .map((x: string) => x.trim());
       setState({
         ...state,
         categories,
-        txt
+        txt,
       });
     };
     reader.readAsText(file);
-  }
+  };
 
   const createDisabled = () => {
-    return (loading || !state.categorySetName || state.categories.length === 0)
-  }
+    return loading || !state.categorySetName || state.categories.length === 0;
+  };
 
   const handleCategoriesChange = (e: any) => {
     const txt = e.target.value;
-    const categories = e.target.value.trim().split('\n').map((x: string) => x.trim()).filter((x: string) => x !== '');
+    const categories = e.target.value
+      .trim()
+      .split('\n')
+      .map((x: string) => x.trim())
+      .filter((x: string) => x !== '');
     setState({
       ...state,
       txt,
       categories,
     });
-  }
+  };
 
   let dialogContent = (
     <DialogContent>
@@ -154,7 +169,7 @@ function CreateCategorySetDialog() {
           label="Categories"
           value={state.txt}
           onChange={handleCategoriesChange}
-          multiline
+          multiline={true}
           rows="10"
           required={true}
           className={classes.textField}
@@ -164,13 +179,13 @@ function CreateCategorySetDialog() {
       </FormControl>
       <FormControl className={classes.formControl}>
         <Button className={classes.button} component="label">
-          {"Browse"}
+          {'Browse'}
           <input
             name="categories-file"
             id="categories-file"
             accept="text/plain"
             type="file"
-            style={{ display: "none" }}
+            style={{ display: 'none' }}
             onChange={handleFile}
           />
         </Button>
@@ -181,11 +196,10 @@ function CreateCategorySetDialog() {
   if (error) {
     dialogContent = (
       <DialogContent>
-        <Typography>{"Unkown error occurred"}</Typography>
+        <Typography>{'Unkown error occurred'}</Typography>
       </DialogContent>
     );
-  }
-  else if (loading) {
+  } else if (loading) {
     dialogContent = (
       <DialogContent>
         <ContentLoading />
@@ -202,17 +216,19 @@ function CreateCategorySetDialog() {
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle disableTypography={true}>
-          <Typography variant="h6">
-            {"New Category Set"}
-          </Typography>
+          <Typography variant="h6">{'New Category Set'}</Typography>
         </DialogTitle>
         {dialogContent}
         <DialogActions>
           <Button color="primary" onClick={handleClose} disabled={loading}>
-            {"Cancel"}
+            {'Cancel'}
           </Button>
-          <Button color="secondary" disabled={createDisabled()} onClick={handleCreate}>
-            {"Create"}
+          <Button
+            color="secondary"
+            disabled={createDisabled()}
+            onClick={handleCreate}
+          >
+            {'Create'}
           </Button>
         </DialogActions>
       </Dialog>
