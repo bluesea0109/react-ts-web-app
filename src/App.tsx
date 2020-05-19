@@ -1,24 +1,3 @@
-<<<<<<< HEAD
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import clsx from "clsx";
-import "firebase/auth";
-import React from "react";
-import { Route, Switch } from "react-router-dom";
-import Dashboard from "./components/Dashboard";
-import AppBar from "./components/Appbar";
-import Drawer from "./components/Drawer";
-import QuestionAnswering from "./components/QuestionAnswering";
-import ImageLabeling from "./components/ImageLabeling";
-import { useQuery } from "@apollo/react-hooks";
-import ContentLoading from "./components/ContentLoading";
-import { GET_CURRENT_USER } from "./gql-queries";
-import { Typography } from "@material-ui/core";
-import assert from "assert";
-import ImageCollectionPage from "./components/ImageLabeling/ImageCollections/ImageCollectionPage";
-import ImageViewer from "./components/ImageLabeling/ImageCollections/ImageViewer";
-import { IUser } from "./models";
-import ImageLabeler from "./components/ImageLabeling/ImageCollections/ImageLabeler";
-=======
 import { useQuery } from '@apollo/react-hooks';
 import { Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -35,23 +14,18 @@ import ImageLabeling from './components/ImageLabeling';
 import ImageCollectionPage from './components/ImageLabeling/ImageCollections/ImageCollectionPage';
 import ImageViewer from './components/ImageLabeling/ImageCollections/ImageViewer';
 import QuestionAnswering from './components/QuestionAnswering';
-import TextSummarization from './components/TextSummarization';
 import { GET_CURRENT_USER } from './gql-queries';
 import { IUser } from './models';
->>>>>>> master
+import ImageLabeler from './components/ImageLabeling/ImageCollections/ImageLabeler';
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-<<<<<<< HEAD
       display: "flex",
       height: '100%',
       overflow: 'hidden'
-=======
-      display: 'flex',
->>>>>>> master
     },
     hide: {
       display: 'none',
@@ -173,13 +147,8 @@ function App() {
           </Route>
           {/* <Route path="/orgs/:orgId/projects/:projectId/text-summarization">
             <TextSummarization />
-<<<<<<< HEAD
-          </Route> */}
-          <Route exact path="/orgs/:orgId/projects/:projectId/image-labeling/:tab">
-=======
-          </Route>
+            </Route> */}
           <Route exact={true} path="/orgs/:orgId/projects/:projectId/image-labeling/:tab">
->>>>>>> master
             <ImageLabeling />
           </Route>
           <Route exact={true} path="/orgs/:orgId/projects/:projectId/image-labeling/collections/:collectionId/:tab">
@@ -188,16 +157,11 @@ function App() {
           <Route exact={true} path="/orgs/:orgId/projects/:projectId/image-labeling/collections/:collectionId/images/:imageId">
             <ImageViewer />
           </Route>
-<<<<<<< HEAD
           <Route exact path="/orgs/:orgId/projects/:projectId/image-labeling/collections/:collectionId/label-image/:imageId">
             <ImageLabeler />
           </Route>
           <Route path="/orgs/:orgId/projects/:projectId/text-labeling"></Route>
           <Route exact path="/no-project">
-=======
-          <Route path="/orgs/:orgId/projects/:projectId/text-labeling"/>
-          <Route exact={true} path="/no-project">
->>>>>>> master
             <div className={classes.container}>
               <Typography>{'No project is active. Please create or activate one.'}</Typography>
             </div>

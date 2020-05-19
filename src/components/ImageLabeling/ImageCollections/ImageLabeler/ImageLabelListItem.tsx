@@ -65,21 +65,21 @@ function ImageLabelListItem(props: IImageLabelListItemProps) {
 
   const toggleLabelVisible = (label: ImageCategoricalLabel) => (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
     label.visible = !label.visible;
-    props.onChange?.(props.labelIndex);
+    props.onChange?.(labelIndex);
     e.preventDefault();
     e.stopPropagation();
   };
 
   const toggleLabelExpand = (label: ImageCategoricalLabel) => (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
     label.open = !label.open;
-    props.onChange?.(props.labelIndex);
+    props.onChange?.(labelIndex);
     e.preventDefault();
     e.stopPropagation();
   };
 
   const deleteLabelShape = (label: ImageCategoricalLabel, shapeIndex: number) => (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     label.deleteShape(shapeIndex);
-    props.onChange?.(props.labelIndex);
+    props.onChange?.(labelIndex);
     e.preventDefault();
     e.stopPropagation();
   }
@@ -90,11 +90,11 @@ function ImageLabelListItem(props: IImageLabelListItemProps) {
   };
 
   const onSelect = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    props.onSelect?.(props.labelIndex);
+    props.onSelect?.(labelIndex);
   }
 
   const onDelete = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    props.onDelete?.(props.labelIndex);
+    props.onDelete?.(labelIndex);
   }
 
   return (

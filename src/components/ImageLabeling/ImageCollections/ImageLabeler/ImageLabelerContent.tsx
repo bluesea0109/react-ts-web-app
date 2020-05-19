@@ -534,9 +534,9 @@ function ImageLabelerContent(props: IImageLabelerContentProps) {
 
     let label;
     if (categorySet) {
-      label = new ImageCategoricalLabel(null, state.shape, categorySet, selectedCategory?.name);
+      label = new ImageCategoricalLabel(null, state.shape, categorySet, selectedCategory?.name || null);
     } else {
-      label = new ImageCategoricalLabel(null, state.shape, null, undefined);
+      label = new ImageCategoricalLabel(null, state.shape, null, null);
     }
     label.modified = true;
 
