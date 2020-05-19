@@ -1,13 +1,10 @@
-import React from 'react';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import Toolbar from '@material-ui/core/Toolbar';
+import { Link, Tabs, Toolbar, Typography } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
-import Tabs from '@material-ui/core/Tabs';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Tab from '@material-ui/core/Tab';
-import { useParams, useHistory } from 'react-router-dom';
-import { Link } from '@material-ui/core';
-import { Link as RouterLink } from "react-router-dom";
+import React from 'react';
+import { useHistory, useParams } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import ImagesTable from './ImagesTable';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -17,9 +14,8 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
     },
-  })
+  }),
 );
-
 
 function ImageCollectionPage() {
   // eslint-disable-next-line
@@ -29,7 +25,7 @@ function ImageCollectionPage() {
 
   const handleChangeTab = (event: any, value: any) => {
     history.push({
-      pathname: `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/${value}`
+      pathname: `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/${value}`,
     });
   };
 
@@ -48,7 +44,7 @@ function ImageCollectionPage() {
           </Tabs>
           <Typography className={classes.root}>
             <Link component={RouterLink} to="/image-labeling/collections">
-              {"All collections"}
+              {'All collections'}
             </Link>
           </Typography>
         </Toolbar>
@@ -56,11 +52,9 @@ function ImageCollectionPage() {
       {tab === 'images' && (
         <ImagesTable collectionId={parseInt(collectionId, 10)} />
       )}
-      {tab === 'review-queues' && (
-        <Typography>{"Review Queues"}</Typography>
-      )}
+      {tab === 'review-queues' && <Typography>{'Review Queues'}</Typography>}
     </div>
   );
-};
+}
 
 export default ImageCollectionPage;

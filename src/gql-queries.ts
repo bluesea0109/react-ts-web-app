@@ -126,4 +126,3 @@ export const DELETE_CATEGORY_SET = gql`
     }
   }
 `;
-

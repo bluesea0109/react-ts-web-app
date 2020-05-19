@@ -1,13 +1,13 @@
-import { useLocation, useHistory } from "react-router";
-import { useQuery, useMutation } from "@apollo/react-hooks";
-import { GET_CURRENT_USER, UPDATE_ACTIVE_ORG } from "../gql-queries";
-import { ApolloError } from "apollo-client";
+import { useMutation, useQuery } from '@apollo/react-hooks';
+import { ApolloError } from 'apollo-client';
+import { useHistory, useLocation } from 'react-router';
+import { GET_CURRENT_USER, UPDATE_ACTIVE_ORG } from '../gql-queries';
 
 export interface IUpdateActiveOrg {
-  loading: boolean,
-  error?: ApolloError,
-  orgId: string | null,
-  projectId: string | null,
+  loading: boolean;
+  error?: ApolloError;
+  orgId: string | null;
+  projectId: string | null;
 }
 
 export const useUpdateActiveOrg = (): IUpdateActiveOrg => {
@@ -18,7 +18,7 @@ export const useUpdateActiveOrg = (): IUpdateActiveOrg => {
   const [updateActiveOrg, updateActiveOrgResult] = useMutation(UPDATE_ACTIVE_ORG,
     {
       refetchQueries: [{ query: GET_CURRENT_USER }],
-      awaitRefetchQueries: true
+      awaitRefetchQueries: true,
     });
 
   const orgId = params.get('org');
@@ -28,8 +28,8 @@ export const useUpdateActiveOrg = (): IUpdateActiveOrg => {
     return {
       loading,
       error,
-      orgId: orgId,
-      projectId: projectId,
+      orgId,
+      projectId,
     };
   }
 
@@ -37,8 +37,8 @@ export const useUpdateActiveOrg = (): IUpdateActiveOrg => {
     return {
       loading: updateActiveOrgResult.loading,
       error: updateActiveOrgResult.error,
-      orgId: orgId,
-      projectId: projectId,
+      orgId,
+      projectId,
     };
   }
 
@@ -51,14 +51,14 @@ export const useUpdateActiveOrg = (): IUpdateActiveOrg => {
       // update url with the user's active org and project
       let search = `?org=${activeOrgId}`;
       if (activeProjectId) {
-        search += `&project=${activeProjectId}`
+        search += `&project=${activeProjectId}`;
       }
       history.push({ pathname: location.pathname, search });
-      
+
       return {
         loading: false,
-        orgId: orgId,
-        projectId: projectId,
+        orgId,
+        projectId,
       };
     }
 
@@ -66,7 +66,7 @@ export const useUpdateActiveOrg = (): IUpdateActiveOrg => {
       loading: false,
       orgId,
       projectId,
-    }
+    };
   }
 
   if (orgId !== activeOrgId || projectId !== activeProjectId) {
@@ -74,14 +74,14 @@ export const useUpdateActiveOrg = (): IUpdateActiveOrg => {
     updateActiveOrg({
       variables: {
         orgId,
-        projectId
-      }
+        projectId,
+      },
     });
     return {
       loading: true,
       orgId,
       projectId,
-    }
+    };
   }
 
   return {

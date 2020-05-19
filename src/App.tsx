@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import clsx from "clsx";
 import "firebase/auth";
@@ -17,51 +18,76 @@ import ImageCollectionPage from "./components/ImageLabeling/ImageCollections/Ima
 import ImageViewer from "./components/ImageLabeling/ImageCollections/ImageViewer";
 import { IUser } from "./models";
 import ImageLabeler from "./components/ImageLabeling/ImageCollections/ImageLabeler";
+=======
+import { useQuery } from '@apollo/react-hooks';
+import { Typography } from '@material-ui/core';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import assert from 'assert';
+import clsx from 'clsx';
+import 'firebase/auth';
+import React from 'react';
+import { Route, Switch } from 'react-router-dom';
+import AppBar from './components/Appbar';
+import ContentLoading from './components/ContentLoading';
+import Dashboard from './components/Dashboard';
+import Drawer from './components/Drawer';
+import ImageLabeling from './components/ImageLabeling';
+import ImageCollectionPage from './components/ImageLabeling/ImageCollections/ImageCollectionPage';
+import ImageViewer from './components/ImageLabeling/ImageCollections/ImageViewer';
+import QuestionAnswering from './components/QuestionAnswering';
+import TextSummarization from './components/TextSummarization';
+import { GET_CURRENT_USER } from './gql-queries';
+import { IUser } from './models';
+>>>>>>> master
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
+<<<<<<< HEAD
       display: "flex",
       height: '100%',
       overflow: 'hidden'
+=======
+      display: 'flex',
+>>>>>>> master
     },
     hide: {
-      display: "none",
+      display: 'none',
     },
     drawer: {
       width: drawerWidth,
       flexShrink: 0,
     },
     drawerHeader: {
-      display: "flex",
-      alignItems: "center",
+      display: 'flex',
+      alignItems: 'center',
       padding: theme.spacing(0, 1),
       // necessary for content to be below app bar
       ...theme.mixins.toolbar,
-      justifyContent: "flex-end",
+      justifyContent: 'flex-end',
     },
     drawerPaper: {
       width: drawerWidth,
     },
     content: {
       flexGrow: 1,
-      transition: theme.transitions.create("margin", {
+      transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
       }),
       marginLeft: -drawerWidth,
     },
     contentShift: {
-      transition: theme.transitions.create("margin", {
+      transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.easeOut,
         duration: theme.transitions.duration.enteringScreen,
       }),
       marginLeft: 0,
     },
     appBar: {
-      transition: theme.transitions.create(["margin", "width"], {
+      transition: theme.transitions.create(['margin', 'width'], {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
       }),
@@ -69,15 +95,15 @@ const useStyles = makeStyles((theme: Theme) =>
     appBarShift: {
       width: `calc(100% - ${drawerWidth}px)`,
       marginLeft: drawerWidth,
-      transition: theme.transitions.create(["margin", "width"], {
+      transition: theme.transitions.create(['margin', 'width'], {
         easing: theme.transitions.easing.easeOut,
         duration: theme.transitions.duration.enteringScreen,
       }),
     },
     container: {
-      padding: theme.spacing(2)
-    }
-  })
+      padding: theme.spacing(2),
+    },
+  }),
 );
 
 function App() {
@@ -105,14 +131,14 @@ function App() {
 
   if (error || !data) {
     console.log(error);
-    return <Typography>{"Unkown error occurred"}</Typography>
+    return <Typography>{'Unkown error occurred'}</Typography>;
   }
-
-
 
   assert.notEqual(data, null);
 
-  return (
+  return !data && loading ? (
+    <ContentLoading />
+  ) : (
     <div className={classes.root}>
       <AppBar
         user={data.currentUser}
@@ -131,7 +157,7 @@ function App() {
         }}
         open={state.drawerOpen}
         onClose={onDrawerClose}
-      ></Drawer>
+      />
       <main
         className={clsx(classes.content, {
           [classes.contentShift]: state.drawerOpen,
@@ -139,7 +165,7 @@ function App() {
       >
         <div className={classes.drawerHeader} />
         <Switch>
-          <Route exact path="/">
+          <Route exact={true} path="/">
             <Dashboard user={data.currentUser} />
           </Route>
           <Route path="/orgs/:orgId/projects/:projectId/qa">
@@ -147,23 +173,33 @@ function App() {
           </Route>
           {/* <Route path="/orgs/:orgId/projects/:projectId/text-summarization">
             <TextSummarization />
+<<<<<<< HEAD
           </Route> */}
           <Route exact path="/orgs/:orgId/projects/:projectId/image-labeling/:tab">
+=======
+          </Route>
+          <Route exact={true} path="/orgs/:orgId/projects/:projectId/image-labeling/:tab">
+>>>>>>> master
             <ImageLabeling />
           </Route>
-          <Route exact path="/orgs/:orgId/projects/:projectId/image-labeling/collections/:collectionId/:tab">
+          <Route exact={true} path="/orgs/:orgId/projects/:projectId/image-labeling/collections/:collectionId/:tab">
             <ImageCollectionPage />
           </Route>
-          <Route exact path="/orgs/:orgId/projects/:projectId/image-labeling/collections/:collectionId/images/:imageId">
+          <Route exact={true} path="/orgs/:orgId/projects/:projectId/image-labeling/collections/:collectionId/images/:imageId">
             <ImageViewer />
           </Route>
+<<<<<<< HEAD
           <Route exact path="/orgs/:orgId/projects/:projectId/image-labeling/collections/:collectionId/label-image/:imageId">
             <ImageLabeler />
           </Route>
           <Route path="/orgs/:orgId/projects/:projectId/text-labeling"></Route>
           <Route exact path="/no-project">
+=======
+          <Route path="/orgs/:orgId/projects/:projectId/text-labeling"/>
+          <Route exact={true} path="/no-project">
+>>>>>>> master
             <div className={classes.container}>
-              <Typography>{"No project is active. Please create or activate one."}</Typography>
+              <Typography>{'No project is active. Please create or activate one.'}</Typography>
             </div>
           </Route>
         </Switch>

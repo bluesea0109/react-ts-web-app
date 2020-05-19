@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
-import { Typography, makeStyles, createStyles, Theme, useTheme } from '@material-ui/core';
-import gql from "graphql-tag";
-import ZoomInIcon from '@material-ui/icons/ZoomIn';
-import ZoomOutIcon from '@material-ui/icons/ZoomOut';
+import { createStyles, makeStyles, Theme, Typography, useTheme } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
-import { useHistory, useLocation, useParams } from 'react-router-dom';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Paper from '@material-ui/core/Paper';
+import Switch from '@material-ui/core/Switch';
+import Toolbar from '@material-ui/core/Toolbar';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import Paper from '@material-ui/core/Paper';
-import Toolbar from '@material-ui/core/Toolbar';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
-import { useApolloClient } from 'react-apollo';
-import ImageCanvas from './ImageCanvas';
+import ZoomInIcon from '@material-ui/icons/ZoomIn';
+import ZoomOutIcon from '@material-ui/icons/ZoomOut';
 import { GraphQLError } from 'graphql';
+import gql from 'graphql-tag';
+import React, { useState } from 'react';
+import { useApolloClient } from 'react-apollo';
+import { useHistory, useParams } from 'react-router-dom';
 import ContentLoading from '../../../ContentLoading';
+import ImageCanvas from './ImageCanvas';
 import ImageCategoricalLabel from '../../models/labels/ImageLabel';
 
 const NEXT_IMAGE = gql`
@@ -38,7 +38,7 @@ const styles = makeStyles((theme: Theme) =>
     root: {
       flexGrow: 1,
       display: 'flex',
-      flexDirection: 'column'
+      flexDirection: 'column',
     },
     content: {
       display: 'flex',
@@ -47,7 +47,7 @@ const styles = makeStyles((theme: Theme) =>
       flex: 1,
     },
     canvasHeader: {
-      marginTop: theme.spacing(1)
+      marginTop: theme.spacing(1),
     },
     paper: {
       padding: theme.spacing(1),
@@ -62,7 +62,6 @@ const styles = makeStyles((theme: Theme) =>
     nested: {
       paddingLeft: theme.spacing(1) * 8,
     },
-
     labelTools: {
       padding: theme.spacing(1),
       flex: 1,
@@ -82,37 +81,37 @@ const styles = makeStyles((theme: Theme) =>
       flex: 1
     },
     canvasContainer: {
-      backgroundImage: "linear-gradient(to right, #757575 50%, #a4a4a4 50%), linear-gradient(to bottom, #757575 50%, #a4a4a4 50%)",
-      backgroundBlendMode: "difference, normal",
-      backgroundSize: "2em 2em",
+      backgroundImage: 'linear-gradient(to right, #757575 50%, #a4a4a4 50%), linear-gradient(to bottom, #757575 50%, #a4a4a4 50%)',
+      backgroundBlendMode: 'difference, normal',
+      backgroundSize: '2em 2em',
       overflow: 'scroll',
       flex: '1 1 auto',
-      height: 0
+      height: 0,
     },
     labelListContainer: {
       marginTop: theme.spacing(1),
       display: 'flex',
       flexGrow: 1,
-      flexDirection: 'column'
+      flexDirection: 'column',
     },
     labelList: {
       flexGrow: 1,
-      overflow: 'auto'
+      overflow: 'auto',
     },
     right: {
       flex: 1,
-      flexGrow: 2
+      flexGrow: 2,
     },
     bottomSpacer: {
       height: 8,
-      background: theme.palette.primary.dark
+      background: theme.palette.primary.dark,
     },
     canvas: {
     },
     appBar: {
       top: 'auto',
       bottom: 0,
-      boxShadow: 'none'
+      boxShadow: 'none',
     },
     button: {
       display: 'block',
@@ -125,52 +124,51 @@ const styles = makeStyles((theme: Theme) =>
     },
     listItemModified: {
       borderLeft: `2px solid red !important`,
-      //background: `#d50000 !important`
+      // background: `#d50000 !important`
     },
     margin: {
-      margin: theme.spacing(1)
+      margin: theme.spacing(1),
     },
     marginRight: {
-      marginRight: theme.spacing(1)
+      marginRight: theme.spacing(1),
     },
     checkbox: {
-      padding: 0
+      padding: 0,
     },
     iconButton: {
       marginLeft: theme.spacing(1),
-      marginRight: theme.spacing(1)
+      marginRight: theme.spacing(1),
     },
     grow: {
       flexGrow: 1,
     },
     bottomToolbar: {
-    }
-  })
+    },
+  }),
 );
 
 interface IImageViewerContentProps {
-  image: any,
-  labelQueueImage: any,
-  labels: ImageCategoricalLabel[]
-  categorySets?: any[]
+  image: any;
+  labelQueueImage: any;
+  labels: ImageCategoricalLabel[];
+  categorySets?: any[];
 }
 
 const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
   const classes = styles();
   const theme = useTheme();
   const history = useHistory();
-  const location = useLocation();
   const client = useApolloClient();
   const { image, labelQueueImage, labels } = props;
   const imageId = image.id;
   const { orgId, projectId, collectionId } = useParams();
 
   interface IState {
-    zoom: number,
-    imageLoaded: boolean,
-    viewMask: boolean,
-    loading: boolean,
-    error: GraphQLError | null,
+    zoom: number;
+    imageLoaded: boolean;
+    viewMask: boolean;
+    loading: boolean;
+    error: GraphQLError | null;
   }
   const [state, setState] = useState<IState>({
     zoom: 1.0,
@@ -183,9 +181,9 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
   const handleChangeViewMask = () => {
     setState(s => ({
       ...s,
-      viewMask: !state.viewMask
-    }))
-  }
+      viewMask: !state.viewMask,
+    }));
+  };
 
   const drawLabels = (canvas: HTMLCanvasElement) => {
     const ctx = canvas.getContext('2d');
@@ -194,7 +192,7 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
         label.draw(ctx, state.zoom);
       }
     }
-  }
+  };
 
   const drawImage = (canvas: HTMLCanvasElement) => {
     if (!state.imageLoaded) {
@@ -207,32 +205,32 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
     canvas.width = w;
     canvas.height = h;
     ctx?.drawImage(img, 0, 0, w, h);
-  }
+  };
 
   const draw = () => {
-    if (!state.imageLoaded) return;
-    const canvas = document.getElementById('canvas') as HTMLCanvasElement
-    if (!canvas) return;
+    if (!state.imageLoaded) { return; }
+    const canvas = document.getElementById('canvas') as HTMLCanvasElement;
+    if (!canvas) { return; }
 
     const ctx = canvas.getContext('2d');
     ctx?.clearRect(0, 0, canvas.width, canvas.height);
     drawImage(canvas);
     drawLabels(canvas);
-  }
+  };
 
   const zoomIn = () => {
     setState({
       ...state,
-      zoom: Math.min(8.0, state.zoom + 0.2)
+      zoom: Math.min(8.0, state.zoom + 0.2),
     });
-  }
+  };
 
   const zoomOut = () => {
     setState({
       ...state,
-      zoom: Math.max(0.2, state.zoom - 0.2)
+      zoom: Math.max(0.2, state.zoom - 0.2),
     });
-  }
+  };
 
   // const toggleLabelVisible = (label: ImageCategoricalLabel) => () => {
   //   label.visible = !label.visible;
@@ -247,76 +245,75 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
   const prevImage = async (unlabeled: boolean | null = null) => {
     setState({
       ...state,
-      loading: true
-    })
+      loading: true,
+    });
 
     const { data, errors } = await client.query({
       query: PREV_IMAGE,
       variables: { imageId, unlabeled },
-      fetchPolicy: 'network-only'
+      fetchPolicy: 'network-only',
     });
 
     if (errors?.[0]) {
       setState(s => ({
         ...s,
         loading: false,
-        error: errors[0]
+        error: errors[0],
       }));
     } else {
       goToImage(data.ImageLabelingService_prevImage?.id);
     }
-  }
+  };
 
   const nextImage = async (unlabeled: boolean | null = null) => {
     setState({
       ...state,
-      loading: true
-    })
+      loading: true,
+    });
 
     const { data, errors } = await client.query({
       query: NEXT_IMAGE,
       variables: { imageId, unlabeled },
-      fetchPolicy: 'network-only'
+      fetchPolicy: 'network-only',
     });
 
     if (errors?.[0]) {
       setState(s => ({
         ...s,
         loading: false,
-        error: errors[0]
+        error: errors[0],
       }));
     } else {
       goToImage(data.ImageLabelingService_nextImage?.id);
     }
-  }
+  };
 
   const goToImage = (imageId: number) => {
     if (imageId) {
       history.push({
         pathname: `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/images/${imageId}`,
-        search: location.search
       });
     }
-  }
+  };
 
   const labelThisImage = async () => {
     setState(s => ({
       ...s,
-      loading: true
+      loading: true,
     }));
 
     const { errors } = await client.mutate({
       mutation: SET_LABEL_QUEUE_IMAGE_IN_PROGRESS,
       variables: {
-        imageId
-      }
+        imageId,
+      },
     });
 
     if (errors?.[0]) {
       setState(s => ({
         ...s,
         error: errors[0],
-        loading: false
+        loading: false,
       }));
       return;
     }
@@ -324,10 +321,10 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
     history.push({
       pathname: `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/label-image/${imageId}`,
     });
-  }
+  };
 
   if (state.loading) {
-    return <ContentLoading />
+    return <ContentLoading />;
   }
   draw();
 
@@ -338,7 +335,7 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
   const approvedBy = (
     <>
       <Typography style={{ marginRight: theme.spacing(1) }}>
-        <strong>{"Approved By: "}</strong>{image.approvedBy.length ? image.approvedBy.join(", ") : "Unapproved"}
+        <strong>{'Approved By: '}</strong>{image.approvedBy.length ? image.approvedBy.join(', ') : 'Unapproved'}
       </Typography>
     </>
   );
@@ -348,10 +345,10 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
     labelInfo = (
       <React.Fragment>
         <Typography style={{ marginRight: theme.spacing(1) }}>
-          <strong>{"Labeler: "}</strong>{labelQueueImage.labeler}
+          <strong>{'Labeler: '}</strong>{labelQueueImage.labeler}
         </Typography>
         <Typography style={{ marginRight: theme.spacing(1) }}>
-          <strong>{"Label Status: "}</strong>{labelQueueImage.status}
+          <strong>{'Label Status: '}</strong>{labelQueueImage.status}
         </Typography>
       </React.Fragment>
     );
@@ -364,7 +361,7 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
           <Paper>
             <Toolbar variant="dense">
               <Typography variant="h6">
-                {"Image Viewer"}
+                {'Image Viewer'}
               </Typography>
             </Toolbar>
           </Paper>
@@ -375,7 +372,7 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
                 <React.Fragment>
                   <Toolbar variant="dense">
                     <Typography variant="h6">
-                      {"Labels"}
+                      {'Labels'}
                     </Typography>
                   </Toolbar>
                   <div className={classes.labelList}>
@@ -406,10 +403,10 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
               <NavigateNextIcon />
             </Button>
             <Button color="secondary" size="small" className={classes.marginRight} variant="contained" onClick={() => prevImage(true)}>
-              <NavigateBeforeIcon />{"Unlabeled"}
+              <NavigateBeforeIcon />{'Unlabeled'}
             </Button>
             <Button color="secondary" size="small" className={classes.marginRight} variant="contained" onClick={() => nextImage(true)}>
-              {"Unlabeled"}<NavigateNextIcon />
+              {'Unlabeled'}<NavigateNextIcon />
             </Button>
             <FormControlLabel
               control={
@@ -423,7 +420,7 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
               label="View Mask"
             />
             <Typography className={classes.grow} />
-            <Button color="secondary" size="small" onClick={labelThisImage}>{"Label this Image"}</Button>
+            <Button color="secondary" size="small" onClick={labelThisImage}>{'Label this Image'}</Button>
           </Toolbar>
           <div className={classes.canvasHeader}>
             <Typography>
@@ -441,8 +438,7 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
       </div>
     </div>
   );
-}
-
+};
 
 const SET_LABEL_QUEUE_IMAGE_IN_PROGRESS = gql`
   mutation ($imageId: Int!) {

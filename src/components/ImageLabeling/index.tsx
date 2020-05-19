@@ -1,26 +1,26 @@
-import { makeStyles, Grid, Typography, Toolbar, Theme, createStyles, Tab, Tabs, Paper } from '@material-ui/core';
-import React from "react";
+import { createStyles, Grid, makeStyles, Paper, Tab, Tabs, Theme, Toolbar, Typography } from '@material-ui/core';
+import React from 'react';
+import { useHistory, useParams } from 'react-router';
+import CategorySets from './CategorySets/CategorySets';
 import Collections from './Collections';
 import CreateCollection from './CreateCollection';
-import { useParams, useHistory } from 'react-router';
-import CategorySets from './CategorySets/CategorySets';
 
 interface IProjectProps {
-  orgId: string,
-  projectId: string,
+  orgId: string;
+  projectId: string;
 }
 
 function ImageLabelingPageWrapper() {
   const { orgId, projectId } = useParams();
 
   if (!orgId) {
-    return <Typography>{"No org is active."}</Typography>
+    return <Typography>{'No org is active.'}</Typography>;
   }
   if (!projectId) {
-    return <Typography>{"No project is active."}</Typography>
+    return <Typography>{'No project is active.'}</Typography>;
   }
 
-  return <ImageLabelingPage orgId={orgId} projectId={projectId} />
+  return <ImageLabelingPage orgId={orgId} projectId={projectId} />;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -31,9 +31,9 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: 'column',
     },
     toolbar: {
-      paddingLeft: theme.spacing(2)
+      paddingLeft: theme.spacing(2),
     },
-  })
+  }),
 );
 
 function ImageLabelingPage(props: IProjectProps) {
@@ -44,7 +44,7 @@ function ImageLabelingPage(props: IProjectProps) {
 
   const handleChangeTab = (event: any, value: any) => {
     history.push({
-      pathname: `/orgs/${orgId}/projects/${projectId}/image-labeling/${value}`
+      pathname: `/orgs/${orgId}/projects/${projectId}/image-labeling/${value}`,
     });
   };
 
@@ -64,16 +64,16 @@ function ImageLabelingPage(props: IProjectProps) {
         </Toolbar>
       </Paper>
       {tab === 'collections' && (
-        <Grid container>
-          <Grid item xs={12}>
+        <Grid container={true}>
+          <Grid item={true} xs={12}>
             <Toolbar variant="dense" disableGutters={true} className={classes.toolbar}>
               <Typography variant="h6">
-                {"Collections"}
+                {'Collections'}
               </Typography>
               <CreateCollection />
             </Toolbar>
           </Grid>
-          <Grid container item xs={12}>
+          <Grid container={true} item={true} xs={12}>
             <Collections />
           </Grid>
         </Grid>
@@ -83,6 +83,6 @@ function ImageLabelingPage(props: IProjectProps) {
       )}
     </div>
   );
-};
+}
 
 export default ImageLabelingPageWrapper;

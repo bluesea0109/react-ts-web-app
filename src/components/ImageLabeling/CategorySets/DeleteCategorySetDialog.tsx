@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { useMutation } from '@apollo/react-hooks';
+import { Button } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
 import DeleteIcon from '@material-ui/icons/Delete';
-import ContentLoading from '../../ContentLoading';
-import { useMutation } from '@apollo/react-hooks';
-import { DELETE_CATEGORY_SET, GET_CATEGORY_SETS } from '../../../gql-queries';
-import { Button } from '@material-ui/core';
+import React, { useState } from 'react';
 import { useParams } from 'react-router';
+import { DELETE_CATEGORY_SET, GET_CATEGORY_SETS } from '../../../gql-queries';
+import ContentLoading from '../../ContentLoading';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -23,17 +23,17 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(1),
     },
     button: {
-      boxShadow: 'none'
+      boxShadow: 'none',
     },
     cancel: {
-      backgroundColor: '#ef9a9a'
+      backgroundColor: '#ef9a9a',
     },
-  })
+  }),
 );
 
 interface IDeleteCategorySetProps {
-  name: string,
-  categorySetId: number,
+  name: string;
+  categorySetId: number;
 }
 
 function DeleteCategorySetDialog(props: IDeleteCategorySetProps) {
@@ -49,7 +49,8 @@ function DeleteCategorySetDialog(props: IDeleteCategorySetProps) {
       },
       refetchQueries: [{ query: GET_CATEGORY_SETS, variables: { projectId } }],
       awaitRefetchQueries: true,
-    });
+    },
+  );
 
   const handleOpen = () => {
     setState({ ...state, open: true });
@@ -62,22 +63,16 @@ function DeleteCategorySetDialog(props: IDeleteCategorySetProps) {
   const handleDelete = () => {
     deleteCategorySet({
       variables: {
-        categorySetId: props.categorySetId
-      }
+        categorySetId: props.categorySetId,
+      },
     });
   };
 
   let dialogContent = (
     <DialogContent>
-      <Typography variant='h6'>
-        {'Category Set'}
-      </Typography>
-      <Typography>
-        {`Name: ${props.name}`}
-      </Typography>
-      <Typography>
-        {`Id: ${props.categorySetId}`}
-      </Typography>
+      <Typography variant="h6">{'Category Set'}</Typography>
+      <Typography>{`Name: ${props.name}`}</Typography>
+      <Typography>{`Id: ${props.categorySetId}`}</Typography>
     </DialogContent>
   );
 
@@ -99,18 +94,16 @@ function DeleteCategorySetDialog(props: IDeleteCategorySetProps) {
 
   return (
     <React.Fragment>
-      <Dialog
-        fullWidth={true}
-        open={state.open}
-        onClose={handleClose}
-      >
-        <DialogTitle>{'Are you sure you want to delete this category set?'}</DialogTitle>
+      <Dialog fullWidth={true} open={state.open} onClose={handleClose}>
+        <DialogTitle>
+          {'Are you sure you want to delete this category set?'}
+        </DialogTitle>
         {dialogContent}
         <DialogActions>
-          <Button color='primary' disabled={loading} onClick={handleClose}>
+          <Button color="primary" disabled={loading} onClick={handleClose}>
             {'Cancel'}
           </Button>
-          <Button color='secondary' disabled={loading} onClick={handleDelete}>
+          <Button color="secondary" disabled={loading} onClick={handleDelete}>
             {'Delete'}
           </Button>
         </DialogActions>

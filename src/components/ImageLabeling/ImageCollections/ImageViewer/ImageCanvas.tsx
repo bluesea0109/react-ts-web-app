@@ -1,24 +1,24 @@
+import { createStyles, makeStyles, Theme } from '@material-ui/core';
 import React, { useState } from 'react';
-import { makeStyles, Theme, createStyles } from '@material-ui/core';
 import ImageCategoricalLabel from '../../models/labels/ImageLabel';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     canvasContainer: {
-      //backgroundImage: "linear-gradient(to right, #757575 50%, #a4a4a4 50%), linear-gradient(to bottom, #757575 50%, #a4a4a4 50%)",
+      // backgroundImage: "linear-gradient(to right, #757575 50%, #a4a4a4 50%), linear-gradient(to bottom, #757575 50%, #a4a4a4 50%)",
       // backgroundBlendMode: "difference, normal",
       // backgroundSize: "2em 2em",
       // overflow: 'auto',
       // flex: '1 1 auto',
       // height: 0
-    }
-  })
+    },
+  }),
 );
 
 interface IImageCanvasProps {
-  imageUrl: string,
-  labels: ImageCategoricalLabel[]
-  zoom: number,
+  imageUrl: string;
+  labels: ImageCategoricalLabel[];
+  zoom: number;
 }
 
 const ImageCanvas: React.FC<IImageCanvasProps> = (props) => {
@@ -37,14 +37,14 @@ const ImageCanvas: React.FC<IImageCanvasProps> = (props) => {
         label.draw(ctx, zoom);
       }
     }
-  }
+  };
 
   const handleImageLoad = () => {
     setState({
       ...state,
-      imageLoaded: true
+      imageLoaded: true,
     });
-  }
+  };
 
   const drawImage = (canvas: HTMLCanvasElement) => {
     if (!state.imageLoaded) {
@@ -57,7 +57,7 @@ const ImageCanvas: React.FC<IImageCanvasProps> = (props) => {
     canvas.width = w;
     canvas.height = h;
     ctx?.drawImage(img, 0, 0, w, h);
-  }
+  };
 
   const draw = () => {
     if (!state.imageLoaded) {
@@ -72,7 +72,7 @@ const ImageCanvas: React.FC<IImageCanvasProps> = (props) => {
     ctx?.clearRect(0, 0, canvas.width, canvas.height);
     drawImage(canvas);
     drawLabels(canvas);
-  }
+  };
 
   draw();
 
@@ -83,6 +83,6 @@ const ImageCanvas: React.FC<IImageCanvasProps> = (props) => {
       </canvas>
     </div>
   );
-}
+};
 
 export default ImageCanvas;

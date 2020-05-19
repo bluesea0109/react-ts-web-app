@@ -1,13 +1,13 @@
 
-import { Typography, Paper, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Toolbar, Button } from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import "firebase/auth";
-import React from "react";
-import { IProject, IOrg } from '../../models';
-import { UPDATE_ACTIVE_ORG, GET_CURRENT_USER } from '../../gql-queries';
+import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Toolbar, Typography } from '@material-ui/core';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import 'firebase/auth';
+import React from 'react';
 import { useMutation } from 'react-apollo';
-import ContentLoading from '../ContentLoading';
+import { GET_CURRENT_USER, UPDATE_ACTIVE_ORG } from '../../gql-queries';
+import { IOrg, IProject } from '../../models';
 import ApolloErrorPage from '../ApolloErrorPage';
+import ContentLoading from '../ContentLoading';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -15,14 +15,14 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: theme.spacing(3),
     },
     paper: {
-      padding: theme.spacing(2)
-    }
-  })
+      padding: theme.spacing(2),
+    },
+  }),
 );
 
 interface IProjectsTableProps {
-  activeOrg: IOrg,
-  activeProject: IProject | null
+  activeOrg: IOrg;
+  activeProject: IProject | null;
 }
 
 function ProjectsTable(props: IProjectsTableProps) {
@@ -38,7 +38,7 @@ function ProjectsTable(props: IProjectsTableProps) {
     updateActiveOrg({
       variables: {
         orgId,
-        projectId
+        projectId,
       },
     });
   };
@@ -48,20 +48,19 @@ function ProjectsTable(props: IProjectsTableProps) {
   }
 
   if (error) {
-    return <ApolloErrorPage error={error}/>
+    return <ApolloErrorPage error={error}/>;
   }
 
   const projects = activeOrg.projects;
-  const activeProjectId = activeProject?.id
+  const activeProjectId = activeProject?.id;
 
   const getButton = (projectId: string) => {
     if (activeProjectId !== projectId) {
-      return <Button variant="contained" color="primary" onClick={() => setActiveProject(activeOrg.id, projectId)}>Make Active</Button>
+      return <Button variant="contained" color="primary" onClick={() => setActiveProject(activeOrg.id, projectId)}>Make Active</Button>;
     }
-    return <Button variant="contained" color="secondary" disabled>Active</Button>
-  }
+    return <Button variant="contained" color="secondary" disabled={true}>Active</Button>;
+  };
 
-  
   return (
     <Paper className={classes.paper}>
       <Toolbar>
@@ -74,7 +73,7 @@ function ProjectsTable(props: IProjectsTableProps) {
               <TableRow>
                 <TableCell>Name</TableCell>
                 <TableCell>Project id</TableCell>
-                <TableCell>{"Set to Active"}</TableCell>
+                <TableCell>{'Set to Active'}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
