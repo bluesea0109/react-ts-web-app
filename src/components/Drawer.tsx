@@ -14,7 +14,7 @@ import { IUser } from '../models';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     list: {
-      width: 250,
+      maxWidth: 250,
     },
     fullList: {
       width: 'auto',

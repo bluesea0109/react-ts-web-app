@@ -56,9 +56,45 @@ const deleteLabel = gql`
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      flexGrow: 1,
+      height: '100%',
+    },
+    content: {
+      height: '100%',
       display: 'flex',
-      flexDirection: 'column'
+      flexDirection: 'row',
+      flexWrap: 'nowrap',
+    },
+    labelTools: {
+      padding: theme.spacing(1),
+      flex: 1,
+      flexGrow: 3,
+      display: 'flex',
+      flexDirection: 'column',
+      overflow: 'auto',
+      minWidth: 400,
+    },
+    middle: {
+      width: 0,
+      marginBottom: theme.spacing(1),
+      marginRight: theme.spacing(1),
+      display: 'flex',
+      overflow: 'hidden',
+      flexDirection: 'column',
+      maxWidth: '100%',
+      flex: '10 0 auto'
+    },
+    canvasContainer: {
+      backgroundImage: "linear-gradient(to right, #757575 50%, #a4a4a4 50%), linear-gradient(to bottom, #757575 50%, #a4a4a4 50%)",
+      backgroundBlendMode: "difference, normal",
+      backgroundSize: "2em 2em",
+      overflow: 'auto',
+      flex: '1 0 auto',
+    },
+    bottomToolbar: {
+      height: 0,
+      bottom: 0,
+      minHeight: 30,
+      flex: '1 0 auto',
     },
     canvasHeader: {
       marginTop: theme.spacing(1)
@@ -91,39 +127,6 @@ const useStyles = makeStyles((theme: Theme) =>
     nested: {
       paddingLeft: theme.spacing(1) * 8,
     },
-    content: {
-      display: 'flex',
-      flexDirection: 'row',
-      flexWrap: 'nowrap',
-      flex: 1,
-      //flexGrow: 1,
-    },
-    labelTools: {
-      padding: theme.spacing(1),
-      flex: 1,
-      flexGrow: 3,
-      display: 'flex',
-      flexDirection: 'column',
-      overflow: 'auto',
-      minWidth: 400,
-    },
-    middle: {
-      marginBottom: theme.spacing(1),
-      marginRight: theme.spacing(1),
-      display: 'flex',
-      flexDirection: 'column',
-      overflow: 'auto',
-      flexGrow: 10,
-      flex: 1
-    },
-    canvasContainer: {
-      backgroundImage: "linear-gradient(to right, #757575 50%, #a4a4a4 50%), linear-gradient(to bottom, #757575 50%, #a4a4a4 50%)",
-      backgroundBlendMode: "difference, normal",
-      backgroundSize: "2em 2em",
-      overflow: 'auto',
-      flexGrow: 1,
-      height: 0
-    },
     labelListContainer: {
       padding: theme.spacing(1),
       display: 'flex',
@@ -143,6 +146,7 @@ const useStyles = makeStyles((theme: Theme) =>
       background: theme.palette.primary.dark
     },
     canvas: {
+      overflow: 'auto',
     },
     appBar: {
       top: 'auto',
@@ -446,7 +450,7 @@ function ImageLabelerContent(props: IImageLabelerContentProps) {
         const height = mousey - lastMousey;
 
         const rect = [lastMousex, lastMousey, width, height].map(x => x / state.zoom);
-        
+
         const [x, y, w, h] = rect;
         if (!shape.isRectangleStarted()) {
           shape.startRectangle(x, y, w, h);
@@ -738,7 +742,7 @@ function ImageLabelerContent(props: IImageLabelerContentProps) {
               <img id="image" src={image.url} onLoad={handleImageLoad} alt="image" />
             </canvas>
           </div>
-          <Paper>
+          <Paper className={classes.bottomToolbar}>
             <Toolbar variant="dense">
             </Toolbar>
           </Paper>

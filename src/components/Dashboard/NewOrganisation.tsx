@@ -9,7 +9,7 @@ import ApolloErrorPage from '../ApolloErrorPage';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      padding: theme.spacing(3),
+      margin: theme.spacing(3),
     },
     inputBox: {
       margin: theme.spacing(1),

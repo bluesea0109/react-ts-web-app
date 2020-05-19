@@ -62,7 +62,8 @@ function ImageLabeler() {
     variables: {
       projectId,
       imageId
-    }
+    },
+    fetchPolicy: 'network-only'
   })
 
   if (error) {
@@ -81,6 +82,8 @@ function ImageLabeler() {
     }
     return labels;
   }
+
+  console.log('label queue image', data.ImageLabelingService_labelQueueImage)
 
   return (
     <ImageLabelingPageContent
