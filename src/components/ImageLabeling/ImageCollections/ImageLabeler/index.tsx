@@ -1,4 +1,3 @@
-import gql from 'graphql-tag';
 import React from 'react';
 import { useQuery } from 'react-apollo';
 import { useParams } from 'react-router';
@@ -7,45 +6,7 @@ import ApolloErrorPage from '../../../ApolloErrorPage';
 import ContentLoading from '../../../ContentLoading';
 import ImageCategoricalLabel from '../../models/labels/ImageLabel';
 import ImageLabelingPageContent from './ImageLabelerContent';
-
-const GET_DATA = gql`
-  query ($imageId: Int!, $projectId: String!) {
-    ImageLabelingService_image(imageId: $imageId) {
-      id
-      collectionId
-      name
-      url
-      maskUrl
-      approvedBy
-      labels {
-        id
-        shape
-        category {
-          categorySetId
-          name
-        }
-        value
-        creator
-      }
-    }
-
-    ImageLabelingService_labelQueueImage(imageId: $imageId) {
-      collectionId
-      imageId
-      status
-      labeler
-    }
-
-    ImageLabelingService_categorySets(projectId: $projectId) {
-      id
-      name
-      categories {
-        categorySetId
-        name
-      }
-    }
-  }
-`;
+import { GET_IMAGE_DATA } from './queries';
 
 function ImageLabeler() {
   const params = useParams<{ projectId: string, imageId?: string}>();
@@ -63,7 +24,7 @@ function ImageLabeler() {
     ImageLabelingService_categorySets: ICategorySet[];
   }
 
-  const { loading, error, data } = useQuery<IGetData>(GET_DATA, {
+  const { loading, error, data } = useQuery<IGetData>(GET_IMAGE_DATA, {
     variables: {
       projectId,
       imageId,
@@ -92,6 +53,7 @@ function ImageLabeler() {
 
   return (
     <ImageLabelingPageContent
+      projectId={projectId}
       labelQueueImage={data.ImageLabelingService_labelQueueImage}
       image={data.ImageLabelingService_image}
       labels={loadLabels(data.ImageLabelingService_image.labels)}

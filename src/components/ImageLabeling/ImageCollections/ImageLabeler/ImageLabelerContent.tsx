@@ -12,46 +12,16 @@ import Switch from '@material-ui/core/Switch';
 import Toolbar from '@material-ui/core/Toolbar';
 import ZoomInIcon from '@material-ui/icons/ZoomIn';
 import ZoomOutIcon from '@material-ui/icons/ZoomOut';
-import gql from 'graphql-tag';
 import React from 'react';
 import { ICategory, ICategorySet, IImage, ILabelQueueImage } from '../../../../models';
 import ImageCategoricalLabel from '../../models/labels/ImageLabel';
 import MultiPolygon from '../../models/labels/MultiPolygon';
 import MultiRectangle from '../../models/labels/MultiRectangle';
 import ImageLabelListItem from './ImageLabelListItem';
-
-const SAVE_LABELS = gql`
-  mutation saveImageLabels(
-    $imageId: Int!,
-    $labels: [SaveImageLabelInput]!
-    ) {
-      imageLabelsSave(
-        imageId: $imageId,
-        labels: $labels
-        ) {
-      id
-      imageId
-      shape
-      categorySetId
-      category
-      value
-      creator
-    }
-  }
-`;
-
-const deleteLabel = gql`
-  mutation deleteImageCategoricalLabel(
-    $id: Int!,
-  ) {
-    deleteImageCategoricalLabel(
-      id: $id,
-    ) {
-      id
-      status
-    }
-  }
-`;
+import { withApollo, WithApolloClient } from 'react-apollo';
+import { GET_IMAGE_DATA, SAVE_LABELS } from './queries';
+import ContentLoading from '../../../ContentLoading';
+import Select from 'react-select';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -189,7 +159,8 @@ const styles = (theme: Theme) =>
     },
   });
 
-interface IImageLabelerContentProps extends WithStyles<typeof styles> {
+interface IImageLabelerContentProps extends WithStyles<typeof styles>, WithApolloClient<object> {
+  projectId: string,
   labels: ImageCategoricalLabel[];
   categorySets: ICategorySet[];
   image: IImage;
@@ -209,7 +180,7 @@ interface IImageLabelerContentState {
   type: string;
   selectedCategory: ICategory | null;
   categorySet: ICategorySet | null;
-  loading: boolean;
+  labelsLoading: boolean;
   mousePos: IMousePos | undefined;
   viewMask: boolean;
   selectedLabelIndex: number;
@@ -237,7 +208,7 @@ class ImageLabelerContent extends React.Component<IImageLabelerContentProps, IIm
       type: 'categorical',
       selectedCategory: null,
       categorySet: null,
-      loading: false,
+      labelsLoading: false,
       mousePos: undefined,
       viewMask: false,
       selectedLabelIndex: 0,
@@ -268,13 +239,10 @@ class ImageLabelerContent extends React.Component<IImageLabelerContentProps, IIm
     });
   };
 
-  handleSelectCategory = (categorySet: ICategorySet | null) => (e: React.ChangeEvent<{
-    name?: string | undefined;
-    value: unknown;
-  }>) => {
+  handleSelectCategory = (categorySet: ICategorySet | null) => (e: any) => {
     if (!categorySet) { return; }
 
-    const category = categorySet.categories.find(x => x.name === e.target.value);
+    const category = categorySet.categories.find(x => x.name === e.value);
     if (!category) { return; }
 
     this.setState({
@@ -282,11 +250,8 @@ class ImageLabelerContent extends React.Component<IImageLabelerContentProps, IIm
     });
   };
 
-  handleSelectCategorySet = (e: React.ChangeEvent<{
-    name?: string | undefined;
-    value: unknown;
-  }>) => {
-    const categorySet = this.props.categorySets.find(x => x.id === e.target.value);
+  handleSelectCategorySet = (e: any) => {
+    const categorySet = this.props.categorySets.find(x => x.id === e.value);
     this.setState({
       categorySet: categorySet ? categorySet : null,
     });
@@ -508,7 +473,44 @@ class ImageLabelerContent extends React.Component<IImageLabelerContentProps, IIm
   };
 
   saveLabels = async () => {
-    // todo;
+    this.setState({
+      labelsLoading: true
+    })
+
+    const labels = this.state.labels;
+
+    const variables = {
+      imageId: this.props.image.id,
+      labels: labels.map((label) => {
+        const labelInput: any = {
+          shape: label.shapeName,
+          categorySetId: label.categorySetId,
+          category: label.category,
+          value: label.toJson()
+        };
+
+        if (label.id)
+          labelInput.id = label.id;
+        return labelInput;
+      })
+    };
+
+    await this.props.client.mutate({
+      mutation: SAVE_LABELS,
+      variables,
+      refetchQueries: [{
+        query: GET_IMAGE_DATA,
+        variables: {
+          imageId: this.props.image.id,
+          projectId: this.props.projectId,
+        }
+      }],
+      awaitRefetchQueries: true,
+    });
+
+    this.setState({
+      labelsLoading: false
+    })
   };
 
   reloadLabels = async () => {
@@ -639,15 +641,15 @@ class ImageLabelerContent extends React.Component<IImageLabelerContentProps, IIm
                   </FormControl>
                 </FormGroup>
                 <FormGroup row={true}>
-                  {/* <FormControl className={classes.formControl}>
-                  <Select placeholder="Category Set" options={categorySetOptions} onChange={handleSelectCategorySet} />
-                </FormControl>
-                <FormControl className={classes.formControl}>
-                  <Select placeholder="Category" options={this.state.categorySet?.categories.map(x => ({
-                    value: x.name,
-                    label: x.name,
-                  }))} onChange={handleSelectCategory(this.state.categorySet)} />
-                </FormControl> */}
+                  <FormControl className={classes.formControl}>
+                    <Select placeholder="Category Set" options={categorySetOptions} onChange={this.handleSelectCategorySet} />
+                  </FormControl>
+                  <FormControl className={classes.formControl}>
+                    <Select placeholder="Category" options={this.state.categorySet?.categories.map(x => ({
+                      value: x.name,
+                      label: x.name,
+                    }))} onChange={this.handleSelectCategory(this.state.categorySet)} />
+                  </FormControl>
                 </FormGroup>
                 <FormGroup row={true}>
                   <FormControl className={classes.formControl} />
@@ -659,33 +661,37 @@ class ImageLabelerContent extends React.Component<IImageLabelerContentProps, IIm
               <br />
             </Paper>
             <Paper className={classes.labelListContainer}>
-              <React.Fragment>
-                <Toolbar disableGutters={true} variant="dense">
-                  <Typography variant="h6">
-                    {'Labels'}
-                  </Typography>
-                  <Typography className={classes.grow} />
-                  <Button variant="contained" size="small" onClick={this.saveLabels}
-                    disabled={this.saveDisabled()}
-                    color="secondary">
-                    {'Save'}
-                    {/* <SaveIcon className={classes.rightIcon} variant="contained"></SaveIcon> */}
-                  </Button>
-                </Toolbar>
-                <div className={classes.labelList}>
-                  <List component="nav">
-                    {this.state.labels.map((label, i) => {
-                      return (
-                        <ImageLabelListItem key={i} label={label} labelIndex={i} isSelected={this.state.selectedLabelIndex === i}
-                          onDelete={this.deleteLabel(label, i)}
-                          onSelect={(i: number) => this.setState({ selectedLabelIndex: i })}
-                          onChange={() => this.forceUpdate()}
-                        />
-                      );
-                    })}
-                  </List>
-                </div>
-              </React.Fragment>
+              {this.state.labelsLoading ? (
+                <ContentLoading />
+              ) : (
+                  <React.Fragment>
+                    <Toolbar disableGutters={true} variant="dense">
+                      <Typography variant="h6">
+                        {'Labels'}
+                      </Typography>
+                      <Typography className={classes.grow} />
+                      <Button variant="contained" size="small" onClick={this.saveLabels}
+                        disabled={this.saveDisabled()}
+                        color="secondary">
+                        {'Save'}
+                        {/* <SaveIcon className={classes.rightIcon} variant="contained"></SaveIcon> */}
+                      </Button>
+                    </Toolbar>
+                    <div className={classes.labelList}>
+                      <List component="nav">
+                        {this.state.labels.map((label, i) => {
+                          return (
+                            <ImageLabelListItem key={i} label={label} labelIndex={i} isSelected={this.state.selectedLabelIndex === i}
+                              onDelete={this.deleteLabel(label, i)}
+                              onSelect={(i: number) => this.setState({ selectedLabelIndex: i })}
+                              onChange={() => this.forceUpdate()}
+                            />
+                          );
+                        })}
+                      </List>
+                    </div>
+                  </React.Fragment>
+                )}
             </Paper>
           </div>
           <div className={classes.middle}>
@@ -732,7 +738,7 @@ class ImageLabelerContent extends React.Component<IImageLabelerContentProps, IIm
             <div className={classes.canvasHeader} />
             <div className={classes.canvasContainer} id="canvas-grid">
               <canvas id="canvas" className={classes.canvas} onClick={this.onCanvasClick}>
-                <img id="image" src={image.url} onLoad={this.handleImageLoad} alt="image" />
+                <img id="image" src={image.url} onLoad={this.handleImageLoad} alt="to-label" />
               </canvas>
             </div>
             <Paper className={classes.bottomToolbar} >
@@ -747,34 +753,5 @@ class ImageLabelerContent extends React.Component<IImageLabelerContentProps, IIm
   }
 }
 
-const NEXT_LABEL_QUEUE_IMAGE = gql`
-  mutation labelQueueItemNext($collectionId: String!) {
-    labelQueueItemNext(collectionId: $collectionId) {
-      imageId
-      status
-      labeler
-    }
-  }
-`;
 
-const COMPLETE_LABEL_QUEUE_IMAGE = gql`
-  mutation labelQueueItemComplete($imageId: Int!) {
-    labelQueueItemComplete(imageId: $imageId) {
-      imageId
-      status
-      labeler
-    }
-  }
-`;
-
-const SET_IN_PROGRESS = gql`
-  mutation labelQueueItemInProgress($imageId: Int!) {
-    labelQueueItemInProgress(imageId: $imageId) {
-      imageId
-      status
-      labeler
-    }
-  }
-`;
-
-export default withStyles(styles)(ImageLabelerContent);
+export default withStyles(styles)(withApollo<IImageLabelerContentProps>(ImageLabelerContent));
