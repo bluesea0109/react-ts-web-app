@@ -12,7 +12,7 @@ import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
 import React, { useState } from 'react';
 import { useApolloClient } from 'react-apollo';
-import { useHistory, useLocation, useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import ImageCategoricalLabel from '../../../../models/labels/ImageLabel';
 import ContentLoading from '../../../ContentLoading';
 import ImageCanvas from './ImageCanvas';
@@ -157,11 +157,10 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
   const classes = styles();
   const theme = useTheme();
   const history = useHistory();
-  const location = useLocation();
   const client = useApolloClient();
   const { image, labelQueueImage, labels } = props;
   const imageId = image.id;
-  const { collectionId } = useParams();
+  const { orgId, projectId, collectionId } = useParams();
 
   interface IState {
     zoom: number;
@@ -291,8 +290,7 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
   const goToImage = (imageId: number) => {
     if (imageId) {
       history.push({
-        pathname: `/image-labeling/collections/${collectionId}/images/${imageId}`,
-        search: location.search,
+        pathname: `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/images/${imageId}`,
       });
     }
   };
@@ -320,8 +318,7 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
     }
 
     history.push({
-      pathname: `/image-labeling/collections/${collectionId}/images/${imageId}`,
-      search: location.search,
+      pathname: `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/images/${imageId}`,
     });
   };
 

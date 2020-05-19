@@ -9,6 +9,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { IUser } from '../models';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -28,10 +29,71 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   }));
 
-function CustomDrawer(props: DrawerProps) {
+interface CustomDrawerProps extends DrawerProps {
+  user: IUser;
+}
+
+function CustomDrawer(props: CustomDrawerProps) {
   const classes = useStyles();
   const location = useLocation();
   const theme = useTheme();
+
+  const user = props.user;
+  if (!user.activeOrg) {
+
+  }
+
+  const createPath = (pageName: string): string => {
+    if (!user.activeProject) {
+      return '/no-project';
+    }
+    return `/orgs/${user.activeProject.orgId}/projects/${user.activeProject.id}/${pageName}`;
+  };
+
+  const requiresActiveProjectListItems = (
+    <>
+      <ListItem
+        component={Link}
+        to={createPath('qa')}
+        selected={location.pathname.includes('/qa')}
+        button={true}
+      >
+        <ListItemText primary="Question Answering" />
+      </ListItem>
+      <ListItem
+        component={Link}
+        to={createPath('text-summarization')}
+        selected={location.pathname.includes('text-summarization')}
+        button={true}
+      >
+        <ListItemText primary="Text Summarization" />
+      </ListItem>
+      <ListItem
+        component={Link}
+        to={createPath('chatbot-builder')}
+        selected={location.pathname.includes('chatbot-builder')}
+        button={true}
+      >
+        <ListItemText primary="Chatbot Builder" />
+      </ListItem>
+      <ListItem
+        component={Link}
+        to={createPath('text-labeling')}
+        selected={location.pathname.includes('text-labeling')}
+        button={true}
+      >
+        <ListItemText primary="Text Labeling" />
+      </ListItem>
+      <ListItem
+        component={Link}
+        to={createPath('image-labeling/collections')}
+        selected={location.pathname.includes('image-labeling')}
+        button={true}
+      >
+        <ListItemText primary="Image Labeling" />
+      </ListItem>
+    </>
+  );
 
   const list = () => (
     <div className={classes.list} role="presentation">
@@ -52,83 +114,15 @@ function CustomDrawer(props: DrawerProps) {
       <List>
         <ListItem
           component={Link}
-          to={{
-            pathname: '/',
-            search: location.search,
-          }}
+          to="/"
           selected={location.pathname === '/'}
           button={true}
         >
-          <ListItemText primary="Home" />
+          <ListItemText primary="Dashboard" />
         </ListItem>
-        <ListItem
-          component={Link}
-          to={{
-            pathname: '/account',
-            search: location.search,
-          }}
-          selected={location.pathname === '/account'}
-          button={true}
-        >
-          <ListItemText primary="Account" />
-        </ListItem>
-        <ListItem
-          component={Link}
-          to={{
-            pathname: '/qa',
-            search: location.search,
-          }}
-          selected={location.pathname === '/qa'}
-          button={true}
-        >
-          <ListItemText primary="Question Answering" />
-        </ListItem>
-        <ListItem
-          component={Link}
-          to={{
-            pathname: '/text-summarization',
-            search: location.search,
-          }}
-          selected={location.pathname === '/text-summarization'}
-          button={true}
-        >
-          <ListItemText primary="Text Summarization" />
-        </ListItem>
-        <ListItem
-          component={Link}
-          to={{
-            pathname: '/chatbot-builder',
-            search: location.search,
-          }}
-          selected={location.pathname === '/chatbot-builder'}
-          button={true}
-        >
-          <ListItemText primary="Chatbot Builder" />
-        </ListItem>
-        <ListItem
-          component={Link}
-          to={{
-            pathname: '/text-labeling',
-            search: location.search,
-          }}
-          selected={location.pathname === '/text-labeling'}
-          button={true}
-        >
-          <ListItemText primary="Text Labeling" />
-        </ListItem>
-        <ListItem
-          component={Link}
-          to={{
-            pathname: '/image-labeling/collections',
-            search: location.search,
-          }}
-          selected={location.pathname === '/image-labeling'}
-          button={true}
-        >
-          <ListItemText primary="Image Labeling" />
-        </ListItem>
+        {requiresActiveProjectListItems}
       </List>
-    </div>
+    </div >
   );
 
   return (

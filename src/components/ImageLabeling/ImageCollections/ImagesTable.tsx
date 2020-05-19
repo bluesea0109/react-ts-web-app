@@ -23,7 +23,7 @@ import LastPageIcon from '@material-ui/icons/LastPage';
 import RemoveIcon from '@material-ui/icons/RemoveCircle';
 import gql from 'graphql-tag';
 import React, { useEffect, useState } from 'react';
-import { useHistory, useLocation } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 import IconButtonPlay from '../../IconButtonPlay';
@@ -141,6 +141,7 @@ interface IImagesTableProps {
 function ImagesTable(props: IImagesTableProps) {
   const { collectionId } = props;
   const classes = styles();
+  const { orgId, projectId } = useParams();
   const [state, setState] = useState({
     loading: false,
     page: 0,
@@ -169,7 +170,6 @@ function ImagesTable(props: IImagesTableProps) {
 
   const client = useApolloClient();
   const history = useHistory();
-  const location = useLocation();
 
   useEffect(() => {
     console.log('start polling');
@@ -192,16 +192,14 @@ function ImagesTable(props: IImagesTableProps) {
     if (data && data.ImageLabelingService_nextLabelQueueImage) {
       const { imageId } = data.ImageLabelingService_nextLabelQueueImage;
       history.push({
-        pathname: `/image-labeling/collections/${collectionId}/images/${imageId}`,
-        search: location.search,
+        pathname: `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/images/${imageId}`,
       });
     }
   };
 
   const handleImageClick = (imageId: number) => () => {
     history.push({
-      pathname: `/image-labeling/collections/${collectionId}/images/${imageId}`,
-      search: location.search,
+      pathname: `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/images/${imageId}`,
     });
   };
 

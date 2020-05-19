@@ -1,36 +1,10 @@
 import { useMutation } from '@apollo/react-hooks';
-import {
-  Button,
-  Card,
-  createStyles,
-  LinearProgress,
-  makeStyles,
-  TextField,
-  Theme,
-  Typography,
-} from '@material-ui/core';
+import { Button, Card, createStyles, LinearProgress, makeStyles, TextField, Theme, Typography } from '@material-ui/core';
 import clsx from 'clsx';
-import gql from 'graphql-tag';
 import React, { useState } from 'react';
-import { CREATE_PROJECT } from '../../gql-queries';
-import { useActiveOrg } from '../UseActiveOrg';
-
-const GET_USER = gql`
-  query {
-    currentUser {
-      name
-      email
-      activeOrg {
-        id
-        name
-      }
-      activeProject {
-        id
-        name
-      }
-    }
-  }
-`;
+import { CREATE_PROJECT, GET_CURRENT_USER } from '../../gql-queries';
+import { IOrg } from '../../models';
+import ApolloErrorPage from '../ApolloErrorPage';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -46,34 +20,33 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-function NewProject() {
+interface INewProjectProps {
+  activeOrg: IOrg | null;
+}
+
+function NewProject(props: INewProjectProps) {
+  const { activeOrg } = props;
   const classes = useStyles();
   const [state, setState] = useState({
     name: '',
   });
-  const { orgId } = useActiveOrg();
 
-  const [createProject, createProjectResult] = useMutation(CREATE_PROJECT, {
-    refetchQueries: [
-      {
-        query: GET_USER,
-      },
-    ],
+  const [createProject, { loading, error }] = useMutation(CREATE_PROJECT, {
+    refetchQueries: [{
+      query: GET_CURRENT_USER,
+    }],
+    awaitRefetchQueries: true,
   });
 
-  const loading = createProjectResult.loading;
-
-  if (createProjectResult.error) {
+  if (error) {
     // TODO: handle errors
-    return <p>{JSON.stringify(createProjectResult.error, null, 2)}</p>;
+    return <ApolloErrorPage error={error} />;
   }
 
   const submit = () => {
-    if (!orgId) {
-      alert('User must have active org to create a project');
-      return;
-    }
-    createProject({ variables: { orgId, name: state.name } });
+    if (!activeOrg) { return; }
+    createProject({ variables: { orgId: activeOrg.id, name: state.name } });
+    setState({ name: '' });
   };
 
   return (
@@ -93,11 +66,9 @@ function NewProject() {
       <br />
       <Button
         className={clsx(classes.button)}
-        disabled={loading}
-        variant="contained"
-        color="primary"
-        onClick={submit}
-      >
+        variant="contained" color="primary"
+        disabled={loading || activeOrg == null || !state.name}
+        onClick={submit}>
         {'Submit'}
       </Button>
     </Card>

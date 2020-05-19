@@ -9,9 +9,9 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import DeleteIcon from '@material-ui/icons/Delete';
 import React, { useState } from 'react';
+import { useParams } from 'react-router';
 import { DELETE_CATEGORY_SET, GET_CATEGORY_SETS } from '../../../gql-queries';
 import ContentLoading from '../../ContentLoading';
-import { useActiveOrg } from '../../UseActiveOrg';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -41,9 +41,8 @@ function DeleteCategorySetDialog(props: IDeleteCategorySetProps) {
   const [state, setState] = useState({
     open: false,
   });
-  const { projectId } = useActiveOrg();
-  const [deleteCategorySet, { loading, error }] = useMutation(
-    DELETE_CATEGORY_SET,
+  const { projectId } = useParams();
+  const [deleteCategorySet, { loading, error }] = useMutation(DELETE_CATEGORY_SET,
     {
       onCompleted: () => {
         handleClose();

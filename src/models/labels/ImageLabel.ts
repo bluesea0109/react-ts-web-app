@@ -1,6 +1,7 @@
 import MultiPolygon from './MultiPolygon';
 import MultiRectangle from './MultiRectangle';
-import { MultiShape, Shape } from './MultiShape';
+import MultiShape from './MultiShape';
+import Shape from './Shape';
 
 class ImageCategoricalLabel {
   shape: MultiShape | null = null;

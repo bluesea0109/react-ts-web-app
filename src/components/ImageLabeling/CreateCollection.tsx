@@ -6,9 +6,9 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import gql from 'graphql-tag';
 import React, { useState } from 'react';
+import { useParams } from 'react-router';
 import ContentLoading from '../ContentLoading';
 import IconButtonAdd from '../IconButtonAdd';
-import { useActiveOrg } from '../UseActiveOrg';
 
 const CREATE_COLLECTION = gql`
   mutation($projectId: String!, $name: String!) {
@@ -35,9 +35,8 @@ interface ICreateCollectionProps {
 }
 
 function CreateCollection(props: ICreateCollectionProps) {
-  const { projectId } = useActiveOrg();
-  const [createCollection, { loading, error, data }] = useMutation(
-    CREATE_COLLECTION,
+  const { projectId } = useParams();
+  const [createCollection, { loading, error, data }] = useMutation(CREATE_COLLECTION,
     {
       onCompleted: () => {
         handleClose();

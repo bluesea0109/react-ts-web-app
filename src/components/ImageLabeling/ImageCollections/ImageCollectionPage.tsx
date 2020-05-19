@@ -3,7 +3,7 @@ import Paper from '@material-ui/core/Paper';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Tab from '@material-ui/core/Tab';
 import React from 'react';
-import { useHistory, useLocation, useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { Link as RouterLink } from 'react-router-dom';
 import ImagesTable from './ImagesTable';
 
@@ -20,14 +20,12 @@ const useStyles = makeStyles((theme: Theme) =>
 function ImageCollectionPage() {
   // eslint-disable-next-line
   const classes = useStyles();
-  const { collectionId, tab } = useParams();
+  const { orgId, projectId, collectionId, tab } = useParams();
   const history = useHistory();
-  const location = useLocation();
 
   const handleChangeTab = (event: any, value: any) => {
     history.push({
-      pathname: `/image-labeling/collections/${collectionId}/${value}`,
-      search: location.search,
+      pathname: `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/${value}`,
     });
   };
 

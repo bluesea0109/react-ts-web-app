@@ -15,10 +15,11 @@ import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
 import Tooltip from '@material-ui/core/Tooltip';
 import AddIcon from '@material-ui/icons/Add';
-import React, { useState } from 'react';
+import { useState } from 'react';
+import React from 'react';
+import { useParams } from 'react-router';
 import { CREATE_CATEGORY_SET, GET_CATEGORY_SETS } from '../../../gql-queries';
 import ContentLoading from '../../ContentLoading';
-import { useActiveOrg } from '../../UseActiveOrg';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -75,9 +76,8 @@ function CreateCategorySetDialog() {
     categorySetName: '',
     categories: [],
   });
-  const { projectId } = useActiveOrg();
-  const [createCategorySet, { loading, error }] = useMutation(
-    CREATE_CATEGORY_SET,
+  const { projectId } = useParams();
+  const [createCategorySet, { loading, error }] = useMutation(CREATE_CATEGORY_SET,
     {
       onCompleted: () => {
         handleClose();

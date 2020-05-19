@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/react-hooks';
 import {
   CircularProgress,
   createStyles,
@@ -14,30 +14,10 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import MenuIcon from '@material-ui/icons/Menu';
 import clsx from 'clsx';
-import gql from 'graphql-tag';
 import React from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
-
-const GET_ORGS = gql`
-  query {
-    currentUser {
-      name
-      email
-      activeOrg {
-        id
-        name
-      }
-      activeProject {
-        id
-        name
-      }
-    }
-    orgs {
-      id
-      name
-    }
-  }
-`;
+import { useHistory } from 'react-router-dom';
+import { GET_CURRENT_USER, UPDATE_ACTIVE_ORG } from '../gql-queries';
+import { IUser } from '../models';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -64,17 +44,28 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function CustomAppbar(props: CustomAppbarProps) {
   const classes = useStyles();
-  const { loading, error, data } = useQuery(GET_ORGS);
   const history = useHistory();
-  const location = useLocation();
+
+  const [updateActiveOrg, { loading, error }] = useMutation(UPDATE_ACTIVE_ORG,
+    {
+      refetchQueries: [{ query: GET_CURRENT_USER }],
+      awaitRefetchQueries: true,
+      onCompleted: () => {
+        history.push('/'); // back to dashboard. TODO: keep the user on their current tab.
+      },
+    });
 
   const setActiveOrg = async (orgId: string) => {
-    const search = `?org=${orgId}`;
-    history.push({
-      pathname: location.pathname,
-      search,
+    const org = props.user.orgs.find(x => x.id === orgId);
+    const projects = org?.projects;
+
+    const projectId = projects?.[0]?.id;
+    updateActiveOrg({
+      variables: {
+        orgId,
+        ...projectId && { projectId },
+      },
     });
-    window.location.reload(false);
   };
 
   const renderProjects = () => {
@@ -84,10 +75,11 @@ function CustomAppbar(props: CustomAppbarProps) {
 
     if (error) {
       // TODO: handle errors
-      return <p>{JSON.stringify(error, null, 2)}</p>;
+      console.error(error);
+      return <Typography>{'Error'}</Typography>;
     }
 
-    const activeOrg = data.currentUser.activeOrg;
+    const activeOrg = props.user.activeOrg;
 
     return (
       <>
@@ -102,12 +94,8 @@ function CustomAppbar(props: CustomAppbarProps) {
             },
           }}
         >
-          {data.orgs.map((org: any) => (
-            <MenuItem key={org.id} value={org.id}>
-              {org.name}
-            </MenuItem>
-          ))}
-        </Select>
+          {props.user.orgs.map((org: any) => <MenuItem key={org.id} value={org.id}>{org.name}</MenuItem>)}
+        </Select >
       </>
     );
   };
@@ -136,6 +124,7 @@ function CustomAppbar(props: CustomAppbarProps) {
 
 interface CustomAppbarProps extends AppBarProps {
   onMenuClick: () => void;
+  user: IUser;
 }
 
 export default CustomAppbar;

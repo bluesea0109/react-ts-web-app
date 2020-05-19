@@ -5,7 +5,6 @@ import { useParams } from 'react-router';
 import ImageCategoricalLabel from '../../../../models/labels/ImageLabel';
 import ApolloErrorPage from '../../../ApolloErrorPage';
 import ContentLoading from '../../../ContentLoading';
-import { useActiveOrg } from '../../../UseActiveOrg';
 import ImageViewerContent from './ImageViewerContent';
 
 const GET_DATA = gql`
@@ -46,7 +45,7 @@ const GET_DATA = gql`
 
 const ImageViewer: React.FC = () => {
   const { imageId } = useParams();
-  const { projectId } = useActiveOrg();
+  const { projectId } = useParams();
   const { loading, error, data } = useQuery(GET_DATA, {
     variables: {
       projectId,

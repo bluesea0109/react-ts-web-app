@@ -10,9 +10,8 @@ import {
 } from '@material-ui/core';
 import gql from 'graphql-tag';
 import React from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import ContentLoading from '../ContentLoading';
-import { useActiveOrg } from '../UseActiveOrg';
 
 const GET_COLLECTIONS = gql`
   query($projectId: String!) {
@@ -36,7 +35,7 @@ interface IProjectProps {
 }
 
 function CollectionsListWrapper() {
-  const { orgId, projectId } = useActiveOrg();
+  const { orgId, projectId } = useParams();
 
   if (!orgId) {
     return <Typography>{'No org is active.'}</Typography>;
@@ -50,10 +49,8 @@ function CollectionsListWrapper() {
 function CollectionsList(props: IProjectProps) {
   const classes = useStyles();
   const history = useHistory();
-  const location = useLocation();
-  const { loading, error, data } = useQuery(GET_COLLECTIONS, {
-    variables: { projectId: props.projectId },
-  });
+  const { loading, error, data } = useQuery(GET_COLLECTIONS, { variables: { projectId: props.projectId } });
+  const { orgId, projectId } = useParams();
 
   if (loading) {
     return <ContentLoading />;
@@ -66,8 +63,7 @@ function CollectionsList(props: IProjectProps) {
 
   const onSelectCollection = (collectionId: number) => () => {
     history.push({
-      pathname: `/image-labeling/collections/${collectionId}/images`,
-      search: location.search,
+      pathname: `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/images`,
     });
   };
 
