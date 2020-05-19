@@ -56,10 +56,13 @@ const deleteLabel = gql`
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      overflow: 'auto',
     },
     content: {
       height: '100%',
+      maxHeight: '100%',
       display: 'flex',
       flexDirection: 'row',
       flexWrap: 'nowrap',
@@ -74,27 +77,24 @@ const useStyles = makeStyles((theme: Theme) =>
       minWidth: 400,
     },
     middle: {
+      maxHeight: '90vh',
+      overflow: 'auto',
       width: 0,
       marginBottom: theme.spacing(1),
       marginRight: theme.spacing(1),
       display: 'flex',
-      overflow: 'hidden',
       flexDirection: 'column',
       maxWidth: '100%',
-      flex: '10 0 auto'
+      flex: '10 0 auto',
     },
     canvasContainer: {
       backgroundImage: "linear-gradient(to right, #757575 50%, #a4a4a4 50%), linear-gradient(to bottom, #757575 50%, #a4a4a4 50%)",
       backgroundBlendMode: "difference, normal",
       backgroundSize: "2em 2em",
       overflow: 'auto',
-      flex: '1 0 auto',
     },
     bottomToolbar: {
-      height: 0,
-      bottom: 0,
-      minHeight: 30,
-      flex: '1 0 auto',
+      //lexShrink: 0
     },
     canvasHeader: {
       marginTop: theme.spacing(1)
@@ -146,7 +146,8 @@ const useStyles = makeStyles((theme: Theme) =>
       background: theme.palette.primary.dark
     },
     canvas: {
-      overflow: 'auto',
+      margin: 0,
+      padding: 0,
     },
     appBar: {
       top: 'auto',
@@ -530,7 +531,7 @@ function ImageLabelerContent(props: IImageLabelerContentProps) {
   const addLabel = () => {
     console.log('adding label');
     const { categorySet, selectedCategory } = state;
-    
+
     let label;
     if (categorySet) {
       label = new ImageCategoricalLabel(null, state.shape, categorySet, selectedCategory?.name);
@@ -682,9 +683,9 @@ function ImageLabelerContent(props: IImageLabelerContentProps) {
                 <List component="nav">
                   {state.labels.map((label, i) => {
                     return (
-                      <ImageLabelListItem label={label} labelIndex={i} isSelected={state.selectedLabelIndex===i}
+                      <ImageLabelListItem label={label} labelIndex={i} isSelected={state.selectedLabelIndex === i}
                         onDelete={deleteLabel(label, i)}
-                        onSelect={(i: number) => setState({...state, selectedLabelIndex: i})}
+                        onSelect={(i: number) => setState({ ...state, selectedLabelIndex: i })}
                         onChange={() => forceUpdate()}
                       />
                     );
@@ -697,12 +698,12 @@ function ImageLabelerContent(props: IImageLabelerContentProps) {
         <div className={classes.middle}>
           <Paper className={classes.toolbar}>
             <Toolbar variant="dense" disableGutters={true}>
-            <Button size="small" variant="contained" className={classes.marginRight} onClick={zoomIn} color="secondary">
-              <ZoomInIcon />
-            </Button>
-            <Button size="small" variant="contained" className={classes.marginRight} onClick={zoomOut} color="secondary">
-              <ZoomOutIcon />
-            </Button>
+              <Button size="small" variant="contained" className={classes.marginRight} onClick={zoomIn} color="secondary">
+                <ZoomInIcon />
+              </Button>
+              <Button size="small" variant="contained" className={classes.marginRight} onClick={zoomOut} color="secondary">
+                <ZoomOutIcon />
+              </Button>
               <Button disabled={closePolygonDisabled()} onClick={closePolygon}>{"Close Polygon"}</Button>
               <FormControlLabel
                 control={
@@ -742,8 +743,9 @@ function ImageLabelerContent(props: IImageLabelerContentProps) {
               <img id="image" src={image.url} onLoad={handleImageLoad} alt="image" />
             </canvas>
           </div>
-          <Paper className={classes.bottomToolbar}>
+          <Paper className={classes.bottomToolbar} >
             <Toolbar variant="dense">
+              <Typography>{"Bottom toolbar"}</Typography>
             </Toolbar>
           </Paper>
         </div>
