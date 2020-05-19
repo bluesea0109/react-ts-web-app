@@ -1,4 +1,4 @@
-import gql from "graphql-tag";
+import gql from 'graphql-tag';
 
 export const GET_IMAGE_DATA = gql`
   query test($imageId: Int!, $projectId: String!) {

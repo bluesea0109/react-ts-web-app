@@ -13,15 +13,15 @@ import Toolbar from '@material-ui/core/Toolbar';
 import ZoomInIcon from '@material-ui/icons/ZoomIn';
 import ZoomOutIcon from '@material-ui/icons/ZoomOut';
 import React from 'react';
+import { withApollo, WithApolloClient } from 'react-apollo';
+import Select from 'react-select';
 import { ICategory, ICategorySet, IImage, ILabelQueueImage } from '../../../../models';
+import ContentLoading from '../../../ContentLoading';
 import ImageCategoricalLabel from '../../models/labels/ImageLabel';
 import MultiPolygon from '../../models/labels/MultiPolygon';
 import MultiRectangle from '../../models/labels/MultiRectangle';
 import ImageLabelListItem from './ImageLabelListItem';
-import { withApollo, WithApolloClient } from 'react-apollo';
 import { GET_IMAGE_DATA, SAVE_LABELS } from './queries';
-import ContentLoading from '../../../ContentLoading';
-import Select from 'react-select';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -160,7 +160,7 @@ const styles = (theme: Theme) =>
   });
 
 interface IImageLabelerContentProps extends WithStyles<typeof styles>, WithApolloClient<object> {
-  projectId: string,
+  projectId: string;
   labels: ImageCategoricalLabel[];
   categorySets: ICategorySet[];
   image: IImage;
@@ -223,21 +223,21 @@ class ImageLabelerContent extends React.Component<IImageLabelerContentProps, IIm
     this.setState((state) => ({
       viewMask: !state.viewMask,
     }));
-  };
+  }
 
   getSelectedLabel = () => {
     if (!this.state.labels) {
       return null;
     }
     return this.state.labels[this.state.selectedLabelIndex];
-  };
+  }
 
   handleChange = (name: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({
       ...this.state,
       [name]: e.target.value,
     });
-  };
+  }
 
   handleSelectCategory = (categorySet: ICategorySet | null) => (e: any) => {
     if (!categorySet) { return; }
@@ -248,14 +248,14 @@ class ImageLabelerContent extends React.Component<IImageLabelerContentProps, IIm
     this.setState({
       selectedCategory: category,
     });
-  };
+  }
 
   handleSelectCategorySet = (e: any) => {
     const categorySet = this.props.categorySets.find(x => x.id === e.value);
     this.setState({
       categorySet: categorySet ? categorySet : null,
     });
-  };
+  }
 
   getMousePos = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>): IMousePos | undefined => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -263,7 +263,7 @@ class ImageLabelerContent extends React.Component<IImageLabelerContentProps, IIm
       x: (e.clientX - rect.left) / this.state.zoom,
       y: (e.clientY - rect.top) / this.state.zoom,
     };
-  };
+  }
 
   drawLabels = () => {
     const canvas = document.getElementById('canvas') as HTMLCanvasElement;
@@ -276,7 +276,7 @@ class ImageLabelerContent extends React.Component<IImageLabelerContentProps, IIm
         label.draw(ctx, this.state.zoom);
       }
     }
-  };
+  }
 
   closePolygonDisabled = () => {
     const label = this.getSelectedLabel();
@@ -286,7 +286,7 @@ class ImageLabelerContent extends React.Component<IImageLabelerContentProps, IIm
     }
     const multipoly = label.shape;
     return !(multipoly.currentPolygon && multipoly.currentPolygon.points.length > 2);
-  };
+  }
 
   onCanvasClick = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
     const label = this.getSelectedLabel();
@@ -300,10 +300,10 @@ class ImageLabelerContent extends React.Component<IImageLabelerContentProps, IIm
 
       this.setState(s => ({
         ...s,
-        mousePos: point
+        mousePos: point,
       }));
 
-      if (!point) return;
+      if (!point) { return; }
 
       multiPoly.addPoint([point.x, point.y]);
 
@@ -320,7 +320,7 @@ class ImageLabelerContent extends React.Component<IImageLabelerContentProps, IIm
         closePolygonDisabled,
       }));
     }
-  };
+  }
 
   handleImageLoad = () => {
     this.setState({
@@ -328,7 +328,7 @@ class ImageLabelerContent extends React.Component<IImageLabelerContentProps, IIm
     });
     this.drawImage();
     this.initDraw();
-  };
+  }
 
   getMultiRect = (): MultiRectangle | null => {
     const label = this.getSelectedLabel();
@@ -336,7 +336,7 @@ class ImageLabelerContent extends React.Component<IImageLabelerContentProps, IIm
     const shape = label.shape;
     if (!(shape instanceof MultiRectangle)) { return null; }
     return shape;
-  };
+  }
 
   drawImage = () => {
     if (!this.state.imgLoaded) { return; }
@@ -352,7 +352,7 @@ class ImageLabelerContent extends React.Component<IImageLabelerContentProps, IIm
     canvas.width = w;
     canvas.height = h;
     ctx?.drawImage(img, 0, 0, w, h);
-  };
+  }
 
   initDraw = () => {
     console.log('initDraw');
@@ -376,7 +376,7 @@ class ImageLabelerContent extends React.Component<IImageLabelerContentProps, IIm
         x: (e.clientX - rect.left) / this.state.zoom,
         y: (e.clientY - rect.top) / this.state.zoom,
       };
-    }
+    };
 
     // Mousedown
     canvas.onmousedown = (e: MouseEvent) => {
@@ -428,7 +428,7 @@ class ImageLabelerContent extends React.Component<IImageLabelerContentProps, IIm
         this.forceUpdate();
       }
     };
-  };
+  }
 
   draw = () => {
     console.log('drawing...');
@@ -444,19 +444,19 @@ class ImageLabelerContent extends React.Component<IImageLabelerContentProps, IIm
     ctx?.clearRect(0, 0, canvas.width, canvas.height);
     this.drawImage();
     this.drawLabels();
-  };
+  }
 
   zoomIn = () => {
     this.setState({
       zoom: Math.min(8.0, this.state.zoom + 0.2),
     });
-  };
+  }
 
   zoomOut = () => {
     this.setState({
       zoom: Math.max(0.2, this.state.zoom - 0.2),
     });
-  };
+  }
 
   closePolygon = () => {
     const label = this.getSelectedLabel();
@@ -464,18 +464,18 @@ class ImageLabelerContent extends React.Component<IImageLabelerContentProps, IIm
     const poly = label.shape as MultiPolygon;
     poly.endPolygon();
     this.forceUpdate();
-  };
+  }
 
   deleteLabel = (label: ImageCategoricalLabel, labelIndex: number) => async () => {
     let labels = this.state.labels;
     labels = [...labels.slice(0, labelIndex), ...labels.slice(labelIndex + 1)];
     this.setState({ ...this.state, labels });
-  };
+  }
 
   saveLabels = async () => {
     this.setState({
-      labelsLoading: true
-    })
+      labelsLoading: true,
+    });
 
     const labels = this.state.labels;
 
@@ -486,13 +486,14 @@ class ImageLabelerContent extends React.Component<IImageLabelerContentProps, IIm
           shape: label.shapeName,
           categorySetId: label.categorySetId,
           category: label.category,
-          value: label.toJson()
+          value: label.toJson(),
         };
 
-        if (label.id)
+        if (label.id) {
           labelInput.id = label.id;
+        }
         return labelInput;
-      })
+      }),
     };
 
     await this.props.client.mutate({
@@ -503,30 +504,30 @@ class ImageLabelerContent extends React.Component<IImageLabelerContentProps, IIm
         variables: {
           imageId: this.props.image.id,
           projectId: this.props.projectId,
-        }
+        },
       }],
       awaitRefetchQueries: true,
     });
 
     this.setState({
-      labelsLoading: false
-    })
-  };
+      labelsLoading: false,
+    });
+  }
 
   reloadLabels = async () => {
     // todo;
-  };
+  }
 
   nextQueueItem = async () => {
     // todo
-  };
+  }
 
   handleShapeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log('changing shape');
     this.setState({
       shape: e.target.value,
     });
-  };
+  }
 
   addLabel = () => {
     console.log('adding label');
@@ -545,31 +546,31 @@ class ImageLabelerContent extends React.Component<IImageLabelerContentProps, IIm
     this.setState({
       labels,
     });
-  };
+  }
 
   onCreated = () => {
     // todo
-  };
+  }
 
   markComplete = async () => {
     // todo;
-  };
+  }
 
   markInProgress = async () => {
     // todo
-  };
+  }
 
   markCompleteDisabled = () => {
     return this.state.labels.length === 0 || this.state.labels.some(x => x.modified);
-  };
+  }
 
   saveDisabled = () => {
     return this.state.labels.every(x => !x.modified);
-  };
+  }
 
   viewMaskDisabled = () => {
     return !this.props.image.maskUrl;
-  };
+  }
 
   render() {
     const { classes, image, labelQueueImage } = this.props;
@@ -752,6 +753,5 @@ class ImageLabelerContent extends React.Component<IImageLabelerContentProps, IIm
     );
   }
 }
-
 
 export default withStyles(styles)(withApollo<IImageLabelerContentProps>(ImageLabelerContent));
