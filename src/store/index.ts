@@ -2,8 +2,9 @@ import { applyMiddleware, combineReducers, createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunkMiddleware from 'redux-thunk';
 
-const dummyReducer = (state: any) => null;
-const rootReducer = combineReducers({ dummyReducer });
+import { canvasReducer } from './labeling-canvas/reducers';
+
+const rootReducer = combineReducers({ canvasReducer });
 
 export type AppState = ReturnType<typeof rootReducer>;
 
