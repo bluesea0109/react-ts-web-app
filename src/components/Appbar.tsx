@@ -15,7 +15,7 @@ import Typography from '@material-ui/core/Typography';
 import MenuIcon from '@material-ui/icons/Menu';
 import clsx from 'clsx';
 import firebase from 'firebase/app';
-import React from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { GET_CURRENT_USER, UPDATE_ACTIVE_ORG } from '../gql-queries';
 import { IUser } from '../models';
@@ -48,16 +48,11 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const CustomAppbar: React.FC<CustomAppbarProps> = ({
-  user,
-  position,
-  className,
-  onMenuClick,
-}) => {
+const Orgs: React.FC<{ user: IUser }> = ({ user }) => {
   const classes = useStyles();
   const history = useHistory();
 
-  const [updateActiveOrg, { loading, error }] = useMutation(UPDATE_ACTIVE_ORG, {
+  const [updateActiveOrg, { loading }] = useMutation(UPDATE_ACTIVE_ORG, {
     refetchQueries: [{ query: GET_CURRENT_USER }],
     awaitRefetchQueries: true,
     onCompleted: () => {
@@ -78,41 +73,65 @@ const CustomAppbar: React.FC<CustomAppbarProps> = ({
     });
   };
 
-  const renderProjects = () => {
-    if (loading) {
-      return <CircularProgress color="secondary" />;
-    }
+  return loading ? (
+    <CircularProgress color="secondary" />
+  ) : (
+    <Select
+      value={user.activeOrg?.id ?? ''}
+      onChange={(e) => setActiveOrg(String(e.target.value))}
+      className={clsx(classes.selectInput)}
+      inputProps={{
+        classes: {
+          root: classes.border,
+          icon: classes.icon,
+        },
+      }}
+    >
+      {user.orgs.map((org: any) => (
+        <MenuItem key={org.id} value={org.id}>
+          {org.name}
+        </MenuItem>
+      ))}
+    </Select>
+  );
+};
 
-    if (error) {
-      // TODO: handle errors
-      console.error(error);
-      return <Typography>{'Error'}</Typography>;
-    }
+const Projects: React.FC<{ user: IUser }> = ({ user }) => {
+  const classes = useStyles();
+  const projects = user?.activeOrg?.projects;
+  const [activeProject, setActiveProject] = useState(projects?.[0]?.id ?? '');
 
-    const activeOrg = user.activeOrg;
-
-    return (
-      <>
-        <Select
-          value={activeOrg ? activeOrg.id : ''}
-          onChange={(e) => setActiveOrg(String(e.target.value))}
-          className={clsx(classes.selectInput)}
-          inputProps={{
-            classes: {
-              root: classes.border,
-              icon: classes.icon,
-            },
-          }}
+  return projects?.length !== 0 ? (
+    <Select
+      value={activeProject}
+      className={clsx([classes.selectInput, classes.menuButton])}
+      inputProps={{
+        classes: {
+          root: classes.border,
+          icon: classes.icon,
+        },
+      }}
+    >
+      {projects?.map((project) => (
+        <MenuItem
+          key={project.id}
+          value={project.id}
+          onClick={() => setActiveProject(project.id)}
         >
-          {user.orgs.map((org: any) => (
-            <MenuItem key={org.id} value={org.id}>
-              {org.name}
-            </MenuItem>
-          ))}
-        </Select>
-      </>
-    );
-  };
+          {project.name}
+        </MenuItem>
+      ))}
+    </Select>
+  ) : null;
+};
+
+const CustomAppbar: React.FC<CustomAppbarProps> = ({
+  user,
+  position,
+  className,
+  onMenuClick,
+}) => {
+  const classes = useStyles();
 
   const onLogoutClick = () => {
     firebase.auth().signOut();
@@ -133,7 +152,8 @@ const CustomAppbar: React.FC<CustomAppbarProps> = ({
         <Typography variant="h6" className={classes.title}>
           {'Bavard AI'}
         </Typography>
-        {renderProjects()}
+        <Projects user={user} />
+        <Orgs user={user} />
         <Button onClick={onLogoutClick} color="inherit">
           Logout
         </Button>
