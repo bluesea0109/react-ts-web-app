@@ -1,4 +1,5 @@
-import { createStyles, Theme, Typography, withStyles, WithStyles, makeStyles } from '@material-ui/core';
+import { useApolloClient } from '@apollo/react-hooks';
+import { createStyles, makeStyles, Theme, Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -10,21 +11,25 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import Switch from '@material-ui/core/Switch';
 import Toolbar from '@material-ui/core/Toolbar';
+import SaveIcon from '@material-ui/icons/Save';
 import ZoomInIcon from '@material-ui/icons/ZoomIn';
 import ZoomOutIcon from '@material-ui/icons/ZoomOut';
-import React, { useState, useEffect, useReducer } from 'react';
-import { withApollo, WithApolloClient } from 'react-apollo';
-import { RouteComponentProps, useParams, useHistory } from 'react-router';
-import { withRouter } from 'react-router-dom';
+import { cloneDeep } from 'lodash';
+import React, { useState } from 'react';
+import { connect, ConnectedProps, useSelector } from 'react-redux';
 import Select from 'react-select';
 import { ICategory, ICategorySet, IImage, ILabelQueueImage } from '../../../../models';
+import * as actions from '../../../../store/image-labeling/actions';
+import { getLabels, getSelectedLabel, getSelectedLabelIndex, deletedSavedLabels } from '../../../../store/image-labeling/selectors';
 import ContentLoading from '../../../ContentLoading';
 import ImageCategoricalLabel from '../../models/labels/ImageLabel';
 import MultiPolygon from '../../models/labels/MultiPolygon';
 import MultiRectangle from '../../models/labels/MultiRectangle';
+import Rectangle from '../../models/labels/Rectangle';
+import ImageLabelerCanvas from './ImageLabelerCanvas';
+import ImageLabelList from './ImageLabelList';
 import ImageLabelListItem from './ImageLabelListItem';
 import { COMPLETE_LABEL_QUEUE_IMAGE, GET_IMAGE_DATA, NEXT_LABEL_QUEUE_IMAGE, SAVE_LABELS } from './queries';
-import { useApolloClient } from '@apollo/client';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -162,12 +167,25 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   }));
 
-interface IImageLabelerContentProps {
+const mapDispatch = {
+  addLabel: actions.addLabel,
+  removeLabel: actions.removeLabel,
+  updateLabel: actions.updateLabel,
+  selectLabel: actions.selectLabel,
+};
+
+const connector = connect(null, mapDispatch);
+
+interface IImageLabelerContentProps extends ConnectedProps<typeof connector> {
   projectId: string;
-  labels: ImageCategoricalLabel[];
   categorySets: ICategorySet[];
   image: IImage;
   labelQueueImage: ILabelQueueImage;
+}
+
+interface IMousePos {
+  x: number;
+  y: number;
 }
 
 interface IImageLabelerContentState {
@@ -176,7 +194,6 @@ interface IImageLabelerContentState {
   canvasHeader: string;
   zoom: number;
   imgLoaded: boolean;
-  labels: ImageCategoricalLabel[];
 
   // label settings state
   shape: string;
@@ -186,22 +203,25 @@ interface IImageLabelerContentState {
   labelsLoading: boolean;
   mousePos: IMousePos | undefined;
   viewMask: boolean;
-  selectedLabelIndex: number;
 }
 
-interface IMousePos {
-  x: number;
-  y: number;
-}
+const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
+  const classes = useStyles();
+  const labels = useSelector(getLabels);
+  const selectedLabel = useSelector(getSelectedLabel);
+  const selectedLabelIndex = useSelector(getSelectedLabelIndex);
+  const hasDeletedLabels = useSelector(deletedSavedLabels);
 
-function ImageLabelerContent(props: IImageLabelerContentProps) {
+  const client = useApolloClient();
+
+  const { image, labelQueueImage, categorySets } = props;
+
   const [state, setState] = useState<IImageLabelerContentState>({
     closePolygonDisabled: true,
     categorySetOpen: false,
     canvasHeader: 'test',
     zoom: 1.0,
     imgLoaded: false,
-    labels: props.labels,
 
     // label settings state
     shape: 'box',
@@ -211,17 +231,6 @@ function ImageLabelerContent(props: IImageLabelerContentProps) {
     labelsLoading: false,
     mousePos: undefined,
     viewMask: false,
-    selectedLabelIndex: 0,
-  });
-  const client = useApolloClient();
-  const classes = useStyles();
-  const { orgId, projectId, collectionId } = useParams();
-  const history = useHistory();
-  const [ignored, forceUpdate] = useReducer(x => !x, true);
-
-  useEffect(() => {
-    initDraw();
-    draw();
   });
 
   const handleChangeViewMask = () => {
@@ -229,13 +238,6 @@ function ImageLabelerContent(props: IImageLabelerContentProps) {
       ...state,
       viewMask: !state.viewMask,
     }));
-  };
-
-  const getSelectedLabel = () => {
-    if (!state.labels) {
-      return null;
-    }
-    return state.labels[state.selectedLabelIndex];
   };
 
   const handleChange = (name: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -255,7 +257,7 @@ function ImageLabelerContent(props: IImageLabelerContentProps) {
       ...state,
       selectedCategory: category,
     });
-  }
+  };
 
   const handleSelectCategorySet = (e: any) => {
     const categorySet = props.categorySets.find(x => x.id === e.value);
@@ -265,221 +267,87 @@ function ImageLabelerContent(props: IImageLabelerContentProps) {
     });
   };
 
-  const getMousePos = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>): IMousePos | undefined => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    return {
-      x: (e.clientX - rect.left) / state.zoom,
-      y: (e.clientY - rect.top) / state.zoom,
-    };
-  };
-
-  const drawLabels = () => {
-    const canvas = document.getElementById('canvas') as HTMLCanvasElement;
-    if (!canvas) { return; }
-
-    const ctx = canvas.getContext('2d');
-
-    for (const label of state.labels) {
-      if (label.visible) {
-        label.draw(ctx, state.zoom);
-      }
-    }
-  };
-
-  const closePolygonDisabled = () => {
-    const label = getSelectedLabel();
-
-    if (label == null || label.shape == null || !(label.shape instanceof MultiPolygon)) {
-      return true;
-    }
-    const multipoly = label.shape;
-    return !(multipoly.currentPolygon && multipoly.currentPolygon.points.length > 2);
-  }
-
-  const onCanvasClick = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
-    const label = getSelectedLabel();
-    if (!label) {
-      return;
-    }
-
-    if (label.shape instanceof MultiPolygon) {
-      const multiPoly = label.shape;
-      const point = getMousePos(e);
-
-      setState(s => ({
-        ...s,
-        mousePos: point,
-      }));
-
-      if (!point) { return; }
-
-      multiPoly.addPoint([point.x, point.y]);
-
-      let closePolygonDisabled = true;
-      if (multiPoly.currentPolygon && multiPoly.currentPolygon.points.length > 2) {
-        closePolygonDisabled = false;
-      }
-
-      label.modified = true;
-
-      setState(s => ({
-        ...s,
-        canvasHeader: 'canvas clicked',
-        closePolygonDisabled,
-      }));
-    }
-  }
-
-  const handleImageLoad = () => {
+  const handleShapeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setState({
       ...state,
-      imgLoaded: true,
+      shape: e.target.value,
     });
-    drawImage();
   };
 
-  const getMultiRect = (): MultiRectangle | null => {
-    const label = getSelectedLabel();
-    if (!label) { return null; }
-    const shape = label.shape;
-    if (!(shape instanceof MultiRectangle)) { return null; }
-    return shape;
-  };
+  const markComplete = async () => {
+    setState({
+      ...state,
+      labelsLoading: true,
+    });
 
-  const drawImage = () => {
-    if (!state.imgLoaded) { return; }
+    const variables = {
+      imageId: props.image.id,
+      labels: labels.map((label) => {
+        const labelInput: any = {
+          shape: label.shapeName,
+          categorySetId: label.categorySetId,
+          category: label.category,
+          value: label.toJson(),
+        };
 
-    const zoom = state.zoom;
-    const img = document.getElementById('image') as HTMLImageElement;
-    const canvas = document.getElementById('canvas') as HTMLCanvasElement;
-    if (!canvas) { return; }
-
-    const ctx = canvas.getContext('2d');
-    const w = img.width * zoom;
-    const h = img.height * zoom;
-    canvas.width = w;
-    canvas.height = h;
-    ctx?.drawImage(img, 0, 0, w, h);
-  };
-
-  const initDraw = () => {
-    if (!state.imgLoaded) return;
-    const canvas = document.getElementById('canvas') as HTMLCanvasElement;
-    if (!canvas) { return; }
-
-    const canvasGrid = document.getElementById('canvas-grid');
-    if (!canvasGrid) {
-      return;
-    }
-
-    // Variables
-
-    let lastMousePos: IMousePos = { x: 0, y: 0 };
-    let mousePos: IMousePos = { x: 0, y: 0 };
-    let mousedown = false;
-
-    const getMousePos = (e: MouseEvent): IMousePos => {
-      const rect = canvas.getBoundingClientRect();
-      return {
-        x: (e.clientX - rect.left) / state.zoom,
-        y: (e.clientY - rect.top) / state.zoom,
-      };
-    };
-
-    // Mousedown
-    canvas.onmousedown = (e: MouseEvent) => {
-      lastMousePos = getMousePos(e);
-      mousedown = true;
-    };
-
-    // Mouseup
-    canvas.onmouseup = e => {
-      mousedown = false;
-      const multiRect = getMultiRect();
-      if (multiRect && multiRect.currentRectangle) {
-        multiRect.endRectangle();
-      }
-      forceUpdate();
-    };
-
-    // Mousemove
-    canvas.onmousemove = e => {
-      const label = getSelectedLabel();
-
-      if (!label) {
-        return;
-      }
-
-      const shape = label.shape;
-      if (!(shape instanceof MultiRectangle)) {
-        return;
-      }
-
-      // const canvasx = canvas.offsetLeft - canvasGrid.scrollLeft;
-      // const canvasy = canvas.offsetTop - canvasGrid.scrollTop;
-      // mousex = e.clientX - canvasx;
-      // mousey = e.clientY - canvasy;
-
-      mousePos = getMousePos(e);
-
-      if (mousedown) {
-        const width = mousePos.x - lastMousePos.x;
-        const height = mousePos.y - lastMousePos.y;
-
-        const rect = [lastMousePos.x, lastMousePos.y, width, height];
-        const [x, y, w, h] = rect;
-        if (!shape.isRectangleStarted()) {
-          shape.startRectangle(x, y, w, h);
-        } else {
-          shape.updateCurrentRectangle(x, y, w, h);
+        if (label.id) {
+          labelInput.id = label.id;
         }
-        forceUpdate();
-      }
+        return labelInput;
+      }),
     };
+
+    await client.mutate({
+      mutation: COMPLETE_LABEL_QUEUE_IMAGE,
+      variables,
+      refetchQueries: [{
+        query: GET_IMAGE_DATA,
+        variables: {
+          imageId: props.image.id,
+          projectId: props.projectId,
+        },
+      }],
+      awaitRefetchQueries: true,
+    });
+
+    setState(s => ({
+      ...s,
+      labelsLoading: false,
+    }));
   };
 
-  const draw = () => {
-    console.log('drawing...');
+  const markInProgress = async () => {
+    // todo
+  };
 
-    if (!state.imgLoaded) {
-      return;
+  const markCompleteDisabled = () => {
+    return labels.length === 0 || labels.some(x => x.modified);
+  };
+
+  const saveDisabled = () => {
+    return labels.every(x => !x.modified) && !hasDeletedLabels;
+  };
+
+  const viewMaskDisabled = () => {
+    return !props.image.maskUrl;
+  };
+
+  const addLabel = () => {
+    console.log('adding label');
+    const { categorySet, selectedCategory } = state;
+
+    let label;
+    if (categorySet) {
+      label = new ImageCategoricalLabel(null, state.shape, categorySet, selectedCategory?.name || null);
+    } else {
+      label = new ImageCategoricalLabel(null, state.shape, null, null);
     }
-
-    const canvas = document.getElementById('canvas') as HTMLCanvasElement;
-    if (!canvas) { return; }
-
-    const ctx = canvas.getContext('2d');
-    ctx?.clearRect(0, 0, canvas.width, canvas.height);
-    drawImage();
-    drawLabels();
+    label.modified = true;
+    props.addLabel(label);
   };
 
-  const zoomIn = () => {
-    setState({
-      ...state,
-      zoom: Math.min(8.0, state.zoom + 0.2),
-    });
-  }
-
-  const zoomOut = () => {
-    setState({
-      ...state,
-      zoom: Math.max(0.2, state.zoom - 0.2),
-    });
-  };
-
-  const closePolygon = () => {
-    const label = getSelectedLabel();
-    if (!label) { return; }
-    const poly = label.shape as MultiPolygon;
-    poly.endPolygon();
-    forceUpdate();
-  };
-
-  const deleteLabel = (label: ImageCategoricalLabel, labelIndex: number) => async () => {
-    let labels = state.labels;
-    labels = [...labels.slice(0, labelIndex), ...labels.slice(labelIndex + 1)];
-    setState({ ...state, labels });
+  const removeLabel = (labelIndex: number) => {
+    props.removeLabel(labelIndex);
   };
 
   const saveLabels = async () => {
@@ -487,8 +355,6 @@ function ImageLabelerContent(props: IImageLabelerContentProps) {
       ...state,
       labelsLoading: true,
     });
-
-    const labels = state.labels;
 
     const variables = {
       imageId: props.image.id,
@@ -526,122 +392,40 @@ function ImageLabelerContent(props: IImageLabelerContentProps) {
     });
   };
 
-  const reloadLabels = async () => {
-    // todo;
+  const zoomIn = () => {
+    setState({
+      ...state,
+      zoom: Math.min(8.0, state.zoom + 0.2),
+    });
   };
 
-  const nextQueueItem = async () => {
-    const collectionId = props.image.collectionId;
-    const imageId = props.image.id;
-
-    const { data } = await client.mutate({
-      mutation: NEXT_LABEL_QUEUE_IMAGE,
-      variables: { imageId },
+  const zoomOut = () => {
+    setState({
+      ...state,
+      zoom: Math.max(0.2, state.zoom - 0.2),
     });
+  };
 
-    if (data.ImageLabelingService_nextLabelQueueImage) {
-      const nextId = data.ImageLabelingService_nextLabelQueueImage.imageId;
-      history.push(`/orgs/${orgId}/projects/${projectId}/collections/${collectionId}/image-labeling/${nextId}`);
-    } else {
-      // the queue is empty so go to collection page
-      history.push(`/orgs/${orgId}/projects/${projectId}/collections/${collectionId}`);
+  const closePolygon = () => {
+    if (!selectedLabel || selectedLabelIndex === null) { return; }
+
+    const label = cloneDeep(selectedLabel);
+    const poly = label.shape as MultiPolygon;
+    poly.endPolygon();
+    props.updateLabel(label, selectedLabelIndex);
+  };
+
+  const closePolygonDisabled = () => {
+    if (!selectedLabel) {
+      return;
     }
-  };
 
-  const handleShapeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('changing shape');
-    setState({
-      ...state,
-      shape: e.target.value,
-    });
-  };
-
-  const addLabel = () => {
-    console.log('adding label');
-    const { categorySet, selectedCategory } = state;
-
-    let label;
-    if (categorySet) {
-      label = new ImageCategoricalLabel(null, state.shape, categorySet, selectedCategory?.name || null);
-    } else {
-      label = new ImageCategoricalLabel(null, state.shape, null, null);
+    if (selectedLabel == null || selectedLabel.shape == null || !(selectedLabel.shape instanceof MultiPolygon)) {
+      return true;
     }
-    label.modified = true;
-
-    const labels = state.labels;
-    labels.push(label);
-    setState({
-      ...state,
-      labels,
-    });
+    const multipoly = selectedLabel.shape;
+    return !(multipoly.currentPolygon && multipoly.currentPolygon.points.length > 2);
   };
-
-  const onCreated = () => {
-    // todo
-  };
-
-  const markComplete = async () => {
-    setState({
-      ...state,
-      labelsLoading: true,
-    });
-
-    const labels = state.labels;
-
-    const variables = {
-      imageId: props.image.id,
-      labels: labels.map((label) => {
-        const labelInput: any = {
-          shape: label.shapeName,
-          categorySetId: label.categorySetId,
-          category: label.category,
-          value: label.toJson(),
-        };
-
-        if (label.id) {
-          labelInput.id = label.id;
-        }
-        return labelInput;
-      }),
-    };
-
-    await client.mutate({
-      mutation: COMPLETE_LABEL_QUEUE_IMAGE,
-      variables,
-      refetchQueries: [{
-        query: GET_IMAGE_DATA,
-        variables: {
-          imageId: props.image.id,
-          projectId: props.projectId,
-        },
-      }],
-      awaitRefetchQueries: true,
-    });
-
-    setState(s => ({
-      ...s,
-      labelsLoading: false,
-    }));
-  }
-
-  const markInProgress = async () => {
-    // todo
-  }
-
-  const markCompleteDisabled = () => {
-    return state.labels.length === 0 || state.labels.some(x => x.modified);
-  };
-
-  const saveDisabled = () => {
-    return state.labels.every(x => !x.modified);
-  };
-
-  const viewMaskDisabled = () => {
-    return !props.image.maskUrl;
-  };
-
-  const { image, labelQueueImage } = props;
-  const selectedLabel = getSelectedLabel();
 
   let selectedLabelInfo;
   if (selectedLabel) {
@@ -742,21 +526,11 @@ function ImageLabelerContent(props: IImageLabelerContentProps) {
                       disabled={saveDisabled()}
                       color="secondary">
                       {'Save'}
-                      {/* <SaveIcon className={classes.rightIcon} variant="contained"></SaveIcon> */}
+                      <SaveIcon />
                     </Button>
                   </Toolbar>
                   <div className={classes.labelList}>
-                    <List component="nav">
-                      {state.labels.map((label, i) => {
-                        return (
-                          <ImageLabelListItem key={i} label={label} labelIndex={i} isSelected={state.selectedLabelIndex === i}
-                            onDelete={deleteLabel(label, i)}
-                            onSelect={(i: number) => setState({ ...state, selectedLabelIndex: i })}
-                            onChange={() => forceUpdate()}
-                          />
-                        );
-                      })}
-                    </List>
+                    <ImageLabelList />
                   </div>
                 </React.Fragment>
               )}
@@ -805,10 +579,12 @@ function ImageLabelerContent(props: IImageLabelerContentProps) {
           </Paper>
           <div className={classes.canvasHeader} />
           <div className={classes.canvasContainer} id="canvas-grid">
-            <canvas id="canvas" className={classes.canvas} onClick={onCanvasClick}>
-              <img id="image" src={image.url} onLoad={handleImageLoad} alt="to-label" />
-            </canvas>
-          </div>
+            <ImageLabelerCanvas
+              zoom={state.zoom}
+              labels={labels}
+              selectedLabel={selectedLabel}
+              selectedLabelIndex={selectedLabelIndex}
+              imageUrl={props.image.url} />          </div>
           <Paper className={classes.bottomToolbar} >
             <Toolbar variant="dense">
               <Typography>{'Bottom toolbar'}</Typography>
@@ -818,6 +594,6 @@ function ImageLabelerContent(props: IImageLabelerContentProps) {
       </div>
     </div>
   );
-}
+};
 
-export default ImageLabelerContent;
+export default connector(ImageLabelerContent);
