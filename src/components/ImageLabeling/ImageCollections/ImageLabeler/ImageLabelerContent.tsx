@@ -14,6 +14,8 @@ import ZoomInIcon from '@material-ui/icons/ZoomIn';
 import ZoomOutIcon from '@material-ui/icons/ZoomOut';
 import React from 'react';
 import { withApollo, WithApolloClient } from 'react-apollo';
+import { RouteComponentProps } from 'react-router';
+import { withRouter } from 'react-router-dom';
 import Select from 'react-select';
 import { ICategory, ICategorySet, IImage, ILabelQueueImage } from '../../../../models';
 import ContentLoading from '../../../ContentLoading';
@@ -21,7 +23,7 @@ import ImageCategoricalLabel from '../../models/labels/ImageLabel';
 import MultiPolygon from '../../models/labels/MultiPolygon';
 import MultiRectangle from '../../models/labels/MultiRectangle';
 import ImageLabelListItem from './ImageLabelListItem';
-import { GET_IMAGE_DATA, SAVE_LABELS } from './queries';
+import { COMPLETE_LABEL_QUEUE_IMAGE, GET_IMAGE_DATA, NEXT_LABEL_QUEUE_IMAGE, SAVE_LABELS } from './queries';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -159,7 +161,7 @@ const styles = (theme: Theme) =>
     },
   });
 
-interface IImageLabelerContentProps extends WithStyles<typeof styles>, WithApolloClient<object> {
+interface IImageLabelerContentProps extends WithStyles<typeof styles>, WithApolloClient<object>, RouteComponentProps<any> {
   projectId: string;
   labels: ImageCategoricalLabel[];
   categorySets: ICategorySet[];
@@ -519,7 +521,22 @@ class ImageLabelerContent extends React.Component<IImageLabelerContentProps, IIm
   }
 
   nextQueueItem = async () => {
-    // todo
+    const { orgId, projectId } = this.props.match.params;
+    const collectionId = this.props.image.collectionId;
+    const imageId = this.props.image.id;
+
+    const { data } = await this.props.client.mutate({
+      mutation: NEXT_LABEL_QUEUE_IMAGE,
+      variables: { imageId },
+    });
+
+    if (data.ImageLabelingService_nextLabelQueueImage) {
+      const nextId = data.ImageLabelingService_nextLabelQueueImage.imageId;
+      this.props.history.push(`/orgs/${orgId}/projects/${projectId}/collections/${collectionId}/image-labeling/${nextId}`);
+    } else {
+      // the queue is empty so go to collection page
+      this.props.history.push(`/orgs/${orgId}/projects/${projectId}/collections/${collectionId}`);
+    }
   }
 
   handleShapeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -553,7 +570,45 @@ class ImageLabelerContent extends React.Component<IImageLabelerContentProps, IIm
   }
 
   markComplete = async () => {
-    // todo;
+    this.setState({
+      labelsLoading: true,
+    });
+
+    const labels = this.state.labels;
+
+    const variables = {
+      imageId: this.props.image.id,
+      labels: labels.map((label) => {
+        const labelInput: any = {
+          shape: label.shapeName,
+          categorySetId: label.categorySetId,
+          category: label.category,
+          value: label.toJson(),
+        };
+
+        if (label.id) {
+          labelInput.id = label.id;
+        }
+        return labelInput;
+      }),
+    };
+
+    await this.props.client.mutate({
+      mutation: COMPLETE_LABEL_QUEUE_IMAGE,
+      variables,
+      refetchQueries: [{
+        query: GET_IMAGE_DATA,
+        variables: {
+          imageId: this.props.image.id,
+          projectId: this.props.projectId,
+        },
+      }],
+      awaitRefetchQueries: true,
+    });
+
+    this.setState({
+      labelsLoading: false,
+    });
   }
 
   markInProgress = async () => {
@@ -754,4 +809,4 @@ class ImageLabelerContent extends React.Component<IImageLabelerContentProps, IIm
   }
 }
 
-export default withStyles(styles)(withApollo<IImageLabelerContentProps>(ImageLabelerContent));
+export default withRouter(withStyles(styles)(withApollo<IImageLabelerContentProps>(ImageLabelerContent)));
