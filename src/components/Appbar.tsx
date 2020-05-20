@@ -14,10 +14,16 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import MenuIcon from '@material-ui/icons/Menu';
 import clsx from 'clsx';
+import firebase from 'firebase/app';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { GET_CURRENT_USER, UPDATE_ACTIVE_ORG } from '../gql-queries';
 import { IUser } from '../models';
+
+interface CustomAppbarProps extends AppBarProps {
+  onMenuClick: () => void;
+  user: IUser;
+}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -42,28 +48,32 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-function CustomAppbar(props: CustomAppbarProps) {
+const CustomAppbar: React.FC<CustomAppbarProps> = ({
+  user,
+  position,
+  className,
+  onMenuClick,
+}) => {
   const classes = useStyles();
   const history = useHistory();
 
-  const [updateActiveOrg, { loading, error }] = useMutation(UPDATE_ACTIVE_ORG,
-    {
-      refetchQueries: [{ query: GET_CURRENT_USER }],
-      awaitRefetchQueries: true,
-      onCompleted: () => {
-        history.push('/'); // back to dashboard. TODO: keep the user on their current tab.
-      },
-    });
+  const [updateActiveOrg, { loading, error }] = useMutation(UPDATE_ACTIVE_ORG, {
+    refetchQueries: [{ query: GET_CURRENT_USER }],
+    awaitRefetchQueries: true,
+    onCompleted: () => {
+      history.push('/'); // back to dashboard. TODO: keep the user on their current tab.
+    },
+  });
 
   const setActiveOrg = async (orgId: string) => {
-    const org = props.user.orgs.find(x => x.id === orgId);
+    const org = user.orgs.find((org) => org.id === orgId);
     const projects = org?.projects;
 
     const projectId = projects?.[0]?.id;
     updateActiveOrg({
       variables: {
         orgId,
-        ...projectId && { projectId },
+        ...(projectId && { projectId }),
       },
     });
   };
@@ -79,7 +89,7 @@ function CustomAppbar(props: CustomAppbarProps) {
       return <Typography>{'Error'}</Typography>;
     }
 
-    const activeOrg = props.user.activeOrg;
+    const activeOrg = user.activeOrg;
 
     return (
       <>
@@ -94,21 +104,29 @@ function CustomAppbar(props: CustomAppbarProps) {
             },
           }}
         >
-          {props.user.orgs.map((org: any) => <MenuItem key={org.id} value={org.id}>{org.name}</MenuItem>)}
-        </Select >
+          {user.orgs.map((org: any) => (
+            <MenuItem key={org.id} value={org.id}>
+              {org.name}
+            </MenuItem>
+          ))}
+        </Select>
       </>
     );
   };
 
+  const onLogoutClick = () => {
+    firebase.auth().signOut();
+  };
+
   return (
-    <AppBar position={props.position} className={props.className}>
+    <AppBar position={position} className={className}>
       <Toolbar>
         <IconButton
           edge="start"
           className={classes.menuButton}
           color="inherit"
           aria-label="menu"
-          onClick={props.onMenuClick}
+          onClick={onMenuClick}
         >
           <MenuIcon />
         </IconButton>
@@ -116,15 +134,12 @@ function CustomAppbar(props: CustomAppbarProps) {
           {'Bavard AI'}
         </Typography>
         {renderProjects()}
-        <Button color="inherit">Logout</Button>
+        <Button onClick={onLogoutClick} color="inherit">
+          Logout
+        </Button>
       </Toolbar>
     </AppBar>
   );
-}
-
-interface CustomAppbarProps extends AppBarProps {
-  onMenuClick: () => void;
-  user: IUser;
-}
+};
 
 export default CustomAppbar;
