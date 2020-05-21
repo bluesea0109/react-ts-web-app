@@ -4,6 +4,8 @@ import {
   createStyles,
   IconButton,
   Theme,
+  FormControl,
+  InputLabel,
 } from '@material-ui/core';
 import AppBar, { AppBarProps } from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
@@ -39,13 +41,16 @@ const useStyles = makeStyles((theme: Theme) =>
       borderRadius: 4,
       borderColor: 'white',
     },
+    selectLabel: {
+      color: 'white',
+    },
     icon: {
       fill: 'white',
     },
     border: {
       borderBottom: '1px solid white',
     },
-  }),
+  })
 );
 
 const Orgs: React.FC<{ user: IUser }> = ({ user }) => {
@@ -60,68 +65,93 @@ const Orgs: React.FC<{ user: IUser }> = ({ user }) => {
     },
   });
 
-  const setActiveOrg = async (orgId: string) => {
-    const org = user.orgs.find((org) => org.id === orgId);
-    const projects = org?.projects;
-
-    const projectId = projects?.[0]?.id;
+  const setActiveOrg = (orgId: string) => {
     updateActiveOrg({
-      variables: {
-        orgId,
-        ...(projectId && { projectId }),
-      },
+      variables: { orgId },
     });
   };
 
   return loading ? (
     <CircularProgress color="secondary" />
   ) : (
-    <Select
-      value={user.activeOrg?.id ?? ''}
-      onChange={(e) => setActiveOrg(String(e.target.value))}
-      className={clsx(classes.selectInput)}
-      inputProps={{
-        classes: {
-          root: classes.border,
-          icon: classes.icon,
-        },
-      }}
-    >
-      {user.orgs.map((org: any) => (
-        <MenuItem key={org.id} value={org.id}>
-          {org.name}
-        </MenuItem>
-      ))}
-    </Select>
+    <FormControl>
+      <InputLabel className={clsx(classes.selectLabel)} id="select-active-org">
+        Org
+      </InputLabel>
+      <Select
+        labelId="select-active-org"
+        value={user.activeOrg?.id ?? ''}
+        onChange={(e) => setActiveOrg(e.target.value as string)}
+        className={clsx([classes.selectInput, classes.menuButton])}
+        inputProps={{
+          classes: {
+            root: classes.border,
+            icon: classes.icon,
+          },
+        }}
+      >
+        {user.orgs.map((org: any) => (
+          <MenuItem key={org.id} value={org.id}>
+            {org.name}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
   );
 };
 
 const Projects: React.FC<{ user: IUser }> = ({ user }) => {
-  const classes = useStyles();
   const projects = user?.activeOrg?.projects;
-  const [activeProject, setActiveProject] = useState(projects?.[0]?.id ?? '');
+
+  const classes = useStyles();
+  const history = useHistory();
+  const [projectId, setProjectId] = useState(user.activeProject?.id ?? '');
+
+  const [updateActiveProject, { loading }] = useMutation(UPDATE_ACTIVE_ORG, {
+    refetchQueries: [{ query: GET_CURRENT_USER }],
+    awaitRefetchQueries: true,
+    onCompleted: () => {
+      history.push('/');
+    },
+  });
+
+  const setActiveProject = async (projectId: string) => {
+    await updateActiveProject({
+      variables: { projectId, orgId: user?.activeOrg?.id },
+    });
+
+    setProjectId(projectId);
+  };
+
+  if (loading) return <CircularProgress color="secondary" />;
 
   return projects?.length !== 0 ? (
-    <Select
-      value={activeProject}
-      className={clsx([classes.selectInput, classes.menuButton])}
-      inputProps={{
-        classes: {
-          root: classes.border,
-          icon: classes.icon,
-        },
-      }}
-    >
-      {projects?.map((project) => (
-        <MenuItem
-          key={project.id}
-          value={project.id}
-          onClick={() => setActiveProject(project.id)}
-        >
-          {project.name}
-        </MenuItem>
-      ))}
-    </Select>
+    <FormControl className={clsx(classes.menuButton)}>
+      <InputLabel
+        className={clsx(classes.selectLabel)}
+        id="select-active-project"
+      >
+        Project
+      </InputLabel>
+      <Select
+        labelId="select-active-project"
+        value={projectId}
+        onChange={(e) => setActiveProject(e.target.value as string)}
+        className={clsx(classes.selectInput)}
+        inputProps={{
+          classes: {
+            root: classes.border,
+            icon: classes.icon,
+          },
+        }}
+      >
+        {projects?.map((project) => (
+          <MenuItem key={project.id} value={project.id}>
+            {project.name}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
   ) : null;
 };
 
@@ -152,8 +182,8 @@ const CustomAppbar: React.FC<CustomAppbarProps> = ({
         <Typography variant="h6" className={classes.title}>
           {'Bavard AI'}
         </Typography>
-        <Projects user={user} />
         <Orgs user={user} />
+        <Projects user={user} />
         <Button onClick={onLogoutClick} color="inherit">
           Logout
         </Button>

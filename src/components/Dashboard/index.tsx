@@ -1,4 +1,14 @@
-import { Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@material-ui/core';
+import {
+  Grid,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import firebase from 'firebase';
 import 'firebase/auth';
@@ -16,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) =>
     paper: {
       padding: theme.spacing(2),
     },
-  }),
+  })
 );
 
 interface IAccountProps {
@@ -47,10 +57,10 @@ function Account(props: IAccountProps) {
   return (
     <div className={classes.root}>
       <Grid>
-        <Grid xs={12}>
+        <Grid item xs={12}>
           <Typography variant="h6">{welcomeMsg}</Typography>
         </Grid>
-        <Grid container={true} xs={12} spacing={2}>
+        <Grid item container={true} xs={12} spacing={2}>
           <Grid item={true} xs={12} sm={6}>
             <Paper className={classes.paper}>
               <Typography variant="h5">{'Your organizations'}</Typography>
@@ -74,28 +84,29 @@ function Account(props: IAccountProps) {
                   </Table>
                 </TableContainer>
               ) : (
-                  <Typography align="center" variant="h6">
-                    {'No organizations found'}
-                  </Typography>
-                )}
+                <Typography align="center" variant="h6">
+                  {'No organizations found'}
+                </Typography>
+              )}
             </Paper>
           </Grid>
           <Grid item={true} xs={12} sm={6}>
             <Paper>
               {activeOrg ? (
-                <ProjectsTable activeOrg={activeOrg} activeProject={props.user.activeProject} />
+                <ProjectsTable
+                  activeOrg={activeOrg}
+                  activeProject={props.user.activeProject}
+                />
               ) : (
-                  <Typography>{'No organization is active.'}</Typography>
-                )}
+                <Typography>{'No organization is active.'}</Typography>
+              )}
             </Paper>
           </Grid>
           <Grid item={true} xs={12} sm={6}>
             <NewOrganisation />
           </Grid>
           <Grid item={true} xs={12} sm={6}>
-            {orgId ? (
-              <NewProject activeOrg={activeOrg} />
-            ) : null}
+            {orgId ? <NewProject activeOrg={activeOrg} /> : null}
           </Grid>
         </Grid>
       </Grid>
