@@ -18,9 +18,19 @@ import { cloneDeep } from 'lodash';
 import React, { useState } from 'react';
 import { connect, ConnectedProps, useSelector } from 'react-redux';
 import Select from 'react-select';
-import { ICategory, ICategorySet, IImage, ILabelQueueImage } from '../../../../models';
+import {
+  ICategory,
+  ICategorySet,
+  IImage,
+  ILabelQueueImage,
+} from '../../../../models';
 import * as actions from '../../../../store/image-labeling/actions';
-import { getLabels, getSelectedLabel, getSelectedLabelIndex, deletedSavedLabels } from '../../../../store/image-labeling/selectors';
+import {
+  getLabels,
+  getSelectedLabel,
+  getSelectedLabelIndex,
+  deletedSavedLabels,
+} from '../../../../store/image-labeling/selectors';
 import ContentLoading from '../../../ContentLoading';
 import ImageCategoricalLabel from '../../models/labels/ImageLabel';
 import MultiPolygon from '../../models/labels/MultiPolygon';
@@ -29,33 +39,42 @@ import Rectangle from '../../models/labels/Rectangle';
 import ImageLabelerCanvas from './ImageLabelerCanvas';
 import ImageLabelList from './ImageLabelList';
 import ImageLabelListItem from './ImageLabelListItem';
-import { COMPLETE_LABEL_QUEUE_IMAGE, GET_IMAGE_DATA, NEXT_LABEL_QUEUE_IMAGE, SAVE_LABELS } from './queries';
+import {
+  COMPLETE_LABEL_QUEUE_IMAGE,
+  GET_IMAGE_DATA,
+  NEXT_LABEL_QUEUE_IMAGE,
+  SAVE_LABELS,
+} from './queries';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      display: 'flex',
-      flexDirection: 'column',
-      overflow: 'auto',
-    },
-    content: {
       height: '100%',
-      maxHeight: '100%',
+      maxHeight: '90vh',
       display: 'flex',
       flexDirection: 'row',
       flexWrap: 'nowrap',
     },
     labelTools: {
+      maxHeight: '100%',
       padding: theme.spacing(1),
       flex: 1,
       flexGrow: 3,
       display: 'flex',
       flexDirection: 'column',
-      overflow: 'auto',
+      overflow: 'hidden',
       minWidth: 400,
     },
+    labelListContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      padding: theme.spacing(1),
+      overflow: 'hidden',
+    },
+    labelList: {
+      overflow: 'scroll',
+    },
     middle: {
-      maxHeight: '90vh',
       overflow: 'auto',
       width: 0,
       marginBottom: theme.spacing(1),
@@ -66,7 +85,8 @@ const useStyles = makeStyles((theme: Theme) =>
       flex: '10 0 auto',
     },
     canvasContainer: {
-      backgroundImage: 'linear-gradient(to right, #757575 50%, #a4a4a4 50%), linear-gradient(to bottom, #757575 50%, #a4a4a4 50%)',
+      backgroundImage:
+        'linear-gradient(to right, #757575 50%, #a4a4a4 50%), linear-gradient(to bottom, #757575 50%, #a4a4a4 50%)',
       backgroundBlendMode: 'difference, normal',
       backgroundSize: '2em 2em',
       overflow: 'auto',
@@ -105,16 +125,7 @@ const useStyles = makeStyles((theme: Theme) =>
     nested: {
       paddingLeft: theme.spacing(1) * 8,
     },
-    labelListContainer: {
-      padding: theme.spacing(1),
-      display: 'flex',
-      flexGrow: 1,
-      flexDirection: 'column',
-    },
-    labelList: {
-      flexGrow: 1,
-      overflow: 'auto',
-    },
+
     right: {
       flex: 1,
       flexGrow: 2,
@@ -165,7 +176,8 @@ const useStyles = makeStyles((theme: Theme) =>
     grow: {
       flexGrow: 1,
     },
-  }));
+  })
+);
 
 const mapDispatch = {
   addLabel: actions.addLabel,
@@ -240,18 +252,26 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
     }));
   };
 
-  const handleChange = (name: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (name: string) => (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setState({
       ...state,
       [name]: e.target.value,
     });
   };
 
-  const handleSelectCategory = (categorySet: ICategorySet | null) => (e: any) => {
-    if (!categorySet) { return; }
+  const handleSelectCategory = (categorySet: ICategorySet | null) => (
+    e: any
+  ) => {
+    if (!categorySet) {
+      return;
+    }
 
-    const category = categorySet.categories.find(x => x.name === e.value);
-    if (!category) { return; }
+    const category = categorySet.categories.find((x) => x.name === e.value);
+    if (!category) {
+      return;
+    }
 
     setState({
       ...state,
@@ -260,7 +280,7 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
   };
 
   const handleSelectCategorySet = (e: any) => {
-    const categorySet = props.categorySets.find(x => x.id === e.value);
+    const categorySet = props.categorySets.find((x) => x.id === e.value);
     setState({
       ...state,
       categorySet: categorySet ? categorySet : null,
@@ -300,17 +320,19 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
     await client.mutate({
       mutation: COMPLETE_LABEL_QUEUE_IMAGE,
       variables,
-      refetchQueries: [{
-        query: GET_IMAGE_DATA,
-        variables: {
-          imageId: props.image.id,
-          projectId: props.projectId,
+      refetchQueries: [
+        {
+          query: GET_IMAGE_DATA,
+          variables: {
+            imageId: props.image.id,
+            projectId: props.projectId,
+          },
         },
-      }],
+      ],
       awaitRefetchQueries: true,
     });
 
-    setState(s => ({
+    setState((s) => ({
       ...s,
       labelsLoading: false,
     }));
@@ -321,11 +343,11 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
   };
 
   const markCompleteDisabled = () => {
-    return labels.length === 0 || labels.some(x => x.modified);
+    return labels.length === 0 || labels.some((x) => x.modified);
   };
 
   const saveDisabled = () => {
-    return labels.every(x => !x.modified) && !hasDeletedLabels;
+    return labels.every((x) => !x.modified) && !hasDeletedLabels;
   };
 
   const viewMaskDisabled = () => {
@@ -338,7 +360,12 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
 
     let label;
     if (categorySet) {
-      label = new ImageCategoricalLabel(null, state.shape, categorySet, selectedCategory?.name || null);
+      label = new ImageCategoricalLabel(
+        null,
+        state.shape,
+        categorySet,
+        selectedCategory?.name || null
+      );
     } else {
       label = new ImageCategoricalLabel(null, state.shape, null, null);
     }
@@ -376,13 +403,15 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
     await client.mutate({
       mutation: SAVE_LABELS,
       variables,
-      refetchQueries: [{
-        query: GET_IMAGE_DATA,
-        variables: {
-          imageId: props.image.id,
-          projectId: props.projectId,
+      refetchQueries: [
+        {
+          query: GET_IMAGE_DATA,
+          variables: {
+            imageId: props.image.id,
+            projectId: props.projectId,
+          },
         },
-      }],
+      ],
       awaitRefetchQueries: true,
     });
 
@@ -407,7 +436,9 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
   };
 
   const closePolygon = () => {
-    if (!selectedLabel || selectedLabelIndex === null) { return; }
+    if (!selectedLabel || selectedLabelIndex === null) {
+      return;
+    }
 
     const label = cloneDeep(selectedLabel);
     const poly = label.shape as MultiPolygon;
@@ -420,11 +451,17 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
       return;
     }
 
-    if (selectedLabel == null || selectedLabel.shape == null || !(selectedLabel.shape instanceof MultiPolygon)) {
+    if (
+      selectedLabel == null ||
+      selectedLabel.shape == null ||
+      !(selectedLabel.shape instanceof MultiPolygon)
+    ) {
       return true;
     }
     const multipoly = selectedLabel.shape;
-    return !(multipoly.currentPolygon && multipoly.currentPolygon.points.length > 2);
+    return !(
+      multipoly.currentPolygon && multipoly.currentPolygon.points.length > 2
+    );
   };
 
   let selectedLabelInfo;
@@ -442,155 +479,211 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
   }
 
   let approveButton = (
-    <Button size="small" onClick={markComplete} disabled={markCompleteDisabled()}>{'Complete'}</Button>
+    <Button
+      size="small"
+      onClick={markComplete}
+      disabled={markCompleteDisabled()}
+    >
+      {'Complete'}
+    </Button>
   );
   if (labelQueueImage.status === 'complete') {
     approveButton = (
-      <Button size="small" onClick={markInProgress}>{'In Progress'}</Button>
+      <Button size="small" onClick={markInProgress}>
+        {'In Progress'}
+      </Button>
     );
   }
 
-  const categorySetOptions = props.categorySets.map(x => ({
+  const categorySetOptions = props.categorySets.map((x) => ({
     value: x.id,
     label: x.name,
   }));
 
   return (
     <div className={classes.root}>
-      <div className={classes.content}>
-        <div className={classes.labelTools}>
-          <Paper className={classes.paper}>
-            <form>
-              <FormGroup row={true}>
-                <FormControl>
-                  <FormLabel component="legend">Shape</FormLabel>
-                  <RadioGroup
-                    aria-label="label-shape"
-                    name="label-shape"
-                    value={state.shape}
-                    onChange={handleShapeChange}
-                    row={true}
-                  >
-                    <FormControlLabel value="box" control={<Radio />} label="Bounding Box" />
-                    <FormControlLabel value="polygon" control={<Radio />} label="Polygon" />
-                    <FormControlLabel value="none" control={<Radio />} label="None" />
-                  </RadioGroup>
-                </FormControl>
-              </FormGroup>
-              <FormGroup row={true}>
-                <FormControl>
-                  <FormLabel component="legend">Type</FormLabel>
-                  <RadioGroup
-                    aria-label="label-type"
-                    name="label-type"
-                    value={state.type}
-                    onChange={handleChange('type')}
-                    row={true}
-                  >
-                    <FormControlLabel value="categorical" control={<Radio />} label="Categorical" />
-                    <FormControlLabel value="none" control={<Radio />} label="None" disabled={true} />
-                  </RadioGroup>
-                </FormControl>
-              </FormGroup>
-              <FormGroup row={true}>
-                <FormControl className={classes.formControl}>
-                  <Select placeholder="Category Set" options={categorySetOptions} onChange={handleSelectCategorySet} />
-                </FormControl>
-                <FormControl className={classes.formControl}>
-                  <Select placeholder="Category" options={state.categorySet?.categories.map(x => ({
+      <div className={classes.labelTools}>
+        <Paper className={classes.paper}>
+          <form>
+            <FormGroup row={true}>
+              <FormControl>
+                <FormLabel component="legend">Shape</FormLabel>
+                <RadioGroup
+                  aria-label="label-shape"
+                  name="label-shape"
+                  value={state.shape}
+                  onChange={handleShapeChange}
+                  row={true}
+                >
+                  <FormControlLabel
+                    value="box"
+                    control={<Radio />}
+                    label="Bounding Box"
+                  />
+                  <FormControlLabel
+                    value="polygon"
+                    control={<Radio />}
+                    label="Polygon"
+                  />
+                  <FormControlLabel
+                    value="none"
+                    control={<Radio />}
+                    label="None"
+                  />
+                </RadioGroup>
+              </FormControl>
+            </FormGroup>
+            <FormGroup row={true}>
+              <FormControl>
+                <FormLabel component="legend">Type</FormLabel>
+                <RadioGroup
+                  aria-label="label-type"
+                  name="label-type"
+                  value={state.type}
+                  onChange={handleChange('type')}
+                  row={true}
+                >
+                  <FormControlLabel
+                    value="categorical"
+                    control={<Radio />}
+                    label="Categorical"
+                  />
+                  <FormControlLabel
+                    value="none"
+                    control={<Radio />}
+                    label="None"
+                    disabled={true}
+                  />
+                </RadioGroup>
+              </FormControl>
+            </FormGroup>
+            <FormGroup row={true}>
+              <FormControl className={classes.formControl}>
+                <Select
+                  placeholder="Category Set"
+                  options={categorySetOptions}
+                  onChange={handleSelectCategorySet}
+                />
+              </FormControl>
+              <FormControl className={classes.formControl}>
+                <Select
+                  placeholder="Category"
+                  options={state.categorySet?.categories.map((x) => ({
                     value: x.name,
                     label: x.name,
-                  }))} onChange={handleSelectCategory(state.categorySet)} />
-                </FormControl>
-              </FormGroup>
-              <FormGroup row={true}>
-                <FormControl className={classes.formControl} />
-              </FormGroup>
-            </form>
-            <br />
-            {/* <ImageLabelCreate categorySets={props.categorySets} onNewLabel={onNewLabel} /> */}
-            <Button variant="contained" color="secondary" size="small" onClick={addLabel}>Add Label</Button>
-            <br />
-          </Paper>
-          <Paper className={classes.labelListContainer}>
-            {state.labelsLoading ? (
-              <ContentLoading />
-            ) : (
-                <React.Fragment>
-                  <Toolbar disableGutters={true} variant="dense">
-                    <Typography variant="h6">
-                      {'Labels'}
-                    </Typography>
-                    <Typography className={classes.grow} />
-                    <Button variant="contained" size="small" onClick={saveLabels}
-                      disabled={saveDisabled()}
-                      color="secondary">
-                      {'Save'}
-                      <SaveIcon />
-                    </Button>
-                  </Toolbar>
-                  <div className={classes.labelList}>
-                    <ImageLabelList />
-                  </div>
-                </React.Fragment>
-              )}
-          </Paper>
+                  }))}
+                  onChange={handleSelectCategory(state.categorySet)}
+                />
+              </FormControl>
+            </FormGroup>
+            <FormGroup row={true}>
+              <FormControl className={classes.formControl} />
+            </FormGroup>
+          </form>
+          <br />
+          {/* <ImageLabelCreate categorySets={props.categorySets} onNewLabel={onNewLabel} /> */}
+          <Button
+            variant="contained"
+            color="secondary"
+            size="small"
+            onClick={addLabel}
+          >
+            Add Label
+          </Button>
+          <br />
+        </Paper>
+        <Paper className={classes.labelListContainer}>
+          {state.labelsLoading ? (
+            <ContentLoading />
+          ) : (
+            <React.Fragment>
+              <Toolbar disableGutters={true} variant="dense">
+                <Typography variant="h6">{'Labels'}</Typography>
+                <Typography className={classes.grow} />
+                <Button
+                  variant="contained"
+                  size="small"
+                  onClick={saveLabels}
+                  disabled={saveDisabled()}
+                  color="secondary"
+                >
+                  {'Save'}
+                  <SaveIcon />
+                </Button>
+              </Toolbar>
+              <div className={classes.labelList}>
+                <ImageLabelList />
+              </div>
+            </React.Fragment>
+          )}
+        </Paper>
+      </div>
+      <div className={classes.middle}>
+        <Paper className={classes.toolbar}>
+          <Toolbar variant="dense" disableGutters={true}>
+            <Button
+              size="small"
+              variant="contained"
+              className={classes.marginRight}
+              onClick={zoomIn}
+              color="secondary"
+            >
+              <ZoomInIcon />
+            </Button>
+            <Button
+              size="small"
+              variant="contained"
+              className={classes.marginRight}
+              onClick={zoomOut}
+              color="secondary"
+            >
+              <ZoomOutIcon />
+            </Button>
+            <Button disabled={closePolygonDisabled()} onClick={closePolygon}>
+              {'Close Polygon'}
+            </Button>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={state.viewMask}
+                  onChange={handleChangeViewMask}
+                  color="secondary"
+                  disabled={viewMaskDisabled()}
+                />
+              }
+              label="View Mask"
+            />
+
+            <div className={classes.grow} />
+            {approveButton}
+          </Toolbar>
+        </Paper>
+        <div className={classes.canvasHeader} />
+        <div className={classes.canvasContainer} id="canvas-grid">
+          <ImageLabelerCanvas
+            zoom={state.zoom}
+            labels={labels}
+            selectedLabel={selectedLabel}
+            selectedLabelIndex={selectedLabelIndex}
+            imageUrl={props.image.url}
+          />{' '}
         </div>
-        <div className={classes.middle}>
-          <Paper className={classes.toolbar}>
-            <Toolbar variant="dense" disableGutters={true}>
-              <Button size="small" variant="contained" className={classes.marginRight} onClick={zoomIn} color="secondary">
-                <ZoomInIcon />
-              </Button>
-              <Button size="small" variant="contained" className={classes.marginRight} onClick={zoomOut} color="secondary">
-                <ZoomOutIcon />
-              </Button>
-              <Button disabled={closePolygonDisabled()} onClick={closePolygon}>{'Close Polygon'}</Button>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={state.viewMask}
-                    onChange={handleChangeViewMask}
-                    color="secondary"
-                    disabled={viewMaskDisabled()}
-                  />
-                }
-                label="View Mask"
-              />
-              <div className={classes.grow} />
-              {approveButton}
-            </Toolbar>
-          </Paper>
-          <Paper className={classes.infobar}>
-            <Toolbar variant="dense" disableGutters={true}>
+        <Paper className={classes.bottomToolbar}>
+          <Toolbar variant="dense">
+            <Typography color="inherit" className={classes.infobarItem}>
+              {'Mode: labeling'}
+            </Typography>
+            <Typography color="inherit" className={classes.infobarItem}>
+              {`Zoom Level: ${state.zoom.toFixed(1)}`}
+            </Typography>
+            {state.mousePos ? (
               <Typography color="inherit" className={classes.infobarItem}>
-                {'Mode: labeling'}
+                {`Mouse Pos: (${state.mousePos.x}, ${state.mousePos.y})`}
               </Typography>
-              <Typography color="inherit" className={classes.infobarItem}>
-                {`Zoom Level: ${state.zoom.toFixed(1)}`}
-              </Typography>
-              {state.mousePos ? (
-                <Typography color="inherit" className={classes.infobarItem}>
-                  {`Mouse Pos: (${state.mousePos.x}, ${state.mousePos.y})`}
-                </Typography>
-              ) : null}
-              {selectedLabelInfo}
-            </Toolbar>
-          </Paper>
-          <div className={classes.canvasHeader} />
-          <div className={classes.canvasContainer} id="canvas-grid">
-            <ImageLabelerCanvas
-              zoom={state.zoom}
-              labels={labels}
-              selectedLabel={selectedLabel}
-              selectedLabelIndex={selectedLabelIndex}
-              imageUrl={props.image.url} />          </div>
-          <Paper className={classes.bottomToolbar} >
-            <Toolbar variant="dense">
-              <Typography>{'Bottom toolbar'}</Typography>
-            </Toolbar>
-          </Paper>
-        </div>
+            ) : null}
+            {selectedLabelInfo}
+          </Toolbar>
+        </Paper>
       </div>
     </div>
   );
