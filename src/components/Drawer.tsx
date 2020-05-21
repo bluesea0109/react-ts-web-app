@@ -34,11 +34,11 @@ interface CustomDrawerProps extends DrawerProps {
 }
 
 function CustomDrawer(props: CustomDrawerProps) {
+  const { user, ...drawProps } = props;
   const classes = useStyles();
   const location = useLocation();
   const theme = useTheme();
 
-  const user = props.user;
   if (!user.activeOrg) {
 
   }
@@ -126,7 +126,7 @@ function CustomDrawer(props: CustomDrawerProps) {
   );
 
   return (
-    <Drawer anchor="left" {...props}>
+    <Drawer anchor="left" {...drawProps}>
       {list()}
     </Drawer>
   );

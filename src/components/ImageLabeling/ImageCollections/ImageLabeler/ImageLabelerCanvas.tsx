@@ -1,13 +1,15 @@
+import { cloneDeep } from 'lodash';
 import React, { useState } from 'react';
 import { useEffect } from 'react';
 import { connect, ConnectedProps, useSelector } from 'react-redux';
 import * as actions from '../../../../store/image-labeling/actions';
 import ImageCategoricalLabel from '../../models/labels/ImageLabel';
 import MultiRectangle from '../../models/labels/MultiRectangle';
-import { cloneDeep } from 'lodash';
+import shape from '@material-ui/core/styles/shape';
 
 const mapDispatch = {
   updateLabel: actions.updateLabel,
+  addLabel: actions.addLabel,
 };
 
 const connector = connect(null, mapDispatch);
@@ -46,7 +48,6 @@ function ImageLabelerCanvas(props: IImageLabelerCanvasProps) {
   });
 
   const draw = () => {
-    console.log('drawing...');
     if (!state.imgLoaded) {
       return;
     }
@@ -84,7 +85,6 @@ function ImageLabelerCanvas(props: IImageLabelerCanvasProps) {
 
     for (const label of labels) {
       if (label.visible) {
-        console.log('drawing label');
         label.draw(ctx, zoom);
       }
     }
@@ -106,6 +106,8 @@ function ImageLabelerCanvas(props: IImageLabelerCanvasProps) {
   };
 
   const onMouseUp = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
+    console.log('mouse up');
+
     setState({
       ...state,
       mouseDownPos: null,
@@ -115,6 +117,7 @@ function ImageLabelerCanvas(props: IImageLabelerCanvasProps) {
     if (!selectedLabel || selectedLabelIndex === null) {
       return;
     }
+    console.log('test');
 
     if (selectedLabel.shape instanceof MultiRectangle && selectedLabel.shape.isRectangleStarted()) {
       const label =  cloneDeep(selectedLabel);
@@ -124,11 +127,13 @@ function ImageLabelerCanvas(props: IImageLabelerCanvasProps) {
   };
 
   const onMouseMove = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
-
     if (!selectedLabel || selectedLabelIndex === null) {
+
+      if (state.mouseDownPos) {
+        props.addLabel(new ImageCategoricalLabel(null, 'box', null, null, []));
+      }
       return;
     }
-    console.log('updating label');
 
     const label =  cloneDeep(selectedLabel);
 
@@ -148,9 +153,9 @@ function ImageLabelerCanvas(props: IImageLabelerCanvasProps) {
       if (!shape.isRectangleStarted()) {
         shape.startRectangle(x, y, w, h);
       } else {
+        console.log('updating label');
         shape.updateCurrentRectangle(x, y, w, h);
       }
-      console.log('updating label');
       label.modified = true;
       updateLabel(label, selectedLabelIndex);
     }

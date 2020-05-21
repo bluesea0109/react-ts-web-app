@@ -23,6 +23,7 @@ export function imageLabelingReducer(
       return {
         ...state,
         labels: [...state.labels, action.label],
+        selectedLabelIndex: state.labels.length,
       };
     case REMOVE_LABEL:
 
