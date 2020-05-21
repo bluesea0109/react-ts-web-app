@@ -105,7 +105,11 @@ export const GET_CATEGORY_SETS = gql`
 
 export const CREATE_CATEGORY_SET = gql`
   mutation($projectId: String!, $name: String!, $categories: [String!]!) {
-    ImageLabelingService_createCategorySet(projectId: $projectId, name: $name, categories: $categories) {
+    ImageLabelingService_createCategorySet(
+      projectId: $projectId
+      name: $name
+      categories: $categories
+    ) {
       id
       projectId
       name
@@ -123,6 +127,219 @@ export const DELETE_CATEGORY_SET = gql`
       id
       projectId
       name
+    }
+  }
+`;
+
+export const CHATBOT_GET_AGENTS = gql`
+  query($projectId: String!) {
+    ChatbotService_agents(projectId: $projectId) {
+      id
+      projectId
+      name
+      language
+      tags
+      userIntents {
+        id
+        agentId
+        value
+        examples {
+          id
+          intentId
+          agentId
+          value
+          tags {
+            id
+            exampleId
+            tagTypeId
+            start
+            end
+          }
+        }
+      }
+      templates {
+        id
+        agentId
+        name
+        value
+      }
+    }
+  }
+`;
+
+export const CHATBOT_GET_AGENT = gql`
+  query($agentId: Int!) {
+    ChatbotService_agent(agentId: $agentId) {
+      id
+      projectId
+      name
+      language
+      tags
+      userIntents {
+        id
+        agentId
+        value
+        examples {
+          id
+          intentId
+          agentId
+          value
+          tags {
+            id
+            exampleId
+            tagTypeId
+            start
+            end
+          }
+        }
+      }
+      templates {
+        id
+        agentId
+        name
+        value
+      }
+    }
+  }
+`;
+
+export const CHATBOT_GET_INTENTS = gql`
+  query($agentId: Int!) {
+    ChatbotService_intents(agentId: $agentId) {
+      id
+      agentId
+      value
+      examples {
+        id
+        intentId
+        agentId
+        value
+        tags {
+          id
+          exampleId
+          tagTypeId
+          start
+          end
+        }
+      }
+    }
+  }
+`;
+
+export const CHATBOT_CREATE_AGENT = gql`
+  mutation(
+    $projectId: String!
+    $name: String!
+    $language: ChatbotService_LanguageEnum!
+  ) {
+    ChatbotService_createAgent(
+      projectId: $projectId
+      name: $name
+      language: $language
+    ) {
+      id
+      projectId
+      name
+      language
+      tags
+      userIntents {
+        id
+        agentId
+        value
+        examples {
+          id
+          intentId
+          agentId
+          value
+          tags {
+            id
+            exampleId
+            tagTypeId
+            start
+            end
+          }
+        }
+      }
+      templates {
+        id
+        agentId
+        name
+        value
+      }
+    }
+  }
+`;
+
+export const CHATBOT_DELETE_AGENT = gql`
+  mutation($agentId: Int!) {
+    ChatbotService_deleteAgent(agentId: $agentId) {
+      id
+      projectId
+      name
+    }
+  }
+`;
+
+export const CHATBOT_UPDATE_AGENT = gql`
+  mutation($agentId: Int!, $name: String!) {
+    ChatbotService_updateAgent(agentId: $agentId, name: $name) {
+      id
+      name
+    }
+  }
+`;
+
+export const CHATBOT_CREATE_INTENT = gql`
+  mutation($agentId: Int!, $value: String!) {
+    ChatbotService_createIntent(agentId: $agentId, value: $value) {
+      id
+      agentId
+      value
+      examples {
+        id
+        intentId
+        agentId
+        value
+        tags {
+          id
+          exampleId
+          tagTypeId
+          start
+          end
+        }
+      }
+    }
+  }
+`;
+
+export const CHATBOT_DELETE_INTENT = gql`
+  mutation($intentId: Int!) {
+    ChatbotService_deleteIntent(intentId: $intentId) {
+      id
+      value
+    }
+  }
+`;
+
+export const CHATBOT_UPDATE_INTENT = gql`
+  mutation($intentId: Int!, $value: String!) {
+    ChatbotService_updateIntent(intentId: $intentId, value: $value) {
+      id
+      agentId
+      value
+      examples {
+        id
+        intentId
+        agentId
+        value
+        tags {
+          id
+          exampleId
+          tagTypeId
+          start
+          end
+        }
+      }
     }
   }
 `;
