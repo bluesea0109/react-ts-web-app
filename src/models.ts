@@ -68,3 +68,8 @@ export interface ILabelQueueImage {
   status: string;
   labeler: string;
 }
+
+export enum ChatbotLanguage {
+  EN_US,
+  FR,
+}

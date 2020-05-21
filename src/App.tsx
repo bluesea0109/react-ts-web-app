@@ -7,6 +7,7 @@ import 'firebase/auth';
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import AppBar from './components/Appbar';
+import ChatbotBuilder from './components/ChatbotBuilder';
 import ContentLoading from './components/ContentLoading';
 import Dashboard from './components/Dashboard';
 import Drawer from './components/Drawer';
@@ -122,7 +123,8 @@ function App() {
         })}
         onMenuClick={onMenuClick}
       />
-      <Drawer user={data.currentUser}
+      <Drawer
+        user={data.currentUser}
         className={classes.drawer}
         variant="persistent"
         anchor="left"
@@ -135,8 +137,7 @@ function App() {
       <main
         className={clsx(classes.content, {
           [classes.contentShift]: state.drawerOpen,
-        })}
-      >
+        })}>
         <div className={classes.drawerHeader} />
         <Switch>
           <Route exact={true} path="/">
@@ -148,22 +149,35 @@ function App() {
           {/* <Route path="/orgs/:orgId/projects/:projectId/text-summarization">
             <TextSummarization />
             </Route> */}
-          <Route exact={true} path="/orgs/:orgId/projects/:projectId/image-labeling/:tab">
+          <Route
+            exact={true}
+            path="/orgs/:orgId/projects/:projectId/image-labeling/:tab">
             <ImageLabeling />
           </Route>
-          <Route exact={true} path="/orgs/:orgId/projects/:projectId/image-labeling/collections/:collectionId/:tab">
+          <Route exact={true} path="/orgs/:orgId/projects/:projectId/chatbot-builder">
+            <ChatbotBuilder user={data.currentUser} />
+          </Route>
+          <Route
+            exact={true}
+            path="/orgs/:orgId/projects/:projectId/image-labeling/collections/:collectionId/:tab">
             <ImageCollectionPage />
           </Route>
-          <Route exact={true} path="/orgs/:orgId/projects/:projectId/image-labeling/collections/:collectionId/images/:imageId">
+          <Route
+            exact={true}
+            path="/orgs/:orgId/projects/:projectId/image-labeling/collections/:collectionId/images/:imageId">
             <ImageViewer />
           </Route>
-          <Route exact={true} path="/orgs/:orgId/projects/:projectId/image-labeling/collections/:collectionId/label-image/:imageId">
+          <Route
+            exact={true}
+            path="/orgs/:orgId/projects/:projectId/image-labeling/collections/:collectionId/label-image/:imageId">
             <ImageLabeler />
           </Route>
-          <Route path="/orgs/:orgId/projects/:projectId/text-labeling"/>
+          <Route path="/orgs/:orgId/projects/:projectId/text-labeling" />
           <Route exact={true} path="/no-project">
             <div className={classes.container}>
-              <Typography>{'No project is active. Please create or activate one.'}</Typography>
+              <Typography>
+                {'No project is active. Please create or activate one.'}
+              </Typography>
             </div>
           </Route>
         </Switch>
