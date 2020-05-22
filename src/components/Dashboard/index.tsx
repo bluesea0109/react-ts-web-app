@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) =>
     paper: {
       padding: theme.spacing(2),
     },
-  })
+  }),
 );
 
 interface IAccountProps {
@@ -57,10 +57,10 @@ function Account(props: IAccountProps) {
   return (
     <div className={classes.root}>
       <Grid>
-        <Grid item xs={12}>
+        <Grid item={true} xs={12}>
           <Typography variant="h6">{welcomeMsg}</Typography>
         </Grid>
-        <Grid item container={true} xs={12} spacing={2}>
+        <Grid item={true} container={true} xs={12} spacing={2}>
           <Grid item={true} xs={12} sm={6}>
             <Paper className={classes.paper}>
               <Typography variant="h5">{'Your organizations'}</Typography>
