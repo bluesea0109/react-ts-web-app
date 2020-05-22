@@ -40,8 +40,8 @@ export const GET_IMAGE_DATA = gql`
 `;
 
 export const NEXT_LABEL_QUEUE_IMAGE = gql`
-  mutation labelQueueItemNext($collectionId: String!) {
-    labelQueueItemNext(collectionId: $collectionId) {
+  mutation ($collectionId: Int!) {
+    ImageLabelingService_nextLabelQueueImage(collectionId: $collectionId) {
       imageId
       status
       labeler
@@ -50,8 +50,8 @@ export const NEXT_LABEL_QUEUE_IMAGE = gql`
 `;
 
 export const COMPLETE_LABEL_QUEUE_IMAGE = gql`
-  mutation labelQueueItemComplete($imageId: Int!) {
-    labelQueueItemComplete(imageId: $imageId) {
+  mutation ($imageId: Int!) {
+    ImageLabelingService_completeLabelQueueImage(imageId: $imageId) {
       imageId
       status
       labeler
@@ -60,8 +60,8 @@ export const COMPLETE_LABEL_QUEUE_IMAGE = gql`
 `;
 
 export const SET_IN_PROGRESS = gql`
-  mutation labelQueueItemInProgress($imageId: Int!) {
-    labelQueueItemInProgress(imageId: $imageId) {
+  mutation ($imageId: Int!) {
+    ImageLabelingService_selectLabelQueueImagene(imageId: $imageId) {
       imageId
       status
       labeler

@@ -1,4 +1,5 @@
 import { useApolloClient } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/react-hooks';
 import { createStyles, makeStyles, Theme, Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
@@ -13,6 +14,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import SaveIcon from '@material-ui/icons/Save';
 import ZoomInIcon from '@material-ui/icons/ZoomIn';
 import ZoomOutIcon from '@material-ui/icons/ZoomOut';
+import { ApolloError } from 'apollo-client';
 import React, { useState } from 'react';
 import { connect, ConnectedProps, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router';
@@ -26,11 +28,12 @@ import {
 import * as actions from '../../../../store/image-labeling/actions';
 import {
   deletedSavedLabels,
+  getImageLabelingState,
   getLabels,
   getSelectedLabel,
   getSelectedLabelIndex,
-  getImageLabelingState,
 } from '../../../../store/image-labeling/selectors';
+import ApolloErrorPage from '../../../ApolloErrorPage';
 import ContentLoading from '../../../ContentLoading';
 import ImageCategoricalLabel, { ImageLabelShapesEnum } from '../../models/labels/ImageLabel';
 import ClosePolygonButton from './ClosePolygonButton';
@@ -43,8 +46,6 @@ import {
   SAVE_LABELS,
 } from './queries';
 import RectangleLabelingCanvas from './RectangleLabelingCanvas';
-import { useMutation } from '@apollo/react-hooks';
-import ApolloErrorPage from '../../../ApolloErrorPage';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -191,6 +192,9 @@ interface IImageLabelerContentState {
   closePolygonDisabled: boolean;
   categorySetOpen: boolean;
   zoom: number;
+  loading: boolean;
+  apolloError: ApolloError | null;
+
   // label settings state
   shape: ImageLabelShapesEnum;
   type: string;
@@ -219,6 +223,8 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
     closePolygonDisabled: true,
     categorySetOpen: false,
     zoom: 1.0,
+    loading: false,
+    apolloError: null,
 
     // label settings state
     shape: ImageLabelShapesEnum.BOX,
@@ -281,64 +287,52 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
   };
 
   const markComplete = async () => {
-    setState({
-      ...state,
-      labelsLoading: true,
-    });
+    setState({ ...state, loading: true });
 
-    const variables = {
-      imageId: image.id,
-      labels: labels.map((label) => {
-        const labelInput: any = {
-          shape: label.shape,
-          categorySetId: label.categorySetId,
-          category: label.category,
-          value: label.toJson(),
-        };
+    try {
+      const variables = {
+        imageId: image.id,
+        labels: labels.map((label) => {
+          const labelInput: any = {
+            shape: label.shape,
+            categorySetId: label.categorySetId,
+            category: label.category,
+            value: label.toJson(),
+          };
 
-        if (label.id) {
-          labelInput.id = label.id;
-        }
-        return labelInput;
-      }),
-    };
+          if (label.id) {
+            labelInput.id = label.id;
+          }
+          return labelInput;
+        }),
+      };
 
-    await client.mutate({
-      mutation: COMPLETE_LABEL_QUEUE_IMAGE,
-      variables,
-      refetchQueries: [
-        {
-          query: GET_IMAGE_DATA,
-          variables: {
-            imageId: image.id,
-            projectId,
-          },
-        },
-      ],
-      awaitRefetchQueries: true,
-    });
-
-    setState((s) => ({
-      ...s,
-      labelsLoading: false,
-    }));
-    await goToNextQueueItem();
+      await client.mutate({ mutation: COMPLETE_LABEL_QUEUE_IMAGE, variables });
+      await goToNextImage();
+    } catch (err) {
+      console.error(err);
+      if (err instanceof ApolloError) {
+        setState(s => ({
+          ...s,
+          loading: false,
+          apolloError: err,
+        }));
+      }
+    }
   };
 
-  const goToNextQueueItem = async () => {
-    const imageId = image.id;
-
+  const goToNextImage = async () => {
     const { data } = await client.mutate({
       mutation: NEXT_LABEL_QUEUE_IMAGE,
-      variables: { imageId },
+      variables: { collectionId: image.collectionId },
     });
 
     if (data.ImageLabelingService_nextLabelQueueImage) {
       const nextId = data.ImageLabelingService_nextLabelQueueImage.imageId;
-      history.push(`/orgs/${orgId}/projects/${projectId}/collections/${collectionId}/image-labeling/${nextId}`);
+      history.push(`/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/label-image/${nextId}`);
     } else {
       // the queue is empty so go to collection page
-      history.push(`/orgs/${orgId}/projects/${projectId}/collections/${collectionId}`);
+      history.push(`/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}`);
     }
   };
 
@@ -347,7 +341,8 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
   };
 
   const markCompleteDisabled = () => {
-    return labels.length === 0 || labels.some((x) => x.modified);
+    return false;
+    // return labels.length === 0 || labels.some((x) => x.modified);
   };
 
   const saveDisabled = () => {
@@ -424,6 +419,14 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
       zoom: Math.max(0.2, state.zoom - 0.2),
     });
   };
+
+  if (state.loading) {
+    return <ContentLoading/>;
+  }
+
+  if (state.apolloError) {
+    return <ApolloErrorPage error={state.apolloError} />;
+  }
 
   let selectedLabelInfo;
   if (selectedLabel) {
