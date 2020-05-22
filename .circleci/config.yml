@@ -8,15 +8,15 @@ references:
           password: $GOOGLE_CREDENTIALS  # JSON service account you created
 
   test: &test
-  <<: *default_config
-  steps:
-    - checkout
-    - run:
-        name: test
-        command: |
-          set -eo pipefail
-          npm install
-          npm run lint
+    <<: *default_config
+    steps:
+      - checkout
+      - run:
+          name: test
+          command: |
+            set -eo pipefail
+            npm install
+            npm run lint
 
   deploy-dev: &deploy-dev
     <<: *default_config
