@@ -10,7 +10,10 @@ import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOffSharp';
 import VisibilityIcon from '@material-ui/icons/VisibilitySharp';
+import { cloneDeep } from 'lodash';
 import React from 'react';
+import { connect, ConnectedProps } from 'react-redux';
+import * as actions from '../../../../store/image-labeling/actions';
 import ImageCategoricalLabel from '../../models/labels/ImageLabel';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -49,36 +52,45 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-interface IImageLabelListItemProps {
+const mapDispatch = {
+  addLabel: actions.addLabel,
+  removeLabel: actions.removeLabel,
+  updateLabel: actions.updateLabel,
+  selectLabel: actions.selectLabel,
+};
+
+const connector = connect(null, mapDispatch);
+
+interface IImageLabelListItemProps extends ConnectedProps<typeof connector> {
   label: ImageCategoricalLabel;
   labelIndex: number;
-  isSelected: boolean;
-  onSelect?(labelIndex: number): void;
-  onChange?(labelIndex: number): void;
-  onDelete?(labelIndex: number): void;
+  selected: boolean;
 }
 
 function ImageLabelListItem(props: IImageLabelListItemProps) {
   const classes = useStyles();
-  const { label, labelIndex } = props;
+  const { label, labelIndex, selected } = props;
 
   const toggleLabelVisible = (label: ImageCategoricalLabel) => (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
-    label.visible = !label.visible;
-    props.onChange?.(labelIndex);
+    const updatedLabel = cloneDeep(label);
+    updatedLabel.visible = !updatedLabel.visible;
+    props.updateLabel(updatedLabel, labelIndex);
     e.preventDefault();
     e.stopPropagation();
   };
 
   const toggleLabelExpand = (label: ImageCategoricalLabel) => (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
-    label.open = !label.open;
-    props.onChange?.(labelIndex);
+    const updatedLabel = cloneDeep(label);
+    updatedLabel.open = !updatedLabel.open;
+    props.updateLabel(updatedLabel, labelIndex);
     e.preventDefault();
     e.stopPropagation();
   };
 
   const deleteLabelShape = (label: ImageCategoricalLabel, shapeIndex: number) => (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    label.deleteShape(shapeIndex);
-    props.onChange?.(labelIndex);
+    const updatedLabel = cloneDeep(label);
+    updatedLabel.deleteShape(shapeIndex);
+    props.updateLabel(updatedLabel, labelIndex);
     e.preventDefault();
     e.stopPropagation();
   };
@@ -89,11 +101,11 @@ function ImageLabelListItem(props: IImageLabelListItemProps) {
   };
 
   const onSelect = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    props.onSelect?.(labelIndex);
+    props.selectLabel(labelIndex);
   };
 
   const onDelete = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    props.onDelete?.(labelIndex);
+    props.removeLabel(labelIndex);
   };
 
   return (
@@ -103,7 +115,7 @@ function ImageLabelListItem(props: IImageLabelListItemProps) {
         classes={listItemClasses}
         button={true}
         dense={true}
-        selected={props.isSelected}
+        selected={selected}
         onClick={onSelect}>
 
         {label.visible ? (
@@ -147,4 +159,4 @@ function ImageLabelListItem(props: IImageLabelListItemProps) {
   );
 }
 
-export default ImageLabelListItem;
+export default connector(ImageLabelListItem);

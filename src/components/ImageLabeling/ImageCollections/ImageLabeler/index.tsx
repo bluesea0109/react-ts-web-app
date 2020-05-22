@@ -1,14 +1,23 @@
 import React from 'react';
 import { useQuery } from 'react-apollo';
+import { connect, ConnectedProps } from 'react-redux';
 import { useParams } from 'react-router';
 import { ICategorySet, IImage, IImageLabel, ILabelQueueImage } from '../../../../models';
+import * as imageLabelingActions from '../../../../store/image-labeling/actions';
 import ApolloErrorPage from '../../../ApolloErrorPage';
 import ContentLoading from '../../../ContentLoading';
 import ImageCategoricalLabel from '../../models/labels/ImageLabel';
 import ImageLabelingPageContent from './ImageLabelerContent';
 import { GET_IMAGE_DATA } from './queries';
 
-function ImageLabeler() {
+const mapDispatch = {
+  addLabel: imageLabelingActions.addLabel,
+  resetLabels: imageLabelingActions.resetLabels,
+};
+
+const connector = connect(null, mapDispatch);
+
+function ImageLabeler(props: ConnectedProps<typeof connector>) {
   const params = useParams<{ projectId: string, imageId?: string}>();
   const { projectId, imageId: imageIdStr } = params;
 
@@ -30,6 +39,9 @@ function ImageLabeler() {
       imageId,
     },
     fetchPolicy: 'network-only',
+    onCompleted: (data) => {
+      loadLabels(data.ImageLabelingService_image.labels);
+    },
   });
 
   if (error) {
@@ -46,7 +58,8 @@ function ImageLabeler() {
       const label = ImageCategoricalLabel.fromServerData(labelData);
       labels.push(label);
     }
-    return labels;
+    console.log('resetting labels');
+    props.resetLabels(labels);
   };
 
   console.log('label queue image', data.ImageLabelingService_labelQueueImage);
@@ -56,10 +69,9 @@ function ImageLabeler() {
       projectId={projectId}
       labelQueueImage={data.ImageLabelingService_labelQueueImage}
       image={data.ImageLabelingService_image}
-      labels={loadLabels(data.ImageLabelingService_image.labels)}
       categorySets={data.ImageLabelingService_categorySets}
     />
   );
 }
 
-export default ImageLabeler;
+export default connector(ImageLabeler);

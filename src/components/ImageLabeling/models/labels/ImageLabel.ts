@@ -3,24 +3,30 @@ import MultiRectangle from './MultiRectangle';
 import MultiShape from './MultiShape';
 import Shape from './Shape';
 
+export enum ImageLabelShapesEnum {
+  BOX = 'box',
+  POLYGON = 'polygon',
+}
+
 class ImageCategoricalLabel {
-  shape: MultiShape | null = null;
+  shape: MultiShape;
   visible: boolean;
   open = false;
   modified = false;
 
   constructor(
     public id: number | null,
-    public shapeName: string,
+    public shapeType: ImageLabelShapesEnum,
     public categorySet: any | null,
     public category: string | null,
     public approvedBy: string[] = [],
     shapeJson?: string,
     ) {
-    if (shapeName === 'polygon') {
-      this.shape = new MultiPolygon(shapeJson);
-    } else if (shapeName === 'box') {
-      this.shape = new MultiRectangle(shapeJson);
+
+    switch (shapeType) {
+      case ImageLabelShapesEnum.BOX: this.shape = new MultiRectangle(shapeJson); break;
+      case ImageLabelShapesEnum.POLYGON: this.shape = new MultiPolygon(shapeJson); break;
+      default: throw new Error('unknown shape type');
     }
     this.visible = true;
   }

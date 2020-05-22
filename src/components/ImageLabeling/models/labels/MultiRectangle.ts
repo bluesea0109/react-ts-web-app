@@ -35,8 +35,8 @@ export default class MultiRectangle extends MultiShape {
     return this.rectangles;
   }
 
-  isRectangleStarted = () => {
-    return this.currentRectangle != null;
+  isRectangleStarted(): boolean {
+    return this.currentRectangle !== null;
   }
 
   startRectangle (x: number, y: number, w: number, h: number): void {
