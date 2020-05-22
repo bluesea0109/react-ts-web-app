@@ -7,6 +7,17 @@ references:
           username: _json_key  # default username when using a JSON key file to authenticate
           password: $GOOGLE_CREDENTIALS  # JSON service account you created
 
+  test: &test
+  <<: *default_config
+  steps:
+    - checkout
+    - run:
+        name: test
+        command: |
+          set -eo pipefail
+          npm install
+          npm run lint
+
   deploy-dev: &deploy-dev
     <<: *default_config
     steps:
@@ -31,6 +42,8 @@ references:
             gcloud config set compute/zone us-west3-a
             ./scripts/deploy-prod.sh
 jobs:
+  test:
+    <<: *test
   deploy-dev:
     <<: *deploy-dev
   deploy-prod:
@@ -39,8 +52,12 @@ workflows:
   version: 2
   deploy:
     jobs:
+      - test:
+          context: bavard
       - deploy-dev:
           context: bavard
+          requires:
+            - test
           filters:
             branches:
               only: master
