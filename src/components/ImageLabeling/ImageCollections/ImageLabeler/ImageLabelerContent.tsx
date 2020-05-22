@@ -5,7 +5,6 @@ import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormLabel from '@material-ui/core/FormLabel';
-import List from '@material-ui/core/List';
 import Paper from '@material-ui/core/Paper';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -14,9 +13,9 @@ import Toolbar from '@material-ui/core/Toolbar';
 import SaveIcon from '@material-ui/icons/Save';
 import ZoomInIcon from '@material-ui/icons/ZoomIn';
 import ZoomOutIcon from '@material-ui/icons/ZoomOut';
-import { cloneDeep } from 'lodash';
 import React, { useState } from 'react';
 import { connect, ConnectedProps, useSelector } from 'react-redux';
+import { useHistory, useParams } from 'react-router';
 import Select from 'react-select';
 import {
   ICategory,
@@ -26,25 +25,26 @@ import {
 } from '../../../../models';
 import * as actions from '../../../../store/image-labeling/actions';
 import {
+  deletedSavedLabels,
   getLabels,
   getSelectedLabel,
   getSelectedLabelIndex,
-  deletedSavedLabels,
+  getImageLabelingState,
 } from '../../../../store/image-labeling/selectors';
 import ContentLoading from '../../../ContentLoading';
-import ImageCategoricalLabel from '../../models/labels/ImageLabel';
-import MultiPolygon from '../../models/labels/MultiPolygon';
-import MultiRectangle from '../../models/labels/MultiRectangle';
-import Rectangle from '../../models/labels/Rectangle';
-import ImageLabelerCanvas from './ImageLabelerCanvas';
+import ImageCategoricalLabel, { ImageLabelShapesEnum } from '../../models/labels/ImageLabel';
+import ClosePolygonButton from './ClosePolygonButton';
 import ImageLabelList from './ImageLabelList';
-import ImageLabelListItem from './ImageLabelListItem';
+import PolygonLabelingCanvas from './PolygonLabelingCanvas';
 import {
   COMPLETE_LABEL_QUEUE_IMAGE,
   GET_IMAGE_DATA,
   NEXT_LABEL_QUEUE_IMAGE,
   SAVE_LABELS,
 } from './queries';
+import RectangleLabelingCanvas from './RectangleLabelingCanvas';
+import { useMutation } from '@apollo/react-hooks';
+import ApolloErrorPage from '../../../ApolloErrorPage';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -90,12 +90,6 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundBlendMode: 'difference, normal',
       backgroundSize: '2em 2em',
       overflow: 'auto',
-    },
-    bottomToolbar: {
-      // lexShrink: 0
-    },
-    canvasHeader: {
-      marginTop: theme.spacing(1),
     },
     toolbar: {
       marginTop: theme.spacing(1),
@@ -166,17 +160,10 @@ const useStyles = makeStyles((theme: Theme) =>
     marginRight: {
       marginRight: theme.spacing(1),
     },
-    checkbox: {
-      padding: 0,
-    },
-    iconButton: {
-      marginLeft: theme.spacing(1),
-      marginRight: theme.spacing(1),
-    },
     grow: {
       flexGrow: 1,
     },
-  })
+  }),
 );
 
 const mapDispatch = {
@@ -203,12 +190,9 @@ interface IMousePos {
 interface IImageLabelerContentState {
   closePolygonDisabled: boolean;
   categorySetOpen: boolean;
-  canvasHeader: string;
   zoom: number;
-  imgLoaded: boolean;
-
   // label settings state
-  shape: string;
+  shape: ImageLabelShapesEnum;
   type: string;
   selectedCategory: ICategory | null;
   categorySet: ICategorySet | null;
@@ -223,20 +207,21 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
   const selectedLabel = useSelector(getSelectedLabel);
   const selectedLabelIndex = useSelector(getSelectedLabelIndex);
   const hasDeletedLabels = useSelector(deletedSavedLabels);
-
+  const labelingState = useSelector(getImageLabelingState);
+  const [saveLabelsMutation, saveLabelsResult] = useMutation(SAVE_LABELS);
+  const history = useHistory();
   const client = useApolloClient();
 
   const { image, labelQueueImage, categorySets } = props;
+  const { orgId, projectId, collectionId } = useParams();
 
   const [state, setState] = useState<IImageLabelerContentState>({
     closePolygonDisabled: true,
     categorySetOpen: false,
-    canvasHeader: 'test',
     zoom: 1.0,
-    imgLoaded: false,
 
     // label settings state
-    shape: 'box',
+    shape: ImageLabelShapesEnum.BOX,
     type: 'categorical',
     selectedCategory: null,
     categorySet: null,
@@ -253,7 +238,7 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
   };
 
   const handleChange = (name: string) => (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setState({
       ...state,
@@ -262,7 +247,7 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
   };
 
   const handleSelectCategory = (categorySet: ICategorySet | null) => (
-    e: any
+    e: any,
   ) => {
     if (!categorySet) {
       return;
@@ -280,7 +265,7 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
   };
 
   const handleSelectCategorySet = (e: any) => {
-    const categorySet = props.categorySets.find((x) => x.id === e.value);
+    const categorySet = categorySets.find((x) => x.id === e.value);
     setState({
       ...state,
       categorySet: categorySet ? categorySet : null,
@@ -290,8 +275,9 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
   const handleShapeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setState({
       ...state,
-      shape: e.target.value,
+      shape: e.target.value as ImageLabelShapesEnum,
     });
+    props.selectLabel(null);
   };
 
   const markComplete = async () => {
@@ -301,10 +287,10 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
     });
 
     const variables = {
-      imageId: props.image.id,
+      imageId: image.id,
       labels: labels.map((label) => {
         const labelInput: any = {
-          shape: label.shapeName,
+          shape: label.shape,
           categorySetId: label.categorySetId,
           category: label.category,
           value: label.toJson(),
@@ -324,8 +310,8 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
         {
           query: GET_IMAGE_DATA,
           variables: {
-            imageId: props.image.id,
-            projectId: props.projectId,
+            imageId: image.id,
+            projectId,
           },
         },
       ],
@@ -336,6 +322,24 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
       ...s,
       labelsLoading: false,
     }));
+    await goToNextQueueItem();
+  };
+
+  const goToNextQueueItem = async () => {
+    const imageId = image.id;
+
+    const { data } = await client.mutate({
+      mutation: NEXT_LABEL_QUEUE_IMAGE,
+      variables: { imageId },
+    });
+
+    if (data.ImageLabelingService_nextLabelQueueImage) {
+      const nextId = data.ImageLabelingService_nextLabelQueueImage.imageId;
+      history.push(`/orgs/${orgId}/projects/${projectId}/collections/${collectionId}/image-labeling/${nextId}`);
+    } else {
+      // the queue is empty so go to collection page
+      history.push(`/orgs/${orgId}/projects/${projectId}/collections/${collectionId}`);
+    }
   };
 
   const markInProgress = async () => {
@@ -351,7 +355,7 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
   };
 
   const viewMaskDisabled = () => {
-    return !props.image.maskUrl;
+    return !image.maskUrl;
   };
 
   const addLabel = () => {
@@ -364,7 +368,7 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
         null,
         state.shape,
         categorySet,
-        selectedCategory?.name || null
+        selectedCategory?.name || null,
       );
     } else {
       label = new ImageCategoricalLabel(null, state.shape, null, null);
@@ -373,21 +377,12 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
     props.addLabel(label);
   };
 
-  const removeLabel = (labelIndex: number) => {
-    props.removeLabel(labelIndex);
-  };
-
   const saveLabels = async () => {
-    setState({
-      ...state,
-      labelsLoading: true,
-    });
-
     const variables = {
-      imageId: props.image.id,
+      imageId: image.id,
       labels: labels.map((label) => {
         const labelInput: any = {
-          shape: label.shapeName,
+          shape: label.shapeType,
           categorySetId: label.categorySetId,
           category: label.category,
           value: label.toJson(),
@@ -398,26 +393,21 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
         }
         return labelInput;
       }),
+      delLabelIds: labelingState.deletedLabelIds,
     };
 
-    await client.mutate({
-      mutation: SAVE_LABELS,
+    saveLabelsMutation({
       variables,
       refetchQueries: [
         {
           query: GET_IMAGE_DATA,
           variables: {
-            imageId: props.image.id,
-            projectId: props.projectId,
+            imageId: image.id,
+            projectId,
           },
         },
       ],
       awaitRefetchQueries: true,
-    });
-
-    setState({
-      ...state,
-      labelsLoading: false,
     });
   };
 
@@ -435,35 +425,6 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
     });
   };
 
-  const closePolygon = () => {
-    if (!selectedLabel || selectedLabelIndex === null) {
-      return;
-    }
-
-    const label = cloneDeep(selectedLabel);
-    const poly = label.shape as MultiPolygon;
-    poly.endPolygon();
-    props.updateLabel(label, selectedLabelIndex);
-  };
-
-  const closePolygonDisabled = () => {
-    if (!selectedLabel) {
-      return;
-    }
-
-    if (
-      selectedLabel == null ||
-      selectedLabel.shape == null ||
-      !(selectedLabel.shape instanceof MultiPolygon)
-    ) {
-      return true;
-    }
-    const multipoly = selectedLabel.shape;
-    return !(
-      multipoly.currentPolygon && multipoly.currentPolygon.points.length > 2
-    );
-  };
-
   let selectedLabelInfo;
   if (selectedLabel) {
     selectedLabelInfo = (
@@ -472,7 +433,7 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
           {selectedLabel.id ? `Label Id=${selectedLabel.id}` : 'New Label'}
         </Typography>
         <Typography color="inherit" className={classes.infobarItem}>
-          {`Label Shape=${selectedLabel.shapeName}`}
+          {`Label Shape=${selectedLabel.shape}`}
         </Typography>
       </React.Fragment>
     );
@@ -495,10 +456,40 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
     );
   }
 
-  const categorySetOptions = props.categorySets.map((x) => ({
+  const getCurrentLabelShape = () => {
+    return selectedLabel?.shapeType ?? state.shape;
+  };
+
+  const categorySetOptions = categorySets.map((x) => ({
     value: x.id,
     label: x.name,
   }));
+
+  let labelingCanvas;
+  switch (getCurrentLabelShape()) {
+    case ImageLabelShapesEnum.BOX: labelingCanvas = (
+      <RectangleLabelingCanvas
+      zoom={state.zoom}
+      labels={labels}
+      selectedLabel={selectedLabel}
+      selectedLabelIndex={selectedLabelIndex}
+      imageUrl={image.url}
+    />
+    ); break;
+    default: labelingCanvas = (
+      <PolygonLabelingCanvas
+      zoom={state.zoom}
+      labels={labels}
+      selectedLabel={selectedLabel}
+      selectedLabelIndex={selectedLabelIndex}
+      imageUrl={image.url}
+    />
+    ); break;
+  }
+
+  if (saveLabelsResult.error) {
+    return <ApolloErrorPage error={saveLabelsResult.error} />;
+  }
 
   return (
     <div className={classes.root}>
@@ -581,7 +572,7 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
             </FormGroup>
           </form>
           <br />
-          {/* <ImageLabelCreate categorySets={props.categorySets} onNewLabel={onNewLabel} /> */}
+          {/* <ImageLabelCreate categorySets={categorySets} onNewLabel={onNewLabel} /> */}
           <Button
             variant="contained"
             color="secondary"
@@ -593,7 +584,7 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
           <br />
         </Paper>
         <Paper className={classes.labelListContainer}>
-          {state.labelsLoading ? (
+          {saveLabelsResult.loading ? (
             <ContentLoading />
           ) : (
             <React.Fragment>
@@ -639,9 +630,7 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
             >
               <ZoomOutIcon />
             </Button>
-            <Button disabled={closePolygonDisabled()} onClick={closePolygon}>
-              {'Close Polygon'}
-            </Button>
+            <ClosePolygonButton />
             <FormControlLabel
               control={
                 <Switch
@@ -658,17 +647,10 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
             {approveButton}
           </Toolbar>
         </Paper>
-        <div className={classes.canvasHeader} />
         <div className={classes.canvasContainer} id="canvas-grid">
-          <ImageLabelerCanvas
-            zoom={state.zoom}
-            labels={labels}
-            selectedLabel={selectedLabel}
-            selectedLabelIndex={selectedLabelIndex}
-            imageUrl={props.image.url}
-          />{' '}
+          {labelingCanvas}
         </div>
-        <Paper className={classes.bottomToolbar}>
+        <Paper className={classes.infobar}>
           <Toolbar variant="dense">
             <Typography color="inherit" className={classes.infobarItem}>
               {'Mode: labeling'}

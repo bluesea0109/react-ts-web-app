@@ -24,7 +24,7 @@ interface UpdateLabel {
 
 interface SelectLabel {
   type: typeof SELECT_LABEL;
-  labelIndex: number;
+  labelIndex: number | null;
 }
 
 interface ResetLabels {
@@ -36,6 +36,7 @@ export interface ImageLabelingState {
   selectedLabelIndex: number | null;
   labels: ImageCategoricalLabel[];
   deletedSavedLabels: boolean;
+  deletedLabelIds: number[];
 }
 
 export type ImageLabelingActionTypes = AddLabel | RemoveLabel | UpdateLabel | SelectLabel | ResetLabels;

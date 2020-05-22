@@ -1,5 +1,5 @@
 import ImageCategoricalLabel from '../../components/ImageLabeling/models/labels/ImageLabel';
-import { ADD_LABEL, ImageLabelingActionTypes, REMOVE_LABEL, UPDATE_LABEL, SELECT_LABEL, RESET_LABELS } from './types';
+import { ADD_LABEL, ImageLabelingActionTypes, REMOVE_LABEL, RESET_LABELS, SELECT_LABEL, UPDATE_LABEL } from './types';
 
 export function addLabel(label: ImageCategoricalLabel): ImageLabelingActionTypes {
   return {
@@ -23,7 +23,7 @@ export function updateLabel(label: ImageCategoricalLabel, labelIndex: number): I
   };
 }
 
-export function selectLabel(labelIndex: number): ImageLabelingActionTypes {
+export function selectLabel(labelIndex: number | null): ImageLabelingActionTypes {
   return {
     type: SELECT_LABEL,
     labelIndex,

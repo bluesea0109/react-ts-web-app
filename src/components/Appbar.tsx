@@ -2,10 +2,10 @@ import { useMutation } from '@apollo/react-hooks';
 import {
   CircularProgress,
   createStyles,
-  IconButton,
-  Theme,
   FormControl,
+  IconButton,
   InputLabel,
+  Theme,
 } from '@material-ui/core';
 import AppBar, { AppBarProps } from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme: Theme) =>
     border: {
       borderBottom: '1px solid white',
     },
-  })
+  }),
 );
 
 const Orgs: React.FC<{ user: IUser }> = ({ user }) => {
@@ -123,7 +123,7 @@ const Projects: React.FC<{ user: IUser }> = ({ user }) => {
     setProjectId(projectId);
   };
 
-  if (loading) return <CircularProgress color="secondary" />;
+  if (loading) { return <CircularProgress color="secondary" />; }
 
   return projects?.length !== 0 ? (
     <FormControl className={clsx(classes.menuButton)}>

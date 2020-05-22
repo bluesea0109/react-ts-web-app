@@ -1,11 +1,10 @@
 import { cloneDeep } from 'lodash';
 import React, { useState } from 'react';
 import { useEffect } from 'react';
-import { connect, ConnectedProps, useSelector } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
 import * as actions from '../../../../store/image-labeling/actions';
-import ImageCategoricalLabel from '../../models/labels/ImageLabel';
+import ImageCategoricalLabel, { ImageLabelShapesEnum } from '../../models/labels/ImageLabel';
 import MultiRectangle from '../../models/labels/MultiRectangle';
-import shape from '@material-ui/core/styles/shape';
 
 const mapDispatch = {
   updateLabel: actions.updateLabel,
@@ -30,7 +29,6 @@ interface IMousePos {
 function ImageLabelerCanvas(props: IImageLabelerCanvasProps) {
   const { labels, selectedLabel, selectedLabelIndex, zoom, updateLabel } = props;
 
-  console.log('labels', labels);
   interface IState {
     imgLoaded: boolean;
     mouseDownPos: IMousePos | null;
@@ -93,8 +91,8 @@ function ImageLabelerCanvas(props: IImageLabelerCanvasProps) {
   const getMousePos = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>): IMousePos => {
     const rect = e.currentTarget.getBoundingClientRect();
     return {
-      x: (e.clientX - rect.left),
-      y: (e.clientY - rect.top),
+      x: (e.clientX - rect.left) / zoom,
+      y: (e.clientY - rect.top) / zoom,
     };
   };
 
@@ -130,7 +128,7 @@ function ImageLabelerCanvas(props: IImageLabelerCanvasProps) {
     if (!selectedLabel || selectedLabelIndex === null) {
 
       if (state.mouseDownPos) {
-        props.addLabel(new ImageCategoricalLabel(null, 'box', null, null, []));
+        props.addLabel(new ImageCategoricalLabel(null, ImageLabelShapesEnum.BOX, null, null, []));
       }
       return;
     }

@@ -3,15 +3,16 @@ import {
   ImageLabelingActionTypes,
   ImageLabelingState,
   REMOVE_LABEL,
+  RESET_LABELS,
   SELECT_LABEL,
   UPDATE_LABEL,
-  RESET_LABELS,
 } from './types';
 
 const initialState: ImageLabelingState = {
   labels: [],
   selectedLabelIndex: null,
   deletedSavedLabels: false,
+  deletedLabelIds: [],
 };
 
 export function imageLabelingReducer(
@@ -37,7 +38,15 @@ export function imageLabelingReducer(
         }
       }
 
+      const deletedLabel = state.labels[action.labelIndex];
+
+      const deletedLabelIds = [...state.deletedLabelIds];
+      if (deletedLabel.id) {
+        deletedLabelIds.push(deletedLabel.id);
+      }
+
       return {
+        deletedLabelIds,
         deletedSavedLabels: state.labels[action.labelIndex].id === null ? false : true,
         selectedLabelIndex,
         labels: [...state.labels.slice(0, action.labelIndex), ...state.labels.slice(action.labelIndex + 1)],
@@ -54,6 +63,7 @@ export function imageLabelingReducer(
       };
     case RESET_LABELS:
       return {
+        deletedLabelIds: [],
         labels: action.labels,
         selectedLabelIndex: null,
         deletedSavedLabels: false,

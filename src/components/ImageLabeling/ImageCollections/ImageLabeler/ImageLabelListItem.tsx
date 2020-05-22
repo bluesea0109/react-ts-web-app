@@ -10,11 +10,11 @@ import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOffSharp';
 import VisibilityIcon from '@material-ui/icons/VisibilitySharp';
-import React from 'react';
-import ImageCategoricalLabel from '../../models/labels/ImageLabel';
-import * as actions from '../../../../store/image-labeling/actions';
-import { connect, ConnectedProps } from 'react-redux';
 import { cloneDeep } from 'lodash';
+import React from 'react';
+import { connect, ConnectedProps } from 'react-redux';
+import * as actions from '../../../../store/image-labeling/actions';
+import ImageCategoricalLabel from '../../models/labels/ImageLabel';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

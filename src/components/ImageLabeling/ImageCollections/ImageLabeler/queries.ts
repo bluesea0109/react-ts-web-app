@@ -72,7 +72,8 @@ export const SET_IN_PROGRESS = gql`
 export const SAVE_LABELS = gql`
   mutation saveImageLabels(
     $imageId: Int!,
-    $labels: [ImageLabelingService_ImageLabelInput]!) {
+    $labels: [ImageLabelingService_ImageLabelInput!]!,
+    $delLabelIds: [Int!]!) {
 
     ImageLabelingService_saveImageLabels(imageId: $imageId, labels: $labels) {
       id
@@ -86,6 +87,9 @@ export const SAVE_LABELS = gql`
       creator
     }
 
+    ImageLabelingService_deleteImageLabels(labelIds: $delLabelIds) {
+      id
+    }
   }
 `;
 

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useQuery } from 'react-apollo';
 import { connect, ConnectedProps } from 'react-redux';
 import { useParams } from 'react-router';
