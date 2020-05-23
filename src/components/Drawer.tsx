@@ -1,5 +1,4 @@
 import { createStyles, IconButton, Theme, useTheme } from '@material-ui/core';
-import Divider from '@material-ui/core/Divider';
 import Drawer, { DrawerProps } from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -110,7 +109,6 @@ function CustomDrawer(props: CustomDrawerProps) {
           )}
         </IconButton>
       </div>
-      <Divider />
       <List>
         <ListItem
           component={Link}

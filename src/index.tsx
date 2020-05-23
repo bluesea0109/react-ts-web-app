@@ -1,3 +1,4 @@
+import { ThemeProvider } from '@material-ui/core';
 import React from 'react';
 import { ApolloProvider } from 'react-apollo';
 import ReactDOM from 'react-dom';
@@ -9,6 +10,7 @@ import './config'; // initializes firebase
 import './index.css';
 import * as serviceWorker from './serviceWorker';
 import configureStore from './store';
+import appTheme from './theme';
 
 const store = configureStore();
 
@@ -17,7 +19,9 @@ ReactDOM.render(
     <ApolloProvider client={client}>
       <Provider store={store}>
         <Router>
-          <AppAuthWrapper />
+          <ThemeProvider theme={appTheme.getMuiTheme()}>
+            <AppAuthWrapper />
+          </ThemeProvider>
         </Router>
       </Provider>
     </ApolloProvider>
