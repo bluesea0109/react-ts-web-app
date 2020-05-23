@@ -43,7 +43,7 @@ function ImageCollectionPage() {
             <Tab label="Review Queues" value="review-queues" />
           </Tabs>
           <Typography className={classes.root}>
-            <Link component={RouterLink} to="/image-labeling/collections">
+            <Link component={RouterLink} to={`/orgs/${orgId}/projects/${projectId}/image-labeling/collections/`}>
               {'All collections'}
             </Link>
           </Typography>
