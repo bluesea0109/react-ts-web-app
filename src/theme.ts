@@ -65,7 +65,7 @@ const lightTheme: ThemeOptions = {
     type: 'light',
     // divider:
     primary: {
-      main: '#000000',
+      main: '#24292e',
     },
     secondary: {
       main: '#04AA51',
@@ -73,8 +73,8 @@ const lightTheme: ThemeOptions = {
     },
     background: {
       // paper: '#eeeeee', // light
-      paper: '#ffffff',
-      default: '#f5f5f5', // light
+      paper: '#f5f5f5',
+      default: '#ffffff', // light
     },
     text: {
       primary: '#000000', // light
