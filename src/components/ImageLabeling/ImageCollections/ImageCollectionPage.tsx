@@ -41,6 +41,7 @@ function ImageCollectionPage() {
           >
             <Tab label="Images" value="images" />
             <Tab label="Review Queues" value="review-queues" />
+            <Tab label="Label Exports" value="label-exports" />
           </Tabs>
           <Typography className={classes.root}>
             <Link component={RouterLink} to={`/orgs/${orgId}/projects/${projectId}/image-labeling/collections/`}>
@@ -53,6 +54,7 @@ function ImageCollectionPage() {
         <ImagesTable collectionId={parseInt(collectionId, 10)} />
       )}
       {tab === 'review-queues' && <Typography>{'Review Queues'}</Typography>}
+      {tab === 'label-exports' && <Typography>{'Label Exports'}</Typography>}
     </div>
   );
 }

@@ -73,3 +73,12 @@ export enum ChatbotLanguage {
   EN_US,
   FR,
 }
+
+export interface ILabelsExport {
+  id: number;
+  collectionId: number;
+  status: string;
+  creator: string;
+  createdAt: string;
+  signedUrl: string;
+}
