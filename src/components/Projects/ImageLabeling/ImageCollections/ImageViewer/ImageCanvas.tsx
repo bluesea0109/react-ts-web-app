@@ -28,8 +28,6 @@ const ImageCanvas: React.FC<IImageCanvasProps> = (props) => {
     imageLoaded: false,
   });
 
-  console.log('imageUrl', imageUrl);
-
   const drawLabels = (canvas: HTMLCanvasElement) => {
     const ctx = canvas.getContext('2d');
     for (const label of labels) {
@@ -67,7 +65,7 @@ const ImageCanvas: React.FC<IImageCanvasProps> = (props) => {
     if (!canvas) {
       return;
     }
-    console.log('drawing image');
+
     const ctx = canvas.getContext('2d');
     ctx?.clearRect(0, 0, canvas.width, canvas.height);
     drawImage(canvas);

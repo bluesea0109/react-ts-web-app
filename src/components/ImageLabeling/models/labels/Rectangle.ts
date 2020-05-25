@@ -27,7 +27,7 @@ export default class Rectangle extends Shape {
     return [this.x, this.y, this.w, this.h];
   }
 
-  coordinates = (): number[][] => {
+  coordinates (): number[][] {
     const { x, y, w, h } = this;
     return [[x, y], [x + w, y], [x + w, y + h], [x, y + h], [x, y]];
   }

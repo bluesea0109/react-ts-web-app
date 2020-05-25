@@ -53,8 +53,6 @@ function ImageLabeler(props: ConnectedProps<typeof connector>) {
     return <ContentLoading />;
   }
 
-  console.log('label queue image', data.ImageLabelingService_labelQueueImage);
-
   return (
     <ImageLabelingPageContent
       projectId={projectId}

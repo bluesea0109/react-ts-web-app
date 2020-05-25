@@ -38,6 +38,7 @@ import ContentLoading from '../../../ContentLoading';
 import ImageCategoricalLabel, {
   ImageLabelShapesEnum,
 } from '../../models/labels/ImageLabel';
+import MultiRectangle from '../../models/labels/MultiRectangle';
 import ClosePolygonButton from './ClosePolygonButton';
 import ImageLabelList from './ImageLabelList';
 import PolygonLabelingCanvas from './PolygonLabelingCanvas';
@@ -360,7 +361,6 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
   };
 
   const addLabel = () => {
-    console.log('adding label');
     const { categorySet, selectedCategory } = state;
 
     let label;

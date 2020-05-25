@@ -172,10 +172,8 @@ function ImagesTable(props: IImagesTableProps) {
   const history = useHistory();
 
   useEffect(() => {
-    console.log('start polling');
     startPolling(3000);
     return function cleanUp() {
-      console.log('Stop polling');
       stopPolling();
     };
   }, [startPolling, stopPolling]);
