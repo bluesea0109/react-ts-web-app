@@ -1,5 +1,11 @@
 import { useApolloClient } from '@apollo/react-hooks';
-import { createStyles, makeStyles, Theme, Typography } from '@material-ui/core';
+import {
+  createStyles,
+  makeStyles,
+  TextField,
+  Theme,
+  Typography,
+} from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -13,11 +19,11 @@ import Toolbar from '@material-ui/core/Toolbar';
 import SaveIcon from '@material-ui/icons/Save';
 import ZoomInIcon from '@material-ui/icons/ZoomIn';
 import ZoomOutIcon from '@material-ui/icons/ZoomOut';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import { ApolloError } from 'apollo-client';
 import React, { useState } from 'react';
 import { connect, ConnectedProps, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router';
-import Select from 'react-select';
 import {
   ICategory,
   ICategorySet,
@@ -38,7 +44,6 @@ import ContentLoading from '../../../ContentLoading';
 import ImageCategoricalLabel, {
   ImageLabelShapesEnum,
 } from '../../models/labels/ImageLabel';
-import MultiRectangle from '../../models/labels/MultiRectangle';
 import ClosePolygonButton from './ClosePolygonButton';
 import ImageLabelList from './ImageLabelList';
 import PolygonLabelingCanvas from './PolygonLabelingCanvas';
@@ -256,13 +261,17 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
   };
 
   const handleSelectCategory = (categorySet: ICategorySet | null) => (
-    e: any,
+    e: React.ChangeEvent<{}>,
+    value: {
+      value: string;
+      label: string;
+    } | null,
   ) => {
     if (!categorySet) {
       return;
     }
 
-    const category = categorySet.categories.find((x) => x.name === e.value);
+    const category = categorySet.categories.find((x) => x.name === value?.value);
     if (!category) {
       return;
     }
@@ -273,8 +282,14 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
     });
   };
 
-  const handleSelectCategorySet = (e: any) => {
-    const categorySet = categorySets.find((x) => x.id === e.value);
+  const handleSelectCategorySet = (
+    e: React.ChangeEvent<{}>,
+    value: {
+      value: number;
+      label: string;
+    } | null,
+  ) => {
+    const categorySet = categorySets.find((x) => x.id === value?.value);
     setState({
       ...state,
       categorySet: categorySet ? categorySet : null,
@@ -406,10 +421,15 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
       interface ISaveLabels {
         ImageLabelingService_saveImageLabels: IImageLabel[];
       }
-      const res = await client.mutate<ISaveLabels>({ mutation: SAVE_LABELS, variables });
+      const res = await client.mutate<ISaveLabels>({
+        mutation: SAVE_LABELS,
+        variables,
+      });
 
       if (res.data) {
-        const labels = convertLabels(res.data.ImageLabelingService_saveImageLabels);
+        const labels = convertLabels(
+          res.data.ImageLabelingService_saveImageLabels,
+        );
         props.resetLabels(labels);
       }
 
@@ -417,7 +437,6 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
         ...s,
         labelsLoading: false,
       }));
-
     } catch (err) {
       console.error(err);
       if (err instanceof ApolloError) {
@@ -490,6 +509,13 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
     value: x.id,
     label: x.name,
   }));
+
+  const categoryOptions = state.categorySet
+    ? state.categorySet.categories.map((x) => ({
+        value: x.name,
+        label: x.name,
+      }))
+    : [];
 
   let labelingCanvas;
   switch (getCurrentLabelShape()) {
@@ -574,20 +600,29 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
             </FormGroup>
             <FormGroup row={true}>
               <FormControl className={classes.formControl}>
-                <Select
-                  placeholder="Category Set"
-                  options={categorySetOptions}
+                <Autocomplete
                   onChange={handleSelectCategorySet}
+                  options={categorySetOptions}
+                  getOptionLabel={(option) => option.label}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Category Sets"
+                    />
+                  )}
                 />
               </FormControl>
               <FormControl className={classes.formControl}>
-                <Select
-                  placeholder="Category"
-                  options={state.categorySet?.categories.map((x) => ({
-                    value: x.name,
-                    label: x.name,
-                  }))}
+                <Autocomplete
                   onChange={handleSelectCategory(state.categorySet)}
+                  options={categoryOptions}
+                  getOptionLabel={(option) => option.label}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Category"
+                    />
+                  )}
                 />
               </FormControl>
             </FormGroup>
