@@ -1,6 +1,4 @@
-import React, { Component, useState } from 'react';
-import Typography from '@material-ui/core/Typography';
-import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 import {
   makeStyles,
   Theme,
@@ -17,7 +15,7 @@ import TableFooter from '@material-ui/core/TableFooter';
 import TablePagination from '@material-ui/core/TablePagination';
 import IconButton from '@material-ui/core/IconButton';
 import Paper from '@material-ui/core/Paper';
-import { graphql, useQuery, useMutation } from 'react-apollo';
+import { useQuery, useMutation } from 'react-apollo';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { useParams } from 'react-router-dom';
 import TableIcon from '@material-ui/icons/TableChart';
@@ -41,12 +39,13 @@ const useStyles = makeStyles((theme: Theme) =>
 function ExportsTable() {
   const rowsPerPage = 10;
   const classes = useStyles();
-  const { collectionId } = useParams();
+  let { collectionId } = useParams();
+  collectionId = parseInt(collectionId, 10);
 
   interface IGetLabelExports {
     ImageLabelingService_labelExports: ILabelsExport[];
   }
-  const getExports = useQuery<IGetLabelExports>(GET_LABEL_EXPORTS, { variables: { collectionId }});
+  const getExports = useQuery<IGetLabelExports>(GET_LABEL_EXPORTS, { variables: { collectionId } });
   const [createExport, createExportResult] = useMutation(CREATE_EXPORT, {
     refetchQueries: [{
       query: GET_LABEL_EXPORTS,
@@ -54,6 +53,7 @@ function ExportsTable() {
         collectionId,
       },
     }],
+    awaitRefetchQueries: true,
   });
   const [deleteExport, deleteExportResult] = useMutation(DELETE_EXPORT, {
     refetchQueries: [{
@@ -62,6 +62,7 @@ function ExportsTable() {
         collectionId,
       },
     }],
+    awaitRefetchQueries: true,
   });
 
   const [state, setState] = useState({
@@ -80,10 +81,19 @@ function ExportsTable() {
 
   const onExportClick = async () => {
     // create export mutation
+    createExport({
+      variables: {
+        collectionId,
+      }
+    });
   };
 
   const onDeleteExportClick = (exportId: number) => async () => {
-    // delete export mutation
+    deleteExport({
+      variables: {
+        exportId,
+      }
+    });
   };
 
   if (getExports.error) {
@@ -105,6 +115,9 @@ function ExportsTable() {
   const exports = getExports.data?.ImageLabelingService_labelExports ?? [];
   const pageItems = getPage(exports);
 
+  exports.forEach(x => {
+    console.log(x.signedUrl);
+  });
   return (
     <Paper className={classes.paper}>
       <Toolbar variant="dense">
@@ -175,8 +188,8 @@ function ExportsTable() {
 }
 
 const GET_LABEL_EXPORTS = gql`
-  query($collectionId: String!) {
-    collectionLabelExports(collectionId: $collectionId) {
+  query($collectionId: Int!) {
+    ImageLabelingService_labelExports(collectionId: $collectionId) {
       id
       collectionId
       status
@@ -188,8 +201,8 @@ const GET_LABEL_EXPORTS = gql`
 `;
 
 const CREATE_EXPORT = gql`
-  mutation createCollectionLabelExport($collectionId: String!) {
-    createCollectionLabelExport(collectionId: $collectionId) {
+  mutation createLabelExport($collectionId: Int!) {
+    ImageLabelingService_createLabelExport(collectionId: $collectionId) {
       id
       collectionId
       status
@@ -200,8 +213,8 @@ const CREATE_EXPORT = gql`
 `;
 
 const DELETE_EXPORT = gql`
-  mutation deleteCollectionLabelExport($exportId: Int!) {
-    deleteCollectionLabelExport(id: $exportId) {
+  mutation($exportId: Int!) {
+    ImageLabelingService_deleteLabelExport(exportId: $exportId) {
       id
       status
     }
