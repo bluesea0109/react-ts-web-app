@@ -1,29 +1,29 @@
-import React, { useState } from 'react';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import Paper from '@material-ui/core/Paper';
 import {
+  createStyles,
   makeStyles,
   Theme,
-  createStyles,
 } from '@material-ui/core/styles';
-import Toolbar from '@material-ui/core/Toolbar';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import gql from 'graphql-tag';
 import TableFooter from '@material-ui/core/TableFooter';
+import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
-import IconButton from '@material-ui/core/IconButton';
-import Paper from '@material-ui/core/Paper';
-import { useQuery, useMutation } from 'react-apollo';
-import DeleteIcon from '@material-ui/icons/Delete';
-import { useParams } from 'react-router-dom';
-import TableIcon from '@material-ui/icons/TableChart';
+import TableRow from '@material-ui/core/TableRow';
+import Toolbar from '@material-ui/core/Toolbar';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
-import Button from '@material-ui/core/Button';
+import DeleteIcon from '@material-ui/icons/Delete';
+import TableIcon from '@material-ui/icons/TableChart';
+import gql from 'graphql-tag';
+import React, { useState } from 'react';
+import { useMutation, useQuery } from 'react-apollo';
+import { useParams } from 'react-router-dom';
+import { ILabelsExport } from '../../../../models';
 import ApolloErrorPage from '../../../ApolloErrorPage';
 import ContentLoading from '../../../ContentLoading';
-import { ILabelsExport } from '../../../../models';
 // import IconButtonRefresh from './IconButtonRefresh';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -84,7 +84,7 @@ function ExportsTable() {
     createExport({
       variables: {
         collectionId,
-      }
+      },
     });
   };
 
@@ -92,7 +92,7 @@ function ExportsTable() {
     deleteExport({
       variables: {
         exportId,
-      }
+      },
     });
   };
 
@@ -125,7 +125,7 @@ function ExportsTable() {
           {'Export to CSV'}
           <TableIcon
             className={classes.rightIcon}
-            color="secondary"></TableIcon>
+            color="secondary"/>
         </Button>
         {/* <IconButtonRefresh onClick={this.reload} /> */}
       </Toolbar>
@@ -143,7 +143,7 @@ function ExportsTable() {
         <TableBody>
           {pageItems.map((labelExport: ILabelsExport) => {
             return (
-              <TableRow key={labelExport.id} hover>
+              <TableRow key={labelExport.id} hover={true}>
                 <TableCell align="left">{labelExport.id}</TableCell>
                 <TableCell align="left">{labelExport.status}</TableCell>
                 <TableCell align="left">
