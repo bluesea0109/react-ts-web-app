@@ -1,7 +1,8 @@
-import { Grid } from '@material-ui/core';
+import { Grid, Paper, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
 import { IUser } from '../../models';
+import AgentsTable from './AgentsTable';
 import NewAgent from './NewAgent';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -21,10 +22,21 @@ interface IChatbotBuilderProps {
 
 const ChatbotBuilder: React.FC<IChatbotBuilderProps> = ({ user }) => {
   const classes = useStyles();
+  const activeProj = user.activeProject;
 
   return (
     <div className={classes.root}>
       <Grid>
+      <Grid item={true} xs={12} sm={6}>
+            <Paper>
+              {activeProj ? (
+                <AgentsTable
+                />
+              ) : (
+                <Typography>{'No Agent is found'}</Typography>
+              )}
+            </Paper>
+          </Grid>
         <Grid item={true} xs={12} sm={6}>
           <NewAgent user={user} />
         </Grid>

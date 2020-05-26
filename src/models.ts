@@ -20,6 +20,13 @@ export interface IProject {
   name: string;
 }
 
+export interface IAgent {
+  id: string;
+  projectId: string;
+  name: string;
+  language: string;
+}
+
 export interface IMember {
   orgId?: string;
   uid: string;
