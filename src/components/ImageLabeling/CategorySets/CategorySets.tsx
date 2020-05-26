@@ -45,7 +45,6 @@ function CategorySets() {
   }
 
   const catSets = categorySets.data.ImageLabelingService_categorySets;
-  console.log('catSets', catSets);
   return (
     <Grid container={true} className={classes.root}>
       <Toolbar

@@ -2,13 +2,13 @@ import React from 'react';
 import { useQuery } from 'react-apollo';
 import { connect, ConnectedProps } from 'react-redux';
 import { useParams } from 'react-router';
-import { ICategorySet, IImage, IImageLabel, ILabelQueueImage } from '../../../../models';
+import { ICategorySet, IImage, ILabelQueueImage } from '../../../../models';
 import * as imageLabelingActions from '../../../../store/image-labeling/actions';
 import ApolloErrorPage from '../../../ApolloErrorPage';
 import ContentLoading from '../../../ContentLoading';
-import ImageCategoricalLabel from '../../models/labels/ImageLabel';
 import ImageLabelingPageContent from './ImageLabelerContent';
 import { GET_IMAGE_DATA } from './queries';
+import { convertLabels } from './utils';
 
 const mapDispatch = {
   addLabel: imageLabelingActions.addLabel,
@@ -40,7 +40,8 @@ function ImageLabeler(props: ConnectedProps<typeof connector>) {
     },
     fetchPolicy: 'network-only',
     onCompleted: (data) => {
-      loadLabels(data.ImageLabelingService_image.labels);
+      const labels = convertLabels(data.ImageLabelingService_image.labels);
+      props.resetLabels(labels);
     },
   });
 
@@ -51,18 +52,6 @@ function ImageLabeler(props: ConnectedProps<typeof connector>) {
   if (loading || !data) {
     return <ContentLoading />;
   }
-
-  const loadLabels = (imageLabels: IImageLabel[]) => {
-    const labels = [];
-    for (const labelData of imageLabels) {
-      const label = ImageCategoricalLabel.fromServerData(labelData);
-      labels.push(label);
-    }
-    console.log('resetting labels');
-    props.resetLabels(labels);
-  };
-
-  console.log('label queue image', data.ImageLabelingService_labelQueueImage);
 
   return (
     <ImageLabelingPageContent

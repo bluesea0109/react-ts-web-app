@@ -104,8 +104,6 @@ function ImageLabelerCanvas(props: IImageLabelerCanvasProps) {
   };
 
   const onMouseUp = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
-    console.log('mouse up');
-
     setState({
       ...state,
       mouseDownPos: null,
@@ -115,7 +113,6 @@ function ImageLabelerCanvas(props: IImageLabelerCanvasProps) {
     if (!selectedLabel || selectedLabelIndex === null) {
       return;
     }
-    console.log('test');
 
     if (selectedLabel.shape instanceof MultiRectangle && selectedLabel.shape.isRectangleStarted()) {
       const label =  cloneDeep(selectedLabel);
@@ -151,7 +148,6 @@ function ImageLabelerCanvas(props: IImageLabelerCanvasProps) {
       if (!shape.isRectangleStarted()) {
         shape.startRectangle(x, y, w, h);
       } else {
-        console.log('updating label');
         shape.updateCurrentRectangle(x, y, w, h);
       }
       label.modified = true;

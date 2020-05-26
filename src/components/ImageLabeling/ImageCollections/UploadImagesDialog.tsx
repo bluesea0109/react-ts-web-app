@@ -84,7 +84,6 @@ class UploadImagesDialog extends React.Component<IUploadImagesDialogProps, IUplo
   }
 
   onCancel = () => {
-    console.log('cancelling');
     this.cancelled = true;
   }
 
@@ -92,7 +91,6 @@ class UploadImagesDialog extends React.Component<IUploadImagesDialogProps, IUplo
     const files = e.target.files;
     if (!files) { return; }
 
-    console.log('setting files');
     this.setState({
       open: true,
       total: files.length,
