@@ -6,10 +6,11 @@ import 'firebase/auth';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import React, {useState} from 'react';
 import { CHATBOT_GET_AGENTS, CHATBOT_DELETE_AGENT } from '../../gql-queries';
-import { IProject, IAgent } from '../../models';
+import {  IAgent } from '../../models';
 import ApolloErrorPage from '../ApolloErrorPage';
 import ContentLoading from '../ContentLoading';
 import ConfirmDialog from '../Utils/ConfirmDialog';
+import { useParams } from 'react-router';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -22,19 +23,15 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-interface IAgentsTableProps {
-  activeProj: IProject;
-}
 
 interface IGetAgents {
     ChatbotService_agents: IAgent[] | undefined
 }
 
 
-function AgentsTable(props: IAgentsTableProps) {
+function AgentsTable() {
   const classes = useStyles();
-  const { activeProj } = props;
-  const projectId = activeProj.id;
+  const { projectId } = useParams()
   const [confirmOpen, setConfirmOpen ] = useState(false)
 
   const agentsData = useQuery<IGetAgents>(CHATBOT_GET_AGENTS, { variables: { projectId } });
@@ -54,9 +51,9 @@ function AgentsTable(props: IAgentsTableProps) {
     return <ApolloErrorPage error={commonError} />;
   }
 
-  const deleteAgentHandler = async (agentId : number)=> {
+  const deleteAgentHandler =  (agentId : number)=> {
 
-    await deleteAgent({
+     deleteAgent({
         variables: {
           agentId
         },

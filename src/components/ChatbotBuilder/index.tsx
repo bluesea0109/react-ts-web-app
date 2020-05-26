@@ -31,7 +31,6 @@ const ChatbotBuilder: React.FC<IChatbotBuilderProps> = ({ user }) => {
             <Paper>
               {activeProj ? (
                 <AgentsTable
-                  activeProj={activeProj}
                 />
               ) : (
                 <Typography>{'No Agent is found'}</Typography>

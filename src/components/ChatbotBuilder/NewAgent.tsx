@@ -14,6 +14,7 @@ import React, { useState } from 'react';
 import { CHATBOT_CREATE_AGENT, CHATBOT_GET_AGENTS } from '../../gql-queries';
 import { IUser } from '../../models';
 import ApolloErrorPage from '../ApolloErrorPage';
+import { useParams } from 'react-router';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -36,7 +37,7 @@ interface INewAgentProps {
 const NewAgent: React.FC<INewAgentProps> = ({ user }) => {
   const classes = useStyles();
   const [name, setName] = useState<string>('');
-  const projectId = user.activeProject?.id;
+  const { projectId } = useParams()
   const [createAgent, { loading, error }] = useMutation(CHATBOT_CREATE_AGENT,  {
     refetchQueries: [{ query: CHATBOT_GET_AGENTS, variables: { projectId }  }],
     awaitRefetchQueries: true,
@@ -48,9 +49,9 @@ const NewAgent: React.FC<INewAgentProps> = ({ user }) => {
   }
 
 
-  const onSubmit = async () => {
+  const onSubmit =  () => {
     if (!user.activeProject) { return; }
-    await createAgent({
+    createAgent({
       variables: {
         projectId,
         name,
