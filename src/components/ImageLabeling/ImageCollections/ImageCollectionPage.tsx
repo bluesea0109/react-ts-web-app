@@ -6,6 +6,7 @@ import React from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { Link as RouterLink } from 'react-router-dom';
 import ImagesTable from './ImagesTable';
+import ExportsTable from './LabelExports/ExportsTable';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -54,7 +55,9 @@ function ImageCollectionPage() {
         <ImagesTable collectionId={parseInt(collectionId, 10)} />
       )}
       {tab === 'review-queues' && <Typography>{'Review Queues'}</Typography>}
-      {tab === 'label-exports' && <Typography>{'Label Exports'}</Typography>}
+      {tab === 'label-exports' && (
+        <ExportsTable/>
+      )}
     </div>
   );
 }

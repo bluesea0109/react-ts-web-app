@@ -1,14 +1,11 @@
 import React, { Component, useState } from 'react';
-import { compose } from 'recompose';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import {
-  withStyles,
   makeStyles,
   Theme,
   createStyles,
 } from '@material-ui/core/styles';
-import ContentLoading from './ContentLoading';
 import Toolbar from '@material-ui/core/Toolbar';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -19,10 +16,6 @@ import gql from 'graphql-tag';
 import TableFooter from '@material-ui/core/TableFooter';
 import TablePagination from '@material-ui/core/TablePagination';
 import IconButton from '@material-ui/core/IconButton';
-import FirstPageIcon from '@material-ui/icons/FirstPage';
-import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
-import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
-import LastPageIcon from '@material-ui/icons/LastPage';
 import Paper from '@material-ui/core/Paper';
 import { graphql, useQuery, useMutation } from 'react-apollo';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -31,6 +24,8 @@ import TableIcon from '@material-ui/icons/TableChart';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import Button from '@material-ui/core/Button';
 import ApolloErrorPage from '../../../ApolloErrorPage';
+import ContentLoading from '../../../ContentLoading';
+import { ILabelsExport } from '../../../../models';
 // import IconButtonRefresh from './IconButtonRefresh';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -44,9 +39,14 @@ const useStyles = makeStyles((theme: Theme) =>
   }));
 
 function ExportsTable() {
+  const rowsPerPage = 10;
   const classes = useStyles();
   const { collectionId } = useParams();
-  const getExports = useQuery(GET_LABEL_EXPORTS, { variables: { collectionId }});
+
+  interface IGetLabelExports {
+    ImageLabelingService_labelExports: ILabelsExport[];
+  }
+  const getExports = useQuery<IGetLabelExports>(GET_LABEL_EXPORTS, { variables: { collectionId }});
   const [createExport, createExportResult] = useMutation(CREATE_EXPORT, {
     refetchQueries: [{
       query: GET_LABEL_EXPORTS,
@@ -69,11 +69,11 @@ function ExportsTable() {
     page: 0,
   });
 
-  const handleChangePage = (event, page) => {
+  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, page: number) => {
     setState({ ...state, page });
   };
 
-  const getPage = (exports) => {
+  const getPage = (exports: ILabelsExport[]) => {
     const { page } = state;
     return exports.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
   };
@@ -116,7 +116,7 @@ function ExportsTable() {
         </Button>
         {/* <IconButtonRefresh onClick={this.reload} /> */}
       </Toolbar>
-      <Table className={classes.table} padding="dense">
+      <Table>
         <TableHead>
           <TableRow>
             <TableCell align="left">Id</TableCell>
@@ -128,7 +128,7 @@ function ExportsTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {pageItems.map((labelExport) => {
+          {pageItems.map((labelExport: ILabelsExport) => {
             return (
               <TableRow key={labelExport.id} hover>
                 <TableCell align="left">{labelExport.id}</TableCell>
@@ -208,4 +208,4 @@ const DELETE_EXPORT = gql`
   }
 `;
 
-export default ImageLabelExportsTable;
+export default ExportsTable;
