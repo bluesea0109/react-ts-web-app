@@ -17,7 +17,7 @@ import Typography from '@material-ui/core/Typography';
 import MenuIcon from '@material-ui/icons/Menu';
 import clsx from 'clsx';
 import firebase from 'firebase/app';
-import React, { useState } from 'react';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { GET_CURRENT_USER, UPDATE_ACTIVE_ORG } from '../gql-queries';
 import { IUser } from '../models';
@@ -36,6 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
     },
     selectInput: {
+      minWidth: 90,
       background: 'primary',
       color: 'white',
       borderRadius: 4,
@@ -66,8 +67,16 @@ const Orgs: React.FC<{ user: IUser }> = ({ user }) => {
   });
 
   const setActiveOrg = (orgId: string) => {
+    console.log('setting active org');
+    const org = user.orgs.find((org) => org.id === orgId);
+    const projects = org?.projects;
+    const projectId = projects?.[0]?.id;
+    console.log('project', projectId);
     updateActiveOrg({
-      variables: { orgId },
+      variables: {
+        orgId,
+        ...projectId && { projectId },
+      },
     });
   };
 
@@ -101,11 +110,10 @@ const Orgs: React.FC<{ user: IUser }> = ({ user }) => {
 };
 
 const Projects: React.FC<{ user: IUser }> = ({ user }) => {
-  const projects = user?.activeOrg?.projects;
-
+  const projects = user?.activeOrg?.projects || [];
+  const projectId = user.activeProject?.id ?? '';
   const classes = useStyles();
   const history = useHistory();
-  const [projectId, setProjectId] = useState(user.activeProject?.id ?? '');
 
   const [updateActiveProject, { loading }] = useMutation(UPDATE_ACTIVE_ORG, {
     refetchQueries: [{ query: GET_CURRENT_USER }],
@@ -115,12 +123,10 @@ const Projects: React.FC<{ user: IUser }> = ({ user }) => {
     },
   });
 
-  const setActiveProject = async (projectId: string) => {
-    await updateActiveProject({
+  const setActiveProject = (projectId: string) => {
+    updateActiveProject({
       variables: { projectId, orgId: user?.activeOrg?.id },
     });
-
-    setProjectId(projectId);
   };
 
   if (loading) { return <CircularProgress color="secondary" />; }
@@ -131,7 +137,7 @@ const Projects: React.FC<{ user: IUser }> = ({ user }) => {
         className={clsx(classes.selectLabel)}
         id="select-active-project"
       >
-        Project
+        {'Project'}
       </InputLabel>
       <Select
         labelId="select-active-project"
@@ -145,7 +151,7 @@ const Projects: React.FC<{ user: IUser }> = ({ user }) => {
           },
         }}
       >
-        {projects?.map((project) => (
+        {projects.map((project) => (
           <MenuItem key={project.id} value={project.id}>
             {project.name}
           </MenuItem>
