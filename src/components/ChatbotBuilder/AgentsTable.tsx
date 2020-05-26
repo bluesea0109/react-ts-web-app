@@ -1,16 +1,16 @@
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
 import 'firebase/auth';
-import { useQuery, useMutation } from '@apollo/react-hooks';
 import React, {useState} from 'react';
-import { CHATBOT_GET_AGENTS, CHATBOT_DELETE_AGENT } from '../../gql-queries';
+import { useParams } from 'react-router';
+import { CHATBOT_DELETE_AGENT, CHATBOT_GET_AGENTS } from '../../gql-queries';
 import {  IAgent } from '../../models';
 import ApolloErrorPage from '../ApolloErrorPage';
 import ContentLoading from '../ContentLoading';
 import ConfirmDialog from '../Utils/ConfirmDialog';
-import { useParams } from 'react-router';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -23,16 +23,14 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-
 interface IGetAgents {
-    ChatbotService_agents: IAgent[] | undefined
+    ChatbotService_agents: IAgent[] | undefined;
 }
-
 
 function AgentsTable() {
   const classes = useStyles();
-  const { projectId } = useParams()
-  const [confirmOpen, setConfirmOpen ] = useState(false)
+  const { projectId } = useParams();
+  const [confirmOpen, setConfirmOpen ] = useState(false);
 
   const agentsData = useQuery<IGetAgents>(CHATBOT_GET_AGENTS, { variables: { projectId } });
   const [deleteAgent, { loading, error }] = useMutation(CHATBOT_DELETE_AGENT,  {
@@ -40,25 +38,25 @@ function AgentsTable() {
     awaitRefetchQueries: true,
   });
 
-  const commonError = agentsData.error? agentsData.error : error;
+  const commonError = agentsData.error ? agentsData.error : error;
 
   if (agentsData.loading || loading) {
     return <ContentLoading />;
   }
-  
+
   if ( commonError) {
     // TODO: handle errors
     return <ApolloErrorPage error={commonError} />;
   }
 
-  const deleteAgentHandler =  (agentId : number)=> {
+  const deleteAgentHandler =  (agentId: number) => {
 
      deleteAgent({
         variables: {
-          agentId
+          agentId,
         },
       });
-  }
+  };
 
   const agents = agentsData.data && agentsData.data.ChatbotService_agents;
   return (
@@ -74,12 +72,12 @@ function AgentsTable() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {agents.map((agent:IAgent) => (
+              {agents.map((agent: IAgent) => (
                 <TableRow key={agent.id}>
                   <TableCell>{agent.name}</TableCell>
                   <TableCell>{agent.id}</TableCell>
-                  <TableCell> 
-                     <IconButton aria-label="delete" onClick={() =>setConfirmOpen(true)}>
+                  <TableCell>
+                     <IconButton aria-label="delete" onClick={() => setConfirmOpen(true)}>
                         <DeleteIcon />
                      </IconButton>
                      <ConfirmDialog
