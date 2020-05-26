@@ -138,7 +138,7 @@ export const CHATBOT_GET_AGENTS = gql`
       projectId
       name
       language
-      tags
+      # tags
       userIntents {
         id
         agentId
@@ -241,7 +241,7 @@ export const CHATBOT_CREATE_AGENT = gql`
       projectId
       name
       language
-      tags
+      # tags
       userIntents {
         id
         agentId

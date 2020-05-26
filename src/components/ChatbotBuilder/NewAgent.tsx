@@ -11,8 +11,9 @@ import {
 } from '@material-ui/core';
 import clsx from 'clsx';
 import React, { useState } from 'react';
-import { CHATBOT_CREATE_AGENT } from '../../gql-queries';
+import { CHATBOT_CREATE_AGENT, CHATBOT_GET_AGENTS } from '../../gql-queries';
 import { IUser } from '../../models';
+import ApolloErrorPage from '../ApolloErrorPage';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -35,16 +36,28 @@ interface INewAgentProps {
 const NewAgent: React.FC<INewAgentProps> = ({ user }) => {
   const classes = useStyles();
   const [name, setName] = useState<string>('');
-  const [createAgent, { loading }] = useMutation(CHATBOT_CREATE_AGENT);
+  const projectId = user.activeProject?.id;
+  const [createAgent, { loading, error }] = useMutation(CHATBOT_CREATE_AGENT,  {
+    refetchQueries: [{ query: CHATBOT_GET_AGENTS, variables: { projectId }  }],
+    awaitRefetchQueries: true,
+  });
+
+  if (error) {
+    // TODO: handle errors
+    return <ApolloErrorPage error={error} />;
+  }
+
 
   const onSubmit = async () => {
+    if (!user.activeProject) { return; }
     await createAgent({
       variables: {
+        projectId,
         name,
-        projectId: user.activeProject?.id,
         language: 'EN_US',
       },
     });
+    setName('');
   };
 
   return (
