@@ -1,143 +1,116 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import { compose } from 'recompose';
+import { useMutation } from '@apollo/react-hooks';
+import { Button } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import PrimaryButton from './PrimaryButton';
-import SecondaryButton from './SecondaryButton';
-import ContentLoading from './ContentLoading';
-import EditIcon from '@material-ui/icons/Edit';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
-import { withRouter } from 'react-router-dom';
+import React, { useState } from 'react';
+import { IReviewQueue } from '../../../../models';
+import ApolloErrorPage from '../../../ApolloErrorPage';
+import ContentLoading from '../../../ContentLoading';
+import IconButtonEdit from '../../../IconButtons/IconButtonEdit';
+import { GET_REVIEW_QUEUES, UPDATE_REVIEW_QUEUE } from './gql-queries';
 
-const styles = theme => ({
-  memberSelect: {
-    marginTop: theme.spacing.unit * 4
-  },
-  dialogPaper: {
-    minHeight: 400
-  },
-});
+interface IEditReviewQueueDialogProps {
+  queue: IReviewQueue;
+}
 
-
-class ReviewQueueDelete extends React.Component {
-  state = {
+function EditReviewQueueDialog(props: IEditReviewQueueDialogProps) {
+  const { queue } = props;
+  const [state, setState] = useState({
     open: false,
-    deleting: false,
-    queueName: this.props.queue.name
-  }
+    name: queue.name,
+  });
+  const [updateQueue, updateQueueResult] = useMutation(UPDATE_REVIEW_QUEUE, {
+    onCompleted: () => {
+      handleClose();
+    },
+    refetchQueries: [{
+      query: GET_REVIEW_QUEUES,
+      variables: {
+        collectionId: queue.collectionId,
+      },
+    }],
+    awaitRefetchQueries: true,
+  });
 
-  handleOpen = () => {
-    this.setState({ open: true });
+  const handleOpen = () => {
+    setState({ ...state, open: true });
   };
 
-  handleClose = () => {
-    this.setState({ open: false });
+  const handleClose = () => {
+    setState({ ...state, open: false });
   };
 
-  handleChange = name => event => {
-    this.setState({
+  const handleChange = (name: string) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setState({
+      ...state,
       [name]: event.target.value,
     });
   };
 
-  handleDeleteQueue = async () => {
-    this.setState({ deleting: true });
-    await this.props.deleteQueue({
-      variables: {
-        queueId: this.props.queue.id
-      }
+  const handleSave = () => {
+    updateQueue({
+      variables: { queueId: queue.id, name: state.name }
     });
-    if (this.props.onCompleted) {
-      this.props.onCompleted();
-    }
   };
 
-  saveDisabled = () => {
-    return true;
+  let dialogContent = (
+    <DialogContent>
+      <TextField
+        value={state.name}
+        onChange={handleChange('name')}
+        autoFocus={true}
+        margin="dense"
+        id="name"
+        label="Name"
+        type="string"
+        fullWidth={true}
+      />
+    </DialogContent>
+  );
+
+  if (updateQueueResult.loading) {
+    dialogContent = (
+      <DialogContent>
+        <ContentLoading />
+      </DialogContent>
+    );
   }
 
-  render() {
-    const { classes, queue } = this.props;
-    
-    let dialogContent = (
-      <React.Fragment>
-        <DialogContent>
-          <Grid container spacing={8}>
-            <Grid item xs={12}>
-              <form className={classes.container} noValidate autoComplete="off">
-                <TextField
-                  value={this.state.queueName}
-                  onChange={this.handleChange('queueName')}
-                  autoFocus
-                  margin="dense"
-                  id="name"
-                  label="Name"
-                  type="string"
-                  fullWidth
-                />
-              </form>
-            </Grid>
-          </Grid>
-        </DialogContent>
+  if (updateQueueResult.error) {
+    dialogContent = (
+      <DialogContent>
+        <ApolloErrorPage error={updateQueueResult.error} />
+      </DialogContent>
+    );
+  }
+
+  return (
+    <React.Fragment>
+      <Dialog
+        fullWidth={true}
+        open={state.open}
+        onClose={handleClose}
+      >
+        <DialogTitle>{'Edit Review Queue'}</DialogTitle>
+        {dialogContent}
         <DialogActions>
-          <SecondaryButton onClick={this.handleClose}>
-            {"Cancel"}
-          </SecondaryButton>
-          <PrimaryButton onClick={this.handleCreateQueue} disabled={this.saveDisabled()}>
-            {"Create"}
-          </PrimaryButton>
+          <Button color="primary" onClick={handleClose} disabled={updateQueueResult.loading}>
+            {'Cancel'}
+          </Button>
+          <Button
+            color="secondary"
+            onClick={handleSave}
+            disabled={state.name === '' || state.name === queue.name || updateQueueResult.loading}>
+            {'Save'}
+          </Button>
         </DialogActions>
-      </React.Fragment>
-    );
-
-    if (this.state.deleting) {
-      dialogContent = (
-        <React.Fragment>
-          <DialogContent>
-            <DialogContentText>
-              {"Saving"}
-            </DialogContentText>
-            <ContentLoading />
-          </DialogContent>
-        </React.Fragment>
-      );
-    }
-
-    return (
-      <React.Fragment>
-        <Dialog
-          fullWidth={true}
-          open={this.state.open}
-          onClose={this.handleClose}
-        >
-          <DialogTitle>{"Edit Labeling Queue"}</DialogTitle>
-          {dialogContent}
-        </Dialog>
-        <IconButton onClick={this.handleOpen} style={{ padding: 6 }}>
-          <Tooltip title="Edit Labeling Queue" disableFocusListener={true}>
-            <EditIcon color="secondary" />
-          </Tooltip>
-        </IconButton>
-      </React.Fragment>
-    );
-  }
+      </Dialog>
+      <IconButtonEdit tooltip="Edit Queue" onClick={handleOpen} />
+    </React.Fragment>
+  );
 }
 
-ReviewQueueDelete.propTypes = {
-  classes: PropTypes.object.isRequired,
-  queue: PropTypes.object.isRequired,
-};
-
-export default compose(
-  withRouter,
-  withStyles(styles)
-)(ReviewQueueDelete);
-
+export default EditReviewQueueDialog;

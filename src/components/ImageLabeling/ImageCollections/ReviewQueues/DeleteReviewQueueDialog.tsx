@@ -1,121 +1,91 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { compose } from 'recompose';
+import { useMutation } from '@apollo/react-hooks';
+import { Button } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import PrimaryButton from './PrimaryButton';
-import SecondaryButton from './SecondaryButton';
-import gql from "graphql-tag";
-import { graphql } from 'react-apollo';
-import ContentLoading from './ContentLoading';
-import DeleteIcon from '@material-ui/icons/Delete';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
+import React, { useState } from 'react';
+import ApolloErrorPage from '../../../ApolloErrorPage';
+import ContentLoading from '../../../ContentLoading';
+import { DELETE_REVIEW_QUEUE, GET_REVIEW_QUEUES } from './gql-queries';
+import IconButtonDelete from '../../../IconButtons/IconButtonDelete';
 
-class ReviewQueueDelete extends React.Component {
-  state = {
-    open: false,
-    deleting: false
-  }
-
-  handleOpen = () => {
-    this.setState({ open: true });
-  };
-
-  handleClose = () => {
-    this.setState({ open: false });
-  };
-
-  handleDeleteQueue = async () => {
-    this.setState({ deleting: true });
-    await this.props.deleteQueue({
-      variables: {
-        queueId: this.props.queue.id
-      }
-    });
-    if (this.props.onCompleted) {
-      this.props.onCompleted();
-    }
-  };
-
-  render() {
-    const { queue } = this.props;
-
-    let dialogContent = (
-      <React.Fragment>
-        <DialogContent>
-          <DialogContentText>
-            {`Id: ${queue.id}`}
-          </DialogContentText>
-          <DialogContentText>
-            {`Name: ${queue.name}`}
-          </DialogContentText>
-          <DialogContentText>
-            {"Are you sure you want to delete this queue?"}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <SecondaryButton onClick={this.handleClose}>
-            {"Cancel"}
-          </SecondaryButton>
-          <PrimaryButton onClick={this.handleDeleteQueue}>
-            {"Delete"}
-          </PrimaryButton>
-        </DialogActions>
-      </React.Fragment>
-    );
-
-    if (this.state.deleting) {
-      dialogContent = (
-        <React.Fragment>
-          <DialogContent>
-            <DialogContentText>
-              {"Deleting"}
-            </DialogContentText>
-            <ContentLoading />
-          </DialogContent>
-        </React.Fragment>
-      );
-    }
-
-    return (
-      <React.Fragment>
-        <Dialog
-          fullWidth={true}
-          open={this.state.open}
-          onClose={this.handleClose}
-        >
-          <DialogTitle>{"Delete Labeling Queue"}</DialogTitle>
-          {dialogContent}
-        </Dialog>
-        <IconButton onClick={this.handleOpen} style={{ padding: 6 }}>
-          <Tooltip title="Delete Labeling Queue" disableFocusListener={true}>
-            <DeleteIcon color="secondary" />
-          </Tooltip>
-        </IconButton>
-      </React.Fragment>
-    );
-  }
+interface IDeleteReviewQueueProps {
+  collectionId: number;
+  queueId: number;
 }
 
-ReviewQueueDelete.propTypes = {
-  queue: PropTypes.object.isRequired,
-};
+function DeleteReviewQueueDialog(props: IDeleteReviewQueueProps) {
+  const { queueId, collectionId } = props;
+  const [state, setState] = useState({
+    open: false,
+  });
+  const [deleteQueue, deleteQueueResult] = useMutation(DELETE_REVIEW_QUEUE, {
+    onCompleted: () => {
+      handleClose();
+    },
+    refetchQueries: [{
+      query: GET_REVIEW_QUEUES,
+      variables: {
+        collectionId,
+      },
+    }],
+    awaitRefetchQueries: true,
+  });
 
-const deleteQueue = gql`
-  mutation ($queueId: Int!)  {
-    reviewQueueDelete(queueId: $queueId) {
-      id
-      name
-      collectionId
-    }
+  const handleOpen = () => {
+    setState({ ...state, open: true });
+  };
+
+  const handleClose = () => {
+    setState({ ...state, open: false });
+  };
+
+  const handleDelete = () => {
+    deleteQueue({
+      variables: { queueId },
+    });
+  };
+
+  let dialogContent = null;
+
+  if (deleteQueueResult.loading) {
+    dialogContent = (
+      <DialogContent>
+        <ContentLoading />
+      </DialogContent>
+    );
   }
-`;
 
-export default compose(
-  graphql(deleteQueue, { name: 'deleteQueue' }),
-)(ReviewQueueDelete);
+  if (deleteQueueResult.error) {
+    dialogContent = (
+      <DialogContent>
+        <ApolloErrorPage error={deleteQueueResult.error} />
+      </DialogContent>
+    );
+  }
 
+  return (
+    <React.Fragment>
+      <Dialog
+        fullWidth={true}
+        open={state.open}
+        onClose={handleClose}
+      >
+        <DialogTitle>{'Delete Review Queue'}</DialogTitle>
+        {dialogContent}
+        <DialogActions>
+          <Button color="primary" onClick={handleClose} disabled={deleteQueueResult.loading}>
+            {'Cancel'}
+          </Button>
+          <Button color="secondary" onClick={handleDelete} disabled={deleteQueueResult.loading}>
+            {'Delete'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <IconButtonDelete tooltip="Delete Review Queue" onClick={handleOpen} />
+    </React.Fragment>
+  );
+}
+
+export default DeleteReviewQueueDialog;

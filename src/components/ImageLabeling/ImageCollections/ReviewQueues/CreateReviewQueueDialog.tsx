@@ -1,171 +1,110 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import { compose } from 'recompose';
-import TextField from '@material-ui/core/TextField';
+import { useMutation } from '@apollo/react-hooks';
+import { Button } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import PrimaryButton from './PrimaryButton';
-import SecondaryButton from './SecondaryButton';
-import gql from "graphql-tag";
-import { graphql } from 'react-apollo';
-import ContentLoading from './ContentLoading';
-import AddIcon from '@material-ui/icons/Add';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import { withRouter } from 'react-router-dom';
-import Grid from '@material-ui/core/Grid';
+import TextField from '@material-ui/core/TextField';
+import React, { useState } from 'react';
+import { useParams } from 'react-router';
+import ApolloErrorPage from '../../../ApolloErrorPage';
+import ContentLoading from '../../../ContentLoading';
+import { CREATE_REVIEW_QUEUE, GET_REVIEW_QUEUES } from './gql-queries';
+import IconButtonAdd from '../../../IconButtons/IconButtonAdd';
 
-const styles = theme => ({
-  dialogPaper: {
-    minHeight: 400
-  },
-});
+function CreateReviewQueueDialog() {
+  let { collectionId } = useParams();
+  collectionId = parseInt(collectionId, 10);
+  const [state, setState] = useState({
+    open: false,
+    name: '',
+  });
+  const [createQueue, createQueueResult] = useMutation(CREATE_REVIEW_QUEUE, {
+    onCompleted: () => {
+      handleClose();
+    },
+    refetchQueries: [{
+      query: GET_REVIEW_QUEUES,
+      variables: {
+        collectionId,
+      },
+    }],
+    awaitRefetchQueries: true,
+  });
 
-class ReviewQueueCreate extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      open: false,
-      loading: false,
-      queueName: ''
-    };
-  }
-
-  handleOpen = () => {
-    this.setState({ open: true });
+  const handleOpen = () => {
+    setState({ ...state, open: true });
   };
 
-  handleClose = () => {
-    this.setState({ open: false });
+  const handleClose = () => {
+    setState({ ...state, open: false });
   };
 
-  handleChange = name => event => {
-    this.setState({
+  const handleChange = (name: string) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setState({
+      ...state,
       [name]: event.target.value,
     });
   };
 
-  handleCreateQueue = async () => {
-    this.setState({ loading: true });
-    await this.props.createQueue({
-      variables: {
-        collectionId: this.props.match.params.collectionId,
-        name: this.state.queueName
-      }
+  const handleCreate = () => {
+    createQueue({
+      variables: { collectionId, name: state.name },
     });
-    this.setState({ loading: false, open: false });
-    if (this.props.onCompleted) {
-      this.props.onCompleted();
-    }
   };
 
-  createDisabled = () => {
-    return !this.state.queueName
+  let dialogContent = (
+    <DialogContent>
+      <TextField
+        autoFocus={true}
+        margin="dense"
+        id="name"
+        label="Name"
+        type="string"
+        fullWidth={true}
+        value={state.name}
+        onChange={handleChange('name')}
+      />
+    </DialogContent>
+  );
+
+  if (createQueueResult.loading) {
+    dialogContent = (
+      <DialogContent>
+        <ContentLoading />
+      </DialogContent>
+    );
   }
 
-  render() {
-    const { classes } = this.props;
-    let dialogContent = (
-      <React.Fragment>
-        <DialogContent>
-          <Grid container spacing={8}>
-            <Grid item xs={12}>
-              <form className={classes.container} noValidate autoComplete="off">
-                <TextField
-                  value={this.state.queueName}
-                  onChange={this.handleChange('queueName')}
-                  autoFocus
-                  margin="dense"
-                  id="name"
-                  label="Queue Name"
-                  type="string"
-                  fullWidth
-                />
-              </form>
-            </Grid>
-          </Grid>
-        </DialogContent>
+  if (createQueueResult.error) {
+    dialogContent = (
+      <DialogContent>
+        <ApolloErrorPage error={createQueueResult.error} />
+      </DialogContent>
+    );
+  }
+
+  return (
+    <React.Fragment>
+      <Dialog
+        fullWidth={true}
+        open={state.open}
+        onClose={handleClose}
+      >
+        <DialogTitle>{'Create Review Queue'}</DialogTitle>
+        {dialogContent}
         <DialogActions>
-          <SecondaryButton onClick={this.handleClose}>
-            {"Cancel"}
-          </SecondaryButton>
-          <PrimaryButton onClick={this.handleCreateQueue} disabled={this.createDisabled()}>
-            {"Create"}
-          </PrimaryButton>
+          <Button color="primary" onClick={handleClose} disabled={createQueueResult.loading}>
+            {'Cancel'}
+          </Button>
+          <Button color="secondary" onClick={handleCreate} disabled={state.name === '' || createQueueResult.loading}>
+            {'Save'}
+          </Button>
         </DialogActions>
-      </React.Fragment>
-    );
-
-    if (this.props.loading) {
-      dialogContent = (
-        <React.Fragment>
-          <DialogContent>
-            <DialogContentText>
-              {"Loading"}
-            </DialogContentText>
-            <ContentLoading />
-          </DialogContent>
-        </React.Fragment>
-      );
-    }
-
-    if (this.state.loading) {
-      dialogContent = (
-        <React.Fragment>
-          <DialogContent>
-            <DialogContentText>
-              {"Creating"}
-            </DialogContentText>
-            <ContentLoading />
-          </DialogContent>
-        </React.Fragment>
-      );
-    }
-
-    return (
-      <div className={classes.root} color="inherit" >
-        <Dialog
-          fullWidth={true}
-          open={this.state.open}
-          onClose={this.handleClose}
-          classes={{ paper: classes.dialogPaper }}
-          aria-labelledby="form-dialog-title"
-        >
-          <DialogTitle id="form-dialog-title">{"New Labeling Queue"}</DialogTitle>
-          {dialogContent}
-        </Dialog>
-        <IconButton onClick={this.handleOpen} style={{ padding: 6 }}>
-          <Tooltip title="New Labeling Queue" disableFocusListener={true}>
-            <AddIcon color="secondary" />
-          </Tooltip>
-        </IconButton>
-      </div>
-    );
-  }
+      </Dialog>
+      <IconButtonAdd tooltip="Create Review Queue" onClick={handleOpen} />
+    </React.Fragment>
+  );
 }
 
-ReviewQueueCreate.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
-
-const createQueue = gql`
-  mutation ($collectionId: String!, $name: String!)  {
-    reviewQueueCreate(collectionId: $collectionId, name: $name) {
-      id
-      name
-      collectionId
-    }
-  }
-`;
-
-export default compose(
-  withRouter,
-  graphql(createQueue, { name: 'createQueue' }),
-  withStyles(styles)
-)(ReviewQueueCreate);
-
+export default CreateReviewQueueDialog;

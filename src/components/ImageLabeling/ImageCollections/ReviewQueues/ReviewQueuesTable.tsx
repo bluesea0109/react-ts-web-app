@@ -1,29 +1,25 @@
-import React, { Component, useState } from 'react';
-import PropTypes from 'prop-types';
-import Toolbar from '@material-ui/core/Toolbar';
+import { createStyles, makeStyles, Theme } from '@material-ui/core';
+import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import gql from "graphql-tag";
 import TableFooter from '@material-ui/core/TableFooter';
+import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
-import IconButton from '@material-ui/core/IconButton';
-import FirstPageIcon from '@material-ui/icons/FirstPage';
-import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
-import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
-import LastPageIcon from '@material-ui/icons/LastPage';
-import Paper from '@material-ui/core/Paper';
-import { graphql, useMutation, useQuery } from 'react-apollo';
-import { withRouter, useParams, useHistory } from 'react-router-dom';
+import TableRow from '@material-ui/core/TableRow';
+import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles, Theme, createStyles } from '@material-ui/core';
-import IconButtonPlay from '../../../IconButtons/IconButtonPlay';
-import IconButtonEdit from '../../../IconButtons/IconButtonEdit';
+import React, { useState } from 'react';
+import { useMutation, useQuery } from 'react-apollo';
+import { useParams, useHistory } from 'react-router-dom';
+import { IReviewQueue } from '../../../../models';
 import ApolloErrorPage from '../../../ApolloErrorPage';
 import ContentLoading from '../../../ContentLoading';
-import { IReviewQueue } from '../../../../models';
+import IconButtonPlay from '../../../IconButtons/IconButtonPlay';
+import CreateReviewQueueDialog from './CreateReviewQueueDialog';
+import EditReviewQueueDialog from './EditReviewQueueDialog';
+import { GET_REVIEW_QUEUES, NEXT_REVIEW_QUEUE_IMAGE } from './gql-queries';
+import DeleteReviewQueueDialog from './DeleteReviewQueueDialog';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -35,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     paper: {
       padding: theme.spacing(1),
-    }
+    },
   }));
 
 function ReviewQueuesTable() {
@@ -44,21 +40,23 @@ function ReviewQueuesTable() {
   const { orgId, projectId } = useParams();
   let { collectionId } = useParams();
   collectionId = parseInt(collectionId, 10);
-
   const history = useHistory();
   const [state, setState] = useState({
     loading: false,
     page: 0,
     offset: 0,
     uploadDialogOpen: false,
-    files: []
+    files: [],
   });
 
-  const getReviewQueues = useQuery(GET_REVIEW_QUEUES, {
+  interface IGetReviewQueues {
+    ImageLabelingService_reviewQueues: IReviewQueue[];
+  }
+  const getReviewQueues = useQuery<IGetReviewQueues>(GET_REVIEW_QUEUES, {
     variables: { collectionId },
   });
-  const [nextReviewQueueImage, nextReviewQueueImageResult] = useMutation(NEXT_REVIEW_QUEUE_IMAGE);
 
+  const [nextReviewQueueImage, nextReviewQueueImageResult] = useMutation(NEXT_REVIEW_QUEUE_IMAGE);
   const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, page: number) => {
     setState({ ...state, page });
   };
@@ -68,23 +66,21 @@ function ReviewQueuesTable() {
     return queues.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
   };
 
-  const onCreateQueue = () => {
-  }
-
-  const onEditQueue = (queueId: number) => () => {
-  }
-
-  const onDeleteQueue = (queueId: number) => () => {
-  }
-
   const startReviewing = (queueId: number) => async () => {
     // todo
-    // props.history.push(`/app/projects/${projectId}/collections/${collectionId}/queues/${queueId}/images/${itemId}`);
-  }
+    const res = await nextReviewQueueImage({
+      variables: { queueId },
+    });
+    
+    if (res.data) {
+      const imageId = res.data.ImageLabelingService_nextReviewQueueImage.imageId;
+      history.push(`/orgs/${orgId}/projects/${projectId}/collections/${collectionId}/review-queues/${queueId}/images/${imageId}`);
+    }
+  };
 
-  const commonErr = getReviewQueues.error || nextReviewQueueImageResult.error
+  const commonErr = getReviewQueues.error || nextReviewQueueImageResult.error;
   if (commonErr) {
-    return <ApolloErrorPage error={commonErr} />
+    return <ApolloErrorPage error={commonErr} />;
   }
 
   if (getReviewQueues.loading || nextReviewQueueImageResult.loading) {
@@ -99,26 +95,27 @@ function ReviewQueuesTable() {
       <Paper className={classes.paper}>
         <Toolbar variant="dense" disableGutters={true}>
           <Typography variant="h6">
-            {"Queues"}
+            {'Queues'}
           </Typography>
           <Typography style={{ padding: 2 }} />
-          {/* <ReviewQueueCreate onCompleted={props.refetch} /> */}
+          <CreateReviewQueueDialog />
         </Toolbar>
         <Table>
           <TableHead>
             <TableRow>
               <TableCell>Id</TableCell>
               <TableCell>Name</TableCell>
-              <TableCell>{"% Under Review"}</TableCell>
-              <TableCell>{"% Approved"}</TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
+              <TableCell>{'% Under Review'}</TableCell>
+              <TableCell>{'% Approved'}</TableCell>
+              <TableCell/>
+              <TableCell/>
+              <TableCell/>
             </TableRow>
           </TableHead>
           <TableBody>
             {pageItems.map((queue, i) => {
               return (
-                <TableRow key={i} hover>
+                <TableRow key={i} hover={true}>
                   <TableCell>
                     {queue.id}
                   </TableCell>
@@ -136,7 +133,10 @@ function ReviewQueuesTable() {
                       onClick={startReviewing(queue.id)} />
                   </TableCell>
                   <TableCell>
-                    <IconButtonEdit tooltip="Edit Queue" onClick={onEditQueue(queue.id)} />
+                    <EditReviewQueueDialog queue={queue}/>
+                  </TableCell>
+                  <TableCell>
+                    <DeleteReviewQueueDialog queueId={queue.id} collectionId={collectionId}/>
                   </TableCell>
                 </TableRow>
               );
@@ -162,46 +162,5 @@ function ReviewQueuesTable() {
     </div>
   );
 }
-
-const CREATE_REVIEW_QUEUE = gql`
-  mutation ($collectionId: Int!, $name: String!) {
-    ImageLabelingService_createReviewQueue(collectionId: $collectionId, name: $name) {
-      id
-      name
-      percentUnderReview
-      percentApproved
-    }
-  }
-`;
-
-const DELETE_REVIEW_QUEUE = gql`
-  mutation ($queueId: Int!) {
-    ImageLabelingService_deleteReviewQueue(queueId: $queueId) {
-      id
-      name
-      percentUnderReview
-      percentApproved
-    }
-  }
-`;
-
-const NEXT_REVIEW_QUEUE_IMAGE = gql`
-  mutation($queueId: Int!) {
-    ImageLabelingService_nextReviewQueueImage(queueId: $queueId) {
-      imageId
-    }
-  }
-`;
-
-const GET_REVIEW_QUEUES = gql`
-  query ($collectionId: Int!) {
-    ImageLabelingService_reviewQueues(collectionId: $collectionId) {
-      id
-      name
-      percentUnderReview
-      percentApproved
-    }
-  }
-`;
 
 export default ReviewQueuesTable;
