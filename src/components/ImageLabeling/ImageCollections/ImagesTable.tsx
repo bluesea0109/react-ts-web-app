@@ -26,7 +26,7 @@ import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
-import IconButtonPlay from '../../IconButtonPlay';
+import IconButtonPlay from '../../IconButtons/IconButtonPlay';
 import UploadImagesDialog from './UploadImagesDialog';
 
 const paginationStyles = makeStyles((theme: Theme) =>

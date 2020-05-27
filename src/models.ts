@@ -89,3 +89,11 @@ export interface ILabelsExport {
   createdAt: string;
   signedUrl: string;
 }
+
+export interface IReviewQueue {
+  id: number;
+  collectionId: number;
+  name: string;
+  percentUnderReview: number;
+  percentApproved: number;
+}
