@@ -1,14 +1,14 @@
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import React from 'react';
+import { connect, ConnectedProps } from 'react-redux';
 import { useParams } from 'react-router';
+import * as imageLabelingActions from '../../../../store/image-labeling/actions';
 import ApolloErrorPage from '../../../ApolloErrorPage';
 import ContentLoading from '../../../ContentLoading';
 import ImageCategoricalLabel from '../../models/labels/ImageLabel';
-import ImageViewerContent from './ImageViewerContent';
 import { convertLabels } from '../ImageLabeler/utils';
-import { ConnectedProps, connect } from 'react-redux';
-import * as imageLabelingActions from '../../../../store/image-labeling/actions';
+import ImageViewerContent from './ImageViewerContent';
 
 const GET_DATA = gql`
   query($projectId: String!, $imageId: Int!) {
@@ -45,7 +45,6 @@ const GET_DATA = gql`
     }
   }
 `;
-
 
 const mapDispatch = {
   resetLabels: imageLabelingActions.resetLabels,
@@ -92,6 +91,6 @@ function ImageViewer(props: ConnectedProps<typeof connector>) {
       categorySets={categorySets}
     />
   );
-};
+}
 
 export default connector(ImageViewer);

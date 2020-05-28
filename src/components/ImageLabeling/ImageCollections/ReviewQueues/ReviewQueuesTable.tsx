@@ -11,15 +11,15 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import React, { useState } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
-import { useParams, useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { IReviewQueue } from '../../../../models';
 import ApolloErrorPage from '../../../ApolloErrorPage';
 import ContentLoading from '../../../ContentLoading';
 import IconButtonPlay from '../../../IconButtons/IconButtonPlay';
 import CreateReviewQueueDialog from './CreateReviewQueueDialog';
+import DeleteReviewQueueDialog from './DeleteReviewQueueDialog';
 import EditReviewQueueDialog from './EditReviewQueueDialog';
 import { GET_REVIEW_QUEUES, NEXT_REVIEW_QUEUE_IMAGE } from './gql-queries';
-import DeleteReviewQueueDialog from './DeleteReviewQueueDialog';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -71,7 +71,7 @@ function ReviewQueuesTable() {
     const res = await nextReviewQueueImage({
       variables: { queueId },
     });
-    
+
     if (res.data) {
       const imageId = res.data.ImageLabelingService_nextReviewQueueImage?.imageId;
       if (imageId) {

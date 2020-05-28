@@ -12,13 +12,13 @@ import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
 import React, { useState } from 'react';
 import { useApolloClient } from 'react-apollo';
+import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
+import { getLabels } from '../../../../store/image-labeling/selectors';
 import ContentLoading from '../../../ContentLoading';
 import ImageCategoricalLabel from '../../models/labels/ImageLabel';
-import ImageCanvas from './ImageCanvas';
-import { useSelector } from 'react-redux';
-import { getLabels } from '../../../../store/image-labeling/selectors';
 import ImageLabelList from '../ImageLabelList';
+import ImageCanvas from './ImageCanvas';
 
 const NEXT_IMAGE = gql`
   query ($imageId: Int!, $unlabeled: Boolean) {

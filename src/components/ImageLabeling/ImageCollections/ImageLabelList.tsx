@@ -21,6 +21,6 @@ const ImageLabelList: React.FC<IImageLabelListProps> = (props) => {
       })}
     </List>
   );
-}
+};
 
 export default ImageLabelList;

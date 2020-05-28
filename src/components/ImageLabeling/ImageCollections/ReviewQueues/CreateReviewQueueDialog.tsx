@@ -9,8 +9,8 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router';
 import ApolloErrorPage from '../../../ApolloErrorPage';
 import ContentLoading from '../../../ContentLoading';
-import { CREATE_REVIEW_QUEUE, GET_REVIEW_QUEUES } from './gql-queries';
 import IconButtonAdd from '../../../IconButtons/IconButtonAdd';
+import { CREATE_REVIEW_QUEUE, GET_REVIEW_QUEUES } from './gql-queries';
 
 function CreateReviewQueueDialog() {
   let { collectionId } = useParams();

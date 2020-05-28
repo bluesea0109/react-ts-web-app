@@ -1,22 +1,22 @@
-import React, { useState } from 'react';
-import { makeStyles, Theme, createStyles, useTheme } from '@material-ui/core/styles';
-import { Typography, Button } from '@material-ui/core';
-import { useParams, useHistory } from 'react-router-dom';
+import { Button, Typography } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
+import { createStyles, makeStyles, Theme, useTheme } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
+import React, { useState } from 'react';
+import { useMutation } from 'react-apollo';
 import { connect, ConnectedProps, useSelector } from 'react-redux';
+import { useHistory, useParams } from 'react-router-dom';
 import { ICategorySet, IImage, IReviewQueueImage } from '../../../../../models';
 import * as actions from '../../../../../store/image-labeling/actions';
+import { getLabels } from '../../../../../store/image-labeling/selectors';
+import ApolloErrorPage from '../../../../ApolloErrorPage';
+import ContentLoading from '../../../../ContentLoading';
 import IconButtonZoomIn from '../../../../IconButtons/IconButtonZoomIn';
 import IconButtonZoomOut from '../../../../IconButtons/IconButtonZoomOut';
-import ImageCanvas from '../../ImageViewer/ImageCanvas';
-import { getLabels } from '../../../../../store/image-labeling/selectors';
 import ImageLabelList from '../../ImageLabelList';
-import { useMutation } from 'react-apollo';
-import { APPROVE_REVIEW_QUEUE_IMAGE } from './gql-queries';
-import ContentLoading from '../../../../ContentLoading';
-import ApolloErrorPage from '../../../../ApolloErrorPage';
+import ImageCanvas from '../../ImageViewer/ImageCanvas';
 import { NEXT_REVIEW_QUEUE_IMAGE } from '../gql-queries';
+import { APPROVE_REVIEW_QUEUE_IMAGE } from './gql-queries';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -164,11 +164,11 @@ function ImageReviewerContent(props: IImageReviewerContentProps) {
     // todo;
 
     await approveImage({
-      variables: { queueId: parseInt(queueId, 10), imageId: image.id }
+      variables: { queueId: parseInt(queueId, 10), imageId: image.id },
     });
 
     const res = await nextImage({
-      variables: { queueId: parseInt(queueId, 10) }
+      variables: { queueId: parseInt(queueId, 10) },
     });
 
     if (res.data) {
@@ -182,18 +182,18 @@ function ImageReviewerContent(props: IImageReviewerContentProps) {
     } else {
       setState({ ...state, loading: false });
     }
-  }
+  };
 
   const disapprove = async () => {
     setState({ ...state, loading: true });
     // todo;
 
     await disapproveImage({
-      variables: { queueId: parseInt(queueId, 10), imageId: image.id }
+      variables: { queueId: parseInt(queueId, 10), imageId: image.id },
     });
 
     const res = await nextImage({
-      variables: { queueId: parseInt(queueId, 10) }
+      variables: { queueId: parseInt(queueId, 10) },
     });
 
     if (res.data) {
@@ -207,7 +207,7 @@ function ImageReviewerContent(props: IImageReviewerContentProps) {
     } else {
       setState({ ...state, loading: false });
     }
-  }
+  };
 
   const zoomIn = () => {
     setState({
@@ -242,11 +242,11 @@ function ImageReviewerContent(props: IImageReviewerContentProps) {
   );
 
   const approveButton = (
-    <Button className={classes.marginRight} size="small" onClick={approve}>{"Approve"}</Button>
+    <Button className={classes.marginRight} size="small" onClick={approve}>{'Approve'}</Button>
   );
 
   const disapproveButton = (
-    <Button size="small" onClick={disapprove}>{"Disapprove"}</Button>
+    <Button size="small" onClick={disapprove}>{'Disapprove'}</Button>
   );
 
   return (
@@ -256,7 +256,7 @@ function ImageReviewerContent(props: IImageReviewerContentProps) {
           <Paper>
             <Toolbar variant="dense">
               <Typography variant="h6">
-                {"Review Image Labels"}
+                {'Review Image Labels'}
               </Typography>
             </Toolbar>
           </Paper>
@@ -264,7 +264,7 @@ function ImageReviewerContent(props: IImageReviewerContentProps) {
             <React.Fragment>
               <Toolbar variant="dense">
                 <Typography variant="h6">
-                  {"Labels"}
+                  {'Labels'}
                 </Typography>
               </Toolbar>
               <div className={classes.labelList}>

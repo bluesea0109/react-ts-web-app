@@ -1,13 +1,13 @@
-import React from 'react';
-import gql from "graphql-tag";
-import { useParams } from 'react-router';
-import { convertLabels } from '../../ImageLabeler/utils';
-import ApolloErrorPage from '../../../../ApolloErrorPage';
 import { useQuery } from '@apollo/react-hooks';
-import ContentLoading from '../../../../ContentLoading';
-import ImageReviewerContent from './ImageReviewerContent';
-import * as imageLabelingActions from '../../../../../store/image-labeling/actions';
+import gql from 'graphql-tag';
+import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
+import { useParams } from 'react-router';
+import * as imageLabelingActions from '../../../../../store/image-labeling/actions';
+import ApolloErrorPage from '../../../../ApolloErrorPage';
+import ContentLoading from '../../../../ContentLoading';
+import { convertLabels } from '../../ImageLabeler/utils';
+import ImageReviewerContent from './ImageReviewerContent';
 
 const mapDispatch = {
   resetLabels: imageLabelingActions.resetLabels,

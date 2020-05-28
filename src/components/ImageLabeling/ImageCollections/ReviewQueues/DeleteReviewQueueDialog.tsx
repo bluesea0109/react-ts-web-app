@@ -7,8 +7,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import React, { useState } from 'react';
 import ApolloErrorPage from '../../../ApolloErrorPage';
 import ContentLoading from '../../../ContentLoading';
-import { DELETE_REVIEW_QUEUE, GET_REVIEW_QUEUES } from './gql-queries';
 import IconButtonDelete from '../../../IconButtons/IconButtonDelete';
+import { DELETE_REVIEW_QUEUE, GET_REVIEW_QUEUES } from './gql-queries';
 
 interface IDeleteReviewQueueProps {
   collectionId: number;

@@ -52,7 +52,7 @@ function EditReviewQueueDialog(props: IEditReviewQueueDialogProps) {
 
   const handleSave = () => {
     updateQueue({
-      variables: { queueId: queue.id, name: state.name }
+      variables: { queueId: queue.id, name: state.name },
     });
   };
 

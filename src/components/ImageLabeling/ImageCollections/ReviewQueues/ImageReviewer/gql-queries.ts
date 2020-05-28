@@ -1,4 +1,4 @@
-import gql from "graphql-tag";
+import gql from 'graphql-tag';
 
 export const NEXT_REVIEW_QUEUE_IMAGE = gql`
   mutation ($queueId: Int!) {

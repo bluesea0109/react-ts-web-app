@@ -44,8 +44,8 @@ import ContentLoading from '../../../ContentLoading';
 import ImageCategoricalLabel, {
   ImageLabelShapesEnum,
 } from '../../models/labels/ImageLabel';
-import ClosePolygonButton from './ClosePolygonButton';
 import ImageLabelList from '../ImageLabelList';
+import ClosePolygonButton from './ClosePolygonButton';
 import PolygonLabelingCanvas from './PolygonLabelingCanvas';
 import {
   COMPLETE_LABEL_QUEUE_IMAGE,

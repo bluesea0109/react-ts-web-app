@@ -1,10 +1,10 @@
-import React from "react";
-import { Route } from "react-router";
-import ImageLabelingPage from "./ImagelabelingPage";
-import ImageCollectionPage from "./ImageCollections/ImageCollectionPage";
-import ImageViewer from "./ImageCollections/ImageViewer";
-import ImageLabeler from "./ImageCollections/ImageLabeler";
-import ImageReviewer from "./ImageCollections/ReviewQueues/ImageReviewer";
+import React from 'react';
+import { Route } from 'react-router';
+import ImageCollectionPage from './ImageCollections/ImageCollectionPage';
+import ImageLabeler from './ImageCollections/ImageLabeler';
+import ImageViewer from './ImageCollections/ImageViewer';
+import ImageReviewer from './ImageCollections/ReviewQueues/ImageReviewer';
+import ImageLabelingPage from './ImagelabelingPage';
 
 export default function ImageLabelingRouter() {
   return (
