@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { makeStyles, Theme, createStyles, useTheme } from '@material-ui/core/styles';
 import { Typography, Button } from '@material-ui/core';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import Paper from '@material-ui/core/Paper';
 import Toolbar from '@material-ui/core/Toolbar';
 import { connect, ConnectedProps, useSelector } from 'react-redux';
@@ -12,6 +12,11 @@ import IconButtonZoomOut from '../../../../IconButtons/IconButtonZoomOut';
 import ImageCanvas from '../../ImageViewer/ImageCanvas';
 import { getLabels } from '../../../../../store/image-labeling/selectors';
 import ImageLabelList from '../../ImageLabelList';
+import { useMutation } from 'react-apollo';
+import { APPROVE_REVIEW_QUEUE_IMAGE } from './gql-queries';
+import ContentLoading from '../../../../ContentLoading';
+import ApolloErrorPage from '../../../../ApolloErrorPage';
+import { NEXT_REVIEW_QUEUE_IMAGE } from '../gql-queries';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -142,19 +147,66 @@ interface IImageReviewerContentProps extends ConnectedProps<typeof connector> {
 function ImageReviewerContent(props: IImageReviewerContentProps) {
   const labels = useSelector(getLabels);
   const theme = useTheme();
-  const { image, reviewQueueImage, categorySets } = props;
+  const { image } = props;
   const classes = useStyles();
-  const { projectId, imageId } = useParams();
+  const { orgId, projectId, collectionId, queueId } = useParams();
   const [state, setState] = useState({
+    loading: false,
     zoom: 1.0,
   });
+  const history = useHistory();
+  const [approveImage, approveImageResult] = useMutation(APPROVE_REVIEW_QUEUE_IMAGE);
+  const [disapproveImage, disapproveImageResult] = useMutation(APPROVE_REVIEW_QUEUE_IMAGE);
+  const [nextImage, nextImageResult] = useMutation(NEXT_REVIEW_QUEUE_IMAGE);
 
   const approve = async () => {
+    setState({ ...state, loading: true });
     // todo;
+
+    await approveImage({
+      variables: { queueId: parseInt(queueId, 10), imageId: image.id }
+    });
+
+    const res = await nextImage({
+      variables: { queueId: parseInt(queueId, 10) }
+    });
+
+    if (res.data) {
+      const nextImageId = res.data.ImageLabelingService_nextReviewQueueImage?.imageId;
+      if (nextImageId == null) {
+        // end of queue;
+        history.push(`/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/review-queues`);
+      } else {
+        history.push(`/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/review-queues/${queueId}/images/${nextImageId}`);
+      }
+    } else {
+      setState({ ...state, loading: false });
+    }
   }
 
   const disapprove = async () => {
+    setState({ ...state, loading: true });
     // todo;
+
+    await disapproveImage({
+      variables: { queueId: parseInt(queueId, 10), imageId: image.id }
+    });
+
+    const res = await nextImage({
+      variables: { queueId: parseInt(queueId, 10) }
+    });
+
+    if (res.data) {
+      const nextImageId = res.data.ImageLabelingService_nextReviewQueueImage?.imageId;
+      if (nextImageId == null) {
+        // end of queue;
+        history.push(`/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/review-queues`);
+      } else {
+        history.push(`/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/review-queues/${queueId}/images/${nextImageId}`);
+      }
+    } else {
+      setState({ ...state, loading: false });
+    }
   }
 
   const zoomIn = () => {
@@ -170,6 +222,16 @@ function ImageReviewerContent(props: IImageReviewerContentProps) {
       zoom: Math.max(0.2, state.zoom - 0.2),
     });
   };
+
+  const apolloError = approveImageResult.error || disapproveImageResult.error || nextImageResult.error;
+  if (apolloError) {
+    return <ApolloErrorPage error={apolloError} />;
+  }
+
+  const loading = state.loading || approveImageResult.loading || disapproveImageResult.loading || nextImageResult.loading;
+  if (loading) {
+    return <ContentLoading />;
+  }
 
   const approvedBy = (
     <>

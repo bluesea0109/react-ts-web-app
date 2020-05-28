@@ -73,8 +73,10 @@ function ReviewQueuesTable() {
     });
     
     if (res.data) {
-      const imageId = res.data.ImageLabelingService_nextReviewQueueImage.imageId;
-      history.push(`/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/review-queues/${queueId}/images/${imageId}`);
+      const imageId = res.data.ImageLabelingService_nextReviewQueueImage?.imageId;
+      if (imageId) {
+        history.push(`/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/review-queues/${queueId}/images/${imageId}`);
+      }
     }
   };
 

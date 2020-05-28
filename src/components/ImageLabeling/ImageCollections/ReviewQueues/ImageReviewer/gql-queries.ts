@@ -19,7 +19,7 @@ export const APPROVE_REVIEW_QUEUE_IMAGE = gql`
 export const DISAPPROVE_REVIEW_QUEUE_IMAGE = gql`
   mutation ($queueId: Int!, $imageId: Int!) {
     ImageLabelingService_disapproveReviewQueueImage(queueId: $queueId, imageId: $imageId) {
-      status
+      imageId
     }
   }
 `;
