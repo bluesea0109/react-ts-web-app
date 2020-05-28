@@ -353,7 +353,7 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
     } else {
       // the queue is empty so go to collection page
       history.push(
-        `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}`,
+        `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/images`,
       );
     }
   };

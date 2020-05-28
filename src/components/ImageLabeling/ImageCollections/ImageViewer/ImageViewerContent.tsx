@@ -254,6 +254,10 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
       history.push({
         pathname: `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/images/${imageId}`,
       });
+    } else {
+      history.push({
+        pathname: `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/images`,
+      });
     }
   };
 
