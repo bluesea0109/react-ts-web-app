@@ -89,3 +89,18 @@ export interface ILabelsExport {
   createdAt: string;
   signedUrl: string;
 }
+
+export interface IReviewQueue {
+  id: number;
+  collectionId: number;
+  name: string;
+  percentUnderReview: number;
+  percentApproved: number;
+}
+
+export interface IReviewQueueImage {
+  queueId: number;
+  imageId: number;
+  reviewer: string;
+  status: string;
+}

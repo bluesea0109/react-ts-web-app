@@ -26,7 +26,7 @@ import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
-import IconButtonPlay from '../../IconButtonPlay';
+import IconButtonPlay from '../../IconButtons/IconButtonPlay';
 import UploadImagesDialog from './UploadImagesDialog';
 
 const paginationStyles = makeStyles((theme: Theme) =>
@@ -322,13 +322,9 @@ function ImagesTable(props: IImagesTableProps) {
           <TableRow>
             <TablePagination
               rowsPerPageOptions={[5]}
-              colSpan={3}
               count={collection.imageCount}
               rowsPerPage={state.rowsPerPage}
               page={state.page}
-              SelectProps={{
-                native: true,
-              }}
               onChangePage={handleChangePage}
               onChangeRowsPerPage={handleChangeRowsPerPage}
               ActionsComponent={TablePaginationActions}

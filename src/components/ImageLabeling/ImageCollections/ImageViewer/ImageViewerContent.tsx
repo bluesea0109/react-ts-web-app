@@ -12,9 +12,12 @@ import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
 import React, { useState } from 'react';
 import { useApolloClient } from 'react-apollo';
+import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
+import { getLabels } from '../../../../store/image-labeling/selectors';
 import ContentLoading from '../../../ContentLoading';
 import ImageCategoricalLabel from '../../models/labels/ImageLabel';
+import ImageLabelList from '../ImageLabelList';
 import ImageCanvas from './ImageCanvas';
 
 const NEXT_IMAGE = gql`
@@ -159,9 +162,10 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
   const theme = useTheme();
   const history = useHistory();
   const client = useApolloClient();
-  const { image, labelQueueImage, labels } = props;
+  const { image, labelQueueImage } = props;
   const imageId = image.id;
   const { orgId, projectId, collectionId } = useParams();
+  const labels = useSelector(getLabels);
 
   interface IState {
     zoom: number;
@@ -185,39 +189,6 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
     }));
   };
 
-  const drawLabels = (canvas: HTMLCanvasElement) => {
-    const ctx = canvas.getContext('2d');
-    for (const label of labels) {
-      if (label.visible) {
-        label.draw(ctx, state.zoom);
-      }
-    }
-  };
-
-  const drawImage = (canvas: HTMLCanvasElement) => {
-    if (!state.imageLoaded) {
-      return;
-    }
-    const img = document.getElementById('image') as HTMLImageElement;
-    const ctx = canvas.getContext('2d');
-    const w = img.width * state.zoom;
-    const h = img.height * state.zoom;
-    canvas.width = w;
-    canvas.height = h;
-    ctx?.drawImage(img, 0, 0, w, h);
-  };
-
-  const draw = () => {
-    if (!state.imageLoaded) { return; }
-    const canvas = document.getElementById('canvas') as HTMLCanvasElement;
-    if (!canvas) { return; }
-
-    const ctx = canvas.getContext('2d');
-    ctx?.clearRect(0, 0, canvas.width, canvas.height);
-    drawImage(canvas);
-    drawLabels(canvas);
-  };
-
   const zoomIn = () => {
     setState({
       ...state,
@@ -231,16 +202,6 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
       zoom: Math.max(0.2, state.zoom - 0.2),
     });
   };
-
-  // const toggleLabelVisible = (label: ImageCategoricalLabel) => () => {
-  //   label.visible = !label.visible;
-  //   setState(state);
-  // };
-
-  // const toggleLabelExpand = (label: ImageCategoricalLabel) => () => {
-  //   label.open = !label.open;
-  //   setState(state);
-  // };
 
   const prevImage = async (unlabeled: boolean | null = null) => {
     setState({
@@ -293,6 +254,10 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
       history.push({
         pathname: `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/images/${imageId}`,
       });
+    } else {
+      history.push({
+        pathname: `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/images`,
+      });
     }
   };
 
@@ -326,7 +291,6 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
   if (state.loading) {
     return <ContentLoading />;
   }
-  draw();
 
   let url = image.url;
   if (state.viewMask) {
@@ -376,13 +340,7 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
                     </Typography>
                   </Toolbar>
                   <div className={classes.labelList}>
-                    {/* <List component="nav">
-                      {labels.map((label, i) => {
-                        return (
-                          <ImageLabelListItem key={i} label={label} labelIndex={i} nonSelectable={true} />
-                        );
-                      })}
-                    </List> */}
+                    <ImageLabelList />
                   </div>
                 </React.Fragment>
               )}

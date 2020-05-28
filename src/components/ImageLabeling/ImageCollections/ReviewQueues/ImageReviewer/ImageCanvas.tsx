@@ -1,6 +1,6 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
-import ImageCategoricalLabel from '../../models/labels/ImageLabel';
+import React, { useState } from 'react';
+import ImageCategoricalLabel from '../../../models/labels/ImageLabel';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -20,9 +20,6 @@ const ImageCanvas: React.FC<IImageCanvasProps> = (props) => {
   const classes = useStyles();
   const [state, setState] = useState({
     imageLoaded: false,
-  });
-  useEffect(() => {
-    draw();
   });
 
   const drawLabels = (canvas: HTMLCanvasElement) => {
@@ -68,6 +65,8 @@ const ImageCanvas: React.FC<IImageCanvasProps> = (props) => {
     drawImage(canvas);
     drawLabels(canvas);
   };
+
+  draw();
 
   return (
     <div className={classes.canvasContainer}>

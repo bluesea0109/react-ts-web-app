@@ -13,8 +13,8 @@ import VisibilityIcon from '@material-ui/icons/VisibilitySharp';
 import { cloneDeep } from 'lodash';
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import * as actions from '../../../../store/image-labeling/actions';
-import ImageCategoricalLabel from '../../models/labels/ImageLabel';
+import * as actions from '../../../store/image-labeling/actions';
+import ImageCategoricalLabel from '../models/labels/ImageLabel';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -65,6 +65,7 @@ interface IImageLabelListItemProps extends ConnectedProps<typeof connector> {
   label: ImageCategoricalLabel;
   labelIndex: number;
   selected: boolean;
+  editable: boolean;
 }
 
 function ImageLabelListItem(props: IImageLabelListItemProps) {
@@ -126,9 +127,11 @@ function ImageLabelListItem(props: IImageLabelListItemProps) {
         <ListItemText color="inherit" primaryTypographyProps={{ variant: 'body2' }}
           primary={label.category ? `${label.categorySetName}:${label.category}` : ''}
           secondary={label.displayType} />
+        {props.editable ? (
           <IconButton size="small" color="default" style={{ padding: 6 }} onClick={onDelete}>
             <DeleteIcon color="secondary" fontSize="small" />
           </IconButton>
+        ) : null}
         <ListItemSecondaryAction>
           {label.open ? (
             <ExpandLess color="secondary" onClick={toggleLabelExpand(label)} />
@@ -148,9 +151,11 @@ function ImageLabelListItem(props: IImageLabelListItemProps) {
                   <VisibilityOffIcon color="secondary" fontSize="small" />
                 )}
               <ListItemText inset={true} primary={shape.displayString} primaryTypographyProps={{ variant: 'body2' }} />
-              <IconButton size="small" color="default" onClick={deleteLabelShape(label, i)} style={{ padding: 6 }} >
-                <DeleteIcon color="secondary" fontSize="small" />
-              </IconButton>
+              {props.editable ? (
+                <IconButton size="small" color="default" onClick={deleteLabelShape(label, i)} style={{ padding: 6 }} >
+                  <DeleteIcon color="secondary" fontSize="small" />
+                </IconButton>
+              ) : null}
             </ListItem>
           ))}
         </List>
