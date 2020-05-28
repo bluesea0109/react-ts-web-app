@@ -322,13 +322,9 @@ function ImagesTable(props: IImagesTableProps) {
           <TableRow>
             <TablePagination
               rowsPerPageOptions={[5]}
-              colSpan={3}
               count={collection.imageCount}
               rowsPerPage={state.rowsPerPage}
               page={state.page}
-              SelectProps={{
-                native: true,
-              }}
               onChangePage={handleChangePage}
               onChangeRowsPerPage={handleChangeRowsPerPage}
               ActionsComponent={TablePaginationActions}

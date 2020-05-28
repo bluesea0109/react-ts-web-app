@@ -74,7 +74,7 @@ function ReviewQueuesTable() {
     
     if (res.data) {
       const imageId = res.data.ImageLabelingService_nextReviewQueueImage.imageId;
-      history.push(`/orgs/${orgId}/projects/${projectId}/collections/${collectionId}/review-queues/${queueId}/images/${imageId}`);
+      history.push(`/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/review-queues/${queueId}/images/${imageId}`);
     }
   };
 
@@ -145,14 +145,10 @@ function ReviewQueuesTable() {
           <TableFooter>
             <TableRow>
               <TablePagination
-                rowsPerPageOptions={[5]}
-                colSpan={3}
+                rowsPerPageOptions={[rowsPerPage]}
                 count={reviewQueues.length}
                 rowsPerPage={rowsPerPage}
                 page={state.page}
-                SelectProps={{
-                  native: true,
-                }}
                 onChangePage={handleChangePage}
               />
             </TableRow>

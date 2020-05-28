@@ -97,3 +97,10 @@ export interface IReviewQueue {
   percentUnderReview: number;
   percentApproved: number;
 }
+
+export interface IReviewQueueImage {
+  queueId: number;
+  imageId: number;
+  reviewer: string;
+  status: string;
+}

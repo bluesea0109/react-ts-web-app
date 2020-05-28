@@ -12,9 +12,6 @@ import ContentLoading from './components/ContentLoading';
 import Dashboard from './components/Dashboard';
 import Drawer from './components/Drawer';
 import ImageLabeling from './components/ImageLabeling';
-import ImageCollectionPage from './components/ImageLabeling/ImageCollections/ImageCollectionPage';
-import ImageLabeler from './components/ImageLabeling/ImageCollections/ImageLabeler';
-import ImageViewer from './components/ImageLabeling/ImageCollections/ImageViewer';
 import QuestionAnswering from './components/QuestionAnswering';
 import { GET_CURRENT_USER } from './gql-queries';
 import { IUser } from './models';
@@ -149,28 +146,11 @@ function App() {
           {/* <Route path="/orgs/:orgId/projects/:projectId/text-summarization">
             <TextSummarization />
             </Route> */}
-          <Route
-            exact={true}
-            path="/orgs/:orgId/projects/:projectId/image-labeling/:tab">
+          <Route path="/orgs/:orgId/projects/:projectId/image-labeling">
             <ImageLabeling />
           </Route>
           <Route exact={true} path="/orgs/:orgId/projects/:projectId/chatbot-builder">
             <ChatbotBuilder user={data.currentUser} />
-          </Route>
-          <Route
-            exact={true}
-            path="/orgs/:orgId/projects/:projectId/image-labeling/collections/:collectionId/:tab">
-            <ImageCollectionPage />
-          </Route>
-          <Route
-            exact={true}
-            path="/orgs/:orgId/projects/:projectId/image-labeling/collections/:collectionId/images/:imageId">
-            <ImageViewer />
-          </Route>
-          <Route
-            exact={true}
-            path="/orgs/:orgId/projects/:projectId/image-labeling/collections/:collectionId/label-image/:imageId">
-            <ImageLabeler />
           </Route>
           <Route path="/orgs/:orgId/projects/:projectId/text-labeling" />
           <Route exact={true} path="/no-project">
