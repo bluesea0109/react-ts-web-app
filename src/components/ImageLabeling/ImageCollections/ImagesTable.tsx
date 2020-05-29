@@ -26,8 +26,8 @@ import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
-import IconButtonPlay from '../../IconButtons/IconButtonPlay';
 import UploadImagesDialog from './UploadImagesDialog';
+import StartLabelingDialog from './StartLabelingDialog';
 
 const paginationStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -263,7 +263,8 @@ function ImagesTable(props: IImagesTableProps) {
     <Paper className={classes.paper}>
       <Toolbar variant="dense">
         {imageUploadDialog}
-        <IconButtonPlay tooltip="Start Labeling" onClick={startLabeling} />
+        <StartLabelingDialog/>
+        {/* <IconButtonPlay tooltip="Start Labeling" onClick={startLabeling} /> */}
       </Toolbar>
       <Table>
         <TableHead>
