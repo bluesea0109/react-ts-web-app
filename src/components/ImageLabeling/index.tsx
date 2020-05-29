@@ -1,5 +1,6 @@
 import React from 'react';
 import { Route } from 'react-router';
+import BatchImageLabeler from './ImageCollections/BatchImageLabeler';
 import ImageCollectionPage from './ImageCollections/ImageCollectionPage';
 import ImageLabeler from './ImageCollections/ImageLabeler';
 import ImageViewer from './ImageCollections/ImageViewer';
@@ -13,6 +14,11 @@ export default function ImageLabelingRouter() {
         exact={true}
         path="/orgs/:orgId/projects/:projectId/image-labeling/:tab">
         <ImageLabelingPage />
+      </Route>
+      <Route
+        exact={true}
+        path="/orgs/:orgId/projects/:projectId/image-labeling/collections/:collectionId/batch-labeling/label-batch">
+        <BatchImageLabeler />
       </Route>
       <Route
         exact={true}

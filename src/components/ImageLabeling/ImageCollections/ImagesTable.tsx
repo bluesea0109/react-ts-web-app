@@ -1,4 +1,4 @@
-import { useApolloClient, useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/react-hooks';
 import IconButton from '@material-ui/core/IconButton';
 import Paper from '@material-ui/core/Paper';
 import {
@@ -26,8 +26,8 @@ import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
-import UploadImagesDialog from './UploadImagesDialog';
 import StartLabelingDialog from './StartLabelingDialog';
+import UploadImagesDialog from './UploadImagesDialog';
 
 const paginationStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -167,8 +167,6 @@ function ImagesTable(props: IImagesTableProps) {
     },
     fetchPolicy: 'network-only',
   });
-
-  const client = useApolloClient();
   const history = useHistory();
 
   useEffect(() => {
@@ -177,23 +175,6 @@ function ImagesTable(props: IImagesTableProps) {
       stopPolling();
     };
   }, [startPolling, stopPolling]);
-
-  const startLabeling = async () => {
-    const { data } = await client.mutate({
-      mutation: NEXT_LABEL_QUEUE_IMAGE,
-      variables: {
-        collectionId,
-      },
-      errorPolicy: 'ignore',
-    });
-
-    if (data && data.ImageLabelingService_nextLabelQueueImage) {
-      const { imageId } = data.ImageLabelingService_nextLabelQueueImage;
-      history.push({
-        pathname: `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/label-image/${imageId}`,
-      });
-    }
-  };
 
   const handleImageClick = (imageId: number) => () => {
     history.push({
@@ -264,7 +245,6 @@ function ImagesTable(props: IImagesTableProps) {
       <Toolbar variant="dense">
         {imageUploadDialog}
         <StartLabelingDialog/>
-        {/* <IconButtonPlay tooltip="Start Labeling" onClick={startLabeling} /> */}
       </Toolbar>
       <Table>
         <TableHead>
@@ -336,14 +316,6 @@ function ImagesTable(props: IImagesTableProps) {
     </Paper>
   );
 }
-
-const NEXT_LABEL_QUEUE_IMAGE = gql`
-  mutation($collectionId: Int!) {
-    ImageLabelingService_nextLabelQueueImage(collectionId: $collectionId) {
-      imageId
-    }
-  }
-`;
 
 const GET_COLLECTION_DATA = gql`
   query($collectionId: Int!, $offset: Int!, $limit: Int!) {
