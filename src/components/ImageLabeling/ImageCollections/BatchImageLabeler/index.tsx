@@ -1,14 +1,15 @@
-import { Typography, Theme, makeStyles, createStyles, Grid } from '@material-ui/core';
+import { Typography, Theme, makeStyles, createStyles, Grid, FormGroup, FormControl, TextField } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { useMutation, useQuery } from 'react-apollo';
 import gql from 'graphql-tag';
 import ApolloErrorPage from '../../../ApolloErrorPage';
 import ContentLoading from '../../../ContentLoading';
-import { IImage, ICategorySet } from '../../../../models';
+import { IImage, ICategorySet, ICategory } from '../../../../models';
 import { GET_CATEGORY_SETS } from '../../../../common-gql-queries';
 import ImageTile from './ImageTile';
 import _ from "lodash";
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -18,17 +19,29 @@ const useStyles = makeStyles((theme: Theme) =>
     row: {
       display: 'flex',
       flexWrap: 'nowrap',
-    }
+    },
+    formControl: {
+      margin: theme.spacing(1),
+      minWidth: 120,
+    },
   }),
 );
+
+interface IState {
+  cols: number,
+  categorySet: null | ICategorySet,
+  selectedCategory: null | ICategory,
+}
 
 export default function BatchImageLabeler() {
   const classes = useStyles();
   const { projectId, collectionId } = useParams();
   const categorySetsQuery = useQuery<IGetCategorySets>(GET_CATEGORY_SETS, { variables: { projectId } });
   const [getBatch, getBatchResult] = useMutation<IGetBatch>(GET_BATCH);
-  const [state, setState] = useState({
+  const [state, setState] = useState<IState>({
     cols: 3,
+    categorySet: null,
+    selectedCategory: null,
   });
 
   useEffect(() => {
@@ -36,6 +49,28 @@ export default function BatchImageLabeler() {
       variables: { collectionId: parseInt(collectionId, 10), batchSize: 5 }
     });
   }, []);
+
+  const handleSelectCategory = (categorySet: ICategorySet | null) => (
+    e: React.ChangeEvent<{}>,
+    value: {
+      value: string;
+      label: string;
+    } | null,
+  ) => {
+    if (!categorySet) {
+      return;
+    }
+
+    const category = categorySet.categories.find((x) => x.name === value?.value);
+    if (!category) {
+      return;
+    }
+
+    setState({
+      ...state,
+      selectedCategory: category,
+    });
+  };
 
   const commonErr = categorySetsQuery.error || getBatchResult.error;
   if (commonErr) {
@@ -52,20 +87,76 @@ export default function BatchImageLabeler() {
 
   const rows = _.chunk(imageUrls, state.cols);
 
-  const lastRow = rows[rows.length - 1];
+  const lastRow = rows.length > 0 ? rows[rows.length - 1] : [];
   while (lastRow.length < state.cols) {
     lastRow.push('');
   }
+
+  const categorySetOptions = catSets.map((x) => ({
+    value: x.id,
+    label: x.name,
+  }));
+
+  const categoryOptions = state.categorySet ? state.categorySet.categories.map((x) => ({
+    value: x.name,
+    label: x.name,
+  })) : [];
+
+  const handleSelectCategorySet = (
+    e: React.ChangeEvent<{}>,
+    value: {
+      value: number;
+      label: string;
+    } | null,
+  ) => {
+    const categorySet = catSets.find((x) => x.id === value?.value);
+    setState({
+      ...state,
+      categorySet: categorySet ? categorySet : null,
+    });
+  };
+
   return (
     <div className={classes.root}>
-      <Typography>Batch Image Labeler</Typography>
-        {rows.map((row, i) => (
-          <div className={classes.row}>
-            {row.map((url, j) => (
-                <ImageTile imageUrl={url} categorySets={catSets} />
-            ))}
-          </div>
-        ))}
+      <div>
+        <form>
+          <FormGroup row={true}>
+            <FormControl className={classes.formControl}>
+              <Autocomplete
+                onChange={handleSelectCategorySet}
+                options={categorySetOptions}
+                getOptionLabel={(option) => option.label}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Category Sets"
+                  />
+                )}
+              />
+            </FormControl>
+            <FormControl className={classes.formControl}>
+              <Autocomplete
+                onChange={handleSelectCategory(state.categorySet)}
+                options={categoryOptions}
+                getOptionLabel={(option) => option.label}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Category"
+                  />
+                )}
+              />
+            </FormControl>
+          </FormGroup>
+        </form>
+      </div>
+      {rows.map((row, i) => (
+        <div className={classes.row}>
+          {row.map((url, j) => (
+            <ImageTile imageUrl={url} categorySets={catSets} />
+          ))}
+        </div>
+      ))}
     </div >
   );
 }

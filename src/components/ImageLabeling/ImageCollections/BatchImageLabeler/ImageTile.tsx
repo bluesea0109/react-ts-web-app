@@ -1,4 +1,4 @@
-import { Theme, makeStyles, createStyles } from '@material-ui/core';
+import { Theme, makeStyles, createStyles, Select } from '@material-ui/core';
 import React from 'react';
 import { ICategorySet } from '../../../../models';
 
@@ -9,9 +9,16 @@ const useStyles = makeStyles((theme: Theme) =>
       maxWidth: '100%',
       objectFit: 'scale-down',
       verticalAlign: 'bottom',
+      display: 'block',
+    },
+    imgContainer: {
+      textAlign: 'left',
+      display: 'inline-block',
     },
     root: {
-      flex: '1 1 0'
+      flex: '1 1 0',
+      textAlign: 'center',
+      padding: theme.spacing(1),
     }
   }),
 );
@@ -30,7 +37,10 @@ export default function ImageTile(props: IImageTileProps) {
 
   return (
     <div className={classes.root}>
-      <img className={classes.img} src={props.imageUrl} alt='batch' />
+      <div className={classes.imgContainer}>
+        <img className={classes.img} src={props.imageUrl} alt='batch' />
+        <Select></Select>
+      </div>
     </div>
   );
 }
