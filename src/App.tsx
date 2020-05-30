@@ -13,7 +13,7 @@ import Dashboard from './components/Dashboard';
 import Drawer from './components/Drawer';
 import ImageLabeling from './components/ImageLabeling';
 import QuestionAnswering from './components/QuestionAnswering';
-import { GET_CURRENT_USER } from './gql-queries';
+import { GET_CURRENT_USER } from './common-gql-queries';
 import { IUser } from './models';
 
 const drawerWidth = 240;

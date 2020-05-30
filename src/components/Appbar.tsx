@@ -19,7 +19,7 @@ import clsx from 'clsx';
 import firebase from 'firebase/app';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { GET_CURRENT_USER, UPDATE_ACTIVE_ORG } from '../gql-queries';
+import { GET_CURRENT_USER, UPDATE_ACTIVE_ORG } from '../common-gql-queries';
 import { IUser } from '../models';
 
 interface CustomAppbarProps extends AppBarProps {
