@@ -6,6 +6,7 @@ import clsx from 'clsx';
 import 'firebase/auth';
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
+import { GET_CURRENT_USER } from './common-gql-queries';
 import AppBar from './components/Appbar';
 import ChatbotBuilder from './components/ChatbotBuilder';
 import ContentLoading from './components/ContentLoading';
@@ -13,7 +14,6 @@ import Dashboard from './components/Dashboard';
 import Drawer from './components/Drawer';
 import ImageLabeling from './components/ImageLabeling';
 import QuestionAnswering from './components/QuestionAnswering';
-import { GET_CURRENT_USER } from './common-gql-queries';
 import { IUser } from './models';
 
 const drawerWidth = 240;
@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       display: 'flex',
-      height: '100%',
+      height: '100vh',
       overflow: 'hidden',
     },
     hide: {
@@ -33,17 +33,16 @@ const useStyles = makeStyles((theme: Theme) =>
       flexShrink: 0,
     },
     drawerHeader: {
-      display: 'flex',
-      alignItems: 'center',
-      padding: theme.spacing(0, 1),
       // necessary for content to be below app bar
       ...theme.mixins.toolbar,
-      justifyContent: 'flex-end',
     },
     drawerPaper: {
       width: drawerWidth,
     },
     content: {
+      display: 'flex',
+      flexDirection: 'column',
+      overflow: 'hidden',
       flexGrow: 1,
       transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.sharp,
@@ -52,6 +51,9 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: -drawerWidth,
     },
     contentShift: {
+      display: 'flex',
+      flexDirection: 'column',
+      overflow: 'hidden',
       transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.easeOut,
         duration: theme.transitions.duration.enteringScreen,
@@ -135,7 +137,7 @@ function App() {
         className={clsx(classes.content, {
           [classes.contentShift]: state.drawerOpen,
         })}>
-        <div className={classes.drawerHeader} />
+                        <div className={classes.drawerHeader} />
         <Switch>
           <Route exact={true} path="/">
             <Dashboard user={data.currentUser} />
