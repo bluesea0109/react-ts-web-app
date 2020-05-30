@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
       minWidth: 150,
       display: 'inline-block',
     },
-  }),
+  })
 );
 
 interface IImageTileProps {
@@ -75,14 +75,14 @@ export default function ImageTile(props: IImageTileProps) {
     value: {
       value: string;
       label: string;
-    } | null,
+    } | null
   ) => {
     if (!categorySet) {
       return;
     }
 
     const category = categorySet.categories.find(
-      (x) => x.name === value?.value,
+      (x) => x.name === value?.value
     );
     if (!category) {
       return;
@@ -119,14 +119,14 @@ export default function ImageTile(props: IImageTileProps) {
         <FormGroup row={true} className={classes.formGroup}>
           <FormControl className={classes.formControl}>
             <Autocomplete
+              value={{
+                value: state.categorySet?.id || '',
+                label: state.categorySet?.name || '',
+              }}
               options={categorySetOptions}
               getOptionLabel={(option) => option.label}
               renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Category Set"
-                  variant="filled"
-                />
+                <TextField {...params} label="Category Set" variant="filled" />
               )}
             />
           </FormControl>

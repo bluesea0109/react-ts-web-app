@@ -1,4 +1,5 @@
 import {
+  Button,
   createStyles,
   FormControl,
   FormGroup,
@@ -33,6 +34,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
       overflow: 'scroll',
+      padding: theme.spacing(3),
     },
     row: {
       flex: '1 1 0',
@@ -185,6 +187,7 @@ export default function BatchImageLabeler() {
                 />
               </FormControl>
             </FormGroup>
+            <Typography>{"Select a category and then click images to assign it to them."}</Typography>
           </Toolbar>
         </Paper>
         <form/>
@@ -203,6 +206,14 @@ export default function BatchImageLabeler() {
             ))}
           </div>
         ))}
+      </div>
+      <div>
+        <Paper>
+          <Toolbar variant="dense">
+            <Button variant="contained">{'Submit Batch'}</Button>
+          </Toolbar>
+        </Paper>
+        <form/>
       </div>
     </div>
   );
