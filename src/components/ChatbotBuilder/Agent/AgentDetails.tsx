@@ -1,13 +1,13 @@
-import React from 'react'
-import SwipeableViews from 'react-swipeable-views';
-import { makeStyles, Theme, useTheme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
+import { makeStyles, Theme, useTheme } from '@material-ui/core/styles';
+import Tab from '@material-ui/core/Tab';
+import Tabs from '@material-ui/core/Tabs';
+import React from 'react';
+import SwipeableViews from 'react-swipeable-views';
 import Intent from '../Intent/Intent';
 import Tag from '../Tags/Tag';
-import Template from '../Template/Template'
+import Template from '../Template/Template';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -48,15 +48,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: '100%',
   },
   appBarWarper: {
-    boxShadow: '0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.14), 0px 1px 10px 0px rgba(0,0,0,0.12)'
-  }
+    boxShadow: '0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.14), 0px 1px 10px 0px rgba(0,0,0,0.12)',
+  },
 }));
 
- const AgentDetails = () =>{
+ const AgentDetails = () => {
   const classes = useStyles();
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
-
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
@@ -99,6 +98,6 @@ const useStyles = makeStyles((theme: Theme) => ({
       </SwipeableViews>
     </div>
   );
-}
+};
 
 export default AgentDetails;
