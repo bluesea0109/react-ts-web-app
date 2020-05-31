@@ -1,10 +1,13 @@
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import React from 'react';
+import { connect, ConnectedProps } from 'react-redux';
 import { useParams } from 'react-router';
+import * as imageLabelingActions from '../../../../store/image-labeling/actions';
 import ApolloErrorPage from '../../../ApolloErrorPage';
 import ContentLoading from '../../../ContentLoading';
 import ImageCategoricalLabel from '../../models/labels/ImageLabel';
+import { convertLabels } from '../ImageLabeler/utils';
 import ImageViewerContent from './ImageViewerContent';
 
 const GET_DATA = gql`
@@ -43,15 +46,24 @@ const GET_DATA = gql`
   }
 `;
 
-const ImageViewer: React.FC = () => {
-  const { imageId } = useParams();
-  const { projectId } = useParams();
+const mapDispatch = {
+  resetLabels: imageLabelingActions.resetLabels,
+};
+
+const connector = connect(null, mapDispatch);
+
+function ImageViewer(props: ConnectedProps<typeof connector>) {
+  const { imageId, projectId } = useParams();
   const { loading, error, data } = useQuery(GET_DATA, {
     variables: {
       projectId,
       imageId: parseInt(imageId, 10),
     },
     fetchPolicy: 'network-only',
+    onCompleted: (data) => {
+      const labels = convertLabels(data.ImageLabelingService_image.labels);
+      props.resetLabels(labels);
+    },
   });
 
   if (loading) {
@@ -79,6 +91,6 @@ const ImageViewer: React.FC = () => {
       categorySets={categorySets}
     />
   );
-};
+}
 
-export default ImageViewer;
+export default connector(ImageViewer);

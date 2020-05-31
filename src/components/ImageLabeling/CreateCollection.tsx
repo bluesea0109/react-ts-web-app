@@ -8,7 +8,7 @@ import gql from 'graphql-tag';
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
 import ContentLoading from '../ContentLoading';
-import IconButtonAdd from '../IconButtonAdd';
+import IconButtonAdd from '../IconButtons/IconButtonAdd';
 
 const CREATE_COLLECTION = gql`
   mutation($projectId: String!, $name: String!) {

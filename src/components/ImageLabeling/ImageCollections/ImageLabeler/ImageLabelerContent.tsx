@@ -44,8 +44,8 @@ import ContentLoading from '../../../ContentLoading';
 import ImageCategoricalLabel, {
   ImageLabelShapesEnum,
 } from '../../models/labels/ImageLabel';
+import ImageLabelList from '../ImageLabelList';
 import ClosePolygonButton from './ClosePolygonButton';
-import ImageLabelList from './ImageLabelList';
 import PolygonLabelingCanvas from './PolygonLabelingCanvas';
 import {
   COMPLETE_LABEL_QUEUE_IMAGE,
@@ -353,7 +353,7 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
     } else {
       // the queue is empty so go to collection page
       history.push(
-        `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}`,
+        `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/images`,
       );
     }
   };
@@ -660,7 +660,7 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
                 </Button>
               </Toolbar>
               <div className={classes.labelList}>
-                <ImageLabelList />
+                <ImageLabelList editable={true} />
               </div>
             </React.Fragment>
           )}
@@ -697,7 +697,6 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
               }
               label="View Mask"
             />
-
             <div className={classes.grow} />
             {approveButton}
           </Toolbar>

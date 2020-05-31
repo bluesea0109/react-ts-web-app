@@ -1,88 +1,39 @@
-import { createStyles, Grid, makeStyles, Paper, Tab, Tabs, Theme, Toolbar, Typography } from '@material-ui/core';
 import React from 'react';
-import { useHistory, useParams } from 'react-router';
-import CategorySets from './CategorySets/CategorySets';
-import Collections from './Collections';
-import CreateCollection from './CreateCollection';
+import { Route } from 'react-router';
+import ImageCollectionPage from './ImageCollections/ImageCollectionPage';
+import ImageLabeler from './ImageCollections/ImageLabeler';
+import ImageViewer from './ImageCollections/ImageViewer';
+import ImageReviewer from './ImageCollections/ReviewQueues/ImageReviewer';
+import ImageLabelingPage from './ImagelabelingPage';
 
-interface IProjectProps {
-  orgId: string;
-  projectId: string;
-}
-
-function ImageLabelingPageWrapper() {
-  const { orgId, projectId } = useParams();
-
-  if (!orgId) {
-    return <Typography>{'No org is active.'}</Typography>;
-  }
-  if (!projectId) {
-    return <Typography>{'No project is active.'}</Typography>;
-  }
-
-  return <ImageLabelingPage orgId={orgId} projectId={projectId} />;
-}
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      flexGrow: 1,
-      display: 'flex',
-      flexDirection: 'column',
-    },
-    toolbar: {
-      paddingLeft: theme.spacing(2),
-    },
-  }),
-);
-
-function ImageLabelingPage(props: IProjectProps) {
-  // eslint-disable-next-line
-  const classes = useStyles();
-  const { orgId, projectId, tab } = useParams();
-  const history = useHistory();
-
-  const handleChangeTab = (event: any, value: any) => {
-    history.push({
-      pathname: `/orgs/${orgId}/projects/${projectId}/image-labeling/${value}`,
-    });
-  };
-
+export default function ImageLabelingRouter() {
   return (
-    <div>
-      <Paper>
-        <Toolbar variant="dense" disableGutters={true}>
-          <Tabs
-            value={tab}
-            onChange={handleChangeTab}
-            indicatorColor="secondary"
-            textColor="primary"
-          >
-            <Tab value={'collections'} label="Image Collections" />
-            <Tab value={'category-sets'} label="Category Sets" />
-          </Tabs>
-        </Toolbar>
-      </Paper>
-      {tab === 'collections' && (
-        <Grid container={true}>
-          <Grid item={true} xs={12}>
-            <Toolbar variant="dense" disableGutters={true} className={classes.toolbar}>
-              <Typography variant="h6">
-                {'Collections'}
-              </Typography>
-              <CreateCollection />
-            </Toolbar>
-          </Grid>
-          <Grid container={true} item={true} xs={12}>
-            <Collections />
-          </Grid>
-        </Grid>
-      )}
-      {tab === 'category-sets' && (
-        <CategorySets />
-      )}
-    </div>
+    <React.Fragment>
+      <Route
+        exact={true}
+        path="/orgs/:orgId/projects/:projectId/image-labeling/:tab">
+        <ImageLabelingPage />
+      </Route>
+      <Route
+        exact={true}
+        path="/orgs/:orgId/projects/:projectId/image-labeling/collections/:collectionId/:tab">
+        <ImageCollectionPage />
+      </Route>
+      <Route
+        exact={true}
+        path="/orgs/:orgId/projects/:projectId/image-labeling/collections/:collectionId/images/:imageId">
+        <ImageViewer />
+      </Route>
+      <Route
+        exact={true}
+        path="/orgs/:orgId/projects/:projectId/image-labeling/collections/:collectionId/label-image/:imageId">
+        <ImageLabeler />
+      </Route>
+      <Route
+        exact={true}
+        path="/orgs/:orgId/projects/:projectId/image-labeling/collections/:collectionId/review-queues/:queueId/images/:imageId">
+        <ImageReviewer />
+      </Route>
+    </React.Fragment>
   );
 }
-
-export default ImageLabelingPageWrapper;
