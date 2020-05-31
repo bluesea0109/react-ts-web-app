@@ -154,7 +154,7 @@ function App() {
             path="/orgs/:orgId/projects/:projectId/image-labeling/:tab">
             <ImageLabeling />
           </Route>
-          <Route exact={true} path="/orgs/:orgId/projects/:projectId/chatbot-builder">
+          <Route  path="/orgs/:orgId/projects/:projectId/chatbot-builder">
             <ChatbotBuilder user={data.currentUser} />
           </Route>
           <Route

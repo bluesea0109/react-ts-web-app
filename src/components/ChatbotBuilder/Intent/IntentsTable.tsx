@@ -6,11 +6,11 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import 'firebase/auth';
 import React, {useState} from 'react';
 import { useParams } from 'react-router';
-import { CHATBOT_DELETE_AGENT, CHATBOT_GET_AGENTS } from '../../gql-queries';
-import {  IAgent } from '../../models';
-import ApolloErrorPage from '../ApolloErrorPage';
-import ContentLoading from '../ContentLoading';
-import ConfirmDialog from '../Utils/ConfirmDialog';
+import { CHATBOT_DELETE_INTENT, CHATBOT_GET_INTENTS } from '../../../gql-queries';
+import {  IIntent } from '../../../models';
+import ApolloErrorPage from '../../ApolloErrorPage';
+import ContentLoading from '../../ContentLoading';
+import ConfirmDialog from '../../Utils/ConfirmDialog';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -23,24 +23,25 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-interface IGetAgents {
-    ChatbotService_agents: IAgent[] | undefined;
+interface IGetIntents {
+  ChatbotService_intents: IIntent[] | undefined;
 }
 
-function AgentsTable() {
+function IntentsTable() {
   const classes = useStyles();
-  const { projectId } = useParams();
+  const { agentId } = useParams();
   const [confirmOpen, setConfirmOpen ] = useState(false);
+  const numAgentId = Number(agentId);
 
-  const agentsData = useQuery<IGetAgents>(CHATBOT_GET_AGENTS, { variables: { projectId } });
-  const [deleteAgent, { loading, error }] = useMutation(CHATBOT_DELETE_AGENT,  {
-    refetchQueries: [{ query: CHATBOT_GET_AGENTS, variables: { projectId }  }],
+  const intentsData = useQuery<IGetIntents>(CHATBOT_GET_INTENTS, { variables: { agentId: numAgentId } });
+  const [deleteIntent, { loading, error }] = useMutation(CHATBOT_DELETE_INTENT,  {
+    refetchQueries: [{ query: CHATBOT_GET_INTENTS, variables: { agentId : numAgentId }  }],
     awaitRefetchQueries: true,
   });
 
-  const commonError = agentsData.error ? agentsData.error : error;
+  const commonError = intentsData.error ? intentsData.error : error;
 
-  if (agentsData.loading || loading) {
+  if (intentsData.loading || loading) {
     return <ContentLoading />;
   }
 
@@ -49,45 +50,47 @@ function AgentsTable() {
     return <ApolloErrorPage error={commonError} />;
   }
 
-  const deleteAgentHandler =  (agentId: number) => {
+  const deleteIntentHandler =  (intentId: number) => {
 
-     deleteAgent({
+    deleteIntent({
         variables: {
-          agentId,
+          intentId,
         },
       });
   };
 
-  const agents = agentsData.data && agentsData.data.ChatbotService_agents;
+  const intents = intentsData.data && intentsData.data.ChatbotService_intents;
   return (
     <Paper className={classes.paper}>
-      {agents ? (
-        <TableContainer component={Paper} aria-label="Agents">
+      {intents ? (
+        <TableContainer component={Paper} aria-label="Intents">
           <Table>
             <TableHead>
               <TableRow>
                 <TableCell>Name</TableCell>
-                <TableCell>Agent id</TableCell>
+                <TableCell>Intent id</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {agents.map((agent: IAgent) => (
-                <TableRow key={agent.id}>
-                  <TableCell>{agent.name}</TableCell>
-                  <TableCell>{agent.id}</TableCell>
+              {intents.map((intent: IIntent) => (
+                <TableRow key={intent.id}>
+                  <TableCell>
+                        {intent.value}
+                  </TableCell>
+                  <TableCell>{intent.id}</TableCell>
                   <TableCell>
                      <IconButton aria-label="delete" onClick={() => setConfirmOpen(true)}>
                         <DeleteIcon />
                      </IconButton>
                      <ConfirmDialog
-                        title="Delete Agent?"
+                        title="Delete Intent?"
                         open={confirmOpen}
                         setOpen={setConfirmOpen}
-                        onConfirm={() => deleteAgentHandler(Number(agent.id))}
+                        onConfirm={() => deleteIntentHandler(Number(intent.id))}
 
                      >
-                        Are you sure you want to delete this agent?
+                        Are you sure you want to delete this intent?
                     </ConfirmDialog>
                   </TableCell>
                 </TableRow>
@@ -98,11 +101,11 @@ function AgentsTable() {
         </TableContainer>
       ) : (
           <Typography align="center" variant="h6">
-            {'No Agents found'}
+            {'No Intents found'}
           </Typography>
         )}
     </Paper>
   );
 }
 
-export default AgentsTable;
+export default IntentsTable;
