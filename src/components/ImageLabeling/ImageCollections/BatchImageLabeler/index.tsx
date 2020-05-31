@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme: Theme) =>
     title: {
       marginRight: theme.spacing(2),
     },
-  }),
+  })
 );
 
 interface IState {
@@ -70,27 +70,29 @@ export default function BatchImageLabeler() {
     selectedCategory: null,
   });
 
-  useEffect(() => {
-    getBatch({
-      variables: { collectionId: parseInt(collectionId, 10), batchSize: 5 },
-    });
-  },
-  // eslint-disable-next-line
-  []);
+  useEffect(
+    () => {
+      getBatch({
+        variables: { collectionId: parseInt(collectionId, 10), batchSize: 5 },
+      });
+    },
+    // eslint-disable-next-line
+    []
+  );
 
   const handleSelectCategory = (categorySet: ICategorySet | null) => (
     e: React.ChangeEvent<{}>,
     value: {
       value: string;
       label: string;
-    } | null,
+    } | null
   ) => {
     if (!categorySet) {
       return;
     }
 
     const category = categorySet.categories.find(
-      (x) => x.name === value?.value,
+      (x) => x.name === value?.value
     );
     if (!category) {
       return;
@@ -114,13 +116,13 @@ export default function BatchImageLabeler() {
   const catSets =
     categorySetsQuery.data?.ImageLabelingService_categorySets || [];
   const batch = getBatchResult.data?.ImageLabelingService_getBatch || [];
-  const imageUrls = batch.map((x) => x.image.url);
+  const images: (IImage | null)[] = batch.map((x) => x.image);
 
-  const rows = _.chunk(imageUrls, state.cols);
+  const rows = _.chunk(images, state.cols);
 
   const lastRow = rows.length > 0 ? rows[rows.length - 1] : [];
   while (lastRow.length < state.cols) {
-    lastRow.push('');
+    lastRow.push(null);
   }
 
   const categorySetOptions = catSets.map((x) => ({
@@ -140,7 +142,7 @@ export default function BatchImageLabeler() {
     value: {
       value: number;
       label: string;
-    } | null,
+    } | null
   ) => {
     const categorySet = catSets.find((x) => x.id === value?.value);
     setState({
@@ -162,6 +164,7 @@ export default function BatchImageLabeler() {
                 <Autocomplete
                   onChange={handleSelectCategorySet}
                   options={categorySetOptions}
+                  getOptionSelected={(a, b) => a.value === b.value}
                   getOptionLabel={(option) => option.label}
                   renderInput={(params) => (
                     <TextField
@@ -176,6 +179,7 @@ export default function BatchImageLabeler() {
                 <Autocomplete
                   onChange={handleSelectCategory(state.categorySet)}
                   options={categoryOptions}
+                  getOptionSelected={(a, b) => a.value === b.value}
                   getOptionLabel={(option) => option.label}
                   renderInput={(params) => (
                     <TextField
@@ -187,23 +191,31 @@ export default function BatchImageLabeler() {
                 />
               </FormControl>
             </FormGroup>
-            <Typography>{'Select a category and then click images to assign it to them.'}</Typography>
+            <Typography>
+              {'Select a category and then click images to assign it to them.'}
+            </Typography>
           </Toolbar>
         </Paper>
-        <form/>
+        <form />
       </div>
       <div className={classes.content}>
         {rows.map((row, i) => (
           <div className={classes.row} key={i}>
-            {row.map((url, j) => (
-              <ImageTile
-                key={j}
-                imageUrl={url}
-                categorySets={catSets}
-                activeCategorySet={state.categorySet}
-                activeCategory={state.selectedCategory}
-              />
-            ))}
+            {row.map((img, j) => {
+              if (!img) {
+                return <div key={j} />;
+              }
+              return (
+                <ImageTile
+                  key={j}
+                  imageId={img.id}
+                  imageUrl={img.url}
+                  categorySets={catSets}
+                  activeCategorySet={state.categorySet}
+                  activeCategory={state.selectedCategory}
+                />
+              );
+            })}
           </div>
         ))}
       </div>
@@ -213,7 +225,7 @@ export default function BatchImageLabeler() {
             <Button variant="contained">{'Submit Batch'}</Button>
           </Toolbar>
         </Paper>
-        <form/>
+        <form />
       </div>
     </div>
   );

@@ -8,7 +8,24 @@ import {
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import React, { useState } from 'react';
-import { ICategory, ICategorySet } from '../../../../models';
+import { connect, ConnectedProps, useSelector } from 'react-redux';
+import {
+  ICategory,
+  ICategorySet,
+  IImage,
+  IImageLabel,
+  IImageLabelInput,
+} from '../../../../models';
+import * as batchLabelingState from '../../../../store/batch-image-labeling/actions';
+import { getBatchImageLabels } from '../../../../store/batch-image-labeling/selectors';
+
+const mapDispatch = {
+  addLabel: batchLabelingState.addLabel,
+  removeLabel: batchLabelingState.removeLabel,
+  updateLabel: batchLabelingState.updateLabel,
+};
+
+const connector = connect(null, mapDispatch);
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -36,10 +53,11 @@ const useStyles = makeStyles((theme: Theme) =>
       minWidth: 150,
       display: 'inline-block',
     },
-  }),
+  })
 );
 
-interface IImageTileProps {
+interface IImageTileProps extends ConnectedProps<typeof connector> {
+  imageId: number;
   categorySets: ICategorySet[];
   imageUrl: string;
   activeCategorySet: ICategorySet | null;
@@ -51,19 +69,35 @@ interface IState {
   selectedCategory: null | ICategory;
 }
 
-export default function ImageTile(props: IImageTileProps) {
+function ImageTile(props: IImageTileProps) {
   const classes = useStyles();
-  const [state, setState] = useState<IState>({
-    categorySet: props.activeCategorySet,
-    selectedCategory: props.activeCategory,
-  });
+  const imageLabels = useSelector(getBatchImageLabels).get(props.imageId) || [];
+  const firstLabel = imageLabels.length > 0 ? imageLabels[0] : null;
+
+  const categorySetId = firstLabel?.categorySetId || null;
+  const catSet = props.categorySets.find((x) => x.id === categorySetId) || null;
+  const category = firstLabel?.category || null;
 
   const onImageClick = () => {
-    setState({
-      ...state,
-      categorySet: props.activeCategorySet,
-      selectedCategory: props.activeCategory,
-    });
+    if (firstLabel) {
+      const newLabel: IImageLabelInput = {
+        ...firstLabel,
+        categorySetId: props.activeCategorySet?.id || null,
+        category: props.activeCategory?.name || null,
+      };
+      props.updateLabel(props.imageId, newLabel, 0);
+    } else {
+      const newLabel: IImageLabelInput = {
+        id: null,
+        shape: 'box',
+        categorySetId: props.activeCategorySet?.id || null,
+        category: props.activeCategory?.name || null,
+        value: null,
+      };
+      console.log('adding label');
+      console.log(JSON.stringify(newLabel, null, 2));
+      props.addLabel(props.imageId, newLabel);
+    }
   };
 
   if (props.imageUrl === '') {
@@ -75,23 +109,18 @@ export default function ImageTile(props: IImageTileProps) {
     value: {
       value: string;
       label: string;
-    } | null,
+    } | null
   ) => {
     if (!categorySet) {
       return;
     }
 
     const category = categorySet.categories.find(
-      (x) => x.name === value?.value,
+      (x) => x.name === value?.value
     );
     if (!category) {
       return;
     }
-
-    setState({
-      ...state,
-      selectedCategory: category,
-    });
   };
 
   const categorySetOptions =
@@ -100,12 +129,24 @@ export default function ImageTile(props: IImageTileProps) {
       label: x.name,
     })) || [];
 
-  const categoryOptions = state.categorySet
-    ? state.categorySet.categories.map((x) => ({
-        value: x.name,
-        label: x.name,
-      }))
-    : [];
+  const categoryOptions =
+    catSet?.categories.map((x) => ({
+      value: x.name,
+      label: x.name,
+    })) || [];
+
+  let catSetOptionsValue;
+  if (catSet) {
+    catSetOptionsValue = {
+      value: catSet.id,
+      label: catSet.name,
+    };
+  } else if (props.categorySets.length > 0) {
+    catSetOptionsValue = {
+      value: props.categorySets[0].id,
+      label: props.categorySets[0].name,
+    };
+  }
 
   return (
     <div className={classes.root}>
@@ -119,11 +160,9 @@ export default function ImageTile(props: IImageTileProps) {
         <FormGroup row={true} className={classes.formGroup}>
           <FormControl className={classes.formControl}>
             <Autocomplete
-              value={{
-                value: state.categorySet?.id || '',
-                label: state.categorySet?.name || '',
-              }}
+              value={catSetOptionsValue}
               options={categorySetOptions}
+              getOptionSelected={(a, b) => a.value === b.value}
               getOptionLabel={(option) => option.label}
               renderInput={(params) => (
                 <TextField {...params} label="Category Set" variant="filled" />
@@ -133,10 +172,11 @@ export default function ImageTile(props: IImageTileProps) {
           <FormControl className={classes.formControl}>
             <Autocomplete
               value={{
-                value: state.selectedCategory?.name || '',
-                label: state.selectedCategory?.name || '',
+                value: category || '',
+                label: category || '',
               }}
-              onChange={handleSelectCategory(state.categorySet)}
+              getOptionSelected={(a, b) => a.value === b.value}
+              onChange={handleSelectCategory(catSet)}
               options={categoryOptions}
               getOptionLabel={(option) => option.label}
               renderInput={(params) => (
@@ -149,3 +189,5 @@ export default function ImageTile(props: IImageTileProps) {
     </div>
   );
 }
+
+export default connector(ImageTile);

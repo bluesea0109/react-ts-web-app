@@ -70,7 +70,7 @@ export interface IImageLabel {
 }
 
 export interface IImageLabelInput {
-  id: number;
+  id: number | null;
   shape: string;
   categorySetId: number | null;
   category: string | null;
