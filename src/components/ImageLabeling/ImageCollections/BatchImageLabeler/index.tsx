@@ -187,7 +187,7 @@ export default function BatchImageLabeler() {
                 />
               </FormControl>
             </FormGroup>
-            <Typography>{"Select a category and then click images to assign it to them."}</Typography>
+            <Typography>{'Select a category and then click images to assign it to them.'}</Typography>
           </Toolbar>
         </Paper>
         <form/>

@@ -63,10 +63,18 @@ export interface IImage {
 
 export interface IImageLabel {
   id: number;
-  shape: string | null;
+  shape: string;
   category: ICategory | null;
   value: string | null;
   creator: string;
+}
+
+export interface IImageLabelInput {
+  id: number;
+  shape: string;
+  categorySetId: number | null;
+  category: string | null;
+  value: string | null;
 }
 
 export interface ILabelQueueImage {

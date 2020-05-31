@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
       minWidth: 150,
       display: 'inline-block',
     },
-  })
+  }),
 );
 
 interface IImageTileProps {
@@ -75,14 +75,14 @@ export default function ImageTile(props: IImageTileProps) {
     value: {
       value: string;
       label: string;
-    } | null
+    } | null,
   ) => {
     if (!categorySet) {
       return;
     }
 
     const category = categorySet.categories.find(
-      (x) => x.name === value?.value
+      (x) => x.name === value?.value,
     );
     if (!category) {
       return;
