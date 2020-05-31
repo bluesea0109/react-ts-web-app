@@ -226,7 +226,6 @@ export const CHATBOT_GET_INTENTS = gql`
   }
 `;
 
-
 export const CHATBOT_GET_TAGS = gql`
   query($agentId: Int!) {
     ChatbotService_tagTypes(agentId: $agentId) {
