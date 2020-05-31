@@ -1,48 +1,21 @@
-import { Grid, Paper, Typography } from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
+import { Route, Switch} from 'react-router-dom';
 import { IUser } from '../../models';
-import AgentsTable from './AgentsTable';
-import NewAgent from './NewAgent';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(2),
-    },
-    paper: {
-      padding: theme.spacing(2),
-    },
-  }),
-);
+import Agent from './Agent/Agent';
+import AgentDetails from './Agent/AgentDetails';
 
 interface IChatbotBuilderProps {
   user: IUser;
 }
+const AgentWarpper: React.FC<IChatbotBuilderProps> = ({ user}) => {
+    return (
+         <Switch>
+            <Route exact={true} path="/orgs/:orgId/projects/:projectId/chatbot-builder">
+              <Agent user={user} />
+            </Route>
+            <Route exact={true} path="/orgs/:orgId/projects/:projectId/chatbot-builder/agents/:agentId" component={AgentDetails} />
+          </Switch>
+    );
+  };
 
-const ChatbotBuilder: React.FC<IChatbotBuilderProps> = ({ user }) => {
-  const classes = useStyles();
-  const activeProj = user.activeProject;
-
-  return (
-    <div className={classes.root}>
-      <Grid>
-      <Grid item={true} xs={12} sm={6}>
-            <Paper>
-              {activeProj ? (
-                <AgentsTable
-                />
-              ) : (
-                <Typography>{'No Agent is found'}</Typography>
-              )}
-            </Paper>
-          </Grid>
-        <Grid item={true} xs={12} sm={6}>
-          <NewAgent user={user} />
-        </Grid>
-      </Grid>
-    </div>
-  );
-};
-
-export default ChatbotBuilder;
+  export default AgentWarpper;

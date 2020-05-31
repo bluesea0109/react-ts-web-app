@@ -29,7 +29,7 @@ interface IGetAgents {
 
 function AgentsTable() {
   const classes = useStyles();
-  const { projectId } = useParams();
+  const { orgId, projectId } = useParams();
   const [confirmOpen, setConfirmOpen ] = useState(false);
 
   const agentsData = useQuery<IGetAgents>(CHATBOT_GET_AGENTS, { variables: { projectId } });
@@ -74,7 +74,11 @@ function AgentsTable() {
             <TableBody>
               {agents.map((agent: IAgent) => (
                 <TableRow key={agent.id}>
-                  <TableCell>{agent.name}</TableCell>
+                  <TableCell>
+                    <Link  to={`/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${agent.id}`}>
+                        {agent.name}
+                    </Link>
+                  </TableCell>
                   <TableCell>{agent.id}</TableCell>
                   <TableCell>
                      <IconButton aria-label="delete" onClick={() => setConfirmOpen(true)}>
