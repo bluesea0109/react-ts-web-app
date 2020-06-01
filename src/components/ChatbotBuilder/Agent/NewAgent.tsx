@@ -12,11 +12,7 @@ import {
 import clsx from 'clsx';
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
-<<<<<<< HEAD:src/components/ChatbotBuilder/Agent/NewAgent.tsx
 import { CHATBOT_CREATE_AGENT, CHATBOT_GET_AGENTS } from '../../../common-gql-queries';
-=======
-import { CHATBOT_CREATE_AGENT, CHATBOT_GET_AGENTS } from '../../../gql-queries';
->>>>>>> 059037773fafdcf1186b35be1cc75427e78990bf:src/components/ChatbotBuilder/NewAgent.tsx
 import { IUser } from '../../../models';
 import ApolloErrorPage from '../../ApolloErrorPage';
 
