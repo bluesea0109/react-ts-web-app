@@ -75,7 +75,7 @@ function AgentsTable() {
               {agents.map((agent: IAgent) => (
                 <TableRow key={agent.id}>
                   <TableCell>
-                    <Link  to={`/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${agent.id}`}>
+                    <Link  to={`/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${agent.id}/intents`}>
                         {agent.name}
                     </Link>
                   </TableCell>

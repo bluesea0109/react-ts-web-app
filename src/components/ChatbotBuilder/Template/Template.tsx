@@ -22,6 +22,9 @@ const TemplateSection: React.FC = () => {
 
   return (
     <div className={classes.root}>
+         <Grid item={true} xs={12} sm={12}>
+            <NewTemplate />
+          </Grid>
           <Grid item={true} xs={12} sm={12}>
             <Paper className={classes.paper}>
               {agentId ? (
@@ -31,9 +34,7 @@ const TemplateSection: React.FC = () => {
               )}
             </Paper>
           </Grid>
-          <Grid item={true} xs={12} sm={12}>
-            <NewTemplate />
-          </Grid>
+          
     </div>
   );
 };

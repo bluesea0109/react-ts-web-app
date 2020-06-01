@@ -1,10 +1,6 @@
-import AppBar from '@material-ui/core/AppBar';
-import Box from '@material-ui/core/Box';
-import { makeStyles, Theme, useTheme } from '@material-ui/core/styles';
-import Tab from '@material-ui/core/Tab';
-import Tabs from '@material-ui/core/Tabs';
+import { makeStyles, Paper, Tab, Tabs, Theme, Toolbar, Box } from '@material-ui/core';
 import React from 'react';
-import SwipeableViews from 'react-swipeable-views';
+import { useHistory, useParams } from 'react-router';
 import Intent from '../Intent/Intent';
 import Tag from '../Tags/Tag';
 import Template from '../Template/Template';
@@ -12,8 +8,8 @@ import Template from '../Template/Template';
 interface TabPanelProps {
   children?: React.ReactNode;
   dir?: string;
-  index: any;
-  value: any;
+  index?: any;
+  value?: any;
 }
 
 function TabPanel(props: TabPanelProps) {
@@ -46,56 +42,46 @@ function a11yProps(index: any) {
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     width: '100%',
-  },
-  appBarWarper: {
-    boxShadow: '0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.14), 0px 1px 10px 0px rgba(0,0,0,0.12)',
-  },
+  }
 }));
 
  const AgentDetails = () => {
   const classes = useStyles();
-  const theme = useTheme();
-  const [value, setValue] = React.useState(0);
+  const { orgId, projectId, agentId, agentTab } = useParams();
+  const history = useHistory();
 
-  const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
-    setValue(newValue);
+
+  const handleChangeTab = (event: any, value: any) => {
+    history.push({
+      pathname: `/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${agentId}/${value}`,
+    });
   };
-
-  const handleChangeIndex = (index: number) => {
-    setValue(index);
-  };
-
   return (
     <div className={classes.root}>
-      <AppBar position="static" color="default" className={classes.appBarWarper}>
+      <Paper>
+      <Toolbar variant="dense" disableGutters={true}>
         <Tabs
-          value={value}
-          onChange={handleChange}
-          indicatorColor="primary"
+          value={agentTab}
+          onChange={handleChangeTab}
+          indicatorColor="secondary"
           textColor="primary"
-          variant="fullWidth"
-          aria-label="agent details tab"
         >
-          <Tab label="Intents" {...a11yProps(0)} />
-          <Tab label="Tags" {...a11yProps(1)} />
-          <Tab label="Templates" {...a11yProps(2)} />
+          <Tab value="Intents" label="Intents" {...a11yProps('Intents')} />
+          <Tab value="Tags" label="Tags" {...a11yProps('Tags')} />
+          <Tab value="Templates" label="Templates" {...a11yProps('Templates')} />
         </Tabs>
-      </AppBar>
-      <SwipeableViews
-        axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-        index={value}
-        onChangeIndex={handleChangeIndex}
-      >
-        <TabPanel value={value} index={0} >
+        </Toolbar>
+        </Paper>
+
+        <TabPanel value={agentTab} index="Intents" >
           <Intent />
         </TabPanel>
-        <TabPanel value={value} index={1}>
+        <TabPanel value={agentTab} index="Tags">
         <Tag />
         </TabPanel>
-        <TabPanel value={value} index={2}>
+        <TabPanel value={agentTab} index="Templates" >
           <Template/>
         </TabPanel>
-      </SwipeableViews>
     </div>
   );
 };

@@ -28,16 +28,16 @@ const ChatbotBuilder: React.FC<IChatbotBuilderAgentProps> = ({ user }) => {
     <div className={classes.root}>
       <Grid>
           <Grid item={true} xs={12} sm={12}>
+            <NewAgent user={user} />
+          </Grid>
+          <Grid item={true} xs={12} sm={12}>
             <Paper>
               {activeProj ? (
                 <AgentsTable />
               ) : (
-                <Typography>{'No Agent is found'}</Typography>
+                <Typography>{'No project is active'}</Typography>
               )}
             </Paper>
-          </Grid>
-          <Grid item={true} xs={12} sm={12}>
-            <NewAgent user={user} />
           </Grid>
       </Grid>
     </div>

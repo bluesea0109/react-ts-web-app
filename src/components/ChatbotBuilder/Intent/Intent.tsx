@@ -23,6 +23,9 @@ const IntentSection: React.FC = () => {
   return (
     <div className={classes.root}>
           <Grid item={true} xs={12} sm={12}>
+            <NewIntent />
+          </Grid>
+          <Grid item={true} xs={12} sm={12}>
             <Paper className={classes.paper}>
               {agentId ? (
                 <IntentsTable />
@@ -31,9 +34,7 @@ const IntentSection: React.FC = () => {
               )}
             </Paper>
           </Grid>
-          <Grid item={true} xs={12} sm={12}>
-            <NewIntent />
-          </Grid>
+         
     </div>
   );
 };

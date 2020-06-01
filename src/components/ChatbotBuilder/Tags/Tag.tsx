@@ -23,6 +23,9 @@ const TagSection: React.FC = () => {
   return (
     <div className={classes.root}>
           <Grid item={true} xs={12} sm={12}>
+            <NewTag />
+          </Grid>
+          <Grid item={true} xs={12} sm={12}>
             <Paper className={classes.paper}>
               {agentId ? (
                 <TagsTable />
@@ -31,9 +34,7 @@ const TagSection: React.FC = () => {
               )}
             </Paper>
           </Grid>
-          <Grid item={true} xs={12} sm={12}>
-            <NewTag />
-          </Grid>
+          
     </div>
   );
 };
