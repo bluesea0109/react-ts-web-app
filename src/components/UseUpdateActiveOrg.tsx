@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import { ApolloError } from 'apollo-client';
 import { useHistory, useLocation } from 'react-router';
-import { GET_CURRENT_USER, UPDATE_ACTIVE_ORG } from '../gql-queries';
+import { GET_CURRENT_USER, UPDATE_ACTIVE_ORG } from '../common-gql-queries';
 
 export interface IUpdateActiveOrg {
   loading: boolean;

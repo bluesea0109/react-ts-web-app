@@ -116,7 +116,7 @@ function ImageLabelerCanvas(props: IImageLabelerCanvasProps) {
         ImageLabelShapesEnum.POLYGON,
         null,
         null,
-        [],
+        null,
       );
       (label.shape as MultiPolygon).addPoint([mousePos.x, mousePos.y]);
       props.addLabel(label);

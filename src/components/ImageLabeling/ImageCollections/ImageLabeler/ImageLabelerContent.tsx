@@ -383,11 +383,12 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
       label = new ImageCategoricalLabel(
         null,
         state.shape,
-        categorySet,
+        categorySet.id,
+        categorySet.name,
         selectedCategory?.name || null,
       );
     } else {
-      label = new ImageCategoricalLabel(null, state.shape, null, null);
+      label = new ImageCategoricalLabel(null, state.shape, null, null, null);
     }
     label.modified = true;
     props.addLabel(label);

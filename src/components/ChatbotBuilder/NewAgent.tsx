@@ -12,7 +12,7 @@ import {
 import clsx from 'clsx';
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
-import { CHATBOT_CREATE_AGENT, CHATBOT_GET_AGENTS } from '../../gql-queries';
+import { CHATBOT_CREATE_AGENT, CHATBOT_GET_AGENTS } from '../../common-gql-queries';
 import { IUser } from '../../models';
 import ApolloErrorPage from '../ApolloErrorPage';
 

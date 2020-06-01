@@ -18,7 +18,7 @@ import AddIcon from '@material-ui/icons/Add';
 import { useState } from 'react';
 import React from 'react';
 import { useParams } from 'react-router';
-import { CREATE_CATEGORY_SET, GET_CATEGORY_SETS } from '../../../gql-queries';
+import { CREATE_CATEGORY_SET, GET_CATEGORY_SETS } from '../../../common-gql-queries';
 import ContentLoading from '../../ContentLoading';
 
 const useStyles = makeStyles((theme: Theme) =>

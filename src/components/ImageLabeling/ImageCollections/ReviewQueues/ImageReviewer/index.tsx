@@ -25,6 +25,8 @@ function ImageReviewer(props: ConnectedProps<typeof connector>) {
     },
     fetchPolicy: 'network-only',
     onCompleted: (data) => {
+      console.log('labels', data.ImageLabelingService_image.labels);
+
       const labels = convertLabels(data.ImageLabelingService_image.labels);
       props.resetLabels(labels);
     },
@@ -64,6 +66,7 @@ const GET_DATA = gql`
         imageId
         shape
         category {
+          categorySetName
           categorySetId
           name
         }

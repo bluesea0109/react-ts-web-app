@@ -24,6 +24,7 @@ const GET_DATA = gql`
         imageId
         shape
         category {
+          categorySetName
           categorySetId
           name
         }

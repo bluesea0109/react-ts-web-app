@@ -125,7 +125,7 @@ function ImageLabelerCanvas(props: IImageLabelerCanvasProps) {
     if (!selectedLabel || selectedLabelIndex === null) {
 
       if (state.mouseDownPos) {
-        props.addLabel(new ImageCategoricalLabel(null, ImageLabelShapesEnum.BOX, null, null, []));
+        props.addLabel(new ImageCategoricalLabel(null, ImageLabelShapesEnum.BOX, null, null, null));
       }
       return;
     }

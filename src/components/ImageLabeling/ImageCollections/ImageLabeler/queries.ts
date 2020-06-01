@@ -13,6 +13,7 @@ export const GET_IMAGE_DATA = gql`
         id
         shape
         category {
+          categorySetName
           categorySetId
           name
         }
@@ -80,6 +81,7 @@ export const SAVE_LABELS = gql`
       imageId
       shape
       category {
+        categorySetName
         categorySetId
         name
       }

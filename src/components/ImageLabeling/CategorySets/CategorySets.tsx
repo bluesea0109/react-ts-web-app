@@ -13,7 +13,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Toolbar from '@material-ui/core/Toolbar';
 import React from 'react';
 import { useParams } from 'react-router';
-import { GET_CATEGORY_SETS } from '../../../gql-queries';
+import { GET_CATEGORY_SETS } from '../../../common-gql-queries';
 import ContentLoading from '../../ContentLoading';
 import CreateCategorySetDialog from './CreateCategorySetDialog';
 import DeleteCategorySetDialog from './DeleteCategorySetDialog';
