@@ -20,4 +20,4 @@ const AgentWarpper: React.FC<IChatbotBuilderProps> = ({ user}) => {
     );
   };
 
-  export default AgentWarpper;
+export default AgentWarpper;
