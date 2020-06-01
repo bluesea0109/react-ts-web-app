@@ -1,4 +1,4 @@
-import { makeStyles, Paper, Tab, Tabs, Theme, Toolbar, Box } from '@material-ui/core';
+import { Box, makeStyles, Paper, Tab, Tabs, Theme, Toolbar } from '@material-ui/core';
 import React from 'react';
 import { useHistory, useParams } from 'react-router';
 import Intent from '../Intent/Intent';
@@ -42,14 +42,13 @@ function a11yProps(index: any) {
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     width: '100%',
-  }
+  },
 }));
 
  const AgentDetails = () => {
   const classes = useStyles();
   const { orgId, projectId, agentId, agentTab } = useParams();
   const history = useHistory();
-
 
   const handleChangeTab = (event: any, value: any) => {
     history.push({

@@ -34,7 +34,7 @@ const TemplateSection: React.FC = () => {
               )}
             </Paper>
           </Grid>
-          
+
     </div>
   );
 };

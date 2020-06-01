@@ -34,7 +34,7 @@ const IntentSection: React.FC = () => {
               )}
             </Paper>
           </Grid>
-         
+
     </div>
   );
 };
