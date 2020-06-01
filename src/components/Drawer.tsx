@@ -26,6 +26,9 @@ const useStyles = makeStyles((theme: Theme) =>
       ...theme.mixins.toolbar,
       justifyContent: 'flex-end',
     },
+    nested: {
+      paddingLeft: theme.spacing(4),
+    },
   }));
 
 interface CustomDrawerProps extends DrawerProps {
@@ -48,6 +51,18 @@ function CustomDrawer(props: CustomDrawerProps) {
     }
     return `/orgs/${user.activeProject.orgId}/projects/${user.activeProject.id}/${pageName}`;
   };
+
+  const createOrgPath = (path: string = ''): string => {
+    if (!user.activeProject) {
+      return '/no-project';
+    }
+
+    if (path !== '') {
+      return `/orgs/${user.activeProject.orgId}/${path}`;
+    }
+    return `/orgs/${user.activeProject.orgId}`;
+  };
+
 
   const requiresActiveProjectListItems = (
     <>
@@ -105,8 +120,8 @@ function CustomDrawer(props: CustomDrawerProps) {
           {theme.direction === 'ltr' ? (
             <ChevronLeftIcon />
           ) : (
-            <ChevronRightIcon />
-          )}
+              <ChevronRightIcon />
+            )}
         </IconButton>
       </div>
       <List>
@@ -118,6 +133,23 @@ function CustomDrawer(props: CustomDrawerProps) {
         >
           <ListItemText primary="Dashboard" />
         </ListItem>
+        <List component="div" disablePadding>
+          <ListItem className={classes.nested}
+            component={Link}
+            to={createOrgPath('settings')}
+            selected={!location.pathname.includes('projects') && location.pathname.includes('settings')}
+            button={true}
+          >
+            <ListItemText primary="Organization" />
+          </ListItem>
+          <ListItem className={classes.nested}
+            component={Link}
+            to={createPath('settings')}
+            selected={location.pathname.includes('projects') && location.pathname.includes('settings')}
+            button={true}>
+            <ListItemText primary="Project" />
+          </ListItem>
+        </List>
         {requiresActiveProjectListItems}
       </List>
     </div >
