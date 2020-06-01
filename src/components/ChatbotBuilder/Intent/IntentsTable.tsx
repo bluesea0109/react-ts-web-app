@@ -6,7 +6,11 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import 'firebase/auth';
 import React, {useState} from 'react';
 import { useParams } from 'react-router';
+<<<<<<< HEAD
 import { CHATBOT_DELETE_INTENT, CHATBOT_GET_INTENTS } from '../../../common-gql-queries';
+=======
+import { CHATBOT_DELETE_INTENT, CHATBOT_GET_INTENTS } from '../../../gql-queries';
+>>>>>>> 059037773fafdcf1186b35be1cc75427e78990bf
 import {  IIntent } from '../../../models';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';

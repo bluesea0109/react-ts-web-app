@@ -6,8 +6,13 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import 'firebase/auth';
 import React, {useState} from 'react';
 import { useParams } from 'react-router';
+<<<<<<< HEAD:src/components/ChatbotBuilder/Agent/AgentsTable.tsx
 import { Link  } from 'react-router-dom';
 import { CHATBOT_DELETE_AGENT, CHATBOT_GET_AGENTS } from '../../../common-gql-queries';
+=======
+import { Link } from 'react-router-dom';
+import { CHATBOT_DELETE_AGENT, CHATBOT_GET_AGENTS } from '../../../gql-queries';
+>>>>>>> 059037773fafdcf1186b35be1cc75427e78990bf:src/components/ChatbotBuilder/AgentsTable.tsx
 import {  IAgent } from '../../../models';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
@@ -76,7 +81,11 @@ function AgentsTable() {
               {agents.map((agent: IAgent) => (
                 <TableRow key={agent.id}>
                   <TableCell>
+<<<<<<< HEAD:src/components/ChatbotBuilder/Agent/AgentsTable.tsx
                     <Link  to={`/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${agent.id}/Intents`}>
+=======
+                    <Link  to={`/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${agent.id}`}>
+>>>>>>> 059037773fafdcf1186b35be1cc75427e78990bf:src/components/ChatbotBuilder/AgentsTable.tsx
                         {agent.name}
                     </Link>
                   </TableCell>
