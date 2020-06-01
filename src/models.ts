@@ -27,6 +27,23 @@ export interface IAgent {
   language: string;
 }
 
+export interface IIntent {
+  id: string;
+  agentId: string;
+  value: string;
+}
+export interface ITemplate {
+  id: string;
+  agentId: string;
+  name: string;
+  value: string;
+}
+
+export interface ITag {
+  id: string;
+  agentId: string;
+  value: string;
+}
 export interface IMember {
   orgId?: string;
   uid: string;

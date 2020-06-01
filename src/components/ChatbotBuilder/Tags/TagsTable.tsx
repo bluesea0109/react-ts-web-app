@@ -6,11 +6,11 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import 'firebase/auth';
 import React, {useState} from 'react';
 import { useParams } from 'react-router';
-import { CHATBOT_DELETE_AGENT, CHATBOT_GET_AGENTS } from '../../common-gql-queries';
-import {  IAgent } from '../../models';
-import ApolloErrorPage from '../ApolloErrorPage';
-import ContentLoading from '../ContentLoading';
-import ConfirmDialog from '../Utils/ConfirmDialog';
+import { CHATBOT_DELETE_TAG, CHATBOT_GET_TAGS } from '../../../common-gql-queries';
+import {  ITag } from '../../../models';
+import ApolloErrorPage from '../../ApolloErrorPage';
+import ContentLoading from '../../ContentLoading';
+import ConfirmDialog from '../../Utils/ConfirmDialog';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -23,24 +23,25 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-interface IGetAgents {
-    ChatbotService_agents: IAgent[] | undefined;
+interface IGetTags {
+  ChatbotService_tagTypes: ITag[] | undefined;
 }
 
-function AgentsTable() {
+function TagsTable() {
   const classes = useStyles();
-  const { projectId } = useParams();
+  const { agentId } = useParams();
   const [confirmOpen, setConfirmOpen ] = useState(false);
+  const numAgentId = Number(agentId);
 
-  const agentsData = useQuery<IGetAgents>(CHATBOT_GET_AGENTS, { variables: { projectId } });
-  const [deleteAgent, { loading, error }] = useMutation(CHATBOT_DELETE_AGENT,  {
-    refetchQueries: [{ query: CHATBOT_GET_AGENTS, variables: { projectId }  }],
+  const tagsData = useQuery<IGetTags>(CHATBOT_GET_TAGS, { variables: { agentId: numAgentId } });
+  const [deleteTag, { loading, error }] = useMutation(CHATBOT_DELETE_TAG,  {
+    refetchQueries: [{ query: CHATBOT_GET_TAGS, variables: { agentId : numAgentId }  }],
     awaitRefetchQueries: true,
   });
 
-  const commonError = agentsData.error ? agentsData.error : error;
+  const commonError = tagsData.error ? tagsData.error : error;
 
-  if (agentsData.loading || loading) {
+  if (tagsData.loading || loading) {
     return <ContentLoading />;
   }
 
@@ -49,45 +50,46 @@ function AgentsTable() {
     return <ApolloErrorPage error={commonError} />;
   }
 
-  const deleteAgentHandler =  (agentId: number) => {
-
-     deleteAgent({
+  const deleteTagHandler =  (tagTypeId: number) => {
+    deleteTag({
         variables: {
-          agentId,
+          tagTypeId,
         },
       });
   };
 
-  const agents = agentsData.data && agentsData.data.ChatbotService_agents;
+  const tags = tagsData.data && tagsData.data.ChatbotService_tagTypes;
   return (
     <Paper className={classes.paper}>
-      {agents ? (
-        <TableContainer component={Paper} aria-label="Agents">
+      {tags ? (
+        <TableContainer component={Paper} aria-label="Tags">
           <Table>
             <TableHead>
               <TableRow>
                 <TableCell>Name</TableCell>
-                <TableCell>Agent id</TableCell>
+                <TableCell>Tag id</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {agents.map((agent: IAgent) => (
-                <TableRow key={agent.id}>
-                  <TableCell>{agent.name}</TableCell>
-                  <TableCell>{agent.id}</TableCell>
+              {tags.map((tag: ITag) => (
+                <TableRow key={tag.id}>
+                  <TableCell>
+                        {tag.value}
+                  </TableCell>
+                  <TableCell>{tag.id}</TableCell>
                   <TableCell>
                      <IconButton aria-label="delete" onClick={() => setConfirmOpen(true)}>
                         <DeleteIcon />
                      </IconButton>
                      <ConfirmDialog
-                        title="Delete Agent?"
+                        title="Delete Tag?"
                         open={confirmOpen}
                         setOpen={setConfirmOpen}
-                        onConfirm={() => deleteAgentHandler(Number(agent.id))}
+                        onConfirm={() => deleteTagHandler(Number(tag.id))}
 
                      >
-                        Are you sure you want to delete this agent?
+                        Are you sure you want to delete this tag?
                     </ConfirmDialog>
                   </TableCell>
                 </TableRow>
@@ -98,11 +100,11 @@ function AgentsTable() {
         </TableContainer>
       ) : (
           <Typography align="center" variant="h6">
-            {'No Agents found'}
+            {'No Tags found'}
           </Typography>
         )}
     </Paper>
   );
 }
 
-export default AgentsTable;
+export default TagsTable;

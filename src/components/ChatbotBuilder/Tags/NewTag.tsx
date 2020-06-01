@@ -12,9 +12,8 @@ import {
 import clsx from 'clsx';
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
-import { CHATBOT_CREATE_AGENT, CHATBOT_GET_AGENTS } from '../../common-gql-queries';
-import { IUser } from '../../models';
-import ApolloErrorPage from '../ApolloErrorPage';
+import { CHATBOT_CREATE_TAG, CHATBOT_GET_TAGS } from '../../../common-gql-queries';
+import ApolloErrorPage from '../../ApolloErrorPage';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -30,16 +29,13 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-interface INewAgentProps {
-  user: IUser;
-}
-
-const NewAgent: React.FC<INewAgentProps> = ({ user }) => {
+const NewTag: React.FC = () => {
   const classes = useStyles();
-  const [name, setName] = useState<string>('');
-  const { projectId } = useParams();
-  const [createAgent, { loading, error }] = useMutation(CHATBOT_CREATE_AGENT,  {
-    refetchQueries: [{ query: CHATBOT_GET_AGENTS, variables: { projectId }  }],
+  const [value, setValue] = useState<string>('');
+  const { agentId } = useParams();
+  const numAgentId = Number(agentId);
+  const [createTag, { loading, error }] = useMutation(CHATBOT_CREATE_TAG,  {
+    refetchQueries: [{ query: CHATBOT_GET_TAGS, variables: { agentId : numAgentId }  }],
     awaitRefetchQueries: true,
   });
 
@@ -49,29 +45,27 @@ const NewAgent: React.FC<INewAgentProps> = ({ user }) => {
   }
 
   const onSubmit =  () => {
-    if (!user.activeProject) { return; }
-    createAgent({
+    createTag({
       variables: {
-        projectId,
-        name,
-        language: 'EN_US',
+        agentId: numAgentId ,
+        value,
       },
     });
-    setName('');
+    setValue('');
   };
 
   return (
     <Card className={clsx(classes.root)}>
       {loading && <LinearProgress />}
-      <Typography variant="h4">New Agent</Typography>
+      <Typography variant="h4">New Tag</Typography>
       <br />
       <TextField
         id="name"
-        label="Agent Name"
+        label="Tag Name"
         type="text"
-        value={name}
+        value={value}
         variant="outlined"
-        onChange={(e: any) => setName(e.target.value as string)}
+        onChange={(e: any) => setValue(e.target.value as string)}
         className={clsx(classes.inputBox)}
       />
       <br />
@@ -79,7 +73,7 @@ const NewAgent: React.FC<INewAgentProps> = ({ user }) => {
         className={clsx(classes.button)}
         variant="contained"
         color="primary"
-        disabled={loading || !name}
+        disabled={loading || !value}
         onClick={onSubmit}>
         Submit
       </Button>
@@ -87,4 +81,4 @@ const NewAgent: React.FC<INewAgentProps> = ({ user }) => {
   );
 };
 
-export default NewAgent;
+export default NewTag;
