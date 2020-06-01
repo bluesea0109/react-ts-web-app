@@ -1,7 +1,7 @@
-import { IImage, IImageLabelInput } from '../../models';
+import { IBatchLabelingInput, IImage } from '../../models';
 import { ADD_LABEL, BatchImageLabelingActionTypes, REMOVE_LABEL, RESET_LABELS, UPDATE_LABEL } from './types';
 
-export function addLabel(imageId: number, label: IImageLabelInput): BatchImageLabelingActionTypes {
+export function addLabel(imageId: number, label: IBatchLabelingInput): BatchImageLabelingActionTypes {
   return {
     type: ADD_LABEL,
     imageId,
@@ -17,7 +17,7 @@ export function removeLabel(imageId: number, labelIndex: number): BatchImageLabe
   };
 }
 
-export function updateLabel(imageId: number, label: IImageLabelInput, labelIndex: number): BatchImageLabelingActionTypes {
+export function updateLabel(imageId: number, label: IBatchLabelingInput, labelIndex: number): BatchImageLabelingActionTypes {
   return {
     type: UPDATE_LABEL,
     imageId,

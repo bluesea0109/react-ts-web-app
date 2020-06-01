@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { IImageLabelInput } from '../../models';
+import { IBatchLabelingInput } from '../../models';
 import {
   ADD_LABEL,
   BatchImageLabelingActionTypes,
@@ -10,7 +10,7 @@ import {
 } from './types';
 
 const initialState: BatchImageLabelingState = {
-  imageLabels: new Map<number, IImageLabelInput[]>(),
+  imageLabels: new Map<number, IBatchLabelingInput[]>(),
 };
 
 export function batchImageLabelingReducer(
@@ -47,15 +47,19 @@ export function batchImageLabelingReducer(
       };
     }
     case RESET_LABELS: {
-      imageLabels = new Map<number, IImageLabelInput[]>();
+      imageLabels = new Map<number, IBatchLabelingInput[]>();
+      console.log('action.images', action.images);
       action.images.forEach(img => {
-        const labelInputs = img.labels.map(label => ({
-          id: label.id,
-          shape: label.shape,
-          categorySetId: label.category?.categorySetId || null,
-          category: label.category?.name || null,
-          value: '',
-        }));
+        const labelInputs: IBatchLabelingInput[] = [];
+        img.labels.forEach(label => {
+          if (label.category) {
+            labelInputs.push({
+              imageId: img.id,
+              categorySetId: label.category.categorySetId,
+              category: label.category.name,
+            });
+          }
+        });
         imageLabels.set(img.id, labelInputs);
       });
       return {

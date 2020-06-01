@@ -15,9 +15,16 @@ import gql from 'graphql-tag';
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
+import { useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 import { GET_CATEGORY_SETS } from '../../../../common-gql-queries';
-import { ICategory, ICategorySet, IImage } from '../../../../models';
+import {
+  IBatchLabelingInput,
+  ICategory,
+  ICategorySet,
+  IImage,
+} from '../../../../models';
+import { getBatchImageLabels } from '../../../../store/batch-image-labeling/selectors';
 import ApolloErrorPage from '../../../ApolloErrorPage';
 import ContentLoading from '../../../ContentLoading';
 import ImageTile from './ImageTile';
@@ -48,7 +55,7 @@ const useStyles = makeStyles((theme: Theme) =>
     title: {
       marginRight: theme.spacing(2),
     },
-  })
+  }),
 );
 
 interface IState {
@@ -64,6 +71,8 @@ export default function BatchImageLabeler() {
     variables: { projectId },
   });
   const [getBatch, getBatchResult] = useMutation<IGetBatch>(GET_BATCH);
+  const [submitBatchMutation, submitBatchResult] = useMutation(SUBMIT_BATCH);
+  const imageLabelsMap = useSelector(getBatchImageLabels);
   const [state, setState] = useState<IState>({
     cols: 3,
     categorySet: null,
@@ -77,22 +86,28 @@ export default function BatchImageLabeler() {
       });
     },
     // eslint-disable-next-line
-    []
+    [],
   );
+
+  const allImagesLabeled = (batchImages: IImage[]) => {
+    const labeledImageIds = Array.from(imageLabelsMap.keys()).sort();
+    const allImageIds = batchImages.map(x => x.id).sort();
+    return _.isEqual(labeledImageIds, allImageIds);
+  };
 
   const handleSelectCategory = (categorySet: ICategorySet | null) => (
     e: React.ChangeEvent<{}>,
     value: {
       value: string;
       label: string;
-    } | null
+    } | null,
   ) => {
     if (!categorySet) {
       return;
     }
 
     const category = categorySet.categories.find(
-      (x) => x.name === value?.value
+      (x) => x.name === value?.value,
     );
     if (!category) {
       return;
@@ -104,22 +119,46 @@ export default function BatchImageLabeler() {
     });
   };
 
-  const commonErr = categorySetsQuery.error || getBatchResult.error;
+  const submitBatch = async () => {
+    let batchInputs: IBatchLabelingInput[] = [];
+
+    imageLabelsMap.forEach((value, key) => {
+      batchInputs = batchInputs.concat(value);
+    });
+
+    console.log('batch inputs', batchInputs);
+
+    const res = await submitBatchMutation({
+      variables: { batch: batchInputs },
+    });
+
+    if (!res.errors) {
+      console.log('submit batch result', res.data);
+      getBatch({
+        variables: { collectionId: parseInt(collectionId, 10), batchSize: 5 },
+      });
+    }
+  };
+
+  const commonErr =
+    categorySetsQuery.error || getBatchResult.error || submitBatchResult.error;
   if (commonErr) {
     return <ApolloErrorPage error={commonErr} />;
   }
 
-  if (categorySetsQuery.loading || getBatchResult.loading) {
+  if (
+    categorySetsQuery.loading ||
+    getBatchResult.loading ||
+    submitBatchResult.loading
+  ) {
     return <ContentLoading />;
   }
 
   const catSets =
     categorySetsQuery.data?.ImageLabelingService_categorySets || [];
   const batch = getBatchResult.data?.ImageLabelingService_getBatch || [];
-  const images: (IImage | null)[] = batch.map((x) => x.image);
-
-  const rows = _.chunk(images, state.cols);
-
+  const batchImages = batch.map((x) => x.image);
+  const rows: (IImage | null)[][] = _.chunk(batchImages, state.cols);
   const lastRow = rows.length > 0 ? rows[rows.length - 1] : [];
   while (lastRow.length < state.cols) {
     lastRow.push(null);
@@ -142,7 +181,7 @@ export default function BatchImageLabeler() {
     value: {
       value: number;
       label: string;
-    } | null
+    } | null,
   ) => {
     const categorySet = catSets.find((x) => x.id === value?.value);
     setState({
@@ -150,6 +189,38 @@ export default function BatchImageLabeler() {
       categorySet: categorySet ? categorySet : null,
     });
   };
+
+  let content = (
+    <>
+      {rows.map((row, i) => (
+        <div className={classes.row} key={i}>
+          {row.map((img, j) => {
+            if (!img) {
+              return <div key={j} />;
+            }
+            return (
+              <ImageTile
+                key={j}
+                imageId={img.id}
+                imageUrl={img.url}
+                categorySets={catSets}
+                activeCategorySet={state.categorySet}
+                activeCategory={state.selectedCategory}
+              />
+            );
+          })}
+        </div>
+      ))}
+    </>
+  );
+
+  if (rows.length === 0) {
+    content = (
+      <Typography>
+        {'All images in this collection have been labeled.'}
+      </Typography>
+    );
+  }
 
   return (
     <div className={classes.root}>
@@ -198,31 +269,13 @@ export default function BatchImageLabeler() {
         </Paper>
         <form />
       </div>
-      <div className={classes.content}>
-        {rows.map((row, i) => (
-          <div className={classes.row} key={i}>
-            {row.map((img, j) => {
-              if (!img) {
-                return <div key={j} />;
-              }
-              return (
-                <ImageTile
-                  key={j}
-                  imageId={img.id}
-                  imageUrl={img.url}
-                  categorySets={catSets}
-                  activeCategorySet={state.categorySet}
-                  activeCategory={state.selectedCategory}
-                />
-              );
-            })}
-          </div>
-        ))}
-      </div>
+      <div className={classes.content}>{content}</div>
       <div>
         <Paper>
           <Toolbar variant="dense">
-            <Button variant="contained">{'Submit Batch'}</Button>
+            <Button variant="contained" onClick={submitBatch} disabled={!allImagesLabeled(batchImages)}>
+              {'Submit Batch'}
+            </Button>
           </Toolbar>
         </Paper>
         <form />
@@ -269,6 +322,38 @@ const GET_BATCH = gql`
           imageId
           shape
           category {
+            categorySetName
+            categorySetId
+            name
+          }
+          value
+          creator
+        }
+      }
+    }
+  }
+`;
+
+const SUBMIT_BATCH = gql`
+  mutation($batch: [ImageLabelingService_BatchLabelingInput!]!) {
+    ImageLabelingService_submitBatch(batch: $batch) {
+      collectionId
+      imageId
+      labeler
+      status
+      image {
+        collectionId
+        id
+        name
+        url
+        maskUrl
+        approvedBy
+        labels {
+          id
+          imageId
+          shape
+          category {
+            categorySetName
             categorySetId
             name
           }

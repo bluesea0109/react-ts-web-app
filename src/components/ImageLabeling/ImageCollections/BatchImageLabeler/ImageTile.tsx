@@ -7,14 +7,12 @@ import {
   Theme,
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import React, { useState } from 'react';
+import React from 'react';
 import { connect, ConnectedProps, useSelector } from 'react-redux';
 import {
+  IBatchLabelingInput,
   ICategory,
   ICategorySet,
-  IImage,
-  IImageLabel,
-  IImageLabelInput,
 } from '../../../../models';
 import * as batchLabelingState from '../../../../store/batch-image-labeling/actions';
 import { getBatchImageLabels } from '../../../../store/batch-image-labeling/selectors';
@@ -53,7 +51,7 @@ const useStyles = makeStyles((theme: Theme) =>
       minWidth: 150,
       display: 'inline-block',
     },
-  })
+  }),
 );
 
 interface IImageTileProps extends ConnectedProps<typeof connector> {
@@ -79,23 +77,19 @@ function ImageTile(props: IImageTileProps) {
   const category = firstLabel?.category || null;
 
   const onImageClick = () => {
+    if (!props.activeCategorySet || !props.activeCategory) {
+      return;
+    }
+
+    const newLabel: IBatchLabelingInput = {
+      imageId: props.imageId,
+      categorySetId: props.activeCategorySet.id,
+      category: props.activeCategory.name,
+    };
+
     if (firstLabel) {
-      const newLabel: IImageLabelInput = {
-        ...firstLabel,
-        categorySetId: props.activeCategorySet?.id || null,
-        category: props.activeCategory?.name || null,
-      };
       props.updateLabel(props.imageId, newLabel, 0);
     } else {
-      const newLabel: IImageLabelInput = {
-        id: null,
-        shape: 'box',
-        categorySetId: props.activeCategorySet?.id || null,
-        category: props.activeCategory?.name || null,
-        value: null,
-      };
-      console.log('adding label');
-      console.log(JSON.stringify(newLabel, null, 2));
       props.addLabel(props.imageId, newLabel);
     }
   };
@@ -109,14 +103,14 @@ function ImageTile(props: IImageTileProps) {
     value: {
       value: string;
       label: string;
-    } | null
+    } | null,
   ) => {
     if (!categorySet) {
       return;
     }
 
     const category = categorySet.categories.find(
-      (x) => x.name === value?.value
+      (x) => x.name === value?.value,
     );
     if (!category) {
       return;

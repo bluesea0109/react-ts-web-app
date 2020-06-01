@@ -109,6 +109,8 @@ function ImageLabelListItem(props: IImageLabelListItemProps) {
     props.removeLabel(labelIndex);
   };
 
+  console.log('label', label);
+
   return (
     <React.Fragment>
       <ListItem
@@ -125,8 +127,8 @@ function ImageLabelListItem(props: IImageLabelListItemProps) {
             <VisibilityOffIcon color="secondary" onClick={toggleLabelVisible(label)} fontSize="small" />
           )}
         <ListItemText color="inherit" primaryTypographyProps={{ variant: 'body2' }}
-          primary={label.category ? `${label.categorySetName}:${label.category}` : ''}
-          secondary={label.displayType} />
+          primary={label.category ? `Category: ${label.categorySetName}-${label.category}` : ''}
+          secondary={`Shape: ${label.displayType}`} />
         {props.editable ? (
           <IconButton size="small" color="default" style={{ padding: 6 }} onClick={onDelete}>
             <DeleteIcon color="secondary" fontSize="small" />

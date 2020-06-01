@@ -1,3 +1,4 @@
+import { IImageLabel } from '../../../../models';
 import MultiPolygon from './MultiPolygon';
 import MultiRectangle from './MultiRectangle';
 import MultiShape from './MultiShape';
@@ -6,10 +7,20 @@ import Shape from './Shape';
 export enum ImageLabelShapesEnum {
   BOX = 'box',
   POLYGON = 'polygon',
+  NONE = 'none',
 }
 
+export const strToShapesEnum = (str: string): ImageLabelShapesEnum => {
+  switch (str.toLowerCase()) {
+    case 'box': return ImageLabelShapesEnum.BOX;
+    case 'polygon': return ImageLabelShapesEnum.POLYGON;
+    case 'none': return ImageLabelShapesEnum.NONE;
+    default: throw new Error(`Unkown image label shape type "${str}"`);
+  }
+};
+
 class ImageCategoricalLabel {
-  shape: MultiShape;
+  shape: MultiShape | null;
   visible: boolean;
   open = false;
   modified = false;
@@ -17,16 +28,16 @@ class ImageCategoricalLabel {
   constructor(
     public id: number | null,
     public shapeType: ImageLabelShapesEnum,
-    public categorySet: any | null,
+    public categorySetId: number | null,
+    public categorySetName: string | null,
     public category: string | null,
-    public approvedBy: string[] = [],
     shapeJson?: string,
     ) {
 
     switch (shapeType) {
       case ImageLabelShapesEnum.BOX: this.shape = new MultiRectangle(shapeJson); break;
       case ImageLabelShapesEnum.POLYGON: this.shape = new MultiPolygon(shapeJson); break;
-      default: throw new Error('unknown shape type');
+      default: this.shape = null;
     }
     this.visible = true;
   }
@@ -34,14 +45,6 @@ class ImageCategoricalLabel {
   deleteShape (i: number): void {
     if (this.shape) { this.shape.deleteShape(i); }
     this.modified = true;
-  }
-
-  get categorySetId(): string | null {
-    return this.categorySet ? this.categorySet.id : null;
-  }
-
-  get categorySetName(): string {
-    return this.categorySet ? this.categorySet.name : '';
   }
 
   get displayType(): string {
@@ -65,15 +68,15 @@ class ImageCategoricalLabel {
     return this.shape ? this.shape.toJson() : '';
   }
 
-  static fromServerData(data: any): ImageCategoricalLabel {
+  static fromServerData(data: IImageLabel): ImageCategoricalLabel {
     const shapeJson = data.value;
     const label = new ImageCategoricalLabel(
       data.id,
-      data.shape,
-      data.categorySet,
-      data.category,
-      data.approvedBy,
-      shapeJson,
+      strToShapesEnum(data.shape),
+      data.category?.categorySetId || null,
+      data.category?.categorySetName || null,
+      data.category?.name || null,
+      shapeJson ? shapeJson : undefined,
     );
 
     return label;

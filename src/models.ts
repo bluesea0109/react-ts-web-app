@@ -47,6 +47,7 @@ export interface ICategorySet {
 }
 
 export interface ICategory {
+  categorySetName: string;
   categorySetId: number;
   name: string;
 }
@@ -75,6 +76,12 @@ export interface IImageLabelInput {
   categorySetId: number | null;
   category: string | null;
   value: string | null;
+}
+
+export interface IBatchLabelingInput {
+  imageId: number;
+  categorySetId: number;
+  category: string;
 }
 
 export interface ILabelQueueImage {

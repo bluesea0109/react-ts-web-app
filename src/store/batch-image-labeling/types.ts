@@ -1,15 +1,15 @@
-import { IImage, IImageLabelInput } from '../../models';
+import { IBatchLabelingInput, IImage } from '../../models';
 
-export const ADD_LABEL = 'ADD_LABEL';
-export const REMOVE_LABEL = 'REMOVE_LABEL';
-export const UPDATE_LABEL = 'UPDATE_LABEL';
-export const SELECT_LABEL = 'SELECT_LABEL';
-export const RESET_LABELS = 'RESET_LABELS';
+export const ADD_LABEL = 'BATCH/ADD_LABEL';
+export const REMOVE_LABEL = 'BATCH/REMOVE_LABEL';
+export const UPDATE_LABEL = 'BATCH/UPDATE_LABEL';
+export const SELECT_LABEL = 'BATCH/SELECT_LABEL';
+export const RESET_LABELS = 'BATCH/RESET_LABELS';
 
 interface AddLabel {
   type: typeof ADD_LABEL;
   imageId: number;
-  label: IImageLabelInput;
+  label: IBatchLabelingInput;
 }
 
 interface RemoveLabel {
@@ -21,7 +21,7 @@ interface RemoveLabel {
 interface UpdateLabel {
   type: typeof UPDATE_LABEL;
   imageId: number;
-  label: IImageLabelInput;
+  label: IBatchLabelingInput;
   labelIndex: number;
 }
 
@@ -31,7 +31,7 @@ interface ResetLabels {
 }
 
 export interface BatchImageLabelingState {
-  imageLabels: Map<number, IImageLabelInput[]>;
+  imageLabels: Map<number, IBatchLabelingInput[]>;
 }
 
 export type BatchImageLabelingActionTypes = AddLabel | RemoveLabel | UpdateLabel | ResetLabels;
