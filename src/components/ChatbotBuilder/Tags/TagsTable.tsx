@@ -6,7 +6,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import 'firebase/auth';
 import React, {useState} from 'react';
 import { useParams } from 'react-router';
-import { CHATBOT_DELETE_TAG, CHATBOT_GET_TAGS } from '../../../gql-queries';
+import { CHATBOT_DELETE_TAG, CHATBOT_GET_TAGS } from '../../../common-gql-queries';
 import {  ITag } from '../../../models';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';

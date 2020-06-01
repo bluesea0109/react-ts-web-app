@@ -12,7 +12,7 @@ import {
 import clsx from 'clsx';
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
-import { CHATBOT_CREATE_TAG, CHATBOT_GET_TAGS } from '../../../gql-queries';
+import { CHATBOT_CREATE_TAG, CHATBOT_GET_TAGS } from '../../../common-gql-queries';
 import ApolloErrorPage from '../../ApolloErrorPage';
 
 const useStyles = makeStyles((theme: Theme) =>

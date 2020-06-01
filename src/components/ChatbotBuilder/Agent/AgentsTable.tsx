@@ -6,11 +6,12 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import 'firebase/auth';
 import React, {useState} from 'react';
 import { useParams } from 'react-router';
-import { CHATBOT_DELETE_AGENT, CHATBOT_GET_AGENTS } from '../../common-gql-queries';
-import {  IAgent } from '../../models';
-import ApolloErrorPage from '../ApolloErrorPage';
-import ContentLoading from '../ContentLoading';
-import ConfirmDialog from '../Utils/ConfirmDialog';
+import { Link  } from 'react-router-dom';
+import { CHATBOT_DELETE_AGENT, CHATBOT_GET_AGENTS } from '../../../common-gql-queries';
+import {  IAgent } from '../../../models';
+import ApolloErrorPage from '../../ApolloErrorPage';
+import ContentLoading from '../../ContentLoading';
+import ConfirmDialog from '../../Utils/ConfirmDialog';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -75,7 +76,7 @@ function AgentsTable() {
               {agents.map((agent: IAgent) => (
                 <TableRow key={agent.id}>
                   <TableCell>
-                    <Link  to={`/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${agent.id}/intents`}>
+                    <Link  to={`/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${agent.id}/Intents`}>
                         {agent.name}
                     </Link>
                   </TableCell>
