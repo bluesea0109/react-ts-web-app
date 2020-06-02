@@ -4,6 +4,7 @@ export const GET_CURRENT_USER = gql`
   query {
     currentUser {
       name
+      uid
       email
       orgs {
         id
@@ -19,6 +20,9 @@ export const GET_CURRENT_USER = gql`
         projects {
           id
           name
+        }
+        currentUserMember {
+          memberType
         }
       }
       activeProject {
@@ -74,6 +78,11 @@ export const GET_ORGS = gql`
         orgId
         uid
         memberType
+        user {
+          uid
+          name
+          email
+        }
       }
     }
   }

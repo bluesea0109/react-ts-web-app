@@ -1,8 +1,8 @@
 export interface IUser {
-  uuid: string;
+  uid: string;
   email: string;
   name: string;
-  orgs: IOrg[];
+  orgs?: IOrg[];
   activeOrg: IOrg | null;
   activeProject: IProject | null;
 }
@@ -10,8 +10,9 @@ export interface IUser {
 export interface IOrg {
   id: string;
   name: string;
-  members: IMember[];
-  projects: IProject[];
+  members?: IMember[];
+  projects?: IProject[];
+  currentUserMember?: IMember;
 }
 
 export interface IProject {
@@ -45,9 +46,10 @@ export interface ITag {
   value: string;
 }
 export interface IMember {
-  orgId?: string;
+  orgId: string;
   uid: string;
   memberType: string;
+  user?: IUser;
 }
 
 // image labeling models

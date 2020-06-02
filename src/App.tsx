@@ -11,6 +11,9 @@ import AppBar from './components/Appbar';
 import ChatbotBuilder from './components/ChatbotBuilder';
 import ContentLoading from './components/ContentLoading';
 import Dashboard from './components/Dashboard';
+import AcceptInvite from './components/Dashboard/Invites/AcceptInvite';
+import OrganizationSettings from './components/Dashboard/OrganizationSettings';
+import ProjectSettings from './components/Dashboard/ProjectSettings';
 import Drawer from './components/Drawer';
 import ImageLabeling from './components/ImageLabeling';
 import QuestionAnswering from './components/QuestionAnswering';
@@ -113,59 +116,68 @@ function App() {
   return !data && loading ? (
     <ContentLoading />
   ) : (
-    <div className={classes.root}>
-      <AppBar
-        user={data.currentUser}
-        position="fixed"
-        className={clsx(classes.appBar, {
-          [classes.appBarShift]: state.drawerOpen,
-        })}
-        onMenuClick={onMenuClick}
-      />
-      <Drawer
-        user={data.currentUser}
-        className={classes.drawer}
-        variant="persistent"
-        anchor="left"
-        classes={{
-          paper: classes.drawerPaper,
-        }}
-        open={state.drawerOpen}
-        onClose={onDrawerClose}
-      />
-      <main
-        className={clsx(classes.content, {
-          [classes.contentShift]: state.drawerOpen,
-        })}>
-                        <div className={classes.drawerHeader} />
-        <Switch>
-          <Route exact={true} path="/">
-            <Dashboard user={data.currentUser} />
-          </Route>
-          <Route path="/orgs/:orgId/projects/:projectId/qa">
-            <QuestionAnswering />
-          </Route>
-          {/* <Route path="/orgs/:orgId/projects/:projectId/text-summarization">
+      <div className={classes.root}>
+        <AppBar
+          user={data.currentUser}
+          position="fixed"
+          className={clsx(classes.appBar, {
+            [classes.appBarShift]: state.drawerOpen,
+          })}
+          onMenuClick={onMenuClick}
+        />
+        <Drawer
+          user={data.currentUser}
+          className={classes.drawer}
+          variant="persistent"
+          anchor="left"
+          classes={{
+            paper: classes.drawerPaper,
+          }}
+          open={state.drawerOpen}
+          onClose={onDrawerClose}
+        />
+        <main
+          className={clsx(classes.content, {
+            [classes.contentShift]: state.drawerOpen,
+          })}>
+          <div className={classes.drawerHeader} />
+          <Switch>
+            <Route exact={true} path="/">
+              <Dashboard user={data.currentUser} />
+            </Route>
+            <Route exact={true} path="/invites/:inviteId">
+              <AcceptInvite />
+            </Route>
+            <Route exact={true} path="/orgs/:orgId/settings">
+              <OrganizationSettings user={data.currentUser} />
+            </Route>
+            <Route exact={true} path="/orgs/:orgId/projects/:projectId/settings">
+              <ProjectSettings />
+            </Route>
+            <Route path="/orgs/:orgId/projects/:projectId/qa">
+              <QuestionAnswering />
+            </Route>
+            {/* <Route path="/orgs/:orgId/projects/:projectId/text-summarization">
             <TextSummarization />
             </Route> */}
-          <Route path="/orgs/:orgId/projects/:projectId/image-labeling">
-            <ImageLabeling />
-          </Route>
-          <Route  path="/orgs/:orgId/projects/:projectId/chatbot-builder">
-            <ChatbotBuilder user={data.currentUser} />
-          </Route>
-          <Route path="/orgs/:orgId/projects/:projectId/text-labeling" />
-          <Route exact={true} path="/no-project">
-            <div className={classes.container}>
-              <Typography>
-                {'No project is active. Please create or activate one.'}
-              </Typography>
-            </div>
-          </Route>
-        </Switch>
-      </main>
-    </div>
-  );
+            <Route path="/orgs/:orgId/projects/:projectId/image-labeling">
+              <ImageLabeling />
+            </Route>
+            <Route path="/orgs/:orgId/projects/:projectId/chatbot-builder">
+              <ChatbotBuilder user={data.currentUser} />
+            </Route>
+            <Route path="/orgs/:orgId/projects/:projectId/text-labeling" />
+            <Route exact={true} path="/no-project">
+              <div className={classes.container}>
+                <Typography>
+                  {'No project is active. Please create or activate one.'}
+                </Typography>
+              </div>
+            </Route>
+          </Switch>
+        </main>
+      </div>
+    );
 }
 
 export default App;
