@@ -1,22 +1,23 @@
-import React, { useState } from 'react';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
+import { Button, Typography } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import gql from "graphql-tag";
-import * as EmailValidator from 'email-validator';
+import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormLabel from '@material-ui/core/FormLabel';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
-import { Button } from '@material-ui/core';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import TextField from '@material-ui/core/TextField';
+import * as EmailValidator from 'email-validator';
+import gql from 'graphql-tag';
+import React, { useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { useParams } from 'react-router';
 import { IUser } from '../../../models';
+import ApolloErrorPage from '../../ApolloErrorPage';
+import ContentLoading from '../../ContentLoading';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -26,8 +27,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     formControl: {
       marginTop: theme.spacing(2),
-    }
-  }),
+    },
+  })
 );
 
 interface IProps {
@@ -47,7 +48,7 @@ export default function InviteDialog(props: IProps) {
 
   const validateInput = () => {
     return EmailValidator.validate(state.email);
-  }
+  };
 
   const handleOpen = () => {
     setState({ ...state, open: true });
@@ -57,7 +58,9 @@ export default function InviteDialog(props: IProps) {
     setState({ ...state, open: false });
   };
 
-  const handleChange = (name: string) => event => {
+  const handleChange = (name: string) => (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setState({
       ...state,
       [name]: event.target.value,
@@ -69,104 +72,120 @@ export default function InviteDialog(props: IProps) {
       variables: {
         orgId,
         recipientEmail: state.email,
-        memberType: state.memberType
-      }
+        memberType: state.memberType,
+      },
     });
   };
 
-  let dialogContent = (
-    <React.Fragment>
+  let dialogContent;
+  const memberType =
+    props.user.activeOrg?.currentUserMember?.memberType || null;
+  if (!memberType) {
+    dialogContent = (
       <DialogContent>
-        <form noValidate autoComplete="off">
-          <TextField
-            value={state.email}
-            onChange={handleChange('email')}
-            autoFocus
-            margin="dense"
-            id="email"
-            label="Email"
-            type="email"
-            fullWidth
-          />
-        </form>
-        <FormControl component="fieldset" className={classes.formControl}>
-          <FormLabel component="legend">Permissions</FormLabel>
-          <RadioGroup
-            name="memberType"
-            value={state.memberType}
-            onChange={handleChange('memberType')}
-            row={true}
-          >
-            {props.user.activeOrg?. === 'owner' ? (
-              <FormControlLabel
-                value="owner"
-                control={<Radio />}
-                label="Owner"
-              />
-            ) : null
-            }
-
-            <FormControlLabel
-              value="editor"
-              control={<Radio />}
-              label="Editor"
-              labelPlacement="start"
-            />
-            <FormControlLabel
-              value="reader"
-              control={<Radio />}
-              label="Reader"
-              labelPlacement="start"
-            />
-          </RadioGroup>
-        </FormControl>
+        <Typography>{'Error: User member type unknown.'}</Typography>
       </DialogContent>
-
-    </React.Fragment>
-  );
-
-  if (state.loading) {
+    );
+  } else if (error) {
     dialogContent = (
       <React.Fragment>
         <DialogContent>
-          <DialogContentText>
-            {"Inviting Project Member"}
-          </DialogContentText>
+          <ApolloErrorPage error={error} />
+        </DialogContent>
+      </React.Fragment>
+    );
+  } else if (loading) {
+    dialogContent = (
+      <React.Fragment>
+        <DialogContent>
           <ContentLoading />
+        </DialogContent>
+      </React.Fragment>
+    );
+  } else {
+    dialogContent = (
+      <React.Fragment>
+        <DialogContent>
+          <form noValidate={true} autoComplete="off">
+            <TextField
+              value={state.email}
+              onChange={handleChange('email')}
+              autoFocus={true}
+              margin="dense"
+              id="email"
+              label="Email"
+              type="email"
+              fullWidth={true}
+            />
+          </form>
+          <FormControl component="fieldset" className={classes.formControl}>
+            <FormLabel component="legend">Permissions</FormLabel>
+            <RadioGroup
+              name="memberType"
+              value={state.memberType}
+              onChange={handleChange('memberType')}
+              row={true}>
+              {memberType === 'owner' ? (
+                <FormControlLabel
+                  value="owner"
+                  control={<Radio />}
+                  label="Owner"
+                />
+              ) : null}
+              <FormControlLabel
+                value="editor"
+                control={<Radio />}
+                label="Editor"
+                labelPlacement="start"
+              />
+              <FormControlLabel
+                value="reader"
+                control={<Radio />}
+                label="Reader"
+                labelPlacement="start"
+              />
+            </RadioGroup>
+          </FormControl>
         </DialogContent>
       </React.Fragment>
     );
   }
 
   return (
-    <div className={classes.root} color="inherit" >
+    <div className={classes.root} color="inherit">
       <Dialog
         fullWidth={true}
         open={state.open}
         onClose={handleClose}
-        aria-labelledby="form-dialog-title"
-      >
+        aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Invite Project Member</DialogTitle>
         {dialogContent}
         <DialogActions>
           <Button color="primary" onClick={handleClose}>
-            {"Cancel"}
+            {'Cancel'}
           </Button>
-          <Button color="secondary" onClick={handleInvite} disabled={validateInput()}>
-            {"Send Invite"}
+          <Button
+            color="secondary"
+            onClick={handleInvite}
+            disabled={validateInput()}>
+            {'Send Invite'}
           </Button>
         </DialogActions>
       </Dialog>
       <Button size="small" onClick={handleOpen}>
-        {"Invite Member"}
+        {'Invite Member'}
       </Button>
     </div>
   );
 }
 
 const INVITE_ORG_MEMBER = gql`
-  mutation ($orgId: String!, $recipientEmail: String!, $memberType: String!)  {
-    inviteOrgMember(orgId: $orgId, recipientEmail: $recipientEmail, memberType: $memberType) {
+  mutation($orgId: String!, $recipientEmail: String!, $memberType: String!) {
+    inviteOrgMember(
+      orgId: $orgId
+      recipientEmail: $recipientEmail
+      memberType: $memberType
+    ) {
       id
     }
   }

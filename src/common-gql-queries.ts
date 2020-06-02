@@ -20,6 +20,9 @@ export const GET_CURRENT_USER = gql`
           id
           name
         }
+        currentUserMember {
+          memberType
+        }
       }
       activeProject {
         id

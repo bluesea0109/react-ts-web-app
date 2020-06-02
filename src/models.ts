@@ -12,6 +12,7 @@ export interface IOrg {
   name: string;
   members: IMember[];
   projects: IProject[];
+  currentUserMember?: IMember | null;
 }
 
 export interface IProject {
