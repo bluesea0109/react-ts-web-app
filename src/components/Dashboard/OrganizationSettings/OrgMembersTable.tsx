@@ -1,3 +1,4 @@
+import { Box } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import {
   createStyles,
@@ -15,9 +16,8 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import React, { useState } from 'react';
 import { IMember, IUser } from '../../../models';
-import InviteDialog from './InviteDialog';
 import IconButtonDelete from '../../IconButtons/IconButtonDelete';
-import { Box } from '@material-ui/core';
+import InviteDialog from './InviteDialog';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -64,7 +64,10 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
           <TableCell align="left"><Box fontWeight="fontWeightBold">{member.user?.email || 'unknown'}</Box></TableCell>
           <TableCell align="left"><Box fontWeight="fontWeightBold">{member.memberType}</Box></TableCell>
           <TableCell align="left">
-            <IconButtonDelete tooltip="Remove User" onClick={() => null} disabled={member.uid === props.user.uid || memberType !== 'owner'} />
+            <IconButtonDelete
+              tooltip="Remove User"
+              onClick={() => null}
+              disabled={member.uid === props.user.uid || memberType !== 'owner'} />
           </TableCell>
         </TableRow>
       );
@@ -75,16 +78,19 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
         <TableCell align="left">{member.user?.email || 'unknown'}</TableCell>
         <TableCell align="left">{member.memberType}</TableCell>
         <TableCell align="left">
-          <IconButtonDelete tooltip="Remove User" onClick={() => null} disabled={memberType !== 'owner'} />
+          <IconButtonDelete
+            tooltip="Remove User"
+            onClick={() => null}
+            disabled={memberType !== 'owner'} />
         </TableCell>
       </TableRow>
     );
-  }
+  };
   return (
     <Paper>
       <Toolbar variant="dense">
         <Typography variant="h6">{'Org Members'}</Typography>
-        <Typography className={classes.grow}/>
+        <Typography className={classes.grow} />
         {memberType === 'owner' ? (
           <InviteDialog user={props.user} />
         ) : null}

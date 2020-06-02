@@ -1,10 +1,10 @@
+import { createStyles, makeStyles, Theme, Typography } from '@material-ui/core';
+import gql from 'graphql-tag';
 import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import gql from "graphql-tag";
 import { useMutation } from 'react-apollo';
-import ContentLoading from '../../ContentLoading';
+import { useParams } from 'react-router-dom';
 import ApolloErrorPage from '../../ApolloErrorPage';
-import { Typography, makeStyles, Theme, createStyles } from '@material-ui/core';
+import ContentLoading from '../../ContentLoading';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -35,13 +35,13 @@ export default function AcceptInvite() {
   }
 
   if (loading) {
-    return <ContentLoading />
+    return <ContentLoading />;
   }
 
-  //history.push(`/app/projects/${data.data.acceptProjectMemberInvite.projectId}`);
+  // history.push(`/app/projects/${data.data.acceptProjectMemberInvite.projectId}`);
   return (
     <div className={classes.root}>
-      <Typography>{"Invite accepted. Welcome to Bavard!"}</Typography>
+      <Typography>{'Invite accepted. Welcome to Bavard!'}</Typography>
     </div>
   );
 }

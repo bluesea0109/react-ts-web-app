@@ -11,13 +11,13 @@ import AppBar from './components/Appbar';
 import ChatbotBuilder from './components/ChatbotBuilder';
 import ContentLoading from './components/ContentLoading';
 import Dashboard from './components/Dashboard';
+import AcceptInvite from './components/Dashboard/Invites/AcceptInvite';
 import OrganizationSettings from './components/Dashboard/OrganizationSettings';
 import ProjectSettings from './components/Dashboard/ProjectSettings';
 import Drawer from './components/Drawer';
 import ImageLabeling from './components/ImageLabeling';
 import QuestionAnswering from './components/QuestionAnswering';
 import { IUser } from './models';
-import AcceptInvite from './components/Dashboard/Invites/AcceptInvite';
 
 const drawerWidth = 240;
 
