@@ -17,6 +17,7 @@ import React, { useState } from 'react';
 import { IMember, IUser } from '../../../models';
 import InviteDialog from './InviteDialog';
 import IconButtonDelete from '../../IconButtons/IconButtonDelete';
+import { Box } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -55,6 +56,30 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
   const memberType = props.user.activeOrg?.currentUserMember?.memberType || null;
   const pageItems = getPage(props.members);
 
+  const getTableRow = (member: IMember, i: number) => {
+    if (member.uid === props.user.uid) {
+      return (
+        <TableRow key={i}>
+          <TableCell align="left"><Box fontWeight="fontWeightBold">{member.user?.name || 'unknown'}</Box></TableCell>
+          <TableCell align="left"><Box fontWeight="fontWeightBold">{member.user?.email || 'unknown'}</Box></TableCell>
+          <TableCell align="left"><Box fontWeight="fontWeightBold">{member.memberType}</Box></TableCell>
+          <TableCell align="left">
+            <IconButtonDelete tooltip="Remove User" onClick={() => null} disabled={member.uid === props.user.uid || memberType !== 'owner'} />
+          </TableCell>
+        </TableRow>
+      );
+    }
+    return (
+      <TableRow key={i}>
+        <TableCell align="left">{member.user?.name || 'unknown'}</TableCell>
+        <TableCell align="left">{member.user?.email || 'unknown'}</TableCell>
+        <TableCell align="left">{member.memberType}</TableCell>
+        <TableCell align="left">
+          <IconButtonDelete tooltip="Remove User" onClick={() => null} disabled={memberType !== 'owner'} />
+        </TableCell>
+      </TableRow>
+    );
+  }
   return (
     <Paper>
       <Toolbar variant="dense">
@@ -75,16 +100,7 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
         </TableHead>
         <TableBody>
           {pageItems.map((member, i) => {
-            return (
-              <TableRow key={i} hover={true}>
-                <TableCell align="left">{member.user?.name || 'unknown'}</TableCell>
-                <TableCell align="left">{member.user?.email || 'unknown'}</TableCell>
-                <TableCell align="left">{member.memberType}</TableCell>
-                <TableCell align="left">
-                  <IconButtonDelete tooltip="Remove User" onClick={() => null} disabled={member.uid === props.user.uid} />
-                </TableCell>
-              </TableRow>
-            );
+            return getTableRow(member, i);
           })}
         </TableBody>
         <TableFooter>

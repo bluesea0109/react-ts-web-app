@@ -17,6 +17,7 @@ import Drawer from './components/Drawer';
 import ImageLabeling from './components/ImageLabeling';
 import QuestionAnswering from './components/QuestionAnswering';
 import { IUser } from './models';
+import AcceptInvite from './components/Dashboard/Invites/AcceptInvite';
 
 const drawerWidth = 240;
 
@@ -143,6 +144,9 @@ function App() {
           <Switch>
             <Route exact={true} path="/">
               <Dashboard user={data.currentUser} />
+            </Route>
+            <Route exact={true} path="/invites/:inviteId">
+              <AcceptInvite />
             </Route>
             <Route exact={true} path="/orgs/:orgId/settings">
               <OrganizationSettings user={data.currentUser} />
