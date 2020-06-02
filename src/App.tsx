@@ -15,6 +15,8 @@ import Drawer from './components/Drawer';
 import ImageLabeling from './components/ImageLabeling';
 import QuestionAnswering from './components/QuestionAnswering';
 import { IUser } from './models';
+import OrganizationSettings from './components/Dashboard/OrganizationSettings';
+import ProjectSettings from './components/Dashboard/ProjectSettings';
 
 const drawerWidth = 240;
 
@@ -141,6 +143,12 @@ function App() {
         <Switch>
           <Route exact={true} path="/">
             <Dashboard user={data.currentUser} />
+          </Route>
+          <Route exact={true} path="/orgs/:orgId/settings">
+            <OrganizationSettings user={data.currentUser} />
+          </Route>
+          <Route exact={true} path="/orgs/:orgId/projects/:projectId/settings">
+            <ProjectSettings user={data.currentUser} />
           </Route>
           <Route path="/orgs/:orgId/projects/:projectId/qa">
             <QuestionAnswering />

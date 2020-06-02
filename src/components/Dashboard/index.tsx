@@ -29,11 +29,11 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-interface IAccountProps {
+interface IDashboardProps {
   user: IUser;
 }
 
-function Account(props: IAccountProps) {
+function Account(props: IDashboardProps) {
   const classes = useStyles();
   const orgId = props.user.activeOrg?.id;
   const firebaseUser = firebase.auth().currentUser;
