@@ -68,7 +68,7 @@ const Orgs: React.FC<{ user: IUser }> = ({ user }) => {
 
   const setActiveOrg = (orgId: string) => {
     console.log('setting active org');
-    const org = user.orgs.find((org) => org.id === orgId);
+    const org = user.orgs?.find((org) => org.id === orgId);
     const projects = org?.projects;
     const projectId = projects?.[0]?.id;
     console.log('project', projectId);
@@ -99,7 +99,7 @@ const Orgs: React.FC<{ user: IUser }> = ({ user }) => {
           },
         }}
       >
-        {user.orgs.map((org: any) => (
+        {user.orgs?.map((org: any) => (
           <MenuItem key={org.id} value={org.id}>
             {org.name}
           </MenuItem>

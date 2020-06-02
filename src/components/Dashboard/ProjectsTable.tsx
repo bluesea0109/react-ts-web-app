@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface IProjectsTableProps {
   activeOrg: IOrg;
-  activeProject: IProject | null;
+  activeProject?: IProject | null;
 }
 
 function ProjectsTable(props: IProjectsTableProps) {

@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
     formControl: {
       marginTop: theme.spacing(2),
     },
-  })
+  }),
 );
 
 interface IProps {
@@ -59,7 +59,7 @@ export default function InviteDialog(props: IProps) {
   };
 
   const handleChange = (name: string) => (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setState({
       ...state,
@@ -167,7 +167,7 @@ export default function InviteDialog(props: IProps) {
           <Button
             color="secondary"
             onClick={handleInvite}
-            disabled={validateInput()}>
+            disabled={!validateInput()}>
             {'Send Invite'}
           </Button>
         </DialogActions>

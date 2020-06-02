@@ -63,7 +63,6 @@ function CustomDrawer(props: CustomDrawerProps) {
     return `/orgs/${user.activeProject.orgId}`;
   };
 
-
   const requiresActiveProjectListItems = (
     <>
       <ListItem
@@ -133,7 +132,7 @@ function CustomDrawer(props: CustomDrawerProps) {
         >
           <ListItemText primary="Dashboard" />
         </ListItem>
-        <List component="div" disablePadding>
+        <List component="div" disablePadding={true}>
           <ListItem className={classes.nested}
             component={Link}
             to={createOrgPath('settings')}
