@@ -28,31 +28,6 @@ export interface IProject {
   name: string;
 }
 
-export interface IAgent {
-  id: number;
-  projectId: string;
-  name: string;
-  language: string;
-}
-
-export interface IIntent {
-  id: number;
-  agentId: number;
-  value: string;
-}
-export interface ITemplate {
-  id: number;
-  agentId: number;
-  name: string;
-  text: string;
-}
-
-export interface ITag {
-  id: number;
-  agentId: number;
-  value: string;
-}
-
 // image labeling models
 export interface IImageCollection {
   id: number;
@@ -111,11 +86,6 @@ export interface ILabelQueueImage {
   labeler: string;
 }
 
-export enum ChatbotLanguage {
-  EN_US,
-  FR,
-}
-
 export interface ILabelsExport {
   id: number;
   collectionId: number;
@@ -138,4 +108,47 @@ export interface IReviewQueueImage {
   imageId: number;
   reviewer: string;
   status: string;
+}
+
+// chatbot service models
+export enum ChatbotLanguage {
+  EN_US,
+  FR,
+}
+
+export interface IAgent {
+  id: number;
+  projectId: string;
+  name: string;
+  language: string;
+}
+
+export interface IIntent {
+  id: number;
+  agentId: number;
+  value: string;
+}
+export interface ITemplate {
+  id: number;
+  agentId: number;
+  name: string;
+  text: string;
+}
+
+export interface ITagType {
+  id: number;
+  agentId: number;
+  value: string;
+}
+
+export interface IExampleInput {
+  text: string;
+  intent: string;
+  tags: IExampleTagInput[];
+}
+
+export interface IExampleTagInput {
+  tagType: string;
+  start: number;
+  end: number;
 }

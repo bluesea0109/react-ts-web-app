@@ -115,9 +115,6 @@ function ExportsTable() {
   const exports = getExports.data?.ImageLabelingService_labelExports ?? [];
   const pageItems = getPage(exports);
 
-  exports.forEach(x => {
-    console.log(x.signedUrl);
-  });
   return (
     <Paper className={classes.paper}>
       <Toolbar variant="dense">

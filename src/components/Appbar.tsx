@@ -67,11 +67,9 @@ const Orgs: React.FC<{ user: IUser }> = ({ user }) => {
   });
 
   const setActiveOrg = (orgId: string) => {
-    console.log('setting active org');
     const org = user.orgs?.find((org) => org.id === orgId);
     const projects = org?.projects;
     const projectId = projects?.[0]?.id;
-    console.log('project', projectId);
     updateActiveOrg({
       variables: {
         orgId,
