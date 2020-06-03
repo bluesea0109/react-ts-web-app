@@ -7,7 +7,7 @@ import 'firebase/auth';
 import React, {useState} from 'react';
 import { useParams } from 'react-router';
 import { CHATBOT_DELETE_TAG, CHATBOT_GET_TAGS } from '../../../common-gql-queries';
-import {  ITag } from '../../../models';
+import { ITagType } from '../../../models';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 import ConfirmDialog from '../../Utils/ConfirmDialog';
@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface IGetTags {
-  ChatbotService_tagTypes: ITag[] | undefined;
+  ChatbotService_tagTypes: ITagType[] | undefined;
 }
 
 function TagsTable() {
@@ -72,7 +72,7 @@ function TagsTable() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {tags.map((tag: ITag) => (
+              {tags.map((tag: ITagType) => (
                 <TableRow key={tag.id}>
                   <TableCell>
                         {tag.value}

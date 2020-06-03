@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   tabPanel: {
     overflow: 'auto',
-  }
+  },
 }));
 
 const AgentDetails = () => {

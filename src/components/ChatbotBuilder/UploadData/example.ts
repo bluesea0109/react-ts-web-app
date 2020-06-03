@@ -12,25 +12,22 @@ const json = `
         {
           "start": 35,
           "end": 44,
-          "value": "charlotte",
           "type": "fromloc.city_name"
         },
         {
           "start": 48,
           "end": 57,
-          "value": "las vegas",
           "type": "toloc.city_name"
         },
         {
           "start": 79,
           "end": 88,
-          "value": "st. louis",
           "type": "stoploc.city_name"
         }
       ]
     }
   ]
 }
-`
+`;
 
 export default json;

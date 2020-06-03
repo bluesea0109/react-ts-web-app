@@ -48,7 +48,6 @@ export function batchImageLabelingReducer(
     }
     case RESET_LABELS: {
       imageLabels = new Map<number, IBatchLabelingInput[]>();
-      console.log('action.images', action.images);
       action.images.forEach(img => {
         const labelInputs: IBatchLabelingInput[] = [];
         img.labels.forEach(label => {

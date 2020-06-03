@@ -109,8 +109,6 @@ function ImageLabelListItem(props: IImageLabelListItemProps) {
     props.removeLabel(labelIndex);
   };
 
-  console.log('label', label);
-
   return (
     <React.Fragment>
       <ListItem

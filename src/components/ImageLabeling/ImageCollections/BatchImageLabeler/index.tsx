@@ -126,14 +126,11 @@ export default function BatchImageLabeler() {
       batchInputs = batchInputs.concat(value);
     });
 
-    console.log('batch inputs', batchInputs);
-
     const res = await submitBatchMutation({
       variables: { batch: batchInputs },
     });
 
     if (!res.errors) {
-      console.log('submit batch result', res.data);
       getBatch({
         variables: { collectionId: parseInt(collectionId, 10), batchSize: 5 },
       });
