@@ -12,7 +12,7 @@ import {
 import clsx from 'clsx';
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
-import { CHATBOT_CREATE_INTENT, CHATBOT_GET_INTENTS } from '../../../common-gql-queries';
+import { CHATBOT_CREATE_INTENTS, CHATBOT_GET_INTENTS } from '../../../common-gql-queries';
 import ApolloErrorPage from '../../ApolloErrorPage';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -34,7 +34,7 @@ const NewIntent: React.FC = () => {
   const [value, setValue] = useState<string>('');
   const { agentId } = useParams();
   const numAgentId = Number(agentId);
-  const [createIntent, { loading, error }] = useMutation(CHATBOT_CREATE_INTENT,  {
+  const [createIntents, { loading, error }] = useMutation(CHATBOT_CREATE_INTENTS,  {
     refetchQueries: [{ query: CHATBOT_GET_INTENTS, variables: { agentId : numAgentId }  }],
     awaitRefetchQueries: true,
   });
@@ -45,10 +45,10 @@ const NewIntent: React.FC = () => {
   }
 
   const onSubmit =  () => {
-    createIntent({
+    createIntents({
       variables: {
         agentId: numAgentId ,
-        value,
+        values: [value],
       },
     });
     setValue('');

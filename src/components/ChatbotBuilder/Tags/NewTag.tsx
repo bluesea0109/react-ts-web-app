@@ -12,7 +12,7 @@ import {
 import clsx from 'clsx';
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
-import { CHATBOT_CREATE_TAG, CHATBOT_GET_TAGS } from '../../../common-gql-queries';
+import { CHATBOT_CREATE_TAGS, CHATBOT_GET_TAGS } from '../../../common-gql-queries';
 import ApolloErrorPage from '../../ApolloErrorPage';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -34,7 +34,7 @@ const NewTag: React.FC = () => {
   const [value, setValue] = useState<string>('');
   const { agentId } = useParams();
   const numAgentId = Number(agentId);
-  const [createTag, { loading, error }] = useMutation(CHATBOT_CREATE_TAG,  {
+  const [createTags, { loading, error }] = useMutation(CHATBOT_CREATE_TAGS,  {
     refetchQueries: [{ query: CHATBOT_GET_TAGS, variables: { agentId : numAgentId }  }],
     awaitRefetchQueries: true,
   });
@@ -45,10 +45,10 @@ const NewTag: React.FC = () => {
   }
 
   const onSubmit =  () => {
-    createTag({
+    createTags({
       variables: {
         agentId: numAgentId ,
-        value,
+        values: [value],
       },
     });
     setValue('');
