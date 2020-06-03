@@ -15,6 +15,13 @@ export interface IOrg {
   currentUserMember?: IMember;
 }
 
+export interface IMember {
+  orgId: string;
+  uid: string;
+  memberType: string;
+  user?: IUser;
+}
+
 export interface IProject {
   id: string;
   orgId: string;
@@ -22,34 +29,28 @@ export interface IProject {
 }
 
 export interface IAgent {
-  id: string;
+  id: number;
   projectId: string;
   name: string;
   language: string;
 }
 
 export interface IIntent {
-  id: string;
-  agentId: string;
+  id: number;
+  agentId: number;
   value: string;
 }
 export interface ITemplate {
-  id: string;
-  agentId: string;
+  id: number;
+  agentId: number;
   name: string;
-  value: string;
+  text: string;
 }
 
 export interface ITag {
-  id: string;
-  agentId: string;
+  id: number;
+  agentId: number;
   value: string;
-}
-export interface IMember {
-  orgId: string;
-  uid: string;
-  memberType: string;
-  user?: IUser;
 }
 
 // image labeling models

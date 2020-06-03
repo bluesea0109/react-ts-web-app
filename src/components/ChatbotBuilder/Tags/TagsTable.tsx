@@ -86,7 +86,7 @@ function TagsTable() {
                         title="Delete Tag?"
                         open={confirmOpen}
                         setOpen={setConfirmOpen}
-                        onConfirm={() => deleteTagHandler(Number(tag.id))}
+                        onConfirm={() => deleteTagHandler(tag.id)}
 
                      >
                         Are you sure you want to delete this tag?

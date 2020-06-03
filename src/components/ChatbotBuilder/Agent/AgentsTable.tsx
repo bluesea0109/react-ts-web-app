@@ -89,7 +89,7 @@ function AgentsTable() {
                         title="Delete Agent?"
                         open={confirmOpen}
                         setOpen={setConfirmOpen}
-                        onConfirm={() => deleteAgentHandler(Number(agent.id))}
+                        onConfirm={() => deleteAgentHandler(agent.id)}
 
                      >
                         Are you sure you want to delete this agent?

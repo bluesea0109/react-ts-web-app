@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const NewTemplate: React.FC = () => {
   const classes = useStyles();
-  const [value, setValue] = useState<string>('');
+  const [text, setText] = useState<string>('');
   const [name, setName] = useState<string>('');
   const { agentId } = useParams();
   const numAgentId = Number(agentId);
@@ -50,10 +50,10 @@ const NewTemplate: React.FC = () => {
       variables: {
         agentId: numAgentId ,
         name,
-        value,
+        text,
       },
     });
-    setValue('');
+    setText('');
   };
 
   return (
@@ -65,9 +65,9 @@ const NewTemplate: React.FC = () => {
         id="name"
         label="Template Name"
         type="text"
-        value={value}
+        value={text}
         variant="outlined"
-        onChange={(e: any) => setValue(e.target.value as string)}
+        onChange={(e: any) => setText(e.target.value as string)}
         className={clsx(classes.inputBox)}
       />
       <br />
@@ -85,7 +85,7 @@ const NewTemplate: React.FC = () => {
         className={clsx(classes.button)}
         variant="contained"
         color="primary"
-        disabled={loading || !value}
+        disabled={loading || !text}
         onClick={onSubmit}>
         Submit
       </Button>
