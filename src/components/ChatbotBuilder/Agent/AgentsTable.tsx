@@ -123,35 +123,17 @@ function AgentsTable() {
         }
       }}
       editable={{
-        onRowUpdate: (newData, oldData) =>
-          new Promise((resolve) => {
-            setTimeout(() => {
-              if (oldData) {
-                setState((prevState:any) => {
-                  const data = [...prevState.data];
-                  const dataId = oldData.id;
-                  const dataName = newData.name;
-                  updateAgentHandler(dataId, dataName);
-                  data[data.indexOf(oldData)] = newData;
-                  return { ...prevState, data };
-                });
-              }
-              resolve();
-            }, 600);
-          }),
-        onRowDelete: (oldData) =>
-          new Promise((resolve) => {
-              if (oldData) {
-              setState((prevState:any) => {
-                const data = [...prevState.data];
-                const dataId = oldData.id;
-                deleteAgentHandler(dataId);
-                data.splice(data.indexOf(oldData), 1);
-                return { ...prevState, data };
-              });
-            }
-            resolve();
-          }),
+        onRowUpdate: async (newData, oldData) => {
+          if(oldData) {
+            const dataId = oldData.id;
+            const dataName = newData.name;
+            updateAgentHandler(dataId, dataName);
+          }
+        },
+        onRowDelete: async (oldData) =>{
+          const dataId = oldData.id;
+          deleteAgentHandler(dataId);
+        }
       }}
     />
         </TableContainer>

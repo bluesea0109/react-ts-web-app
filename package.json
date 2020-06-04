@@ -35,6 +35,7 @@
     "graphql-tag": "^2.10.3",
     "install": "^0.13.0",
     "lodash": "^4.17.15",
+    "material-design-icons": "^3.0.1",
     "material-table": "^1.59.0",
     "npm": "^6.14.5",
     "react": "^16.13.1",

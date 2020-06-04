@@ -18,6 +18,7 @@ import Drawer from './components/Drawer';
 import ImageLabeling from './components/ImageLabeling';
 import QuestionAnswering from './components/QuestionAnswering';
 import { IUser } from './models';
+import './App.css';
 
 const drawerWidth = 240;
 
