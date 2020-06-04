@@ -1,8 +1,8 @@
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import { Paper, TableContainer, Typography} from '@material-ui/core';
-import MaterialTable, { Column } from 'material-table';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import 'firebase/auth';
+import MaterialTable, { Column } from 'material-table';
 import React, {useEffect} from 'react';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -14,7 +14,7 @@ import ContentLoading from '../../ContentLoading';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      margin: theme.spacing(3)
+      margin: theme.spacing(3),
     },
     paper: {
       padding: theme.spacing(2),
@@ -27,11 +27,9 @@ interface IGetAgents {
 }
 
 interface AgentState {
-  columns: Array<Column<IAgent>>;
+  columns: Column<IAgent>[];
   data: IAgent[] | undefined;
 }
-
-
 
 function AgentsTable() {
   const classes = useStyles();
@@ -49,12 +47,12 @@ function AgentsTable() {
   const [state, setState] = React.useState<AgentState>({
     columns: [
       { title: 'Agent id', field: 'id', editable: 'never' },
-      { title: 'Name', 
-         field: 'name', 
+      { title: 'Name',
+         field: 'name',
          render: rowData => <Link  to={`/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${rowData.id}/Intents`}>
          {rowData.name}
      </Link>,
-     editable: 'onUpdate'
+     editable: 'onUpdate',
       },
       { title: 'Language', field: 'language', editable: 'never' },
     ],
@@ -62,15 +60,15 @@ function AgentsTable() {
   });
 
   useEffect(() => {
-    if(agents) {
+    if (agents) {
       setState({
         columns: state.columns,
-        data : [...agents]
-      })
+        data : [...agents],
+      });
     }
-    
-    return () => {}
-  }, [agents, state.columns])
+
+    return () => {};
+  }, [agents, state.columns]);
 
   const commonError = agentsData.error ? agentsData.error : updatedData.error ? updatedData.error : error;
 
@@ -83,22 +81,19 @@ function AgentsTable() {
     return <ApolloErrorPage error={commonError} />;
   }
 
-
-    
-
   const deleteAgentHandler =  (agentId: number) => {
      deleteAgent({
         variables: {
-          agentId
+          agentId,
         },
       });
   };
 
-  const updateAgentHandler =  (agentId: number, name:string) => {
+  const updateAgentHandler =  (agentId: number, name: string) => {
     updateAgent({
        variables: {
          agentId,
-         name
+         name,
        },
      });
  };
@@ -118,22 +113,22 @@ function AgentsTable() {
       localization={{
         body: {
           editRow: {
-            deleteText : "Are you sure delete this Agent?"
-          }
-        }
+            deleteText : 'Are you sure delete this Agent?',
+          },
+        },
       }}
       editable={{
         onRowUpdate: async (newData, oldData) => {
-          if(oldData) {
+          if (oldData) {
             const dataId = oldData.id;
             const dataName = newData.name;
             updateAgentHandler(dataId, dataName);
           }
         },
-        onRowDelete: async (oldData) =>{
+        onRowDelete: async (oldData) => {
           const dataId = oldData.id;
           deleteAgentHandler(dataId);
-        }
+        },
       }}
     />
         </TableContainer>
