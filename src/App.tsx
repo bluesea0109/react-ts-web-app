@@ -6,6 +6,7 @@ import clsx from 'clsx';
 import 'firebase/auth';
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
+import './App.css';
 import { GET_CURRENT_USER } from './common-gql-queries';
 import AppBar from './components/Appbar';
 import ChatbotBuilder from './components/ChatbotBuilder';
