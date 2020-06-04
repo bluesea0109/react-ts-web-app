@@ -218,9 +218,9 @@ class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDa
       });
     }
 
-    // if (!this.state.error) {
-    //   this.handleClose();
-    // }
+    if (!this.state.error) {
+      this.handleClose();
+    }
   }
 
   render() {
