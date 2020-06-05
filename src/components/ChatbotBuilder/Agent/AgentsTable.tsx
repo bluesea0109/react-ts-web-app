@@ -1,17 +1,15 @@
 import { useMutation, useQuery } from '@apollo/react-hooks';
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@material-ui/core';
-import IconButton from '@material-ui/core/IconButton';
+import { Paper, TableContainer, Typography} from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import DeleteIcon from '@material-ui/icons/Delete';
 import 'firebase/auth';
-import React, {useState} from 'react';
+import MaterialTable, { Column } from 'material-table';
+import React, {useEffect} from 'react';
 import { useParams } from 'react-router';
-import { Link  } from 'react-router-dom';
-import { CHATBOT_DELETE_AGENT, CHATBOT_GET_AGENTS } from '../../../common-gql-queries';
+import { Link } from 'react-router-dom';
+import { CHATBOT_DELETE_AGENT, CHATBOT_GET_AGENTS, CHATBOT_UPDATE_AGENT } from '../../../common-gql-queries';
 import {  IAgent } from '../../../models';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
-import ConfirmDialog from '../../Utils/ConfirmDialog';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -28,20 +26,53 @@ interface IGetAgents {
     ChatbotService_agents: IAgent[] | undefined;
 }
 
+interface AgentState {
+  columns: Column<IAgent>[];
+  data: IAgent[] | undefined;
+}
+
 function AgentsTable() {
   const classes = useStyles();
-  const { orgId, projectId } = useParams();
-  const [confirmOpen, setConfirmOpen ] = useState(false);
-
+  const { projectId, orgId } = useParams();
   const agentsData = useQuery<IGetAgents>(CHATBOT_GET_AGENTS, { variables: { projectId } });
   const [deleteAgent, { loading, error }] = useMutation(CHATBOT_DELETE_AGENT,  {
     refetchQueries: [{ query: CHATBOT_GET_AGENTS, variables: { projectId }  }],
     awaitRefetchQueries: true,
   });
+  const [updateAgent, updatedData ] = useMutation(CHATBOT_UPDATE_AGENT,  {
+    refetchQueries: [{ query: CHATBOT_GET_AGENTS, variables: { projectId }  }],
+    awaitRefetchQueries: true,
+  });
+  const agents: IAgent[] | undefined = agentsData && agentsData.data && agentsData.data.ChatbotService_agents;
+  const [state, setState] = React.useState<AgentState>({
+    columns: [
+      { title: 'Agent id', field: 'id', editable: 'never' },
+      { title: 'Name',
+         field: 'name',
+         render: rowData => <Link  to={`/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${rowData.id}/Intents`}>
+         {rowData.name}
+     </Link>,
+     editable: 'onUpdate',
+      },
+      { title: 'Language', field: 'language', editable: 'never' },
+    ],
+    data: agents,
+  });
 
-  const commonError = agentsData.error ? agentsData.error : error;
+  useEffect(() => {
+    if (agents) {
+      setState({
+        columns: state.columns,
+        data : [...agents],
+      });
+    }
 
-  if (agentsData.loading || loading) {
+    return () => {};
+  }, [agents, state.columns]);
+
+  const commonError = agentsData.error ? agentsData.error : updatedData.error ? updatedData.error : error;
+
+  if (agentsData.loading || updatedData.loading || loading ) {
     return <ContentLoading />;
   }
 
@@ -51,7 +82,6 @@ function AgentsTable() {
   }
 
   const deleteAgentHandler =  (agentId: number) => {
-
      deleteAgent({
         variables: {
           agentId,
@@ -59,47 +89,48 @@ function AgentsTable() {
       });
   };
 
-  const agents = agentsData.data && agentsData.data.ChatbotService_agents;
+  const updateAgentHandler =  (agentId: number, name: string) => {
+    updateAgent({
+       variables: {
+         agentId,
+         name,
+       },
+     });
+ };
+
   return (
     <Paper className={classes.paper}>
-      {agents ? (
+      {state && state.data && state.data.length > 0 ? (
         <TableContainer component={Paper} aria-label="Agents">
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>Agent id</TableCell>
-                <TableCell>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {agents.map((agent: IAgent) => (
-                <TableRow key={agent.id}>
-                  <TableCell>
-                    <Link  to={`/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${agent.id}/Intents`}>
-                        {agent.name}
-                    </Link>
-                  </TableCell>
-                  <TableCell>{agent.id}</TableCell>
-                  <TableCell>
-                     <IconButton aria-label="delete" onClick={() => setConfirmOpen(true)}>
-                        <DeleteIcon />
-                     </IconButton>
-                     <ConfirmDialog
-                        title="Delete Agent?"
-                        open={confirmOpen}
-                        setOpen={setConfirmOpen}
-                        onConfirm={() => deleteAgentHandler(agent.id)}
+          <MaterialTable
+      title="Agents Table"
+      columns={state.columns}
+      data={state.data}
+      options={{
+        actionsColumnIndex: -1,
+      }}
 
-                     >
-                        Are you sure you want to delete this agent?
-                    </ConfirmDialog>
-                  </TableCell>
-                </TableRow>
-              ))}
-
-            </TableBody>
-          </Table>
+      localization={{
+        body: {
+          editRow: {
+            deleteText : 'Are you sure delete this Agent?',
+          },
+        },
+      }}
+      editable={{
+        onRowUpdate: async (newData, oldData) => {
+          if (oldData) {
+            const dataId = oldData.id;
+            const dataName = newData.name;
+            updateAgentHandler(dataId, dataName);
+          }
+        },
+        onRowDelete: async (oldData) => {
+          const dataId = oldData.id;
+          deleteAgentHandler(dataId);
+        },
+      }}
+    />
         </TableContainer>
       ) : (
           <Typography align="center" variant="h6">

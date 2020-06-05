@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     flex: '1 1 0',
     display: 'flex',
     flexDirection: 'column',
-    overflow: 'hidden',
+    overflow: 'auto',
   },
   tabPanel: {
     overflow: 'auto',
