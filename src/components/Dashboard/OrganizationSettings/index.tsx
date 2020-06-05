@@ -3,7 +3,7 @@ import React from 'react';
 import { useQuery } from 'react-apollo';
 import { useParams } from 'react-router';
 import { GET_ORGS } from '../../../common-gql-queries';
-import { IOrg, IUser } from '../../../models';
+import { IOrg, IUser } from '../../../models/user-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 import OrgMembersTable from './OrgMembersTable';

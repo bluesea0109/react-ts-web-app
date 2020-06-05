@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { connect, ConnectedProps, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-import { ICategorySet, IImage, IReviewQueueImage } from '../../../../../models';
+import { ICategorySet, IImage, IReviewQueueImage } from '../../../../../models/image-labeling-service';
 import * as actions from '../../../../../store/image-labeling/actions';
 import { getLabels } from '../../../../../store/image-labeling/selectors';
 import ApolloErrorPage from '../../../../ApolloErrorPage';

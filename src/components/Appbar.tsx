@@ -20,7 +20,7 @@ import firebase from 'firebase/app';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { GET_CURRENT_USER, UPDATE_ACTIVE_ORG } from '../common-gql-queries';
-import { IUser } from '../models';
+import { IUser } from '../models/user-service';
 
 interface CustomAppbarProps extends AppBarProps {
   onMenuClick: () => void;

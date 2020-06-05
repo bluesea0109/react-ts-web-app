@@ -8,7 +8,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { IUser } from '../models';
+import { IUser } from '../models/user-service';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

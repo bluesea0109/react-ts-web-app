@@ -1,4 +1,4 @@
-import { IImageLabel } from '../../../../models';
+import { IImageLabel } from '../../../../models/image-labeling-service';
 import ImageCategoricalLabel from '../../models/labels/ImageLabel';
 
 export const convertLabels = (imageLabels: IImageLabel[]): ImageCategoricalLabel[] => {

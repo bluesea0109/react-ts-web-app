@@ -13,7 +13,7 @@ import {
   IBatchLabelingInput,
   ICategory,
   ICategorySet,
-} from '../../../../models';
+} from '../../../../models/image-labeling-service';
 import * as batchLabelingState from '../../../../store/batch-image-labeling/actions';
 import { getBatchImageLabels } from '../../../../store/batch-image-labeling/selectors';
 

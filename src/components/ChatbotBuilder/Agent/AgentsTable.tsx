@@ -7,7 +7,7 @@ import React, {useEffect} from 'react';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import { CHATBOT_DELETE_AGENT, CHATBOT_GET_AGENTS, CHATBOT_UPDATE_AGENT } from '../../../common-gql-queries';
-import {  IAgent } from '../../../models';
+import { IAgent } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 

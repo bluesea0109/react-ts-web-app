@@ -2,7 +2,7 @@ import React from 'react';
 import { useQuery } from 'react-apollo';
 import { connect, ConnectedProps } from 'react-redux';
 import { useParams } from 'react-router';
-import { ICategorySet, IImage, ILabelQueueImage } from '../../../../models';
+import { ICategorySet, IImage, ILabelQueueImage } from '../../../../models/image-labeling-service';
 import * as imageLabelingActions from '../../../../store/image-labeling/actions';
 import ApolloErrorPage from '../../../ApolloErrorPage';
 import ContentLoading from '../../../ContentLoading';

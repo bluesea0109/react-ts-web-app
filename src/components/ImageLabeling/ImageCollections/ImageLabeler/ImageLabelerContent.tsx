@@ -30,7 +30,7 @@ import {
   IImage,
   IImageLabel,
   ILabelQueueImage,
-} from '../../../../models';
+} from '../../../../models/image-labeling-service';
 import * as actions from '../../../../store/image-labeling/actions';
 import {
   deletedSavedLabels,
