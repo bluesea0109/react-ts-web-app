@@ -1,4 +1,4 @@
-import { IBatchLabelingInput, IImage } from '../../models';
+import { IBatchLabelingInput, IImage } from '../../models/image-labeling-service';
 import { ADD_LABEL, BatchImageLabelingActionTypes, REMOVE_LABEL, RESET_LABELS, UPDATE_LABEL } from './types';
 
 export function addLabel(imageId: number, label: IBatchLabelingInput): BatchImageLabelingActionTypes {

@@ -7,7 +7,7 @@ import 'firebase/auth';
 import React, {useState} from 'react';
 import { useParams } from 'react-router';
 import { CHATBOT_DELETE_INTENT, CHATBOT_GET_INTENTS } from '../../../common-gql-queries';
-import {  IIntent } from '../../../models';
+import { IIntent } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 import ConfirmDialog from '../../Utils/ConfirmDialog';

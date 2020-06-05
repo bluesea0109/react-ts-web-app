@@ -1,7 +1,7 @@
 import { Grid, Paper, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
-import { IUser } from '../../../models';
+import { IUser } from '../../../models/user-service';
 import AgentsTable from './AgentsTable';
 import NewAgent from './NewAgent';
 

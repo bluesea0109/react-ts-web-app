@@ -3,7 +3,7 @@ import { Button, Card, createStyles, LinearProgress, makeStyles, TextField, Them
 import clsx from 'clsx';
 import React, { useState } from 'react';
 import { CREATE_PROJECT, GET_CURRENT_USER } from '../../common-gql-queries';
-import { IOrg } from '../../models';
+import { IOrg } from '../../models/user-service';
 import ApolloErrorPage from '../ApolloErrorPage';
 
 const useStyles = makeStyles((theme: Theme) =>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { IUser } from '../../models';
+import { IUser } from '../../models/user-service';
 import Agent from './Agent/Agent';
 import AgentDetails from './Agent/AgentDetails';
 
