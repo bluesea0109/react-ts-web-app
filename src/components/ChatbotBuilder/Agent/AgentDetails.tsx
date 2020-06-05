@@ -1,11 +1,11 @@
 import { Box, makeStyles, Paper, Tab, Tabs, Theme, Toolbar } from '@material-ui/core';
 import React from 'react';
 import { useHistory, useParams } from 'react-router';
+import DataExportsTab from '../DataExports/DataExportsTab';
 import Intent from '../Intent/Intent';
 import Tag from '../Tags/Tag';
 import Template from '../Template/Template';
 import UploadDataTab from '../UploadData/UploadDataTab';
-import DataExportsTab from '../DataExports/DataExportsTab';
 
 interface TabPanelProps {
   children?: React.ReactNode;
