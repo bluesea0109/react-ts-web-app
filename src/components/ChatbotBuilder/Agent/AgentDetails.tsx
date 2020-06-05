@@ -5,6 +5,7 @@ import Intent from '../Intent/Intent';
 import Tag from '../Tags/Tag';
 import Template from '../Template/Template';
 import UploadDataTab from '../UploadData/UploadDataTab';
+import DataExportsTab from '../DataExports/DataExportsTab';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -76,7 +77,8 @@ const AgentDetails = () => {
             <Tab value="Intents" label="Intents" {...a11yProps('Intents')} />
             <Tab value="Tags" label="Tags" {...a11yProps('Tags')} />
             <Tab value="Templates" label="Templates" {...a11yProps('Templates')} />
-            <Tab value="upload-data" label="Upload Training Data" {...a11yProps('Templates')} />
+            <Tab value="upload-data" label="Upload Data" {...a11yProps('Templates')} />
+            <Tab value="exports" label="Data Exports" {...a11yProps('Templates')} />
           </Tabs>
         </Toolbar>
       </Paper>
@@ -91,6 +93,9 @@ const AgentDetails = () => {
       </TabPanel>
       {agentTab === 'upload-data' && (
         <UploadDataTab />
+      )}
+      {agentTab === 'exports' && (
+        <DataExportsTab />
       )}
     </div>
   );
