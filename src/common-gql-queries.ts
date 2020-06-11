@@ -412,3 +412,68 @@ export const CHATBOT_UPDATE_INTENT = gql`
     }
   }
 `;
+
+export const CREATE_EXAMPLE = gql`
+  mutation($intentId: Int!, $text: String!) {
+    ChatbotService_createIntentExample(intentId: $intentId, text: $text) {
+        id
+        intentId
+        agentId
+        text
+    }
+  }
+`;
+
+export const GET_EXAMPLES = gql`
+  query($intentId: Int!) {
+    ChatbotService_intentExamples(intentId: $intentId) {
+        id
+        intentId
+        agentId
+        text
+        tags {
+          id
+          exampleId
+          tagTypeId
+          start
+          end
+        }
+    }
+  }
+`;
+
+export const CHATBOT_DELETE_EXAMPLE = gql`
+  mutation($exampleId: Int!) {
+    ChatbotService_deleteIntentExample(exampleId: $exampleId) {
+      id
+        intentId
+        agentId
+        text
+        tags {
+          id
+          exampleId
+          tagTypeId
+          start
+          end
+        }
+    }
+  }
+`;
+
+export const CHATBOT_UPDATE_EXAMPLE = gql`
+  mutation($exampleId: Int!, $text: String!) {
+    ChatbotService_updateIntentExample(exampleId: $exampleId,text: $text) {
+      id
+        intentId
+        agentId
+        text
+        tags {
+          id
+          exampleId
+          tagTypeId
+          start
+          end
+        }
+    }
+  }
+`;

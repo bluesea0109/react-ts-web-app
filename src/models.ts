@@ -123,6 +123,14 @@ export interface IAgent {
   language: string;
 }
 
+export interface IExample {
+  id: number;
+  intentId:number;
+  agentId: number;
+  text:string;
+  tags:any;
+}
+
 export interface IIntent {
   id: number;
   agentId: number;
