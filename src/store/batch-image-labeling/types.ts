@@ -1,4 +1,4 @@
-import { IBatchLabelingInput, IImage } from '../../models';
+import { IBatchLabelingInput, IImage } from '../../models/image-labeling-service';
 
 export const ADD_LABEL = 'BATCH/ADD_LABEL';
 export const REMOVE_LABEL = 'BATCH/REMOVE_LABEL';

@@ -13,7 +13,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import firebase from 'firebase';
 import 'firebase/auth';
 import React from 'react';
-import { IUser } from '../../models';
+import { IUser } from '../../models/user-service';
 import NewOrganisation from './NewOrganisation';
 import NewProject from './NewProject';
 import ProjectsTable from './ProjectsTable';

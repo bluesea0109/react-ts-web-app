@@ -18,7 +18,7 @@ import ProjectSettings from './components/Dashboard/ProjectSettings';
 import Drawer from './components/Drawer';
 import ImageLabeling from './components/ImageLabeling';
 import QuestionAnswering from './components/QuestionAnswering';
-import { IUser } from './models';
+import { IUser } from './models/user-service';
 
 const drawerWidth = 240;
 

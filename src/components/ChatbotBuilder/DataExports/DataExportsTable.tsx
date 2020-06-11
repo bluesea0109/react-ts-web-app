@@ -21,10 +21,9 @@ import gql from 'graphql-tag';
 import React, { useState } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
 import { useParams } from 'react-router-dom';
-import { ILabelsExport } from '../../../../models/image-labeling-service';
-import ApolloErrorPage from '../../../ApolloErrorPage';
-import ContentLoading from '../../../ContentLoading';
-// import IconButtonRefresh from './IconButtonRefresh';
+import { IDataExport } from '../../../models/chatbot-service';
+import ApolloErrorPage from '../../ApolloErrorPage';
+import ContentLoading from '../../ContentLoading';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -36,30 +35,30 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   }));
 
-function ExportsTable() {
+function DataExportsTable() {
   const rowsPerPage = 10;
   const classes = useStyles();
-  let { collectionId } = useParams();
-  collectionId = parseInt(collectionId, 10);
+  let { agentId } = useParams();
+  agentId = parseInt(agentId, 10);
 
-  interface IGetLabelExports {
-    ImageLabelingService_labelExports: ILabelsExport[];
+  interface IGetDataExports {
+    ChatbotService_dataExports: IDataExport[];
   }
-  const getExports = useQuery<IGetLabelExports>(GET_LABEL_EXPORTS, { variables: { collectionId } });
+  const getExports = useQuery<IGetDataExports>(GET_DATA_EXPORTS, { variables: { agentId } });
   const [createExport, createExportResult] = useMutation(CREATE_EXPORT, {
     refetchQueries: [{
-      query: GET_LABEL_EXPORTS,
+      query: GET_DATA_EXPORTS,
       variables: {
-        collectionId,
+        agentId,
       },
     }],
     awaitRefetchQueries: true,
   });
   const [deleteExport, deleteExportResult] = useMutation(DELETE_EXPORT, {
     refetchQueries: [{
-      query: GET_LABEL_EXPORTS,
+      query: GET_DATA_EXPORTS,
       variables: {
-        collectionId,
+        agentId,
       },
     }],
     awaitRefetchQueries: true,
@@ -74,7 +73,7 @@ function ExportsTable() {
     setState({ ...state, page });
   };
 
-  const getPage = (exports: ILabelsExport[]) => {
+  const getPage = (exports: IDataExport[]) => {
     const { page } = state;
     return exports.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
   };
@@ -83,7 +82,7 @@ function ExportsTable() {
     // create export mutation
     createExport({
       variables: {
-        collectionId,
+        agentId,
       },
     });
   };
@@ -112,14 +111,14 @@ function ExportsTable() {
     return <ContentLoading />;
   }
 
-  const exports = getExports.data?.ImageLabelingService_labelExports ?? [];
+  const exports = getExports.data?.ChatbotService_dataExports ?? [];
   const pageItems = getPage(exports);
 
   return (
     <Paper className={classes.paper}>
       <Toolbar variant="dense">
         <Button onClick={onExportClick}>
-          {'Export to CSV'}
+          {'Export to JSON'}
           <TableIcon
             className={classes.rightIcon}
             color="secondary"/>
@@ -138,26 +137,27 @@ function ExportsTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {pageItems.map((labelExport: ILabelsExport) => {
+          {pageItems.map((dataExport: IDataExport) => {
             return (
-              <TableRow key={labelExport.id} hover={true}>
-                <TableCell align="left">{labelExport.id}</TableCell>
-                <TableCell align="left">{labelExport.status}</TableCell>
+              <TableRow key={dataExport.id} hover={true}>
+                <TableCell align="left">{dataExport.id}</TableCell>
+                <TableCell align="left">{dataExport.status}</TableCell>
                 <TableCell align="left">
-                  {new Date(parseInt(labelExport.createdAt)).toISOString()}
+                  {new Date(parseInt(dataExport.createdAt)).toISOString()}
                 </TableCell>
-                <TableCell align="left">{labelExport.creator}</TableCell>
+                <TableCell align="left">{dataExport.creator}</TableCell>
                 <TableCell align="left">
                   <IconButton
+                    disabled={dataExport.url === null}
                     style={{ padding: 6 }}
-                    href={labelExport.signedUrl}>
+                    href={dataExport.url}>
                     <CloudDownloadIcon color="secondary" />
                   </IconButton>
                 </TableCell>
                 <TableCell align="left">
                   <IconButton
                     style={{ padding: 6 }}
-                    onClick={onDeleteExportClick(labelExport.id)}>
+                    onClick={onDeleteExportClick(dataExport.id)}>
                     <DeleteIcon color="secondary" />
                   </IconButton>
                 </TableCell>
@@ -184,24 +184,24 @@ function ExportsTable() {
   );
 }
 
-const GET_LABEL_EXPORTS = gql`
-  query($collectionId: Int!) {
-    ImageLabelingService_labelExports(collectionId: $collectionId) {
+const GET_DATA_EXPORTS = gql`
+  query($agentId: Int!) {
+    ChatbotService_dataExports(agentId: $agentId) {
       id
-      collectionId
+      agentId
       status
       createdAt
       creator
-      signedUrl
+      url
     }
   }
 `;
 
 const CREATE_EXPORT = gql`
-  mutation createLabelExport($collectionId: Int!) {
-    ImageLabelingService_createLabelExport(collectionId: $collectionId) {
+  mutation createDataExport($agentId: Int!) {
+    ChatbotService_createDataExport(agentId: $agentId) {
       id
-      collectionId
+      agentId
       status
       createdAt
       creator
@@ -211,11 +211,11 @@ const CREATE_EXPORT = gql`
 
 const DELETE_EXPORT = gql`
   mutation($exportId: Int!) {
-    ImageLabelingService_deleteLabelExport(exportId: $exportId) {
+    ChatbotService_deleteDataExport(exportId: $exportId) {
       id
       status
     }
   }
 `;
 
-export default ExportsTable;
+export default DataExportsTable;

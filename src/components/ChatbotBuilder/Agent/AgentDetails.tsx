@@ -1,6 +1,7 @@
 import { Box, makeStyles, Paper, Tab, Tabs, Theme, Toolbar } from '@material-ui/core';
 import React from 'react';
 import { useHistory, useParams } from 'react-router';
+import DataExportsTab from '../DataExports/DataExportsTab';
 import Intent from '../Intent/Intent';
 import Tag from '../Tags/Tag';
 import Template from '../Template/Template';
@@ -77,8 +78,9 @@ const AgentDetails = () => {
             <Tab value="Intents" label="Intents" {...a11yProps('Intents')} />
             <Tab value="Tags" label="Tags" {...a11yProps('Tags')} />
             <Tab value="Templates" label="Templates" {...a11yProps('Templates')} />
-            <Tab value="upload-data" label="Upload Training Data" {...a11yProps('Templates')} />
             <Tab value="Examples" label="Examples" {...a11yProps('Examples')} />
+            <Tab value="upload-data" label="Upload Data" {...a11yProps('Templates')} />
+            <Tab value="exports" label="Data Exports" {...a11yProps('Templates')} />
           </Tabs>
         </Toolbar>
       </Paper>
@@ -97,6 +99,9 @@ const AgentDetails = () => {
       <TabPanel value={agentTab} index="Examples" >
         <Examples />
       </TabPanel>
+      {agentTab === 'exports' && (
+        <DataExportsTab />
+      )}
     </div>
   );
 };

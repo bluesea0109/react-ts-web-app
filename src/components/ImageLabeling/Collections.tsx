@@ -11,7 +11,7 @@ import {
 import gql from 'graphql-tag';
 import React from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import { IImageCollection } from '../../models';
+import { IImageCollection } from '../../models/image-labeling-service';
 import ContentLoading from '../ContentLoading';
 
 const GET_COLLECTIONS = gql`

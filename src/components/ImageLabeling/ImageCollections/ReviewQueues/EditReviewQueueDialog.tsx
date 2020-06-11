@@ -6,7 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import React, { useState } from 'react';
-import { IReviewQueue } from '../../../../models';
+import { IReviewQueue } from '../../../../models/image-labeling-service';
 import ApolloErrorPage from '../../../ApolloErrorPage';
 import ContentLoading from '../../../ContentLoading';
 import IconButtonEdit from '../../../IconButtons/IconButtonEdit';

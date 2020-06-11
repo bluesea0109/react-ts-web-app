@@ -15,7 +15,7 @@ import gql from 'graphql-tag';
 import React, { useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { useParams } from 'react-router';
-import { IUser } from '../../../models';
+import { IUser } from '../../../models/user-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 

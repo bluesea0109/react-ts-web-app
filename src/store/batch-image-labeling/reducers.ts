@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { IBatchLabelingInput } from '../../models';
+import { IBatchLabelingInput, IImageLabel } from '../../models/image-labeling-service';
 import {
   ADD_LABEL,
   BatchImageLabelingActionTypes,
@@ -50,7 +50,7 @@ export function batchImageLabelingReducer(
       imageLabels = new Map<number, IBatchLabelingInput[]>();
       action.images.forEach(img => {
         const labelInputs: IBatchLabelingInput[] = [];
-        img.labels.forEach(label => {
+        img.labels.forEach((label: IImageLabel) => {
           if (label.category) {
             labelInputs.push({
               imageId: img.id,

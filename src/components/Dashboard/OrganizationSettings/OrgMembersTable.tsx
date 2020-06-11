@@ -15,7 +15,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import React, { useState } from 'react';
-import { IMember, IUser } from '../../../models';
+import { IMember, IUser } from '../../../models/user-service';
 import IconButtonDelete from '../../IconButtons/IconButtonDelete';
 import InviteDialog from './InviteDialog';
 

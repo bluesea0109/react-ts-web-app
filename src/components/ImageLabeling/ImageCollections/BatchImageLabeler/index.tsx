@@ -23,7 +23,7 @@ import {
   ICategory,
   ICategorySet,
   IImage,
-} from '../../../../models';
+} from '../../../../models/image-labeling-service';
 import { getBatchImageLabels } from '../../../../store/batch-image-labeling/selectors';
 import ApolloErrorPage from '../../../ApolloErrorPage';
 import ContentLoading from '../../../ContentLoading';

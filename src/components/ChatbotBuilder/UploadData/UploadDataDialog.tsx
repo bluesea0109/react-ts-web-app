@@ -12,7 +12,7 @@ import _ from 'lodash';
 import React from 'react';
 import { withApollo } from 'react-apollo';
 import { CHATBOT_CREATE_INTENTS, CHATBOT_CREATE_TAGS } from '../../../common-gql-queries';
-import { IExampleInput } from '../../../models';
+import { IExampleInput } from '../../../models/chatbot-service';
 
 interface IUploadDataDialogProps {
   agentId: number;

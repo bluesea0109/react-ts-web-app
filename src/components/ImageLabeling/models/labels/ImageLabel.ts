@@ -1,4 +1,4 @@
-import { IImageLabel } from '../../../../models';
+import { IImageLabel } from '../../../../models/image-labeling-service';
 import MultiPolygon from './MultiPolygon';
 import MultiRectangle from './MultiRectangle';
 import MultiShape from './MultiShape';

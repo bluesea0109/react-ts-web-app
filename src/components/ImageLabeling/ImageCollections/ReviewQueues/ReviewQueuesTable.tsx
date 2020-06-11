@@ -12,7 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import React, { useState } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
 import { useHistory, useParams } from 'react-router-dom';
-import { IReviewQueue } from '../../../../models';
+import { IReviewQueue } from '../../../../models/image-labeling-service';
 import ApolloErrorPage from '../../../ApolloErrorPage';
 import ContentLoading from '../../../ContentLoading';
 import IconButtonPlay from '../../../IconButtons/IconButtonPlay';
