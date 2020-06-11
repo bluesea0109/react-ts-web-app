@@ -4,7 +4,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import AutoComplete from '../../Utils/Autocomplete';
 import ExampleTable from './ExampleTable';
 import CreateExamples from './CreateExamples';
-import { IIntent, ITagType } from '../../../models';
+import { IIntent, ITagType } from '../../../models/chatbot-service';
 import { useQuery } from 'react-apollo';
 import { CHATBOT_GET_INTENTS, CHATBOT_GET_TAGS } from '../../../common-gql-queries';
 import { useParams } from 'react-router';

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useQuery, useMutation } from 'react-apollo';
 import { GET_EXAMPLES, CHATBOT_DELETE_EXAMPLE, CHATBOT_UPDATE_EXAMPLE } from '../../../common-gql-queries';
-import {  IExample } from '../../../models';
+import {  IExample } from '../../../models/chatbot-service';
 import ContentLoading from '../../ContentLoading';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import { makeStyles, Theme, createStyles, Paper, TableContainer, Typography } from '@material-ui/core';
