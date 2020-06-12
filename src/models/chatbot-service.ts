@@ -49,3 +49,8 @@ export interface IDataExport {
   createdAt: string;
   url: string;
 }
+
+export interface ITrainingJob {
+  jobId: string;
+  status: string;
+}
