@@ -54,3 +54,8 @@ export interface ITrainingJob {
   jobId: string;
   status: string;
 }
+
+export interface IAgentModelInfo {
+  name: string;
+  status: string;
+}

@@ -1,6 +1,7 @@
 import { createStyles, Grid, makeStyles, Theme } from '@material-ui/core';
 import React from 'react';
 import { useParams } from 'react-router';
+import AgentModelTable from './AgentModelTable';
 import CreateTrainingJobDialog from './CreateTrainingJobDialog';
 import TrainingJobsTable from './TrainingJobsTable';
 
@@ -19,12 +20,17 @@ export default function TrainingJobsTab() {
   return (
     <div className={classes.root}>
       <Grid container={true}>
-        <Grid item={true} xs={6}>
+        <Grid item={true}>
           <CreateTrainingJobDialog agentId={agentId} />
         </Grid>
       </Grid>
-      <Grid container={true}>
-        <TrainingJobsTable />
+      <Grid container={true} spacing={2}>
+        <Grid item={true} xs={6}>
+          <TrainingJobsTable />
+        </Grid>
+        <Grid item={true} xs={6}>
+          <AgentModelTable />
+        </Grid>
       </Grid>
     </div>
   );
