@@ -5,6 +5,7 @@ import DataExportsTab from '../DataExports/DataExportsTab';
 import Intent from '../Intent/Intent';
 import Tag from '../Tags/Tag';
 import Template from '../Template/Template';
+import TrainingJobsTab from '../TrainingJobs/TrainingJobsTab';
 import UploadDataTab from '../UploadData/UploadDataTab';
 
 interface TabPanelProps {
@@ -78,7 +79,8 @@ const AgentDetails = () => {
             <Tab value="Tags" label="Tags" {...a11yProps('Tags')} />
             <Tab value="Templates" label="Templates" {...a11yProps('Templates')} />
             <Tab value="upload-data" label="Upload Data" {...a11yProps('Templates')} />
-            <Tab value="exports" label="Data Exports" {...a11yProps('Templates')} />
+            <Tab value="exports" label="Data Exports" {...a11yProps('Data Exports')} />
+            <Tab value="training-jobs" label="Training Jobs" {...a11yProps('Training Jobs')} />
           </Tabs>
         </Toolbar>
       </Paper>
@@ -96,6 +98,9 @@ const AgentDetails = () => {
       )}
       {agentTab === 'exports' && (
         <DataExportsTab />
+      )}
+      {agentTab === 'training-jobs' && (
+        <TrainingJobsTab />
       )}
     </div>
   );
