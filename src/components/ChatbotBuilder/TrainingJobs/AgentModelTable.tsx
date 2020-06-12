@@ -52,7 +52,7 @@ export default function AgentModelTable() {
   return (
     <Paper className={classes.paper}>
       <Toolbar variant="dense">
-        <Typography variant="h5">Training Jobs</Typography>
+        <Typography variant="h5">Agent Model Info</Typography>
       </Toolbar>
       <Table>
         <TableHead>
