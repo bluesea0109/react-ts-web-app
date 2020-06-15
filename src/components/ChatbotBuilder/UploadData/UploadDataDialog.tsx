@@ -281,7 +281,7 @@ class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDa
 export default withApollo<IUploadDataDialogProps>(UploadDataDialog);
 
 const UPLOAD_EXAMPLES = gql`
-  mutation ($agentId: Int!, $examples: [ChatbotService_IntentExampleInput!]!) {
+  mutation ($agentId: Int!, $examples: [ChatbotService_ExampleInput!]!) {
     ChatbotService_uploadExamples(agentId: $agentId, examples: $examples)
   }
 `;
