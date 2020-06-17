@@ -16,7 +16,7 @@ export interface IIntent {
   agentId: number;
   value: string;
 }
-export interface ITemplate {
+export interface IUtteranceAction {
   id: number;
   agentId: number;
   name: string;
