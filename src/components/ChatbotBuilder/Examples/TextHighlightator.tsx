@@ -1,6 +1,6 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core';
 import React from 'react';
-import Highlighter from "react-highlight-words";
+import Highlighter from 'react-highlight-words';
 import {  IExample } from '../../../models/chatbot-service';
 
 interface ITextHighlitatorProps {
@@ -18,8 +18,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const TextHighlightator: React.FC<ITextHighlitatorProps> = ({rowData, onMouseUp}) => {
     const classes = useStyles();
-    const words = rowData.tags.map((tag:any) => {
-      return rowData.text.slice(tag.start, tag.end)
+    const words = rowData.tags.map((tag: any) => {
+      return rowData.text.slice(tag.start, tag.end);
 
     });
     return (
