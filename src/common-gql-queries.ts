@@ -253,9 +253,9 @@ export const CHATBOT_GET_TAGS = gql`
   }
 `;
 
-export const CHATBOT_GET_TEMPLATES = gql`
+export const CHATBOT_GET_UTTERANCE_ACTIONS = gql`
   query($agentId: Int!) {
-    ChatbotService_templates(agentId: $agentId) {
+    ChatbotService_utteranceActions(agentId: $agentId) {
       id
       agentId
       name
@@ -361,9 +361,9 @@ export const CHATBOT_CREATE_TAGS = gql`
   }
 `;
 
-export const CHATBOT_CREATE_TEMPLATE = gql`
+export const CHATBOT_CREATE_UTTERANCE_ACTION = gql`
   mutation($agentId: Int!, $text: String!, $name: String!) {
-    ChatbotService_createTemplate(agentId: $agentId, name: $name, text: $text) {
+    ChatbotService_createUtteranceAction(agentId: $agentId, name: $name, text: $text) {
       id
       agentId
       name
@@ -390,9 +390,9 @@ export const CHATBOT_DELETE_TAG = gql`
   }
 `;
 
-export const CHATBOT_DELETE_TEMPLATE = gql`
-  mutation($templateId: Int!) {
-    ChatbotService_deleteTemplate(templateId: $templateId) {
+export const CHATBOT_DELETE_UTTERANCE_ACTION = gql`
+  mutation($utteranceActionId: Int!) {
+    ChatbotService_deleteUtteranceAction(utteranceActionId: $utteranceActionId) {
       id
       text
     }

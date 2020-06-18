@@ -6,8 +6,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import 'firebase/auth';
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
-import { CHATBOT_DELETE_TEMPLATE, CHATBOT_GET_TEMPLATES } from '../../../common-gql-queries';
-import { ITemplate } from '../../../models/chatbot-service';
+import { CHATBOT_DELETE_UTTERANCE_ACTION, CHATBOT_GET_UTTERANCE_ACTIONS } from '../../../common-gql-queries';
+import { IUtteranceAction } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 import ConfirmDialog from '../../Utils/ConfirmDialog';
@@ -23,25 +23,25 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-interface IGetTemplates {
-  ChatbotService_templates: ITemplate[] | undefined;
+interface IGetUtteranceActions {
+  ChatbotService_utteranceActions: IUtteranceAction[] | undefined;
 }
 
-function TagsTable() {
+function UtteranceActionsTable() {
   const classes = useStyles();
   const { agentId } = useParams();
   const [confirmOpen, setConfirmOpen] = useState(false);
   const numAgentId = Number(agentId);
 
-  const templatesData = useQuery<IGetTemplates>(CHATBOT_GET_TEMPLATES, { variables: { agentId: numAgentId } });
-  const [deleteTemplate, { loading, error }] = useMutation(CHATBOT_DELETE_TEMPLATE, {
-    refetchQueries: [{ query: CHATBOT_GET_TEMPLATES, variables: { agentId: numAgentId } }],
+  const actionsData = useQuery<IGetUtteranceActions>(CHATBOT_GET_UTTERANCE_ACTIONS, { variables: { agentId: numAgentId } });
+  const [deleteAction, { loading, error }] = useMutation(CHATBOT_DELETE_UTTERANCE_ACTION, {
+    refetchQueries: [{ query: CHATBOT_GET_UTTERANCE_ACTIONS, variables: { agentId: numAgentId } }],
     awaitRefetchQueries: true,
   });
 
-  const commonError = templatesData.error ? templatesData.error : error;
+  const commonError = actionsData.error ? actionsData.error : error;
 
-  if (templatesData.loading || loading) {
+  if (actionsData.loading || loading) {
     return <ContentLoading />;
   }
 
@@ -50,45 +50,45 @@ function TagsTable() {
     return <ApolloErrorPage error={commonError} />;
   }
 
-  const deleteTemplateHandler = (templateId: number) => {
-    deleteTemplate({
+  const deleteUtteranceActionHandler = (utteranceActionId: number) => {
+    deleteAction({
       variables: {
-        templateId,
+        utteranceActionId,
       },
     });
   };
 
-  const templates = templatesData.data?.ChatbotService_templates;
+  const actions = actionsData.data?.ChatbotService_utteranceActions;
   return (
     <Paper className={classes.paper}>
-      {templates ? (
-        <TableContainer component={Paper} aria-label="Templates">
+      {actions ? (
+        <TableContainer component={Paper} aria-label="Utterance Actions">
           <Table>
             <TableHead>
               <TableRow>
                 <TableCell>Name</TableCell>
                 <TableCell>Text</TableCell>
-                <TableCell>Template id</TableCell>
+                <TableCell>Utterance Action id</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {templates.map((template: ITemplate) => (
-                <TableRow key={template.id}>
+              {actions.map((action: IUtteranceAction) => (
+                <TableRow key={action.id}>
                   <TableCell>
-                    {template.name}
+                    {action.name}
                   </TableCell>
-                  <TableCell>{template.text}</TableCell>
-                  <TableCell>{template.id}</TableCell>
+                  <TableCell>{action.text}</TableCell>
+                  <TableCell>{action.id}</TableCell>
                   <TableCell>
                     <IconButton aria-label="delete" onClick={() => setConfirmOpen(true)}>
                       <DeleteIcon />
                     </IconButton>
                     <ConfirmDialog
-                      title="Delete Template?"
+                      title="Delete Action?"
                       open={confirmOpen}
                       setOpen={setConfirmOpen}
-                      onConfirm={() => deleteTemplateHandler(template.id)}
+                      onConfirm={() => deleteUtteranceActionHandler(action.id)}
 
                     >
                       Are you sure you want to delete this template?
@@ -102,11 +102,11 @@ function TagsTable() {
         </TableContainer>
       ) : (
           <Typography align="center" variant="h6">
-            {'No Templates found'}
+            {'No utterance actions found'}
           </Typography>
         )}
     </Paper>
   );
 }
 
-export default TagsTable;
+export default UtteranceActionsTable;

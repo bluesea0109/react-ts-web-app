@@ -24,7 +24,7 @@ export interface IIntent {
   agentId: number;
   value: string;
 }
-export interface ITemplate {
+export interface IUtteranceAction {
   id: number;
   agentId: number;
   name: string;
@@ -56,4 +56,14 @@ export interface IDataExport {
   creator: string;
   createdAt: string;
   url: string;
+}
+
+export interface ITrainingJob {
+  jobId: string;
+  status: string;
+}
+
+export interface IAgentModelInfo {
+  name: string;
+  status: string;
 }

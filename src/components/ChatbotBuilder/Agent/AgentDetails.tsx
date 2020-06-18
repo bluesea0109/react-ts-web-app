@@ -5,8 +5,9 @@ import DataExportsTab from '../DataExports/DataExportsTab';
 import Examples from '../Examples/Examples';
 import Intent from '../Intent/Intent';
 import Tag from '../Tags/Tag';
-import Template from '../Template/Template';
+import TrainingJobsTab from '../TrainingJobs/TrainingJobsTab';
 import UploadDataTab from '../UploadData/UploadDataTab';
+import UtteranceAction from '../UtteranceActions/UtteranceAction';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -77,10 +78,13 @@ const AgentDetails = () => {
           >
             <Tab value="Intents" label="Intents" {...a11yProps('Intents')} />
             <Tab value="Tags" label="Tags" {...a11yProps('Tags')} />
-            <Tab value="Templates" label="Templates" {...a11yProps('Templates')} />
             <Tab value="Examples" label="Examples" {...a11yProps('Examples')} />
             <Tab value="upload-data" label="Upload Data" {...a11yProps('Templates')} />
             <Tab value="exports" label="Data Exports" {...a11yProps('Templates')} />
+            <Tab value="actions" label="Agent Actions" {...a11yProps('Agent Actions')} />
+            <Tab value="upload-data" label="Upload Data" {...a11yProps('Upload Data')} />
+            <Tab value="exports" label="Data Exports" {...a11yProps('Data Exports')} />
+            <Tab value="training-jobs" label="Training Jobs" {...a11yProps('Training Jobs')} />
           </Tabs>
         </Toolbar>
       </Paper>
@@ -90,8 +94,8 @@ const AgentDetails = () => {
       <TabPanel value={agentTab} index="Tags">
         <Tag />
       </TabPanel>
-      <TabPanel value={agentTab} index="Templates" >
-        <Template />
+      <TabPanel value={agentTab} index="actions" >
+        <UtteranceAction />
       </TabPanel>
       {agentTab === 'upload-data' && (
         <UploadDataTab />
@@ -101,6 +105,9 @@ const AgentDetails = () => {
       </TabPanel>
       {agentTab === 'exports' && (
         <DataExportsTab />
+      )}
+      {agentTab === 'training-jobs' && (
+        <TrainingJobsTab />
       )}
     </div>
   );
