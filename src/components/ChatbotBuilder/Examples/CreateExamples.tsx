@@ -5,26 +5,27 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { CREATE_EXAMPLE, GET_EXAMPLES } from '../../../common-gql-queries';
 import ContentLoading from '../../ContentLoading';
 import IconButtonAdd from '../../IconButtons/IconButtonAdd';
-import { CREATE_EXAMPLE, GET_EXAMPLES } from '../../../common-gql-queries';
-
-
 
 interface ICreateExampleProps {
   onCompleted?(): any;
-  intentId : string | null;
+  intentId: string | null;
 }
 
 function CreateExample(props: ICreateExampleProps) {
   const {intentId} = props;
+  const { agentId } = useParams();
+  const numAgentId  = Number(agentId);
   const numIntentId = Number(intentId);
   const [createExample, { loading, error, data }] = useMutation(CREATE_EXAMPLE,
     {
       onCompleted: () => {
         handleClose();
       },
-      refetchQueries: [{ query: GET_EXAMPLES, variables: { intentId: numIntentId  } }],
+      refetchQueries: [{ query: GET_EXAMPLES, variables: { agentId: numAgentId  } }],
       awaitRefetchQueries: true,
     },
   );
@@ -53,8 +54,9 @@ function CreateExample(props: ICreateExampleProps) {
     if (state.name && intentId) {
         createExample({
         variables: {
-            intentId: numIntentId, 
-            text: state.name
+            agentId: numAgentId,
+            text: state.name,
+            intentId: numIntentId,
         },
       });
     }
