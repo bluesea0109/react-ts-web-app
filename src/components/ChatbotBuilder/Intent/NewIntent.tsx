@@ -48,7 +48,7 @@ const NewIntent: React.FC = () => {
     createIntents({
       variables: {
         agentId: numAgentId ,
-        values: [value],
+        intents: [{value : value, defaultResponse: "testing default response" }],
       },
     });
     setValue('');

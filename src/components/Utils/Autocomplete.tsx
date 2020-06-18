@@ -1,12 +1,11 @@
-import React, { Fragment } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-
+import React, { Fragment } from 'react';
 
 interface IComboBoxProps {
     value: string | number | null;
-    label:string;
-    onChange:any;
+    label: string;
+    onChange: any;
     options: any[] | undefined;
   }
 const ComboBox: React.FC<IComboBoxProps> = ({value, onChange, label, options}) => {
@@ -25,7 +24,7 @@ const ComboBox: React.FC<IComboBoxProps> = ({value, onChange, label, options}) =
   } else {
     return null;
   }
-  
-}
+
+};
 
 export default ComboBox;

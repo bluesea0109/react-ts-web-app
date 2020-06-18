@@ -94,10 +94,10 @@ export interface IAgent {
 
 export interface IExample {
   id: number;
-  intentId:number;
+  intentId: number;
   agentId: number;
-  text:string;
-  tags:any;
+  text: string;
+  tags: any;
 }
 
 export interface IIntent {
