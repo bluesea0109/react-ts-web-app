@@ -77,7 +77,7 @@ export default function CreateTrainingJobDialog(props: IProps) {
         open={state.open}
         onClose={handleClose}
         aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Create Agent Training Job</DialogTitle>
+        <DialogTitle id="form-dialog-title">Create Agent Training Jobs</DialogTitle>
         {dialogContent}
         <DialogActions>
           <Button color="primary" onClick={handleClose}>
@@ -91,8 +91,8 @@ export default function CreateTrainingJobDialog(props: IProps) {
           </Button>
         </DialogActions>
       </Dialog>
-      <Button size="small" onClick={handleOpen}>
-        {'Create Agent Training Job'}
+      <Button variant="contained" size="small" onClick={handleOpen}>
+        {'Train Agent'}
       </Button>
     </div>
   );
@@ -100,7 +100,7 @@ export default function CreateTrainingJobDialog(props: IProps) {
 
 const CREATE_TRAINING_JOB = gql`
   mutation ($agentId: Int!) {
-    ChatbotService_createTrainingJob(agentId: $agentId) {
+    ChatbotService_createNLUTrainingJob(agentId: $agentId) {
       jobId
       status
     }
