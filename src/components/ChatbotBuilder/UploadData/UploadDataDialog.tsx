@@ -123,7 +123,7 @@ class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDa
       mutation: CHATBOT_CREATE_INTENTS,
       variables: {
         agentId: this.props.agentId,
-        values: intents,
+        intents: intents.map(x => ({ value: x })),
       },
     });
 

@@ -320,8 +320,8 @@ export const CHATBOT_UPDATE_AGENT = gql`
 `;
 
 export const CHATBOT_CREATE_INTENTS = gql`
-  mutation($agentId: Int!, $values: [String!]!) {
-    ChatbotService_createIntents(agentId: $agentId, values: $values) {
+  mutation($agentId: Int!, $intents: [ChatbotService_IntentInput!]!) {
+    ChatbotService_createIntents(agentId: $agentId, intents: $intents) {
       id
       agentId
       value
