@@ -1,4 +1,4 @@
-import { createStyles, Grid, makeStyles, Theme, TextField } from '@material-ui/core';
+import { createStyles, Grid, makeStyles, TextField, Theme } from '@material-ui/core';
 import React, { useState } from 'react';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     textArea: {
       width: '100%',
-    }
+    },
   }),
 );
 
@@ -24,8 +24,8 @@ export default function ChatWithAgent() {
   return (
     <div className={classes.root}>
       <Grid container={true} spacing={2}>
-        <Grid item container xs={12}>
-          <Grid item xs={12} md={6}>
+        <Grid item={true} container={true} xs={12}>
+          <Grid item={true} xs={12} md={6}>
             <TextField
               className={classes.textArea}
               id="dialogue"
@@ -40,8 +40,8 @@ export default function ChatWithAgent() {
             />
           </Grid>
         </Grid>
-        <Grid item container xs={12}>
-          <Grid item xs={12} md={6}>
+        <Grid item={true} container={true} xs={12}>
+          <Grid item={true} xs={12} md={6}>
             <TextField
               className={classes.textArea}
               id="message"

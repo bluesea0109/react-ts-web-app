@@ -9,7 +9,6 @@ export enum ChatbotActorEnum {
   USER,
 }
 
-
 export interface IAgent {
   id: number;
   projectId: string;
@@ -78,7 +77,7 @@ export interface IDialogueTurn {
   actor: ChatbotActorEnum;
   utterance: string;
   utteranceActionId?: number;
-  customActionId?: number
+  customActionId?: number;
 }
 
 export interface IConversation {
