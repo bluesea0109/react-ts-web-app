@@ -3,12 +3,12 @@ import React from 'react';
 import { useHistory, useParams } from 'react-router';
 import DataExportsTab from '../DataExports/DataExportsTab';
 import Examples from '../Examples/Examples';
+import Examples from '../Examples/Examples';
 import Intent from '../Intent/Intent';
 import Tag from '../Tags/Tag';
 import TrainingJobsTab from '../TrainingJobs/TrainingJobsTab';
 import UploadDataTab from '../UploadData/UploadDataTab';
 import UtteranceAction from '../UtteranceActions/UtteranceAction';
-import Examples from '../Examples/Examples';
 
 interface TabPanelProps {
   children?: React.ReactNode;
