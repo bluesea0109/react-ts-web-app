@@ -3,12 +3,12 @@ import React from 'react';
 import { useHistory, useParams } from 'react-router';
 import DataExportsTab from '../DataExports/DataExportsTab';
 import Examples from '../Examples/Examples';
-import Examples from '../Examples/Examples';
 import Intent from '../Intent/Intent';
 import Tag from '../Tags/Tag';
 import TrainingJobsTab from '../TrainingJobs/TrainingJobsTab';
 import UploadDataTab from '../UploadData/UploadDataTab';
 import UtteranceAction from '../UtteranceActions/UtteranceAction';
+import ChatWithAgent from '../ChatWithAgent';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -87,6 +87,7 @@ const AgentDetails = () => {
             <Tab value="exports" label="Data Exports" {...a11yProps('Data Exports')} />
             <Tab value="training-jobs" label="Training Jobs" {...a11yProps('Training Jobs')} />
             <Tab value="Examples" label="Examples" {...a11yProps('Examples')} />
+            <Tab value="chat" label="Chat with Agent" {...a11yProps('Chat with Agent')} />
           </Tabs>
         </Toolbar>
       </Paper>
@@ -96,7 +97,7 @@ const AgentDetails = () => {
       <TabPanel value={agentTab} index="Tags">
         <Tag />
       </TabPanel>
-      <TabPanel value={agentTab} index="actions" >
+      <TabPanel value={agentTab} index="actions">
         <UtteranceAction />
       </TabPanel>
       {agentTab === 'upload-data' && (
@@ -114,6 +115,9 @@ const AgentDetails = () => {
       <TabPanel value={agentTab} index="Examples" >
         <Examples />
       </TabPanel>
+      {agentTab === 'chat' && (
+        <ChatWithAgent />
+      )}
     </div>
   );
 };
