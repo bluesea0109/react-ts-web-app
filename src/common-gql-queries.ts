@@ -147,7 +147,6 @@ export const CHATBOT_GET_AGENTS = gql`
       projectId
       name
       language
-      # tags
       userIntents {
         id
         agentId
@@ -158,6 +157,11 @@ export const CHATBOT_GET_AGENTS = gql`
         agentId
         name
         text
+      }
+      tagTypes{
+        id
+        agentId
+        value
       }
     }
   }
@@ -170,7 +174,6 @@ export const CHATBOT_GET_AGENT = gql`
       projectId
       name
       language
-      tags
       userIntents {
         id
         agentId
@@ -181,6 +184,11 @@ export const CHATBOT_GET_AGENT = gql`
         agentId
         name
         text
+      }
+      tagTypes{
+        id
+        agentId
+        value
       }
     }
   }
@@ -206,9 +214,9 @@ export const CHATBOT_GET_TAGS = gql`
   }
 `;
 
-export const CHATBOT_GET_UTTERANCE_ACTIONS = gql`
+export const CHATBOT_GET_TEMPLATES = gql`
   query($agentId: Int!) {
-    ChatbotService_utteranceActions(agentId: $agentId) {
+    ChatbotService_templates(agentId: $agentId) {
       id
       agentId
       name
@@ -286,6 +294,7 @@ export const CHATBOT_CREATE_INTENTS = gql`
       id
       agentId
       value
+      defaultResponse
       examples {
         id
         intentId
@@ -313,9 +322,9 @@ export const CHATBOT_CREATE_TAGS = gql`
   }
 `;
 
-export const CHATBOT_CREATE_UTTERANCE_ACTION = gql`
+export const CHATBOT_CREATE_TEMPLATE = gql`
   mutation($agentId: Int!, $text: String!, $name: String!) {
-    ChatbotService_createUtteranceAction(agentId: $agentId, name: $name, text: $text) {
+    ChatbotService_createTemplate(agentId: $agentId, name: $name, text: $text) {
       id
       agentId
       name
@@ -342,9 +351,9 @@ export const CHATBOT_DELETE_TAG = gql`
   }
 `;
 
-export const CHATBOT_DELETE_UTTERANCE_ACTION = gql`
-  mutation($utteranceActionId: Int!) {
-    ChatbotService_deleteUtteranceAction(utteranceActionId: $utteranceActionId) {
+export const CHATBOT_DELETE_TEMPLATE = gql`
+  mutation($templateId: Int!) {
+    ChatbotService_deleteTemplate(templateId: $templateId) {
       id
       text
     }
@@ -370,6 +379,69 @@ export const CHATBOT_UPDATE_INTENT = gql`
           end
         }
       }
+    }
+  }
+`;
+
+export const CREATE_EXAMPLE = gql`
+  mutation($agentId: Int!, $text: String!, $intentId: Int) {
+    ChatbotService_createExample(agentId: $agentId, text: $text, intentId: $intentId) {
+        id
+        intentId
+        agentId
+        text
+    }
+  }
+`;
+
+export const GET_EXAMPLES = gql`
+  query($agentId: Int!) {
+    ChatbotService_examples(agentId: $agentId) {
+        id
+        intentId
+        agentId
+        text
+        tags {
+          id
+          exampleId
+          tagTypeId
+          start
+          end
+          tagType {
+            id
+            agentId
+            value
+          }
+
+        }
+    }
+  }
+`;
+
+export const CHATBOT_DELETE_EXAMPLE = gql`
+  mutation($exampleId: Int!) {
+    ChatbotService_deleteExample(exampleId: $exampleId) {
+      id
+    }
+  }
+`;
+
+export const CHATBOT_UPDATE_EXAMPLE = gql`
+  mutation($exampleId: Int!, $text: String!) {
+    ChatbotService_updateExample(exampleId: $exampleId,text: $text) {
+      id
+    }
+  }
+`;
+
+export const CREATE_EXAMPLE_TAGS = gql`
+  mutation($exampleId: Int!, $tagTypeId: Int!, $start: Int!, $end: Int!) {
+    ChatbotService_createExampleTag(exampleId: $exampleId,tagTypeId: $tagTypeId, start: $start,end: $end) {
+      id
+      exampleId
+      tagTypeId
+      start
+      end
     }
   }
 `;
