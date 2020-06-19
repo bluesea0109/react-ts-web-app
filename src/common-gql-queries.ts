@@ -407,6 +407,12 @@ export const GET_EXAMPLES = gql`
           tagTypeId
           start
           end
+          tagType {
+            id
+            agentId
+            value
+          }
+
         }
     }
   }
