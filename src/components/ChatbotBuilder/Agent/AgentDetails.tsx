@@ -2,6 +2,7 @@ import { Box, makeStyles, Paper, Tab, Tabs, Theme, Toolbar } from '@material-ui/
 import React from 'react';
 import { useHistory, useParams } from 'react-router';
 import DataExportsTab from '../DataExports/DataExportsTab';
+import Examples from '../Examples/Examples';
 import Intent from '../Intent/Intent';
 import Tag from '../Tags/Tag';
 import TrainingJobsTab from '../TrainingJobs/TrainingJobsTab';
@@ -78,6 +79,9 @@ const AgentDetails = () => {
           >
             <Tab value="Intents" label="Intents" {...a11yProps('Intents')} />
             <Tab value="Tags" label="Tags" {...a11yProps('Tags')} />
+            <Tab value="Examples" label="Examples" {...a11yProps('Examples')} />
+            <Tab value="upload-data" label="Upload Data" {...a11yProps('Templates')} />
+            <Tab value="exports" label="Data Exports" {...a11yProps('Templates')} />
             <Tab value="actions" label="Agent Actions" {...a11yProps('Agent Actions')} />
             <Tab value="upload-data" label="Upload Data" {...a11yProps('Upload Data')} />
             <Tab value="exports" label="Data Exports" {...a11yProps('Data Exports')} />
@@ -98,6 +102,9 @@ const AgentDetails = () => {
       {agentTab === 'upload-data' && (
         <UploadDataTab />
       )}
+      <TabPanel value={agentTab} index="Examples" >
+        <Examples />
+      </TabPanel>
       {agentTab === 'exports' && (
         <DataExportsTab />
       )}
