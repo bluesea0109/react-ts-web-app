@@ -4,8 +4,8 @@ import Highlighter from 'react-highlight-words';
 import {  IExample } from '../../../models/chatbot-service';
 
 interface ITextHighlitatorProps {
-  rowData: IExample;
-  onMouseUp: any;
+  example: IExample;
+  onSelectExample: any;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -16,10 +16,10 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const TextHighlightator: React.FC<ITextHighlitatorProps> = ({rowData, onMouseUp}) => {
+const TextHighlightator: React.FC<ITextHighlitatorProps> = ({example, onSelectExample}) => {
     const classes = useStyles();
-    const words = rowData.tags.map((tag: any) => {
-      return rowData.text.slice(tag.start, tag.end);
+    const words = example.tags.map((tag: any) => {
+      return example.text.slice(tag.start, tag.end);
 
     });
     return (
@@ -27,8 +27,8 @@ const TextHighlightator: React.FC<ITextHighlitatorProps> = ({rowData, onMouseUp}
         highlightClassName={classes.selectionText}
         searchWords={[...words]}
         autoEscape={true}
-        textToHighlight={rowData.text}
-        onMouseUp={onMouseUp}
+        textToHighlight={example.text}
+        onMouseUp={onSelectExample}
      />
     );
 };

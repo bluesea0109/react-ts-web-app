@@ -3,7 +3,7 @@ import MaterialTable, { Column } from 'material-table';
 import React, { useEffect } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
 import { useParams } from 'react-router-dom';
-import { CHATBOT_DELETE_EXAMPLE, CHATBOT_UPDATE_EXAMPLE, CREATE_EXAMPLE_TAGTYPES, GET_EXAMPLES } from '../../../common-gql-queries';
+import { CHATBOT_DELETE_EXAMPLE, CHATBOT_UPDATE_EXAMPLE, CREATE_EXAMPLE_TAGS, GET_EXAMPLES } from '../../../common-gql-queries';
 import {  IExample } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
@@ -52,7 +52,7 @@ const ExampleTable: React.FC<IExampleTableProps> = ({tagTypeId, intentId}) => {
         refetchQueries: [{ query: GET_EXAMPLES, variables: { agentId: numAgentId }  }],
         awaitRefetchQueries: true,
       });
-      const [createExampleTagType, updatedDataTag ] = useMutation(CREATE_EXAMPLE_TAGTYPES,  {
+      const [createExampleTagType, updatedDataTag ] = useMutation(CREATE_EXAMPLE_TAGS,  {
         refetchQueries: [{ query: GET_EXAMPLES, variables: { agentId: numAgentId }  }],
         awaitRefetchQueries: true,
       });
@@ -87,8 +87,8 @@ const ExampleTable: React.FC<IExampleTableProps> = ({tagTypeId, intentId}) => {
           { title: 'Example id', field: 'id', editable: 'never' },
           { title: 'Text',
             field: 'text',
-            render: rowData => <TextHighlightator onMouseUp={() => setSingleExample(rowData)}
-            rowData={rowData} />,
+            render: rowData => <TextHighlightator onSelectExample={() => setSingleExample(rowData)}
+            example={rowData} />,
             editable: 'onUpdate',
           },
         ],

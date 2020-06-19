@@ -4,6 +4,7 @@ export enum ChatbotLanguage {
   FR,
 }
 
+
 export interface IAgent {
   id: number;
   projectId: string;
@@ -36,6 +37,7 @@ export interface ITagType {
   agentId: number;
   value: string;
 }
+
 
 export interface IExampleInput {
   text: string;
