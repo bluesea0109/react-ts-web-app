@@ -7,6 +7,7 @@ import Tag from '../Tags/Tag';
 import TrainingJobsTab from '../TrainingJobs/TrainingJobsTab';
 import UploadDataTab from '../UploadData/UploadDataTab';
 import UtteranceAction from '../UtteranceActions/UtteranceAction';
+import ChatWithAgent from '../ChatWithAgent';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -81,6 +82,7 @@ const AgentDetails = () => {
             <Tab value="upload-data" label="Upload Data" {...a11yProps('Upload Data')} />
             <Tab value="exports" label="Data Exports" {...a11yProps('Data Exports')} />
             <Tab value="training-jobs" label="Training Jobs" {...a11yProps('Training Jobs')} />
+            <Tab value="chat" label="Chat with Agent" {...a11yProps('Chat with Agent')} />
           </Tabs>
         </Toolbar>
       </Paper>
@@ -90,7 +92,7 @@ const AgentDetails = () => {
       <TabPanel value={agentTab} index="Tags">
         <Tag />
       </TabPanel>
-      <TabPanel value={agentTab} index="actions" >
+      <TabPanel value={agentTab} index="actions">
         <UtteranceAction />
       </TabPanel>
       {agentTab === 'upload-data' && (
@@ -101,6 +103,9 @@ const AgentDetails = () => {
       )}
       {agentTab === 'training-jobs' && (
         <TrainingJobsTab />
+      )}
+      {agentTab === 'chat' && (
+        <ChatWithAgent />
       )}
     </div>
   );
