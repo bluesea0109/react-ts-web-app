@@ -152,19 +152,6 @@ export const CHATBOT_GET_AGENTS = gql`
         id
         agentId
         value
-        examples {
-          id
-          intentId
-          agentId
-          text
-          tags {
-            id
-            exampleId
-            tagTypeId
-            start
-            end
-          }
-        }
       }
       utteranceActions {
         id
@@ -188,19 +175,6 @@ export const CHATBOT_GET_AGENT = gql`
         id
         agentId
         value
-        examples {
-          id
-          intentId
-          agentId
-          text
-          tags {
-            id
-            exampleId
-            tagTypeId
-            start
-            end
-          }
-        }
       }
       utteranceActions {
         id
@@ -218,19 +192,6 @@ export const CHATBOT_GET_INTENTS = gql`
       id
       agentId
       value
-      examples {
-        id
-        intentId
-        agentId
-        text
-        tags {
-          id
-          exampleId
-          tagTypeId
-          start
-          end
-        }
-      }
     }
   }
 `;
