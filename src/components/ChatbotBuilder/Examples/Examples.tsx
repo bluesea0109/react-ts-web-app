@@ -41,7 +41,7 @@ const Examples = () => {
       setTagSelectedValue(tagSelectedValue ? tagSelectedValue : tags[0]);
     }
     if (intents) {
-      setIntentSelectedValue(intentSelectedValue ? intentSelectedValue : intents[0].id);
+      setIntentSelectedValue(intentSelectedValue ? intentSelectedValue : intents?.[0]?.id);
     }
 
     return () => {
