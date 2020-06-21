@@ -4,11 +4,24 @@ export enum ChatbotLanguage {
   FR,
 }
 
+export enum ChatbotActorEnum {
+  AGENT,
+  USER,
+}
+
 export interface IAgent {
   id: number;
   projectId: string;
   name: string;
   language: string;
+}
+
+export interface IExample {
+  id: number;
+  intentId: number;
+  agentId: number;
+  text: string;
+  tags: any;
 }
 
 export interface IIntent {
@@ -58,4 +71,15 @@ export interface ITrainingJob {
 export interface IAgentModelInfo {
   name: string;
   status: string;
+}
+
+export interface IDialogueTurn {
+  actor: ChatbotActorEnum;
+  utterance: string;
+  utteranceActionId?: number;
+  customActionId?: number;
+}
+
+export interface IConversation {
+  dialogueTurns: IDialogueTurn[];
 }

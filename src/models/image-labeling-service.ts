@@ -78,3 +78,54 @@ export interface IReviewQueueImage {
   reviewer: string;
   status: string;
 }
+
+// chatbot service models
+export enum ChatbotLanguage {
+  EN_US,
+  FR,
+}
+
+export interface IAgent {
+  id: number;
+  projectId: string;
+  name: string;
+  language: string;
+}
+
+export interface IExample {
+  id: number;
+  intentId: number;
+  agentId: number;
+  text: string;
+  tags: any;
+}
+
+export interface IIntent {
+  id: number;
+  agentId: number;
+  value: string;
+}
+export interface ITemplate {
+  id: number;
+  agentId: number;
+  name: string;
+  text: string;
+}
+
+export interface ITagType {
+  id: number;
+  agentId: number;
+  value: string;
+}
+
+export interface IExampleInput {
+  text: string;
+  intent: string;
+  tags: IExampleTagInput[];
+}
+
+export interface IExampleTagInput {
+  tagType: string;
+  start: number;
+  end: number;
+}
