@@ -437,7 +437,7 @@ export const CHATBOT_CREATE_UTTERANCE_ACTION = gql`
   }
 `;
 
-export const CHATBOT_DELETE_UTTERANCE_ACTION = gql`
+export const CHATBOT_DELETE_UTTERANCE_ACTION = gql` 
   mutation($utteranceActionId: Int!) {
     ChatbotService_deleteUtteranceAction(utteranceActionId: $utteranceActionId) {
       id
@@ -445,3 +445,34 @@ export const CHATBOT_DELETE_UTTERANCE_ACTION = gql`
     }
   }
 `;
+
+export const CHATBOT_TALK_TO_AGENT = gql`
+  mutation($conversation: ChatbotService_ConversationInput!) {
+    ChatbotService_talkToAgent(conversation: $conversation) {
+      agentId
+      dialogueTurns {
+        actor
+        utterance
+       }
+    }
+  }
+`;
+
+export const GET_TRAINING_JBOS = gql`
+  query($agentId: Int!) {
+    ChatbotService_trainingJobs(agentId: $agentId) {
+      jobId
+      status
+    }
+  }
+`;
+
+export const CREATE_TRAINING_JOB = gql`
+  mutation ($agentId: Int!) {
+    ChatbotService_createNLUTrainingJob(agentId: $agentId) {
+      jobId
+      status
+    }
+  }
+`;
+

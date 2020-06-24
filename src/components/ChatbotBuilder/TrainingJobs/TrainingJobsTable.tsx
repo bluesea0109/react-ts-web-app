@@ -11,13 +11,13 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Toolbar from '@material-ui/core/Toolbar';
-import gql from 'graphql-tag';
 import React from 'react';
 import { useQuery } from 'react-apollo';
 import { useParams } from 'react-router-dom';
 import { ITrainingJob } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
+import { GET_TRAINING_JBOS } from '../../../common-gql-queries';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -76,11 +76,3 @@ export default function TrainingJobsTable() {
   );
 }
 
-const GET_TRAINING_JBOS = gql`
-  query($agentId: Int!) {
-    ChatbotService_trainingJobs(agentId: $agentId) {
-      jobId
-      status
-    }
-  }
-`;
