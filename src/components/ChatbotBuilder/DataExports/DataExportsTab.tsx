@@ -5,6 +5,7 @@ import DataExportsTable from './DataExportsTable';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
+      width: '100%',
       overflow: 'auto',
       padding: theme.spacing(2),
     },

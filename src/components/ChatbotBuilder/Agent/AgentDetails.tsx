@@ -1,4 +1,4 @@
-import { Box, makeStyles, Paper, Tab, Tabs, Theme, Toolbar } from '@material-ui/core';
+import { Box, makeStyles, Tab, Tabs, Theme } from '@material-ui/core';
 import React from 'react';
 import { useHistory, useParams } from 'react-router';
 import ChatWithAgent from '../ChatWithAgent';
@@ -11,6 +11,7 @@ import UploadDataTab from '../UploadData/UploadDataTab';
 import UtteranceAction from '../UtteranceActions/UtteranceAction';
 
 interface TabPanelProps {
+  className?: string;
   children?: React.ReactNode;
   dir?: string;
   index?: any;
@@ -18,10 +19,11 @@ interface TabPanelProps {
 }
 
 function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
+  const { className, children, value, index, ...other } = props;
 
   return (
     <div
+      className={className}
       role="tabpanel"
       hidden={value !== index}
       id={`full-width-tabpanel-${index}`}
@@ -48,11 +50,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   root: {
     flex: '1 1 0',
     display: 'flex',
-    flexDirection: 'column',
     overflow: 'auto',
   },
   tabPanel: {
     overflow: 'auto',
+    width: '100%',
   },
 }));
 
@@ -69,35 +71,33 @@ const AgentDetails = () => {
 
   return (
     <div className={classes.root}>
-      <Paper>
-        <Toolbar variant="dense" disableGutters={true}>
-          <Tabs
-            value={agentTab}
-            onChange={handleChangeTab}
-            indicatorColor="secondary"
-            textColor="primary"
-          >
-            <Tab value="Intents" label="Intents" {...a11yProps('Intents')} />
-            <Tab value="Tags" label="Tags" {...a11yProps('Tags')} />
-            <Tab value="examples" label="Examples" {...a11yProps('Examples')} />
-            <Tab value="actions" label="Agent Actions" {...a11yProps('Agent Actions')} />
-            <Tab value="upload-data" label="Upload Data" {...a11yProps('Upload Data')} />
-            <Tab value="exports" label="Data Exports" {...a11yProps('Data Exports')} />
-            <Tab value="training-jobs" label="Training Jobs" {...a11yProps('Training Jobs')} />
-            <Tab value="chat" label="Chat with Agent" {...a11yProps('Chat with Agent')} />
-          </Tabs>
-        </Toolbar>
-      </Paper>
-      <TabPanel value={agentTab} index="Intents" >
+      <Tabs
+        value={agentTab}
+        onChange={handleChangeTab}
+        indicatorColor="secondary"
+        variant="scrollable"
+        orientation="vertical"
+        textColor="primary"
+      >
+        <Tab value="Intents" label="Intents" {...a11yProps('Intents')} />
+        <Tab value="Tags" label="Tags" {...a11yProps('Tags')} />
+        <Tab value="examples" label="Examples" {...a11yProps('Examples')} />
+        <Tab value="actions" label="Agent Actions" {...a11yProps('Agent Actions')} />
+        <Tab value="upload-data" label="Upload Data" {...a11yProps('Upload Data')} />
+        <Tab value="exports" label="Data Exports" {...a11yProps('Data Exports')} />
+        <Tab value="training-jobs" label="Training Jobs" {...a11yProps('Training Jobs')} />
+        <Tab value="chat" label="Chat with Agent" {...a11yProps('Chat with Agent')} />
+      </Tabs>
+      <TabPanel className={classes.tabPanel} value={agentTab} index="Intents" >
         <Intent />
       </TabPanel>
-      <TabPanel value={agentTab} index="Tags">
+      <TabPanel className={classes.tabPanel} value={agentTab} index="Tags">
         <Tag />
       </TabPanel>
-      <TabPanel value={agentTab} index="actions">
+      <TabPanel className={classes.tabPanel} value={agentTab} index="actions">
         <UtteranceAction />
       </TabPanel>
-      <TabPanel value={agentTab} index="examples" >
+      <TabPanel className={classes.tabPanel} value={agentTab} index="examples" >
         <Examples />
       </TabPanel>
       {agentTab === 'upload-data' && (
