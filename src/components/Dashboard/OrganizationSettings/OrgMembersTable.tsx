@@ -66,7 +66,7 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [
     removeOrgMember,
-    { error, loading, data: removedMember },
+    { loading, data: removedMember },
   ] = useMutation(REMOVE_ORG_MEMBER, {
     onCompleted() {
       props.refetchOrgs();
