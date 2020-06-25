@@ -27,7 +27,7 @@ interface IGetOrgs {
 export default function OrganizationSettings(props: IOrgSettingsProps) {
   const classes = useStyles();
   const { orgId } = useParams();
-  const { error, loading, data } = useQuery<IGetOrgs>(GET_ORGS, { variables: { id: orgId }});
+  const { error, loading, data, refetch } = useQuery<IGetOrgs>(GET_ORGS, { variables: { id: orgId }});
 
   if (error) {
     return <ApolloErrorPage error={error}/>;
@@ -46,7 +46,7 @@ export default function OrganizationSettings(props: IOrgSettingsProps) {
   return (
     <div className={classes.root}>
       <Typography>{'Organization Settings'}</Typography>
-      <OrgMembersTable members={org.members || []} user={props.user} />
+      <OrgMembersTable members={org.members || []} user={props.user} refetchOrgs={refetch} />
     </div>
   );
 }
