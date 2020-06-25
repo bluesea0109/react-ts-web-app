@@ -3,7 +3,6 @@ import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import React, { useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { CHATBOT_TALK_TO_AGENT } from '../../../common-gql-queries';
-import ContentLoading from '../../ContentLoading';
 import ChatBox from './ChatBox';
 import { useParams } from 'react-router';
 
@@ -26,18 +25,15 @@ function Alert(props: AlertProps) {
 
 export default function ChatWithAgent() {
   const [state, setState] = useState({
-    dialogue: '',
     userUtterance: ''
   });
+  const [chatResponse, setChatResponse] = useState<any[]>([])
   const [errStatus, setErrStatus] = useState('')
   const { agentId } = useParams();
   const numAgentId = Number(agentId);
   const classes = useStyles();
   const [talkToAgent, { loading }] = useMutation(CHATBOT_TALK_TO_AGENT);
 
-  if (loading) {
-    return <ContentLoading />;
-  }
 
 
   
@@ -52,15 +48,19 @@ export default function ChatWithAgent() {
            },
          }
         });
-        console.log('response', response);
+        const appenedResponse = [...chatResponse, ...response.data.ChatbotService_talkToAgent.dialogueTurns];
+        setChatResponse(appenedResponse);
   
         setState({ ...state, userUtterance: '' })
       } catch (e) {
-        if(e && e.graphQLErrors[0] && e.graphQLErrors[0].extensions && e.graphQLErrors[0].extensions.code === 'NO_MODEL' && e.graphQLErrors[0].message) {
-          setErrStatus(e.graphQLErrors[0].message)
-        } else {
-          setErrStatus(e.graphQLErrors[0].message)
+        if (e && e.graphQLErrors && e.graphQLErrors.length > 0) {
+          if(e.graphQLErrors[0] && e.graphQLErrors[0].extensions && e.graphQLErrors[0].extensions.code === 'NO_MODEL' && e.graphQLErrors[0].message) {
+            setErrStatus(e.graphQLErrors[0].message)
+          } else {
+            setErrStatus(e.graphQLErrors[0].message)
+          }
         }
+        
       }
 
     }
@@ -80,7 +80,7 @@ export default function ChatWithAgent() {
         <Grid item={true} container={true} xs={12}>
           <Grid item={true} xs={12} md={6}>
              {errStatus && <Alert severity="error">{errStatus}</Alert>}
-             <ChatBox/>
+             <ChatBox loading={loading} chatResponse={chatResponse} currentTxt={state.userUtterance} />
           </Grid>
         </Grid>
         <Grid item={true} container={true} xs={12}>
