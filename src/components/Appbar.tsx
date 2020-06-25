@@ -5,6 +5,7 @@ import {
   FormControl,
   IconButton,
   InputLabel,
+  TextField,
   Theme,
 } from '@material-ui/core';
 import AppBar, { AppBarProps } from '@material-ui/core/AppBar';
@@ -51,6 +52,19 @@ const useStyles = makeStyles((theme: Theme) =>
     border: {
       borderBottom: '1px solid white',
     },
+    noProject: {
+      width: 100,
+      marginLeft: 10,
+      '& label': {
+        color: '#ffffff',
+      },
+      '& .MuiInputBase-root': {
+        color: '#ffffff',
+        '&::before': {
+          borderBottomColor: '#ffffff',
+        },
+      },
+    },
   }),
 );
 
@@ -78,9 +92,9 @@ const Orgs: React.FC<{ user: IUser }> = ({ user }) => {
     });
   };
 
-  return loading ? (
-    <CircularProgress color="secondary" />
-  ) : (
+  if (loading) { return <CircularProgress color="secondary" />; }
+  const orgs = user.orgs ?? [];
+  return orgs?.length !== 0 ? (
     <FormControl>
       <InputLabel className={clsx(classes.selectLabel)} id="select-active-org">
         Org
@@ -97,13 +111,23 @@ const Orgs: React.FC<{ user: IUser }> = ({ user }) => {
           },
         }}
       >
-        {user.orgs?.map((org: any) => (
+        {orgs?.map((org: any) => (
           <MenuItem key={org.id} value={org.id}>
             {org.name}
           </MenuItem>
         ))}
       </Select>
     </FormControl>
+  ) : (
+    <TextField
+      className={classes.noProject}
+      id="no-org"
+      label="Org"
+      defaultValue=" No Org"
+      InputProps={{
+        readOnly: true,
+      }}
+    />
   );
 };
 
@@ -156,7 +180,17 @@ const Projects: React.FC<{ user: IUser }> = ({ user }) => {
         ))}
       </Select>
     </FormControl>
-  ) : null;
+  ) : (
+    <TextField
+      className={classes.noProject}
+      id="no-project"
+      label="Project"
+      defaultValue=" No Project"
+      InputProps={{
+        readOnly: true,
+      }}
+    />
+  );
 };
 
 const CustomAppbar: React.FC<CustomAppbarProps> = ({
