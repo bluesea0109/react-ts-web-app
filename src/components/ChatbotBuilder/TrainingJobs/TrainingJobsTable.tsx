@@ -14,7 +14,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import React from 'react';
 import { useQuery } from 'react-apollo';
 import { useParams } from 'react-router-dom';
-import { GET_TRAINING_JBOS } from '../../../common-gql-queries';
+import { GET_TRAINING_JOBS } from '../../../common-gql-queries';
 import { ITrainingJob } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
@@ -37,7 +37,7 @@ export default function TrainingJobsTable() {
   interface IGetTrainingJobs {
     ChatbotService_trainingJobs: ITrainingJob[];
   }
-  const getTrainingJobs = useQuery<IGetTrainingJobs>(GET_TRAINING_JBOS, { variables: { agentId } });
+  const getTrainingJobs = useQuery<IGetTrainingJobs>(GET_TRAINING_JOBS, { variables: { agentId } });
 
   if (getTrainingJobs.error) {
     return <ApolloErrorPage error={getTrainingJobs.error} />;

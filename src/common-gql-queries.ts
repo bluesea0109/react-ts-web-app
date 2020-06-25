@@ -458,7 +458,7 @@ export const CHATBOT_TALK_TO_AGENT = gql`
   }
 `;
 
-export const GET_TRAINING_JBOS = gql`
+export const GET_TRAINING_JOBS = gql`
   query($agentId: Int!) {
     ChatbotService_trainingJobs(agentId: $agentId) {
       jobId

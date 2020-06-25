@@ -51,10 +51,11 @@ const NewIntent: React.FC = () => {
   }
 
   const onSubmit =  () => {
+    const dfltResponse = defaultResponse === '' ? undefined : defaultResponse;
     createIntents({
       variables: {
         agentId: numAgentId ,
-        intents: [{value, defaultResponse}],
+        intents: [{value, defaultResponse : dfltResponse}],
       },
     });
     setValue('');

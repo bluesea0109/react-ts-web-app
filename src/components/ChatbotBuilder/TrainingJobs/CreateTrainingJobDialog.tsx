@@ -6,7 +6,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { useState } from 'react';
 import { useMutation } from 'react-apollo';
-import { CREATE_TRAINING_JOB, GET_TRAINING_JBOS } from '../../../common-gql-queries';
+import { CREATE_TRAINING_JOB, GET_TRAINING_JOBS } from '../../../common-gql-queries';
 import ContentLoading from '../../ContentLoading';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -36,7 +36,7 @@ export default function CreateTrainingJobDialog(props: IProps) {
   });
 
   const [createTrainingJob, { error, loading }] = useMutation(CREATE_TRAINING_JOB, {
-    refetchQueries: [{ query: GET_TRAINING_JBOS, variables: { agentId: props.agentId } }],
+    refetchQueries: [{ query: GET_TRAINING_JOBS, variables: { agentId: props.agentId } }],
     awaitRefetchQueries: true,
   });
 
