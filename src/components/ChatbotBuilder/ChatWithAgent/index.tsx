@@ -50,7 +50,7 @@ export default function ChatWithAgent() {
 
         setState({ ...state, userUtterance: '' });
       } catch (e) {
-        if(e?.graphQLErrors?.[0]?.extensions?.code === 'NO_MODEL' && e?.graphQLErrors?.[0]?.message) {
+        if (e?.graphQLErrors?.[0]?.extensions?.code === 'NO_MODEL' && e?.graphQLErrors?.[0]?.message) {
           setErrStatus(e.graphQLErrors[0].message);
         } else {
           setErrStatus(e.graphQLErrors[0].message);
