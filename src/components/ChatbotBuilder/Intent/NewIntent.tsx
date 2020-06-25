@@ -75,7 +75,9 @@ const NewIntent: React.FC = () => {
         className={clsx(classes.inputBox)}
       />
       <br />
-      <TextareaAutosize aria-label="minimum height" className={clsx(classes.textAreaBox)}  value={defaultResponse} onChange={(e: any) => setDefaultResponse(e.target.value as string)} rowsMin={4} placeholder="Intent Default Response" />
+      <TextareaAutosize aria-label="minimum height" className={clsx(classes.textAreaBox)}
+      value={defaultResponse} onChange={(e: any) => setDefaultResponse(e.target.value as string)}
+      rowsMin={4} placeholder="Intent Default Response" />
       <br />
       <Button
         className={clsx(classes.button)}
