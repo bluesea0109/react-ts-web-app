@@ -5,10 +5,10 @@ import {
   createStyles,
   LinearProgress,
   makeStyles,
+  TextareaAutosize,
   TextField,
   Theme,
   Typography,
-  TextareaAutosize,
 } from '@material-ui/core';
 import clsx from 'clsx';
 import React, { useState } from 'react';
@@ -54,7 +54,7 @@ const NewIntent: React.FC = () => {
     createIntents({
       variables: {
         agentId: numAgentId ,
-        intents: [{value:value, defaultResponse:defaultResponse}],
+        intents: [{value, defaultResponse}],
       },
     });
     setValue('');

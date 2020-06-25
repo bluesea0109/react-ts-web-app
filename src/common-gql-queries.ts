@@ -437,7 +437,7 @@ export const CHATBOT_CREATE_UTTERANCE_ACTION = gql`
   }
 `;
 
-export const CHATBOT_DELETE_UTTERANCE_ACTION = gql` 
+export const CHATBOT_DELETE_UTTERANCE_ACTION = gql`
   mutation($utteranceActionId: Int!) {
     ChatbotService_deleteUtteranceAction(utteranceActionId: $utteranceActionId) {
       id
@@ -475,4 +475,3 @@ export const CREATE_TRAINING_JOB = gql`
     }
   }
 `;
-

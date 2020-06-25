@@ -14,10 +14,10 @@ import Toolbar from '@material-ui/core/Toolbar';
 import React from 'react';
 import { useQuery } from 'react-apollo';
 import { useParams } from 'react-router-dom';
+import { GET_TRAINING_JBOS } from '../../../common-gql-queries';
 import { ITrainingJob } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
-import { GET_TRAINING_JBOS } from '../../../common-gql-queries';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -75,4 +75,3 @@ export default function TrainingJobsTable() {
     </Paper>
   );
 }
-

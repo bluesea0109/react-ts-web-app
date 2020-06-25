@@ -2,9 +2,9 @@ import { createStyles, Grid, makeStyles, TextField, Theme } from '@material-ui/c
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import React, { useState } from 'react';
 import { useMutation } from 'react-apollo';
+import { useParams } from 'react-router';
 import { CHATBOT_TALK_TO_AGENT } from '../../../common-gql-queries';
 import ChatBox from './ChatBox';
-import { useParams } from 'react-router';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,18 +25,15 @@ function Alert(props: AlertProps) {
 
 export default function ChatWithAgent() {
   const [state, setState] = useState({
-    userUtterance: ''
+    userUtterance: '',
   });
-  const [chatResponse, setChatResponse] = useState<any[]>([])
-  const [errStatus, setErrStatus] = useState('')
+  const [chatResponse, setChatResponse] = useState<any[]>([]);
+  const [errStatus, setErrStatus] = useState('');
   const { agentId } = useParams();
   const numAgentId = Number(agentId);
   const classes = useStyles();
   const [talkToAgent, { loading }] = useMutation(CHATBOT_TALK_TO_AGENT);
 
-
-
-  
   const onKeyDownHandler = async (e: React.KeyboardEvent) => {
     if (e.keyCode === 13) {
       try {
@@ -46,33 +43,29 @@ export default function ChatWithAgent() {
               agentId: numAgentId,
               dialogueTurns: [{actor: 'USER', utterance: state.userUtterance}],
            },
-         }
+         },
         });
         const appenedResponse = [...chatResponse, ...response.data.ChatbotService_talkToAgent.dialogueTurns];
         setChatResponse(appenedResponse);
-  
-        setState({ ...state, userUtterance: '' })
+
+        setState({ ...state, userUtterance: '' });
       } catch (e) {
         if (e && e.graphQLErrors && e.graphQLErrors.length > 0) {
-          if(e.graphQLErrors[0] && e.graphQLErrors[0].extensions && e.graphQLErrors[0].extensions.code === 'NO_MODEL' && e.graphQLErrors[0].message) {
-            setErrStatus(e.graphQLErrors[0].message)
+          if (e.graphQLErrors[0] && e.graphQLErrors[0].extensions && e.graphQLErrors[0].extensions.code === 'NO_MODEL' && e.graphQLErrors[0].message) {
+            setErrStatus(e.graphQLErrors[0].message);
           } else {
-            setErrStatus(e.graphQLErrors[0].message)
+            setErrStatus(e.graphQLErrors[0].message);
           }
         }
-        
+
       }
 
     }
   };
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setState({ ...state,  userUtterance: e.target.value })
+    setState({ ...state,  userUtterance: e.target.value });
     setErrStatus('');
-  }
-
-  
-
-
+  };
 
   return (
     <div className={classes.root}>

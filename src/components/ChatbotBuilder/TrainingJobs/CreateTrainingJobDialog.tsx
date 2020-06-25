@@ -6,8 +6,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { useState } from 'react';
 import { useMutation } from 'react-apollo';
-import ContentLoading from '../../ContentLoading';
 import { CREATE_TRAINING_JOB, GET_TRAINING_JBOS } from '../../../common-gql-queries';
+import ContentLoading from '../../ContentLoading';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -49,21 +49,20 @@ export default function CreateTrainingJobDialog(props: IProps) {
   };
   let dialogContent;
   const handleCreateTrainingJob = async () => {
-  try{
+  try {
     const responseData =  await createTrainingJob({
       variables: {
         agentId: props.agentId,
       },
     });
-    if(responseData) {
+    if (responseData) {
       handleClose();
     }
   } catch (e) {
-    dialogContent = e.graphQLErrors[0].message
+    dialogContent = e.graphQLErrors[0].message;
   }
-  
-  };
 
+  };
 
   if (error) {
     dialogContent = (
@@ -107,5 +106,3 @@ export default function CreateTrainingJobDialog(props: IProps) {
     </div>
   );
 }
-
-

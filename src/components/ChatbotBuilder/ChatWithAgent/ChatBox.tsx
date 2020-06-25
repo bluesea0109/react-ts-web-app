@@ -1,33 +1,32 @@
-import React, { useRef, useEffect } from "react";
 import { createStyles, makeStyles, Theme } from '@material-ui/core';
 import Avatar from '@material-ui/core/Avatar';
 import { deepOrange, deepPurple } from '@material-ui/core/colors';
-
+import React, { useEffect, useRef } from 'react';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
-      border: "0.5px solid black",
+      border: '0.5px solid black',
       padding: theme.spacing(2),
       maxHeight: '200px',
-      overflowY: 'auto'
+      overflowY: 'auto',
     },
     bubbleContainer: {
-      width: "100%",
-      display: "flex"
+      width: '100%',
+      display: 'flex',
     },
     left: {
-      justifyContent: 'flex-start!important'
+      justifyContent: 'flex-start!important',
     },
     right: {
-      justifyContent: 'flex-end!important'
+      justifyContent: 'flex-end!important',
     },
     bubble: {
-      border: "0.5px solid black",
-      borderRadius: "10px",
-      margin: "0px 5px",
-      padding: "10px",
-      display: "inline-block"
+      border: '0.5px solid black',
+      borderRadius: '10px',
+      margin: '0px 5px',
+      padding: '10px',
+      display: 'inline-block',
     },
     orange: {
       color: theme.palette.getContrastText(deepOrange[500]),
@@ -36,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) =>
     purple: {
       color: theme.palette.getContrastText(deepPurple[500]),
       backgroundColor: deepPurple[500],
-      order: 1
+      order: 1,
     },
   }),
 );
@@ -50,32 +49,32 @@ interface IChatBoxProps {
 const ChatBox: React.FC<IChatBoxProps> = ({ loading, chatResponse, currentTxt }) => {
   const classes = useStyles();
   let data = chatResponse && chatResponse.map((singleMsg: any) => {
-    const { actor, utterance } = singleMsg
-    if (actor === "USER") {
+    const { actor, utterance } = singleMsg;
+    if (actor === 'USER') {
       return {
         message: utterance,
-        direction: "right"
-      }
+        direction: 'right',
+      };
     } else {
       return {
         message: utterance,
-        direction: "left"
-      }
+        direction: 'left',
+      };
     }
-  })
+  });
   if (loading) {
     data = [...data, {
       message: currentTxt,
-      direction: "right"
+      direction: 'right',
     }, {
-      message: "Typing..........",
-      direction: "left"
-    }]
+      message: 'Typing..........',
+      direction: 'left',
+    }];
   }
   const messagesEndRef: React.MutableRefObject<any> = useRef(null);
 
   useEffect(() => {
-    messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
+    messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
   }, [chatResponse, loading]);
 
   const chatBubbles = data && data.map((obj: any, i = 0) => {
@@ -89,7 +88,7 @@ const ChatBox: React.FC<IChatBoxProps> = ({ loading, chatResponse, currentTxt })
           <div>{obj.message}</div>
         </div>
       </div>
-    )
+    );
   });
 
   return <div className={classes.container}>{chatBubbles}<div ref={messagesEndRef}>&nbsp;</div></div>;
