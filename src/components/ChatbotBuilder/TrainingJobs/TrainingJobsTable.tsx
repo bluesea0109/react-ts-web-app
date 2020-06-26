@@ -11,10 +11,10 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Toolbar from '@material-ui/core/Toolbar';
-import gql from 'graphql-tag';
 import React from 'react';
 import { useQuery } from 'react-apollo';
 import { useParams } from 'react-router-dom';
+import { GET_TRAINING_JOBS } from '../../../common-gql-queries';
 import { ITrainingJob } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
@@ -37,7 +37,7 @@ export default function TrainingJobsTable() {
   interface IGetTrainingJobs {
     ChatbotService_trainingJobs: ITrainingJob[];
   }
-  const getTrainingJobs = useQuery<IGetTrainingJobs>(GET_TRAINING_JBOS, { variables: { agentId } });
+  const getTrainingJobs = useQuery<IGetTrainingJobs>(GET_TRAINING_JOBS, { variables: { agentId } });
 
   if (getTrainingJobs.error) {
     return <ApolloErrorPage error={getTrainingJobs.error} />;
@@ -75,12 +75,3 @@ export default function TrainingJobsTable() {
     </Paper>
   );
 }
-
-const GET_TRAINING_JBOS = gql`
-  query($agentId: Int!) {
-    ChatbotService_trainingJobs(agentId: $agentId) {
-      jobId
-      status
-    }
-  }
-`;
