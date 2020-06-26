@@ -46,7 +46,6 @@ function IntentsTable() {
   }
 
   if ( commonError) {
-    // TODO: handle errors
     return <ApolloErrorPage error={commonError} />;
   }
 
@@ -60,6 +59,7 @@ function IntentsTable() {
   };
 
   const intents = intentsData.data && intentsData.data.ChatbotService_intents;
+  console.log(intents);
   return (
     <Paper className={classes.paper}>
       {intents ? (
@@ -69,6 +69,7 @@ function IntentsTable() {
               <TableRow>
                 <TableCell>Name</TableCell>
                 <TableCell>Intent id</TableCell>
+                <TableCell>Default Response</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -78,6 +79,7 @@ function IntentsTable() {
                   <TableCell>
                         {intent.value}
                   </TableCell>
+                  <TableCell>{intent.id}</TableCell>
                   <TableCell>{intent.id}</TableCell>
                   <TableCell>
                      <IconButton aria-label="delete" onClick={() => setConfirmOpen(true)}>
