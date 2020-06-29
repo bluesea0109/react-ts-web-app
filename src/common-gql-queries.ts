@@ -475,3 +475,26 @@ export const CREATE_TRAINING_JOB = gql`
     }
   }
 `;
+
+export const CREATE_TRAINING_CONVERSATIONS = gql`
+  mutation ($conversation: ChatbotService_TrainingConversationInput!){
+    ChatbotService_createTrainingConversation(conversation: $conversation){
+      agentId
+      userActions {
+        turn
+        intent
+        tagValues {
+           tagType
+           value
+        }
+        utterance
+      }
+      agentActions {
+          turn
+          actionId
+          actionType
+          utterance
+      }
+    }
+  }
+`;
