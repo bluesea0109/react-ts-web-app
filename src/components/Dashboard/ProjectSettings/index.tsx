@@ -16,14 +16,6 @@ import { useMutation, useQuery } from '@apollo/react-hooks';
 import { createApiKeyMutation, deleteApiKeyMutation, getApiKeysQuery } from './gql';
 import { useParams } from 'react-router';
 
-type APIKey = {
-  key: string;
-  orgId: string;
-  projectId: string;
-  orgName: string;
-  projectName: string;
-}
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     keyItem: {
