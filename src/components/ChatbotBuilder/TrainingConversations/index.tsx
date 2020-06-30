@@ -2,33 +2,27 @@ import {
   Button,
   ExpansionPanel,
   ExpansionPanelDetails,
-  ExpansionPanelSummary, FormControl,
-  Grid,
-  IconButton, InputLabel,
+  ExpansionPanelSummary,
+  Grid, IconButton,
   Paper,
-  TextField,
   Typography,
 } from '@material-ui/core';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
 import {
   createStyles,
   makeStyles,
   Theme,
 } from '@material-ui/core/styles';
-import { AddCircleOutline, Delete, ExpandMore } from '@material-ui/icons';
-import { Alert } from '@material-ui/lab';
-import React, { Fragment, useEffect, useState } from 'react';
-import { useMutation, useQuery } from 'react-apollo';
+import { Delete, Edit, ExpandMore } from '@material-ui/icons';
+import React, {useState } from 'react';
+import { useQuery } from 'react-apollo';
 import { useParams } from 'react-router-dom';
 import {
-  CHATBOT_GET_INTENTS,
-  CHATBOT_GET_TAGS,
-  CHATBOT_GET_UTTERANCE_ACTIONS,
-  CREATE_TRAINING_CONVERSATIONS,
+  GET_TRAINING_CONVERSATIONS,
 } from '../../../common-gql-queries';
-import { IIntent, ITagType, IUtteranceAction } from '../../../models/chatbot-service';
-import AutoComplete from '../../Utils/Autocomplete';
+import { ITrainingConversations } from '../../../models/chatbot-service';
+import ApolloErrorPage from '../../ApolloErrorPage';
+import ContentLoading from '../../ContentLoading';
+import CreateConversation from './createTrainingConversations';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -54,6 +48,17 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
+    },
+    actionButtonWrapper: {
+      display: 'flex',
+      justifyContent: 'flex-end',
+      '& button': {
+        '& span': {
+          '& svg': {
+            fontSize: '22px',
+          },
+        },
+      },
     },
     actionDetailsWrapper: {
       width: '50%',
@@ -85,113 +90,56 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
      color: 'black',
     },
+    contentTable: {
+      width: '65%',
+      '& tr': {
+        '& th': {
+          color: '#777',
+        },
+        '& td': {
+          textAlign: 'center',
+          color: '#333',
+        },
+      },
+    },
 
   }));
 
-interface IGetTags {
-  ChatbotService_tagTypes: ITagType[] | undefined;
+interface IGetTrainingConversation {
+  ChatbotService_trainingConversations: ITrainingConversations[];
 }
-
-interface IGetIntents {
-  ChatbotService_intents: IIntent[] | undefined;
-}
-
-interface IGetUtteranceActions {
-  ChatbotService_utteranceActions: IUtteranceAction[] | undefined;
-}
-
 export default function TrainingConversations() {
   const classes = useStyles();
   const { agentId } = useParams();
-  const [errStatus, setErrStatus] = useState('');
-  const [conversationList, setConversationList] = useState<any | null>([]);
+  const [createConversation, setcreateConversation] = useState(false);
   const numAgentId = Number(agentId);
-  const [actionData, setActionsValue] = useState<any | null>([]);
-  const [turn, setTurns] = useState<any | null>([]);
+  const getTrainingConversations = useQuery<IGetTrainingConversation>(GET_TRAINING_CONVERSATIONS, { variables: { agentId: numAgentId } });
+  let conversations = getTrainingConversations.data?.ChatbotService_trainingConversations || [];
+  const refetchConversations = getTrainingConversations.refetch;
 
-  const [userActions] = useMutation(CREATE_TRAINING_CONVERSATIONS);
-  const intentsData = useQuery<IGetIntents>(CHATBOT_GET_INTENTS, { variables: { agentId: numAgentId } });
-  const tagsData = useQuery<IGetTags>(CHATBOT_GET_TAGS, { variables: { agentId: numAgentId } });
-  const actionsData = useQuery<IGetUtteranceActions>(CHATBOT_GET_UTTERANCE_ACTIONS, { variables: { agentId: numAgentId } });
-  const intents = intentsData.data && intentsData.data.ChatbotService_intents;
-  const tags = tagsData.data && tagsData.data.ChatbotService_tagTypes;
-  const [tagSelectedValue, setTagSelectedValue] = useState<any | null>(null);
-  const [intentSelectedValue, setIntentSelectedValue] = useState<any | null>(null);
-
-  const actions = actionsData.data?.ChatbotService_utteranceActions;
-  const actionId = actions !== undefined ?  actions.map(item => ({id: item.id, value: item.text})) : [];
-
-  useEffect(() => {
-    if (tags) {
-      setTagSelectedValue(tagSelectedValue ? tagSelectedValue : tags[0]);
-    }
-
-    if (intents) {
-      setIntentSelectedValue(intentSelectedValue ? intentSelectedValue : intents?.[0]?.id);
-    }
-
-    return () => {
-    };
-
-  }, [intentSelectedValue, intents, tagSelectedValue, tags]);
-
-  const onSubmit = async () => {
-    try {
-
-      const response = await userActions({
-        variables: {
-          conversation : {
-            agentId: numAgentId,
-            agentActions: [],
-            userActions: [{
-              turn: 0,
-              intent: intentSelectedValue?.value,
-              tagValues: [{tagType: tagSelectedValue?.value,
-                value: tagSelectedValue?.value }],
-              utterance: 'Test',
-            }],
-          },
-        },
-      });
-
-    } catch (e) {
-      if (e?.graphQLErrors?.[0]?.extensions?.code === 'NO_MODEL' && e?.graphQLErrors?.[0]?.message) {
-        setErrStatus(e.graphQLErrors[0].message);
-      } else {
-        setErrStatus(e.graphQLErrors[0].message);
-      }
-    }
-  };
+  const data = conversations.map((item: any) => {
+    item.userActions.map((a: any) => a.isUser = true);
+    item.agentActions.map((a: any) => a.isAgent = true);
+    const arr = item.userActions.concat(item.agentActions).sort((a: any, b: any) => parseFloat(a.turn) - parseFloat(b.turn));
+    return {actions: arr, id: item.id};
+  });
 
   const onCreateNewConversation = () => {
-      const arr = [{agentId: numAgentId}];
-      setConversationList(arr);
+    setcreateConversation(true);
   };
 
-  const handleAddFields = (turnValue: string) => {
-      const values = [...actionData];
-      values.push({
-        userActions:
-          turnValue === 'user' ? [{ turn:  turn.length, intent: '', tagValues: [{ tagType: '', value: '' }], utterance: '' }] : [],
-        AgentAction:
-          turnValue === 'agent' ? [{ turn:  turn.length, actionId: '', actionType: '', utterance: ''  }] : [],
-      });
-      setActionsValue(values);
-      setTurns([...turn, turnValue]);
-  };
+  if (getTrainingConversations.error) {
+    return <ApolloErrorPage error={getTrainingConversations.error} />;
+  }
 
-  const handleOnChange = (index: number, event: any) => {
-    const values = [...actionData];
-    if (event.target.id === 'Utterance') {
-      values[index].userActions[0].utterance = event.target.value;
-    }
-  };
+  if (getTrainingConversations.loading) {
+    return <ContentLoading />;
+  }
 
-  const onDelete = (index: number, event: any) => {
-    const values = [...actionData];
-    values.splice(index, 1);
-    setActionsValue(values);
-
+  const onSaveCallBack = async () => {
+    const refetchData = await refetchConversations();
+    conversations = refetchData.data?.ChatbotService_trainingConversations || [];
+    setcreateConversation(false);
   };
 
   return (
@@ -204,148 +152,104 @@ export default function TrainingConversations() {
       >
         Create New Conversation
       </Button>
-      {errStatus && <Alert severity="error">{errStatus}</Alert>}
       {
-        conversationList.length > 0 ?
+        data.length > 0 && data ?
           (
-            <ExpansionPanel className={classes.listItemWrapper}>
-            <ExpansionPanelSummary
-              expandIcon={<ExpandMore />}
-              id="conversationId"
-            >
-              <Typography className={classes.heading}>Conversation 1</Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails className={classes.listItem}>
-              <Grid direction={'column'} className={classes.paper}>
-                <Grid container={true} className = {classes.actionWrapper}>
-                  <Grid container={true} item={true} className = {classes.actionItemWrapper}>
-                    <Typography> Turn </Typography>
-                  </Grid>
-                  <Grid container={true} item={true} className = {classes.actionDetailsWrapper}>
-                    <Typography> User Actions </Typography>
-                    <IconButton onClick={() => handleAddFields('user')}>
-                      <AddCircleOutline fontSize="large" />
+            data.map((item, index) => {
+              return (
+                <ExpansionPanel className={classes.listItemWrapper} key={index}>
+                  <ExpansionPanelSummary
+                    expandIcon={<ExpandMore />}
+                    id="conversationId"
+                  >
+                    <Typography className={classes.heading}>Conversation {index + 1}</Typography>
+                  </ExpansionPanelSummary>
+                  <ExpansionPanelDetails className={classes.listItem}>
+                   <Grid className={classes.actionButtonWrapper}>
+                    <IconButton>
+                      <Edit fontSize="large" />
                     </IconButton>
-                  </Grid>
-                  <Grid container={true} item={true} className = {classes.actionDetailsWrapper}>
-                    <Typography> Agent Actions </Typography>
-                    <IconButton onClick={() => handleAddFields('agent')}>
-                      <AddCircleOutline fontSize="large" />
+                    <IconButton>
+                      <Delete fontSize="large" />
                     </IconButton>
-                  </Grid>
-                </Grid>
-                { actionData.map((inputField: any, index: number) => (
-                  <Fragment key={`${inputField}~${index}`}>
-                    <Grid container={true} className = {classes.actionWrapper}>
-                      <Grid container={true} item={true} className = {classes.actionItemWrapper}>
-                        <Typography> {index} </Typography>
+                   </Grid>
+                    <Grid direction={'column'} className={classes.paper}>
+                      <Grid container={true} className = {classes.actionWrapper}>
+                        <Grid container={true} item={true} className = {classes.actionItemWrapper}>
+                          <Typography> Turn </Typography>
+                        </Grid>
+                        <Grid container={true} item={true} className = {classes.actionDetailsWrapper}>
+                          <Typography> User Actions </Typography>
+                        </Grid>
+                        <Grid container={true} item={true} className = {classes.actionDetailsWrapper}>
+                          <Typography> Agent Actions </Typography>
+                        </Grid>
                       </Grid>
+                    </Grid>
+                    <Grid direction={'column'} className={classes.paper}>
                       {
-                        turn[index] === 'user' ?
-                          (
-                            <Grid container={true} item={true} className = {classes.actionDetailsWrapper}>
-                              <Grid item={true} className={classes.controlsWidth}>
-                                <AutoComplete
-                                  options={intents}
-                                  value={intentSelectedValue}
-                                  label="intents"
-                                  onChange={(event: any) => handleOnChange(index, event)}
-                                />
+                        item.actions.map((item: any, index: number) => {
+                          return (
+                            <Grid container={true} className = {classes.actionWrapper} key={index}>
+                              <Grid container={true} item={true} className = {classes.actionItemWrapper}>
+                                <Typography> {item.turn} </Typography>
                               </Grid>
-                              <Grid item={true} className={classes.controlsWidth}>
-                                <AutoComplete
-                                  options={tags}
-                                  value={tagSelectedValue}
-                                  label="Tag Types"
-                                  onChange={(event: any, newValue: any | null) => {
-                                    setTagSelectedValue(newValue);
-                                  }
-                                  }
-                                />
+                              {item.isUser ? (
+                                <Grid container={true} item={true} className = {classes.actionDetailsWrapper}>
+                                <table className={classes.contentTable}>
+                                  <tbody>
+                                    <tr>
+                                      <th>Intent Name</th>
+                                      <th>Tag Values</th>
+                                      <th>Utterance</th>
+                                    </tr>
+                                    <tr>
+                                      <td>{item.intent}</td>
+                                      <td>{item.tagValues.map((item: any) => item.tagType + ',')}</td>
+                                      <td>{item.utterance}</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
                               </Grid>
-                              <Grid item={true} className={classes.controlsWidth}>
-                                <TextField
-                                  id="Utterance"
-                                  label="Utterance"
-                                  variant="outlined"
-                                  onChange={event => handleOnChange(index, event)}
-                                />
+                              ) : (
+                                <Grid container={true} item={true} justify={'flex-end'} >
+                                <Grid container={true} item={true} className = {classes.actionDetailsWrapper}>
+                                  <table className={classes.contentTable}>
+                                    <tbody>
+                                      <tr>
+                                        <th>Action Id</th>
+                                        <th>Action Type</th>
+                                        <th>Utterance</th>
+                                      </tr>
+                                      <tr>
+                                        <td>{item.actionId}</td>
+                                        <td>{item.actionType}</td>
+                                        <td>{item.utterance}</td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </Grid>
                               </Grid>
-                              <Grid item={true} className={classes.controlsWidth}>
-                                <TextField
-                                  id="userValues"
-                                  label="Values"
-                                  variant="outlined"
-                                  onChange={event => handleOnChange(index, event)}
-                                />
-                              </Grid>
-                              <IconButton onClick={event => onDelete(index, event)}>
-                                <Delete fontSize="large" />
-                              </IconButton>
+                              )}
                             </Grid>
-                          ) : (
-                            <Grid container={true} item={true} justify={'flex-end'}>
-                              <Grid  item={true} className = {classes.actionDetailsWrapper}>
-                                <Grid item={true} className={classes.controlsWidth}>
-                                  <AutoComplete
-                                    options={actionId}
-                                    value={intentSelectedValue}
-                                    label="Action Id"
-                                    onChange={(event: any, newValue: any | null) => {
-                                      setIntentSelectedValue(newValue);
-                                    }
-                                    }
-                                  />
-                                </Grid>
-                                <Grid item={true} className={classes.controlsWidth}>
-                                  <FormControl variant="outlined" className={classes.selectControls}>
-                                    <InputLabel id="actionType">
-                                      Action Type
-                                    </InputLabel>
-                                    <Select
-                                       labelId="actionType"
-                                       label="Action Type"
-                                    >
-                                        <MenuItem  value={'UTTER'}>UTTER</MenuItem>
-                                        <MenuItem  value={'CUSTOM'}>CUSTOM</MenuItem>
-                                    </Select>
-                                  </FormControl>
-                                </Grid>
-                                <Grid item={true} className={classes.controlsWidth}>
-                                  <TextField
-                                    label="Utterance"
-                                    variant="outlined"
-                                    id="agentUtterance"
-                                  />
-                                </Grid>
-                                <IconButton onClick={event => onDelete(index, event)}>
-                                  <Delete fontSize="large" />
-                                </IconButton>
-                              </Grid>
-                            </Grid>
-                          )
+                          );
+                        })
                       }
                     </Grid>
-                  </Fragment>
-                ))}
-              </Grid>
-              <Button
-                className={classes.saveButton}
-                variant="contained"
-                color="primary"
-                onClick={onSubmit}
-                disabled={true}
-              >
-                Save
-              </Button>
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
+
+                  </ExpansionPanelDetails>
+                </ExpansionPanel>
+              );
+            })
           )
           : (
             <Typography align="center" variant="h6">
             {'No Conversation found'}
             </Typography>
           )
+      }
+      {
+        createConversation && <CreateConversation onSaveCallback={onSaveCallBack} conversationLastindex={conversations.length + 1} />
       }
     </Paper>
   );

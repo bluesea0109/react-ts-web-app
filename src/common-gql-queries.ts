@@ -498,3 +498,27 @@ export const CREATE_TRAINING_CONVERSATIONS = gql`
     }
   }
 `;
+
+export const GET_TRAINING_CONVERSATIONS = gql`
+  query($agentId: Int!) {
+    ChatbotService_trainingConversations(agentId: $agentId) {
+      agentId
+      id
+      userActions {
+        turn
+        tagValues{
+          tagType
+          value
+        }
+        intent
+        utterance
+      }
+      agentActions{
+        actionId
+        actionType
+        utterance
+        turn
+      }
+    }
+  }
+`;
