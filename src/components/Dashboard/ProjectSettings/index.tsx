@@ -1,8 +1,18 @@
-import { Box, Button, createStyles, Grid, IconButton, Theme, Tooltip, Typography } from '@material-ui/core';
-import React, { useEffect, useRef, useState } from 'react';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  createStyles,
+  Grid,
+  IconButton,
+  Theme,
+  Tooltip,
+  Typography,
+} from '@material-ui/core';
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Add } from '@material-ui/icons';
-import { useApolloClient } from '@apollo/react-hooks';
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import { createApiKeyMutation, deleteApiKeyMutation, getApiKeysQuery } from './gql';
 import { useParams } from 'react-router';
 
@@ -31,73 +41,56 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export default function Project() {
-  const client = useApolloClient();
-  const [apiKeys, setApiKeys] = React.useState<APIKey[]>([]);
-  const [loading, setLoading] = useState(false);
   const classes = useStyles();
-  const projectId = useRef<string>("");
-  const params = useParams();
+  const { projectId } = useParams();
+  const [currentKey, setCurrentKey] = useState<string | null>(null);
+
+  const apiKeysQuery = useQuery(getApiKeysQuery, {
+    variables: {
+      projectId
+    }
+  });
+
+  const [addKey, createKeyMutation] = useMutation(createApiKeyMutation);
+  const [deleteKey, deleteKeyMutation] = useMutation(deleteApiKeyMutation);
+
+  const loadedKey = apiKeysQuery.data?.apiKey.key ?? null
 
   useEffect(() => {
-    setLoading(true);
-    projectId.current = (params as any).projectId;
-    (async () => {
-      try {
-        const res = await client.query({
-          query: getApiKeysQuery,
-          variables: {
-            projectId: projectId.current
-          }
-        });
-
-        const apiKeys = [{ ...res.data.apiKey }];
-        setApiKeys([ ...apiKeys ]);
-      } catch (e) {
-        console.log(e.data);
-      } finally {
-        setLoading(false);
-      }
-    })()
-  }, [params]);
+    if (!apiKeysQuery.loading) {
+      setCurrentKey(loadedKey);
+    }
+  }, [loadedKey, apiKeysQuery.loading])
 
   const createNewKey = async () => {
-    setLoading(true);
-
     try {
-      const resp = await client.mutate({
-        mutation: createApiKeyMutation,
+      const { data } = await addKey({
         variables: {
-          projectId: projectId.current
+          projectId
         }
       });
 
-      const apiKeys = [{ ...resp.data.generateApiKey }];
-      setApiKeys([ ...apiKeys ]);
+      setCurrentKey(data?.generateApiKey?.key ?? null);
     } catch (e) {
 
-    } finally {
-      setLoading(false);
     }
   }
 
-  const deleteKey = async () => {
-    setLoading(true);
-
+  const deleteApiKey = async () => {
     try {
-      await client.mutate({
-        mutation: deleteApiKeyMutation,
+      await deleteKey({
         variables: {
-          projectId: projectId.current
+          projectId
         }
       });
 
-      setApiKeys([]);
+      setCurrentKey(null);
     } catch (e) {
 
-    } finally {
-      setLoading(false);
     }
   }
+
+  const loading = apiKeysQuery.loading || createKeyMutation.loading || deleteKeyMutation.loading;
 
   return (
     <Box p={3}>
@@ -106,26 +99,34 @@ export default function Project() {
           <Typography variant="h5">API Keys</Typography>
         </Grid>
         <Grid item>
-          <IconButton style={{ marginLeft: 16 }} onClick={createNewKey} disabled={apiKeys.length >= 1 || loading}>
+          <IconButton style={{ marginLeft: 16 }} onClick={createNewKey} disabled={loading}>
             <Add />
           </IconButton>
         </Grid>
       </Grid>
-      {apiKeys.map(({ key }) => (
-        <Grid container key={key} className={classes.keyItem} justify="space-between" alignItems="center">
+      {(!currentKey && loading) && (
+        <Box p={4}>
+          <Grid container alignItems="center" justify="center">
+            <Grid item>
+              <CircularProgress size={18} />
+            </Grid>
+          </Grid>
+        </Box>
+      )}
+      {currentKey && (
+        <Grid container className={classes.keyItem} justify="space-between" alignItems="center">
           <Grid item>
             <Tooltip title="Copy Key" arrow>
               <Typography style={{ cursor: 'pointer' }}>
-                {/*{key.split('').slice(0, 3)}*******************/}
-                {key}
+                {currentKey}
               </Typography>
             </Tooltip>
           </Grid>
           <Grid item>
-            <Button className={classes.deleteBtn} disabled={loading} onClick={deleteKey}>Delete</Button>
+            <Button className={classes.deleteBtn} disabled={loading} onClick={deleteApiKey}>Delete</Button>
           </Grid>
         </Grid>
-      ))}
+      )}
     </Box>
   );
 }
