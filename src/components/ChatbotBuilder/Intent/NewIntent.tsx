@@ -5,6 +5,7 @@ import {
   createStyles,
   LinearProgress,
   makeStyles,
+  TextareaAutosize,
   TextField,
   Theme,
   Typography,
@@ -23,6 +24,10 @@ const useStyles = makeStyles((theme: Theme) =>
     inputBox: {
       margin: theme.spacing(1),
     },
+    textAreaBox: {
+      margin: theme.spacing(1),
+      padding: theme.spacing(1),
+    },
     button: {
       margin: theme.spacing(1),
     },
@@ -32,6 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const NewIntent: React.FC = () => {
   const classes = useStyles();
   const [value, setValue] = useState<string>('');
+  const [defaultResponse, setDefaultResponse] = useState<string>('');
   const { agentId } = useParams();
   const numAgentId = Number(agentId);
   const [createIntents, { loading, error }] = useMutation(CHATBOT_CREATE_INTENTS,  {
@@ -45,10 +51,11 @@ const NewIntent: React.FC = () => {
   }
 
   const onSubmit =  () => {
+    const dfltResponse = defaultResponse === '' ? undefined : defaultResponse;
     createIntents({
       variables: {
         agentId: numAgentId ,
-        intents: [{value, defaultResponse: 'testing default response' }],
+        intents: [{value, defaultResponse : dfltResponse}],
       },
     });
     setValue('');
@@ -68,6 +75,10 @@ const NewIntent: React.FC = () => {
         onChange={(e: any) => setValue(e.target.value as string)}
         className={clsx(classes.inputBox)}
       />
+      <br />
+      <TextareaAutosize aria-label="minimum height" className={clsx(classes.textAreaBox)}
+      value={defaultResponse} onChange={(e: any) => setDefaultResponse(e.target.value as string)}
+      rowsMin={4} placeholder="Intent Default Response" />
       <br />
       <Button
         className={clsx(classes.button)}

@@ -4,9 +4,9 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import gql from 'graphql-tag';
 import React, { useState } from 'react';
 import { useMutation } from 'react-apollo';
+import { CREATE_TRAINING_JOB, GET_TRAINING_JOBS } from '../../../common-gql-queries';
 import ContentLoading from '../../ContentLoading';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -35,7 +35,10 @@ export default function CreateTrainingJobDialog(props: IProps) {
     open: false,
   });
 
-  const [createTrainingJob, { error, loading }] = useMutation(CREATE_TRAINING_JOB);
+  const [createTrainingJob, { error, loading }] = useMutation(CREATE_TRAINING_JOB, {
+    refetchQueries: [{ query: GET_TRAINING_JOBS, variables: { agentId: props.agentId } }],
+    awaitRefetchQueries: true,
+  });
 
   const handleOpen = () => {
     setState({ ...state, open: true });
@@ -44,21 +47,27 @@ export default function CreateTrainingJobDialog(props: IProps) {
   const handleClose = () => {
     setState({ ...state, open: false });
   };
-
+  let dialogContent;
   const handleCreateTrainingJob = async () => {
-    createTrainingJob({
+  try {
+    const responseData =  await createTrainingJob({
       variables: {
         agentId: props.agentId,
       },
     });
-  };
+    if (responseData) {
+      handleClose();
+    }
+  } catch (e) {
+    dialogContent = e.graphQLErrors[0].message;
+  }
 
-  let dialogContent;
+  };
 
   if (error) {
     dialogContent = (
       <React.Fragment>
-        <DialogContent/>
+        <DialogContent>{error.graphQLErrors[0].message} </DialogContent>
       </React.Fragment>
     );
   } else if (loading) {
@@ -97,12 +106,3 @@ export default function CreateTrainingJobDialog(props: IProps) {
     </div>
   );
 }
-
-const CREATE_TRAINING_JOB = gql`
-  mutation ($agentId: Int!) {
-    ChatbotService_createNLUTrainingJob(agentId: $agentId) {
-      jobId
-      status
-    }
-  }
-`;

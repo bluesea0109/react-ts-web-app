@@ -22,7 +22,7 @@ export const GET_CURRENT_USER = gql`
           name
         }
         currentUserMember {
-          memberType
+          role
         }
       }
       activeProject {
@@ -77,7 +77,7 @@ export const GET_ORGS = gql`
       members {
         orgId
         uid
-        memberType
+        role
         user {
           uid
           name
@@ -442,6 +442,36 @@ export const CHATBOT_DELETE_UTTERANCE_ACTION = gql`
     ChatbotService_deleteUtteranceAction(utteranceActionId: $utteranceActionId) {
       id
       text
+    }
+  }
+`;
+
+export const CHATBOT_TALK_TO_AGENT = gql`
+  mutation($conversation: ChatbotService_ConversationInput!) {
+    ChatbotService_talkToAgent(conversation: $conversation) {
+      agentId
+      dialogueTurns {
+        actor
+        utterance
+       }
+    }
+  }
+`;
+
+export const GET_TRAINING_JOBS = gql`
+  query($agentId: Int!) {
+    ChatbotService_trainingJobs(agentId: $agentId) {
+      jobId
+      status
+    }
+  }
+`;
+
+export const CREATE_TRAINING_JOB = gql`
+  mutation ($agentId: Int!) {
+    ChatbotService_createNLUTrainingJob(agentId: $agentId) {
+      jobId
+      status
     }
   }
 `;

@@ -25,3 +25,7 @@ yarn-error.log*
 .firebase
 
 /.vscode
+
+yarn.lock
+package-lock.json
+.idea/
