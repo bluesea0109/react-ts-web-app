@@ -200,6 +200,7 @@ export const CHATBOT_GET_INTENTS = gql`
       id
       agentId
       value
+      defaultResponse
     }
   }
 `;

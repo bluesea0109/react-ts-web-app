@@ -80,7 +80,7 @@ function IntentsTable() {
                         {intent.value}
                   </TableCell>
                   <TableCell>{intent.id}</TableCell>
-                  <TableCell>{intent.id}</TableCell>
+                  <TableCell>{intent.defaultResponse}</TableCell>
                   <TableCell>
                      <IconButton aria-label="delete" onClick={() => setConfirmOpen(true)}>
                         <DeleteIcon />
