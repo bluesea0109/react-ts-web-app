@@ -112,6 +112,7 @@ export default function TrainingConversations() {
   const classes = useStyles();
   const { agentId } = useParams();
   const [createConversation, setcreateConversation] = useState(false);
+  const [editConversation, seteditConversation] = useState(0);
   const numAgentId = Number(agentId);
   const getTrainingConversations = useQuery<IGetTrainingConversation>(GET_TRAINING_CONVERSATIONS, { variables: { agentId: numAgentId } });
   let conversations = getTrainingConversations.data?.ChatbotService_trainingConversations || [];
@@ -141,6 +142,9 @@ export default function TrainingConversations() {
     conversations = refetchData.data?.ChatbotService_trainingConversations || [];
     setcreateConversation(false);
   };
+  const onEditConversation = (index: number) => {
+      seteditConversation(index);
+  }
 
   return (
     <Paper className={classes.paper}>
@@ -156,6 +160,15 @@ export default function TrainingConversations() {
         data.length > 0 && data ?
           (
             data.map((item, index) => {
+              if (item.id === editConversation) {
+                return (
+                  <CreateConversation
+                    isUpdate={true}
+                    conversation={item}
+                    onSaveCallback={onSaveCallBack}
+                    conversationLastindex={index + 1} />
+                );
+              }
               return (
                 <ExpansionPanel className={classes.listItemWrapper} key={index}>
                   <ExpansionPanelSummary
@@ -167,7 +180,7 @@ export default function TrainingConversations() {
                   <ExpansionPanelDetails className={classes.listItem}>
                    <Grid className={classes.actionButtonWrapper}>
                     <IconButton>
-                      <Edit fontSize="large" />
+                      <Edit fontSize="large" onClick={() => onEditConversation(item.id)}/>
                     </IconButton>
                     <IconButton>
                       <Delete fontSize="large" />
