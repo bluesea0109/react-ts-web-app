@@ -36,8 +36,8 @@ const prod = {
 
 const local = {
   projectId: 'bavard-dev',
-  apiBaseUrl: 'http://localhost:8080',
-  apiUrl: 'http://localhost:8080/graphql',
+  apiBaseUrl: 'http://localhost:8081',
+  apiUrl: 'http://localhost:8081/graphql',
   predictionServiceUrl: 'https://prediction-service-dot-bavard-dev.appspot.com/graphql',
   firebase: {
     apiKey: 'AIzaSyDwt9YZ88n3dsp2bHS0nV7uU2oUULQLdo0',

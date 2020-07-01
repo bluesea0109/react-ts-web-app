@@ -58,7 +58,7 @@
     "utility-types": "^3.10.0"
   },
   "scripts": {
-    "start": "REACT_APP_ENV=dev react-scripts start",
+    "start": "REACT_APP_ENV=local react-scripts start",
     "win-start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
