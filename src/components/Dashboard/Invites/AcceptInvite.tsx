@@ -56,7 +56,7 @@ const ACCEPT_INVITE = gql`
       senderName
       senderEmail
       timestamp
-      memberType
+      role
     }
   }
 `;

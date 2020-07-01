@@ -77,7 +77,7 @@ export const GET_ORGS = gql`
       members {
         orgId
         uid
-        memberType
+        role
         user {
           uid
           name

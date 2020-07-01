@@ -39,7 +39,7 @@ export default function InviteDialog(props: IProps) {
   const classes = useStyles();
   const [state, setState] = useState({
     open: false,
-    memberType: 'editor',
+    role: 'editor',
     email: '',
   });
   const { orgId } = useParams();
@@ -72,15 +72,15 @@ export default function InviteDialog(props: IProps) {
       variables: {
         orgId,
         recipientEmail: state.email,
-        memberType: state.memberType,
+        role: state.role,
       },
     });
   };
 
   let dialogContent;
-  const memberType =
-    props.user.activeOrg?.currentUserMember?.memberType || null;
-  if (!memberType) {
+  const role =
+    props.user.activeOrg?.currentUserMember?.role || null;
+  if (!role) {
     dialogContent = (
       <DialogContent>
         <Typography>{'Error: User member type unknown.'}</Typography>
@@ -121,11 +121,11 @@ export default function InviteDialog(props: IProps) {
           <FormControl component="fieldset" className={classes.formControl}>
             <FormLabel component="legend">Permissions</FormLabel>
             <RadioGroup
-              name="memberType"
-              value={state.memberType}
-              onChange={handleChange('memberType')}
+              name="role"
+              value={state.role}
+              onChange={handleChange('role')}
               row={true}>
-              {memberType === 'owner' ? (
+              {role === 'owner' ? (
                 <FormControlLabel
                   value="owner"
                   control={<Radio />}
@@ -180,11 +180,11 @@ export default function InviteDialog(props: IProps) {
 }
 
 const INVITE_ORG_MEMBER = gql`
-  mutation($orgId: String!, $recipientEmail: String!, $memberType: String!) {
+  mutation($orgId: String!, $recipientEmail: String!, $role: String!) {
     inviteOrgMember(
       orgId: $orgId
       recipientEmail: $recipientEmail
-      memberType: $memberType
+      role: $role
     ) {
       id
     }

@@ -25,4 +25,5 @@ yarn-error.log*
 .firebase
 
 /.vscode
-.idea
+
+.idea/

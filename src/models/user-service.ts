@@ -18,7 +18,7 @@ export interface IOrg {
 export interface IMember {
   orgId: string;
   uid: string;
-  memberType: string;
+  role: string;
   user?: IUser;
 }
 
