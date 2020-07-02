@@ -1,8 +1,8 @@
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import { Paper, TableContainer, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import MaterialTable, { Column } from 'material-table';
 import 'firebase/auth';
+import MaterialTable, { Column } from 'material-table';
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router';
 import { CHATBOT_DELETE_INTENT, CHATBOT_GET_INTENTS, CHATBOT_UPDATE_INTENT } from '../../../common-gql-queries';
@@ -52,7 +52,7 @@ function IntentsTable() {
       { title: 'Intent id', field: 'id', editable: 'never' },
       {
         title: 'Name',
-        field: 'name',
+        field: 'value',
         editable: 'onUpdate',
       },
       { title: 'Default Response', field: 'defaultResponse', editable: 'onUpdate' },
@@ -82,14 +82,13 @@ function IntentsTable() {
     return <ApolloErrorPage error={commonError} />;
   }
 
-
   const updateIntentHandler = (intentId: number, value: string, defaultResponse: string) => {
 
     updateIntent({
       variables: {
         intentId,
         value,
-        defaultResponse
+        defaultResponse,
       },
     });
   };
@@ -101,7 +100,6 @@ function IntentsTable() {
       },
     });
   };
-
 
   return (
     <Paper className={classes.paper}>
@@ -119,7 +117,7 @@ function IntentsTable() {
             localization={{
               body: {
                 editRow: {
-                  deleteText: 'Are you sure delete this Agent?',
+                  deleteText: 'Are you sure delete this Intent?',
                 },
               },
             }}

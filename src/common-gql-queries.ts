@@ -447,6 +447,17 @@ export const CHATBOT_DELETE_UTTERANCE_ACTION = gql`
   }
 `;
 
+export const CHATBOT_UPDATE_UTTERANCE_ACTION = gql `
+mutation($utteranceActionId: Int!, $name: String!, $text: String!) {
+  ChatbotService_updateUtteranceAction(utteranceActionId: $utteranceActionId, name: $name, text: $text) {
+    id
+    agentId
+    name
+    text
+  }
+}
+`;
+
 export const CHATBOT_TALK_TO_AGENT = gql`
   mutation($conversation: ChatbotService_ConversationInput!) {
     ChatbotService_talkToAgent(conversation: $conversation) {
