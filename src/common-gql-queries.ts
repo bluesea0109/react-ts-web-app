@@ -556,3 +556,9 @@ export const UPDATE_TRAINING_CONVERSATIONS = gql`
     }
   }
 `;
+
+export const DELETE_TRAINING_CONVERSATION = gql`
+  mutation($conversationId: Int!) {
+    ChatbotService_deleteTrainingConversation(conversationId: $conversationId)
+  }
+`;

@@ -8,7 +8,9 @@ import { ITagType } from '../../../models/chatbot-service';
 interface ITagSelection {
   tags: any[];
   onAddTags: (tagType: string, tagValue: string) => any;
+  userTags:  any;
 }
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     controlsWidth: {
@@ -16,8 +18,10 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: '0px 3px',
       minWidth: '130px',
     },
-  }))
-const TagTypeSelection: React.FC<ITagSelection> = ({tags, onAddTags}) => {
+}))
+
+const TagTypeSelection: React.FC<ITagSelection> = ({tags, onAddTags,userTags}) => {
+  const classes = useStyles();
   const [tagSelectedValue, setTagSelectedValue] = React.useState<ITagType | null>(null);
   const [tagValue, setTagValues] = useState<any | null>(null);
 
@@ -27,13 +31,11 @@ const TagTypeSelection: React.FC<ITagSelection> = ({tags, onAddTags}) => {
     setTagSelectedValue(null);
   }
 
-  const classes = useStyles();
-
   return (
       <Fragment>
         <Grid item={true} className={classes.controlsWidth}>
           <Autocomplete
-            options={tags}
+            options={tags.filter(o => !userTags?.find((o2: any) => o.value === o2.tagType))}
             value={tagSelectedValue}
             getOptionLabel={(option) =>  option.value}
             onChange={(event: any, newValue: any | null) => setTagSelectedValue(newValue)}

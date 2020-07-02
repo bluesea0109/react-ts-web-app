@@ -6,6 +6,7 @@ import {
   Grid, IconButton,
   Paper,
   Typography,
+  LinearProgress,
 } from '@material-ui/core';
 import {
   createStyles,
@@ -14,15 +15,17 @@ import {
 } from '@material-ui/core/styles';
 import { Delete, Edit, ExpandMore } from '@material-ui/icons';
 import React, {useState } from 'react';
-import { useQuery } from 'react-apollo';
+import { useQuery, useMutation } from 'react-apollo';
 import { useParams } from 'react-router-dom';
 import {
   GET_TRAINING_CONVERSATIONS,
+  DELETE_TRAINING_CONVERSATION
 } from '../../../common-gql-queries';
 import { ITrainingConversations } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
-import CreateConversation from './createTrainingConversations';
+import CreateConversation from './newTrainingConversations';
+import ConfirmDialog from '../../Utils/ConfirmDialog';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -74,7 +77,7 @@ const useStyles = makeStyles((theme: Theme) =>
       minWidth: '130px',
     },
     listItemWrapper: {
-      margin: '0px 50px !important',
+      margin: '0px 50px 20px !important',
       backgroundColor: '#fff',
       borderRadius: '5px',
     },
@@ -108,12 +111,15 @@ const useStyles = makeStyles((theme: Theme) =>
 interface IGetTrainingConversation {
   ChatbotService_trainingConversations: ITrainingConversations[];
 }
+
 export default function TrainingConversations() {
   const classes = useStyles();
   const { agentId } = useParams();
   const [createConversation, setcreateConversation] = useState(false);
+  const [confirmOpen, setConfirmOpen ] = useState(false);
   const [editConversation, seteditConversation] = useState(0);
   const numAgentId = Number(agentId);
+  const [deleteConversations, { loading }] = useMutation(DELETE_TRAINING_CONVERSATION);
   const getTrainingConversations = useQuery<IGetTrainingConversation>(GET_TRAINING_CONVERSATIONS, { variables: { agentId: numAgentId } });
   let conversations = getTrainingConversations.data?.ChatbotService_trainingConversations || [];
   const refetchConversations = getTrainingConversations.refetch;
@@ -125,26 +131,42 @@ export default function TrainingConversations() {
     return {actions: arr, id: item.id};
   });
 
-  const onCreateNewConversation = () => {
-    setcreateConversation(true);
-  };
-
   if (getTrainingConversations.error) {
     return <ApolloErrorPage error={getTrainingConversations.error} />;
   }
-
+  
   if (getTrainingConversations.loading) {
     return <ContentLoading />;
   }
+  const onCreateNewConversation = () => {
+    setcreateConversation(true);
+  };
 
   const onSaveCallBack = async () => {
     const refetchData = await refetchConversations();
     conversations = refetchData.data?.ChatbotService_trainingConversations || [];
     setcreateConversation(false);
+    seteditConversation(0);
   };
+
   const onEditConversation = (index: number) => {
       seteditConversation(index);
   }
+
+  const deleteConversationHandler = async (conversationId: number) => {
+    const response = await deleteConversations({
+       variables: {
+        conversationId,
+       },
+     });
+     if (response) {
+       onSaveCallBack();
+     }
+  };
+
+  const deleteConfirm = () => setConfirmOpen(true)
+
+  const onCancel = () => seteditConversation(0);
 
   return (
     <Paper className={classes.paper}>
@@ -156,21 +178,25 @@ export default function TrainingConversations() {
       >
         Create New Conversation
       </Button>
+      {loading && <LinearProgress />}
       {
         data.length > 0 && data ?
           (
-            data.map((item, index) => {
+            data.sort((a: any, b: any) => parseInt(a.id) + parseInt(b.id)).map((item, index) => {
               if (item.id === editConversation) {
                 return (
                   <CreateConversation
                     isUpdate={true}
                     conversation={item}
                     onSaveCallback={onSaveCallBack}
-                    conversationLastindex={index + 1} />
+                    conversationLastindex={index + 1} 
+                    onCancel={onCancel}  
+                  />
                 );
               }
               return (
                 <ExpansionPanel className={classes.listItemWrapper} key={index}>
+                  
                   <ExpansionPanelSummary
                     expandIcon={<ExpandMore />}
                     id="conversationId"
@@ -179,14 +205,22 @@ export default function TrainingConversations() {
                   </ExpansionPanelSummary>
                   <ExpansionPanelDetails className={classes.listItem}>
                    <Grid className={classes.actionButtonWrapper}>
-                    <IconButton>
-                      <Edit fontSize="large" onClick={() => onEditConversation(item.id)}/>
+                    <IconButton onClick={() => onEditConversation(item.id)}>
+                      <Edit fontSize="large" />
                     </IconButton>
-                    <IconButton>
+                    <IconButton onClick={deleteConfirm}>
                       <Delete fontSize="large" />
                     </IconButton>
+                    <ConfirmDialog
+                        title="Delete Conversations?"
+                        open={confirmOpen}
+                        setOpen={setConfirmOpen}
+                        onConfirm={() => deleteConversationHandler(item.id)}
+                     >
+                        Are you sure you want to delete this Conversations?
+                    </ConfirmDialog>
                    </Grid>
-                    <Grid direction={'column'} className={classes.paper}>
+                    <Grid container={true} direction={'column'} className={classes.paper}>
                       <Grid container={true} className = {classes.actionWrapper}>
                         <Grid container={true} item={true} className = {classes.actionItemWrapper}>
                           <Typography> Turn </Typography>
@@ -199,7 +233,7 @@ export default function TrainingConversations() {
                         </Grid>
                       </Grid>
                     </Grid>
-                    <Grid direction={'column'} className={classes.paper}>
+                    <Grid container={true} direction={'column'} className={classes.paper}>
                       {
                         item.actions.map((item: any, index: number) => {
                           return (
