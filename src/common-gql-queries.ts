@@ -342,8 +342,8 @@ export const CHATBOT_DELETE_TAG = gql`
 `;
 
 export const CHATBOT_UPDATE_INTENT = gql`
-  mutation($intentId: Int!, $value: String!) {
-    ChatbotService_updateIntent(intentId: $intentId, value: $value) {
+  mutation($intentId: Int!, $value: String!, $defaultResponse: String) {
+    ChatbotService_updateIntent(intentId: $intentId, value: $value, defaultResponse: $defaultResponse) {
       id
       agentId
       value
