@@ -22,7 +22,7 @@ export const GET_CURRENT_USER = gql`
           name
         }
         currentUserMember {
-          memberType
+          role
         }
       }
       activeProject {
@@ -77,7 +77,7 @@ export const GET_ORGS = gql`
       members {
         orgId
         uid
-        memberType
+        role
         user {
           uid
           name

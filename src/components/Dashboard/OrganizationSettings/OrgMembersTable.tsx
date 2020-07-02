@@ -61,7 +61,7 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
   const [selectedMember, setSelectedMember] = useState({
     orgId: '',
     uid: '',
-    memberType: '',
+    role: '',
   });
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [
@@ -99,8 +99,8 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
     setOpenSnackBar(false);
   };
 
-  const memberType =
-    props.user.activeOrg?.currentUserMember?.memberType || null;
+  const role =
+    props.user.activeOrg?.currentUserMember?.role || null;
   const pageItems = getPage(props.members);
 
   const getTableRow = (member: IMember, i: number) => {
@@ -118,13 +118,13 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
             </Box>
           </TableCell>
           <TableCell align="left">
-            <Box fontWeight="fontWeightBold">{member.memberType}</Box>
+            <Box fontWeight="fontWeightBold">{member.role}</Box>
           </TableCell>
           <TableCell align="left">
             <IconButtonDelete
               tooltip="Remove User"
               onClick={() => null}
-              disabled={member.uid === props.user.uid || memberType !== 'owner'}
+              disabled={member.uid === props.user.uid || role !== 'owner'}
             />
           </TableCell>
         </TableRow>
@@ -134,7 +134,7 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
       <TableRow key={i}>
         <TableCell align="left">{member.user?.name || 'unknown'}</TableCell>
         <TableCell align="left">{member.user?.email || 'unknown'}</TableCell>
-        <TableCell align="left">{member.memberType}</TableCell>
+        <TableCell align="left">{member.role}</TableCell>
         <TableCell align="left">
           <IconButtonDelete
             tooltip="Remove User"
@@ -142,7 +142,7 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
               setConfirmOpen(true);
               setSelectedMember(member);
             }}
-            disabled={memberType !== 'owner'}
+            disabled={role !== 'owner'}
           />
           <ConfirmDialog
             title="Are you sure?"
@@ -161,7 +161,7 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
       <Toolbar variant="dense">
         <Typography variant="h6">{'Org Members'}</Typography>
         <Typography className={classes.grow} />
-        {memberType === 'owner' ? <InviteDialog user={props.user} /> : null}
+        {role === 'owner' ? <InviteDialog user={props.user} /> : null}
       </Toolbar>
       {loading ? (
         <ContentLoading />
@@ -171,7 +171,7 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
             <TableRow>
               <TableCell align="left">Name</TableCell>
               <TableCell align="left">Email</TableCell>
-              <TableCell align="left">Member Type</TableCell>
+              <TableCell align="left">Role</TableCell>
               <TableCell align="left">Options</TableCell>
             </TableRow>
           </TableHead>

@@ -54,7 +54,7 @@ function CustomDrawer(props: CustomDrawerProps) {
 
   const createOrgPath = (path: string = ''): string => {
     if (!user.activeProject) {
-      return '/no-project';
+      return '/no-orgs';
     }
 
     if (path !== '') {
