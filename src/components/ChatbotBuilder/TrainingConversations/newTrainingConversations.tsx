@@ -23,10 +23,10 @@ import {
 import { AddCircleOutline, Delete, ExpandMore } from '@material-ui/icons';
 import { Alert } from '@material-ui/lab';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import clsx from 'clsx';
 import React, { Fragment, useState } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
 import { useParams } from 'react-router-dom';
-import clsx from 'clsx';
 import {
   CHATBOT_GET_INTENTS,
   CHATBOT_GET_TAGS,
@@ -50,370 +50,370 @@ interface IGetUtteranceActions {
 }
 
 interface IConversationProps {
-  conversationLastindex:  number;
+  conversationLastindex: number;
   onSaveCallback?: () => void;
   isUpdate?: boolean;
   onCancel?: () => void;
   conversation?: { actions: object[], id: number };
 }
 
-const CreateTrainingConversations: React.FC<IConversationProps> = ({conversationLastindex, onSaveCallback, isUpdate,  conversation, onCancel }) => {
-  
-  let tempActionData: any[] = [];
-  const userTurns: string[] = [];
-  if (isUpdate && conversation && conversation.actions) {
-    tempActionData = conversation.actions.map((c: any) => c.isUser ? ({userActions: [c]}) : ({agentActions: [c]}));
-    conversation.actions.map((i: any) => userTurns[i.turn] = i.isUser ? 'user' : 'agent');
-  }
+const CreateTrainingConversations: React.FC<IConversationProps> =
+  ({ conversationLastindex, onSaveCallback, isUpdate, conversation, onCancel }) => {
 
-  const classes = useStyles();
-  const { agentId } = useParams();
-  const [errStatus, setErrStatus] = useState('');
-  const numAgentId = Number(agentId);
-  const [actionData, setActionsValue] = useState<any | null>(isUpdate ? tempActionData : []);
-  const [turn, setTurns] = useState<string[]>(isUpdate ? userTurns : []);
-  const [actionType, setActionType] = useState<string>('UTTR');
-  const [loading, setLoding] = useState<boolean>(false);
-
-  const [createConversations] = useMutation(CREATE_TRAINING_CONVERSATIONS);
-  const [updateConversations] = useMutation(UPDATE_TRAINING_CONVERSATIONS);
-  const intentsData = useQuery<IGetIntents>(CHATBOT_GET_INTENTS, { variables: { agentId: numAgentId } });
-  const tagsData = useQuery<IGetTags>(CHATBOT_GET_TAGS, { variables: { agentId: numAgentId } });
-  const actionsData = useQuery<IGetUtteranceActions>(CHATBOT_GET_UTTERANCE_ACTIONS, { variables: { agentId: numAgentId } });
-
-  const intents = (intentsData.data && intentsData.data.ChatbotService_intents) || [];
-  const tags = (tagsData.data && tagsData.data.ChatbotService_tagTypes) || [];
-  const intentOption = intents?.map(i => i.value || []) || [];
-  const actions = actionsData.data?.ChatbotService_utteranceActions;
-  let actionId = actions !== undefined ?  actions?.map(item => ({id: item.id, value: item.name, text: item.text})) : [];
-  
-  const handleAddFields = (turnValue: string) => {
-    const values = [...actionData];
-    if (turnValue === 'user') {
-      values.push({
-        userActions: [{ turn:  0, intent: '', tagValues: [], utterance: '' }],
-      });
-    } else {
-      values.push({
-        agentActions: [{ turn:  0, actionId: '', actionType: '', utterance: '' }] ,
-      });
+    let tempActionData: any[] = [];
+    const userTurns: string[] = [];
+    if (isUpdate && conversation && conversation.actions) {
+      tempActionData = conversation.actions.map((c: any) => c.isUser ? ({ userActions: [c] }) : ({ agentActions: [c] }));
+      conversation.actions.map((i: any) => userTurns[i.turn] = i.isUser ? 'user' : 'agent');
     }
-    setActionsValue(values);
-    setTurns([...turn, turnValue]);
-  };
 
-  const handleOnChange = (index: number, event: any) => {
-    const values = [...actionData];
-    if (event.target.id === 'Utterance') {
-      values[index].userActions[0].utterance = event.target.value;
-    } else if (event.target.id === 'agentUtterance') {
-      values[index].agentActions[0].utterance = event.target.value;
-    } else if (event.target.name === 'actionType') {
-        if (event.target.value === "CUSTOM") {
+    const classes = useStyles();
+    const { agentId } = useParams();
+    const [errStatus, setErrStatus] = useState('');
+    const numAgentId = Number(agentId);
+    const [actionData, setActionsValue] = useState<any | null>(isUpdate ? tempActionData : []);
+    const [turn, setTurns] = useState<string[]>(isUpdate ? userTurns : []);
+    const [actionType, setActionType] = useState<string>('UTTR');
+    const [loading, setLoding] = useState<boolean>(false);
+
+    const [createConversations] = useMutation(CREATE_TRAINING_CONVERSATIONS);
+    const [updateConversations] = useMutation(UPDATE_TRAINING_CONVERSATIONS);
+    const intentsData = useQuery<IGetIntents>(CHATBOT_GET_INTENTS, { variables: { agentId: numAgentId } });
+    const tagsData = useQuery<IGetTags>(CHATBOT_GET_TAGS, { variables: { agentId: numAgentId } });
+    const actionsData = useQuery<IGetUtteranceActions>(CHATBOT_GET_UTTERANCE_ACTIONS, { variables: { agentId: numAgentId } });
+
+    const intents = (intentsData.data && intentsData.data.ChatbotService_intents) || [];
+    const tags = (tagsData.data && tagsData.data.ChatbotService_tagTypes) || [];
+    const intentOption = intents?.map(i => i.value || []) || [];
+    const actions = actionsData.data?.ChatbotService_utteranceActions;
+    const actionId = actions !== undefined ? actions?.map(item => ({ id: item.id, value: item.name, text: item.text })) : [];
+
+    const handleAddFields = (turnValue: string) => {
+      const values = [...actionData];
+      if (turnValue === 'user') {
+        values.push({
+          userActions: [{ turn: 0, intent: '', tagValues: [], utterance: '' }],
+        });
+      } else {
+        values.push({
+          agentActions: [{ turn: 0, actionId: '', actionType: '', utterance: '' }],
+        });
+      }
+      setActionsValue(values);
+      setTurns([...turn, turnValue]);
+    };
+
+    const handleOnChange = (index: number, event: any) => {
+      const values = [...actionData];
+      if (event.target.id === 'Utterance') {
+        values[index].userActions[0].utterance = event.target.value;
+      } else if (event.target.id === 'agentUtterance') {
+        values[index].agentActions[0].utterance = event.target.value;
+      } else if (event.target.name === 'actionType') {
+        if (event.target.value === 'CUSTOM') {
           setErrStatus('Custom actions not yet supported');
           setActionType('CUSTOM');
         } else {
           setActionType('UTTR');
-        } 
+        }
         values[index].agentActions[0].actionType = event.target.value;
-    }
-    setActionsValue([...values]);
-
-  };
-
-  const onDelete = (index: number, event: any) => {
-    const values = [...actionData];
-    const turnValues = [...turn];
-    turnValues.splice(index,1)
-    values.splice(index, 1);
-    setActionsValue(values);
-    setTurns(turnValues);
-  };
-
-  const handleOnSelect = (index: number, event: any, value: any) => {
-    const values = [...actionData];
-    if (event.target.id.startsWith('intent')) {
-      values[index].userActions[0].intent = value;
-    } else if (event.target.id.startsWith('actionId')) {
-      values[index].agentActions[0].actionId = value.id;
-      values[index].agentActions[0].utterance = value.text;
-    }
-    setActionsValue([...values]);
-    setErrStatus('');
-  };
-
-  const onSubmit = async () => {
-    setLoding(true);
-    const userActions: object[] = [];
-    const agentActions: object[] = [];
-    actionData.forEach((item: any, index: number) => {
-      if (item.userActions && item.userActions !== undefined) {
-        item.userActions[0].turn = index;
-        userActions.push(item.userActions[0]);
-      } else if (item.agentActions && item.agentActions !== undefined) {
-        item.agentActions[0].turn = index;
-        agentActions.push(item.agentActions[0]);
       }
-    });
+      setActionsValue([...values]);
 
-    const checkUser = userActions.map(item => CheckEmpty(item));
-    const checkAgent = agentActions.map(item => CheckEmpty(item));
+    };
 
-    if (checkUser.includes(false)) {
-      setErrStatus('Please Fill all the details of user actions');
-      setLoding(false);
-    } else if (checkAgent.includes(false)) {
-      setErrStatus('Please Fill all the details of agent actions');
-      setLoding(false);
-    } else {
-      try {
-        let response;
-        if (isUpdate) {
+    const onDelete = (index: number, event: any) => {
+      const values = [...actionData];
+      const turnValues = [...turn];
+      turnValues.splice(index, 1);
+      values.splice(index, 1);
+      setActionsValue(values);
+      setTurns(turnValues);
+    };
 
-          agentActions.map((i: any) => i.isAgent && delete i.isAgent);
-          userActions.map((i: any) => i.isUser && delete i.isUser);
-           response = await updateConversations({
-            variables: {
+    const handleOnSelect = (index: number, event: any, value: any) => {
+      const values = [...actionData];
+      if (event.target.id.startsWith('intent')) {
+        values[index].userActions[0].intent = value;
+      } else if (event.target.id.startsWith('actionId')) {
+        values[index].agentActions[0].actionId = value.id;
+        values[index].agentActions[0].utterance = value.text;
+      }
+      setActionsValue([...values]);
+      setErrStatus('');
+    };
+
+    const onSubmit = async () => {
+      setLoding(true);
+      const userActions: object[] = [];
+      const agentActions: object[] = [];
+      actionData.forEach((item: any, index: number) => {
+        if (item.userActions && item.userActions !== undefined) {
+          item.userActions[0].turn = index;
+          userActions.push(item.userActions[0]);
+        } else if (item.agentActions && item.agentActions !== undefined) {
+          item.agentActions[0].turn = index;
+          agentActions.push(item.agentActions[0]);
+        }
+      });
+
+      const checkUser = userActions.map(item => CheckEmpty(item));
+      const checkAgent = agentActions.map(item => CheckEmpty(item));
+
+      if (checkUser.includes(false)) {
+        setErrStatus('Please Fill all the details of user actions');
+        setLoding(false);
+      } else if (checkAgent.includes(false)) {
+        setErrStatus('Please Fill all the details of agent actions');
+        setLoding(false);
+      } else {
+        try {
+          let response;
+          if (isUpdate) {
+
+            agentActions.map((i: any) => i.isAgent && delete i.isAgent);
+            userActions.map((i: any) => i.isUser && delete i.isUser);
+            response = await updateConversations({
+              variables: {
                 conversationId: conversation?.id,
                 agentId: numAgentId,
                 agentActions,
                 userActions,
-            },
-          });
-
-        } else {
-
-           response = await createConversations({
-            variables: {
-              conversation : {
-                agentId: numAgentId,
-                agentActions,
-                userActions,
               },
-            },
-          });
+            });
 
-        }
+          } else {
 
-        if (response && response !== []) {
-          setActionsValue([]);
-          setTurns([]);
-          setLoding(false);
-          if (onSaveCallback) {
-            onSaveCallback();
+            response = await createConversations({
+              variables: {
+                conversation: {
+                  agentId: numAgentId,
+                  agentActions,
+                  userActions,
+                },
+              },
+            });
+
+          }
+
+          if (response && response !== []) {
+            setActionsValue([]);
+            setTurns([]);
+            setLoding(false);
+            if (onSaveCallback) {
+              onSaveCallback();
+            }
+          }
+
+        } catch (e) {
+          if (e?.graphQLErrors?.[0]?.extensions?.code === 'NO_MODEL' && e?.graphQLErrors?.[0]?.message) {
+            setErrStatus(e.graphQLErrors[0].message);
+          } else {
+            setErrStatus(e.graphQLErrors[0].message);
           }
         }
+      }
+    };
 
-      } catch (e) {
-        if (e?.graphQLErrors?.[0]?.extensions?.code === 'NO_MODEL' && e?.graphQLErrors?.[0]?.message) {
-          setErrStatus(e.graphQLErrors[0].message);
+    const CheckEmpty = (obj: object) => {
+      return Object.entries(obj).every(([k, v]) => v !== '' && v !== []);
+    };
+
+    const onAddTags = (tagType: string, tagValue: string, index: number) => {
+      const values = [...actionData];
+      if (tagType || tagValue) {
+        const tagValues = { tagType, value: tagValue };
+        if (values[index].userActions[0].tagValues.length > 10) {
+          setErrStatus('You can not add more than 10 tags');
         } else {
-          setErrStatus(e.graphQLErrors[0].message);
+          values[index].userActions[0].tagValues.push(tagValues);
+          setActionsValue([...values]);
         }
-      }
-    }
-  };
-
-  const CheckEmpty = (obj: object) => {
-    return Object.entries(obj).every(([k, v]) => v !== '' && v !== []);
-  };
-
-  const onAddTags = (tagType: string, tagValue: string, index: number) => {
-    const values = [...actionData];
-    if(tagType || tagValue)
-    {
-      const tagValues = {tagType, value: tagValue};
-      if (values[index].userActions[0].tagValues.length > 10) {
-        setErrStatus('You can not add more than 10 tags');
       } else {
-        values[index].userActions[0].tagValues.push(tagValues);
-        setActionsValue([...values]);
+        setErrStatus('Please Add tagValues');
       }
-    } else {
-      setErrStatus('Please Add tagValues')
-    }
-    
-  };
 
-  const removeTags = (tagIndex: number, index: number) => {
-    const values = [...actionData];
-    values[index].userActions[0].tagValues.splice(tagIndex, 1);
-    setActionsValue([...values]);
-  };
-  
-  return (
-    <Paper className={classes.paper}>
-      {errStatus && <Alert severity="error" className={classes.progressIndicator}>{errStatus}</Alert>}
-      {loading && <LinearProgress className={classes.progressIndicator} />}
-      <ExpansionPanel className={classes.listItemWrapper} defaultExpanded={isUpdate}>
-        <ExpansionPanelSummary expandIcon={<ExpandMore />}>
-          <Typography className={classes.heading}>Conversation {conversationLastindex}</Typography>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails className={classes.listItem}>
-          <Grid container={true} direction={'column'} className={classes.paper}>
-            <Grid container={true} className = {classes.actionWrapper}>
-              <Grid container={true} item={true} className = {classes.actionItemWrapper}>
-                <Typography> Turn </Typography>
-              </Grid>
-              <Grid container={true} item={true} className = {classes.actionDetailsWrapper}>
-                <Typography> User Actions </Typography>
-                <IconButton onClick={() => handleAddFields('user')}>
-                  <AddCircleOutline fontSize="large" />
-                </IconButton>
-              </Grid>
-              <Grid container={true} item={true} className = {classes.actionDetailsWrapper}>
-                <Typography> Agent Actions </Typography>
-                <IconButton onClick={() => handleAddFields('agent')}>
-                  <AddCircleOutline fontSize="large" />
-                </IconButton>
-              </Grid>
-            </Grid>
+    };
 
-            { actionData?.map((inputField: any, index: number) => {
-              const userAction: any = inputField.userActions ? inputField.userActions[0] || {} : {};
-              const agentAction: any = inputField.agentActions ? inputField.agentActions[0] || {} : {};
-              return (
-                <Fragment key={`${inputField}~${index}`}>
-                  <Grid container={true} className = {classes.actionWrapper}>
-                    <Grid container={true} item={true} className = {classes.actionItemWrapper}>
-                      <Typography> {index} </Typography>
-                    </Grid>
-                    {
-                      (turn[index] === 'user' || (inputField.userActions)) ?
-                        (
-                          <Grid container={true} item={true} className = {classes.actionDetailsWrapper}>
-                            <Grid container={true} className={classes.actionListWrapper}>
-                              <Grid item={true} className={classes.controlsWidth}>
-                                <Autocomplete
-                                  id="intent"
-                                  options={intentOption}
-                                  getOptionLabel={(option) => option || ''}
-                                  onChange={(event: any, value: any) => handleOnSelect(index, event, value)}
-                                  value={userAction.intent}
-                                  getOptionSelected={(a) => a.value === userAction?.intent}
-                                  renderInput={(params) => <TextField {...params} label="Intent" variant="outlined" />}
-                                />
-                              </Grid>
-                              <Grid item={true} className={classes.controlsWidth}>
-                                <TextField
-                                  id="Utterance"
-                                  label="Utterance"
-                                  variant="outlined"
-                                  value={userAction?.utterance}
-                                  onChange={event => handleOnChange(index, event)}
-                                />
-                              </Grid>
-                                <TagTypeSelection 
-                                  tags={tags} 
+    const removeTags = (tagIndex: number, index: number) => {
+      const values = [...actionData];
+      values[index].userActions[0].tagValues.splice(tagIndex, 1);
+      setActionsValue([...values]);
+    };
+
+    return (
+      <Paper className={classes.paper}>
+        {errStatus && <Alert severity="error" className={classes.progressIndicator}>{errStatus}</Alert>}
+        {loading && <LinearProgress className={classes.progressIndicator} />}
+        <ExpansionPanel className={classes.listItemWrapper} defaultExpanded={isUpdate}>
+          <ExpansionPanelSummary expandIcon={<ExpandMore />}>
+            <Typography className={classes.heading}>Conversation {conversationLastindex}</Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails className={classes.listItem}>
+            <Grid container={true} direction={'column'} className={classes.paper}>
+              <Grid container={true} className={classes.actionWrapper}>
+                <Grid container={true} item={true} className={classes.actionItemWrapper}>
+                  <Typography> Turn </Typography>
+                </Grid>
+                <Grid container={true} item={true} className={classes.actionDetailsWrapper}>
+                  <Typography> User Actions </Typography>
+                  <IconButton onClick={() => handleAddFields('user')}>
+                    <AddCircleOutline fontSize="large" />
+                  </IconButton>
+                </Grid>
+                <Grid container={true} item={true} className={classes.actionDetailsWrapper}>
+                  <Typography> Agent Actions </Typography>
+                  <IconButton onClick={() => handleAddFields('agent')}>
+                    <AddCircleOutline fontSize="large" />
+                  </IconButton>
+                </Grid>
+              </Grid>
+
+              {actionData?.map((inputField: any, index: number) => {
+                const userAction: any = inputField.userActions ? inputField.userActions[0] || {} : {};
+                const agentAction: any = inputField.agentActions ? inputField.agentActions[0] || {} : {};
+                return (
+                  <Fragment key={`${inputField}~${index}`}>
+                    <Grid container={true} className={classes.actionWrapper}>
+                      <Grid container={true} item={true} className={classes.actionItemWrapper}>
+                        <Typography> {index} </Typography>
+                      </Grid>
+                      {
+                        (turn[index] === 'user' || (inputField.userActions)) ?
+                          (
+                            <Grid container={true} item={true} className={classes.actionDetailsWrapper}>
+                              <Grid container={true} className={classes.actionListWrapper}>
+                                <Grid item={true} className={classes.controlsWidth}>
+                                  <Autocomplete
+                                    id="intent"
+                                    options={intentOption}
+                                    getOptionLabel={(option) => option || ''}
+                                    onChange={(event: any, value: any) => handleOnSelect(index, event, value)}
+                                    value={userAction.intent}
+                                    getOptionSelected={(a) => a.value === userAction?.intent}
+                                    renderInput={(params) => <TextField {...params} label="Intent" variant="outlined" />}
+                                  />
+                                </Grid>
+                                <Grid item={true} className={classes.controlsWidth}>
+                                  <TextField
+                                    id="Utterance"
+                                    label="Utterance"
+                                    variant="outlined"
+                                    value={userAction?.utterance}
+                                    onChange={event => handleOnChange(index, event)}
+                                  />
+                                </Grid>
+                                <TagTypeSelection
+                                  tags={tags}
                                   userTags={userAction.tagValues}
                                   onAddTags={(tagType, tagValue) => onAddTags(tagType, tagValue, index)}
                                 />
-                              <IconButton onClick={event => onDelete(index, event)}>
-                                <Delete fontSize="large" />
-                              </IconButton>
+                                <IconButton onClick={event => onDelete(index, event)}>
+                                  <Delete fontSize="large" />
+                                </IconButton>
+                              </Grid>
+                              <Grid container={true} className={classes.tagList}>
+                                <Paper component="ul" className={classes.tagListWrapper}>
+                                  {
+                                    userAction.tagValues?.map((item: any, i: number) => {
+                                      const label = item.tagType + ' : ' + item.value;
+                                      return (
+                                        <li key={i}>
+                                          <Chip
+                                            label={label}
+                                            onDelete={() => removeTags(i, index)}
+                                            className={classes.chip}
+                                          />
+                                        </li>
+                                      );
+                                    })
+                                  }
+                                </Paper>
+                              </Grid>
                             </Grid>
-                            <Grid container={true} className={classes.tagList}>
-                              <Paper component="ul" className={classes.tagListWrapper}>
-                                {
-                                  userAction.tagValues?.map((item: any, i: number) => {
-                                    const label = item.tagType + ' : ' + item.value;
-                                    return (
-                                      <li key={i}>
-                                        <Chip
-                                          label={label}
-                                          onDelete={() => removeTags(i,index)}
-                                          className={classes.chip}
-                                        />
-                                      </li>
-                                    );
-                                  })
-                                }
-                              </Paper>
-                            </Grid>
-                          </Grid>
-                        ) : (
-                          <Grid container={true} item={true} justify={'flex-end'}>
-                            <Grid  item={true} className = {classes.actionDetailsWrapper}>
-                              <Grid item={true} className={classes.controlsWidth}>
-                                <FormControl variant="outlined" className={classes.selectControls}>
-                                  <InputLabel id="action-label">
-                                    Action Type
+                          ) : (
+                            <Grid container={true} item={true} justify={'flex-end'}>
+                              <Grid item={true} className={classes.actionDetailsWrapper}>
+                                <Grid item={true} className={classes.controlsWidth}>
+                                  <FormControl variant="outlined" className={classes.selectControls}>
+                                    <InputLabel id="action-label">
+                                      Action Type
                                   </InputLabel>
-                                  <Select
-                                    labelId="action-label"
-                                    label="Action Type"
-                                    name="actionType"
-                                    value={agentAction.actionType}
+                                    <Select
+                                      labelId="action-label"
+                                      label="Action Type"
+                                      name="actionType"
+                                      value={agentAction.actionType}
+                                      onChange={event => handleOnChange(index, event)}
+                                    >
+                                      <MenuItem value={'UTTER'}>UTTER</MenuItem>
+                                      <MenuItem value={'CUSTOM'}>CUSTOM</MenuItem>
+                                    </Select>
+                                  </FormControl>
+                                </Grid>
+                                <Grid item={true} className={classes.controlsWidth}>
+                                  <Autocomplete
+                                    options={actionType === 'UTTR' ? actionId : []}
+                                    id="actionId"
+                                    value={actionType === 'UTTR' ? {
+                                      id: agentAction.actionId,
+                                      value: actionId.find(a => a.id === agentAction.actionId)?.value,
+                                      text: actionId.find(a => a.id === agentAction.actionId)?.text,
+                                    } : {}}
+                                    getOptionLabel={(option) => option.value || ''}
+                                    getOptionSelected={(a, b) => a.id === b.id}
+                                    onChange={(event: any, value: any) => handleOnSelect(index, event, value)}
+                                    renderInput={(params) => <TextField {...params} label="Action" variant="outlined" />}
+                                  />
+                                </Grid>
+                                <Grid item={true} className={classes.controlsWidth}>
+                                  <TextField
+                                    label="Utterance"
+                                    variant="outlined"
+                                    id="agentUtterance"
+                                    value={agentAction.utterance}
                                     onChange={event => handleOnChange(index, event)}
-                                  >
-                                    <MenuItem value={'UTTER'}>UTTER</MenuItem>
-                                    <MenuItem value={'CUSTOM'}>CUSTOM</MenuItem>
-                                  </Select>
-                                </FormControl>
+                                    disabled={true}
+                                  />
+                                </Grid>
+                                <IconButton onClick={event => onDelete(index, event)}>
+                                  <Delete fontSize="large" />
+                                </IconButton>
                               </Grid>
-                              <Grid item={true} className={classes.controlsWidth}>
-                                <Autocomplete
-                                  options={actionType === "UTTR" ? actionId : []}
-                                  id="actionId"
-                                  value={actionType === "UTTR" ? {
-                                    id: agentAction.actionId,
-                                    value: actionId.find(a => a.id === agentAction.actionId)?.value,
-                                    text: actionId.find(a => a.id === agentAction.actionId)?.text,
-                                  } : {} }
-                                  getOptionLabel={(option) => option.value || ''}
-                                  getOptionSelected={(a, b) => a.id === b.id}
-                                  onChange={(event: any, value: any) => handleOnSelect(index, event, value)}
-                                  renderInput={(params) => <TextField {...params} label="Action" variant="outlined" />}
-                                />
-                              </Grid>
-                              <Grid item={true} className={classes.controlsWidth}>
-                                <TextField
-                                  label="Utterance"
-                                  variant="outlined"
-                                  id="agentUtterance"
-                                  value={agentAction.utterance}
-                                  onChange={event => handleOnChange(index, event)}
-                                  disabled={true}
-                                />
-                              </Grid>
-                              <IconButton onClick={event => onDelete(index, event)}>
-                                <Delete fontSize="large" />
-                              </IconButton>
                             </Grid>
-                          </Grid>
-                        )
-                    }
-                  </Grid>
-                </Fragment>
-              );
-            })}
-          </Grid>
-          <Grid container={true} justify={'flex-end'}> 
-            <Button
-              className={clsx(classes.saveButton,classes.buttonMargin)}
-              variant="contained"
-              color="primary"
-              onClick={onSubmit}
-              disabled={loading || actionData.length <= 0 }
-            >
-              {isUpdate ? 'Update' : 'Save'}
+                          )
+                      }
+                    </Grid>
+                  </Fragment>
+                );
+              })}
+            </Grid>
+            <Grid container={true} justify={'flex-end'}>
+              <Button
+                className={clsx(classes.saveButton, classes.buttonMargin)}
+                variant="contained"
+                color="primary"
+                onClick={onSubmit}
+                disabled={loading || actionData.length <= 0}
+              >
+                {isUpdate ? 'Update' : 'Save'}
+              </Button>
+              {
+                isUpdate && <Button
+                  className={classes.saveButton}
+                  variant="contained"
+                  color="primary"
+                  onClick={onCancel}
+                >
+                  Cancel
             </Button>
-            {
-              isUpdate &&  <Button
-              className={classes.saveButton}
-              variant="contained"
-              color="primary"
-              onClick={onCancel}
-            >
-              Cancel
-            </Button>
-            }
-          </Grid>
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
-    </Paper>
-  );
-};
+              }
+            </Grid>
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
+      </Paper>
+    );
+  };
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -504,7 +504,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     progressIndicator: {
       margin: '0 50px',
-    }
+    },
 
   }));
 

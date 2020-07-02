@@ -4,9 +4,9 @@ import {
   ExpansionPanelDetails,
   ExpansionPanelSummary,
   Grid, IconButton,
+  LinearProgress,
   Paper,
   Typography,
-  LinearProgress,
 } from '@material-ui/core';
 import {
   createStyles,
@@ -15,17 +15,17 @@ import {
 } from '@material-ui/core/styles';
 import { Delete, Edit, ExpandMore } from '@material-ui/icons';
 import React, {useState } from 'react';
-import { useQuery, useMutation } from 'react-apollo';
+import { useMutation, useQuery } from 'react-apollo';
 import { useParams } from 'react-router-dom';
 import {
+  DELETE_TRAINING_CONVERSATION,
   GET_TRAINING_CONVERSATIONS,
-  DELETE_TRAINING_CONVERSATION
 } from '../../../common-gql-queries';
 import { ITrainingConversations } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
-import CreateConversation from './newTrainingConversations';
 import ConfirmDialog from '../../Utils/ConfirmDialog';
+import CreateConversation from './newTrainingConversations';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -134,7 +134,7 @@ export default function TrainingConversations() {
   if (getTrainingConversations.error) {
     return <ApolloErrorPage error={getTrainingConversations.error} />;
   }
-  
+
   if (getTrainingConversations.loading) {
     return <ContentLoading />;
   }
@@ -151,7 +151,7 @@ export default function TrainingConversations() {
 
   const onEditConversation = (index: number) => {
       seteditConversation(index);
-  }
+  };
 
   const deleteConversationHandler = async (conversationId: number) => {
     const response = await deleteConversations({
@@ -164,7 +164,7 @@ export default function TrainingConversations() {
      }
   };
 
-  const deleteConfirm = () => setConfirmOpen(true)
+  const deleteConfirm = () => setConfirmOpen(true);
 
   const onCancel = () => seteditConversation(0);
 
@@ -189,14 +189,14 @@ export default function TrainingConversations() {
                     isUpdate={true}
                     conversation={item}
                     onSaveCallback={onSaveCallBack}
-                    conversationLastindex={index + 1} 
-                    onCancel={onCancel}  
+                    conversationLastindex={index + 1}
+                    onCancel={onCancel}
                   />
                 );
               }
               return (
                 <ExpansionPanel className={classes.listItemWrapper} key={index}>
-                  
+
                   <ExpansionPanelSummary
                     expandIcon={<ExpandMore />}
                     id="conversationId"

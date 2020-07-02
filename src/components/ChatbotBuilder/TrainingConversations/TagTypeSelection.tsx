@@ -18,9 +18,9 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: '0px 3px',
       minWidth: '130px',
     },
-}))
+}));
 
-const TagTypeSelection: React.FC<ITagSelection> = ({tags, onAddTags,userTags}) => {
+const TagTypeSelection: React.FC<ITagSelection> = ({tags, onAddTags, userTags}) => {
   const classes = useStyles();
   const [tagSelectedValue, setTagSelectedValue] = React.useState<ITagType | null>(null);
   const [tagValue, setTagValues] = useState<any | null>(null);
@@ -56,6 +56,6 @@ const TagTypeSelection: React.FC<ITagSelection> = ({tags, onAddTags,userTags}) =
         </IconButton>
       </Fragment>
   );
-}
+};
 
 export default TagTypeSelection;
