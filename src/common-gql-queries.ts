@@ -475,3 +475,90 @@ export const CREATE_TRAINING_JOB = gql`
     }
   }
 `;
+
+export const CREATE_TRAINING_CONVERSATIONS = gql`
+  mutation ($conversation: ChatbotService_TrainingConversationInput!){
+    ChatbotService_createTrainingConversation(conversation: $conversation){
+      agentId
+      userActions {
+        turn
+        intent
+        tagValues {
+           tagType
+           value
+        }
+        utterance
+      }
+      agentActions {
+          turn
+          actionId
+          actionType
+          utterance
+      }
+    }
+  }
+`;
+
+export const GET_TRAINING_CONVERSATIONS = gql`
+  query($agentId: Int!) {
+    ChatbotService_trainingConversations(agentId: $agentId) {
+      agentId
+      id
+      userActions {
+        turn
+        tagValues{
+          tagType
+          value
+        }
+        intent
+        utterance
+      }
+      agentActions{
+        actionId
+        actionType
+        utterance
+        turn
+      }
+    }
+  }
+`;
+
+export const UPDATE_TRAINING_CONVERSATIONS = gql`
+  mutation (
+  $conversationId: Int!,
+  $agentId: Int!,
+  $agentActions: [ChatbotService_TrainingConversationAgentActionInput!]!,
+  $userActions: [ChatbotService_TrainingConversationUserActionInput!]!){
+    ChatbotService_updateTrainingConversation(conversationId: $conversationId,
+     conversation:
+     {
+        agentId: $agentId,
+        agentActions:  $agentActions,
+        userActions: $userActions
+     }
+    ){
+      agentId
+      userActions {
+        turn
+        intent
+        tagValues {
+           tagType
+           value
+        }
+        utterance
+      }
+      agentActions {
+          turn
+          actionId
+          actionType
+          utterance
+      }
+    }
+  }
+`;
+
+export const DELETE_TRAINING_CONVERSATION = gql`
+  mutation($conversationId: Int!) {
+    ChatbotService_deleteTrainingConversation(conversationId: $conversationId)
+  }
+`;

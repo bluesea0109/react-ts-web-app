@@ -6,6 +6,7 @@ import DataExportsTab from '../DataExports/DataExportsTab';
 import Examples from '../Examples/Examples';
 import Intent from '../Intent/Intent';
 import Tag from '../Tags/Tag';
+import TrainingConversations from '../TrainingConversations';
 import TrainingJobsTab from '../TrainingJobs/TrainingJobsTab';
 import UploadDataTab from '../UploadData/UploadDataTab';
 import UtteranceAction from '../UtteranceActions/UtteranceAction';
@@ -87,6 +88,7 @@ const AgentDetails = () => {
         <Tab value="exports" label="Data Exports" {...a11yProps('Data Exports')} />
         <Tab value="training-jobs" label="Training Jobs" {...a11yProps('Training Jobs')} />
         <Tab value="chat" label="Chat with Agent" {...a11yProps('Chat with Agent')} />
+        <Tab value="training-conversations" label="Training conversations" {...a11yProps('Training conversations')} />
       </Tabs>
       <TabPanel className={classes.tabPanel} value={agentTab} index="Intents" >
         <Intent />
@@ -111,6 +113,9 @@ const AgentDetails = () => {
       )}
       {agentTab === 'chat' && (
         <ChatWithAgent />
+      )}
+      {agentTab === 'training-conversations' && (
+        <TrainingConversations />
       )}
     </div>
   );
