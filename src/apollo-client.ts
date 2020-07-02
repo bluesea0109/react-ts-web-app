@@ -47,23 +47,19 @@ const getIdToken = async () => {
   const user = firebase.auth().currentUser;
   if (user) {
     const token = await user.getIdToken();
-    const customToken = await exchangeFirebaseToken(token);
 
-    return customToken
+    return await exchangeFirebaseToken(token);
   }
   throw new Error('Failed to get firebase id token');
 };
 
 const exchangeFirebaseToken = async (token: string): Promise<string> => {
   try {
-    const url = `${config.apiBaseUrl}/exchange-firebase-token`;
-    const headers = {
-      "authorization": `Bearer ${token}`
-    }
+    const urlifiedToken = encodeURIComponent(`Bearer ${token}`);
+    const url = `${config.apiBaseUrl}/v1/bavard-auth-token?firebaseToken=${urlifiedToken}`;
 
     const data = await fetch(url, {
-      method: "POST",
-      headers
+      method: 'POST',
     }).then(resp => resp.json());
 
     return data.token;
@@ -75,7 +71,7 @@ const exchangeFirebaseToken = async (token: string): Promise<string> => {
 
 const authLink = setContext((_, { headers }) => {
   return getIdToken().then((token) => {
-    console.log("TOKEN::", token);
+    console.log('TOKEN::', token);
 
     return {
       headers: {
