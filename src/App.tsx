@@ -175,6 +175,13 @@ function App() {
                 </Typography>
               </div>
             </Route>
+            <Route exact={true} path="/no-orgs">
+              <div className={classes.container}>
+                <Typography>
+                  {'No Organization found.'}
+                </Typography>
+              </div>
+            </Route>
           </Switch>
         </main>
       </div>

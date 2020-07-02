@@ -44,6 +44,8 @@ function Account(props: IDashboardProps) {
   }
 
   const userName = firebaseUser.displayName;
+  const email = firebaseUser.email;
+
   let welcomeMsg = `Welcome, back.`;
 
   if (userName) {
@@ -59,6 +61,7 @@ function Account(props: IDashboardProps) {
       <Grid>
         <Grid item={true} xs={12}>
           <Typography variant="h6">{welcomeMsg}</Typography>
+          <Typography variant="h6">{email}</Typography>
         </Grid>
         <Grid item={true} container={true} xs={12} spacing={2}>
           <Grid item={true} xs={12} sm={6}>
