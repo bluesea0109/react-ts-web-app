@@ -7,13 +7,14 @@ import {
   LinearProgress,
   Paper,
   Typography,
+  Chip,
 } from '@material-ui/core';
 import {
   createStyles,
   makeStyles,
   Theme,
 } from '@material-ui/core/styles';
-import { Delete, Edit, ExpandMore } from '@material-ui/icons';
+import { Delete, Edit, ExpandMore, Height } from '@material-ui/icons';
 import React, {useState } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
 import { useParams } from 'react-router-dom';
@@ -26,6 +27,7 @@ import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 import ConfirmDialog from '../../Utils/ConfirmDialog';
 import CreateConversation from './newTrainingConversations';
+import clsx from 'clsx';
 
 interface IGetTrainingConversation {
   ChatbotService_trainingConversations: ITrainingConversations[];
@@ -156,46 +158,65 @@ export default function TrainingConversations() {
                       {
                         item.actions.map((item: any, index: number) => {
                           return (
-                            <Grid container={true} className = {classes.actionWrapper} key={index}>
+                            <Grid container={true} className={clsx(classes.actionWrapper,item.isAgent && classes.agentActionWrapper )} key={index}>
                               <Grid container={true} item={true} className = {classes.actionItemWrapper}>
                                 <Typography> {item.turn} </Typography>
                               </Grid>
                               {item.isUser ? (
-                                <Grid container={true} item={true} className = {classes.actionDetailsWrapper}>
-                                <table className={classes.contentTable}>
-                                  <tbody>
-                                    <tr>
-                                      <th>Intent Name</th>
-                                      <th>Tag Values</th>
-                                      <th>Utterance</th>
-                                    </tr>
-                                    <tr>
-                                      <td>{item.intent}</td>
-                                      <td>{item.tagValues.map((item: any) => item.tagType + ',')}</td>
-                                      <td>{item.utterance}</td>
-                                    </tr>
-                                  </tbody>
-                                </table>
-                              </Grid>
-                              ) : (
-                                <Grid container={true} item={true} justify={'flex-end'} >
-                                <Grid container={true} item={true} className = {classes.actionDetailsWrapper}>
-                                  <table className={classes.contentTable}>
-                                    <tbody>
-                                      <tr>
-                                        <th>Action Id</th>
-                                        <th>Action Type</th>
-                                        <th>Utterance</th>
-                                      </tr>
-                                      <tr>
-                                        <td>{item.actionId}</td>
-                                        <td>{item.actionType}</td>
-                                        <td>{item.utterance}</td>
-                                      </tr>
-                                    </tbody>
-                                  </table>
+                                  <Grid container={true} item={true} className={classes.actionsWrapper}>
+                                    <span className={classes.agentTagText}>User Action</span>
+                                    <Grid container={true} className={classes.actionDetailsWrapper} direction={'column'}>
+                                       <Grid className={classes.contentTable}>
+                                          <span className={classes.itemWrapper}>
+                                            <h6>Intent:</h6>
+                                            <p>{item.intent}</p>
+                                          </span>
+                                          <span className={classes.itemWrapper}> 
+                                            <h6>Utterance:</h6>
+                                            <p>{item.utterance}</p>
+                                          </span>
+                                        </Grid>
+                                      <Grid container={true} className={classes.tagList}>
+                                        <span className={classes.agentTagText}>Tags</span>
+                                        <Paper component="ul" className={classes.tagListWrapper}>
+                                          {
+                                            item.tagValues?.map((item: any, i: number) => {
+                                              const label = item.tagType + ' : ' + item.value;
+                                              return (
+                                                <li key={i}>
+                                                  <Chip
+                                                    label={label}
+                                                    className={classes.chip}
+                                                  />
+                                                </li>
+                                              );
+                                            })
+                                          }
+                                        </Paper>
+                                      </Grid>
+                                  </Grid>
                                 </Grid>
-                              </Grid>
+                          
+                              ) : (
+                                <Grid container={true} item={true} className={classes.actionsWrapper}>
+                                    <span className={classes.agentTagText}>Agent Action</span>
+                                    <Grid container={true} className={classes.actionDetailsWrapper} direction={'column'}>
+                                       <Grid className={classes.contentTable}>
+                                          <span className={classes.itemWrapper}>
+                                            <h6>Action Id:</h6>
+                                            <p>{item.actionId}</p>
+                                          </span>
+                                          <span className={classes.itemWrapper}> 
+                                            <h6>Action Type:</h6>
+                                            <p>{item.actionType}</p>
+                                          </span>
+                                          <span className={classes.itemWrapper}> 
+                                            <h6>Utterance:</h6>
+                                            <p>{item.utterance}</p>
+                                          </span>
+                                        </Grid>
+                                  </Grid>
+                                </Grid>
                               )}
                             </Grid>
                           );
@@ -240,11 +261,53 @@ const useStyles = makeStyles((theme: Theme) =>
       flexWrap: 'unset',
       flexDirection: 'row',
     },
+    agentTagText: {
+      position: 'absolute',
+      top: '-12px',
+      backgroundColor: '#fff',
+      padding: '2px 6px',
+      left: '9px',
+      fontSize: '12px',
+    },
+    tagList: {
+      marginTop: '17px',
+      display: 'flex',
+      alignItems: 'center',
+      flexWrap: 'unset',
+      position: 'relative',
+    },
+    agentActionWrapper: {
+      justifyContent: 'space-between',
+      margin: '12px 0 10px'
+    },
     actionItemWrapper: {
       width: '80px',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
+    },
+    tagListWrapper: {
+      display: 'flex',
+      overflowX: 'auto',
+      listStyle: 'none',
+      padding: theme.spacing(0.5),
+      margin: '0 13px 0 5px',
+      flex: '1',
+      background: 'transparent',
+      border: '1px solid #000',
+      borderRadius: '3px',
+      height: '40px',
+      '&::-webkit-scrollbar': {
+        width: '0.4em',
+        height: '3px',
+      },
+      '&::-webkit-scrollbar-track': {
+        '-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,0.00)'
+      },
+      '&::-webkit-scrollbar-thumb': {
+        backgroundColor: 'rgba(0,0,0,.1)',
+        outline: '1px solid slategrey'
+      },
     },
     actionButtonWrapper: {
       display: 'flex',
@@ -257,8 +320,14 @@ const useStyles = makeStyles((theme: Theme) =>
         },
       },
     },
+    actionsWrapper: {
+      border: '1px solid #000',
+      borderRadius: '3px',
+      width: 'calc(50% - 50px)',
+      position: 'relative',
+    },
     actionDetailsWrapper: {
-      width: '50%',
+      width: '100%',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -275,6 +344,9 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: '#fff',
       borderRadius: '5px',
     },
+    chip: {
+      margin: theme.spacing(0.5),
+    },
     saveButton: {
       width: '100px',
       marginTop: '20px',
@@ -288,15 +360,28 @@ const useStyles = makeStyles((theme: Theme) =>
      color: 'black',
     },
     contentTable: {
-      width: '65%',
-      '& tr': {
-        '& th': {
-          color: '#777',
-        },
-        '& td': {
-          textAlign: 'center',
-          color: '#333',
-        },
+      width: '100%',
+      display: 'flex',
+    },
+    itemWrapper: {
+      display: 'flex',
+      marginRight: '10px',
+      marginLeft: '10px',
+      padding: '0 5px',
+      '& h6': {
+        margin: '0 8px 0 0',
+        fontWeight: '600',
+        color: '#333',
+        fontSize: '16px',
+        
+
+      },
+      '& p': {
+        margin: '0',
+        fontSize: '16px',
+        fontWeight: '400',
+        color: '#333',
+
       },
     },
 

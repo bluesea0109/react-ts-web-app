@@ -216,7 +216,7 @@ const CreateTrainingConversations: React.FC<IConversationProps> =
     };
 
     const CheckEmpty = (obj: object) => {
-      return Object.entries(obj).every(([k, v]) => v !== '' && v !== []);
+      return Object.entries(obj).every(([k, v]) => k !== 'Utterance' || v !== '' && v !== []);
     };
 
     const onAddTags = (tagType: string, tagValue: string, index: number) => {
@@ -300,7 +300,7 @@ const CreateTrainingConversations: React.FC<IConversationProps> =
                                   <Grid item={true} className={classes.UtteranceControlsWidth}>
                                     <TextField
                                       id="Utterance"
-                                      label="Utterance"
+                                      label="Utterance [Optional]"
                                       variant="outlined"
                                       size="small"
                                       value={userAction?.utterance}
