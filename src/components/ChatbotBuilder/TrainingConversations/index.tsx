@@ -27,87 +27,6 @@ import ContentLoading from '../../ContentLoading';
 import ConfirmDialog from '../../Utils/ConfirmDialog';
 import CreateConversation from './newTrainingConversations';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    paper: {
-      width: '100%',
-    },
-    button: {
-      margin: theme.spacing(1),
-    },
-    heading: {
-      fontSize: theme.typography.pxToRem(15),
-      fontWeight: theme.typography.fontWeightRegular,
-    },
-    actionWrapper: {
-      width: '100%',
-      display: 'flex',
-      alignItems: 'center',
-      flexWrap: 'unset',
-      flexDirection: 'row',
-    },
-    actionItemWrapper: {
-      width: '80px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    actionButtonWrapper: {
-      display: 'flex',
-      justifyContent: 'flex-end',
-      '& button': {
-        '& span': {
-          '& svg': {
-            fontSize: '22px',
-          },
-        },
-      },
-    },
-    actionDetailsWrapper: {
-      width: '50%',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexDirection: 'row',
-      padding: '10px 0',
-    },
-    controlsWidth: {
-      width: '20%',
-      padding: '0px 3px',
-      minWidth: '130px',
-    },
-    listItemWrapper: {
-      margin: '0px 50px 20px !important',
-      backgroundColor: '#fff',
-      borderRadius: '5px',
-    },
-    saveButton: {
-      width: '100px',
-      marginTop: '20px',
-    },
-    listItem: {
-      flexDirection: 'column',
-      alignItems: 'flex-end',
-    },
-    selectControls: {
-      width: '100%',
-     color: 'black',
-    },
-    contentTable: {
-      width: '65%',
-      '& tr': {
-        '& th': {
-          color: '#777',
-        },
-        '& td': {
-          textAlign: 'center',
-          color: '#333',
-        },
-      },
-    },
-
-  }));
-
 interface IGetTrainingConversation {
   ChatbotService_trainingConversations: ITrainingConversations[];
 }
@@ -301,3 +220,84 @@ export default function TrainingConversations() {
     </Paper>
   );
 }
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    paper: {
+      width: '100%',
+    },
+    button: {
+      margin: theme.spacing(1),
+    },
+    heading: {
+      fontSize: theme.typography.pxToRem(15),
+      fontWeight: theme.typography.fontWeightRegular,
+    },
+    actionWrapper: {
+      width: '100%',
+      display: 'flex',
+      alignItems: 'center',
+      flexWrap: 'unset',
+      flexDirection: 'row',
+    },
+    actionItemWrapper: {
+      width: '80px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    actionButtonWrapper: {
+      display: 'flex',
+      justifyContent: 'flex-end',
+      '& button': {
+        '& span': {
+          '& svg': {
+            fontSize: '22px',
+          },
+        },
+      },
+    },
+    actionDetailsWrapper: {
+      width: '50%',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexDirection: 'row',
+      padding: '10px 0',
+    },
+    controlsWidth: {
+      width: '20%',
+      padding: '0px 3px',
+      minWidth: '130px',
+    },
+    listItemWrapper: {
+      margin: '0px 50px 20px !important',
+      backgroundColor: '#fff',
+      borderRadius: '5px',
+    },
+    saveButton: {
+      width: '100px',
+      marginTop: '20px',
+    },
+    listItem: {
+      flexDirection: 'column',
+      alignItems: 'flex-end',
+    },
+    selectControls: {
+      width: '100%',
+     color: 'black',
+    },
+    contentTable: {
+      width: '65%',
+      '& tr': {
+        '& th': {
+          color: '#777',
+        },
+        '& td': {
+          textAlign: 'center',
+          color: '#333',
+        },
+      },
+    },
+
+  }));
