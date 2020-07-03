@@ -200,6 +200,7 @@ export const CHATBOT_GET_INTENTS = gql`
       id
       agentId
       value
+      defaultResponse
     }
   }
 `;
@@ -341,8 +342,8 @@ export const CHATBOT_DELETE_TAG = gql`
 `;
 
 export const CHATBOT_UPDATE_INTENT = gql`
-  mutation($intentId: Int!, $value: String!) {
-    ChatbotService_updateIntent(intentId: $intentId, value: $value) {
+  mutation($intentId: Int!, $value: String!, $defaultResponse: String) {
+    ChatbotService_updateIntent(intentId: $intentId, value: $value, defaultResponse: $defaultResponse) {
       id
       agentId
       value
@@ -428,7 +429,7 @@ export const CREATE_EXAMPLE_TAGS = gql`
 
 export const CHATBOT_CREATE_UTTERANCE_ACTION = gql`
   mutation($agentId: Int!, $text: String!, $name: String!) {
-    ChatbotService_createUtteranceAction(agentId: $agentId, name: $name, text: $text) {
+    ChatbotService_createUtteranceAction(agentId: $agentId, text: $text, name: $name) {
       id
       agentId
       name
@@ -444,6 +445,17 @@ export const CHATBOT_DELETE_UTTERANCE_ACTION = gql`
       text
     }
   }
+`;
+
+export const CHATBOT_UPDATE_UTTERANCE_ACTION = gql `
+mutation($utteranceActionId: Int!, $name: String!, $text: String!) {
+  ChatbotService_updateUtteranceAction(utteranceActionId: $utteranceActionId, name: $name, text: $text) {
+    id
+    agentId
+    name
+    text
+  }
+}
 `;
 
 export const CHATBOT_TALK_TO_AGENT = gql`

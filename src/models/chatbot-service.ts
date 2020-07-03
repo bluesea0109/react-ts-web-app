@@ -27,6 +27,7 @@ export interface IExample {
 export interface IIntent {
   id: number;
   agentId: number;
+  defaultResponse: string;
   value: string;
 }
 export interface IUtteranceAction {
