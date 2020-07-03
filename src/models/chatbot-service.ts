@@ -84,3 +84,29 @@ export interface IDialogueTurn {
 export interface IConversation {
   dialogueTurns: IDialogueTurn[];
 }
+
+export interface ITrainingConversations {
+  agentId: number;
+  id: number;
+  userActions: IUserAction[];
+  agentActions: IAgentAction[];
+}
+
+export interface IUserAction {
+  turn: number;
+  tagValues: IUserTagValues[];
+  intent: string;
+  utterance: string;
+}
+
+export interface IUserTagValues {
+  tagType: string;
+  value: string;
+}
+
+export interface IAgentAction {
+  turn: number;
+  actionId: number;
+  actionType: string;
+  utterance: string;
+}
