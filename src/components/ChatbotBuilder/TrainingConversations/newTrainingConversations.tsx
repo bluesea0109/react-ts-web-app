@@ -157,13 +157,13 @@ const CreateTrainingConversations: React.FC<IConversationProps> =
         }
       });
 
-      const checkUser = userActions.map(item => CheckEmpty(item));
-      const checkAgent = agentActions.map(item => CheckEmpty(item));
+      const isUserFull = userActions.every(item => !isEmpty(item));
+      const isAgentFull = agentActions.every(item => !isEmpty(item));
 
-      if (checkUser.includes(false)) {
+      if (!isUserFull) {
         setErrStatus('Please Fill all the details of user actions');
         setLoding(false);
-      } else if (checkAgent.includes(false)) {
+      } else if (!isAgentFull) {
         setErrStatus('Please Fill all the details of agent actions');
         setLoding(false);
       } else {
@@ -215,13 +215,13 @@ const CreateTrainingConversations: React.FC<IConversationProps> =
       }
     };
 
-    const CheckEmpty = (obj: object) => {
-      return Object.entries(obj).every(([k, v]) => k !== 'Utterance' || v !== '' && v !== []);
+    const isEmpty = (obj: object) => {
+      return Object.entries(obj).every(([k, v]) => k !== 'Utterance' || v === '' || v === [] || v == null);
     };
 
     const onAddTags = (tagType: string, tagValue: string, index: number) => {
       const values = [...actionData];
-      if (tagType || tagValue) {
+      if (tagType && tagValue) {
         const tagValues = { tagType, value: tagValue };
         if (values[index].userActions[0].tagValues.length > 10) {
           setErrStatus('You can not add more than 10 tags');

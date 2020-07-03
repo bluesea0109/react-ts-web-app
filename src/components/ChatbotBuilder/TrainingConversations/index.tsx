@@ -14,7 +14,7 @@ import {
   makeStyles,
   Theme,
 } from '@material-ui/core/styles';
-import { Delete, Edit, ExpandMore, Height } from '@material-ui/icons';
+import { Delete, Edit, ExpandMore } from '@material-ui/icons';
 import React, {useState } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
 import { useParams } from 'react-router-dom';
