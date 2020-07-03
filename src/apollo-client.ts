@@ -44,12 +44,21 @@ console.log('API URL:', config.apiUrl);
 console.log('project id:', config.projectId);
 
 const getIdToken = async () => {
-  const user = firebase.auth().currentUser;
-  if (user) {
-    const token = await user.getIdToken();
+  const token = sessionStorage.getItem("token");
+  if (!!token && token !== "") {
+    return btoa(token);
+  } else {
+    const user = firebase.auth().currentUser;
+    if (user) {
+      const token = await user.getIdToken();
+      const customToken = await exchangeFirebaseToken(token);
 
-    return await exchangeFirebaseToken(token);
+      sessionStorage.setItem("token", atob(customToken));
+
+      return customToken;
+    }
   }
+
   throw new Error('Failed to get firebase id token');
 };
 
