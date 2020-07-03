@@ -52,12 +52,13 @@ function UtteranceActionsTable() {
   const [state, setState] = React.useState<ActionState>({
     columns: [
       { title: 'Action id', field: 'id', editable: 'never' },
+      { title: 'Utterance', field: 'text', editable: 'onUpdate' },
       {
         title: 'Name',
         field: 'name',
         editable: 'onUpdate',
       },
-      { title: 'Text', field: 'text', editable: 'onUpdate' },
+
     ],
     data: actions,
   });

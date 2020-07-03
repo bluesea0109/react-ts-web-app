@@ -49,8 +49,8 @@ const NewUtteranceAction: React.FC = () => {
     createUtteranceAction({
       variables: {
         agentId: numAgentId ,
-        name,
         text,
+        name,
       },
     });
     setText('');
@@ -65,9 +65,9 @@ const NewUtteranceAction: React.FC = () => {
         id="name"
         label="Action Name"
         type="text"
-        value={text}
+        value={name}
         variant="outlined"
-        onChange={(e: any) => setText(e.target.value as string)}
+        onChange={(e: any) => setName(e.target.value as string)}
         className={clsx(classes.inputBox)}
       />
       <br />
@@ -75,9 +75,9 @@ const NewUtteranceAction: React.FC = () => {
         id="value"
         label="Action Value"
         type="text"
-        value={name}
+        value={text}
         variant="outlined"
-        onChange={(e: any) => setName(e.target.value as string)}
+        onChange={(e: any) => setText(e.target.value as string)}
         className={clsx(classes.inputBox)}
       />
       <br />

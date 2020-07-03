@@ -429,7 +429,7 @@ export const CREATE_EXAMPLE_TAGS = gql`
 
 export const CHATBOT_CREATE_UTTERANCE_ACTION = gql`
   mutation($agentId: Int!, $text: String!, $name: String!) {
-    ChatbotService_createUtteranceAction(agentId: $agentId, name: $name, text: $text) {
+    ChatbotService_createUtteranceAction(agentId: $agentId, text: $text, name: $name) {
       id
       agentId
       name
