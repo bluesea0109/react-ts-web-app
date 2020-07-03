@@ -3,9 +3,9 @@ import gql from 'graphql-tag';
 import React, { useEffect } from 'react';
 import { useMutation } from 'react-apollo';
 import { useParams } from 'react-router-dom';
+import { resetApolloContext } from '../../../apollo-client';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
-import { resetApolloContext } from '../../../apollo-client';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -28,7 +28,7 @@ export default function AcceptInvite() {
       (async () => {
         await acceptInvite({ variables: { inviteId } });
         resetApolloContext();
-      })()
+      })();
     } catch (err) {
       console.error(err);
     }
@@ -41,7 +41,6 @@ export default function AcceptInvite() {
   if (loading) {
     return <ContentLoading />;
   }
-
 
   return (
     <div className={classes.root}>

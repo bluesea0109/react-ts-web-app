@@ -44,8 +44,8 @@ console.log('API URL:', config.apiUrl);
 console.log('project id:', config.projectId);
 
 const getIdToken = async () => {
-  const token = sessionStorage.getItem("token");
-  if (!!token && token !== "") {
+  const token = sessionStorage.getItem('token');
+  if (!!token && token !== '') {
     return atob(token);
   } else {
     const user = firebase.auth().currentUser;
@@ -53,9 +53,9 @@ const getIdToken = async () => {
       const token = await user.getIdToken();
       const customToken = await exchangeFirebaseToken(token);
 
-      console.log("TOKEN: ", customToken);
+      console.log('TOKEN: ', customToken);
 
-      sessionStorage.setItem("token", btoa(customToken));
+      sessionStorage.setItem('token', btoa(customToken));
 
       return customToken;
     }
@@ -99,5 +99,5 @@ export const client = new ApolloClient({
 });
 
 export const resetApolloContext = () => {
-  sessionStorage.removeItem("token");
-}
+  sessionStorage.removeItem('token');
+};
