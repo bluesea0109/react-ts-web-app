@@ -1,16 +1,14 @@
 import { useMutation, useQuery } from '@apollo/react-hooks';
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@material-ui/core';
-import IconButton from '@material-ui/core/IconButton';
+import { Paper, TableContainer, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import DeleteIcon from '@material-ui/icons/Delete';
 import 'firebase/auth';
-import React, {useState} from 'react';
+import MaterialTable, { Column } from 'material-table';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router';
-import { CHATBOT_DELETE_INTENT, CHATBOT_GET_INTENTS } from '../../../common-gql-queries';
+import { CHATBOT_DELETE_INTENT, CHATBOT_GET_INTENTS, CHATBOT_UPDATE_INTENT } from '../../../common-gql-queries';
 import { IIntent } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
-import ConfirmDialog from '../../Utils/ConfirmDialog';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,77 +25,117 @@ interface IGetIntents {
   ChatbotService_intents: IIntent[] | undefined;
 }
 
+interface IntentState {
+  columns: Column<IIntent>[];
+  data: IIntent[] | undefined;
+}
+
 function IntentsTable() {
   const classes = useStyles();
   const { agentId } = useParams();
-  const [confirmOpen, setConfirmOpen ] = useState(false);
   const numAgentId = Number(agentId);
 
   const intentsData = useQuery<IGetIntents>(CHATBOT_GET_INTENTS, { variables: { agentId: numAgentId } });
-  const [deleteIntent, { loading, error }] = useMutation(CHATBOT_DELETE_INTENT,  {
-    refetchQueries: [{ query: CHATBOT_GET_INTENTS, variables: { agentId : numAgentId }  }],
+  const [updateIntent, updatedData] = useMutation(CHATBOT_UPDATE_INTENT, {
+    refetchQueries: [{ query: CHATBOT_GET_INTENTS, variables: { agentId: numAgentId } }],
+    awaitRefetchQueries: true,
+  });
+  const [deleteIntent, { loading, error }] = useMutation(CHATBOT_DELETE_INTENT, {
+    refetchQueries: [{ query: CHATBOT_GET_INTENTS, variables: { agentId: numAgentId } }],
     awaitRefetchQueries: true,
   });
 
-  const commonError = intentsData.error ? intentsData.error : error;
+  const intents: IIntent[] | undefined = intentsData && intentsData.data && intentsData.data.ChatbotService_intents;
 
-  if (intentsData.loading || loading) {
+  const [state, setState] = React.useState<IntentState>({
+    columns: [
+      { title: 'Intent id', field: 'id', editable: 'never' },
+      {
+        title: 'Name',
+        field: 'value',
+        editable: 'onUpdate',
+      },
+      { title: 'Default Response', field: 'defaultResponse', editable: 'onUpdate' },
+    ],
+    data: intents,
+  });
+
+  useEffect(() => {
+    if (intents) {
+      setState({
+        columns: state.columns,
+        data: [...intents],
+      });
+    }
+
+    return () => { };
+  }, [intents, state.columns]);
+
+  const commonError = intentsData.error ? intentsData.error : updatedData.error ? updatedData.error : error;
+
+  if (intentsData.loading || updatedData.loading || loading) {
     return <ContentLoading />;
   }
 
-  if ( commonError) {
+  if (commonError) {
     // TODO: handle errors
     return <ApolloErrorPage error={commonError} />;
   }
 
-  const deleteIntentHandler =  (intentId: number) => {
+  const updateIntentHandler = (intentId: number, value: string, defaultResponse: string) => {
+
+    updateIntent({
+      variables: {
+        intentId,
+        value,
+        defaultResponse,
+      },
+    });
+  };
+  const deleteIntentHandler = (intentId: number) => {
 
     deleteIntent({
-        variables: {
-          intentId,
-        },
-      });
+      variables: {
+        intentId,
+      },
+    });
   };
 
-  const intents = intentsData.data && intentsData.data.ChatbotService_intents;
   return (
     <Paper className={classes.paper}>
-      {intents ? (
-        <TableContainer component={Paper} aria-label="Intents">
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>Intent id</TableCell>
-                <TableCell>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {intents.map((intent: IIntent) => (
-                <TableRow key={intent.id}>
-                  <TableCell>
-                        {intent.value}
-                  </TableCell>
-                  <TableCell>{intent.id}</TableCell>
-                  <TableCell>
-                     <IconButton aria-label="delete" onClick={() => setConfirmOpen(true)}>
-                        <DeleteIcon />
-                     </IconButton>
-                     <ConfirmDialog
-                        title="Delete Intent?"
-                        open={confirmOpen}
-                        setOpen={setConfirmOpen}
-                        onConfirm={() => deleteIntentHandler(Number(intent.id))}
 
-                     >
-                        Are you sure you want to delete this intent?
-                    </ConfirmDialog>
-                  </TableCell>
-                </TableRow>
-              ))}
+      {state && state.data && state.data.length > 0 ? (
+        <TableContainer component={Paper} aria-label="Agents">
+          <MaterialTable
+            title="Agents Table"
+            columns={state.columns}
+            data={state.data}
+            options={{
+              actionsColumnIndex: -1,
+            }}
 
-            </TableBody>
-          </Table>
+            localization={{
+              body: {
+                editRow: {
+                  deleteText: 'Are you sure delete this Intent?',
+                },
+              },
+            }}
+            editable={{
+              onRowUpdate: async (newData, oldData) => {
+                if (oldData) {
+                  const dataId = oldData.id;
+                  const dataName = newData.value;
+                  const dataResponse = newData.defaultResponse;
+                  updateIntentHandler(dataId, dataName, dataResponse);
+                }
+              },
+              onRowDelete: async (oldData) => {
+                const dataId = oldData.id;
+                deleteIntentHandler(dataId);
+              },
+            }}
+          />
         </TableContainer>
       ) : (
           <Typography align="center" variant="h6">

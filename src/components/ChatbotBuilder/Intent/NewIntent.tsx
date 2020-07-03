@@ -59,6 +59,7 @@ const NewIntent: React.FC = () => {
       },
     });
     setValue('');
+    setDefaultResponse('');
   };
 
   return (
