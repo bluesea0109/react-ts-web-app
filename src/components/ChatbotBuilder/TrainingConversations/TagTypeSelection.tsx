@@ -1,4 +1,4 @@
-import { Grid, Button, TextField } from '@material-ui/core';
+import { Button, Grid, TextField } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import React, { Fragment, useState } from 'react';
@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     tagSelectionWrapper: {
       alignItems: 'center',
-    }
+    },
 }));
 
 const TagTypeSelection: React.FC<ITagSelection> = ({tags, onAddTags, userTags}) => {

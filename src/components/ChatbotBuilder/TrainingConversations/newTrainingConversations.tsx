@@ -274,7 +274,7 @@ const CreateTrainingConversations: React.FC<IConversationProps> =
                 const agentAction: any = inputField.agentActions ? inputField.agentActions[0] || {} : {};
                 return (
                   <Fragment key={`${inputField}~${index}`}>
-                    <Grid container={true} className={clsx(classes.actionWrapper,inputField.agentActions && classes.agentActionWrapper )}>
+                    <Grid container={true} className={clsx(classes.actionWrapper, inputField.agentActions && classes.agentActionWrapper )}>
                       <Grid container={true} item={true} className={classes.actionItemWrapper}>
                         <Typography> {index} </Typography>
                       </Grid>
@@ -327,7 +327,7 @@ const CreateTrainingConversations: React.FC<IConversationProps> =
                                     }
                                   </Paper>
                               </Grid>
-                            
+
                                 <Grid container={true} className={classes.tagValuesWrapper}>
                                   <TagTypeSelection
                                           tags={tags}
@@ -353,7 +353,7 @@ const CreateTrainingConversations: React.FC<IConversationProps> =
                                         </InputLabel>
                                         <Select
                                           labelId="action-label"
-                                          label="Action Type" 
+                                          label="Action Type"
                                           name="actionType"
                                           value={agentAction.actionType}
                                           onChange={event => handleOnChange(index, event)}
