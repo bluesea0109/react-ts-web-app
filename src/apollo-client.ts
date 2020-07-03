@@ -46,14 +46,16 @@ console.log('project id:', config.projectId);
 const getIdToken = async () => {
   const token = sessionStorage.getItem("token");
   if (!!token && token !== "") {
-    return btoa(token);
+    return atob(token);
   } else {
     const user = firebase.auth().currentUser;
     if (user) {
       const token = await user.getIdToken();
       const customToken = await exchangeFirebaseToken(token);
 
-      sessionStorage.setItem("token", atob(customToken));
+      console.log("TOKEN: ", customToken);
+
+      sessionStorage.setItem("token", btoa(customToken));
 
       return customToken;
     }
@@ -80,8 +82,6 @@ const exchangeFirebaseToken = async (token: string): Promise<string> => {
 
 const authLink = setContext((_, { headers }) => {
   return getIdToken().then((token) => {
-    console.log('TOKEN::', token);
-
     return {
       headers: {
         ...headers,
@@ -97,3 +97,7 @@ export const client = new ApolloClient({
     addTypename: false,
   }),
 });
+
+export const resetApolloContext = () => {
+  sessionStorage.removeItem("token");
+}

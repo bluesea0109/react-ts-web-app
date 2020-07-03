@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import React, { useState } from 'react';
 import { CREATE_ORG, GET_CURRENT_USER } from '../../common-gql-queries';
 import ApolloErrorPage from '../ApolloErrorPage';
+import { resetApolloContext } from '../../apollo-client';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -37,8 +38,9 @@ function NewOrganisation() {
     return <ApolloErrorPage error={error}/>;
   }
 
-  const submit = () => {
-    createOrg({ variables: { name: state.name } });
+  const submit = async () => {
+    await createOrg({ variables: { name: state.name } });
+    resetApolloContext();
     setState({ name: ''});
   };
 
