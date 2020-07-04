@@ -213,11 +213,10 @@ const CreateTrainingConversations: React.FC<IConversationProps> =
       }
     };
 
-    
     const validateUserActions = (actions: any[]): boolean => {
       for (const action of actions) {
         if (!action.intent) {
-          setErrStatus("User action intent is required.");
+          setErrStatus('User action intent is required.');
           return false;
         }
       }
@@ -227,17 +226,16 @@ const CreateTrainingConversations: React.FC<IConversationProps> =
     const validateAgentActions = (actions: any[]): boolean => {
       for (const action of actions) {
         if (!action.actionType) {
-          setErrStatus("Agent action type is required.");
+          setErrStatus('Agent action type is required.');
           return false;
-        } 
+        }
         if (!action.actionId) {
-          setErrStatus("Agent action is required.");
+          setErrStatus('Agent action is required.');
           return false;
-        } 
+        }
       }
       return true;
     };
-
 
     const onAddTags = (tagType: string, tagValue: string, index: number) => {
       const values = [...actionData];
