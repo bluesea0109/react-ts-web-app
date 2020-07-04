@@ -2,6 +2,7 @@ import { useMutation } from '@apollo/react-hooks';
 import { Button, Card, createStyles, LinearProgress, makeStyles, TextField, Theme, Typography } from '@material-ui/core';
 import clsx from 'clsx';
 import React, { useState } from 'react';
+import { resetApolloContext } from '../../apollo-client';
 import { CREATE_ORG, GET_CURRENT_USER } from '../../common-gql-queries';
 import ApolloErrorPage from '../ApolloErrorPage';
 
@@ -37,8 +38,9 @@ function NewOrganisation() {
     return <ApolloErrorPage error={error}/>;
   }
 
-  const submit = () => {
-    createOrg({ variables: { name: state.name } });
+  const submit = async () => {
+    await createOrg({ variables: { name: state.name } });
+    resetApolloContext();
     setState({ name: ''});
   };
 
