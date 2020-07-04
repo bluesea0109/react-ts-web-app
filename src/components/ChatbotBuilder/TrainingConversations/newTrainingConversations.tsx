@@ -73,7 +73,7 @@ const CreateTrainingConversations: React.FC<IConversationProps> =
     const numAgentId = Number(agentId);
     const [actionData, setActionsValue] = useState<any | null>(isUpdate ? tempActionData : []);
     const [turn, setTurns] = useState<string[]>(isUpdate ? userTurns : []);
-    const [actionType, setActionType] = useState<string>('UTTR');
+    const [actionType, setActionType] = useState<string>('UTTER');
     const [loading, setLoding] = useState<boolean>(false);
 
     const [createConversations] = useMutation(CREATE_TRAINING_CONVERSATIONS);
@@ -114,7 +114,7 @@ const CreateTrainingConversations: React.FC<IConversationProps> =
           setErrStatus('Custom actions not yet supported');
           setActionType('CUSTOM');
         } else {
-          setActionType('UTTR');
+          setActionType('UTTER');
         }
         values[index].agentActions[0].actionType = event.target.value;
       }
@@ -157,14 +157,12 @@ const CreateTrainingConversations: React.FC<IConversationProps> =
         }
       });
 
-      const isUserFull = userActions.every(item => !isEmpty(item));
-      const isAgentFull = agentActions.every(item => !isEmpty(item));
+      const userActionsValid = validateUserActions(userActions);
+      const agentActionsValid = validateAgentActions(agentActions);
 
-      if (!isUserFull) {
-        setErrStatus('Please Fill all the details of user actions');
+      if (!userActionsValid) {
         setLoding(false);
-      } else if (!isAgentFull) {
-        setErrStatus('Please Fill all the details of agent actions');
+      } else if (!agentActionsValid) {
         setLoding(false);
       } else {
         try {
@@ -215,9 +213,31 @@ const CreateTrainingConversations: React.FC<IConversationProps> =
       }
     };
 
-    const isEmpty = (obj: object) => {
-      return Object.entries(obj).every(([k, v]) => k !== 'Utterance' || v === '' || v === [] || v == null);
+    
+    const validateUserActions = (actions: any[]): boolean => {
+      for (const action of actions) {
+        if (!action.intent) {
+          setErrStatus("User action intent is required.");
+          return false;
+        }
+      }
+      return true;
     };
+
+    const validateAgentActions = (actions: any[]): boolean => {
+      for (const action of actions) {
+        if (!action.actionType) {
+          setErrStatus("Agent action type is required.");
+          return false;
+        } 
+        if (!action.actionId) {
+          setErrStatus("Agent action is required.");
+          return false;
+        } 
+      }
+      return true;
+    };
+
 
     const onAddTags = (tagType: string, tagValue: string, index: number) => {
       const values = [...actionData];
@@ -365,9 +385,9 @@ const CreateTrainingConversations: React.FC<IConversationProps> =
                                     </Grid>
                                     <Grid item={true} className={classes.controlsWidth}>
                                       <Autocomplete
-                                        options={actionType === 'UTTR' ? actionId : []}
+                                        options={actionType === 'UTTER' ? actionId : []}
                                         id="actionId"
-                                        value={actionType === 'UTTR' ? {
+                                        value={actionType === 'UTTER' ? {
                                           id: agentAction.actionId,
                                           value: actionId.find(a => a.id === agentAction.actionId)?.value,
                                           text: actionId.find(a => a.id === agentAction.actionId)?.text,
