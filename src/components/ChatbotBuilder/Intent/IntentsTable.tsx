@@ -40,7 +40,7 @@ function IntentsTable() {
     refetchQueries: [{ query: CHATBOT_GET_INTENTS, variables: { agentId: numAgentId } }],
     awaitRefetchQueries: true,
   });
-  const [deleteIntent, { loading, error }] = useMutation(CHATBOT_DELETE_INTENT, {
+  const [deleteIntent, {  error }] = useMutation(CHATBOT_DELETE_INTENT, {
     refetchQueries: [{ query: CHATBOT_GET_INTENTS, variables: { agentId: numAgentId } }],
     awaitRefetchQueries: true,
   });
@@ -73,7 +73,7 @@ function IntentsTable() {
 
   const commonError = intentsData.error ? intentsData.error : updatedData.error ? updatedData.error : error;
 
-  if (intentsData.loading || updatedData.loading || loading) {
+  if (intentsData.loading) {
     return <ContentLoading />;
   }
 

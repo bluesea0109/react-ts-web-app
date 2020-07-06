@@ -42,7 +42,7 @@ function UtteranceActionsTable() {
     awaitRefetchQueries: true,
   });
 
-  const [deleteAction, { loading, error }] = useMutation(CHATBOT_DELETE_UTTERANCE_ACTION, {
+  const [deleteAction, {  error }] = useMutation(CHATBOT_DELETE_UTTERANCE_ACTION, {
     refetchQueries: [{ query: CHATBOT_GET_UTTERANCE_ACTIONS, variables: { agentId: numAgentId } }],
     awaitRefetchQueries: true,
   });
@@ -76,7 +76,7 @@ function UtteranceActionsTable() {
 
   const commonError = actionsData.error ? actionsData.error : updatedData.error ? updatedData.error : error;
 
-  if (actionsData.loading || updatedData.loading || loading) {
+  if (actionsData.loading) {
     return <ContentLoading />;
   }
 
