@@ -3,6 +3,7 @@ import gql from 'graphql-tag';
 import React, { useEffect } from 'react';
 import { useMutation } from 'react-apollo';
 import { useParams } from 'react-router-dom';
+import { resetApolloContext } from '../../../apollo-client';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 
@@ -24,7 +25,10 @@ export default function AcceptInvite() {
 
   useEffect(() => {
     try {
-      acceptInvite({ variables: { inviteId } });
+      (async () => {
+        await acceptInvite({ variables: { inviteId } });
+        resetApolloContext();
+      })();
     } catch (err) {
       console.error(err);
     }
@@ -38,7 +42,6 @@ export default function AcceptInvite() {
     return <ContentLoading />;
   }
 
-  // history.push(`/app/projects/${data.data.acceptProjectMemberInvite.projectId}`);
   return (
     <div className={classes.root}>
       <Typography>{'Invite accepted. Welcome to Bavard!'}</Typography>

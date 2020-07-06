@@ -1,6 +1,5 @@
-import { Grid, IconButton, TextField } from '@material-ui/core';
+import { Button, Grid, TextField } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { AddCircleOutline } from '@material-ui/icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import React, { Fragment, useState } from 'react';
 import { ITagType } from '../../../models/chatbot-service';
@@ -18,6 +17,9 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: '0px 3px',
       minWidth: '130px',
     },
+    tagSelectionWrapper: {
+      alignItems: 'center',
+    },
 }));
 
 const TagTypeSelection: React.FC<ITagSelection> = ({tags, onAddTags, userTags}) => {
@@ -33,27 +35,35 @@ const TagTypeSelection: React.FC<ITagSelection> = ({tags, onAddTags, userTags}) 
 
   return (
       <Fragment>
-        <Grid item={true} className={classes.controlsWidth}>
-          <Autocomplete
-            options={tags.filter(o => !userTags?.find((o2: any) => o.value === o2.tagType))}
-            value={tagSelectedValue}
-            getOptionLabel={(option) =>  option.value}
-            onChange={(event: any, newValue: any | null) => setTagSelectedValue(newValue)}
-            renderInput={(params) => <TextField {...params} label="Tag Types" variant="outlined" />}
-          />
+        <Grid container={true} className={classes.tagSelectionWrapper}>
+          <Grid item={true} className={classes.controlsWidth}>
+            <Autocomplete
+              options={tags.filter(o => !userTags?.find((o2: any) => o.value === o2.tagType))}
+              value={tagSelectedValue}
+              getOptionLabel={(option) =>  option.value}
+              onChange={(event: any, newValue: any | null) => setTagSelectedValue(newValue)}
+              renderInput={(params) => <TextField {...params} label="Tag Types" variant="outlined" />}
+              size="small"
+            />
+          </Grid>
+          <Grid item={true} className={classes.controlsWidth}>
+            <TextField
+              label="Values"
+              variant="outlined"
+              id="tagValues"
+              value={tagValue}
+              onChange={(event: any) => setTagValues(event.target.value)}
+              size="small"
+            />
+          </Grid>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={_onTagAdd}
+          >
+           Add Tag
+        </Button>
         </Grid>
-        <Grid item={true} className={classes.controlsWidth}>
-          <TextField
-            label="Values"
-            variant="outlined"
-            id="tagValues"
-            value={tagValue}
-            onChange={(event: any) => setTagValues(event.target.value)}
-          />
-        </Grid>
-        <IconButton onClick={_onTagAdd}>
-          <AddCircleOutline fontSize="large" />
-        </IconButton>
       </Fragment>
   );
 };

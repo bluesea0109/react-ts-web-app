@@ -73,7 +73,7 @@ const CreateTrainingConversations: React.FC<IConversationProps> =
     const numAgentId = Number(agentId);
     const [actionData, setActionsValue] = useState<any | null>(isUpdate ? tempActionData : []);
     const [turn, setTurns] = useState<string[]>(isUpdate ? userTurns : []);
-    const [actionType, setActionType] = useState<string>('UTTR');
+    const [actionType, setActionType] = useState<string>('UTTER');
     const [loading, setLoding] = useState<boolean>(false);
 
     const [createConversations] = useMutation(CREATE_TRAINING_CONVERSATIONS);
@@ -114,7 +114,7 @@ const CreateTrainingConversations: React.FC<IConversationProps> =
           setErrStatus('Custom actions not yet supported');
           setActionType('CUSTOM');
         } else {
-          setActionType('UTTR');
+          setActionType('UTTER');
         }
         values[index].agentActions[0].actionType = event.target.value;
       }
@@ -157,14 +157,12 @@ const CreateTrainingConversations: React.FC<IConversationProps> =
         }
       });
 
-      const checkUser = userActions.map(item => CheckEmpty(item));
-      const checkAgent = agentActions.map(item => CheckEmpty(item));
+      const userActionsValid = validateUserActions(userActions);
+      const agentActionsValid = validateAgentActions(agentActions);
 
-      if (checkUser.includes(false)) {
-        setErrStatus('Please Fill all the details of user actions');
+      if (!userActionsValid) {
         setLoding(false);
-      } else if (checkAgent.includes(false)) {
-        setErrStatus('Please Fill all the details of agent actions');
+      } else if (!agentActionsValid) {
         setLoding(false);
       } else {
         try {
@@ -215,13 +213,33 @@ const CreateTrainingConversations: React.FC<IConversationProps> =
       }
     };
 
-    const CheckEmpty = (obj: object) => {
-      return Object.entries(obj).every(([k, v]) => v !== '' && v !== []);
+    const validateUserActions = (actions: any[]): boolean => {
+      for (const action of actions) {
+        if (!action.intent) {
+          setErrStatus('User action intent is required.');
+          return false;
+        }
+      }
+      return true;
+    };
+
+    const validateAgentActions = (actions: any[]): boolean => {
+      for (const action of actions) {
+        if (!action.actionType) {
+          setErrStatus('Agent action type is required.');
+          return false;
+        }
+        if (!action.actionId) {
+          setErrStatus('Agent action is required.');
+          return false;
+        }
+      }
+      return true;
     };
 
     const onAddTags = (tagType: string, tagValue: string, index: number) => {
       const values = [...actionData];
-      if (tagType || tagValue) {
+      if (tagType && tagValue) {
         const tagValues = { tagType, value: tagValue };
         if (values[index].userActions[0].tagValues.length > 10) {
           setErrStatus('You can not add more than 10 tags');
@@ -255,13 +273,13 @@ const CreateTrainingConversations: React.FC<IConversationProps> =
                 <Grid container={true} item={true} className={classes.actionItemWrapper}>
                   <Typography> Turn </Typography>
                 </Grid>
-                <Grid container={true} item={true} className={classes.actionDetailsWrapper}>
+                <Grid container={true} item={true} className={classes.ActionsHeading}>
                   <Typography> User Actions </Typography>
                   <IconButton onClick={() => handleAddFields('user')}>
                     <AddCircleOutline fontSize="large" />
                   </IconButton>
                 </Grid>
-                <Grid container={true} item={true} className={classes.actionDetailsWrapper}>
+                <Grid container={true} item={true} className={classes.ActionsHeading}>
                   <Typography> Agent Actions </Typography>
                   <IconButton onClick={() => handleAddFields('agent')}>
                     <AddCircleOutline fontSize="large" />
@@ -274,111 +292,127 @@ const CreateTrainingConversations: React.FC<IConversationProps> =
                 const agentAction: any = inputField.agentActions ? inputField.agentActions[0] || {} : {};
                 return (
                   <Fragment key={`${inputField}~${index}`}>
-                    <Grid container={true} className={classes.actionWrapper}>
+                    <Grid container={true} className={clsx(classes.actionWrapper, inputField.agentActions && classes.agentActionWrapper )}>
                       <Grid container={true} item={true} className={classes.actionItemWrapper}>
                         <Typography> {index} </Typography>
                       </Grid>
                       {
                         (turn[index] === 'user' || (inputField.userActions)) ?
                           (
-                            <Grid container={true} item={true} className={classes.actionDetailsWrapper}>
-                              <Grid container={true} className={classes.actionListWrapper}>
-                                <Grid item={true} className={classes.controlsWidth}>
-                                  <Autocomplete
-                                    id="intent"
-                                    options={intentOption}
-                                    getOptionLabel={(option) => option || ''}
-                                    onChange={(event: any, value: any) => handleOnSelect(index, event, value)}
-                                    value={userAction.intent}
-                                    getOptionSelected={(a) => a.value === userAction?.intent}
-                                    renderInput={(params) => <TextField {...params} label="Intent" variant="outlined" />}
-                                  />
+                            <Grid container={true} item={true} className={classes.actionsWrapper}>
+                              <span className={classes.agentTagText}>User Action</span>
+                              <Grid container={true} className={classes.actionDetailsWrapper} direction={'column'}>
+                                <Grid container={true}>
+                                  <Grid item={true} className={classes.controlsWidth}>
+                                    <Autocomplete
+                                      id="intent"
+                                      options={intentOption}
+                                      getOptionLabel={(option) => option || ''}
+                                      onChange={(event: any, value: any) => handleOnSelect(index, event, value)}
+                                      value={userAction.intent}
+                                      getOptionSelected={(a) => a.value === userAction?.intent}
+                                      renderInput={(params) => <TextField {...params} label="Intent" variant="outlined" />}
+                                      size="small"
+                                    />
+                                  </Grid>
+                                  <Grid item={true} className={classes.UtteranceControlsWidth}>
+                                    <TextField
+                                      id="Utterance"
+                                      label="Utterance [Optional]"
+                                      variant="outlined"
+                                      size="small"
+                                      value={userAction?.utterance}
+                                      onChange={event => handleOnChange(index, event)}
+                                    />
+                                  </Grid>
                                 </Grid>
-                                <Grid item={true} className={classes.controlsWidth}>
-                                  <TextField
-                                    id="Utterance"
-                                    label="Utterance"
-                                    variant="outlined"
-                                    value={userAction?.utterance}
-                                    onChange={event => handleOnChange(index, event)}
-                                  />
-                                </Grid>
-                                <TagTypeSelection
-                                  tags={tags}
-                                  userTags={userAction.tagValues}
-                                  onAddTags={(tagType, tagValue) => onAddTags(tagType, tagValue, index)}
-                                />
-                                <IconButton onClick={event => onDelete(index, event)}>
-                                  <Delete fontSize="large" />
-                                </IconButton>
+                                <Grid container={true} className={classes.tagList}>
+                                  <span className={classes.agentTagText}>Tags</span>
+                                  <Paper component="ul" className={classes.tagListWrapper}>
+                                    {
+                                      userAction.tagValues?.map((item: any, i: number) => {
+                                        const label = item.tagType + ' : ' + item.value;
+                                        return (
+                                          <li key={i}>
+                                            <Chip
+                                              label={label}
+                                              onDelete={() => removeTags(i, index)}
+                                              className={classes.chip}
+                                            />
+                                          </li>
+                                        );
+                                      })
+                                    }
+                                  </Paper>
                               </Grid>
-                              <Grid container={true} className={classes.tagList}>
-                                <Paper component="ul" className={classes.tagListWrapper}>
-                                  {
-                                    userAction.tagValues?.map((item: any, i: number) => {
-                                      const label = item.tagType + ' : ' + item.value;
-                                      return (
-                                        <li key={i}>
-                                          <Chip
-                                            label={label}
-                                            onDelete={() => removeTags(i, index)}
-                                            className={classes.chip}
-                                          />
-                                        </li>
-                                      );
-                                    })
-                                  }
-                                </Paper>
+
+                                <Grid container={true} className={classes.tagValuesWrapper}>
+                                  <TagTypeSelection
+                                          tags={tags}
+                                          userTags={userAction.tagValues}
+                                          onAddTags={(tagType, tagValue) => onAddTags(tagType, tagValue, index)}
+                                        />
+                                  <IconButton onClick={event => onDelete(index, event)}>
+                                      <Delete fontSize="large" />
+                                  </IconButton>
+                              </Grid>
                               </Grid>
                             </Grid>
                           ) : (
-                            <Grid container={true} item={true} justify={'flex-end'}>
-                              <Grid item={true} className={classes.actionDetailsWrapper}>
-                                <Grid item={true} className={classes.controlsWidth}>
-                                  <FormControl variant="outlined" className={classes.selectControls}>
-                                    <InputLabel id="action-label">
-                                      Action Type
-                                  </InputLabel>
-                                    <Select
-                                      labelId="action-label"
-                                      label="Action Type"
-                                      name="actionType"
-                                      value={agentAction.actionType}
+                            <Grid container={true} className={classes.actionsWrapper}>
+                              <span className={classes.agentTagText}>Agent Action</span>
+                                <Grid container={true} item={true}>
+                                <Grid container={true} item={true} className={classes.actionDetailsWrapper}>
+                                  <Grid container={true}>
+                                    <Grid item={true} className={classes.controlsWidth}>
+                                      <FormControl variant="outlined" className={classes.selectControls} size="small">
+                                        <InputLabel id="action-label">
+                                          Action Type
+                                        </InputLabel>
+                                        <Select
+                                          labelId="action-label"
+                                          label="Action Type"
+                                          name="actionType"
+                                          value={agentAction.actionType}
+                                          onChange={event => handleOnChange(index, event)}
+                                        >
+                                          <MenuItem value={'UTTER'}>UTTER</MenuItem>
+                                          <MenuItem value={'CUSTOM'}>CUSTOM</MenuItem>
+                                        </Select>
+                                      </FormControl>
+                                    </Grid>
+                                    <Grid item={true} className={classes.controlsWidth}>
+                                      <Autocomplete
+                                        options={actionType === 'UTTER' ? actionId : []}
+                                        id="actionId"
+                                        value={actionType === 'UTTER' ? {
+                                          id: agentAction.actionId,
+                                          value: actionId.find(a => a.id === agentAction.actionId)?.value,
+                                          text: actionId.find(a => a.id === agentAction.actionId)?.text,
+                                        } : {}}
+                                        getOptionLabel={(option) => option.value || ''}
+                                        getOptionSelected={(a, b) => a.id === b.id}
+                                        onChange={(event: any, value: any) => handleOnSelect(index, event, value)}
+                                        renderInput={(params) => <TextField {...params} label="Action" variant="outlined" />}
+                                        size="small"
+                                      />
+                                    </Grid>
+                                    <Grid item={true} className={classes.controlsWidth}>
+                                    <TextField
+                                      label="Utterance"
+                                      variant="outlined"
+                                      id="agentUtterance"
+                                      size="small"
+                                      value={agentAction.utterance}
                                       onChange={event => handleOnChange(index, event)}
-                                    >
-                                      <MenuItem value={'UTTER'}>UTTER</MenuItem>
-                                      <MenuItem value={'CUSTOM'}>CUSTOM</MenuItem>
-                                    </Select>
-                                  </FormControl>
+                                      disabled={true}
+                                    />
+                                  </Grid>
+                                  </Grid>
+                                  <IconButton onClick={event => onDelete(index, event)}>
+                                    <Delete fontSize="large" />
+                                  </IconButton>
                                 </Grid>
-                                <Grid item={true} className={classes.controlsWidth}>
-                                  <Autocomplete
-                                    options={actionType === 'UTTR' ? actionId : []}
-                                    id="actionId"
-                                    value={actionType === 'UTTR' ? {
-                                      id: agentAction.actionId,
-                                      value: actionId.find(a => a.id === agentAction.actionId)?.value,
-                                      text: actionId.find(a => a.id === agentAction.actionId)?.text,
-                                    } : {}}
-                                    getOptionLabel={(option) => option.value || ''}
-                                    getOptionSelected={(a, b) => a.id === b.id}
-                                    onChange={(event: any, value: any) => handleOnSelect(index, event, value)}
-                                    renderInput={(params) => <TextField {...params} label="Action" variant="outlined" />}
-                                  />
-                                </Grid>
-                                <Grid item={true} className={classes.controlsWidth}>
-                                  <TextField
-                                    label="Utterance"
-                                    variant="outlined"
-                                    id="agentUtterance"
-                                    value={agentAction.utterance}
-                                    onChange={event => handleOnChange(index, event)}
-                                    disabled={true}
-                                  />
-                                </Grid>
-                                <IconButton onClick={event => onDelete(index, event)}>
-                                  <Delete fontSize="large" />
-                                </IconButton>
                               </Grid>
                             </Grid>
                           )
@@ -427,12 +461,24 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: theme.typography.pxToRem(15),
       fontWeight: theme.typography.fontWeightRegular,
     },
+    ActionsHeading: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: '50%',
+    },
     actionWrapper: {
       width: '100%',
       display: 'flex',
       alignItems: 'center',
       flexWrap: 'unset',
       flexDirection: 'row',
+      marginBottom: '13px',
+    },
+    actionsWrapper: {
+      border: '1px solid #000',
+      borderRadius: '3px',
+      width: 'calc(50% - 50px)',
+      position: 'relative',
     },
     actionItemWrapper: {
       width: '80px',
@@ -440,19 +486,40 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       justifyContent: 'center',
     },
+    agentActionWrapper: {
+      justifyContent: 'space-between',
+    },
+    UtteranceControlsWidth: {
+      padding: '0 3px',
+      flex: '1',
+      '& > div': {
+        width: '100%',
+      },
+    },
     actionDetailsWrapper: {
-      width: '50%',
       display: 'flex',
       alignItems: 'center',
-      justifyContent: 'center',
-      flexDirection: 'row',
-      padding: '10px 0',
+      justifyContent: 'space-between',
+      padding: '20px 10px 10px',
+      flexWrap: 'unset',
+    },
+    tagValuesWrapper: {
+      flexWrap: 'unset',
     },
     tagList: {
-      marginTop: '3px',
+      marginTop: '17px',
       display: 'flex',
       alignItems: 'center',
       flexWrap: 'unset',
+      position: 'relative',
+    },
+    agentTagText: {
+      position: 'absolute',
+      top: '-12px',
+      backgroundColor: '#fff',
+      padding: '2px 6px',
+      left: '9px',
+      fontSize: '12px',
     },
     controlsWidth: {
       width: '20%',
@@ -491,7 +558,12 @@ const useStyles = makeStyles((theme: Theme) =>
       overflowX: 'auto',
       listStyle: 'none',
       padding: theme.spacing(0.5),
-      margin: '0 10px 0 3px',
+      margin: '0 3px',
+      flex: '1',
+      background: 'transparent',
+      border: '1px solid #000',
+      borderRadius: '3px',
+      height: '40px',
     },
     addButton: {
       whiteSpace: 'nowrap',
