@@ -47,6 +47,7 @@ console.log('project id:', config.projectId);
 
 const getIdToken = async () => {
   const token = sessionStorage.getItem('token') ?? '';
+
   const fetchNewToken = async () => {
     const user = firebase.auth().currentUser;
     if (user) {
@@ -65,7 +66,8 @@ const getIdToken = async () => {
 
   if (!isEmpty(token)) {
     const { exp } = parseJwt(token);
-    if ((Date.now() - (exp * 1000)) <= 5 * 60 * 1000) {
+
+    if ((exp * 1000) - (Date.now()) <= 5 * 60 * 1000) {
       return await fetchNewToken();
     }
 
