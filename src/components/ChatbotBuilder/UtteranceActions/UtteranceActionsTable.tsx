@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@apollo/react-hooks';
-import { Paper, TableContainer, Typography } from '@material-ui/core';
+import { LinearProgress, Paper, TableContainer,  Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import 'firebase/auth';
 import MaterialTable, { Column } from 'material-table';
@@ -8,7 +8,6 @@ import { useParams } from 'react-router';
 import { CHATBOT_DELETE_UTTERANCE_ACTION, CHATBOT_GET_UTTERANCE_ACTIONS, CHATBOT_UPDATE_UTTERANCE_ACTION  } from '../../../common-gql-queries';
 import { IUtteranceAction } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
-import ContentLoading from '../../ContentLoading';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -42,7 +41,7 @@ function UtteranceActionsTable() {
     awaitRefetchQueries: true,
   });
 
-  const [deleteAction, { loading, error }] = useMutation(CHATBOT_DELETE_UTTERANCE_ACTION, {
+  const [deleteAction, {  loading, error }] = useMutation(CHATBOT_DELETE_UTTERANCE_ACTION, {
     refetchQueries: [{ query: CHATBOT_GET_UTTERANCE_ACTIONS, variables: { agentId: numAgentId } }],
     awaitRefetchQueries: true,
   });
@@ -76,10 +75,6 @@ function UtteranceActionsTable() {
 
   const commonError = actionsData.error ? actionsData.error : updatedData.error ? updatedData.error : error;
 
-  if (actionsData.loading || updatedData.loading || loading) {
-    return <ContentLoading />;
-  }
-
   if (commonError) {
     // TODO: handle errors
     return <ApolloErrorPage error={commonError} />;
@@ -105,6 +100,7 @@ function UtteranceActionsTable() {
 
   return (
     <Paper className={classes.paper}>
+      {(actionsData.loading || updatedData.loading || loading) && <LinearProgress />}
       {state && state.data && state.data.length > 0 ? (
         <TableContainer component={Paper} aria-label="Actions">
           <MaterialTable
@@ -113,6 +109,7 @@ function UtteranceActionsTable() {
             data={state.data}
             options={{
               actionsColumnIndex: -1,
+              pageSize: 20,
             }}
 
             localization={{

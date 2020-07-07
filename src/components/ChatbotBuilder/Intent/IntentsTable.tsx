@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@apollo/react-hooks';
-import { Paper, TableContainer, Typography } from '@material-ui/core';
+import { LinearProgress, Paper, TableContainer,  Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import 'firebase/auth';
 import MaterialTable, { Column } from 'material-table';
@@ -8,7 +8,6 @@ import { useParams } from 'react-router';
 import { CHATBOT_DELETE_INTENT, CHATBOT_GET_INTENTS, CHATBOT_UPDATE_INTENT } from '../../../common-gql-queries';
 import { IIntent } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
-import ContentLoading from '../../ContentLoading';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -73,10 +72,6 @@ function IntentsTable() {
 
   const commonError = intentsData.error ? intentsData.error : updatedData.error ? updatedData.error : error;
 
-  if (intentsData.loading || updatedData.loading || loading) {
-    return <ContentLoading />;
-  }
-
   if (commonError) {
     // TODO: handle errors
     return <ApolloErrorPage error={commonError} />;
@@ -103,7 +98,7 @@ function IntentsTable() {
 
   return (
     <Paper className={classes.paper}>
-
+       {(intentsData.loading || updatedData.loading || loading) && <LinearProgress />}
       {state && state.data && state.data.length > 0 ? (
         <TableContainer component={Paper} aria-label="Agents">
           <MaterialTable
@@ -112,6 +107,7 @@ function IntentsTable() {
             data={state.data}
             options={{
               actionsColumnIndex: -1,
+              pageSize: 20,
             }}
 
             localization={{
