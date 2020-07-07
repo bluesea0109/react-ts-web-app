@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@apollo/react-hooks';
-import { Paper, TableContainer, Typography,  LinearProgress, } from '@material-ui/core';
+import { LinearProgress, Paper, TableContainer,  Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import 'firebase/auth';
 import MaterialTable, { Column } from 'material-table';
@@ -75,8 +75,6 @@ function UtteranceActionsTable() {
 
   const commonError = actionsData.error ? actionsData.error : updatedData.error ? updatedData.error : error;
 
-
-
   if (commonError) {
     // TODO: handle errors
     return <ApolloErrorPage error={commonError} />;
@@ -111,7 +109,7 @@ function UtteranceActionsTable() {
             data={state.data}
             options={{
               actionsColumnIndex: -1,
-              pageSize: 20
+              pageSize: 20,
             }}
 
             localization={{
