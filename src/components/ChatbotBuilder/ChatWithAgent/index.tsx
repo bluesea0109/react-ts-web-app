@@ -1,9 +1,9 @@
+import { useQuery } from '@apollo/react-hooks';
 import { createStyles, makeStyles, Theme } from '@material-ui/core';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
-import { useQuery } from '@apollo/react-hooks';
-import { getApiKeysQuery } from '../../Dashboard/ProjectSettings/gql';
 import config from '../../../config';
+import { getApiKeysQuery } from '../../Dashboard/ProjectSettings/gql';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -26,10 +26,10 @@ export default function ChatWithAgent() {
 
   const apiKeysQuery = useQuery(getApiKeysQuery, {
     variables: {
-      projectId
+      projectId,
     },
-    skip: !projectId
-  })
+    skip: !projectId,
+  });
 
   const loadedKey = apiKeysQuery.data?.apiKey.key ?? null;
 
@@ -40,7 +40,7 @@ export default function ChatWithAgent() {
   }, [loadedKey, apiKeysQuery.loading]);
 
   const onMessage = useCallback((e: any) => {
-    if (e.data.hasOwnProperty("isWidgetActive")) {
+    if (e.data.hasOwnProperty('isWidgetActive')) {
       setIsActive(e.data.isWidgetActive);
     }
   }, []);
@@ -51,17 +51,17 @@ export default function ChatWithAgent() {
       const url = new URL(parentUrl);
       const host = url.hostname;
       setIsDebug([
-        "localhost",
-        "bavard-ai-dev.web.app",
-        "bavard-chatbot.web.app"
+        'localhost',
+        'bavard-ai-dev.web.app',
+        'bavard-chatbot.web.app',
       ].includes(host));
-    })()
+    })();
 
     window.addEventListener('message', onMessage);
 
     return () => {
       window.removeEventListener('message', onMessage);
-    }
+    };
   // eslint-disable-next-line
   }, []);
 
@@ -69,9 +69,9 @@ export default function ChatWithAgent() {
     iframe.current?.contentWindow?.postMessage({
       agentID: agentId,
       apiKey,
-      isActive: true
+      isActive: true,
     }, '*');
-  }
+  };
 
   return (
     <div
