@@ -68,7 +68,7 @@ export default function ChatWithAgent() {
   const onIframeLoad = () => {
     iframe.current?.contentWindow?.postMessage({
       agentID: agentId,
-      apiKey,
+      apiKey: apiKey.current,
       isActive: true,
     }, '*');
   };

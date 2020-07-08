@@ -23,7 +23,7 @@ const prod = {
   apiBaseUrl: 'https://api-gateway-dot-bavard-prod.appspot.com',
   apiUrl: 'https://api-gateway-dot-bavard-prod/graphql',
   predictionServiceUrl: 'https://prediction-service-dot-bavard-prod.appspot.com/graphql',
-  chatbotUrl: 'https://bavard-chatbot.web.app/public/index.html',
+  chatbotUrl: 'http://localhost:8000/public/index.html',
   firebase: {
     apiKey: 'AIzaSyDwt9YZ88n3dsp2bHS0nV7uU2oUULQLdo0',
     authDomain: 'bavard-dev.firebaseapp.com',
