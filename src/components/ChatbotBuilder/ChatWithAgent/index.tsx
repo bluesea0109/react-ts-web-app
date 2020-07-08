@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import { useQuery } from '@apollo/react-hooks';
 import { getApiKeysQuery } from '../../Dashboard/ProjectSettings/gql';
+import config from '../../../config';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -80,7 +81,7 @@ export default function ChatWithAgent() {
       {(!!apiKey && !!agentId) && (
         <iframe
           title="chatbot"
-          src="http://localhost:8000/public/index.html"
+          src={config.chatbotUrl}
           ref={ref => iframe.current = ref}
           onLoad={onIframeLoad}
           style={{
