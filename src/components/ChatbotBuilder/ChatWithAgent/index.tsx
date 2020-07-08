@@ -78,7 +78,7 @@ export default function ChatWithAgent() {
       className={classes.root}
       id="chatbot"
     >
-      {(!!apiKey && !!agentId) && (
+      {(!!(apiKey?.current) && !!agentId) && (
         <iframe
           title="chatbot"
           src={config.chatbotUrl}
