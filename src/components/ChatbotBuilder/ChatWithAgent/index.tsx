@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/react-hooks';
-import { createStyles, makeStyles, Theme } from '@material-ui/core';
+import { createStyles, makeStyles, Theme, Typography } from '@material-ui/core';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import config from '../../../config';
@@ -22,6 +22,7 @@ export default function ChatWithAgent() {
   const classes = useStyles();
   const [isActive, setIsActive] = useState(true);
   const [isDebug, setIsDebug] = useState(false);
+  const [error, setError] = useState<any>(null);
   const iframe = useRef<HTMLIFrameElement | null>(null);
 
   const apiKeysQuery = useQuery(getApiKeysQuery, {
@@ -40,8 +41,11 @@ export default function ChatWithAgent() {
   }, [loadedKey, apiKeysQuery.loading]);
 
   const onMessage = useCallback((e: any) => {
+    console.log('onMessage: ', e.data.hasOwnProperty('isError') && e.data?.isError);
     if (e.data.hasOwnProperty('isWidgetActive')) {
       setIsActive(e.data.isWidgetActive);
+    } else if (e.data.hasOwnProperty('isError') && e.data?.isError) {
+      setError(e.data);
     }
   }, []);
 
@@ -66,6 +70,8 @@ export default function ChatWithAgent() {
   }, []);
 
   const onIframeLoad = () => {
+    console.log(agentId, apiKey.current);
+
     iframe.current?.contentWindow?.postMessage({
       agentID: agentId,
       apiKey: apiKey.current,
@@ -86,7 +92,7 @@ export default function ChatWithAgent() {
           onLoad={onIframeLoad}
           style={{
             border: 'none',
-            display: 'block',
+            display: !!error ? 'none' : 'block',
             height: isActive ? '80%' : 76,
             width: isActive ? (isDebug ? 900 : 450) : 76,
             position: 'fixed',
@@ -105,6 +111,15 @@ export default function ChatWithAgent() {
             touchAction: 'auto',
           }}
         />
+      )}
+      {!!error && (
+        <Typography
+          variant="h6"
+          color="error"
+          style={{ fontWeight: 'bold', textAlign: 'center' }}
+        >
+          Error {error.code}: {error.message}
+        </Typography>
       )}
     </div>
   );

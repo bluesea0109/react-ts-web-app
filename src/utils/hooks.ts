@@ -2,6 +2,7 @@ import { OperationVariables } from '@apollo/react-common';
 import { useQuery } from '@apollo/react-hooks';
 import { QueryHookOptions } from '@apollo/react-hooks/lib/types';
 import { DocumentNode } from 'graphql';
+import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 
 export const useQueryParams = () => {
@@ -13,4 +14,12 @@ export const useQueryAsArray = <TData = any, TVariables = OperationVariables>(qu
   const { data, loading, error } = useQuery<TData, TVariables>(query, options);
 
   return [data, loading, error];
+};
+
+export const usePrevious = <T>(value: T) => {
+  const ref = useRef<T>();
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
 };
