@@ -1,10 +1,10 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import React, { useEffect, useState } from 'react';
+import { resetApolloContext } from './apollo-client';
 import App from './App';
 import ContentLoading from './components/ContentLoading';
 import SignInPage from './components/SignInPage';
-import { resetApolloContext } from './apollo-client';
 
 function AppAuthWrapper() {
   const [state, setState] = useState({
