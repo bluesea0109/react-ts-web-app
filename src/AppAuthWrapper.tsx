@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import App from './App';
 import ContentLoading from './components/ContentLoading';
 import SignInPage from './components/SignInPage';
+import { resetApolloContext } from './apollo-client';
 
 function AppAuthWrapper() {
   const [state, setState] = useState({
@@ -15,6 +16,7 @@ function AppAuthWrapper() {
     const unregisterAuthObserver = firebase
       .auth()
       .onAuthStateChanged(async (user) => {
+        resetApolloContext();
         if (user) {
           setState({
             loading: false,
