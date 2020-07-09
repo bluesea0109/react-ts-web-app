@@ -15,10 +15,10 @@ import { Add } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 
-import { createApiKeyMutation, deleteApiKeyMutation, getApiKeysQuery, updateDomainsMutation } from './gql';
-import KeyValueArrayInput from '../../Utils/KeyValueArrayInput';
 import { IAPIKey } from '../../../models/user-service';
 import { useQueryAsArray } from '../../../utils/hooks';
+import KeyValueArrayInput from '../../Utils/KeyValueArrayInput';
+import { createApiKeyMutation, deleteApiKeyMutation, getApiKeysQuery, updateDomainsMutation } from './gql';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     domainsContainer: {
       margin: theme.spacing(2, 0),
-      maxWidth: 800
+      maxWidth: 800,
     },
     deleteBtn: {
       background: theme.palette.error.main,
@@ -41,11 +41,11 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface QueryResult {
-  apiKey: IAPIKey
+  apiKey: IAPIKey;
 }
 
 interface UpdateDomainsMutationResult {
-  updateAllowedDomains: IAPIKey
+  updateAllowedDomains: IAPIKey;
 }
 
 export default function Project() {
@@ -106,8 +106,8 @@ export default function Project() {
       const { data } = await updateAllowedDomains({
         variables: {
           projectId,
-          domains
-        }
+          domains,
+        },
       });
 
       const updatedKey = data?.updateAllowedDomains ?? null;
@@ -115,7 +115,7 @@ export default function Project() {
     } catch (e) {
 
     }
-  }
+  };
 
   const loading = apiKeyLoading || createKeyMutation.loading || deleteKeyMutation.loading;
 

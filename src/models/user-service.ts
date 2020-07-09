@@ -34,5 +34,5 @@ export interface IAPIKey {
   orgName: string;
   projectName: string;
   key: string;
-  domains: string[]
+  domains: string[];
 }
