@@ -7,7 +7,8 @@ export const getApiKeysQuery = gql`
       orgId,
       orgName,
       projectId,
-      projectName
+      projectName,
+      domains
     }
   }
 `;
@@ -19,7 +20,8 @@ export const createApiKeyMutation = gql`
       orgId,
       orgName,
       projectId,
-      projectName
+      projectName,
+      domains
     }
   }
 `;
@@ -30,4 +32,17 @@ export const deleteApiKeyMutation = gql`
       key
     }
   }
+`;
+
+export const updateDomainsMutation = gql`
+    mutation ($projectId: String!, $domains: [String!]!) {
+      updateAllowedDomains(projectId: $projectId, domains: $domains) {
+        key,
+        orgId,
+        orgName,
+        projectId,
+        projectName,
+        domains
+      }
+    }
 `;
