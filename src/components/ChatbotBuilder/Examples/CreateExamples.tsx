@@ -1,12 +1,11 @@
 import { useMutation, useQuery } from '@apollo/react-hooks';
-import { Button, Grid, TextareaAutosize, LinearProgress } from '@material-ui/core';
+import { Button, Grid, LinearProgress, TextareaAutosize } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { useState } from 'react';
-import { IIntent } from '../../../models/chatbot-service';
 import { useParams } from 'react-router-dom';
-import { CREATE_EXAMPLE, GET_EXAMPLES, CHATBOT_GET_INTENTS } from '../../../common-gql-queries';
+import { CHATBOT_GET_INTENTS, CREATE_EXAMPLE, GET_EXAMPLES } from '../../../common-gql-queries';
+import { IIntent } from '../../../models/chatbot-service';
 import AutoComplete from '../../Utils/Autocomplete';
-
 
 interface ICreateExampleProps {
   onCompleted?(): any;
@@ -22,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
       border: `1px solid #000`,
       marginBottom: theme.spacing(2),
       borderRadius: `4px`,
-      position: `relative`
+      position: `relative`,
     },
     label: {
       position: `absolute`,
@@ -32,13 +31,13 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: `0px 5px`,
     },
     textArea: {
-      minWidth: '90%'
+      minWidth: '90%',
     },
     createBtn: {
       float: `right`,
       marginTop: `10px`,
       marginRight: `9%`,
-    }
+    },
   }),
 );
 
@@ -60,7 +59,6 @@ function CreateExample() {
     name: '',
     open: false,
   });
-
 
   const handleChange = (event: any) => {
     setState({
@@ -86,11 +84,6 @@ function CreateExample() {
     });
   };
 
-
-
-
-
-
   if (error) {
     console.error(error);
   }
@@ -114,7 +107,7 @@ function CreateExample() {
 
         <Grid item={true} xs={12} sm={9}>
 
-          <TextareaAutosize 
+          <TextareaAutosize
             value={state.name} onChange={handleChange}
             rowsMin={4} placeholder="Text" className={classes.textArea}  />
 

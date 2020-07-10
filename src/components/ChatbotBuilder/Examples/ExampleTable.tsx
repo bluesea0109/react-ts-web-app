@@ -4,11 +4,10 @@ import React, { useEffect } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
 import { useParams } from 'react-router-dom';
 import { CHATBOT_DELETE_EXAMPLE, CHATBOT_UPDATE_EXAMPLE, CREATE_EXAMPLE_TAGS, GET_EXAMPLES } from '../../../common-gql-queries';
-import {  IIntent, IExample } from '../../../models/chatbot-service';
+import {  IExample, IIntent } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 import TextHighlightator from './TextHighlightator';
-
 
 interface IGetExamples {
   ChatbotService_examples: IExample[] | undefined;
@@ -34,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
       border: `1px solid #000`,
       marginBottom: theme.spacing(2),
       borderRadius: `4px`,
-      position: `relative`
+      position: `relative`,
     },
     selectionText: {
       border: 'none',
@@ -47,7 +46,7 @@ const useStyles = makeStyles((theme: Theme) =>
       left: `20px`,
       background: `white`,
       padding: `0px 5px`,
-    }
+    },
   }),
 );
 
@@ -71,7 +70,7 @@ const ExampleTable: React.FC<IExampleTableProps> = ({tagTypeId}) => {
       const [singleExample, setSingleExample] = React.useState<IExample | null>();
       const examples: IExample[] | undefined = examplesData && examplesData.data &&
       examplesData.data.ChatbotService_examples;
-      const intents : IIntent[] | undefined = examplesData && examplesData.data &&
+      const intents: IIntent[] | undefined = examplesData && examplesData.data &&
       examplesData.data.ChatbotService_intents;
 
       const submitExampleTag = () => {
@@ -95,44 +94,41 @@ const ExampleTable: React.FC<IExampleTableProps> = ({tagTypeId}) => {
 
     };
 
-  
-    const getMargeIntentData = (examplesData:any[], intentsData: any[]) => {
-      let mergedData = examplesData.map((singleExample:any) => {
-           const intent = intentsData.filter((intnt) => intnt.id ===  singleExample.intentId)
+    const getMargeIntentData = (examplesData: any[], intentsData: any[]) => {
+      const mergedData = examplesData.map((singleExample: any) => {
+           const intent = intentsData.filter((intnt) => intnt.id ===  singleExample.intentId);
            return {
              ...singleExample,
-             intentName: intent[0].value
-           }
-      })
+             intentName: intent[0].value,
+           };
+      });
       return mergedData;
-      
-    }
 
-    const arrayToObj = (intntData:any[]) =>{
-      let elements:any = {}
+    };
+
+    const arrayToObj = (intntData: any[]) => {
+      const elements: any = {};
       intntData.forEach(({id, value}) => {
-        elements[id] = value
-      })
+        elements[id] = value;
+      });
 
+      return elements;
 
-      return elements
+    };
 
-    }
-
-    
     const [state, setState] = React.useState<ExampleState>({
         columns: [
-          { title: 'Intent', 
+          { title: 'Intent',
           field: 'intentId',
-          render: (rowData) => <span>{rowData.intentName}</span>, 
+          render: (rowData) => <span>{rowData.intentName}</span>,
           editable: 'never',
           customFilterAndSearch: (term, rowData) => {
-            if(term.length > 0) {
-              return Number(term[0]) === rowData.intentId
+            if (term.length > 0) {
+              return Number(term[0]) === rowData.intentId;
             } else {
               return true;
             }
-            
+
           },
           lookup: { 1: 'İstanbul', 2: 'Şanlıurfa' },
          },
@@ -141,15 +137,15 @@ const ExampleTable: React.FC<IExampleTableProps> = ({tagTypeId}) => {
             render: rowData => <TextHighlightator onSelectExample={() => setSingleExample(rowData)}
             example={rowData} />,
             editable: 'onUpdate',
-            filtering: false
+            filtering: false,
           },
         ],
-        data: examples
+        data: examples,
       });
 
       useEffect(() => {
         if (examples && intents) {
-          const updatedData = getMargeIntentData(examples, intents)
+          const updatedData = getMargeIntentData(examples, intents);
           state.columns[0].lookup = arrayToObj(intents);
           setState({
             columns: state.columns,
@@ -159,7 +155,6 @@ const ExampleTable: React.FC<IExampleTableProps> = ({tagTypeId}) => {
 
         return () => {};
       }, [examples, intents,  state.columns]);
-
 
       const commonError = examplesData.error ? examplesData.error : updatedData.error ? updatedData.error
       : updatedDataTag.error ? updatedDataTag.error : error;
@@ -201,7 +196,7 @@ const ExampleTable: React.FC<IExampleTableProps> = ({tagTypeId}) => {
       data={state.data}
       options={{
         actionsColumnIndex: -1,
-        filtering: true
+        filtering: true,
       }}
 
       localization={{
