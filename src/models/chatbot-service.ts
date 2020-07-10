@@ -20,6 +20,7 @@ export interface IExample {
   id: number;
   intentId: number;
   agentId: number;
+  intentName?: any;
   text: string;
   tags: any;
 }

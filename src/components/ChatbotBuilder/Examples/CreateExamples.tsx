@@ -1,31 +1,56 @@
-import { useMutation } from '@apollo/react-hooks';
-import { Button, TextField, Typography } from '@material-ui/core';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import { useMutation, useQuery } from '@apollo/react-hooks';
+import { Button, Grid, LinearProgress, TextareaAutosize } from '@material-ui/core';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { CREATE_EXAMPLE, GET_EXAMPLES } from '../../../common-gql-queries';
-import ContentLoading from '../../ContentLoading';
-import IconButtonAdd from '../../IconButtons/IconButtonAdd';
+import { CHATBOT_GET_INTENTS, CREATE_EXAMPLE, GET_EXAMPLES } from '../../../common-gql-queries';
+import { IIntent } from '../../../models/chatbot-service';
+import AutoComplete from '../../Utils/Autocomplete';
 
 interface ICreateExampleProps {
   onCompleted?(): any;
-  intentId: string | null;
+}
+interface IGetIntents {
+  ChatbotService_intents: IIntent[] | undefined;
 }
 
-function CreateExample(props: ICreateExampleProps) {
-  const {intentId} = props;
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    box: {
+      padding: theme.spacing(2),
+      border: `1px solid #000`,
+      marginBottom: theme.spacing(2),
+      borderRadius: `4px`,
+      position: `relative`,
+    },
+    label: {
+      position: `absolute`,
+      top: `-26px`,
+      left: `20px`,
+      background: `white`,
+      padding: `0px 5px`,
+    },
+    textArea: {
+      minWidth: '90%',
+    },
+    createBtn: {
+      float: `right`,
+      marginTop: `10px`,
+      marginRight: `9%`,
+    },
+  }),
+);
+
+function CreateExample() {
   const { agentId } = useParams();
-  const numAgentId  = Number(agentId);
-  const numIntentId = Number(intentId);
-  const [createExample, { loading, error, data }] = useMutation(CREATE_EXAMPLE,
+  const numAgentId = Number(agentId);
+  const classes = useStyles();
+  const intentsData = useQuery<IGetIntents>(CHATBOT_GET_INTENTS, { variables: { agentId: numAgentId } });
+  const intents = intentsData.data && intentsData.data.ChatbotService_intents;
+  const [intentSelectedValue, setIntentSelectedValue] = React.useState<any | null>(null);
+  const [createExample, { loading, error }] = useMutation(CREATE_EXAMPLE,
     {
-      onCompleted: () => {
-        handleClose();
-      },
-      refetchQueries: [{ query: GET_EXAMPLES, variables: { agentId: numAgentId  } }],
+      refetchQueries: [{ query: GET_EXAMPLES, variables: { agentId: numAgentId } }],
       awaitRefetchQueries: true,
     },
   );
@@ -35,95 +60,67 @@ function CreateExample(props: ICreateExampleProps) {
     open: false,
   });
 
-  const handleOpen = () => {
-    setState({ ...state, open: true });
-  };
-
-  const handleClose = () => {
-    setState({ ...state, open: false });
-  };
-
-  const handleChange = (name: string) => (event: any) => {
+  const handleChange = (event: any) => {
     setState({
       ...state,
-      [name]: event.target.value,
+      name: event.target.value,
     });
   };
 
   const handleCreate = () => {
-    if (state.name && intentId) {
-        createExample({
+    if (state.name) {
+      createExample({
         variables: {
-            agentId: numAgentId,
-            text: state.name,
-            intentId: numIntentId,
+          agentId: numAgentId,
+          text: state.name,
+          intentId: intentSelectedValue,
         },
       });
     }
+
+    setState({
+      ...state,
+      name: '',
+    });
   };
-
-  if (data) {
-    if (props.onCompleted) {
-      props.onCompleted();
-    }
-  }
-
-  let dialogConent = (
-    <DialogContent>
-      <TextField
-        autoFocus={true}
-        margin="dense"
-        id="name"
-        label="Example Name"
-        type="string"
-        fullWidth={true}
-        value={state.name}
-        onChange={handleChange('name')}
-      />
-    </DialogContent>
-  );
-
-  if (loading) {
-    dialogConent = (
-      <DialogContent>
-        <ContentLoading />
-      </DialogContent>
-    );
-  }
 
   if (error) {
     console.error(error);
-    dialogConent = (
-      <DialogContent>
-        <Typography>{'Error'}</Typography>
-      </DialogContent>
-    );
   }
 
   return (
     <React.Fragment>
-      <Dialog
-        fullWidth={true}
-        open={state.open}
-        onClose={handleClose}
-        aria-labelledby="form-dialog-title"
-      >
-        <DialogTitle id="form-dialog-title">{'New Example'}</DialogTitle>
-        {dialogConent}
-        <DialogActions>
-          <Button color="primary" disabled={loading} onClick={handleClose}>
-            {'Cancel'}
-          </Button>
+      {loading && <LinearProgress />}
+      <Grid container={true} spacing={1} className={classes.box}>
+      <p className={classes.label}>Create NLU Example</p>
+        <Grid item={true} xs={12} sm={3}>
+          <AutoComplete
+            options={intents}
+            value={intentSelectedValue}
+            label="Intents"
+            onChange={(event: any, newValue: any | null) => {
+              setIntentSelectedValue(newValue.id);
+            }
+            }
+          />
+        </Grid>
+
+        <Grid item={true} xs={12} sm={9}>
+
+          <TextareaAutosize
+            value={state.name} onChange={handleChange}
+            rowsMin={4} placeholder="Text" className={classes.textArea}  />
+
           <Button
-            color="secondary"
+            variant="outlined" color="secondary"
             disabled={loading || error != null}
             onClick={handleCreate}
+            className={classes.createBtn}
           >
-            {'Create'}
+            {'Add NLU Example'}
           </Button>
-        </DialogActions>
-      </Dialog>
-      <IconButtonAdd tooltip="New Example" onClick={handleOpen} />
+        </Grid>
+      </Grid>
     </React.Fragment>
   );
 }
