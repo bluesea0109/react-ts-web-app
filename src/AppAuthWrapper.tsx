@@ -5,6 +5,7 @@ import { resetApolloContext } from './apollo-client';
 import App from './App';
 import ContentLoading from './components/ContentLoading';
 import SignInPage from './components/SignInPage';
+import { usePrevious } from './utils/hooks';
 
 function AppAuthWrapper() {
   const [state, setState] = useState({
@@ -12,11 +13,19 @@ function AppAuthWrapper() {
     isSignedIn: false,
   });
 
+  const prevSignedIn = usePrevious<boolean>(state.isSignedIn);
+
+  useEffect(() => {
+    if (state.isSignedIn !== prevSignedIn) {
+      resetApolloContext();
+    }
+  // eslint-disable-next-line
+  }, [state.isSignedIn]);
+
   useEffect(() => {
     const unregisterAuthObserver = firebase
       .auth()
       .onAuthStateChanged(async (user) => {
-        resetApolloContext();
         if (user) {
           setState({
             loading: false,
