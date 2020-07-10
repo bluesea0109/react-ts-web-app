@@ -1,15 +1,26 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import React, { useEffect, useState } from 'react';
+import { resetApolloContext } from './apollo-client';
 import App from './App';
 import ContentLoading from './components/ContentLoading';
 import SignInPage from './components/SignInPage';
+import { usePrevious } from './utils/hooks';
 
 function AppAuthWrapper() {
   const [state, setState] = useState({
     loading: true,
     isSignedIn: false,
   });
+
+  const prevSignedIn = usePrevious<boolean>(state.isSignedIn);
+
+  useEffect(() => {
+    if (state.isSignedIn !== prevSignedIn) {
+      resetApolloContext();
+    }
+  // eslint-disable-next-line
+  }, [state.isSignedIn]);
 
   useEffect(() => {
     const unregisterAuthObserver = firebase

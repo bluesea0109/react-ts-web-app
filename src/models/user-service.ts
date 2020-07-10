@@ -27,3 +27,12 @@ export interface IProject {
   orgId: string;
   name: string;
 }
+
+export interface IAPIKey {
+  orgId: string;
+  projectId: string;
+  orgName: string;
+  projectName: string;
+  key: string;
+  domains: string[];
+}

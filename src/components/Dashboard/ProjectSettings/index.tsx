@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/react-hooks';
 import {
   Box,
   Button,
@@ -15,12 +15,19 @@ import { Add } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 
-import { createApiKeyMutation, deleteApiKeyMutation, getApiKeysQuery } from './gql';
+import { IAPIKey } from '../../../models/user-service';
+import { useQueryAsArray } from '../../../utils/hooks';
+import KeyValueArrayInput from '../../Utils/KeyValueArrayInput';
+import { createApiKeyMutation, deleteApiKeyMutation, getApiKeysQuery, updateDomainsMutation } from './gql';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     keyItem: {
       margin: theme.spacing(2, 0),
+    },
+    domainsContainer: {
+      margin: theme.spacing(2, 0),
+      maxWidth: 800,
     },
     deleteBtn: {
       background: theme.palette.error.main,
@@ -33,12 +40,20 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
+interface QueryResult {
+  apiKey: IAPIKey;
+}
+
+interface UpdateDomainsMutationResult {
+  updateAllowedDomains: IAPIKey;
+}
+
 export default function Project() {
   const classes = useStyles();
   const { projectId } = useParams();
-  const [currentKey, setCurrentKey] = useState<string | null>(null);
+  const [currentKey, setCurrentKey] = useState<IAPIKey | null>(null);
 
-  const apiKeysQuery = useQuery(getApiKeysQuery, {
+  const [apiKey, apiKeyLoading] = useQueryAsArray<QueryResult>(getApiKeysQuery, {
     variables: {
       projectId,
     },
@@ -46,14 +61,15 @@ export default function Project() {
 
   const [addKey, createKeyMutation] = useMutation(createApiKeyMutation);
   const [deleteKey, deleteKeyMutation] = useMutation(deleteApiKeyMutation);
+  const [updateAllowedDomains, updateAllowedDomainsMutation] = useMutation<UpdateDomainsMutationResult>(updateDomainsMutation);
 
-  const loadedKey = apiKeysQuery.data?.apiKey.key ?? null;
+  const loadedKey = apiKey?.apiKey ?? null;
 
   useEffect(() => {
-    if (!apiKeysQuery.loading) {
+    if (!apiKeyLoading) {
       setCurrentKey(loadedKey);
     }
-  }, [loadedKey, apiKeysQuery.loading]);
+  }, [loadedKey, apiKeyLoading]);
 
   const createNewKey = async () => {
     try {
@@ -83,7 +99,25 @@ export default function Project() {
     }
   };
 
-  const loading = apiKeysQuery.loading || createKeyMutation.loading || deleteKeyMutation.loading;
+  const updateDomains = async (e: any) => {
+    const domains = e.target.value;
+
+    try {
+      const { data } = await updateAllowedDomains({
+        variables: {
+          projectId,
+          domains,
+        },
+      });
+
+      const updatedKey = data?.updateAllowedDomains ?? null;
+      setCurrentKey(updatedKey);
+    } catch (e) {
+
+    }
+  };
+
+  const loading = apiKeyLoading || createKeyMutation.loading || deleteKeyMutation.loading;
 
   return (
     <Box p={3}>
@@ -107,18 +141,29 @@ export default function Project() {
         </Box>
       )}
       {currentKey && (
-        <Grid container={true} className={classes.keyItem} justify="space-between" alignItems="center">
-          <Grid item={true}>
-            <Tooltip title="Copy Key" arrow={true}>
-              <Typography style={{ cursor: 'pointer' }}>
-                {currentKey}
-              </Typography>
-            </Tooltip>
+        <Box>
+          <Grid container={true} className={classes.keyItem} justify="space-between" alignItems="center">
+            <Grid item={true}>
+              <Tooltip title="Copy Key" arrow={true}>
+                <Typography style={{ cursor: 'pointer' }}>
+                  {currentKey.key}
+                </Typography>
+              </Tooltip>
+            </Grid>
+            <Grid item={true}>
+              <Button className={classes.deleteBtn} disabled={loading} onClick={deleteApiKey}>Delete</Button>
+            </Grid>
           </Grid>
-          <Grid item={true}>
-            <Button className={classes.deleteBtn} disabled={loading} onClick={deleteApiKey}>Delete</Button>
+          <Grid container={true} className={classes.domainsContainer} justify="space-between" alignItems="center">
+            <KeyValueArrayInput
+              disabled={updateAllowedDomainsMutation.loading}
+              name="domains"
+              label="Allowed Domains"
+              value={currentKey?.domains}
+              onChange={updateDomains}
+            />
           </Grid>
-        </Grid>
+        </Box>
       )}
     </Box>
   );
