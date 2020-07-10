@@ -377,6 +377,10 @@ export const CREATE_EXAMPLE = gql`
 
 export const GET_EXAMPLES = gql`
   query($agentId: Int!) {
+    ChatbotService_intents(agentId: $agentId) {
+      id
+      value
+    }
     ChatbotService_examples(agentId: $agentId) {
         id
         intentId

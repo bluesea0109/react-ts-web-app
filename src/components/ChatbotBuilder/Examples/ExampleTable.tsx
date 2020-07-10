@@ -4,10 +4,11 @@ import React, { useEffect } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
 import { useParams } from 'react-router-dom';
 import { CHATBOT_DELETE_EXAMPLE, CHATBOT_UPDATE_EXAMPLE, CREATE_EXAMPLE_TAGS, GET_EXAMPLES } from '../../../common-gql-queries';
-import {  IExample } from '../../../models/chatbot-service';
+import {  IIntent, IExample } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 import TextHighlightator from './TextHighlightator';
+
 
 interface IGetExamples {
   ChatbotService_examples: IExample[] | undefined;
@@ -19,7 +20,7 @@ interface IExampleTableProps {
   }
 
   interface ExampleState {
-    columns: Column<any>[];
+    columns: Column<IExample>[];
     data: IExample[] | undefined;
   }
 
@@ -30,20 +31,31 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     paper: {
       padding: theme.spacing(2),
+      border: `1px solid #000`,
+      marginBottom: theme.spacing(2),
+      borderRadius: `4px`,
+      position: `relative`
     },
     selectionText: {
       border: 'none',
       outline: 'none',
       backgroundColor: '#f5f5f5',
     },
+    label: {
+      position: `absolute`,
+      top: `-26px`,
+      left: `20px`,
+      background: `white`,
+      padding: `0px 5px`,
+    }
   }),
 );
 
-const ExampleTable: React.FC<IExampleTableProps> = ({tagTypeId, intentId}) => {
+const ExampleTable: React.FC<IExampleTableProps> = ({tagTypeId}) => {
     const classes = useStyles();
     const { agentId } = useParams();
     const numAgentId  = Number(agentId);
-    const examplesData = useQuery<IGetExamples>(GET_EXAMPLES, {variables: { agentId: numAgentId }});
+    const examplesData = useQuery<any>(GET_EXAMPLES, {variables: { agentId: numAgentId }});
     const [deleteExample, { loading, error }] = useMutation(CHATBOT_DELETE_EXAMPLE,  {
         refetchQueries: [{ query: GET_EXAMPLES, variables: { agentId: numAgentId }  }],
         awaitRefetchQueries: true,
@@ -57,9 +69,10 @@ const ExampleTable: React.FC<IExampleTableProps> = ({tagTypeId, intentId}) => {
         awaitRefetchQueries: true,
       });
       const [singleExample, setSingleExample] = React.useState<IExample | null>();
-
       const examples: IExample[] | undefined = examplesData && examplesData.data &&
       examplesData.data.ChatbotService_examples;
+      const intents : IIntent[] | undefined = examplesData && examplesData.data &&
+      examplesData.data.ChatbotService_intents;
 
       const submitExampleTag = () => {
         const selection = window.getSelection();
@@ -82,29 +95,72 @@ const ExampleTable: React.FC<IExampleTableProps> = ({tagTypeId, intentId}) => {
 
     };
 
+  
+    const getMargeIntentData = (examplesData:any[], intentsData: any[]) => {
+      let mergedData = examplesData.map((singleExample:any) => {
+           const intent = intentsData.filter((intnt) => intnt.id ===  singleExample.intentId)
+           return {
+             ...singleExample,
+             intentName: intent[0].value
+           }
+      })
+      return mergedData;
+      
+    }
+
+    const arrayToObj = (intntData:any[]) =>{
+      let elements:any = {}
+      intntData.forEach(({id, value}) => {
+        elements[id] = value
+      })
+
+
+      return elements
+
+    }
+
+    
     const [state, setState] = React.useState<ExampleState>({
         columns: [
-          { title: 'Example id', field: 'id', editable: 'never' },
+          { title: 'Intent', 
+          field: 'intentId',
+          render: (rowData) => <span>{rowData.intentName}</span>, 
+          editable: 'never',
+          customFilterAndSearch: (term, rowData) => {
+            if(term.length > 0) {
+              return Number(term[0]) === rowData.intentId
+            } else {
+              return true;
+            }
+            
+          },
+          lookup: { 1: 'İstanbul', 2: 'Şanlıurfa' },
+         },
           { title: 'Text',
             field: 'text',
             render: rowData => <TextHighlightator onSelectExample={() => setSingleExample(rowData)}
             example={rowData} />,
             editable: 'onUpdate',
+            filtering: false
           },
         ],
-        data: examples,
+        data: examples
       });
 
       useEffect(() => {
-        if (examples) {
+        if (examples && intents) {
+          const updatedData = getMargeIntentData(examples, intents)
+          state.columns[0].lookup = arrayToObj(intents);
           setState({
             columns: state.columns,
-            data : [...examples],
+            data : [...updatedData],
           });
         }
 
         return () => {};
-      }, [examples, state.columns]);
+      }, [examples, intents,  state.columns]);
+
+
       const commonError = examplesData.error ? examplesData.error : updatedData.error ? updatedData.error
       : updatedDataTag.error ? updatedDataTag.error : error;
     if (examplesData.loading || updatedData.loading || updatedDataTag.loading || loading ) {
@@ -133,7 +189,8 @@ const ExampleTable: React.FC<IExampleTableProps> = ({tagTypeId, intentId}) => {
     };
     return (
         <Paper className={classes.paper}>
-            {state && state.data && state.data.length > 0 ? (
+          <p className={classes.label}>NLU Example Tables</p>
+            {state && state.data && state.data.length ? (
         <TableContainer component={Paper} aria-label="Examples">
           <Button  variant="outlined" color="secondary" onClick={submitExampleTag}>
               Save Tags
@@ -144,6 +201,7 @@ const ExampleTable: React.FC<IExampleTableProps> = ({tagTypeId, intentId}) => {
       data={state.data}
       options={{
         actionsColumnIndex: -1,
+        filtering: true
       }}
 
       localization={{
