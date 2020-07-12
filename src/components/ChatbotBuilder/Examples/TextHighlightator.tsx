@@ -20,7 +20,6 @@ const TextHighlightator: React.FC<ITextHighlitatorProps> = ({example, onSelectEx
     const classes = useStyles();
     const words = example.tags.map((tag: any) => {
       return example.text.slice(tag.start, tag.end);
-
     });
     return (
       <Highlighter
