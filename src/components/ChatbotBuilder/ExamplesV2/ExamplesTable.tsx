@@ -1,24 +1,30 @@
-import { createStyles, makeStyles, Paper, TableContainer, Theme, Typography } from '@material-ui/core';
+import {
+  createStyles,
+  makeStyles,
+  Paper,
+  TableContainer,
+  TablePagination,
+  TextField,
+  Theme,
+  Typography,
+} from '@material-ui/core';
 import { Edit } from '@material-ui/icons';
 import MaterialTable, { Column } from 'material-table';
 import React, { useEffect, useState } from 'react';
 import { TextAnnotator } from 'react-text-annotate';
 import { IExample, IIntent } from '../../../models/chatbot-service';
-import { MergedExample } from './types';
-import { getMargeIntentData, intentsArrToObj } from './utils';
+import { ExamplesFilter } from './types';
+import { getMargeIntentData } from './utils';
+import { Autocomplete } from '@material-ui/lab';
+import { usePrevious } from '../../../utils/hooks';
+import { EXAMPLES_LIMIT } from './Examples';
 
 const initialColumns: Column<any>[] = [
   {
     title: 'Intent',
-    field: 'intentId',
+    field: 'intentName',
     editable: 'never',
-    customFilterAndSearch: (term: string, rowData: MergedExample) => {
-      if (term.length > 0) {
-        return Number(term[0]) === rowData.intentId;
-      } else {
-        return true;
-      }
-    },
+    filtering: true
   },
   {
     title: 'Text',
@@ -85,21 +91,50 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 type ExamplesTableProps = {
+  loading: boolean;
   examples?: IExample[];
   intents?: IIntent[];
+  filters?: ExamplesFilter;
   onDelete: (exampleID: number) => Promise<void>;
   onEdit: (exampleID: number) => void;
+  updateFilters: (filters: ExamplesFilter) => void;
 };
 
-const ExamplesTable = ({ examples, intents, onDelete, onEdit }: ExamplesTableProps) => {
+const ExamplesTable = (props: ExamplesTableProps) => {
+  const { examples, intents, onDelete, onEdit, filters, loading, updateFilters } = props;
   const classes = useStyles();
   const [columns, setColumns] = useState<Column<any>[]>(initialColumns);
   const [data, setData] = useState<any[] | null>(null);
+  const [intent, setIntent] = useState<IIntent | null>(intents?.find(i => i.id === filters?.intentId) ?? null);
+
+  const prevIntent = usePrevious(intent);
+
+  useEffect(() => {
+    if (!!intent && prevIntent?.id !== intent?.id) {
+      updateFilters({
+        intentId: intent.id
+      });
+    }
+  //eslint-disable-next-line
+  }, [intent]);
 
   useEffect(() => {
     if (examples && intents) {
       const updatedColumns = [...columns];
-      updatedColumns[0].lookup = intentsArrToObj(intents);
+      updatedColumns[0] = {
+        ...updatedColumns[0],
+        filterComponent: (...args) => (
+          <Autocomplete
+            id="intentSelector"
+            options={intents}
+            getOptionLabel={(option: any) => option.value}
+            value={intent}
+            onChange={(e, intent) => setIntent(intent)}
+            style={{ maxWidth: 300 }}
+            renderInput={(params) => <TextField {...params} label="Intents" variant="outlined" />}
+          />
+        ),
+      }
 
       setColumns(updatedColumns);
       setData(getMargeIntentData(examples, intents));
@@ -116,23 +151,17 @@ const ExamplesTable = ({ examples, intents, onDelete, onEdit }: ExamplesTablePro
             title="Examples Table"
             columns={columns}
             data={data}
+            isLoading={loading}
             options={{
               actionsColumnIndex: -1,
               filtering: true,
+              search: false,
+              paging: true,
+              pageSize: 10
             }}
-
-            localization={{
-              body: {
-                editRow: {
-                  deleteText: 'Are you sure delete this Example?',
-                },
-              },
-            }}
-
             editable={{
               onRowDelete: async (oldData) => await onDelete(oldData.id),
             }}
-
             actions={[
               {
                 icon: (props: any) => <Edit />,
@@ -142,6 +171,24 @@ const ExamplesTable = ({ examples, intents, onDelete, onEdit }: ExamplesTablePro
                 },
               },
             ]}
+            components={{
+              Pagination: props => (
+                <TablePagination
+                  rowsPerPageOptions={[10]}
+                  rowsPerPage={10}
+                  count={-1}
+                  labelDisplayedRows={({ from, to, count }) => {
+                    return `${from}-${to} of ${count !== -1 ? count : `more than ${to}`}`;
+                  }}
+                  page={(filters?.offset ?? 0) / EXAMPLES_LIMIT}
+                  onChangePage={(e, page) =>
+                    updateFilters({
+                      offset: page * EXAMPLES_LIMIT
+                    })
+                  }
+                />
+              ),
+            }}
           />
         </TableContainer>
       ) : (

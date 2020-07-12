@@ -5,9 +5,17 @@ export interface TagsQueryResult {
   ChatbotService_tagTypes: ITagType[] | undefined;
 }
 
-export interface ExampleQueryResults {
+export interface IntentsQueryResults {
   ChatbotService_intents: IIntent[];
+}
+
+export interface ExamplesQueryResults {
   ChatbotService_examples: IExample[] | undefined;
+}
+
+export interface ExamplesFilter {
+  intentId?: number;
+  offset?: number;
 }
 
 export type MergedExample = IExample & IIntent;
