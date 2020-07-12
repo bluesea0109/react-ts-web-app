@@ -20,7 +20,6 @@ const Examples = () => {
   const examplesData = useQuery<ExampleQueryResults>(GET_EXAMPLES, { variables: { agentId: numAgentId } });
 
   const tags = tagsData.data?.ChatbotService_tagTypes;
-  console.log(tags);
   const examples = examplesData.data?.ChatbotService_examples;
   const intents = examplesData.data?.ChatbotService_intents;
 
@@ -58,6 +57,7 @@ const Examples = () => {
 
   const onExampleSave = async (updatedExample: IExample) => {
     console.log(updatedExample);
+    setCurrentEdit(null);
   };
 
   return (
@@ -70,6 +70,8 @@ const Examples = () => {
       />
       {!!currentEdit && (
         <EditExample
+          tags={tags}
+          intents={intents}
           example={examples?.find(ex => ex.id === currentEdit)}
           onEditExampleClose={onExampleEditClose}
           onSaveExample={onExampleSave}
