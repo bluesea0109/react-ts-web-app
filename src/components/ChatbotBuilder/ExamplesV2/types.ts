@@ -1,5 +1,5 @@
-import { IExample, IIntent, ITagType } from '../../../models/chatbot-service';
 import { Column } from 'material-table';
+import { IExample, IIntent, ITagType } from '../../../models/chatbot-service';
 
 export interface TagsQueryResult {
   ChatbotService_tagTypes: ITagType[] | undefined;

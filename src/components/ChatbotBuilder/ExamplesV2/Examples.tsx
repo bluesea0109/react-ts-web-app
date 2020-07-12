@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router';
 import { useMutation, useQuery } from 'react-apollo';
+import { useParams } from 'react-router';
 import { CHATBOT_DELETE_EXAMPLE, CHATBOT_GET_TAGS, GET_EXAMPLES } from '../../../common-gql-queries';
-import { ExampleQueryResults, TagsQueryResult } from './types';
-import ContentLoading from '../../ContentLoading';
-import ApolloErrorPage from '../../ApolloErrorPage';
-import ExamplesTable from './ExamplesTable';
-import EditExample from './EditExample';
 import { IExample } from '../../../models/chatbot-service';
+import ApolloErrorPage from '../../ApolloErrorPage';
+import ContentLoading from '../../ContentLoading';
+import EditExample from './EditExample';
+import ExamplesTable from './ExamplesTable';
+import { ExampleQueryResults, TagsQueryResult } from './types';
 
 const Examples = () => {
   const { agentId } = useParams();
@@ -25,7 +25,7 @@ const Examples = () => {
 
   const [deleteExample, { loading, error }] = useMutation(CHATBOT_DELETE_EXAMPLE, {
     refetchQueries: [
-      { query: GET_EXAMPLES, variables: { agentId: numAgentId } }
+      { query: GET_EXAMPLES, variables: { agentId: numAgentId } },
     ],
     awaitRefetchQueries: true,
   });
@@ -41,13 +41,13 @@ const Examples = () => {
 
   const onExampleEdit = (exampleID: number) => {
     setCurrentEdit(exampleID);
-  }
+  };
 
   const onExampleDelete = async (exampleId: number) => {
     await deleteExample({
       variables: {
         exampleId,
-      }
+      },
     });
   };
 
@@ -78,7 +78,7 @@ const Examples = () => {
         />
       )}
     </>
-  )
+  );
 };
 
 export default Examples;

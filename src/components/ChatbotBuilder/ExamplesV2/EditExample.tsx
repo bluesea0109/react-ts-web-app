@@ -1,20 +1,20 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { Box, Grid, TextField } from '@material-ui/core';
+import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
+import Slide from '@material-ui/core/Slide';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import Toolbar from '@material-ui/core/Toolbar';
+import { TransitionProps } from '@material-ui/core/transitions';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
-import Slide from '@material-ui/core/Slide';
-import { TransitionProps } from '@material-ui/core/transitions';
+import { Autocomplete } from '@material-ui/lab';
+import randomcolor from 'randomcolor';
+import React, { useEffect, useRef, useState } from 'react';
+import { TextAnnotator } from 'react-text-annotate';
 import { IExample } from '../../../models/chatbot-service';
 import { Maybe } from '../../../utils/types';
-import { Box, Grid, TextField } from '@material-ui/core';
-import { TextAnnotator } from 'react-text-annotate';
-import randomcolor from 'randomcolor';
-import { Autocomplete } from '@material-ui/lab';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -41,13 +41,13 @@ type EditExampleProps = {
   intents: any;
   onEditExampleClose: () => void;
   onSaveExample: (updatedExample: IExample) => Promise<void>;
-}
+};
 
 const EditExample = ({ example, tags, intents, onEditExampleClose, onSaveExample }: EditExampleProps) => {
   const classes = useStyles();
   const [currentExample, setCurrentExample] = useState<Maybe<IExample>>(example);
   const [state, setState] = useState<any>({});
-  const [intent, setIntent] = useState<string>("");
+  const [intent, setIntent] = useState<string>('');
   const colors = useRef<any>({});
 
   useEffect(() => {
@@ -61,7 +61,7 @@ const EditExample = ({ example, tags, intents, onEditExampleClose, onSaveExample
     tags.forEach((tag: any) => {
       colors.current = {
         ...colors.current,
-        [tag.value]: randColors[currIndex]
+        [tag.value]: randColors[currIndex],
       };
 
       currIndex += 1;
@@ -75,21 +75,21 @@ const EditExample = ({ example, tags, intents, onEditExampleClose, onSaveExample
         return {
           start: tag.start,
           end: tag.end,
-          tag: tag.tagType.value
-        }
+          tag: tag.tagType.value,
+        };
       }),
-      tag: tags[0].value
+      tag: tags[0].value,
     });
 
     const intent = intents.find(({ id }: any) => id === example?.intentId);
     setIntent(intent?.value);
-  //eslint-disable-next-line
+  // eslint-disable-next-line
   }, [example]);
 
   const updateTagsOnText = (updatedTags: any[]) => {
     setState({
       ...state,
-      value: [ ...updatedTags ]
+      value: [ ...updatedTags ],
     });
   };
 
@@ -115,18 +115,18 @@ const EditExample = ({ example, tags, intents, onEditExampleClose, onSaveExample
           tagType: {
             value: tag.tag,
             agentId: currentExample.agentId,
-            id: tags.find((t: any) => t.value === tag.tag).id
-          }
-        }))
+            id: tags.find((t: any) => t.value === tag.tag).id,
+          },
+        })),
       };
 
       await onSaveExample(finalExampleObj);
     }
-  }
+  };
 
   if (!!currentExample) {
     return (
-      <Dialog fullScreen open={true} TransitionComponent={Transition}>
+      <Dialog fullScreen={true} open={true} TransitionComponent={Transition}>
         <AppBar className={classes.appBar}>
           <Toolbar>
             <IconButton edge="start" color="inherit" onClick={onEditExampleClose} aria-label="close">
@@ -135,13 +135,13 @@ const EditExample = ({ example, tags, intents, onEditExampleClose, onSaveExample
             <Typography variant="h6" className={classes.title}>
               Edit Example #{currentExample.id}
             </Typography>
-            <Button autoFocus color="inherit" onClick={saveChanges}>
+            <Button autoFocus={true} color="inherit" onClick={saveChanges}>
               save
             </Button>
           </Toolbar>
         </AppBar>
-        <Grid container>
-          <Grid item xs={6}>
+        <Grid container={true}>
+          <Grid item={true} xs={6}>
             <Box px={2} py={4}>
               <Box mb={5}>
                 <Autocomplete
@@ -155,8 +155,8 @@ const EditExample = ({ example, tags, intents, onEditExampleClose, onSaveExample
                 />
               </Box>
               <TextField
-                fullWidth
-                multiline
+                fullWidth={true}
+                multiline={true}
                 variant="outlined"
                 rows={20}
                 value={currentExample.text}
@@ -164,7 +164,7 @@ const EditExample = ({ example, tags, intents, onEditExampleClose, onSaveExample
               />
             </Box>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item={true} xs={6}>
             <Box px={2} py={4}>
               <Box mb={5}>
                 <Autocomplete
@@ -197,7 +197,7 @@ const EditExample = ({ example, tags, intents, onEditExampleClose, onSaveExample
         </Grid>
       </Dialog>
     );
-  } else return null;
-}
+  } else { return null; }
+};
 
 export default EditExample;

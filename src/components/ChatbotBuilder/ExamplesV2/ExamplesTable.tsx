@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
 import { createStyles, makeStyles, Paper, TableContainer, Theme, Typography } from '@material-ui/core';
+import { Edit } from '@material-ui/icons';
 import MaterialTable, { Column } from 'material-table';
+import React, { useEffect, useState } from 'react';
+import { TextAnnotator } from 'react-text-annotate';
+import { IExample, IIntent } from '../../../models/chatbot-service';
 import { MergedExample } from './types';
 import { getMargeIntentData, intentsArrToObj } from './utils';
-import { IExample, IIntent } from '../../../models/chatbot-service';
-import { TextAnnotator } from 'react-text-annotate';
-import { Edit } from '@material-ui/icons';
 
 const initialColumns: Column<any>[] = [
   {
@@ -31,11 +31,11 @@ const initialColumns: Column<any>[] = [
           return {
             start: tag.start,
             end: tag.end,
-            tag: tag.tagType.value
-          }
+            tag: tag.tagType.value,
+          };
         }),
-        tag: data.tags[0].tagType.value
-      }
+        tag: data.tags[0].tagType.value,
+      };
 
       return (
         <TextAnnotator
@@ -52,8 +52,8 @@ const initialColumns: Column<any>[] = [
             color: '#ccc',
           })}
         />
-      )
-    }
+      );
+    },
   },
 ];
 
@@ -89,7 +89,7 @@ type ExamplesTableProps = {
   intents?: IIntent[];
   onDelete: (exampleID: number) => Promise<void>;
   onEdit: (exampleID: number) => void;
-}
+};
 
 const ExamplesTable = ({ examples, intents, onDelete, onEdit }: ExamplesTableProps) => {
   const classes = useStyles();
@@ -104,7 +104,7 @@ const ExamplesTable = ({ examples, intents, onDelete, onEdit }: ExamplesTablePro
       setColumns(updatedColumns);
       setData(getMargeIntentData(examples, intents));
     }
-    //eslint-disable-next-line
+    // eslint-disable-next-line
   }, [examples, intents]);
 
   return (
@@ -118,7 +118,7 @@ const ExamplesTable = ({ examples, intents, onDelete, onEdit }: ExamplesTablePro
             data={data}
             options={{
               actionsColumnIndex: -1,
-              filtering: true
+              filtering: true,
             }}
 
             localization={{
@@ -136,11 +136,11 @@ const ExamplesTable = ({ examples, intents, onDelete, onEdit }: ExamplesTablePro
             actions={[
               {
                 icon: (props: any) => <Edit />,
-                tooltip: "Edit Example",
+                tooltip: 'Edit Example',
                 onClick: (event, rowData) => {
-                  onEdit(rowData.id)
-                }
-              }
+                  onEdit(rowData.id);
+                },
+              },
             ]}
           />
         </TableContainer>
