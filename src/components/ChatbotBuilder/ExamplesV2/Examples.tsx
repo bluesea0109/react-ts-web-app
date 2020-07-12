@@ -6,17 +6,49 @@ import { IExample } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import EditExample from './EditExample';
 import ExamplesTable from './ExamplesTable';
-import { ExamplesFilter, ExamplesQueryResults, IntentsQueryResults, TagsQueryResult } from './types';
-import { getExamplesQuery, getIntentsQuery, saveExampleMutation } from './gql';
+import {
+  CreateExampleMutationResult,
+  ExamplesFilter,
+  ExamplesQueryResults,
+  IntentsQueryResults,
+  TagsQueryResult,
+} from './types';
+import { createExampleMutation, getExamplesQuery, getIntentsQuery, saveExampleMutation } from './gql';
+import { Box, CircularProgress, createStyles, Fab } from '@material-ui/core';
+import { Add } from '@material-ui/icons';
+import { makeStyles } from '@material-ui/core/styles';
 
 export const EXAMPLES_LIMIT = 10;
 
+const useStyles = makeStyles(theme =>
+  createStyles({
+    fabContainer: {
+      position: 'fixed',
+      right: theme.spacing(2),
+      bottom: theme.spacing(2)
+    },
+    wrapper: {
+      margin: theme.spacing(1),
+      position: 'relative',
+    },
+    fabProgress: {
+      color: theme.palette.secondary.main,
+      position: 'absolute',
+      top: -6,
+      left: -6,
+      zIndex: 1,
+    },
+  })
+);
+
 const Examples = () => {
   const { agentId } = useParams();
+  const classes = useStyles();
 
   const [currentEdit, setCurrentEdit] = useState<number | null>();
   const [filters, setFilters] = useState<ExamplesFilter>();
   const [rendered, rerender] = useState(false);
+  const [newExample, setNewExample] = useState<IExample | null>(null);
 
   useEffect(() => {
     if (rendered) {
@@ -57,7 +89,7 @@ const Examples = () => {
     awaitRefetchQueries: true,
   });
 
-  const [updateExample, updateExampleMutation] = useMutation<ExamplesQueryResults>(saveExampleMutation, {
+  const [updateExample, updateExampleMutation] = useMutation(saveExampleMutation, {
     refetchQueries: [
       {
         query: getExamplesQuery,
@@ -70,7 +102,13 @@ const Examples = () => {
       },
     ],
     awaitRefetchQueries: true,
-  })
+  });
+
+  const [createExample, createExampleMutationData] = useMutation<CreateExampleMutationResult>(createExampleMutation, {
+    variables: {
+      agentId: numAgentId
+    }
+  });
 
   const commonError = examplesData.error || deleteExampleMutation.error || updateExampleMutation.error;
   if (commonError) {
@@ -112,31 +150,62 @@ const Examples = () => {
     });
 
     setCurrentEdit(null);
+    setNewExample(null);
   };
 
   const loading = examplesData.loading || deleteExampleMutation.loading || updateExampleMutation.loading;
+
+  const createNewExample = async () => {
+    const data = await createExample();
+    setNewExample(data.data?.ChatbotService_createExample ?? null);
+  }
+
+  const updateFilters = (newFilters: ExamplesFilter) => {
+    const resetIntent = !!filters?.intentId && !newFilters.intentId;
+    const changeIntent = !!newFilters?.intentId && filters?.intentId !== newFilters?.intentId;
+
+    if (resetIntent || changeIntent) {
+      newFilters['offset'] = 0;
+    }
+
+    setFilters({ ...filters, ...newFilters });
+  };
 
   return (
     <>
       <ExamplesTable
         loading={loading}
-        updateFilters={(newFilters: ExamplesFilter) => setFilters({ ...filters, ...newFilters })}
+        updateFilters={updateFilters}
         examples={examples}
         intents={intents}
         filters={filters}
         onDelete={onExampleDelete}
         onEdit={onExampleEdit}
       />
-      {!!currentEdit && (
+      {(!!currentEdit || !!newExample) && (
         <EditExample
+          isNew={!!newExample}
           loading={loading}
           tags={tags}
           intents={intents}
-          example={examples?.find(ex => ex.id === currentEdit)}
+          example={!!newExample ? newExample : examples?.find(ex => ex.id === currentEdit)}
           onEditExampleClose={onExampleEditClose}
           onSaveExample={onExampleSave}
         />
       )}
+      <Box className={classes.fabContainer}>
+        <div className={classes.wrapper}>
+          <Fab
+            disabled={createExampleMutationData.loading}
+            aria-label="save"
+            color="primary"
+            onClick={createNewExample}
+          >
+            <Add />
+          </Fab>
+          {createExampleMutationData.loading && <CircularProgress size={68} className={classes.fabProgress} />}
+        </div>
+      </Box>
     </>
   );
 };

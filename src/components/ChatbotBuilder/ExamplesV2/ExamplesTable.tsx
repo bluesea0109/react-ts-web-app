@@ -177,13 +177,14 @@ const ExamplesTable = (props: ExamplesTableProps) => {
                 <TablePagination
                   rowsPerPageOptions={[10]}
                   rowsPerPage={10}
-                  count={-1}
+                  count={data?.length < 10 ? data?.length : -1}
                   labelDisplayedRows={({ from, to, count }) => {
                     return `${from}-${to} of ${count !== -1 ? count : `more than ${to}`}`;
                   }}
                   page={(filters?.offset ?? 0) / EXAMPLES_LIMIT}
                   onChangePage={(e, page) =>
                     updateFilters({
+                      intentId: intent?.id,
                       offset: page * EXAMPLES_LIMIT
                     })
                   }

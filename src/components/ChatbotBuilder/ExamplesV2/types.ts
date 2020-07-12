@@ -12,6 +12,10 @@ export interface ExamplesQueryResults {
   ChatbotService_examples: IExample[] | undefined;
 }
 
+export interface CreateExampleMutationResult {
+  ChatbotService_createExample: IExample;
+}
+
 export interface ExamplesFilter {
   intentId?: number;
   offset?: number;

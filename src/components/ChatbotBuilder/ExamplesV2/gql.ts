@@ -1,16 +1,27 @@
 import gql from 'graphql-tag';
 
-// input ChatbotService_ExampleInput {
-//   id: Int
-//   text: String!
-//   intentId: Int!
-//   tags: [ChatbotService_TagInput!]!
-// }
-// input ChatbotService_TagInput {
-//   tagTypeId: Int!
-//   start: Int!
-//   end: Int!
-// }
+export const createExampleMutation = gql`
+    mutation($agentId: Int!) {
+      ChatbotService_createExample(agentId: $agentId, text: "") {
+        id
+        intentId
+        agentId
+        text
+        tags {
+          id
+          exampleId
+          tagTypeId
+          start
+          end
+          tagType {
+            id
+            agentId
+            value
+          }
+        }
+      }
+    }
+`;
 
 export const saveExampleMutation = gql`
   mutation($example: ChatbotService_ExampleInput!) {

@@ -36,6 +36,7 @@ const Transition = React.forwardRef(function Transition(
 });
 
 type EditExampleProps = {
+  isNew: boolean;
   loading: boolean;
   example?: IExample;
   tags: any;
@@ -45,7 +46,7 @@ type EditExampleProps = {
 };
 
 const EditExample = (props: EditExampleProps) => {
-  const { loading, example, tags, intents, onEditExampleClose, onSaveExample } = props;
+  const { isNew, loading, example, tags, intents, onEditExampleClose, onSaveExample } = props;
 
   const classes = useStyles();
   const [currentExample, setCurrentExample] = useState<Maybe<IExample>>(example);
@@ -136,7 +137,7 @@ const EditExample = (props: EditExampleProps) => {
               <CloseIcon />
             </IconButton>
             <Typography variant="h6" className={classes.title}>
-              Edit Example #{currentExample.id}
+              {isNew ? "Add New Example" : `Edit Example #${currentExample.id}`}
             </Typography>
             <Button disabled={loading} autoFocus={true} color="inherit" onClick={saveChanges}>
               {loading && (
