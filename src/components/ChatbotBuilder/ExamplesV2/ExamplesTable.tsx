@@ -110,9 +110,9 @@ const ExamplesTable = (props: ExamplesTableProps) => {
   const prevIntent = usePrevious(intent);
 
   useEffect(() => {
-    if (!!intent && prevIntent?.id !== intent?.id) {
+    if (prevIntent?.id !== intent?.id) {
       updateFilters({
-        intentId: intent.id
+        intentId: intent?.id
       });
     }
   //eslint-disable-next-line
@@ -129,7 +129,9 @@ const ExamplesTable = (props: ExamplesTableProps) => {
             options={intents}
             getOptionLabel={(option: any) => option.value}
             value={intent}
-            onChange={(e, intent) => setIntent(intent)}
+            onChange={(e, intent) => {
+              setIntent(intent)
+            }}
             style={{ maxWidth: 300 }}
             renderInput={(params) => <TextField {...params} label="Intents" variant="outlined" />}
           />
@@ -148,7 +150,6 @@ const ExamplesTable = (props: ExamplesTableProps) => {
       {(data && data.length) ? (
         <TableContainer component={Paper} aria-label="Examples">
           <MaterialTable
-            title="Examples Table"
             columns={columns}
             data={data}
             isLoading={loading}

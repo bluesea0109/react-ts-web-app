@@ -1,4 +1,3 @@
-import { Column } from 'material-table';
 import { IExample, IIntent, ITagType } from '../../../models/chatbot-service';
 
 export interface TagsQueryResult {
@@ -17,5 +16,3 @@ export interface ExamplesFilter {
   intentId?: number;
   offset?: number;
 }
-
-export type MergedExample = IExample & IIntent;

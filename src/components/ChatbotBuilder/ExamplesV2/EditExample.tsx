@@ -1,4 +1,4 @@
-import { Box, Grid, TextField } from '@material-ui/core';
+import { Box, CircularProgress, Grid, LinearProgress, TextField } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -36,6 +36,7 @@ const Transition = React.forwardRef(function Transition(
 });
 
 type EditExampleProps = {
+  loading: boolean;
   example?: IExample;
   tags: any;
   intents: any;
@@ -43,7 +44,9 @@ type EditExampleProps = {
   onSaveExample: (updatedExample: IExample) => Promise<void>;
 };
 
-const EditExample = ({ example, tags, intents, onEditExampleClose, onSaveExample }: EditExampleProps) => {
+const EditExample = (props: EditExampleProps) => {
+  const { loading, example, tags, intents, onEditExampleClose, onSaveExample } = props;
+
   const classes = useStyles();
   const [currentExample, setCurrentExample] = useState<Maybe<IExample>>(example);
   const [state, setState] = useState<any>({});
@@ -129,32 +132,41 @@ const EditExample = ({ example, tags, intents, onEditExampleClose, onSaveExample
       <Dialog fullScreen={true} open={true} TransitionComponent={Transition}>
         <AppBar className={classes.appBar}>
           <Toolbar>
-            <IconButton edge="start" color="inherit" onClick={onEditExampleClose} aria-label="close">
+            <IconButton disabled={loading} edge="start" color="inherit" onClick={onEditExampleClose} aria-label="close">
               <CloseIcon />
             </IconButton>
             <Typography variant="h6" className={classes.title}>
               Edit Example #{currentExample.id}
             </Typography>
-            <Button autoFocus={true} color="inherit" onClick={saveChanges}>
-              save
+            <Button disabled={loading} autoFocus={true} color="inherit" onClick={saveChanges}>
+              {loading && (
+                <CircularProgress
+                  color="secondary"
+                  size={20}
+                />
+              )}
+              {!loading && "save"}
             </Button>
           </Toolbar>
+          {loading && <LinearProgress color="secondary" />}
         </AppBar>
         <Grid container={true}>
           <Grid item={true} xs={6}>
             <Box px={2} py={4}>
               <Box mb={5}>
                 <Autocomplete
+                  disabled={loading}
                   id="intentSelector"
                   options={intents}
                   getOptionLabel={(option: any) => option.value}
                   value={intents.find((i: any) => i.value === intent)}
-                  onChange={(e, { value }) => setIntent(value)}
+                  onChange={(e, intent) => setIntent(intent?.value)}
                   style={{ width: 300 }}
                   renderInput={(params) => <TextField {...params} label="Intents" variant="outlined" />}
                 />
               </Box>
               <TextField
+                disabled={loading}
                 fullWidth={true}
                 multiline={true}
                 variant="outlined"
@@ -168,11 +180,12 @@ const EditExample = ({ example, tags, intents, onEditExampleClose, onSaveExample
             <Box px={2} py={4}>
               <Box mb={5}>
                 <Autocomplete
+                  disabled={loading}
                   id="tagSelector"
                   options={tags}
                   getOptionLabel={(option: any) => option.value}
                   defaultValue={tags[0]}
-                  onChange={(e, { value }) => setState({ ...state, tag: value })}
+                  onChange={(e, tag) => setState({ ...state, tag: tag?.value })}
                   style={{ width: 300 }}
                   renderInput={(params) => <TextField {...params} label="Tags" variant="outlined" />}
                 />
@@ -181,6 +194,7 @@ const EditExample = ({ example, tags, intents, onEditExampleClose, onSaveExample
                 <TextAnnotator
                   style={{
                     lineHeight: 1.5,
+                    pointerEvents: loading ? "none" : "auto"
                   }}
                   content={currentExample.text}
                   value={state.value}
