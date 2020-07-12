@@ -9,22 +9,22 @@ import {
   Typography,
 } from '@material-ui/core';
 import { Edit } from '@material-ui/icons';
+import { Autocomplete } from '@material-ui/lab';
 import MaterialTable, { Column } from 'material-table';
 import React, { useEffect, useState } from 'react';
 import { TextAnnotator } from 'react-text-annotate';
 import { IExample, IIntent } from '../../../models/chatbot-service';
-import { ExamplesFilter } from './types';
-import { getMargeIntentData } from './utils';
-import { Autocomplete } from '@material-ui/lab';
 import { usePrevious } from '../../../utils/hooks';
 import { EXAMPLES_LIMIT } from './Examples';
+import { ExamplesFilter } from './types';
+import { getMargeIntentData } from './utils';
 
 const initialColumns: Column<any>[] = [
   {
     title: 'Intent',
     field: 'intentName',
     editable: 'never',
-    filtering: true
+    filtering: true,
   },
   {
     title: 'Text',
@@ -112,10 +112,10 @@ const ExamplesTable = (props: ExamplesTableProps) => {
   useEffect(() => {
     if (prevIntent?.id !== intent?.id) {
       updateFilters({
-        intentId: intent?.id
+        intentId: intent?.id,
       });
     }
-  //eslint-disable-next-line
+  // eslint-disable-next-line
   }, [intent]);
 
   useEffect(() => {
@@ -130,13 +130,13 @@ const ExamplesTable = (props: ExamplesTableProps) => {
             getOptionLabel={(option: any) => option.value}
             value={intent}
             onChange={(e, intent) => {
-              setIntent(intent)
+              setIntent(intent);
             }}
             style={{ maxWidth: 300 }}
             renderInput={(params) => <TextField {...params} label="Intents" variant="outlined" />}
           />
         ),
-      }
+      };
 
       setColumns(updatedColumns);
       setData(getMargeIntentData(examples, intents));
@@ -158,7 +158,7 @@ const ExamplesTable = (props: ExamplesTableProps) => {
               filtering: true,
               search: false,
               paging: true,
-              pageSize: 10
+              pageSize: 10,
             }}
             editable={{
               onRowDelete: async (oldData) => await onDelete(oldData.id),
@@ -185,7 +185,7 @@ const ExamplesTable = (props: ExamplesTableProps) => {
                   onChangePage={(e, page) =>
                     updateFilters({
                       intentId: intent?.id,
-                      offset: page * EXAMPLES_LIMIT
+                      offset: page * EXAMPLES_LIMIT,
                     })
                   }
                 />

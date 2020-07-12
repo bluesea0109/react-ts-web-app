@@ -1,3 +1,6 @@
+import { Box, CircularProgress, createStyles, Fab } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import { Add } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
 import { useParams } from 'react-router';
@@ -6,6 +9,7 @@ import { IExample } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import EditExample from './EditExample';
 import ExamplesTable from './ExamplesTable';
+import { createExampleMutation, getExamplesQuery, getIntentsQuery, saveExampleMutation } from './gql';
 import {
   CreateExampleMutationResult,
   ExamplesFilter,
@@ -13,10 +17,6 @@ import {
   IntentsQueryResults,
   TagsQueryResult,
 } from './types';
-import { createExampleMutation, getExamplesQuery, getIntentsQuery, saveExampleMutation } from './gql';
-import { Box, CircularProgress, createStyles, Fab } from '@material-ui/core';
-import { Add } from '@material-ui/icons';
-import { makeStyles } from '@material-ui/core/styles';
 
 export const EXAMPLES_LIMIT = 10;
 
@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme =>
     fabContainer: {
       position: 'fixed',
       right: theme.spacing(2),
-      bottom: theme.spacing(2)
+      bottom: theme.spacing(2),
     },
     wrapper: {
       margin: theme.spacing(1),
@@ -38,7 +38,7 @@ const useStyles = makeStyles(theme =>
       left: -6,
       zIndex: 1,
     },
-  })
+  }),
 );
 
 const Examples = () => {
@@ -54,7 +54,7 @@ const Examples = () => {
     if (rendered) {
       rerender(false);
     }
-  }, [rendered])
+  }, [rendered]);
 
   const numAgentId = Number(agentId);
 
@@ -66,13 +66,13 @@ const Examples = () => {
       agentId: numAgentId,
       limit: EXAMPLES_LIMIT,
       offset: filters?.offset,
-      intentId: filters?.intentId
-    }
+      intentId: filters?.intentId,
+    },
   });
 
   const tags = tagsData.data?.ChatbotService_tagTypes;
   const intents = intentsData.data?.ChatbotService_intents;
-  let examples = examplesData.data?.ChatbotService_examples;
+  const examples = examplesData.data?.ChatbotService_examples;
 
   const [deleteExample, deleteExampleMutation] = useMutation(CHATBOT_DELETE_EXAMPLE, {
     refetchQueries: [
@@ -82,8 +82,8 @@ const Examples = () => {
           agentId: numAgentId,
           limit: EXAMPLES_LIMIT,
           offset: filters?.offset,
-          intentId: filters?.intentId
-        }
+          intentId: filters?.intentId,
+        },
       },
     ],
     awaitRefetchQueries: true,
@@ -97,8 +97,8 @@ const Examples = () => {
           agentId: numAgentId,
           limit: EXAMPLES_LIMIT,
           offset: filters?.offset,
-          intentId: filters?.intentId
-        }
+          intentId: filters?.intentId,
+        },
       },
     ],
     awaitRefetchQueries: true,
@@ -106,8 +106,8 @@ const Examples = () => {
 
   const [createExample, createExampleMutationData] = useMutation<CreateExampleMutationResult>(createExampleMutation, {
     variables: {
-      agentId: numAgentId
-    }
+      agentId: numAgentId,
+    },
   });
 
   const commonError = examplesData.error || deleteExampleMutation.error || updateExampleMutation.error;
@@ -139,14 +139,14 @@ const Examples = () => {
       tags: updatedExample.tags.map((tag: any) => ({
         start: tag.start,
         end: tag.end,
-        tagTypeId: tag.tagType.id
-      }))
+        tagTypeId: tag.tagType.id,
+      })),
     };
 
     await updateExample({
       variables: {
-        example
-      }
+        example,
+      },
     });
 
     setCurrentEdit(null);
@@ -158,7 +158,7 @@ const Examples = () => {
   const createNewExample = async () => {
     const data = await createExample();
     setNewExample(data.data?.ChatbotService_createExample ?? null);
-  }
+  };
 
   const updateFilters = (newFilters: ExamplesFilter) => {
     const resetIntent = !!filters?.intentId && !newFilters.intentId;

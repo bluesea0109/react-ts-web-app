@@ -137,7 +137,7 @@ const EditExample = (props: EditExampleProps) => {
               <CloseIcon />
             </IconButton>
             <Typography variant="h6" className={classes.title}>
-              {isNew ? "Add New Example" : `Edit Example #${currentExample.id}`}
+              {isNew ? 'Add New Example' : `Edit Example #${currentExample.id}`}
             </Typography>
             <Button disabled={loading} autoFocus={true} color="inherit" onClick={saveChanges}>
               {loading && (
@@ -146,7 +146,7 @@ const EditExample = (props: EditExampleProps) => {
                   size={20}
                 />
               )}
-              {!loading && "save"}
+              {!loading && 'save'}
             </Button>
           </Toolbar>
           {loading && <LinearProgress color="secondary" />}
@@ -195,7 +195,7 @@ const EditExample = (props: EditExampleProps) => {
                 <TextAnnotator
                   style={{
                     lineHeight: 1.5,
-                    pointerEvents: loading ? "none" : "auto"
+                    pointerEvents: loading ? 'none' : 'auto',
                   }}
                   content={currentExample.text}
                   value={state.value}
