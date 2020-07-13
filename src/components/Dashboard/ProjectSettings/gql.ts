@@ -14,8 +14,8 @@ export const getApiKeysQuery = gql`
 `;
 
 export const createApiKeyMutation = gql`
-  mutation ($projectId: String!) {
-    generateApiKey(projectId: $projectId) {
+  mutation ($projectId: String!, $apiKey: String) {
+    generateApiKey(projectId: $projectId, key: $apiKey) {
       key,
       orgId,
       orgName,
