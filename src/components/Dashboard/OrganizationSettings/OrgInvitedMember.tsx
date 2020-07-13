@@ -46,7 +46,8 @@ function InvitedMemberTable() {
   const classes = useStyles();
   const { orgId } = useParams();
   const invitedMemberData = useQuery<IInvitedMemberProps>(GET_INVITED_ORG_MEMBERS, { variables: { orgId } });
-  const invitedMember: IInvitedMember[] | undefined = invitedMemberData && invitedMemberData.data && invitedMemberData.data.orgMemberInvites;
+  const invitedMember: IInvitedMember[] | undefined = invitedMemberData
+                        && invitedMemberData.data && invitedMemberData.data.orgMemberInvites;
 
   if (invitedMemberData.loading) {
     return <ContentLoading />;
