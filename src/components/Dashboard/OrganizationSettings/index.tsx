@@ -7,6 +7,7 @@ import { IOrg, IUser } from '../../../models/user-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 import OrgMembersTable from './OrgMembersTable';
+import OrginvitedMember from './OrgInvitedMember';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -47,6 +48,7 @@ export default function OrganizationSettings(props: IOrgSettingsProps) {
     <div className={classes.root}>
       <Typography>{'Organization Settings'}</Typography>
       <OrgMembersTable members={org.members || []} user={props.user} refetchOrgs={refetch} />
+      <OrginvitedMember />
     </div>
   );
 }
