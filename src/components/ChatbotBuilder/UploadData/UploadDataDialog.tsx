@@ -40,7 +40,6 @@ export interface IAgentDataExampleTag {
   end: number;
 }
 
-
 class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDataDialogState> {
   constructor(props: IUploadDataDialogProps) {
     super(props);
@@ -237,8 +236,8 @@ class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDa
             start: tag.start,
             end: tag.end,
             tagTypeId,
-          }
-        })
+          };
+        }),
       };
     });
 
