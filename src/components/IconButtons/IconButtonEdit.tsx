@@ -6,7 +6,7 @@ import React from 'react';
 interface IconButtonEditProps {
   onClick(): any;
   tooltip: string;
-  disabled?: false;
+  disabled?: boolean;
 }
 
 export default function IconButtonEdit(props: IconButtonEditProps) {
