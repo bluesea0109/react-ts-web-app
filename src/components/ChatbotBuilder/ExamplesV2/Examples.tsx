@@ -1,17 +1,16 @@
-import { Box, CircularProgress, createStyles, Fab } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { Add } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
 import { useParams } from 'react-router';
 import { CHATBOT_DELETE_EXAMPLE, CHATBOT_GET_TAGS } from '../../../common-gql-queries';
 import { IExample } from '../../../models/chatbot-service';
+import { Maybe } from '../../../utils/types';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import EditExample from './EditExample';
 import ExamplesTable from './ExamplesTable';
 import { createExampleMutation, getExamplesQuery, getIntentsQuery, saveExampleMutation } from './gql';
+import NewExampleDialog from './NewExampleDialog';
 import {
-  CreateExampleMutationResult,
+  CreateExampleMutationResult, ExamplesError,
   ExamplesFilter,
   ExamplesQueryResults,
   IntentsQueryResults,
@@ -20,35 +19,15 @@ import {
 
 export const EXAMPLES_LIMIT = 10;
 
-const useStyles = makeStyles(theme =>
-  createStyles({
-    fabContainer: {
-      position: 'fixed',
-      right: theme.spacing(2),
-      bottom: theme.spacing(2),
-    },
-    wrapper: {
-      margin: theme.spacing(1),
-      position: 'relative',
-    },
-    fabProgress: {
-      color: theme.palette.secondary.main,
-      position: 'absolute',
-      top: -6,
-      left: -6,
-      zIndex: 1,
-    },
-  }),
-);
-
 const Examples = () => {
   const { agentId } = useParams();
-  const classes = useStyles();
 
   const [currentEdit, setCurrentEdit] = useState<number | null>();
   const [filters, setFilters] = useState<ExamplesFilter>();
   const [rendered, rerender] = useState(false);
   const [newExample, setNewExample] = useState<IExample | null>(null);
+  const [showNewExampleDialog, setShowNewExampleDialog] = useState(false);
+  const [exampleError, setExampleError] = useState<Maybe<ExamplesError>>();
 
   useEffect(() => {
     if (rendered) {
@@ -153,11 +132,27 @@ const Examples = () => {
     setNewExample(null);
   };
 
-  const loading = examplesData.loading || deleteExampleMutation.loading || updateExampleMutation.loading;
+  const loading = examplesData.loading ||
+    deleteExampleMutation.loading ||
+    updateExampleMutation.loading ||
+    createExampleMutationData.loading;
 
-  const createNewExample = async () => {
-    const data = await createExample();
-    setNewExample(data.data?.ChatbotService_createExample ?? null);
+  const createNewExample = async (text: string, intent: Maybe<number> = null) => {
+    setExampleError(null);
+    try {
+      const data = await createExample({
+        variables: {
+          text,
+          intent,
+        },
+      });
+      setShowNewExampleDialog(false);
+      setNewExample(data.data?.ChatbotService_createExample ?? null);
+    } catch (e) {
+      if (`${e}`.indexOf('duplicate key') !== -1) {
+        setExampleError(ExamplesError.CREATE_ERROR_DUPLICATE_EXAMPLE);
+      }
+    }
   };
 
   const updateFilters = (newFilters: ExamplesFilter) => {
@@ -181,10 +176,10 @@ const Examples = () => {
         filters={filters}
         onDelete={onExampleDelete}
         onEdit={onExampleEdit}
+        onAdd={() => setShowNewExampleDialog(true)}
       />
-      {(!!currentEdit || !!newExample) && (
+      {(!!intents && !!tags) && (
         <EditExample
-          isNew={!!newExample}
           loading={loading}
           tags={tags}
           intents={intents}
@@ -193,19 +188,14 @@ const Examples = () => {
           onSaveExample={onExampleSave}
         />
       )}
-      <Box className={classes.fabContainer}>
-        <div className={classes.wrapper}>
-          <Fab
-            disabled={createExampleMutationData.loading}
-            aria-label="save"
-            color="primary"
-            onClick={createNewExample}
-          >
-            <Add />
-          </Fab>
-          {createExampleMutationData.loading && <CircularProgress size={68} className={classes.fabProgress} />}
-        </div>
-      </Box>
+      <NewExampleDialog
+        loading={loading}
+        intents={intents ?? []}
+        isOpen={showNewExampleDialog}
+        onClose={() => setShowNewExampleDialog(false)}
+        onCreate={createNewExample}
+        error={exampleError}
+      />
     </>
   );
 };

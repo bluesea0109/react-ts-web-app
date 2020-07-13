@@ -36,7 +36,6 @@ const Transition = React.forwardRef(function Transition(
 });
 
 type EditExampleProps = {
-  isNew: boolean;
   loading: boolean;
   example?: IExample;
   tags: any;
@@ -46,7 +45,7 @@ type EditExampleProps = {
 };
 
 const EditExample = (props: EditExampleProps) => {
-  const { isNew, loading, example, tags, intents, onEditExampleClose, onSaveExample } = props;
+  const { loading, example, tags, intents, onEditExampleClose, onSaveExample } = props;
 
   const classes = useStyles();
   const [currentExample, setCurrentExample] = useState<Maybe<IExample>>(example);
@@ -128,91 +127,89 @@ const EditExample = (props: EditExampleProps) => {
     }
   };
 
-  if (!!currentExample) {
-    return (
-      <Dialog fullScreen={true} open={true} TransitionComponent={Transition}>
-        <AppBar className={classes.appBar}>
-          <Toolbar>
-            <IconButton disabled={loading} edge="start" color="inherit" onClick={onEditExampleClose} aria-label="close">
-              <CloseIcon />
-            </IconButton>
-            <Typography variant="h6" className={classes.title}>
-              {isNew ? 'Add New Example' : `Edit Example #${currentExample.id}`}
-            </Typography>
-            <Button disabled={loading} autoFocus={true} color="inherit" onClick={saveChanges}>
-              {loading && (
-                <CircularProgress
-                  color="secondary"
-                  size={20}
-                />
-              )}
-              {!loading && 'save'}
-            </Button>
-          </Toolbar>
-          {loading && <LinearProgress color="secondary" />}
-        </AppBar>
-        <Grid container={true}>
-          <Grid item={true} xs={6}>
-            <Box px={2} py={4}>
-              <Box mb={5}>
-                <Autocomplete
-                  disabled={loading}
-                  id="intentSelector"
-                  options={intents}
-                  getOptionLabel={(option: any) => option.value}
-                  value={intents.find((i: any) => i.value === intent)}
-                  onChange={(e, intent) => setIntent(intent?.value)}
-                  style={{ width: 300 }}
-                  renderInput={(params) => <TextField {...params} label="Intents" variant="outlined" />}
-                />
-              </Box>
-              <TextField
+  return (
+    <Dialog fullScreen={true} open={!!example} TransitionComponent={Transition}>
+      <AppBar className={classes.appBar}>
+        <Toolbar>
+          <IconButton disabled={loading} edge="start" color="inherit" onClick={onEditExampleClose} aria-label="close">
+            <CloseIcon />
+          </IconButton>
+          <Typography variant="h6" className={classes.title}>
+            Edit Example #${currentExample?.id}
+          </Typography>
+          <Button disabled={loading} autoFocus={true} color="inherit" onClick={saveChanges}>
+            {loading && (
+              <CircularProgress
+                color="secondary"
+                size={20}
+              />
+            )}
+            {!loading && 'save'}
+          </Button>
+        </Toolbar>
+        {loading && <LinearProgress color="secondary" />}
+      </AppBar>
+      <Grid container={true}>
+        <Grid item={true} xs={6}>
+          <Box px={2} py={4}>
+            <Box mb={5}>
+              <Autocomplete
                 disabled={loading}
-                fullWidth={true}
-                multiline={true}
-                variant="outlined"
-                rows={20}
-                value={currentExample.text}
-                onChange={onExampleTextChange}
+                id="intentSelector"
+                options={intents}
+                getOptionLabel={(option: any) => option.value}
+                value={intents.find((i: any) => i.value === intent)}
+                onChange={(e, intent) => setIntent(intent?.value)}
+                style={{ width: 300 }}
+                renderInput={(params) => <TextField {...params} label="Intents" variant="outlined" />}
               />
             </Box>
-          </Grid>
-          <Grid item={true} xs={6}>
-            <Box px={2} py={4}>
-              <Box mb={5}>
-                <Autocomplete
-                  disabled={loading}
-                  id="tagSelector"
-                  options={tags}
-                  getOptionLabel={(option: any) => option.value}
-                  defaultValue={tags[0]}
-                  onChange={(e, tag) => setState({ ...state, tag: tag?.value })}
-                  style={{ width: 300 }}
-                  renderInput={(params) => <TextField {...params} label="Tags" variant="outlined" />}
-                />
-              </Box>
-              <Box p={2} border="1px solid rgba(0, 0, 0, 0.23)" borderRadius={4}>
-                <TextAnnotator
-                  style={{
-                    lineHeight: 1.5,
-                    pointerEvents: loading ? 'none' : 'auto',
-                  }}
-                  content={currentExample.text}
-                  value={state.value}
-                  onChange={(value: any) => updateTagsOnText(value)}
-                  getSpan={span => ({
-                    ...span,
-                    tag: state.tag,
-                    color: colors.current[state.tag],
-                  })}
-                />
-              </Box>
-            </Box>
-          </Grid>
+            <TextField
+              disabled={loading}
+              fullWidth={true}
+              multiline={true}
+              variant="outlined"
+              rows={20}
+              value={currentExample?.text}
+              onChange={onExampleTextChange}
+            />
+          </Box>
         </Grid>
-      </Dialog>
-    );
-  } else { return null; }
+        <Grid item={true} xs={6}>
+          <Box px={2} py={4}>
+            <Box mb={5}>
+              <Autocomplete
+                disabled={loading}
+                id="tagSelector"
+                options={tags}
+                getOptionLabel={(option: any) => option.value}
+                defaultValue={tags[0]}
+                onChange={(e, tag) => setState({ ...state, tag: tag?.value })}
+                style={{ width: 300 }}
+                renderInput={(params) => <TextField {...params} label="Tags" variant="outlined" />}
+              />
+            </Box>
+            <Box p={2} border="1px solid rgba(0, 0, 0, 0.23)" borderRadius={4}>
+              <TextAnnotator
+                style={{
+                  lineHeight: 1.5,
+                  pointerEvents: loading ? 'none' : 'auto',
+                }}
+                content={currentExample?.text ?? ''}
+                value={state.value}
+                onChange={(value: any) => updateTagsOnText(value)}
+                getSpan={span => ({
+                  ...span,
+                  tag: state.tag,
+                  color: colors.current[state.tag],
+                })}
+              />
+            </Box>
+          </Box>
+        </Grid>
+      </Grid>
+    </Dialog>
+  );
 };
 
 export default EditExample;

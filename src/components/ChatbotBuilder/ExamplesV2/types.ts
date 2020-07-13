@@ -20,3 +20,7 @@ export interface ExamplesFilter {
   intentId?: number;
   offset?: number;
 }
+
+export enum ExamplesError {
+  CREATE_ERROR_DUPLICATE_EXAMPLE,
+}

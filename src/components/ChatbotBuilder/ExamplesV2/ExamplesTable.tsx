@@ -1,4 +1,5 @@
 import {
+  Button,
   createStyles,
   makeStyles,
   Paper,
@@ -97,11 +98,12 @@ type ExamplesTableProps = {
   filters?: ExamplesFilter;
   onDelete: (exampleID: number) => Promise<void>;
   onEdit: (exampleID: number) => void;
+  onAdd: () => void;
   updateFilters: (filters: ExamplesFilter) => void;
 };
 
 const ExamplesTable = (props: ExamplesTableProps) => {
-  const { examples, intents, onDelete, onEdit, filters, loading, updateFilters } = props;
+  const { examples, intents, onDelete, onEdit, onAdd, filters, loading, updateFilters } = props;
   const classes = useStyles();
   const [columns, setColumns] = useState<Column<any>[]>(initialColumns);
   const [data, setData] = useState<any[] | null>(null);
@@ -150,6 +152,9 @@ const ExamplesTable = (props: ExamplesTableProps) => {
       {(data && data.length) ? (
         <TableContainer component={Paper} aria-label="Examples">
           <MaterialTable
+            title={
+              <Button disabled={loading} variant="contained" color="primary" onClick={onAdd}>Add New Example</Button>
+            }
             columns={columns}
             data={data}
             isLoading={loading}
