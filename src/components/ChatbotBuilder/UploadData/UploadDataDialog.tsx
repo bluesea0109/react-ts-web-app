@@ -28,6 +28,19 @@ interface IUploadDataDialogState {
   status: string;
 }
 
+export interface IAgentDataExample {
+  text: string;
+  intent: string;
+  tags: IAgentDataExampleTag[];
+}
+
+export interface IAgentDataExampleTag {
+  tagType: string;
+  start: number;
+  end: number;
+}
+
+
 class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDataDialogState> {
   constructor(props: IUploadDataDialogProps) {
     super(props);
@@ -96,9 +109,9 @@ class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDa
       reader.readAsText(file, 'utf-8');
     });
 
-    const removeDuplicates = (exs: IExampleInput[]) => {
+    const removeDuplicates = (exs: IAgentDataExample[]) => {
       const seen = new Set<string>();
-      const result: IExampleInput[] = [];
+      const result: IAgentDataExample[] = [];
       exs.forEach(ex => {
         if (seen.has(ex.intent + ex.text)) {
           return;
@@ -114,7 +127,7 @@ class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDa
     return data;
   }
 
-  uploadIntents = async (intents: string[]) => {
+  uploadIntents = async (intents: string[]): Promise<Map<string, number>> => {
     this.setState({
       status: 'Creating intents',
     });
@@ -127,21 +140,22 @@ class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDa
       },
     });
 
-    if (res.errors?.[0]) {
-      console.error(res.errors[0]);
-      this.setState({
-        error: res.errors[0],
-        status: '',
-      });
-      return;
-    }
+    const intentIdsMap = new Map<string, number>();
+
+    const uploadedIntents: any[] = res.data.ChatbotService_createIntents;
+    console.log('intents upload res', res.data);
+    uploadedIntents.forEach(x => {
+      intentIdsMap.set(x.value, x.id);
+    });
 
     this.setState({
       status: '',
     });
+
+    return intentIdsMap;
   }
 
-  uploadTagTypes = async (tagTypes: string[]) => {
+  uploadTagTypes = async (tagTypes: string[]): Promise<Map<string, number>> => {
     this.setState({
       status: 'Creating tag types',
     });
@@ -154,18 +168,17 @@ class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDa
       },
     });
 
-    if (res.errors?.[0]) {
-      console.error(res.errors[0]);
-      this.setState({
-        error: res.errors[0],
-        status: '',
-      });
-      return;
-    }
+    const tagTypeIdsMap = new Map<string, number>();
+    const uploadedTagTypes: any[] = res.data.ChatbotService_createTagTypes;
+    uploadedTagTypes.forEach(x => {
+      tagTypeIdsMap.set(x.value, x.id);
+    });
 
     this.setState({
       status: '',
     });
+
+    return tagTypeIdsMap;
   }
 
   handleJsonFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -201,10 +214,35 @@ class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDa
       progress: 0,
     }));
 
-    await this.uploadIntents(data.intents);
-    await this.uploadTagTypes(data.tagTypes);
+    const intentIdsMap = await this.uploadIntents(data.intents);
+    const tagTypeIdsMap = await this.uploadTagTypes(data.tagTypes);
 
-    const exampleBatches = _.chunk(data.examples, 100);
+    console.log(JSON.stringify(intentIdsMap));
+    const preprocessedExamples: IExampleInput[] = data.examples.map(x => {
+
+      const intentId = intentIdsMap.get(x.intent);
+      if (!intentId) {
+        throw new Error(`Failed to get id for intent: ${x.intent}`);
+      }
+
+      return {
+        intentId,
+        text: x.text,
+        tags: x.tags.map(tag => {
+          const tagTypeId = tagTypeIdsMap.get(tag.tagType);
+          if (!tagTypeId) {
+            throw new Error(`Failed to id for tagType: ${tag.tagType}`);
+          }
+          return {
+            start: tag.start,
+            end: tag.end,
+            tagTypeId,
+          }
+        })
+      };
+    });
+
+    const exampleBatches = _.chunk(preprocessedExamples, 100);
 
     for (const batch of exampleBatches) {
       await this.uploadBatch(batch);
@@ -289,5 +327,5 @@ const UPLOAD_EXAMPLES = gql`
 interface IAgentData {
   intents: string[];
   tagTypes: string[];
-  examples: IExampleInput[];
+  examples: IAgentDataExample[];
 }

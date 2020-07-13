@@ -12,6 +12,7 @@ export enum ChatbotActorEnum {
 export interface IAgent {
   id: number;
   projectId: string;
+  uname: string;
   name: string;
   language: string;
 }
@@ -46,12 +47,12 @@ export interface ITagType {
 
 export interface IExampleInput {
   text: string;
-  intent: string;
+  intentId: number;
   tags: IExampleTagInput[];
 }
 
 export interface IExampleTagInput {
-  tagType: string;
+  tagTypeId: number;
   start: number;
   end: number;
 }

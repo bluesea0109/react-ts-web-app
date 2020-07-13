@@ -37,10 +37,14 @@ interface INewAgentProps {
 const NewAgent: React.FC<INewAgentProps> = ({ user }) => {
   const classes = useStyles();
   const [name, setName] = useState<string>('');
+  const [uname, setUname] = useState<string>('');
+
   const { projectId } = useParams();
   const [createAgent, { loading, error }] = useMutation(CHATBOT_CREATE_AGENT,  {
     refetchQueries: [{ query: CHATBOT_GET_AGENTS, variables: { projectId }  }],
     awaitRefetchQueries: true,
+    onError: () => { },
+    errorPolicy: 'ignore',
   });
 
   if (error) {
@@ -53,6 +57,7 @@ const NewAgent: React.FC<INewAgentProps> = ({ user }) => {
     createAgent({
       variables: {
         projectId,
+        uname,
         name,
         language: 'EN_US',
       },
@@ -65,6 +70,15 @@ const NewAgent: React.FC<INewAgentProps> = ({ user }) => {
       {loading && <LinearProgress />}
       <Typography variant="h4">New Agent</Typography>
       <br />
+      <TextField
+        id="name"
+        label="Agent Unique Name"
+        type="text"
+        value={uname}
+        variant="outlined"
+        onChange={(e: any) => setUname(e.target.value as string)}
+        className={clsx(classes.inputBox)}
+      />
       <TextField
         id="name"
         label="Agent Name"

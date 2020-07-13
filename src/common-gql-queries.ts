@@ -145,6 +145,7 @@ export const CHATBOT_GET_AGENTS = gql`
     ChatbotService_agents(projectId: $projectId) {
       id
       projectId
+      uname
       name
       language
       userIntents {
@@ -172,6 +173,7 @@ export const CHATBOT_GET_AGENT = gql`
     ChatbotService_agent(agentId: $agentId) {
       id
       projectId
+      uname
       name
       language
       userIntents {
@@ -229,16 +231,19 @@ export const CHATBOT_GET_UTTERANCE_ACTIONS = gql`
 export const CHATBOT_CREATE_AGENT = gql`
   mutation(
     $projectId: String!
+    $uname: String!
     $name: String!
     $language: ChatbotService_LanguageEnum!
   ) {
     ChatbotService_createAgent(
       projectId: $projectId
+      uname: $uname
       name: $name
       language: $language
     ) {
       id
       projectId
+      uname
       name
       language
       # tags
@@ -281,9 +286,10 @@ export const CHATBOT_DELETE_AGENT = gql`
 `;
 
 export const CHATBOT_UPDATE_AGENT = gql`
-  mutation($agentId: Int!, $name: String!) {
-    ChatbotService_updateAgent(agentId: $agentId, name: $name) {
+  mutation($agentId: Int!, $uname: String, $name: String) {
+    ChatbotService_updateAgent(agentId: $agentId, uname: $uname, name: $name) {
       id
+      uname
       name
     }
   }
@@ -296,19 +302,6 @@ export const CHATBOT_CREATE_INTENTS = gql`
       agentId
       value
       defaultResponse
-      examples {
-        id
-        intentId
-        agentId
-        text
-        tags {
-          id
-          exampleId
-          tagTypeId
-          start
-          end
-        }
-      }
     }
   }
 `;
@@ -463,13 +456,9 @@ mutation($utteranceActionId: Int!, $name: String!, $text: String!) {
 `;
 
 export const CHATBOT_TALK_TO_AGENT = gql`
-  mutation($conversation: ChatbotService_ConversationInput!) {
-    ChatbotService_talkToAgent(conversation: $conversation) {
+  mutation($uname: String!, $conversation: ChatbotService_ConversationInput!) {
+    ChatbotService_talkToAgent(uname: $uname, conversation: $conversation) {
       agentId
-      dialogueTurns {
-        actor
-        utterance
-       }
     }
   }
 `;
