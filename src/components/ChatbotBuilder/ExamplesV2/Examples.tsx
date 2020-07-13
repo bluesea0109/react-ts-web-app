@@ -178,7 +178,7 @@ const Examples = () => {
         onEdit={onExampleEdit}
         onAdd={() => setShowNewExampleDialog(true)}
       />
-      {(!!intents && !!tags) && (
+      {(!!intents && !!tags && (examples?.length ?? 0) >= 1) && (
         <EditExample
           loading={loading}
           tags={tags}
