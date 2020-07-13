@@ -5,6 +5,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableFooter,
   TableHead,
   TablePagination,
@@ -40,6 +41,14 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     grow: {
       flexGrow: 1,
+    },
+    tableContainer: {
+      maxHeight: '75vh',
+    },
+    tableHeader: {
+      '& th' : {
+        backgroundColor: '#f5f5f5',
+      },
     },
   }),
 );
@@ -166,36 +175,38 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
       {loading ? (
         <ContentLoading />
       ) : (
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell align="left">Name</TableCell>
-              <TableCell align="left">Email</TableCell>
-              <TableCell align="left">Role</TableCell>
-              <TableCell align="left">Options</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {pageItems.map((member, i) => {
-              return getTableRow(member, i);
-            })}
-          </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TablePagination
-                rowsPerPageOptions={[5]}
-                colSpan={3}
-                count={props.members?.length || 0}
-                rowsPerPage={state.rowsPerPage}
-                page={state.page}
-                SelectProps={{
-                  native: true,
-                }}
-                onChangePage={handleChangePage}
-              />
-            </TableRow>
-          </TableFooter>
-        </Table>
+        <TableContainer className={classes.tableContainer}>
+          <Table stickyHeader={true} aria-label="sticky table">
+            <TableHead>
+              <TableRow className={classes.tableHeader}>
+                <TableCell align="left">Name</TableCell>
+                <TableCell align="left">Email</TableCell>
+                <TableCell align="left">Role</TableCell>
+                <TableCell align="left">Options</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {pageItems.map((member, i) => {
+                return getTableRow(member, i);
+              })}
+            </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TablePagination
+                  rowsPerPageOptions={[5]}
+                  colSpan={3}
+                  count={props.members?.length || 0}
+                  rowsPerPage={state.rowsPerPage}
+                  page={state.page}
+                  SelectProps={{
+                    native: true,
+                  }}
+                  onChangePage={handleChangePage}
+                />
+              </TableRow>
+            </TableFooter>
+          </Table>
+        </TableContainer>
       )}
       <Snackbar
         open={openSnackBar}
