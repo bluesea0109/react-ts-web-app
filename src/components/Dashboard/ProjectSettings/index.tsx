@@ -18,7 +18,8 @@ import { useParams } from 'react-router';
 import { IAPIKey } from '../../../models/user-service';
 import { useQueryAsArray } from '../../../utils/hooks';
 import KeyValueArrayInput from '../../Utils/KeyValueArrayInput';
-import { createApiKeyMutation, deleteApiKeyMutation, getApiKeysQuery, updateDomainsMutation } from './gql';
+import { deleteApiKeyMutation, getApiKeysQuery, updateDomainsMutation } from './gql';
+import NewApiKeyDialog from './NewApiKeyDialog';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -52,6 +53,7 @@ export default function Project() {
   const classes = useStyles();
   const { projectId } = useParams();
   const [currentKey, setCurrentKey] = useState<IAPIKey | null>(null);
+  const [showCreateKeyDialog, setShowCreateKeyDialog] = useState(false);
 
   const [apiKey, apiKeyLoading] = useQueryAsArray<QueryResult>(getApiKeysQuery, {
     variables: {
@@ -59,7 +61,6 @@ export default function Project() {
     },
   });
 
-  const [addKey, createKeyMutation] = useMutation(createApiKeyMutation);
   const [deleteKey, deleteKeyMutation] = useMutation(deleteApiKeyMutation);
   const [updateAllowedDomains, updateAllowedDomainsMutation] = useMutation<UpdateDomainsMutationResult>(updateDomainsMutation);
 
@@ -70,20 +71,6 @@ export default function Project() {
       setCurrentKey(loadedKey);
     }
   }, [loadedKey, apiKeyLoading]);
-
-  const createNewKey = async () => {
-    try {
-      const { data } = await addKey({
-        variables: {
-          projectId,
-        },
-      });
-
-      setCurrentKey(data?.generateApiKey?.key ?? null);
-    } catch (e) {
-
-    }
-  };
 
   const deleteApiKey = async () => {
     try {
@@ -117,7 +104,7 @@ export default function Project() {
     }
   };
 
-  const loading = apiKeyLoading || createKeyMutation.loading || deleteKeyMutation.loading;
+  const loading = apiKeyLoading || deleteKeyMutation.loading;
 
   return (
     <Box p={3}>
@@ -126,11 +113,16 @@ export default function Project() {
           <Typography variant="h5">API Keys</Typography>
         </Grid>
         <Grid item={true}>
-          <IconButton style={{ marginLeft: 16 }} onClick={createNewKey} disabled={loading}>
+          <IconButton style={{ marginLeft: 16 }} onClick={() => setShowCreateKeyDialog(true)} disabled={loading}>
             <Add />
           </IconButton>
         </Grid>
       </Grid>
+      <NewApiKeyDialog
+        isOpen={showCreateKeyDialog}
+        onClose={() => setShowCreateKeyDialog(false)}
+        onCreateKey={setCurrentKey}
+      />
       {(!currentKey && loading) && (
         <Box p={4}>
           <Grid container={true} alignItems="center" justify="center">
