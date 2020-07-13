@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
 export const createExampleMutation = gql`
-    mutation($agentId: Int!) {
-      ChatbotService_createExample(agentId: $agentId, text: "") {
+    mutation($agentId: Int!, $text: String!, $intentId: Int) {
+      ChatbotService_createExample(agentId: $agentId, text: $text, intentId: $intentId) {
         id
         intentId
         agentId
