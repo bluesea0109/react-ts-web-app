@@ -36,3 +36,14 @@ export interface IAPIKey {
   key: string;
   domains: string[];
 }
+
+export interface IInvitedMember {
+  id: string;
+  email: string;
+  orgId: string;
+  orgName: string;
+  senderName: string;
+  senderEmail: string;
+  timestamp: string;
+  role: string;
+}

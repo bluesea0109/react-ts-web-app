@@ -1,4 +1,4 @@
-import { createStyles, makeStyles, Theme, Typography } from '@material-ui/core';
+import { createStyles, Grid, makeStyles, Theme, Typography } from '@material-ui/core';
 import React from 'react';
 import { useQuery } from 'react-apollo';
 import { useParams } from 'react-router';
@@ -6,12 +6,16 @@ import { GET_ORGS } from '../../../common-gql-queries';
 import { IOrg, IUser } from '../../../models/user-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
+import OrginvitedMember from './OrgInvitedMember';
 import OrgMembersTable from './OrgMembersTable';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       margin: theme.spacing(2),
+    },
+    tableWrapper: {
+      display: 'flex',
     },
   }),
 );
@@ -46,7 +50,14 @@ export default function OrganizationSettings(props: IOrgSettingsProps) {
   return (
     <div className={classes.root}>
       <Typography>{'Organization Settings'}</Typography>
-      <OrgMembersTable members={org.members || []} user={props.user} refetchOrgs={refetch} />
+      <Grid item={true} container={true} xs={12} spacing={2}>
+          <Grid item={true} xs={12} sm={6}>
+             <OrgMembersTable members={org.members || []} user={props.user} refetchOrgs={refetch} />
+          </Grid>
+          <Grid item={true} xs={12} sm={6}>
+            <OrginvitedMember />
+          </Grid>
+      </Grid>
     </div>
   );
 }
