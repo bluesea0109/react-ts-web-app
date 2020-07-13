@@ -22,7 +22,9 @@ import { useMutation } from 'react-apollo';
 import { IMember, IUser } from '../../../models/user-service';
 import ContentLoading from '../../ContentLoading';
 import IconButtonDelete from '../../IconButtons/IconButtonDelete';
+import IconButtonEdit from '../../IconButtons/IconButtonEdit';
 import ConfirmDialog from '../../Utils/ConfirmDialog';
+import ChangeRoleDialog from './changeRoleDialog';
 import InviteDialog from './InviteDialog';
 
 interface IAlertProps {
@@ -50,6 +52,10 @@ const useStyles = makeStyles((theme: Theme) =>
         backgroundColor: '#f5f5f5',
       },
     },
+    iconWrapper: {
+      display: 'flex',
+      alignItems: 'center',
+    },
   }),
 );
 
@@ -73,6 +79,7 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
     role: '',
   });
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [changeConfirm, setchangeConfirm] = useState(false);
   const [
     removeOrgMember,
     { loading, data: removedMember },
@@ -112,6 +119,11 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
     props.user.activeOrg?.currentUserMember?.role || null;
   const pageItems = getPage(props.members);
 
+  const onUpdateCallback = () => {
+    props.refetchOrgs();
+    setchangeConfirm(false);
+  };
+
   const getTableRow = (member: IMember, i: number) => {
     if (member.uid === props.user.uid) {
       return (
@@ -127,7 +139,14 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
             </Box>
           </TableCell>
           <TableCell align="left">
-            <Box fontWeight="fontWeightBold">{member.role}</Box>
+            <Box className={classes.iconWrapper}>
+              <Box fontWeight="fontWeightBold">{member.role}</Box>
+              <IconButtonEdit
+                tooltip="Change Role"
+                onClick={() => null}
+                disabled={member.uid === props.user.uid || role !== 'owner'}
+              />
+            </Box>
           </TableCell>
           <TableCell align="left">
             <IconButtonDelete
@@ -143,7 +162,21 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
       <TableRow key={i}>
         <TableCell align="left">{member.user?.name || 'unknown'}</TableCell>
         <TableCell align="left">{member.user?.email || 'unknown'}</TableCell>
-        <TableCell align="left">{member.role}</TableCell>
+        <TableCell align="left">{member.role}
+            <IconButtonEdit
+              tooltip="Change Role"
+              onClick={() => {
+                setchangeConfirm(true);
+                setSelectedMember(member);
+              }}
+            />
+            <ChangeRoleDialog
+              open={changeConfirm}
+              setOpen={setchangeConfirm}
+              member={selectedMember}
+              onUpdateCallback={onUpdateCallback}
+            />
+        </TableCell>
         <TableCell align="left">
           <IconButtonDelete
             tooltip="Remove User"
