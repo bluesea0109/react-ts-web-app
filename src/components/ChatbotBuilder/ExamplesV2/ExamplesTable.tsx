@@ -7,7 +7,6 @@ import {
   TablePagination,
   TextField,
   Theme,
-  Typography,
 } from '@material-ui/core';
 import { Edit } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
@@ -149,60 +148,59 @@ const ExamplesTable = (props: ExamplesTableProps) => {
   return (
     <Paper className={classes.paper}>
       <p className={classes.label}>NLU Example Tables</p>
-      {(data && data.length) ? (
-        <TableContainer component={Paper} aria-label="Examples">
-          <MaterialTable
-            title={
-              <Button disabled={loading} variant="contained" color="primary" onClick={onAdd}>Add New Example</Button>
-            }
-            columns={columns}
-            data={data}
-            isLoading={loading}
-            options={{
-              actionsColumnIndex: -1,
-              filtering: true,
-              search: false,
-              paging: true,
-              pageSize: 10,
-            }}
-            editable={{
-              onRowDelete: async (oldData) => await onDelete(oldData.id),
-            }}
-            actions={[
-              {
-                icon: (props: any) => <Edit />,
-                tooltip: 'Edit Example',
-                onClick: (event, rowData) => {
-                  onEdit(rowData.id);
-                },
+      <TableContainer component={Paper} aria-label="Examples">
+        <MaterialTable
+          title={
+            <Button disabled={loading} variant="contained" color="primary" onClick={onAdd}>Add New Example</Button>
+          }
+          columns={columns}
+          data={data || []}
+          isLoading={loading}
+          localization={{
+            body: {
+              emptyDataSourceMessage: 'No Examples Found. Create Your First Example Now!',
+            },
+          }}
+          options={{
+            actionsColumnIndex: -1,
+            filtering: true,
+            search: false,
+            paging: true,
+            pageSize: 10,
+          }}
+          editable={{
+            onRowDelete: async (oldData) => await onDelete(oldData.id),
+          }}
+          actions={[
+            {
+              icon: (props: any) => <Edit />,
+              tooltip: 'Edit Example',
+              onClick: (event, rowData) => {
+                onEdit(rowData.id);
               },
-            ]}
-            components={{
-              Pagination: props => (
-                <TablePagination
-                  rowsPerPageOptions={[10]}
-                  rowsPerPage={10}
-                  count={data?.length < 10 ? data?.length : -1}
-                  labelDisplayedRows={({ from, to, count }) => {
-                    return `${from}-${to} of ${count !== -1 ? count : `more than ${to}`}`;
-                  }}
-                  page={(filters?.offset ?? 0) / EXAMPLES_LIMIT}
-                  onChangePage={(e, page) =>
-                    updateFilters({
-                      intentId: intent?.id,
-                      offset: page * EXAMPLES_LIMIT,
-                    })
-                  }
-                />
-              ),
-            }}
-          />
-        </TableContainer>
-      ) : (
-        <Typography align="center" variant="h6">
-          {'No Examples found'}
-        </Typography>
-      )}
+            },
+          ]}
+          components={{
+            Pagination: props => (
+              <TablePagination
+                rowsPerPageOptions={[10]}
+                rowsPerPage={10}
+                count={(data?.length ?? 0) < 10 ? (data?.length ?? 0) : -1}
+                labelDisplayedRows={({ from, to, count }) => {
+                  return `${from}-${to} of ${count !== -1 ? count : `more than ${to}`}`;
+                }}
+                page={(filters?.offset ?? 0) / EXAMPLES_LIMIT}
+                onChangePage={(e, page) =>
+                  updateFilters({
+                    intentId: intent?.id,
+                    offset: page * EXAMPLES_LIMIT,
+                  })
+                }
+              />
+            ),
+          }}
+        />
+      </TableContainer>
     </Paper>
   );
 };
