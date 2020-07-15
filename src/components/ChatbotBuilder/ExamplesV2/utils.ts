@@ -4,7 +4,7 @@ export const getMargeIntentData = (examplesData: IExample[], intentsData: IInten
   const intent = intentsData.filter(intent => intent.id === example.intentId);
   return {
     ...example,
-    intentName: intent[0].value,
+    intentName: intent?.[0]?.value,
   };
 });
 
