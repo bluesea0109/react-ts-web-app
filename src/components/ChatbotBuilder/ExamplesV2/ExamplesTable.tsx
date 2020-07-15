@@ -40,7 +40,7 @@ const initialColumns: Column<any>[] = [
             tag: tag.tagType.value,
           };
         }),
-        tag: data.tags[0].tagType.value,
+        tag: null,
       };
 
       return (

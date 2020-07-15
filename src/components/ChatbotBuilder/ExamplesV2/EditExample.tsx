@@ -81,7 +81,7 @@ const EditExample = (props: EditExampleProps) => {
           tag: tag.tagType.value,
         };
       }),
-      tag: tags[0].value,
+      tag: tags[0]?.value,
     });
 
     const intent = intents.find(({ id }: any) => id === example?.intentId);
