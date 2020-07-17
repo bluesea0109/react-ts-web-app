@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import { useMutation } from 'react-apollo';
 import { useParams } from 'react-router-dom';
 import { resetApolloContext } from '../../../apollo-client';
+import {GET_CURRENT_USER, UPDATE_ACTIVE_ORG } from '../../../common-gql-queries';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 
@@ -18,11 +19,21 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function AcceptInvite() {
   const classes = useStyles();
   const { inviteId } = useParams();
+  const [updateActiveOrg, updateActiveOrgResult] = useMutation(UPDATE_ACTIVE_ORG, {
+    refetchQueries: [{ query: GET_CURRENT_USER }],
+    awaitRefetchQueries: true,
+  });
+
   const [acceptInvite, { error, loading }] = useMutation(ACCEPT_INVITE, {
     variables: { inviteId },
     onError: () => { },
+    onCompleted: async (data) => {
+      resetApolloContext();
+      if (data) {
+        await updateActiveOrg({ variables: { orgId: data?.acceptOrgMemberInvite?.orgId } });
+      }
+    },
   });
-
   useEffect(() => {
     try {
       (async () => {
@@ -34,11 +45,12 @@ export default function AcceptInvite() {
     }
   }, [acceptInvite, inviteId]);
 
-  if (error) {
-    return <ApolloErrorPage error={error} />;
+  const err = error || updateActiveOrgResult.error;
+  if (err) {
+    return <ApolloErrorPage error={err} />;
   }
 
-  if (loading) {
+  if (loading || updateActiveOrgResult.loading) {
     return <ContentLoading />;
   }
 
