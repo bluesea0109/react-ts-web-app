@@ -29,7 +29,7 @@ export default function AcceptInvite() {
     onError: () => { },
     onCompleted: async (data) => {
       resetApolloContext();
-      if (data) {
+      if (!!data?.acceptOrgMemberInvite?.orgId) {
         await updateActiveOrg({ variables: { orgId: data?.acceptOrgMemberInvite?.orgId } });
       }
     },
