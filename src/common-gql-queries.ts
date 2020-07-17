@@ -155,8 +155,6 @@ export const CHATBOT_GET_AGENTS = gql`
       }
       utteranceActions {
         id
-        agentId
-        name
         text
       }
       tagTypes{
@@ -301,7 +299,7 @@ export const CHATBOT_CREATE_INTENTS = gql`
       id
       agentId
       value
-      defaultResponse
+      defaultAction
     }
   }
 `;

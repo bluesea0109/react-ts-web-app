@@ -47,6 +47,7 @@ function AgentsTable() {
   const [state, setState] = React.useState<AgentState>({
     columns: [
       { title: 'Agent id', field: 'id', editable: 'never' },
+      { title: 'Unique Name', field: 'uname', editable: 'never' },
       { title: 'Name',
          field: 'name',
          render: rowData => <Link  to={`/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${rowData.id}/Intents`}>

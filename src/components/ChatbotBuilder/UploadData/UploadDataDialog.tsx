@@ -94,6 +94,7 @@ class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDa
 
   onCancel = () => {
     this.cancelled = true;
+    this.handleClose();
   }
 
   readFile = async (file: File): Promise<IAgentData> => {
@@ -126,7 +127,7 @@ class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDa
     return data;
   }
 
-  uploadIntents = async (intents: string[]): Promise<Map<string, number>> => {
+  uploadIntents = async (intents: IAgentDataIntent[]): Promise<Map<string, number>> => {
     this.setState({
       status: 'Creating intents',
     });
@@ -135,7 +136,7 @@ class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDa
       mutation: CHATBOT_CREATE_INTENTS,
       variables: {
         agentId: this.props.agentId,
-        intents: intents.map(x => ({ value: x })),
+        intents: intents.map(x => ({ value: x.intent })),
       },
     });
 
@@ -181,82 +182,90 @@ class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDa
   }
 
   handleJsonFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) { return; }
+    try {
 
-    const file = files[0];
+      const files = e.target.files;
+      if (!files || files.length === 0) { return; }
 
-    this.setState(s => ({
-      ...s,
-      open: true,
-    }));
+      const file = files[0];
 
-    if (file.type !== 'application/json') {
-      // set error message
       this.setState(s => ({
         ...s,
-        status: 'Invalid file type',
+        open: true,
       }));
-      return;
-    }
 
-    const data = await this.readFile(file);
-
-    let numCompleted = 0;
-    const total = data.examples.length;
-
-    this.setState(s => ({
-      ...s,
-      open: true,
-      numCompleted,
-      total,
-      progress: 0,
-    }));
-
-    const intentIdsMap = await this.uploadIntents(data.intents);
-    const tagTypeIdsMap = await this.uploadTagTypes(data.tagTypes);
-
-    console.log(JSON.stringify(intentIdsMap));
-    const preprocessedExamples: IExampleInput[] = data.examples.map(x => {
-
-      const intentId = intentIdsMap.get(x.intent);
-      if (!intentId) {
-        throw new Error(`Failed to get id for intent: ${x.intent}`);
+      if (file.type !== 'application/json') {
+        // set error message
+        this.setState(s => ({
+          ...s,
+          status: 'Invalid file type',
+        }));
+        return;
       }
 
-      return {
-        intentId,
-        text: x.text,
-        tags: x.tags.map(tag => {
-          const tagTypeId = tagTypeIdsMap.get(tag.tagType);
-          if (!tagTypeId) {
-            throw new Error(`Failed to id for tagType: ${tag.tagType}`);
-          }
-          return {
-            start: tag.start,
-            end: tag.end,
-            tagTypeId,
-          };
-        }),
-      };
-    });
+      const data = await this.readFile(file);
 
-    const exampleBatches = _.chunk(preprocessedExamples, 100);
+      let numCompleted = 0;
+      const total = data.examples.length;
 
-    for (const batch of exampleBatches) {
-      await this.uploadBatch(batch);
-      numCompleted += batch.length;
-      const progress = 100.0 * numCompleted / total;
-      this.setState({
-        status: 'Uploading examples',
+      this.setState(s => ({
+        ...s,
+        open: true,
         numCompleted,
         total,
-        progress,
-      });
-    }
+        progress: 0,
+      }));
 
-    if (!this.state.error) {
-      this.handleClose();
+      const intentIdsMap = await this.uploadIntents(data.intents);
+      const tagTypeIdsMap = await this.uploadTagTypes(data.tagTypes);
+
+      console.log(JSON.stringify(intentIdsMap));
+      const preprocessedExamples: IExampleInput[] = data.examples.map(x => {
+
+        const intentId = intentIdsMap.get(x.intent);
+        if (!intentId) {
+          throw new Error(`Failed to get id for intent: ${x.intent}`);
+        }
+
+        return {
+          intentId,
+          text: x.text,
+          tags: x.tags.map(tag => {
+            const tagTypeId = tagTypeIdsMap.get(tag.tagType);
+            if (!tagTypeId) {
+              throw new Error(`Failed to id for tagType: ${tag.tagType}`);
+            }
+            return {
+              start: tag.start,
+              end: tag.end,
+              tagTypeId,
+            };
+          }),
+        };
+      });
+
+      const exampleBatches = _.chunk(preprocessedExamples, 100);
+
+      for (const batch of exampleBatches) {
+        await this.uploadBatch(batch);
+        numCompleted += batch.length;
+        const progress = 100.0 * numCompleted / total;
+        this.setState({
+          status: 'Uploading examples',
+          numCompleted,
+          total,
+          progress,
+        });
+      }
+
+      if (!this.state.error) {
+        this.handleClose();
+      }
+    } catch (err) {
+      console.error(err);
+      this.setState({
+        error: err,
+      });
     }
   }
 
@@ -273,9 +282,13 @@ class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDa
     );
 
     if (state.error) {
+      console.error(state.error);
       dialogContent = (
         <DialogContent>
-          <Typography>{state.error.message}</Typography>
+          <DialogContentText>
+            {'Something went wrong :('}
+          </DialogContentText>
+          <Typography>{'Please contact support@bavard.ai'}</Typography>
         </DialogContent>
       );
     }
@@ -287,7 +300,7 @@ class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDa
           onClose={this.handleClose}
           fullWidth={true}
         >
-          <DialogTitle>{'Uploading Examples File'}</DialogTitle>
+          <DialogTitle>{'Upload Agent Data'}</DialogTitle>
           {dialogContent}
           <DialogActions>
             <Button color="secondary" onClick={this.onCancel}>
@@ -324,7 +337,12 @@ const UPLOAD_EXAMPLES = gql`
 `;
 
 interface IAgentData {
-  intents: string[];
+  intents: IAgentDataIntent[];
   tagTypes: string[];
   examples: IAgentDataExample[];
+}
+
+interface IAgentDataIntent {
+  intent: string;
+  defaultAction?: number | null;
 }
