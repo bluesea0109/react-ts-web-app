@@ -1,11 +1,20 @@
 import { useMutation, useQuery } from '@apollo/react-hooks';
-import { LinearProgress, Paper, TableContainer,  Typography } from '@material-ui/core';
+import {
+  LinearProgress,
+  Paper,
+  TableContainer,
+  Typography,
+} from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import 'firebase/auth';
 import MaterialTable, { Column } from 'material-table';
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router';
-import { CHATBOT_DELETE_INTENT, CHATBOT_GET_INTENTS, CHATBOT_UPDATE_INTENT } from '../../../common-gql-queries';
+import {
+  CHATBOT_DELETE_INTENT,
+  CHATBOT_GET_INTENTS,
+  CHATBOT_UPDATE_INTENT,
+} from '../../../common-gql-queries';
 import { IIntent } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 
@@ -17,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) =>
     paper: {
       padding: theme.spacing(2),
     },
-  }),
+  })
 );
 
 interface IGetIntents {
@@ -34,17 +43,27 @@ function IntentsTable() {
   const { agentId } = useParams();
   const numAgentId = Number(agentId);
 
-  const intentsData = useQuery<IGetIntents>(CHATBOT_GET_INTENTS, { variables: { agentId: numAgentId } });
+  const intentsData = useQuery<IGetIntents>(CHATBOT_GET_INTENTS, {
+    variables: { agentId: numAgentId },
+  });
   const [updateIntent, updatedData] = useMutation(CHATBOT_UPDATE_INTENT, {
-    refetchQueries: [{ query: CHATBOT_GET_INTENTS, variables: { agentId: numAgentId } }],
+    refetchQueries: [
+      { query: CHATBOT_GET_INTENTS, variables: { agentId: numAgentId } },
+    ],
     awaitRefetchQueries: true,
   });
-  const [deleteIntent, { loading, error }] = useMutation(CHATBOT_DELETE_INTENT, {
-    refetchQueries: [{ query: CHATBOT_GET_INTENTS, variables: { agentId: numAgentId } }],
-    awaitRefetchQueries: true,
-  });
+  const [deleteIntent, { loading, error }] = useMutation(
+    CHATBOT_DELETE_INTENT,
+    {
+      refetchQueries: [
+        { query: CHATBOT_GET_INTENTS, variables: { agentId: numAgentId } },
+      ],
+      awaitRefetchQueries: true,
+    }
+  );
 
-  const intents: IIntent[] | undefined = intentsData && intentsData.data && intentsData.data.ChatbotService_intents;
+  const intents: IIntent[] | undefined =
+    intentsData && intentsData.data && intentsData.data.ChatbotService_intents;
 
   const [state, setState] = React.useState<IntentState>({
     columns: [
@@ -54,7 +73,11 @@ function IntentsTable() {
         field: 'value',
         editable: 'onUpdate',
       },
-      { title: 'Default Response', field: 'defaultResponse', editable: 'onUpdate' },
+      {
+        title: 'Default Response',
+        field: 'defaultResponse',
+        editable: 'onUpdate',
+      },
     ],
     data: intents,
   });
@@ -67,28 +90,34 @@ function IntentsTable() {
       });
     }
 
-    return () => { };
+    return () => {};
   }, [intents, state.columns]);
 
-  const commonError = intentsData.error ? intentsData.error : updatedData.error ? updatedData.error : error;
+  const commonError = intentsData.error
+    ? intentsData.error
+    : updatedData.error
+    ? updatedData.error
+    : error;
 
   if (commonError) {
     // TODO: handle errors
     return <ApolloErrorPage error={commonError} />;
   }
 
-  const updateIntentHandler = (intentId: number, value: string, defaultResponse: string) => {
-
+  const updateIntentHandler = (
+    intentId: number,
+    value: string,
+    defaultAction: number
+  ) => {
     updateIntent({
       variables: {
         intentId,
         value,
-        defaultResponse,
+        defaultAction,
       },
     });
   };
   const deleteIntentHandler = (intentId: number) => {
-
     deleteIntent({
       variables: {
         intentId,
@@ -98,7 +127,9 @@ function IntentsTable() {
 
   return (
     <Paper className={classes.paper}>
-       {(intentsData.loading || updatedData.loading || loading) && <LinearProgress />}
+      {(intentsData.loading || updatedData.loading || loading) && (
+        <LinearProgress />
+      )}
       {state && state.data && state.data.length > 0 ? (
         <TableContainer component={Paper} aria-label="Agents">
           <MaterialTable
@@ -109,7 +140,6 @@ function IntentsTable() {
               actionsColumnIndex: -1,
               pageSize: 20,
             }}
-
             localization={{
               body: {
                 editRow: {
@@ -122,7 +152,7 @@ function IntentsTable() {
                 if (oldData) {
                   const dataId = oldData.id;
                   const dataName = newData.value;
-                  const dataResponse = newData.defaultResponse;
+                  const dataResponse = newData.defaultAction;
                   updateIntentHandler(dataId, dataName, dataResponse);
                 }
               },
@@ -134,10 +164,10 @@ function IntentsTable() {
           />
         </TableContainer>
       ) : (
-          <Typography align="center" variant="h6">
-            {'No Intents found'}
-          </Typography>
-        )}
+        <Typography align="center" variant="h6">
+          {'No Intents found'}
+        </Typography>
+      )}
     </Paper>
   );
 }

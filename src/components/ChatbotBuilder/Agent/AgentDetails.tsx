@@ -10,6 +10,7 @@ import TrainingConversations from '../TrainingConversations';
 import TrainingJobsTab from '../TrainingJobs/TrainingJobsTab';
 import UploadDataTab from '../UploadData/UploadDataTab';
 import UtteranceAction from '../UtteranceActions/UtteranceAction';
+import Actions from '../Actions/Actions';
 
 interface TabPanelProps {
   className?: string;
@@ -29,13 +30,8 @@ function TabPanel(props: TabPanelProps) {
       hidden={value !== index}
       id={`full-width-tabpanel-${index}`}
       aria-labelledby={`full-width-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box p={3}>
-          {children}
-        </Box>
-      )}
+      {...other}>
+      {value === index && <Box p={3}>{children}</Box>}
     </div>
   );
 }
@@ -78,19 +74,50 @@ const AgentDetails = () => {
         indicatorColor="secondary"
         variant="scrollable"
         orientation="vertical"
-        textColor="primary"
-      >
+        textColor="primary">
+        <Tab value="Actions" label="Actions" {...a11yProps('Actions')} />
         <Tab value="Intents" label="Intents" {...a11yProps('Intents')} />
         <Tab value="Tags" label="Tags" {...a11yProps('Tags')} />
-        <Tab value="nluExamples" label="NLU Examples" {...a11yProps('NLU Examples')} />
-        <Tab value="actions" label="Agent Actions" {...a11yProps('Agent Actions')} />
-        <Tab value="upload-data" label="Upload Data" {...a11yProps('Upload Data')} />
-        <Tab value="exports" label="Data Exports" {...a11yProps('Data Exports')} />
-        <Tab value="training-jobs" label="Training Jobs" {...a11yProps('Training Jobs')} />
-        <Tab value="chat" label="Chat with Agent" {...a11yProps('Chat with Agent')} />
-        <Tab value="training-conversations" label="Training conversations" {...a11yProps('Training conversations')} />
+        <Tab
+          value="nluExamples"
+          label="NLU Examples"
+          {...a11yProps('NLU Examples')}
+        />
+        <Tab
+          value="actions"
+          label="Agent Actions"
+          {...a11yProps('Agent Actions')}
+        />
+        <Tab
+          value="upload-data"
+          label="Upload Data"
+          {...a11yProps('Upload Data')}
+        />
+        <Tab
+          value="exports"
+          label="Data Exports"
+          {...a11yProps('Data Exports')}
+        />
+        <Tab
+          value="training-jobs"
+          label="Training Jobs"
+          {...a11yProps('Training Jobs')}
+        />
+        <Tab
+          value="chat"
+          label="Chat with Agent"
+          {...a11yProps('Chat with Agent')}
+        />
+        <Tab
+          value="training-conversations"
+          label="Training conversations"
+          {...a11yProps('Training conversations')}
+        />
       </Tabs>
-      <TabPanel className={classes.tabPanel} value={agentTab} index="Intents" >
+      <TabPanel className={classes.tabPanel} value={agentTab} index="Actions">
+        <Actions />
+      </TabPanel>
+      <TabPanel className={classes.tabPanel} value={agentTab} index="Intents">
         <Intent />
       </TabPanel>
       <TabPanel className={classes.tabPanel} value={agentTab} index="Tags">
@@ -99,24 +126,17 @@ const AgentDetails = () => {
       <TabPanel className={classes.tabPanel} value={agentTab} index="actions">
         <UtteranceAction />
       </TabPanel>
-      <TabPanel className={classes.tabPanel} value={agentTab} index="nluExamples" >
+      <TabPanel
+        className={classes.tabPanel}
+        value={agentTab}
+        index="nluExamples">
         <Examples />
       </TabPanel>
-      {agentTab === 'upload-data' && (
-        <UploadDataTab />
-      )}
-      {agentTab === 'exports' && (
-        <DataExportsTab />
-      )}
-      {agentTab === 'training-jobs' && (
-        <TrainingJobsTab />
-      )}
-      {agentTab === 'chat' && (
-        <ChatWithAgent />
-      )}
-      {agentTab === 'training-conversations' && (
-        <TrainingConversations />
-      )}
+      {agentTab === 'upload-data' && <UploadDataTab />}
+      {agentTab === 'exports' && <DataExportsTab />}
+      {agentTab === 'training-jobs' && <TrainingJobsTab />}
+      {agentTab === 'chat' && <ChatWithAgent />}
+      {agentTab === 'training-conversations' && <TrainingConversations />}
     </div>
   );
 };

@@ -1,11 +1,20 @@
 import { useMutation, useQuery } from '@apollo/react-hooks';
-import { LinearProgress, Paper, TableContainer,  Typography } from '@material-ui/core';
+import {
+  LinearProgress,
+  Paper,
+  TableContainer,
+  Typography,
+} from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import 'firebase/auth';
 import MaterialTable, { Column } from 'material-table';
-import React, {  useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router';
-import { CHATBOT_DELETE_UTTERANCE_ACTION, CHATBOT_GET_UTTERANCE_ACTIONS, CHATBOT_UPDATE_UTTERANCE_ACTION  } from '../../../common-gql-queries';
+import {
+  CHATBOT_DELETE_UTTERANCE_ACTION,
+  CHATBOT_GET_UTTERANCE_ACTIONS,
+  CHATBOT_UPDATE_UTTERANCE_ACTION,
+} from '../../../common-gql-queries';
 import { IUtteranceAction } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 
@@ -17,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) =>
     paper: {
       padding: theme.spacing(2),
     },
-  }),
+  })
 );
 
 interface IGetUtteranceActions {
@@ -34,30 +43,46 @@ function UtteranceActionsTable() {
   const { agentId } = useParams();
   const numAgentId = Number(agentId);
 
-  const actionsData = useQuery<IGetUtteranceActions>(CHATBOT_GET_UTTERANCE_ACTIONS, { variables: { agentId: numAgentId } });
+  const actionsData = useQuery<IGetUtteranceActions>(
+    CHATBOT_GET_UTTERANCE_ACTIONS,
+    { variables: { agentId: numAgentId } }
+  );
 
-  const [updateAction, updatedData] = useMutation(CHATBOT_UPDATE_UTTERANCE_ACTION, {
-    refetchQueries: [{ query: CHATBOT_GET_UTTERANCE_ACTIONS, variables: { agentId: numAgentId } }],
-    awaitRefetchQueries: true,
-  });
+  const [updateAction, updatedData] = useMutation(
+    CHATBOT_UPDATE_UTTERANCE_ACTION,
+    {
+      refetchQueries: [
+        {
+          query: CHATBOT_GET_UTTERANCE_ACTIONS,
+          variables: { agentId: numAgentId },
+        },
+      ],
+      awaitRefetchQueries: true,
+    }
+  );
 
-  const [deleteAction, {  loading, error }] = useMutation(CHATBOT_DELETE_UTTERANCE_ACTION, {
-    refetchQueries: [{ query: CHATBOT_GET_UTTERANCE_ACTIONS, variables: { agentId: numAgentId } }],
-    awaitRefetchQueries: true,
-  });
+  const [deleteAction, { loading, error }] = useMutation(
+    CHATBOT_DELETE_UTTERANCE_ACTION,
+    {
+      refetchQueries: [
+        {
+          query: CHATBOT_GET_UTTERANCE_ACTIONS,
+          variables: { agentId: numAgentId },
+        },
+      ],
+      awaitRefetchQueries: true,
+    }
+  );
 
-  const actions: IUtteranceAction[] | undefined = actionsData && actionsData.data && actionsData.data.ChatbotService_utteranceActions;
+  const actions: IUtteranceAction[] | undefined =
+    actionsData &&
+    actionsData.data &&
+    actionsData.data.ChatbotService_utteranceActions;
 
   const [state, setState] = React.useState<ActionState>({
     columns: [
       { title: 'Action id', field: 'id', editable: 'never' },
       { title: 'Utterance', field: 'text', editable: 'onUpdate' },
-      {
-        title: 'Name',
-        field: 'name',
-        editable: 'onUpdate',
-      },
-
     ],
     data: actions,
   });
@@ -70,29 +95,35 @@ function UtteranceActionsTable() {
       });
     }
 
-    return () => { };
+    return () => {};
   }, [actions, state.columns]);
 
-  const commonError = actionsData.error ? actionsData.error : updatedData.error ? updatedData.error : error;
+  const commonError = actionsData.error
+    ? actionsData.error
+    : updatedData.error
+    ? updatedData.error
+    : error;
 
   if (commonError) {
     // TODO: handle errors
     return <ApolloErrorPage error={commonError} />;
   }
 
-  const deleteUtteranceActionHandler = (utteranceActionId: number) => {
-    deleteAction({
+  const deleteUtteranceActionHandler = async (utteranceActionId: number) => {
+    await deleteAction({
       variables: {
         utteranceActionId,
       },
     });
   };
 
-  const updateUtteranceActionHandler = (utteranceActionId: number, name: string, text: string) => {
-    updateAction({
+  const updateUtteranceActionHandler = async (
+    utteranceActionId: number,
+    text: string
+  ) => {
+    await updateAction({
       variables: {
         utteranceActionId,
-        name,
         text,
       },
     });
@@ -100,7 +131,9 @@ function UtteranceActionsTable() {
 
   return (
     <Paper className={classes.paper}>
-      {(actionsData.loading || updatedData.loading || loading) && <LinearProgress />}
+      {(actionsData.loading || updatedData.loading || loading) && (
+        <LinearProgress />
+      )}
       {state && state.data && state.data.length > 0 ? (
         <TableContainer component={Paper} aria-label="Actions">
           <MaterialTable
@@ -111,7 +144,6 @@ function UtteranceActionsTable() {
               actionsColumnIndex: -1,
               pageSize: 20,
             }}
-
             localization={{
               body: {
                 editRow: {
@@ -123,23 +155,22 @@ function UtteranceActionsTable() {
               onRowUpdate: async (newData, oldData) => {
                 if (oldData) {
                   const dataId = oldData.id;
-                  const name = newData.name;
                   const text = newData.text;
-                  updateUtteranceActionHandler(dataId, name, text);
+                  await updateUtteranceActionHandler(dataId, text);
                 }
               },
               onRowDelete: async (oldData) => {
                 const dataId = oldData.id;
-                deleteUtteranceActionHandler(dataId);
+                await deleteUtteranceActionHandler(dataId);
               },
             }}
           />
         </TableContainer>
       ) : (
-          <Typography align="center" variant="h6">
-            {'No Action found'}
-          </Typography>
-        )}
+        <Typography align="center" variant="h6">
+          {'No Action found'}
+        </Typography>
+      )}
     </Paper>
   );
 }

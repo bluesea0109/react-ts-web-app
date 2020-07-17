@@ -26,16 +26,25 @@ export interface IExample {
   tags: any;
 }
 
+export enum ActionType {
+  UTTERANCE_ACTION = "UTTERANCE_ACTION"
+}
+
+export interface IAction {
+  id: number;
+  agentId: number;
+  name: string;
+  type: ActionType;
+}
+
 export interface IIntent {
   id: number;
   agentId: number;
-  defaultResponse: string;
+  defaultAction: number;
   value: string;
 }
 export interface IUtteranceAction {
   id: number;
-  agentId: number;
-  name: string;
   text: string;
 }
 
