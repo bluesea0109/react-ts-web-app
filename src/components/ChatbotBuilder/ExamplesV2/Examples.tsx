@@ -8,7 +8,6 @@ import ApolloErrorPage from '../../ApolloErrorPage';
 import EditExample from './EditExample';
 import ExamplesTable from './ExamplesTable';
 import { createExampleMutation, getExamplesQuery, getIntentsQuery, saveExampleMutation } from './gql';
-import NewExampleDialog from './NewExampleDialog';
 import {
   CreateExampleMutationResult, ExamplesError,
   ExamplesFilter,
@@ -26,7 +25,6 @@ const Examples = () => {
   const [filters, setFilters] = useState<ExamplesFilter>();
   const [rendered, rerender] = useState(false);
   const [newExample, setNewExample] = useState<IExample | null>(null);
-  const [showNewExampleDialog, setShowNewExampleDialog] = useState(false);
   const [exampleError, setExampleError] = useState<Maybe<ExamplesError>>();
 
   useEffect(() => {
@@ -108,11 +106,12 @@ const Examples = () => {
 
   const onExampleEditClose = () => {
     setCurrentEdit(null);
+    setNewExample(null);
   };
 
   const onExampleSave = async (updatedExample: IExample) => {
     const example = {
-      id: updatedExample.id,
+      ...(updatedExample.id === -1 ? {} : { id: updatedExample.id }),
       text: updatedExample.text,
       intentId: updatedExample.intentId,
       tags: updatedExample.tags.map((tag: any) => ({
@@ -122,38 +121,48 @@ const Examples = () => {
       })),
     };
 
-    await updateExample({
+    const mutationOpts = {
       variables: {
-        example,
-      },
-    });
+        example
+      }
+    };
 
-    setCurrentEdit(null);
-    setNewExample(null);
-  };
+    let resp: any;
 
-  const loading = examplesData.loading ||
-    deleteExampleMutation.loading ||
-    updateExampleMutation.loading ||
-    createExampleMutationData.loading;
-
-  const createNewExample = async (text: string, intent: Maybe<number> = null) => {
-    setExampleError(null);
     try {
-      const data = await createExample({
-        variables: {
-          text,
-          intent,
-        },
-      });
-      setShowNewExampleDialog(false);
-      setNewExample(data.data?.ChatbotService_createExample ?? null);
+      if (updatedExample.id === -1) {
+        resp = await createExample(mutationOpts)
+      } else {
+        resp = await updateExample(mutationOpts);
+      }
+
+      if (!!createExampleMutationData.error) {
+        if (createExampleMutationData.error.message.indexOf('duplicate key') !== -1) {
+          setExampleError(ExamplesError.CREATE_ERROR_DUPLICATE_EXAMPLE);
+        }
+      } else if (!!updateExampleMutation.error) {
+        if (updateExampleMutation.error.message.indexOf('duplicate key') !== -1) {
+          setExampleError(ExamplesError.CREATE_ERROR_DUPLICATE_EXAMPLE);
+        }
+      } else if (!!resp.errors?.[0]) {
+        if (resp.errors[0].message.indexOf('duplicate key') !== -1) {
+          setExampleError(ExamplesError.CREATE_ERROR_DUPLICATE_EXAMPLE);
+        }
+      } else {
+        setCurrentEdit(null);
+        setNewExample(null);
+      }
     } catch (e) {
       if (`${e}`.indexOf('duplicate key') !== -1) {
         setExampleError(ExamplesError.CREATE_ERROR_DUPLICATE_EXAMPLE);
       }
     }
   };
+
+  const loading = examplesData.loading ||
+    deleteExampleMutation.loading ||
+    updateExampleMutation.loading ||
+    createExampleMutationData.loading;
 
   const updateFilters = (newFilters: ExamplesFilter) => {
     const resetIntent = !!filters?.intentId && !newFilters.intentId;
@@ -166,6 +175,16 @@ const Examples = () => {
     setFilters({ ...filters, ...newFilters });
   };
 
+  const startNewExample = () => {
+    setNewExample({
+      id: -1,
+      intentId: null,
+      agentId: agentId,
+      tags: [],
+      text: ""
+    });
+  }
+
   return (
     <>
       <ExamplesTable
@@ -176,7 +195,7 @@ const Examples = () => {
         filters={filters}
         onDelete={onExampleDelete}
         onEdit={onExampleEdit}
-        onAdd={() => setShowNewExampleDialog(true)}
+        onAdd={startNewExample}
       />
       {(!!intents && !!tags && (examples?.length ?? 0) >= 1) && (
         <EditExample
@@ -186,16 +205,9 @@ const Examples = () => {
           example={!!newExample ? newExample : examples?.find(ex => ex.id === currentEdit)}
           onEditExampleClose={onExampleEditClose}
           onSaveExample={onExampleSave}
+          error={exampleError}
         />
       )}
-      <NewExampleDialog
-        loading={loading}
-        intents={intents ?? []}
-        isOpen={showNewExampleDialog}
-        onClose={() => setShowNewExampleDialog(false)}
-        onCreate={createNewExample}
-        error={exampleError}
-      />
     </>
   );
 };
