@@ -1,4 +1,3 @@
-
 export enum ChatbotLanguage {
   EN_US,
   FR,
@@ -19,23 +18,38 @@ export interface IAgent {
 
 export interface IExample {
   id: number;
-  intentId: number;
+  intentId: number | null;
   agentId: number;
   intentName?: any;
   text: string;
   tags: any;
 }
 
+export interface IExampleInput {
+  intentId: number | null;
+  text: string;
+  tags: IExampleTagInput[];
+}
+
+export enum ActionType {
+  UTTERANCE_ACTION = 'UTTERANCE_ACTION',
+}
+
+export interface IAction {
+  id: number;
+  agentId: number;
+  name: string;
+  type: ActionType;
+}
+
 export interface IIntent {
   id: number;
   agentId: number;
-  defaultResponse: string;
+  defaultAction: number;
   value: string;
 }
 export interface IUtteranceAction {
   id: number;
-  agentId: number;
-  name: string;
   text: string;
 }
 
@@ -43,12 +57,6 @@ export interface ITagType {
   id: number;
   agentId: number;
   value: string;
-}
-
-export interface IExampleInput {
-  text: string;
-  intentId: number;
-  tags: IExampleTagInput[];
 }
 
 export interface IExampleTagInput {

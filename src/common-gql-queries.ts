@@ -181,8 +181,6 @@ export const CHATBOT_GET_AGENT = gql`
       }
       utteranceActions {
         id
-        agentId
-        name
         text
       }
       tagTypes{
@@ -200,7 +198,7 @@ export const CHATBOT_GET_INTENTS = gql`
       id
       agentId
       value
-      defaultResponse
+      defaultAction
     }
   }
 `;
@@ -219,8 +217,6 @@ export const CHATBOT_GET_UTTERANCE_ACTIONS = gql`
   query($agentId: Int!) {
     ChatbotService_utteranceActions(agentId: $agentId) {
       id
-      agentId
-      name
       text
     }
   }
@@ -265,8 +261,6 @@ export const CHATBOT_CREATE_AGENT = gql`
       }
       utteranceActions {
         id
-        agentId
-        name
         text
       }
     }
@@ -333,8 +327,8 @@ export const CHATBOT_DELETE_TAG = gql`
 `;
 
 export const CHATBOT_UPDATE_INTENT = gql`
-  mutation($intentId: Int!, $value: String!, $defaultResponse: String) {
-    ChatbotService_updateIntent(intentId: $intentId, value: $value, defaultResponse: $defaultResponse) {
+  mutation($intentId: Int!, $value: String!, $defaultAction: Int) {
+    ChatbotService_updateIntent(intentId: $intentId, value: $value, defaultAction: $defaultAction) {
       id
       agentId
       value
@@ -426,8 +420,6 @@ export const CHATBOT_CREATE_UTTERANCE_ACTION = gql`
   mutation($agentId: Int!, $text: String!, $name: String!) {
     ChatbotService_createUtteranceAction(agentId: $agentId, text: $text, name: $name) {
       id
-      agentId
-      name
       text
     }
   }
@@ -446,8 +438,6 @@ export const CHATBOT_UPDATE_UTTERANCE_ACTION = gql `
 mutation($utteranceActionId: Int!, $name: String!, $text: String!) {
   ChatbotService_updateUtteranceAction(utteranceActionId: $utteranceActionId, name: $name, text: $text) {
     id
-    agentId
-    name
     text
   }
 }

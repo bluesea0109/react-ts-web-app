@@ -15,6 +15,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { TextAnnotator } from 'react-text-annotate';
 import { IExample } from '../../../models/chatbot-service';
 import { Maybe } from '../../../utils/types';
+import { ExamplesError } from './types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -42,10 +43,11 @@ type EditExampleProps = {
   intents: any;
   onEditExampleClose: () => void;
   onSaveExample: (updatedExample: IExample) => Promise<void>;
+  error: Maybe<ExamplesError>;
 };
 
 const EditExample = (props: EditExampleProps) => {
-  const { loading, example, tags, intents, onEditExampleClose, onSaveExample } = props;
+  const { loading, example, tags, intents, onEditExampleClose, onSaveExample, error } = props;
 
   const classes = useStyles();
   const [currentExample, setCurrentExample] = useState<Maybe<IExample>>(example);
@@ -135,7 +137,7 @@ const EditExample = (props: EditExampleProps) => {
             <CloseIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
-            Edit Example #${currentExample?.id}
+            {currentExample?.id === -1 ? 'Create New Example' : `Edit Example #${currentExample?.id}`}
           </Typography>
           <Button disabled={loading} autoFocus={true} color="inherit" onClick={saveChanges}>
             {loading && (
@@ -144,7 +146,7 @@ const EditExample = (props: EditExampleProps) => {
                 size={20}
               />
             )}
-            {!loading && 'save'}
+            {!loading && (currentExample?.id === -1 ? 'Create' : 'Save')}
           </Button>
         </Toolbar>
         {loading && <LinearProgress color="secondary" />}
@@ -172,7 +174,15 @@ const EditExample = (props: EditExampleProps) => {
               rows={20}
               value={currentExample?.text}
               onChange={onExampleTextChange}
+              error={error === ExamplesError.CREATE_ERROR_DUPLICATE_EXAMPLE}
             />
+            <Typography variant="h6" color="error" style={{ fontWeight: 'bold', marginTop: 16 }}>
+              {
+                error === ExamplesError.CREATE_ERROR_DUPLICATE_EXAMPLE ?
+                  'Cannot create duplicate example entry. Please try again with different values.' :
+                  null
+              }
+            </Typography>
           </Box>
         </Grid>
         <Grid item={true} xs={6}>
