@@ -1,16 +1,16 @@
 import { Box, makeStyles, Tab, Tabs, Theme } from '@material-ui/core';
 import React from 'react';
 import { useHistory, useParams } from 'react-router';
+import Actions from '../Actions/Actions';
 import ChatWithAgent from '../ChatWithAgent';
 import DataExportsTab from '../DataExports/DataExportsTab';
-import Examples from '../ExamplesV2/Examples';
+import Examples from '../Examples/Examples';
 import Intent from '../Intent/Intent';
 import Tag from '../Tags/Tag';
 import TrainingConversations from '../TrainingConversations';
 import TrainingJobsTab from '../TrainingJobs/TrainingJobsTab';
 import UploadDataTab from '../UploadData/UploadDataTab';
 import UtteranceAction from '../UtteranceActions/UtteranceAction';
-import Actions from '../Actions/Actions';
 
 interface TabPanelProps {
   className?: string;

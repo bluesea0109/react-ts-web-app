@@ -68,10 +68,10 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
   const userTurns: string[] = [];
   if (isUpdate && conversation && conversation.actions) {
     tempActionData = conversation.actions.map((c: any) =>
-      c.isUser ? { userActions: [c] } : { agentActions: [c] }
+      c.isUser ? { userActions: [c] } : { agentActions: [c] },
     );
     conversation.actions.map(
-      (i: any) => (userTurns[i.turn] = i.isUser ? 'user' : 'agent')
+      (i: any) => (userTurns[i.turn] = i.isUser ? 'user' : 'agent'),
     );
   }
 
@@ -80,7 +80,7 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
   const [errStatus, setErrStatus] = useState('');
   const numAgentId = Number(agentId);
   const [actionData, setActionsValue] = useState<any | null>(
-    isUpdate ? tempActionData : []
+    isUpdate ? tempActionData : [],
   );
   const [turn, setTurns] = useState<string[]>(isUpdate ? userTurns : []);
   const [actionType, setActionType] = useState<string>('UTTER');
@@ -96,7 +96,7 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
   });
   const actionsData = useQuery<IGetUtteranceActions>(
     CHATBOT_GET_UTTERANCE_ACTIONS,
-    { variables: { agentId: numAgentId } }
+    { variables: { agentId: numAgentId } },
   );
 
   const intents =
@@ -336,7 +336,7 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
                     container={true}
                     className={clsx(
                       classes.actionWrapper,
-                      inputField.agentActions && classes.agentActionWrapper
+                      inputField.agentActions && classes.agentActionWrapper,
                     )}>
                     <Grid
                       container={true}
@@ -412,7 +412,7 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
                                       />
                                     </li>
                                   );
-                                }
+                                },
                               )}
                             </Paper>
                           </Grid>
@@ -481,7 +481,7 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
                                       ? {
                                           id: agentAction.actionId,
                                           text: actionId.find(
-                                            (a) => a.id === agentAction.actionId
+                                            (a) => a.id === agentAction.actionId,
                                           )?.text,
                                         }
                                       : {}
@@ -685,7 +685,7 @@ const useStyles = makeStyles((theme: Theme) =>
     progressIndicator: {
       margin: '0 50px',
     },
-  })
+  }),
 );
 
 export default CreateTrainingConversations;

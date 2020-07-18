@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) =>
     paper: {
       padding: theme.spacing(2),
     },
-  })
+  }),
 );
 
 interface IGetIntents {
@@ -59,7 +59,7 @@ function IntentsTable() {
         { query: CHATBOT_GET_INTENTS, variables: { agentId: numAgentId } },
       ],
       awaitRefetchQueries: true,
-    }
+    },
   );
 
   const intents: IIntent[] | undefined =
@@ -107,7 +107,7 @@ function IntentsTable() {
   const updateIntentHandler = (
     intentId: number,
     value: string,
-    defaultAction: number
+    defaultAction: number,
   ) => {
     updateIntent({
       variables: {

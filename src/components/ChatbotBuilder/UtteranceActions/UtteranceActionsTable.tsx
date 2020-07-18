@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) =>
     paper: {
       padding: theme.spacing(2),
     },
-  })
+  }),
 );
 
 interface IGetUtteranceActions {
@@ -45,7 +45,7 @@ function UtteranceActionsTable() {
 
   const actionsData = useQuery<IGetUtteranceActions>(
     CHATBOT_GET_UTTERANCE_ACTIONS,
-    { variables: { agentId: numAgentId } }
+    { variables: { agentId: numAgentId } },
   );
 
   const [updateAction, updatedData] = useMutation(
@@ -58,7 +58,7 @@ function UtteranceActionsTable() {
         },
       ],
       awaitRefetchQueries: true,
-    }
+    },
   );
 
   const [deleteAction, { loading, error }] = useMutation(
@@ -71,7 +71,7 @@ function UtteranceActionsTable() {
         },
       ],
       awaitRefetchQueries: true,
-    }
+    },
   );
 
   const actions: IUtteranceAction[] | undefined =
@@ -119,7 +119,7 @@ function UtteranceActionsTable() {
 
   const updateUtteranceActionHandler = async (
     utteranceActionId: number,
-    text: string
+    text: string,
   ) => {
     await updateAction({
       variables: {
