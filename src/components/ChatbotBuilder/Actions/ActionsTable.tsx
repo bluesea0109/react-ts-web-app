@@ -1,8 +1,6 @@
-import { useQuery } from '@apollo/react-hooks';
 import {
-  Box,
+  Box, Button,
   Grid,
-  LinearProgress,
   Paper,
   TableContainer,
   Typography,
@@ -11,10 +9,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import 'firebase/auth';
 import MaterialTable, { Column } from 'material-table';
 import React, { useEffect } from 'react';
-import { useParams } from 'react-router';
 import { AnyAction } from '../../../models/chatbot-service';
-import ApolloErrorPage from '../../ApolloErrorPage';
-import { GET_ACTIONS_QUERY } from './gql';
 import { Edit } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -28,10 +23,6 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-interface IGetActions {
-  ChatbotService_actions: AnyAction[] | undefined;
-}
-
 interface ActionState {
   columns: Column<AnyAction>[];
   data: AnyAction[] | undefined;
@@ -39,19 +30,13 @@ interface ActionState {
 
 interface ActionsTableProps {
   onEditAction: (id: number) => void;
+  actions: AnyAction[];
+  loading: boolean;
+  onAdd: () => void;
 }
 
-function ActionsTable({ onEditAction }: ActionsTableProps) {
+function ActionsTable({ onEditAction, actions, loading, onAdd }: ActionsTableProps) {
   const classes = useStyles();
-  const { agentId } = useParams();
-  const numAgentId = Number(agentId);
-
-  const actionsData = useQuery<IGetActions>(GET_ACTIONS_QUERY, {
-    variables: { agentId: numAgentId },
-  });
-
-  const actions: AnyAction[] | undefined =
-    actionsData && actionsData.data && actionsData.data.ChatbotService_actions;
 
   const [state, setState] = React.useState<ActionState>({
     columns: [
@@ -77,20 +62,15 @@ function ActionsTable({ onEditAction }: ActionsTableProps) {
     return () => {};
   }, [actions, state.columns]);
 
-  const commonError = actionsData.error;
-
-  if (commonError) {
-    // TODO: handle errors
-    return <ApolloErrorPage error={commonError} />;
-  }
-
   return (
     <Paper className={classes.paper}>
-      {actionsData.loading && <LinearProgress />}
       {state && state.data && state.data.length > 0 ? (
         <TableContainer component={Paper} aria-label="Agents">
           <MaterialTable
-            title="Agents Table"
+            isLoading={loading}
+            title={
+              <Button disabled={loading} variant="contained" color="primary" onClick={onAdd}>Add New Action</Button>
+            }
             columns={state.columns}
             data={state.data}
             detailPanel={({ tableData, ...actionDetails }: any) => <ActionDetailPanel action={actionDetails} />}

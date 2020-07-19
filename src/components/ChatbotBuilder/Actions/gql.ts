@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 import { ActionType } from '../../../models/chatbot-service';
 
-export const GET_ACTIONS_QUERY = gql`
+export const getActionsQuery = gql`
   query($agentId: Int!) {
     ChatbotService_actions(agentId: $agentId) {
       id
@@ -25,18 +25,34 @@ export const createActionMutation = (type: string) => {
         }
       }
     `;
+  } else {
+    return gql`
+        mutation {
+          EmptyMutation {
+            emptyField
+          }
+        }
+    `;
   }
 }
 
 export const updateActionMutation = (type: string) => {
   if (type === ActionType.UTTERANCE_ACTION) {
     return gql`
-      mutation($utteranceActionId: Int!, $name: String!, $text: String!) {
-        ChatbotService_updateUtteranceAction(utteranceActionId: $utteranceActionId, name: $name, text: $text) {
+      mutation($actionId: Int!, $text: String!) {
+        ChatbotService_updateUtteranceAction(id: $actionId, text: $text) {
           id
           text
         }
       }
+    `;
+  } else {
+    return gql`
+        mutation {
+          EmptyMutation {
+            emptyField
+          }
+        }
     `;
   }
 }
