@@ -9,10 +9,10 @@ import Toolbar from '@material-ui/core/Toolbar';
 import { TransitionProps } from '@material-ui/core/transitions';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
-import React, { useEffect, useState } from 'react';
-import { Maybe } from '../../../utils/types';
-import { AnyAction, IIntent } from '../../../models/chatbot-service';
 import { Autocomplete } from '@material-ui/lab';
+import React, { useEffect, useState } from 'react';
+import { AnyAction, IIntent } from '../../../models/chatbot-service';
+import { Maybe } from '../../../utils/types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -93,11 +93,11 @@ const EditIntent = (props: EditIntentProps) => {
               <Box p={2}>
                 <TextField
                   fullWidth={true}
-                  label='Intent Value (No Spaces Allowed)'
+                  label="Intent Value (No Spaces Allowed)"
                   disabled={loading}
                   variant="outlined"
                   value={currentIntent?.value}
-                  onChange={e => setCurrentIntent({ ...currentIntent, value: e.target.value.replace(/ /g, "+") } as any)}
+                  onChange={e => setCurrentIntent({ ...currentIntent, value: e.target.value.replace(/ /g, '+') } as any)}
                 />
               </Box>
             </Grid>
@@ -111,7 +111,7 @@ const EditIntent = (props: EditIntentProps) => {
                   getOptionLabel={(option: AnyAction) => option.name}
                   value={actions.find(a => a.id === currentIntent?.defaultAction)}
                   onChange={(e, action) => setCurrentIntent({ ...currentIntent, defaultAction: action?.id } as any)}
-                  renderInput={(params) => <TextField {...params} label="Action Type" variant="outlined" />}
+                  renderInput={(params) => <TextField {...params} label="Default Action" variant="outlined" />}
                 />
               </Box>
             </Grid>

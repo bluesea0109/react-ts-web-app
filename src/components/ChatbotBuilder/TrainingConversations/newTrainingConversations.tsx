@@ -34,8 +34,8 @@ import {
   ITagType,
   IUtteranceAction,
 } from '../../../models/chatbot-service';
-import TagTypeSelection from './TagTypeSelection';
 import { getIntentsQuery } from '../Intent/gql';
+import TagTypeSelection from './TagTypeSelection';
 
 interface IGetTags {
   ChatbotService_tagTypes: ITagType[] | undefined;

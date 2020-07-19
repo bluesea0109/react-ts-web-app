@@ -192,8 +192,6 @@ export const CHATBOT_GET_AGENT = gql`
   }
 `;
 
-
-
 export const CHATBOT_GET_TAGS = gql`
   query($agentId: Int!) {
     ChatbotService_tagTypes(agentId: $agentId) {
@@ -278,8 +276,6 @@ export const CHATBOT_UPDATE_AGENT = gql`
   }
 `;
 
-
-
 export const CHATBOT_CREATE_TAGS = gql`
   mutation($agentId: Int!, $values: [String!]!) {
     ChatbotService_createTagTypes(agentId: $agentId, values: $values) {
@@ -289,8 +285,6 @@ export const CHATBOT_CREATE_TAGS = gql`
     }
   }
 `;
-
-
 
 export const CHATBOT_DELETE_TAG = gql`
   mutation($tagTypeId: Int!) {

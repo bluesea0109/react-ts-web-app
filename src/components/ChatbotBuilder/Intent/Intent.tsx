@@ -1,15 +1,15 @@
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import IntentsTable from './IntentsTable';
-import { useMutation, useQuery } from '@apollo/react-hooks';
 import { IIntent } from '../../../models/chatbot-service';
 import { Maybe } from '../../../utils/types';
-import { createIntentMutation, deleteIntentMutation, getIntentsQuery, updateIntentMutation } from './gql';
-import { GetIntentsQueryResult } from './types';
-import EditIntent from './EditIntent';
-import { GetActionsQueryResult } from '../Actions/types';
 import { getActionsQuery } from '../Actions/gql';
+import { GetActionsQueryResult } from '../Actions/types';
+import EditIntent from './EditIntent';
+import { createIntentMutation, deleteIntentMutation, getIntentsQuery, updateIntentMutation } from './gql';
+import IntentsTable from './IntentsTable';
+import { GetIntentsQueryResult } from './types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -34,7 +34,7 @@ const IntentSection: React.FC = () => {
     id: -1,
     agentId: numAgentId,
     defaultAction: -1,
-    value: ""
+    value: '',
   };
 
   const { data, loading, error } = useQuery<GetIntentsQueryResult>(getIntentsQuery, {
@@ -42,7 +42,7 @@ const IntentSection: React.FC = () => {
   });
 
   const getActionsQueryData = useQuery<GetActionsQueryResult>(getActionsQuery, {
-    variables: { agentId: numAgentId }
+    variables: { agentId: numAgentId },
   });
 
   const [createIntent, createIntentMutationData] = useMutation(createIntentMutation, {
@@ -75,16 +75,16 @@ const IntentSection: React.FC = () => {
           agentId: numAgentId,
           intents: [
             { value, defaultAction },
-          ]
-        }
+          ],
+        },
       });
     } else {
       await updateIntent({
         variables: {
           intentId: intentData.id,
           value: intentData.value,
-          defaultAction: intentData.defaultAction
-        }
+          defaultAction: intentData.defaultAction,
+        },
       });
     }
 
@@ -95,9 +95,9 @@ const IntentSection: React.FC = () => {
   const onDeleteIntent = async (intentId: number) => {
     await deleteIntent({
       variables: {
-        intentId
-      }
-    })
+        intentId,
+      },
+    });
   };
 
   const onEditIntentClose = () => {
@@ -105,8 +105,17 @@ const IntentSection: React.FC = () => {
     setNewIntent(false);
   };
 
-  const isLoading = loading || updateIntentMutationData.loading || deleteIntentMutationData.loading || getActionsQueryData.loading || createIntentMutationData.loading;
-  const isErrorOccurred = error || updateIntentMutationData.error || deleteIntentMutationData.error || getActionsQueryData.error || createIntentMutationData.error;
+  const isLoading = loading ||
+    updateIntentMutationData.loading ||
+    deleteIntentMutationData.loading ||
+    getActionsQueryData.loading ||
+    createIntentMutationData.loading;
+
+  const isErrorOccurred = error ||
+    updateIntentMutationData.error ||
+    deleteIntentMutationData.error ||
+    getActionsQueryData.error ||
+    createIntentMutationData.error;
 
   return (
     <div className={classes.root}>
