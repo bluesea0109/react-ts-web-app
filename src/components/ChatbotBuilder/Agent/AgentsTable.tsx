@@ -50,7 +50,7 @@ function AgentsTable() {
       { title: 'Unique Name', field: 'uname', editable: 'never' },
       { title: 'Name',
          field: 'name',
-         render: rowData => <Link  to={`/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${rowData.id}/Intents`}>
+         render: rowData => <Link  to={`/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${rowData.id}/Actions`}>
          {rowData.name}
      </Link>,
      editable: 'onUpdate',

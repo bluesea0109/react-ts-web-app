@@ -10,7 +10,6 @@ import Tag from '../Tags/Tag';
 import TrainingConversations from '../TrainingConversations';
 import TrainingJobsTab from '../TrainingJobs/TrainingJobsTab';
 import UploadDataTab from '../UploadData/UploadDataTab';
-import UtteranceAction from '../UtteranceActions/UtteranceAction';
 
 interface TabPanelProps {
   className?: string;
@@ -84,11 +83,6 @@ const AgentDetails = () => {
           {...a11yProps('NLU Examples')}
         />
         <Tab
-          value="actions"
-          label="Agent Actions"
-          {...a11yProps('Agent Actions')}
-        />
-        <Tab
           value="upload-data"
           label="Upload Data"
           {...a11yProps('Upload Data')}
@@ -122,9 +116,6 @@ const AgentDetails = () => {
       </TabPanel>
       <TabPanel className={classes.tabPanel} value={agentTab} index="Tags">
         <Tag />
-      </TabPanel>
-      <TabPanel className={classes.tabPanel} value={agentTab} index="actions">
-        <UtteranceAction />
       </TabPanel>
       <TabPanel
         className={classes.tabPanel}
