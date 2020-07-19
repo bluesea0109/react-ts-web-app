@@ -84,7 +84,7 @@ function ActionsTable({ onEditAction, actions, loading, onAdd }: ActionsTablePro
             actions={[
               {
                 icon: (props: any) => <Edit />,
-                tooltip: 'Edit Example',
+                tooltip: 'Edit Action',
                 onClick: (event, rowData) => {
                   const data = rowData as AnyAction;
                   onEditAction(data.id);

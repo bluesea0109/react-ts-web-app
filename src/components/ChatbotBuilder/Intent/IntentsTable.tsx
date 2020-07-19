@@ -1,22 +1,14 @@
-import { useMutation, useQuery } from '@apollo/react-hooks';
 import {
-  LinearProgress,
+  Button,
   Paper,
-  TableContainer,
-  Typography,
+  TableContainer, Typography,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import 'firebase/auth';
 import MaterialTable, { Column } from 'material-table';
-import React, { useEffect } from 'react';
-import { useParams } from 'react-router';
-import {
-  CHATBOT_DELETE_INTENT,
-  CHATBOT_GET_INTENTS,
-  CHATBOT_UPDATE_INTENT,
-} from '../../../common-gql-queries';
-import { IIntent } from '../../../models/chatbot-service';
-import ApolloErrorPage from '../../ApolloErrorPage';
+import React from 'react';
+import { AnyAction, IIntent } from '../../../models/chatbot-service';
+import { Edit } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -29,145 +21,75 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-interface IGetIntents {
-  ChatbotService_intents: IIntent[] | undefined;
+interface IntentsTableProps {
+  onEditIntent: (id: number) => void;
+  onDeleteIntent: (id: number) => void | Promise<void>;
+  intents: IIntent[];
+  actions: AnyAction[];
+  loading: boolean;
+  onAdd: () => void;
 }
 
-interface IntentState {
-  columns: Column<IIntent>[];
-  data: IIntent[] | undefined;
-}
-
-function IntentsTable() {
+function IntentsTable({ intents, actions, loading, onAdd, onEditIntent, onDeleteIntent }: IntentsTableProps) {
   const classes = useStyles();
-  const { agentId } = useParams();
-  const numAgentId = Number(agentId);
-
-  const intentsData = useQuery<IGetIntents>(CHATBOT_GET_INTENTS, {
-    variables: { agentId: numAgentId },
-  });
-  const [updateIntent, updatedData] = useMutation(CHATBOT_UPDATE_INTENT, {
-    refetchQueries: [
-      { query: CHATBOT_GET_INTENTS, variables: { agentId: numAgentId } },
-    ],
-    awaitRefetchQueries: true,
-  });
-  const [deleteIntent, { loading, error }] = useMutation(
-    CHATBOT_DELETE_INTENT,
+  const columns: Column<IIntent>[] = [
+    { title: 'Intent id', field: 'id', editable: 'never' },
     {
-      refetchQueries: [
-        { query: CHATBOT_GET_INTENTS, variables: { agentId: numAgentId } },
-      ],
-      awaitRefetchQueries: true,
+      title: 'Name',
+      field: 'value',
+      editable: 'never'
     },
-  );
+    {
+      title: 'Default Action',
+      render: rowData => actions.find(a => a.id === rowData.defaultAction)?.name ?? <Typography style={{ color: "#808080" }}>N/A</Typography>,
+      editable: 'never'
+    },
+  ];
 
-  const intents: IIntent[] | undefined =
-    intentsData && intentsData.data && intentsData.data.ChatbotService_intents;
-
-  const [state, setState] = React.useState<IntentState>({
-    columns: [
-      { title: 'Intent id', field: 'id', editable: 'never' },
-      {
-        title: 'Name',
-        field: 'value',
-        editable: 'onUpdate',
-      },
-      {
-        title: 'Default Response',
-        field: 'defaultResponse',
-        editable: 'onUpdate',
-      },
-    ],
-    data: intents,
-  });
-
-  useEffect(() => {
-    if (intents) {
-      setState({
-        columns: state.columns,
-        data: [...intents],
-      });
-    }
-
-    return () => {};
-  }, [intents, state.columns]);
-
-  const commonError = intentsData.error
-    ? intentsData.error
-    : updatedData.error
-    ? updatedData.error
-    : error;
-
-  if (commonError) {
-    // TODO: handle errors
-    return <ApolloErrorPage error={commonError} />;
-  }
-
-  const updateIntentHandler = (
-    intentId: number,
-    value: string,
-    defaultAction: number,
-  ) => {
-    updateIntent({
-      variables: {
-        intentId,
-        value,
-        defaultAction,
-      },
-    });
-  };
-  const deleteIntentHandler = (intentId: number) => {
-    deleteIntent({
-      variables: {
-        intentId,
-      },
-    });
+  const deleteIntentHandler = async (intentId: number) => {
+    await onDeleteIntent(intentId);
   };
 
   return (
     <Paper className={classes.paper}>
-      {(intentsData.loading || updatedData.loading || loading) && (
-        <LinearProgress />
-      )}
-      {state && state.data && state.data.length > 0 ? (
-        <TableContainer component={Paper} aria-label="Agents">
-          <MaterialTable
-            title="Agents Table"
-            columns={state.columns}
-            data={state.data}
-            options={{
-              actionsColumnIndex: -1,
-              pageSize: 20,
-            }}
-            localization={{
-              body: {
-                editRow: {
-                  deleteText: 'Are you sure delete this Intent?',
-                },
+      <TableContainer component={Paper} aria-label="Agents">
+        <MaterialTable
+          isLoading={loading}
+          title={
+            <Button disabled={loading} variant="contained" color="primary" onClick={onAdd}>Add New Intent</Button>
+          }
+          columns={columns}
+          data={intents ?? []}
+          options={{
+            actionsColumnIndex: -1,
+            paging: true,
+            pageSize: 10,
+          }}
+          localization={{
+            body: {
+              editRow: {
+                deleteText: 'Are you sure delete this Intent?',
               },
-            }}
-            editable={{
-              onRowUpdate: async (newData, oldData) => {
-                if (oldData) {
-                  const dataId = oldData.id;
-                  const dataName = newData.value;
-                  const dataResponse = newData.defaultAction;
-                  updateIntentHandler(dataId, dataName, dataResponse);
-                }
+            },
+          }}
+          actions={[
+            {
+              icon: (props: any) => <Edit />,
+              tooltip: 'Edit Intent',
+              onClick: (event, rowData) => {
+                const data = rowData as IIntent;
+                onEditIntent(data.id);
               },
-              onRowDelete: async (oldData) => {
-                const dataId = oldData.id;
-                deleteIntentHandler(dataId);
-              },
-            }}
-          />
-        </TableContainer>
-      ) : (
-        <Typography align="center" variant="h6">
-          {'No Intents found'}
-        </Typography>
-      )}
+            },
+          ]}
+          editable={{
+            onRowDelete: async (oldData) => {
+              const dataId = oldData.id;
+              await deleteIntentHandler(dataId);
+            },
+          }}
+        />
+      </TableContainer>
     </Paper>
   );
 }

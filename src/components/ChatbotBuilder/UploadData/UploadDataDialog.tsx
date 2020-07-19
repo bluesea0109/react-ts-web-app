@@ -11,8 +11,9 @@ import gql from 'graphql-tag';
 import _ from 'lodash';
 import React from 'react';
 import { withApollo } from 'react-apollo';
-import { CHATBOT_CREATE_INTENTS, CHATBOT_CREATE_TAGS } from '../../../common-gql-queries';
+import { CHATBOT_CREATE_TAGS } from '../../../common-gql-queries';
 import { IExampleInput } from '../../../models/chatbot-service';
+import { createIntentMutation } from '../Intent/gql';
 
 interface IUploadDataDialogProps {
   agentId: number;
@@ -133,7 +134,7 @@ class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDa
     });
 
     const res = await this.props.client.mutate({
-      mutation: CHATBOT_CREATE_INTENTS,
+      mutation: createIntentMutation,
       variables: {
         agentId: this.props.agentId,
         intents: intents.map(x => ({ value: x.intent })),

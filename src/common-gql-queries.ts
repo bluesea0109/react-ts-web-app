@@ -192,16 +192,7 @@ export const CHATBOT_GET_AGENT = gql`
   }
 `;
 
-export const CHATBOT_GET_INTENTS = gql`
-  query($agentId: Int!) {
-    ChatbotService_intents(agentId: $agentId) {
-      id
-      agentId
-      value
-      defaultAction
-    }
-  }
-`;
+
 
 export const CHATBOT_GET_TAGS = gql`
   query($agentId: Int!) {
@@ -287,16 +278,7 @@ export const CHATBOT_UPDATE_AGENT = gql`
   }
 `;
 
-export const CHATBOT_CREATE_INTENTS = gql`
-  mutation($agentId: Int!, $intents: [ChatbotService_IntentInput!]!) {
-    ChatbotService_createIntents(agentId: $agentId, intents: $intents) {
-      id
-      agentId
-      value
-      defaultAction
-    }
-  }
-`;
+
 
 export const CHATBOT_CREATE_TAGS = gql`
   mutation($agentId: Int!, $values: [String!]!) {
@@ -308,43 +290,13 @@ export const CHATBOT_CREATE_TAGS = gql`
   }
 `;
 
-export const CHATBOT_DELETE_INTENT = gql`
-  mutation($intentId: Int!) {
-    ChatbotService_deleteIntent(intentId: $intentId) {
-      id
-      value
-    }
-  }
-`;
+
 
 export const CHATBOT_DELETE_TAG = gql`
   mutation($tagTypeId: Int!) {
     ChatbotService_deleteTagType(tagTypeId: $tagTypeId) {
       id
       value
-    }
-  }
-`;
-
-export const CHATBOT_UPDATE_INTENT = gql`
-  mutation($intentId: Int!, $value: String!, $defaultAction: Int) {
-    ChatbotService_updateIntent(intentId: $intentId, value: $value, defaultAction: $defaultAction) {
-      id
-      agentId
-      value
-      examples {
-        id
-        intentId
-        agentId
-        text
-        tags {
-          id
-          exampleId
-          tagTypeId
-          start
-          end
-        }
-      }
     }
   }
 `;
