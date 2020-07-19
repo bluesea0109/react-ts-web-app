@@ -32,15 +32,23 @@ export interface IExampleInput {
 }
 
 export enum ActionType {
+  NEW_ACTION = 'NEW_ACTION',
   UTTERANCE_ACTION = 'UTTERANCE_ACTION',
 }
 
-export interface IAction {
+export interface ActionBase {
   id: number;
   agentId: number;
   name: string;
+  type?: ActionType;
+}
+
+export interface UtteranceAction extends ActionBase {
+  text: string;
   type: ActionType;
 }
+
+export type AnyAction = UtteranceAction;
 
 export interface IIntent {
   id: number;

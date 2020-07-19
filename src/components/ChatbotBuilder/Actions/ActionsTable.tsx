@@ -1,18 +1,16 @@
-import { useQuery } from '@apollo/react-hooks';
 import {
-  LinearProgress,
+  Box, Button,
+  Grid,
   Paper,
   TableContainer,
   Typography,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { Edit } from '@material-ui/icons';
 import 'firebase/auth';
 import MaterialTable, { Column } from 'material-table';
 import React, { useEffect } from 'react';
-import { useParams } from 'react-router';
-import { IAction } from '../../../models/chatbot-service';
-import ApolloErrorPage from '../../ApolloErrorPage';
-import { GET_ACTIONS_QUERY } from './gql';
+import { AnyAction } from '../../../models/chatbot-service';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,26 +23,20 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-interface IGetActions {
-  ChatbotService_actions: IAction[] | undefined;
-}
-
 interface ActionState {
-  columns: Column<IAction>[];
-  data: IAction[] | undefined;
+  columns: Column<AnyAction>[];
+  data: AnyAction[] | undefined;
 }
 
-function ActionsTable() {
+interface ActionsTableProps {
+  onEditAction: (id: number) => void;
+  actions: AnyAction[];
+  loading: boolean;
+  onAdd: () => void;
+}
+
+function ActionsTable({ onEditAction, actions, loading, onAdd }: ActionsTableProps) {
   const classes = useStyles();
-  const { agentId } = useParams();
-  const numAgentId = Number(agentId);
-
-  const actionsData = useQuery<IGetActions>(GET_ACTIONS_QUERY, {
-    variables: { agentId: numAgentId },
-  });
-
-  const actions: IAction[] | undefined =
-    actionsData && actionsData.data && actionsData.data.ChatbotService_actions;
 
   const [state, setState] = React.useState<ActionState>({
     columns: [
@@ -70,26 +62,35 @@ function ActionsTable() {
     return () => {};
   }, [actions, state.columns]);
 
-  const commonError = actionsData.error;
-
-  if (commonError) {
-    // TODO: handle errors
-    return <ApolloErrorPage error={commonError} />;
-  }
-
   return (
     <Paper className={classes.paper}>
-      {actionsData.loading && <LinearProgress />}
       {state && state.data && state.data.length > 0 ? (
         <TableContainer component={Paper} aria-label="Agents">
           <MaterialTable
-            title="Agents Table"
+            isLoading={loading}
+            title={
+              <Button disabled={loading} variant="contained" color="primary" onClick={onAdd}>Add New Action</Button>
+            }
             columns={state.columns}
             data={state.data}
+            detailPanel={({ tableData, ...actionDetails }: any) => <ActionDetailPanel action={actionDetails} />}
             options={{
               actionsColumnIndex: -1,
-              pageSize: 20,
+              filtering: true,
+              search: false,
+              paging: true,
+              pageSize: 10,
             }}
+            actions={[
+              {
+                icon: (props: any) => <Edit />,
+                tooltip: 'Edit Example',
+                onClick: (event, rowData) => {
+                  const data = rowData as AnyAction;
+                  onEditAction(data.id);
+                },
+              },
+            ]}
           />
         </TableContainer>
       ) : (
@@ -100,5 +101,25 @@ function ActionsTable() {
     </Paper>
   );
 }
+
+type OtherProps = { [index: string]: any };
+
+const ActionDetailPanel = ({ action }: { action: AnyAction }) => {
+    const { id, type, name, agentId, ...otherProps } = action;
+    const actionProps = otherProps as OtherProps;
+
+    return (
+      <Grid container={true}>
+        <Grid item={true} xs={6}>
+          {Array.from(Object.keys(actionProps)).map(key => (
+            <Box my={3} key={key}>
+              <Typography variant="h6" style={{ textTransform: 'capitalize', fontWeight: 'bold' }}>{key}</Typography>
+              <Typography variant="caption" style={{ textTransform: 'capitalize' }}>{actionProps[key]}</Typography>
+            </Box>
+          ))}
+        </Grid>
+      </Grid>
+    );
+};
 
 export default ActionsTable;
