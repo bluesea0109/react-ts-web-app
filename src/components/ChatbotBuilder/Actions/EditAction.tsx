@@ -1,3 +1,4 @@
+import { useMutation } from '@apollo/react-hooks';
 import { Box, CircularProgress, DialogContent, Grid, LinearProgress, TextField } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
@@ -9,13 +10,12 @@ import Toolbar from '@material-ui/core/Toolbar';
 import { TransitionProps } from '@material-ui/core/transitions';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
+import { Autocomplete } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { ActionType, AnyAction } from '../../../models/chatbot-service';
 import { Maybe } from '../../../utils/types';
-import { Autocomplete } from '@material-ui/lab';
-import { useMutation } from '@apollo/react-hooks';
 import { createActionMutation, getActionsQuery, updateActionMutation } from './gql';
-import { useParams } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -51,18 +51,18 @@ const EditAction = (props: EditActionProps) => {
   const [currentAction, setCurrentAction] = useState<Maybe<AnyAction>>(action);
   const [actionType, setActionType] = useState<Maybe<ActionType>>();
 
-  const [createAction, createActionMutationData] = useMutation(createActionMutation(actionType ?? ""), {
+  const [createAction, createActionMutationData] = useMutation(createActionMutation(actionType ?? ''), {
     refetchQueries: [{ query: getActionsQuery, variables: { agentId: numAgentId } }],
-    awaitRefetchQueries: true
+    awaitRefetchQueries: true,
   });
 
-  const [updateAction, updateActionMutationData] = useMutation(updateActionMutation(actionType ?? ""), {
+  const [updateAction, updateActionMutationData] = useMutation(updateActionMutation(actionType ?? ''), {
     refetchQueries: [{ query: getActionsQuery, variables: { agentId: numAgentId } }],
-    awaitRefetchQueries: true
+    awaitRefetchQueries: true,
   });
 
   const onSaveAction = async ({ id, agentId, name, type, ...action }: AnyAction) => {
-    let finalDataObj: Partial<AnyAction> = { agentId, name, type, ...action };
+    const finalDataObj: Partial<AnyAction> = { agentId, name, type, ...action };
 
     if (id !== -1) {
       finalDataObj['id'] = id;
@@ -71,22 +71,22 @@ const EditAction = (props: EditActionProps) => {
         variables: {
           agentId: numAgentId,
           actionId: id,
-          ...action
-        }
+          ...action,
+        },
       });
       console.log(resp);
 
       onEditActionClose();
 
-      return
+      return;
     }
 
     const resp = await createAction({
       variables: {
         agentId: numAgentId,
-        name: name,
-        ...action
-      }
+        name,
+        ...action,
+      },
     });
     console.log(resp);
 
@@ -103,7 +103,7 @@ const EditAction = (props: EditActionProps) => {
     if (!!currentAction) {
       const finalActionObj = {
         ...currentAction,
-        type: actionType
+        type: actionType,
       } as any;
 
       await onSaveAction(finalActionObj);
@@ -137,12 +137,12 @@ const EditAction = (props: EditActionProps) => {
       </AppBar>
       <DialogContent>
         <Box my={4}>
-          <Grid container>
-            <Grid item xs={6}>
+          <Grid container={true}>
+            <Grid item={true} xs={6}>
               <Box p={2}>
                 <TextField
-                  fullWidth
-                  label={`Action Name ${currentAction?.id !== -1 ? "(Read-Only)" : ""}`}
+                  fullWidth={true}
+                  label={`Action Name ${currentAction?.id !== -1 ? '(Read-Only)' : ''}`}
                   disabled={isLoading}
                   variant="outlined"
                   value={currentAction?.name}
@@ -152,10 +152,10 @@ const EditAction = (props: EditActionProps) => {
                 />
               </Box>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item={true} xs={6}>
               <Box p={2}>
                 <Autocomplete
-                  fullWidth
+                  fullWidth={true}
                   disabled={isLoading}
                   id="actionTypeSelector"
                   options={[ActionType.UTTERANCE_ACTION]}
@@ -170,11 +170,11 @@ const EditAction = (props: EditActionProps) => {
               <>
                 {actionType === ActionType.UTTERANCE_ACTION && (
                   <>
-                    <Grid item xs={6}>
+                    <Grid item={true} xs={6}>
                       <Box p={2}>
                         <TextField
-                          fullWidth
-                          multiline
+                          fullWidth={true}
+                          multiline={true}
                           label="Utterance Text"
                           disabled={isLoading}
                           variant="outlined"

@@ -6,11 +6,11 @@ import {
   Typography,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { Edit } from '@material-ui/icons';
 import 'firebase/auth';
 import MaterialTable, { Column } from 'material-table';
 import React, { useEffect } from 'react';
 import { AnyAction } from '../../../models/chatbot-service';
-import { Edit } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -102,24 +102,24 @@ function ActionsTable({ onEditAction, actions, loading, onAdd }: ActionsTablePro
   );
 }
 
-type OtherProps = { [index: string]: any }
+type OtherProps = { [index: string]: any };
 
 const ActionDetailPanel = ({ action }: { action: AnyAction }) => {
     const { id, type, name, agentId, ...otherProps } = action;
     const actionProps = otherProps as OtherProps;
 
     return (
-      <Grid container>
-        <Grid item xs={6}>
+      <Grid container={true}>
+        <Grid item={true} xs={6}>
           {Array.from(Object.keys(actionProps)).map(key => (
-            <Box my={3}>
-              <Typography variant='h6' style={{ textTransform: 'capitalize', fontWeight: 'bold' }}>{key}</Typography>
-              <Typography variant='caption' style={{ textTransform: 'capitalize' }}>{actionProps[key]}</Typography>
+            <Box my={3} key={key}>
+              <Typography variant="h6" style={{ textTransform: 'capitalize', fontWeight: 'bold' }}>{key}</Typography>
+              <Typography variant="caption" style={{ textTransform: 'capitalize' }}>{actionProps[key]}</Typography>
             </Box>
           ))}
         </Grid>
       </Grid>
-    )
+    );
 };
 
 export default ActionsTable;

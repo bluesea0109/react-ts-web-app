@@ -34,7 +34,7 @@ export const createActionMutation = (type: string) => {
         }
     `;
   }
-}
+};
 
 export const updateActionMutation = (type: string) => {
   if (type === ActionType.UTTERANCE_ACTION) {
@@ -55,7 +55,7 @@ export const updateActionMutation = (type: string) => {
         }
     `;
   }
-}
+};
 
 export const deleteActionMutation = (type: string) => {
   if (type === ActionType.UTTERANCE_ACTION) {
@@ -68,4 +68,4 @@ export const deleteActionMutation = (type: string) => {
       }
     `;
   }
-}
+};
