@@ -8,7 +8,7 @@ export const getActionsQuery = gql`
       agentId
       name
       type
-      ... on UtteranceAction {
+      ... on ChatbotService_UtteranceAction {
         text
       }
     }

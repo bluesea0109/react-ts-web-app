@@ -24,7 +24,6 @@ import React, { Fragment, useState } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
 import { useParams } from 'react-router-dom';
 import {
-  CHATBOT_GET_INTENTS,
   CHATBOT_GET_TAGS,
   CHATBOT_GET_UTTERANCE_ACTIONS,
   CREATE_TRAINING_CONVERSATIONS,
@@ -35,6 +34,7 @@ import {
   ITagType,
   IUtteranceAction,
 } from '../../../models/chatbot-service';
+import { getIntentsQuery } from '../Intent/gql';
 import TagTypeSelection from './TagTypeSelection';
 
 interface IGetTags {
@@ -88,7 +88,7 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
 
   const [createConversations] = useMutation(CREATE_TRAINING_CONVERSATIONS);
   const [updateConversations] = useMutation(UPDATE_TRAINING_CONVERSATIONS);
-  const intentsData = useQuery<IGetIntents>(CHATBOT_GET_INTENTS, {
+  const intentsData = useQuery<IGetIntents>(getIntentsQuery, {
     variables: { agentId: numAgentId },
   });
   const tagsData = useQuery<IGetTags>(CHATBOT_GET_TAGS, {
