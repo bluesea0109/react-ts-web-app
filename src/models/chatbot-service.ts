@@ -125,6 +125,5 @@ export interface IUserTagValues {
 export interface IAgentAction {
   turn: number;
   actionId: number;
-  actionType: string;
-  utterance: string;
+  actionName: string;
 }

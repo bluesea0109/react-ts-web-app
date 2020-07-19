@@ -431,8 +431,7 @@ export const CREATE_TRAINING_CONVERSATIONS = gql`
       agentActions {
           turn
           actionId
-          actionType
-          utterance
+          actionName
       }
     }
   }
@@ -452,11 +451,10 @@ export const GET_TRAINING_CONVERSATIONS = gql`
         intent
         utterance
       }
-      agentActions{
-        actionId
-        actionType
-        utterance
+      agentActions {
         turn
+        actionId
+        actionName
       }
     }
   }
@@ -487,10 +485,9 @@ export const UPDATE_TRAINING_CONVERSATIONS = gql`
         utterance
       }
       agentActions {
-          turn
-          actionId
-          actionType
-          utterance
+        turn
+        actionId
+        actionName
       }
     }
   }
