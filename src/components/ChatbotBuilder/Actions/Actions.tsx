@@ -29,7 +29,7 @@ const Actions = () => {
       <Grid item={true} xs={12} sm={12}>
         <Paper className={classes.paper}>
           {agentId ? (
-            <ActionsTable />
+            <ActionsTable onEditAction={console.log} />
           ) : (
             <Typography>{'No Action is found'}</Typography>
           )}

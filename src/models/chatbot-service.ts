@@ -35,12 +35,18 @@ export enum ActionType {
   UTTERANCE_ACTION = 'UTTERANCE_ACTION',
 }
 
-export interface IAction {
+export interface ActionBase {
   id: number;
   agentId: number;
   name: string;
   type: ActionType;
 }
+
+export interface UtteranceAction extends ActionBase {
+  text: string;
+}
+
+export type AnyAction = UtteranceAction;
 
 export interface IIntent {
   id: number;
