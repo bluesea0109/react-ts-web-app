@@ -51,7 +51,7 @@ const Examples = () => {
   const intents = intentsData.data?.ChatbotService_intents;
   const examples = examplesData.data?.ChatbotService_examples;
 
-  const [deleteExample, deleteExampleMutation] = useMutation(CHATBOT_DELETE_EXAMPLE, {
+  const refetchOptions = {
     refetchQueries: [
       {
         query: getExamplesQuery,
@@ -63,28 +63,22 @@ const Examples = () => {
         },
       },
     ],
-    awaitRefetchQueries: true,
+    awaitRefetchQueries: true
+  };
+
+  const [deleteExample, deleteExampleMutation] = useMutation(CHATBOT_DELETE_EXAMPLE, {
+    ...refetchOptions
   });
 
   const [updateExample, updateExampleMutation] = useMutation(saveExampleMutation, {
-    refetchQueries: [
-      {
-        query: getExamplesQuery,
-        variables: {
-          agentId: numAgentId,
-          limit: EXAMPLES_LIMIT,
-          offset: filters?.offset,
-          intentId: filters?.intentId,
-        },
-      },
-    ],
-    awaitRefetchQueries: true,
+    ...refetchOptions
   });
 
   const [createExample, createExampleMutationData] = useMutation<CreateExampleMutationResult>(createExampleMutation, {
     variables: {
       agentId: numAgentId,
     },
+    ...refetchOptions
   });
 
   const commonError = examplesData.error || deleteExampleMutation.error || updateExampleMutation.error;
@@ -197,7 +191,7 @@ const Examples = () => {
         onEdit={onExampleEdit}
         onAdd={startNewExample}
       />
-      {(!!intents && !!tags && (examples?.length ?? 0) >= 1) && (
+      {(!!intents && !!tags) && (
         <EditExample
           loading={loading}
           tags={tags}
