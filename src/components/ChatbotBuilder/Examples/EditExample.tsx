@@ -112,8 +112,8 @@ const EditExample = (props: EditExampleProps) => {
         id: currentExample.id,
         agentId: currentExample.agentId,
         text: currentExample.text,
-        intentId: currIntent.id,
-        intentName: currIntent.name,
+        intentId: currIntent?.id,
+        intentName: currIntent?.name,
         tags: state.value.map((tag: any) => ({
           start: tag.start,
           end: tag.end,
