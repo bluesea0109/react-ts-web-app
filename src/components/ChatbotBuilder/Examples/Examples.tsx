@@ -63,22 +63,22 @@ const Examples = () => {
         },
       },
     ],
-    awaitRefetchQueries: true
+    awaitRefetchQueries: true,
   };
 
   const [deleteExample, deleteExampleMutation] = useMutation(CHATBOT_DELETE_EXAMPLE, {
-    ...refetchOptions
+    ...refetchOptions,
   });
 
   const [updateExample, updateExampleMutation] = useMutation(saveExampleMutation, {
-    ...refetchOptions
+    ...refetchOptions,
   });
 
   const [createExample, createExampleMutationData] = useMutation<CreateExampleMutationResult>(createExampleMutation, {
     variables: {
       agentId: numAgentId,
     },
-    ...refetchOptions
+    ...refetchOptions,
   });
 
   const commonError = examplesData.error || deleteExampleMutation.error || updateExampleMutation.error;
