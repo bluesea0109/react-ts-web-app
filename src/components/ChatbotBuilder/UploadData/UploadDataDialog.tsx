@@ -246,22 +246,23 @@ class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDa
       });
 
       const exampleBatches = _.chunk(preprocessedExamples, 100);
+      let status = "Uploading examples";
 
       for (const batch of exampleBatches) {
         await this.uploadBatch(batch);
         numCompleted += batch.length;
         const progress = 100.0 * numCompleted / total;
+        if(progress === 100) {
+          status = "Upload Complete!";
+        }
         this.setState({
-          status: 'Uploading examples',
+          status: status,
           numCompleted,
           total,
           progress,
         });
       }
-
-      if (!this.state.error) {
-        this.handleClose();
-      }
+      
     } catch (err) {
       console.error(err);
       this.setState({
@@ -304,9 +305,17 @@ class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDa
           <DialogTitle>{'Upload Agent Data'}</DialogTitle>
           {dialogContent}
           <DialogActions>
-            <Button color="secondary" onClick={this.onCancel}>
-              {'Cancel'}
-            </Button>
+            {
+              this.state.progress === 100
+              ?
+              <Button color="secondary" onClick={this.handleClose}>
+                {'Close'}
+              </Button>
+              :
+              <Button color="secondary" onClick={this.onCancel}>
+                {'Cancel'}
+              </Button>
+            }
           </DialogActions>
         </Dialog>
         <Button
