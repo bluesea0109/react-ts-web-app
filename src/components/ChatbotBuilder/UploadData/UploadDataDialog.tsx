@@ -13,10 +13,10 @@ import React from 'react';
 import { withApollo } from 'react-apollo';
 import { CHATBOT_CREATE_TAGS } from '../../../common-gql-queries';
 import { IExampleInput, UtteranceAction } from '../../../models/chatbot-service';
-import { createIntentMutation } from '../Intent/gql';
-import { createActionMutation, getActionsQuery } from '../Actions/gql';
-import { IAgentData, IAgentAction, IAgentDataIntent, IAgentDataExample, IAgentDataIntentGqlVars  } from './types';
 import { ActionType } from '../../../models/chatbot-service';
+import { createActionMutation, getActionsQuery } from '../Actions/gql';
+import { createIntentMutation } from '../Intent/gql';
+import { IAgentAction, IAgentData, IAgentDataExample, IAgentDataIntent, IAgentDataIntentGqlVars  } from './types';
 
 interface IUploadDataDialogProps {
   agentId: number;
@@ -121,46 +121,46 @@ class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDa
 
   uploadUtteranceActions = async(actions: IAgentAction[]): Promise<UtteranceAction[]> => {
     this.setState({
-      status: "Creating utterance actions",
+      status: 'Creating utterance actions',
     });
 
     const mutation = createActionMutation(ActionType.UTTERANCE_ACTION);
 
-    // Todo Add a Backend Mutation to upload multiple actions at once 
-    
-    let mutations = actions.map((a)=> {
+    // Todo Add a Backend Mutation to upload multiple actions at once
+
+    const mutations = actions.map((a) => {
       return this.props.client.mutate({
-        mutation: mutation,
+        mutation,
         variables: {
           agentId: this.props.agentId,
           text: a.text,
-          name: a.name
-        }
+          name: a.name,
+        },
       });
     });
 
-    try { 
+    try {
       await Promise.all(mutations);
 
-    } catch(e) {
-      console.error("Error: ", e);
+    } catch (e) {
+      console.error('Error: ', e);
     }
 
-    console.log("Mutations completed");
+    console.log('Mutations completed');
 
-    let savedActions = await this.props.client.query({
+    const savedActions = await this.props.client.query({
       query: getActionsQuery,
-      fetchPolicy: "network-only",
+      fetchPolicy: 'network-only',
       variables: {
-        agentId: this.props.agentId
-      }
+        agentId: this.props.agentId,
+      },
     });
 
     this.setState({
       status: '',
     });
 
-    return _.get(savedActions, "data.ChatbotService_actions") || [];
+    return _.get(savedActions, 'data.ChatbotService_actions') || [];
 
   }
 
@@ -174,19 +174,18 @@ class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDa
       variables: {
         agentId: this.props.agentId,
         intents: intents.map((x) => {
-          let intent:IAgentDataIntentGqlVars = {
+          const intent: IAgentDataIntentGqlVars = {
             value: x.intent,
           };
 
-          if(typeof x.defaultAction === "number") {
+          if (typeof x.defaultAction === 'number') {
             intent.defaultAction = x.defaultAction;
-          }
-          else if(typeof x.defaultAction === "string") {
-            let action = _.find(actions, { 
-              name: x.defaultAction
+          } else if (typeof x.defaultAction === 'string') {
+            const action = _.find(actions, {
+              name: x.defaultAction,
             });
             intent.defaultAction = action?.id || null;
-          } 
+          }
           return intent;
         }),
       },
@@ -195,7 +194,7 @@ class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDa
     const intentIdsMap = new Map<string, number>();
 
     const uploadedIntents: any[] = res.data.ChatbotService_createIntents;
-    
+
     uploadedIntents.forEach(x => {
       intentIdsMap.set(x.value, x.id);
     });
@@ -234,7 +233,7 @@ class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDa
   }
 
   handleJsonFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    let status = "";
+    let status = '';
     try {
 
       const files = e.target.files;
@@ -249,7 +248,7 @@ class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDa
 
       if (file.type !== 'application/json') {
         // set error message
-        status = "Invalid file type";
+        status = 'Invalid file type';
         this.setState(s => ({
           ...s,
           status,
@@ -270,12 +269,12 @@ class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDa
         progress: 0,
       }));
 
-      // Upload Utterance Actions. 
+      // Upload Utterance Actions.
       // TODO - modify the backend code to make this an upsert. It currently throws an error if you upload duplicates
       const actions: UtteranceAction[] = await this.uploadUtteranceActions(data.utteranceActions);
       const intentIdsMap = await this.uploadIntents(data.intents, actions);
       const tagTypeIdsMap = await this.uploadTagTypes(data.tagTypes);
-      
+
       const preprocessedExamples: IExampleInput[] = data.examples.map(x => {
 
         const intentId = intentIdsMap.get(x.intent);
@@ -301,23 +300,23 @@ class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDa
       });
 
       const exampleBatches = _.chunk(preprocessedExamples, 100);
-      
-      status = "Uploading examples";
+
+      status = 'Uploading examples';
       for (const batch of exampleBatches) {
         await this.uploadBatch(batch);
         numCompleted += batch.length;
         const progress = 100.0 * numCompleted / total;
-        if(progress === 100) {
-          status = "Upload Complete!";
+        if (progress === 100) {
+          status = 'Upload Complete!';
         }
         this.setState({
-          status: status,
+          status,
           numCompleted,
           total,
           progress,
         });
       }
-      
+
     } catch (err) {
       console.error(err);
       this.setState({
@@ -400,6 +399,3 @@ const UPLOAD_EXAMPLES = gql`
     ChatbotService_uploadExamples(agentId: $agentId, examples: $examples)
   }
 `;
-
-
-
