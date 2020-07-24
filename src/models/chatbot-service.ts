@@ -56,10 +56,6 @@ export interface IIntent {
   defaultAction: number;
   value: string;
 }
-export interface IUtteranceAction {
-  id: number;
-  text: string;
-}
 
 export interface ITagType {
   id: number;
@@ -100,21 +96,36 @@ export interface IDialogueTurn {
 }
 
 export interface IConversation {
-  dialogueTurns: IDialogueTurn[];
+  id: number;
+  agentId: number;
+  turns: (IUserAction | IAgentAction)[];
 }
 
 export interface ITrainingConversations {
   agentId: number;
   id: number;
-  userActions: IUserAction[];
-  agentActions: IAgentAction[];
+  userActions: ITrainingUserAction[];
+  agentActions: ITrainingAgentAction[];
 }
 
-export interface IUserAction {
+export interface ITrainingAgentAction {
+  turn: number;
+  actionId: number;
+  actionName: string;
+}
+
+export interface ITrainingUserAction {
   turn: number;
   tagValues: IUserTagValues[];
   intent: string;
   utterance: string;
+}
+
+export interface IUserAction {
+  intent: string;
+  utterance: string;
+  tagValues: IUserTagValues[];
+  isDefaultResponse?: boolean;
 }
 
 export interface IUserTagValues {
@@ -123,7 +134,28 @@ export interface IUserTagValues {
 }
 
 export interface IAgentAction {
-  turn: number;
+  action: IUtteranceAction;
+  userResponseOptions?: IUserResponseOption[];
+}
+
+interface IActionBase {
+  id: number;
+  agentId: number;
+  name: string;
+  type: ActionType;
+}
+
+export interface IUtteranceAction extends IActionBase {
+  text: string;
+}
+
+export interface IUserResponseOption extends IUserResponseOptionInput {
+  id: number;
+  agentId: number;
   actionId: number;
-  actionName: string;
+}
+
+export interface IUserResponseOptionInput {
+  intentId: number;
+  text: string;
 }
