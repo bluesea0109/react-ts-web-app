@@ -69,7 +69,7 @@ export default function ConversationsTab() {
                     className={classes.conversationListItem}
                     >
                     <Typography>
-                      <span>Conversation {index = 1} </span>  &nbsp; &nbsp;
+                      <span>Conversation {index + 1} </span>  &nbsp; &nbsp;
                       <Badge badgeContent={c.turns?.length || 0} color="secondary"/>
                     </Typography>
                   </ListItem>
