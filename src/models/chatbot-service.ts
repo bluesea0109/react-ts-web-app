@@ -121,7 +121,6 @@ export interface ITrainingUserAction {
   utterance: string;
 }
 
-
 export interface IUserAction {
   intent: string;
   utterance: string;

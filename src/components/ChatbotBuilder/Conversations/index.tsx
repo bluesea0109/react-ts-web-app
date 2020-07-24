@@ -42,7 +42,7 @@ export default function ConversationsTab() {
   const [selectedConversationId, selectConversation] = useState(0);
 
   agentId = parseInt(agentId, 10);
-  
+
   const { data } = useQuery<GetLiveConversationsQueryResult>(getLiveConversationsQuery, {
     variables: { agentId },
   });
