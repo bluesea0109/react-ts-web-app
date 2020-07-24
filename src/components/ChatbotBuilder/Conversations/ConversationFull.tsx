@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const renderTurn = (turn: any, classes: any) => {
+const renderTurn = (turn: any, index: number, classes: any) => {
   let userContent = <div/>;
   let agentContent = <div/>;
 
@@ -56,7 +56,7 @@ const renderTurn = (turn: any, classes: any) => {
   }
 
   return (
-    <React.Fragment>
+    <React.Fragment key={`turn_${index}`}>
       <Grid item={true} xs={6}>
         {userContent}
       </Grid>
@@ -82,8 +82,8 @@ export default function ConversationFull({conversation}: ConversationFullProps) 
         </Typography>
       </Grid>
       {
-        conversation.turns.map((turn) => {
-          return renderTurn(turn, classes);
+        conversation.turns.map((turn, index) => {
+          return renderTurn(turn, index, classes);
         })
       }
     </Grid>

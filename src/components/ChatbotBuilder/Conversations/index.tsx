@@ -3,8 +3,7 @@ import { Badge, createStyles, Divider, Grid, List, ListItem, makeStyles, Paper, 
 import _ from 'lodash';
 import React, { useState } from 'react';
 import { useParams} from 'react-router-dom';
-import { ActionType , IConversation } from '../../../models/chatbot-service';
-// import ConversationListItem from './ConversationListItem';
+import { IConversation } from '../../../models/chatbot-service';
 import ConversationFull from './ConversationFull';
 import {getLiveConversationsQuery} from './gql';
 import {GetLiveConversationsQueryResult} from './types';
@@ -43,124 +42,14 @@ export default function ConversationsTab() {
 
   const [selectedConversationId, selectConversation] = useState(0);
 
-  console.log('PARAMS: ', params);
-
   agentId = parseInt(agentId, 10);
-  console.log('SHOWING CONVERSATIONS FOR AGENT ID: ', agentId);
+  
 
   const { data, loading, error } = useQuery<GetLiveConversationsQueryResult>(getLiveConversationsQuery, {
     variables: { agentId },
   });
 
-  console.log('QUERY RESULT: ', data, loading, error);
-
-  // let conversations = data?.ChatbotService_liveConversations || [];
-  const conversations = [];
-
-  conversations.push({
-    id: 1,
-    agentId,
-    turns: [
-      {
-        action: {
-          name: 'greeting',
-          agentId: 1,
-          id: 1,
-          type: ActionType.UTTERANCE_ACTION,
-          text: 'hello there',
-        },
-      },
-      {
-        intent: 'test',
-        utterance: 'testing',
-        tagValues: [
-        ],
-      },
-      {
-        intent: 'test',
-        utterance: 'testing',
-        tagValues: [],
-      },
-      {
-        action: {
-          name: 'greeting',
-          agentId: 1,
-          id: 1,
-          type: ActionType.UTTERANCE_ACTION,
-          text: 'hello there',
-        },
-      },
-      {
-        action: {
-          name: 'greeting',
-          agentId: 1,
-          id: 1,
-          type: ActionType.UTTERANCE_ACTION,
-          text: 'hello there',
-        },
-      },
-      {
-        intent: 'test',
-        utterance: 'testing',
-        tagValues: [],
-      },
-      {
-        action: {
-          name: 'greeting',
-          agentId: 1,
-          id: 1,
-          type: ActionType.UTTERANCE_ACTION,
-          text: 'hello there',
-        },
-      },
-      {
-        action: {
-          name: 'greeting',
-          agentId: 1,
-          id: 1,
-          type: ActionType.UTTERANCE_ACTION,
-          text: 'hello there',
-        },
-      },
-    ],
-  });
-
-  conversations.push({
-    id: 2,
-    agentId,
-    turns: [
-      {
-        action: {
-          name: 'greeting',
-          agentId: 1,
-          id: 1,
-          type: ActionType.UTTERANCE_ACTION,
-          text: 'hello there',
-        },
-      },
-      {
-        intent: 'test',
-        utterance: 'testing',
-        tagValues: [
-        ],
-      },
-      {
-        intent: 'test',
-        utterance: 'testing',
-        tagValues: [],
-      },
-      {
-        action: {
-          name: 'greeting',
-          agentId: 1,
-          id: 1,
-          type: ActionType.UTTERANCE_ACTION,
-          text: 'hello there',
-        },
-      },
-    ],
-  });
-
+  const conversations = data?.ChatbotService_liveConversations || [];
   const selectedConv = _.find(conversations, {id: selectedConversationId || conversations[0]?.id});
 
   return (
