@@ -146,8 +146,6 @@ class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDa
       console.error('Error: ', e);
     }
 
-    console.log('Mutations completed');
-
     const savedActions = await this.props.client.query({
       query: getActionsQuery,
       fetchPolicy: 'network-only',
@@ -160,7 +158,7 @@ class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDa
       status: '',
     });
 
-    return _.get(savedActions, 'data.ChatbotService_actions') || [];
+    return savedActions?.data?.ChatbotService_actions || [];
 
   }
 

@@ -3,6 +3,7 @@ import React from 'react';
 import { useHistory, useParams } from 'react-router';
 import Actions from '../Actions/Actions';
 import ChatWithAgent from '../ChatWithAgent';
+import ConversationsTab from '../Conversations';
 import DataExportsTab from '../DataExports/DataExportsTab';
 import Examples from '../Examples/Examples';
 import Intent from '../Intent/Intent';
@@ -107,6 +108,11 @@ const AgentDetails = () => {
           label="Training conversations"
           {...a11yProps('Training conversations')}
         />
+        <Tab
+          value="live-conversations"
+          label="Live conversations"
+          {...a11yProps('Live conversations')}
+        />
       </Tabs>
       <TabPanel className={classes.tabPanel} value={agentTab} index="Actions">
         <Actions />
@@ -128,6 +134,7 @@ const AgentDetails = () => {
       {agentTab === 'training-jobs' && <TrainingJobsTab />}
       {agentTab === 'chat' && <ChatWithAgent />}
       {agentTab === 'training-conversations' && <TrainingConversations />}
+      {agentTab === 'live-conversations' && <ConversationsTab />}
     </div>
   );
 };
