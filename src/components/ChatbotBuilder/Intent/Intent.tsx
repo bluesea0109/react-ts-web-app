@@ -46,7 +46,7 @@ const IntentSection: React.FC = () => {
   });
 
   const [createIntent, createIntentMutationData] = useMutation(createIntentMutation, {
-    refetchQueries: [{ query: getIntentsQuery }],
+    refetchQueries: [{ query: getIntentsQuery, variables: { agentId: numAgentId } }],
     awaitRefetchQueries: true,
   });
 
@@ -74,7 +74,7 @@ const IntentSection: React.FC = () => {
         variables: {
           agentId: numAgentId,
           intents: [
-            { value, defaultAction },
+            { value, defaultAction: defaultAction !== -1 ? defaultAction : null },
           ],
         },
       });
