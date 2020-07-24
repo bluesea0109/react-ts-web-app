@@ -43,7 +43,6 @@ export default function ConversationsTab() {
 
   agentId = parseInt(agentId, 10);
   
-
   const { data } = useQuery<GetLiveConversationsQueryResult>(getLiveConversationsQuery, {
     variables: { agentId },
   });

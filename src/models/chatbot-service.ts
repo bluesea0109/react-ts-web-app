@@ -108,12 +108,6 @@ export interface ITrainingConversations {
   agentActions: IAgentAction[];
 }
 
-// export interface IUserAction {
-//   tagValues: IUserTagValues[];
-//   intent: string;
-//   utterance: string;
-// }
-
 export interface IUserAction {
   intent: string;
   utterance: string;
