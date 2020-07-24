@@ -104,9 +104,23 @@ export interface IConversation {
 export interface ITrainingConversations {
   agentId: number;
   id: number;
-  userActions: IUserAction[];
-  agentActions: IAgentAction[];
+  userActions: ITrainingUserAction[];
+  agentActions: ITrainingAgentAction[];
 }
+
+export interface ITrainingAgentAction {
+  turn: number;
+  actionId: number;
+  actionName: string;
+}
+
+export interface ITrainingUserAction {
+  turn: number;
+  tagValues: IUserTagValues[];
+  intent: string;
+  utterance: string;
+}
+
 
 export interface IUserAction {
   intent: string;
