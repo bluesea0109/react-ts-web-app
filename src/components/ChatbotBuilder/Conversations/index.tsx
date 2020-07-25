@@ -60,7 +60,6 @@ export default function ConversationsTab() {
           <Paper className={`${classes.paper} ${classes.conversationsList}`}>
             <Typography variant="h6" align="center">Live Conversations</Typography>
             <Divider/>
-
             { 
               loading 
               ?  
@@ -73,7 +72,7 @@ export default function ConversationsTab() {
                     <ListItem
                       key={c.id}
                       onClick={() => selectConversation(c.id)}
-                      selected={selectedConversationId === c.id}
+                      selected={(selectedConversationId === c.id) || (!selectedConversationId && index ===0)}
                       className={classes.conversationListItem}
                       >
                       <Typography>
