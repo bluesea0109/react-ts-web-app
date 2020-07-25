@@ -4,8 +4,8 @@ import _ from 'lodash';
 import React, { useState } from 'react';
 import { useParams} from 'react-router-dom';
 import { IConversation } from '../../../models/chatbot-service';
-import ConversationFull from './ConversationFull';
 import ContentLoading from '../../ContentLoading';
+import ConversationFull from './ConversationFull';
 import {getLiveConversationsQuery} from './gql';
 import {GetLiveConversationsQueryResult} from './types';
 
@@ -45,7 +45,7 @@ export default function ConversationsTab() {
   agentId = parseInt(agentId, 10);
 
   const queryResult = useQuery<GetLiveConversationsQueryResult>(getLiveConversationsQuery, {
-    fetchPolicy: "no-cache",
+    fetchPolicy: 'no-cache',
     variables: { agentId },
   });
 
@@ -60,19 +60,19 @@ export default function ConversationsTab() {
           <Paper className={`${classes.paper} ${classes.conversationsList}`}>
             <Typography variant="h6" align="center">Live Conversations</Typography>
             <Divider/>
-            { 
-              loading 
-              ?  
+            {
+              loading
+              ?
               <ContentLoading/>
               :
               <List>
               {
-                conversations.map((c: IConversation, index:number) => {
+                conversations.map((c: IConversation, index: number) => {
                   return (
                     <ListItem
                       key={c.id}
                       onClick={() => selectConversation(c.id)}
-                      selected={(selectedConversationId === c.id) || (!selectedConversationId && index ===0)}
+                      selected={(selectedConversationId === c.id) || (!selectedConversationId && index === 0)}
                       className={classes.conversationListItem}
                       >
                       <Typography>
@@ -84,7 +84,7 @@ export default function ConversationsTab() {
                 })
               }
               </List>
-              
+
             }
           </Paper>
         </Grid>
