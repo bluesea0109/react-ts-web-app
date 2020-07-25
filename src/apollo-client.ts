@@ -106,7 +106,7 @@ const authLink = setContext((_, { headers }) => {
 export const client = new ApolloClient({
   link: authLink.concat(createUploadLink({ uri: config.apiUrl })),
   cache: new InMemoryCache({
-    addTypename: true,
+    addTypename: false,
   }),
 });
 
