@@ -135,7 +135,7 @@ export interface IUserTagValues {
 
 export interface IAgentAction {
   action: IUtteranceAction;
-  userResponseOptions?: IUserResponseOption[];
+  userResponseOptions?: IUserResponseOption[] | null;
 }
 
 interface IActionBase {

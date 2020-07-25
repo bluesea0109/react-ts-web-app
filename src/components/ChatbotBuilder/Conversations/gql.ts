@@ -3,6 +3,7 @@ import gql from 'graphql-tag';
 export const getLiveConversationsQuery = gql`
   query($agentId: Int!) {
     ChatbotService_liveConversations(agentId: $agentId) {
+      id
       agentId
       turns {
         ... on ChatbotService_UserAction {

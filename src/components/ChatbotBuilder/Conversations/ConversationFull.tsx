@@ -35,7 +35,7 @@ const renderTurn = (turn: any, index: number, classes: any) => {
     agentContent = (
       <Paper className={classes.userMessage}>
         <Typography align="left">
-          Text: {turn.action?.text}
+          Action: {turn.action?.name}
         </Typography>
         <Typography align="left">
           Type: {turn.action?.type}

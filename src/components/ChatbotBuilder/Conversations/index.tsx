@@ -4,6 +4,7 @@ import _ from 'lodash';
 import React, { useState } from 'react';
 import { useParams} from 'react-router-dom';
 import { IConversation } from '../../../models/chatbot-service';
+import ContentLoading from '../../ContentLoading';
 import ConversationFull from './ConversationFull';
 import {getLiveConversationsQuery} from './gql';
 import {GetLiveConversationsQueryResult} from './types';
@@ -43,10 +44,12 @@ export default function ConversationsTab() {
 
   agentId = parseInt(agentId, 10);
 
-  const { data } = useQuery<GetLiveConversationsQueryResult>(getLiveConversationsQuery, {
+  const queryResult = useQuery<GetLiveConversationsQueryResult>(getLiveConversationsQuery, {
+    fetchPolicy: 'no-cache',
     variables: { agentId },
   });
 
+  const {data, loading} = queryResult;
   const conversations = data?.ChatbotService_liveConversations || [];
   const selectedConv = _.find(conversations, {id: selectedConversationId || conversations[0]?.id});
 
@@ -57,27 +60,32 @@ export default function ConversationsTab() {
           <Paper className={`${classes.paper} ${classes.conversationsList}`}>
             <Typography variant="h6" align="center">Live Conversations</Typography>
             <Divider/>
-
-            <List>
             {
-              conversations.map((c: IConversation, index) => {
-                return (
-                  <ListItem
-                    key={c.id}
-                    onClick={() => selectConversation(c.id)}
-                    selected={selectedConversationId === c.id}
-                    className={classes.conversationListItem}
-                    >
-                    <Typography>
-                      <span>Conversation {index + 1} </span>  &nbsp; &nbsp;
-                      <Badge badgeContent={c.turns?.length || 0} color="secondary"/>
-                    </Typography>
-                  </ListItem>
-                );
-              })
-            }
-            </List>
+              loading
+              ?
+              <ContentLoading/>
+              :
+              <List>
+              {
+                conversations.map((c: IConversation, index: number) => {
+                  return (
+                    <ListItem
+                      key={c.id}
+                      onClick={() => selectConversation(c.id)}
+                      selected={(selectedConversationId === c.id) || (!selectedConversationId && index === 0)}
+                      className={classes.conversationListItem}
+                      >
+                      <Typography>
+                        <span>Conversation {index + 1} </span>  &nbsp; &nbsp;
+                        <Badge badgeContent={c.turns?.length || 0} color="secondary"/>
+                      </Typography>
+                    </ListItem>
+                  );
+                })
+              }
+              </List>
 
+            }
           </Paper>
         </Grid>
 
