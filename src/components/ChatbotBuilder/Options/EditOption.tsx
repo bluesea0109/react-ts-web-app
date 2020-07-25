@@ -1,4 +1,4 @@
-import { Box, CircularProgress, DialogContent, Grid, LinearProgress } from '@material-ui/core';
+import { Box, CircularProgress, DialogContent, Grid, LinearProgress, TextField } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -9,9 +9,11 @@ import Toolbar from '@material-ui/core/Toolbar';
 import { TransitionProps } from '@material-ui/core/transitions';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
-import React, { useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { Maybe } from '../../../utils/types';
-import { IOption, IOptionInput } from './types';
+import { IOption, IOptionInput, IOptionType } from './types';
+import { Autocomplete } from '@material-ui/lab';
+import { IIntent } from '../../../models/chatbot-service';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -35,17 +37,19 @@ const Transition = React.forwardRef(function Transition(
 type EditOptionProps = {
   isLoading: boolean;
   option?: IOption | IOptionInput;
+  intents: IIntent[];
   onEditOptionClose: () => void;
   onSaveOption: (optionData: IOptionInput | IOption) => void | Promise<void>;
   error?: Error;
 };
 
 const EditOption = (props: EditOptionProps) => {
-  const { isLoading, option, onEditOptionClose, onSaveOption } = props;
+  const { isLoading, option, intents, onEditOptionClose, onSaveOption } = props;
 
   const classes = useStyles();
   const [currentOption, setCurrentOption] = useState<Maybe<IOption | IOptionInput>>(option);
   const [saveLoading, setSaveLoading] = useState(false);
+  const [isFileLoading, setIsFileLoading] = useState(false);
 
   useEffect(() => {
     setCurrentOption(option);
@@ -54,13 +58,24 @@ const EditOption = (props: EditOptionProps) => {
   const saveChanges = async () => {
     if (!!currentOption) {
       const { tableData, ...optionData } = currentOption as any;
+      console.log(optionData);
       setSaveLoading(true);
       await onSaveOption(optionData);
       setSaveLoading(false);
     }
   };
 
-  const loading = isLoading || saveLoading;
+  const loading = isLoading || isFileLoading || saveLoading;
+  const optionTypes = Object.values(IOptionType);
+
+  const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    setIsFileLoading(true)
+    console.log(file);
+    setTimeout(() => {
+      setIsFileLoading(false);
+    }, 5000);
+  };
 
   return (
     <Dialog fullScreen={true} open={!!option} TransitionComponent={Transition}>
@@ -87,6 +102,85 @@ const EditOption = (props: EditOptionProps) => {
       <DialogContent>
         <Box my={4}>
           <Grid container={true}>
+            <Grid item xs={6}>
+              <Box p={2}>
+                <Autocomplete
+                  disabled={loading}
+                  id="intentSelector"
+                  options={intents}
+                  getOptionLabel={(option: any) => option.value}
+                  value={intents.find((i: any) => i.id === currentOption?.intentId)}
+                  onChange={(e, intent) => setCurrentOption({ ...currentOption, intentId: intent?.id } as any)}
+                  renderInput={(params) => <TextField {...params} label="Intent" variant="outlined" />}
+                />
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box p={2}>
+                <Autocomplete
+                  disabled={loading}
+                  id="typeSelector"
+                  options={optionTypes}
+                  getOptionLabel={(option: any) => option}
+                  value={optionTypes.find((type: string) => type === currentOption?.type)}
+                  onChange={(e, type) => setCurrentOption({ ...currentOption, type } as any)}
+                  renderInput={(params) => <TextField {...params} label="Option Type" variant="outlined" />}
+                />
+              </Box>
+            </Grid>
+            {currentOption?.type === IOptionType.TEXT && (
+              <Grid item xs={12}>
+                <Box p={2}>
+                  <TextField
+                    label="Option Text"
+                    disabled={loading}
+                    fullWidth={true}
+                    multiline={true}
+                    variant="outlined"
+                    rows={4}
+                    value={currentOption?.text}
+                    onChange={e => setCurrentOption({ ...currentOption, text: e.target.value } as any)}
+                  />
+                </Box>
+              </Grid>
+            )}
+            {currentOption?.type === IOptionType.IMAGE_LIST && (
+              <>
+                <Grid item>
+                  <Box p={2}>
+                    <Button
+                      variant="contained"
+                      component="label"
+                      style={{ padding: 6 }}>
+                      Add Image
+                      <input
+                        name="image"
+                        id="image"
+                        accept="image/*"
+                        type="file"
+                        style={{ display: 'none' }}
+                        multiple={false}
+                        onChange={handleImageUpload}
+                      />
+                    </Button>
+                  </Box>
+                </Grid>
+                <Grid item xs={12}>
+                  <Box p={2}>
+                    <TextField
+                      label="Option Text"
+                      disabled={loading}
+                      fullWidth={true}
+                      multiline={true}
+                      variant="outlined"
+                      rows={4}
+                      value={currentOption?.text}
+                      onChange={e => setCurrentOption({ ...currentOption, text: e.target.value } as any)}
+                    />
+                  </Box>
+                </Grid>
+              </>
+            )}
           </Grid>
         </Box>
       </DialogContent>

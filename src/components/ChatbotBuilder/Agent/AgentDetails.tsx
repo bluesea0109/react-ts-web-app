@@ -11,6 +11,7 @@ import Tag from '../Tags/Tag';
 import TrainingConversations from '../TrainingConversations';
 import TrainingJobsTab from '../TrainingJobs/TrainingJobsTab';
 import UploadDataTab from '../UploadData/UploadDataTab';
+import Options from '../Options/Option';
 
 interface TabPanelProps {
   className?: string;
@@ -77,6 +78,7 @@ const AgentDetails = () => {
         textColor="primary">
         <Tab value="Actions" label="Actions" {...a11yProps('Actions')} />
         <Tab value="Intents" label="Intents" {...a11yProps('Intents')} />
+        <Tab value="Options" label="Options" {...a11yProps('Options')} />
         <Tab value="Tags" label="Tags" {...a11yProps('Tags')} />
         <Tab
           value="nluExamples"
@@ -119,6 +121,9 @@ const AgentDetails = () => {
       </TabPanel>
       <TabPanel className={classes.tabPanel} value={agentTab} index="Intents">
         <Intent />
+      </TabPanel>
+      <TabPanel className={classes.tabPanel} value={agentTab} index="Options">
+        <Options />
       </TabPanel>
       <TabPanel className={classes.tabPanel} value={agentTab} index="Tags">
         <Tag />

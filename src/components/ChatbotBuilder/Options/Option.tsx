@@ -7,6 +7,9 @@ import EditOption from './EditOption';
 import OptionsTable from './OptionsTable';
 import { GetOptionsQueryResult, IOption, IOptionInput, IOptionType, ITextOptionInput } from './types';
 import { createOptionMutation, deleteOptionMutation, getOptionsQuery, updateOptionMutation } from './gql';
+import { IIntent } from '../../../models/chatbot-service';
+import { getIntentsQuery } from '../Intent/gql';
+import { IntentsQueryResults } from '../Examples/types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -20,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const OptionSection: React.FC = () => {
+const Options = () => {
   const classes = useStyles();
   const { agentId } = useParams();
   const numAgentId = Number(agentId);
@@ -36,6 +39,7 @@ const OptionSection: React.FC = () => {
   const { data, loading, error } = useQuery<GetOptionsQueryResult>(getOptionsQuery, {
     variables: { agentId: numAgentId },
   });
+  const intentsData = useQuery<IntentsQueryResults>(getIntentsQuery, { variables: { agentId: numAgentId } });
 
   const [createOption, createOptionMutationData] = useMutation(createOptionMutation, {
     refetchQueries: [{ query: getOptionsQuery, variables: { agentId: numAgentId } }],
@@ -50,10 +54,10 @@ const OptionSection: React.FC = () => {
   const [deleteOption, deleteOptionMutationData] = useMutation(deleteOptionMutation, {
       refetchQueries: [{ query: getOptionsQuery, variables: { agentId: numAgentId } }],
       awaitRefetchQueries: true,
-    },
-  );
+    });
 
   const options: Maybe<IOption[]> = data?.ChatbotService_userResponseOptions;
+  const intents: Maybe<IIntent[]> = intentsData.data?.ChatbotService_intents;
 
   const onEditOption = (id: number) => {
     setCurrentOption(id);
@@ -61,7 +65,7 @@ const OptionSection: React.FC = () => {
 
   const onSaveOption = async (optionData: IOptionInput | IOption) => {
     if (newOption) {
-      const { intentId, type, ...otherData } = optionData as IOptionInput;
+      const { type, ...otherData } = optionData as IOptionInput;
       await createOption({
         variables: {
           agentId: numAgentId,
@@ -140,6 +144,7 @@ const OptionSection: React.FC = () => {
         <EditOption
           isLoading={isLoading}
           option={newOption ? defaultOptionVal : options.find(x => x.id === currentOption)}
+          intents={intents ?? []}
           onEditOptionClose={onEditOptionClose}
           onSaveOption={onSaveOption}
           error={isErrorOccurred}
@@ -149,4 +154,4 @@ const OptionSection: React.FC = () => {
   );
 };
 
-export default OptionSection;
+export default Options;
