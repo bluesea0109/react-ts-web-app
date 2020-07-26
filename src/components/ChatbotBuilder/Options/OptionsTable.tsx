@@ -106,14 +106,23 @@ const OptionDetailsPanel = ({ option }: { option: IOption }) => {
 
   return (
     <Grid container={true}>
-      <Grid item={true} xs={6}>
-        {Array.from(Object.keys(optionProps)).map(key => (
-          <Box my={3} key={key}>
-            <Typography variant="h6" style={{ textTransform: 'capitalize', fontWeight: 'bold' }}>{key}</Typography>
-            <Typography variant="caption" style={{ textTransform: 'capitalize' }}>{optionProps[key]}</Typography>
-          </Box>
+        {Array.from(Object.keys(optionProps)).map(key => key === "imageUrl" ? (
+          <Grid item={true}>
+            <Box my={3} p={2} key={key}>
+              <Typography variant="h6" style={{ textTransform: 'capitalize', fontWeight: 'bold' }}>Image</Typography>
+              <Box>
+                <img src={optionProps[key]} alt="" style={{ maxWidth: 400, maxHeight: 400, objectFit: 'contain' }} />
+              </Box>
+            </Box>
+          </Grid>
+          ) : (
+          <Grid item={true}>
+            <Box my={3} p={2} key={key}>
+              <Typography variant="h6" style={{ textTransform: 'capitalize', fontWeight: 'bold' }}>{key}</Typography>
+              <Typography variant="caption" style={{ textTransform: 'capitalize' }}>{optionProps[key]}</Typography>
+            </Box>
+          </Grid>
         ))}
-      </Grid>
     </Grid>
   );
 };

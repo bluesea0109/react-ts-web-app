@@ -13,7 +13,11 @@ import { Autocomplete } from '@material-ui/lab';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { IIntent } from '../../../models/chatbot-service';
 import { Maybe } from '../../../utils/types';
-import { IOption, IOptionInput, IOptionType } from './types';
+import { GetImageOptionUploadUrlQueryResult, IOption, IOptionInput, IOptionType } from './types';
+import { useQuery } from '@apollo/react-hooks';
+import { getImageOptionUploadUrlQuery } from './gql';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -45,11 +49,22 @@ type EditOptionProps = {
 
 const EditOption = (props: EditOptionProps) => {
   const { isLoading, option, intents, onEditOptionClose, onSaveOption } = props;
+  const { agentId } = useParams();
+  const numAgentId = Number(agentId);
 
   const classes = useStyles();
   const [currentOption, setCurrentOption] = useState<Maybe<IOption | IOptionInput>>(option);
   const [saveLoading, setSaveLoading] = useState(false);
   const [isFileLoading, setIsFileLoading] = useState(false);
+  const [file, setFile] = useState<Maybe<File>>(null);
+
+  const imageUploadUrlQuery = useQuery<GetImageOptionUploadUrlQueryResult>(getImageOptionUploadUrlQuery, {
+    variables: {
+      agentId: numAgentId,
+      basename: file?.name
+    },
+    skip: !file
+  });
 
   useEffect(() => {
     setCurrentOption(option);
@@ -57,24 +72,54 @@ const EditOption = (props: EditOptionProps) => {
 
   const saveChanges = async () => {
     if (!!currentOption) {
-      const { tableData, ...optionData } = currentOption as any;
-      console.log(optionData);
+      const { tableData, __typename, intent, intentId, ...optionData } = currentOption as any;
       setSaveLoading(true);
-      await onSaveOption(optionData);
+      console.log({ ...optionData, intentId: intents.find(i => i.value === intent)?.id });
+      await onSaveOption({ ...optionData, intentId: intentId || intents.find(i => i.value === intent)?.id });
       setSaveLoading(false);
     }
   };
 
-  const loading = isLoading || isFileLoading || saveLoading;
+  useEffect(() => {
+    if (!option && file) {
+      setFile(null);
+    }
+  // eslint-disable-next-line
+  }, [option]);
+
+  useEffect(() => {
+    if (!!file) {
+      const url = imageUploadUrlQuery.data?.ChatbotService_imageOptionUploadUrl.url;
+
+      if (!!url) {
+        (async () => {
+          try {
+            await axios.put(url, file, {
+              headers: {
+                'Content-Type': file.type
+              }
+            });
+
+            const path = url.split("?")[0].split('/images/')[1];
+            setCurrentOption(currentOption => ({ ...currentOption, imageUrl: path }) as any);
+          } catch (e) {
+            console.log(e);
+            console.log(e.response);
+          }
+
+          setIsFileLoading(false);
+        })()
+      }
+    }
+  // eslint-disable-next-line
+  }, [imageUploadUrlQuery.data])
+
+  const loading = isLoading || isFileLoading || saveLoading || imageUploadUrlQuery.loading;
   const optionTypes = Object.values(IOptionType);
 
   const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
     setIsFileLoading(true);
-    console.log(file);
-    setTimeout(() => {
-      setIsFileLoading(false);
-    }, 5000);
+    setFile(e.target.files?.[0]);
   };
 
   return (
@@ -152,7 +197,8 @@ const EditOption = (props: EditOptionProps) => {
                       variant="contained"
                       component="label"
                       style={{ padding: 6 }}>
-                      Add Image
+                      {(!file && !(currentOption as any)?.imageUrl) && "Add Image"}
+                      {(!!file || (!!(currentOption as any)?.imageUrl && (currentOption as any)?.imageUrl !== "")) && "Replace Image"}
                       <input
                         name="image"
                         id="image"
@@ -164,6 +210,16 @@ const EditOption = (props: EditOptionProps) => {
                       />
                     </Button>
                   </Box>
+                  {!!file && (
+                    <Box p={2}>
+                      <img src={URL.createObjectURL(file)} alt="" style={{ maxWidth: 400, maxHeight: 400, objectFit: 'contain' }} />
+                    </Box>
+                  )}
+                  {(!file && !!(currentOption as any)?.imageUrl && (currentOption as any)?.imageUrl !== "") && (
+                    <Box p={2}>
+                      <img src={(currentOption as any)?.imageUrl} alt="" style={{ maxWidth: 400, maxHeight: 400, objectFit: 'contain' }} />
+                    </Box>
+                  )}
                 </Grid>
                 <Grid item={true} xs={12}>
                   <Box p={2}>

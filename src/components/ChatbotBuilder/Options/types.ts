@@ -2,6 +2,12 @@ export interface GetOptionsQueryResult {
   ChatbotService_userResponseOptions: IOption[];
 }
 
+export interface GetImageOptionUploadUrlQueryResult {
+  ChatbotService_imageOptionUploadUrl: {
+    url: string;
+  };
+}
+
 export enum IOptionType {
   IMAGE_LIST = 'IMAGE_LIST',
   TEXT = 'TEXT',

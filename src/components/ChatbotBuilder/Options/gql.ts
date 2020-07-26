@@ -18,6 +18,14 @@ export const createOptionMutation = gql`
   }
 `;
 
+export const getImageOptionUploadUrlQuery = gql`
+    query($agentId: Int!, $basename: String!) {
+      ChatbotService_imageOptionUploadUrl(agentId: $agentId, basename: $basename) {
+        url
+      }
+    }
+`;
+
 export const getOptionsQuery = gql`
   query($agentId: Int!, $type: ChatbotService_OptionType) {
     ChatbotService_userResponseOptions(agentId: $agentId, type: $type) {

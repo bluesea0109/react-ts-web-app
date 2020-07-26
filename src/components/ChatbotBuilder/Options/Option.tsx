@@ -64,6 +64,8 @@ const Options = () => {
   };
 
   const onSaveOption = async (optionData: IOptionInput | IOption) => {
+    console.log(optionData);
+
     if (newOption) {
       const { type, ...otherData } = optionData as IOptionInput;
       await createOption({
@@ -84,7 +86,7 @@ const Options = () => {
         },
       });
     } else {
-      const { id, intentId, type, ...otherData } = optionData as IOption;
+      const { id, type, ...otherData } = optionData as IOption;
       await updateOption({
         variables: {
           id,
@@ -111,7 +113,7 @@ const Options = () => {
   const onDeleteOption = async (optionId: number) => {
     await deleteOption({
       variables: {
-        optionId,
+        id: optionId,
       },
     });
   };
