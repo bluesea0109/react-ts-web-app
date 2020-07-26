@@ -10,6 +10,8 @@ import ActionsTable from './ActionsTable';
 import EditAction from './EditAction';
 import { getActionsQuery } from './gql';
 import { GetActionsQueryResult } from './types';
+import { getOptionsQuery } from '../Options/gql';
+import { GetOptionsQueryResult, IOption } from '../Options/types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -42,8 +44,12 @@ const Actions = () => {
   const { data, loading, error } = useQuery<GetActionsQueryResult>(getActionsQuery, {
     variables: { agentId: numAgentId },
   });
+  const optionsData = useQuery<GetOptionsQueryResult>(getOptionsQuery, {
+    variables: { agentId: numAgentId },
+  });
 
   const actions: Maybe<AnyAction[]> = data?.ChatbotService_actions;
+  const options: Maybe<IOption[]> = optionsData.data?.ChatbotService_userResponseOptions;
 
   const commonError = error;
 
@@ -63,7 +69,7 @@ const Actions = () => {
         <Paper className={classes.paper}>
           {agentId ? (
             <ActionsTable
-              loading={loading}
+              loading={loading || optionsData.loading}
               actions={actions ?? []}
               onEditAction={setCurrentAction}
               onAdd={() => setNewAction(true)}
@@ -75,8 +81,9 @@ const Actions = () => {
       </Grid>
       {!!actions && (
         <EditAction
-          loading={loading}
+          loading={loading || optionsData.loading}
           action={newAction ? defaultActionVal : actions.find(x => x.id === currentAction)}
+          options={options ?? []}
           onEditActionClose={onEditActionClose}
         />
       )}

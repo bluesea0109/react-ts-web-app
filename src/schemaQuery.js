@@ -1,6 +1,9 @@
 const fetch = require('node-fetch');
 const fs = require('fs');
 
+// When an update is required to fragmentTypes
+// Run this file only after replacing
+// Authorization header with latest token
 fetch("https://api-gateway-dot-bavard-dev.appspot.com/graphql", {
   method: 'POST',
   headers: {
