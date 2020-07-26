@@ -106,7 +106,7 @@ const OptionDetailsPanel = ({ option }: { option: IOption }) => {
 
   return (
     <Grid container={true}>
-        {Array.from(Object.keys(optionProps)).map(key => key === "imageUrl" ? (
+        {Array.from(Object.keys(optionProps)).map(key => key === 'imageUrl' ? (
           <Grid item={true}>
             <Box my={3} p={2} key={key}>
               <Typography variant="h6" style={{ textTransform: 'capitalize', fontWeight: 'bold' }}>Image</Typography>

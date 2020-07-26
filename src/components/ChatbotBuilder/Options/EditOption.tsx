@@ -1,3 +1,4 @@
+import { useQuery } from '@apollo/react-hooks';
 import { Box, CircularProgress, DialogContent, Grid, LinearProgress, TextField } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
@@ -10,14 +11,13 @@ import { TransitionProps } from '@material-ui/core/transitions';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import { Autocomplete } from '@material-ui/lab';
+import axios from 'axios';
 import React, { ChangeEvent, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { IIntent } from '../../../models/chatbot-service';
 import { Maybe } from '../../../utils/types';
-import { GetImageOptionUploadUrlQueryResult, IOption, IOptionInput, IOptionType } from './types';
-import { useQuery } from '@apollo/react-hooks';
 import { getImageOptionUploadUrlQuery } from './gql';
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import { GetImageOptionUploadUrlQueryResult, IOption, IOptionInput, IOptionType } from './types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -61,9 +61,9 @@ const EditOption = (props: EditOptionProps) => {
   const imageUploadUrlQuery = useQuery<GetImageOptionUploadUrlQueryResult>(getImageOptionUploadUrlQuery, {
     variables: {
       agentId: numAgentId,
-      basename: file?.name
+      basename: file?.name,
     },
-    skip: !file
+    skip: !file,
   });
 
   useEffect(() => {
@@ -96,11 +96,11 @@ const EditOption = (props: EditOptionProps) => {
           try {
             await axios.put(url, file, {
               headers: {
-                'Content-Type': file.type
-              }
+                'Content-Type': file.type,
+              },
             });
 
-            const path = url.split("?")[0].split('/images/')[1];
+            const path = url.split('?')[0].split('/images/')[1];
             setCurrentOption(currentOption => ({ ...currentOption, imageUrl: path }) as any);
           } catch (e) {
             console.log(e);
@@ -108,11 +108,11 @@ const EditOption = (props: EditOptionProps) => {
           }
 
           setIsFileLoading(false);
-        })()
+        })();
       }
     }
   // eslint-disable-next-line
-  }, [imageUploadUrlQuery.data])
+  }, [imageUploadUrlQuery.data]);
 
   const loading = isLoading || isFileLoading || saveLoading || imageUploadUrlQuery.loading;
   const optionTypes = Object.values(IOptionType);
@@ -197,8 +197,8 @@ const EditOption = (props: EditOptionProps) => {
                       variant="contained"
                       component="label"
                       style={{ padding: 6 }}>
-                      {(!file && !(currentOption as any)?.imageUrl) && "Add Image"}
-                      {(!!file || (!!(currentOption as any)?.imageUrl && (currentOption as any)?.imageUrl !== "")) && "Replace Image"}
+                      {(!file && !(currentOption as any)?.imageUrl) && 'Add Image'}
+                      {(!!file || (!!(currentOption as any)?.imageUrl && (currentOption as any)?.imageUrl !== '')) && 'Replace Image'}
                       <input
                         name="image"
                         id="image"
@@ -215,7 +215,7 @@ const EditOption = (props: EditOptionProps) => {
                       <img src={URL.createObjectURL(file)} alt="" style={{ maxWidth: 400, maxHeight: 400, objectFit: 'contain' }} />
                     </Box>
                   )}
-                  {(!file && !!(currentOption as any)?.imageUrl && (currentOption as any)?.imageUrl !== "") && (
+                  {(!file && !!(currentOption as any)?.imageUrl && (currentOption as any)?.imageUrl !== '') && (
                     <Box p={2}>
                       <img src={(currentOption as any)?.imageUrl} alt="" style={{ maxWidth: 400, maxHeight: 400, objectFit: 'contain' }} />
                     </Box>
