@@ -40,8 +40,8 @@ import { createUploadLink } from 'apollo-upload-client';
 import firebase from 'firebase/app';
 import { isEmpty } from 'lodash';
 import config from './config';
-import { parseJwt } from './utils';
 import introspectionQueryResultData from './fragmentTypes.json';
+import { parseJwt } from './utils';
 
 console.log('API URL:', config.apiUrl);
 console.log('project id:', config.projectId);
@@ -105,13 +105,13 @@ const authLink = setContext((_, { headers }) => {
 });
 
 const fragmentMatcher = new IntrospectionFragmentMatcher({
-  introspectionQueryResultData
+  introspectionQueryResultData,
 });
 
 export const client = new ApolloClient({
   link: authLink.concat(createUploadLink({ uri: config.apiUrl })),
   cache: new InMemoryCache({
-    fragmentMatcher
+    fragmentMatcher,
   }),
 });
 

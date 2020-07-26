@@ -2,22 +2,21 @@ export interface GetOptionsQueryResult {
   ChatbotService_userResponseOptions: IOption[];
 }
 
-
 export enum IOptionType {
-  IMAGE_LIST = "IMAGE_LIST",
-  TEXT = "TEXT"
+  IMAGE_LIST = 'IMAGE_LIST',
+  TEXT = 'TEXT',
 }
 
 export interface ITextOptionInput {
   intentId: number;
   text: string;
-  type: IOptionType
+  type: IOptionType;
 }
 
 export interface IImageOptionInput {
   intentId: number;
   text: string;
-  type: IOptionType
+  type: IOptionType;
 }
 
 export type IOptionInput = ITextOptionInput | IImageOptionInput;

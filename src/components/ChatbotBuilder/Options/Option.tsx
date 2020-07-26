@@ -2,14 +2,14 @@ import { useMutation, useQuery } from '@apollo/react-hooks';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { IIntent } from '../../../models/chatbot-service';
 import { Maybe } from '../../../utils/types';
+import { IntentsQueryResults } from '../Examples/types';
+import { getIntentsQuery } from '../Intent/gql';
 import EditOption from './EditOption';
+import { createOptionMutation, deleteOptionMutation, getOptionsQuery, updateOptionMutation } from './gql';
 import OptionsTable from './OptionsTable';
 import { GetOptionsQueryResult, IOption, IOptionInput, IOptionType, ITextOptionInput } from './types';
-import { createOptionMutation, deleteOptionMutation, getOptionsQuery, updateOptionMutation } from './gql';
-import { IIntent } from '../../../models/chatbot-service';
-import { getIntentsQuery } from '../Intent/gql';
-import { IntentsQueryResults } from '../Examples/types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -32,8 +32,8 @@ const Options = () => {
 
   const defaultOptionVal: ITextOptionInput = {
     intentId: -1,
-    text: "",
-    type: IOptionType.TEXT
+    text: '',
+    type: IOptionType.TEXT,
   };
 
   const { data, loading, error } = useQuery<GetOptionsQueryResult>(getOptionsQuery, {
@@ -72,14 +72,14 @@ const Options = () => {
           ...(type === IOptionType.TEXT ? {
             userTextResponseOption: {
               type,
-              ...otherData
-            }
+              ...otherData,
+            },
           } : {}),
           ...(type === IOptionType.IMAGE_LIST ? {
             userImageResponseOption: {
               type,
-              ...otherData
-            }
+              ...otherData,
+            },
           } : {}),
         },
       });
@@ -87,18 +87,18 @@ const Options = () => {
       const { id, intentId, type, ...otherData } = optionData as IOption;
       await updateOption({
         variables: {
-          id: id,
+          id,
           ...(type === IOptionType.TEXT ? {
             userTextResponseOption: {
               type,
-              ...otherData
-            }
+              ...otherData,
+            },
           } : {}),
           ...(type === IOptionType.IMAGE_LIST ? {
             userImageResponseOption: {
               type,
-              ...otherData
-            }
+              ...otherData,
+            },
           } : {}),
         },
       });

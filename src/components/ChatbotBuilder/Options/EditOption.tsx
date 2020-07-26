@@ -9,11 +9,11 @@ import Toolbar from '@material-ui/core/Toolbar';
 import { TransitionProps } from '@material-ui/core/transitions';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
+import { Autocomplete } from '@material-ui/lab';
 import React, { ChangeEvent, useEffect, useState } from 'react';
+import { IIntent } from '../../../models/chatbot-service';
 import { Maybe } from '../../../utils/types';
 import { IOption, IOptionInput, IOptionType } from './types';
-import { Autocomplete } from '@material-ui/lab';
-import { IIntent } from '../../../models/chatbot-service';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -70,7 +70,7 @@ const EditOption = (props: EditOptionProps) => {
 
   const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    setIsFileLoading(true)
+    setIsFileLoading(true);
     console.log(file);
     setTimeout(() => {
       setIsFileLoading(false);
@@ -102,7 +102,7 @@ const EditOption = (props: EditOptionProps) => {
       <DialogContent>
         <Box my={4}>
           <Grid container={true}>
-            <Grid item xs={6}>
+            <Grid item={true} xs={6}>
               <Box p={2}>
                 <Autocomplete
                   disabled={loading}
@@ -115,7 +115,7 @@ const EditOption = (props: EditOptionProps) => {
                 />
               </Box>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item={true} xs={6}>
               <Box p={2}>
                 <Autocomplete
                   disabled={loading}
@@ -129,7 +129,7 @@ const EditOption = (props: EditOptionProps) => {
               </Box>
             </Grid>
             {currentOption?.type === IOptionType.TEXT && (
-              <Grid item xs={12}>
+              <Grid item={true} xs={12}>
                 <Box p={2}>
                   <TextField
                     label="Option Text"
@@ -146,7 +146,7 @@ const EditOption = (props: EditOptionProps) => {
             )}
             {currentOption?.type === IOptionType.IMAGE_LIST && (
               <>
-                <Grid item>
+                <Grid item={true}>
                   <Box p={2}>
                     <Button
                       variant="contained"
@@ -165,7 +165,7 @@ const EditOption = (props: EditOptionProps) => {
                     </Button>
                   </Box>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item={true} xs={12}>
                   <Box p={2}>
                     <TextField
                       label="Option Text"

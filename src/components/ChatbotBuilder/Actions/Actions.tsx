@@ -6,12 +6,12 @@ import { useParams } from 'react-router-dom';
 import { ActionType, AnyAction } from '../../../models/chatbot-service';
 import { Maybe } from '../../../utils/types';
 import ApolloErrorPage from '../../ApolloErrorPage';
+import { getOptionsQuery } from '../Options/gql';
+import { GetOptionsQueryResult, IOption } from '../Options/types';
 import ActionsTable from './ActionsTable';
 import EditAction from './EditAction';
 import { getActionsQuery } from './gql';
 import { GetActionsQueryResult } from './types';
-import { getOptionsQuery } from '../Options/gql';
-import { GetOptionsQueryResult, IOption } from '../Options/types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

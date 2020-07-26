@@ -9,15 +9,15 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import { TransitionProps } from '@material-ui/core/transitions';
 import Typography from '@material-ui/core/Typography';
+import { CheckBox, CheckBoxOutlineBlank } from '@material-ui/icons';
 import CloseIcon from '@material-ui/icons/Close';
 import { Autocomplete } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { ActionType, AnyAction } from '../../../models/chatbot-service';
 import { Maybe } from '../../../utils/types';
-import { createActionMutation, getActionsQuery, updateActionMutation } from './gql';
 import { IOption } from '../Options/types';
-import { CheckBoxOutlineBlank, CheckBox } from '@material-ui/icons';
+import { createActionMutation, getActionsQuery, updateActionMutation } from './gql';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -79,7 +79,7 @@ const EditAction = (props: EditActionProps) => {
           agentId: numAgentId,
           actionId: id,
           ...action,
-          userResponseOptions: selectedOptions
+          userResponseOptions: selectedOptions,
         },
       });
       console.log(resp);
@@ -94,7 +94,7 @@ const EditAction = (props: EditActionProps) => {
         agentId: numAgentId,
         name,
         ...action,
-        userResponseOptions: selectedOptions
+        userResponseOptions: selectedOptions,
       },
     });
     console.log(resp);
@@ -162,7 +162,7 @@ const EditAction = (props: EditActionProps) => {
               </Box>
             </Grid>
           </Grid>
-          <Grid container>
+          <Grid container={true}>
             <Grid item={true} xs={6}>
               <Box p={2}>
                 <Autocomplete
