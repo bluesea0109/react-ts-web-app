@@ -33,13 +33,14 @@
 //   cache: new InMemoryCache(),
 // });
 
-import { InMemoryCache } from 'apollo-cache-inmemory';
+import { InMemoryCache, IntrospectionFragmentMatcher } from 'apollo-cache-inmemory';
 import { ApolloClient } from 'apollo-client';
 import { setContext } from 'apollo-link-context';
 import { createUploadLink } from 'apollo-upload-client';
 import firebase from 'firebase/app';
 import { isEmpty } from 'lodash';
 import config from './config';
+import introspectionQueryResultData from './fragmentTypes.json';
 import { parseJwt } from './utils';
 
 console.log('API URL:', config.apiUrl);
@@ -103,10 +104,14 @@ const authLink = setContext((_, { headers }) => {
   });
 });
 
+const fragmentMatcher = new IntrospectionFragmentMatcher({
+  introspectionQueryResultData,
+});
+
 export const client = new ApolloClient({
   link: authLink.concat(createUploadLink({ uri: config.apiUrl })),
   cache: new InMemoryCache({
-    addTypename: false,
+    fragmentMatcher,
   }),
 });
 

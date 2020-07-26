@@ -8,6 +8,19 @@ export const getActionsQuery = gql`
       agentId
       name
       type
+      userResponseOptions {
+        id
+        intentId
+        intent
+        type
+        ... on ChatbotService_TextOption {
+          text
+        }
+        ... on ChatbotService_ImageOption {
+          imageUrl
+          text
+        }
+      }
       ... on ChatbotService_UtteranceAction {
         text
       }
@@ -18,8 +31,8 @@ export const getActionsQuery = gql`
 export const createActionMutation = (type: string) => {
   if (type === ActionType.UTTERANCE_ACTION) {
     return gql`
-      mutation($agentId: Int!, $text: String!, $name: String!) {
-        ChatbotService_createUtteranceAction(agentId: $agentId, text: $text, name: $name) {
+      mutation($agentId: Int!, $text: String!, $name: String!, $userResponseOptions: [Int!]) {
+        ChatbotService_createUtteranceAction(agentId: $agentId, text: $text, name: $name, userResponseOptionIDs: $userResponseOptions) {
           id
           text
         }
@@ -39,8 +52,8 @@ export const createActionMutation = (type: string) => {
 export const updateActionMutation = (type: string) => {
   if (type === ActionType.UTTERANCE_ACTION) {
     return gql`
-      mutation($actionId: Int!, $text: String!) {
-        ChatbotService_updateUtteranceAction(id: $actionId, text: $text) {
+      mutation($actionId: Int!, $text: String!, $userResponseOptions: [Int!]) {
+        ChatbotService_updateUtteranceAction(id: $actionId, text: $text, userResponseOptionIDs: $userResponseOptions) {
           id
           text
         }
