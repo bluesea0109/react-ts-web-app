@@ -6,13 +6,13 @@ import ChatWithAgent from '../ChatWithAgent';
 import ConversationsTab from '../Conversations';
 import DataExportsTab from '../DataExports/DataExportsTab';
 import Examples from '../Examples/Examples';
+import GraphPolicy from '../GraphPolicy/GraphPolicy';
 import Intent from '../Intent/Intent';
 import Options from '../Options/Option';
 import Tag from '../Tags/Tag';
 import TrainingConversations from '../TrainingConversations';
 import TrainingJobsTab from '../TrainingJobs/TrainingJobsTab';
 import UploadDataTab from '../UploadData/UploadDataTab';
-import GraphPolicy from '../GraphPolicy/GraphPolicy';
 
 interface TabPanelProps {
   className?: string;

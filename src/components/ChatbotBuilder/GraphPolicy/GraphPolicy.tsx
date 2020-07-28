@@ -1,10 +1,10 @@
+import { useMutation } from '@apollo/react-hooks';
+import { GraphPolicySchema } from '@bavard/graph-policy';
+import { Box, Button, TextField, Typography } from '@material-ui/core';
+import { useSnackbar } from 'notistack';
 import React, { ChangeEvent, useState } from 'react';
 import { useParams } from 'react-router';
-import { Box, Button, TextField, Typography } from '@material-ui/core';
-import { useMutation } from '@apollo/react-hooks';
 import { createGraphPolicyMutation } from './gql';
-import { useSnackbar } from 'notistack';
-import { GraphPolicySchema } from '@bavard/graph-policy';
 
 const GraphPolicy = () => {
   const { agentId } = useParams();
@@ -13,8 +13,8 @@ const GraphPolicy = () => {
 
   const [loading, setLoading] = useState(false);
   const [policy, setPolicy] = useState({
-    name: "",
-    data: null as any
+    name: '',
+    data: null as any,
   });
 
   const [createPolicy, createGraphPolicyMutationData] = useMutation(createGraphPolicyMutation);
@@ -25,7 +25,7 @@ const GraphPolicy = () => {
 
       const file = e.target?.files?.[0];
       if (!file || file.type !== 'application/json') {
-        throw new Error("invalid file");
+        throw new Error('invalid file');
       }
 
       const json = await new Promise<string>((resolve, reject) => {
@@ -45,19 +45,19 @@ const GraphPolicy = () => {
       try {
         await GraphPolicySchema.validate(json);
       } catch (e) {
-        throw new Error("JSON schema doesn't match required schema!")
+        throw new Error('JSON schema doesn\'t match required schema!');
       }
 
       setPolicy({
         ...policy,
-        data: JSON.parse(json)
+        data: JSON.parse(json),
       });
     } catch (e) {
-      enqueueSnackbar(`Unable to parse json file: ${e.message}`, { variant: "error" });
+      enqueueSnackbar(`Unable to parse json file: ${e.message}`, { variant: 'error' });
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   const createGraphPolicy = async () => {
     try {
@@ -65,16 +65,16 @@ const GraphPolicy = () => {
       await createPolicy({
         variables: {
           agentId: numAgentId,
-          policy: policy
-        }
+          policy,
+        },
       });
       setPolicy({
-        name: "",
-        data: null
+        name: '',
+        data: null,
       });
-      enqueueSnackbar("Graph Policy Created Successfully!", { variant: "success" });
+      enqueueSnackbar('Graph Policy Created Successfully!', { variant: 'success' });
     } catch (e) {
-      enqueueSnackbar("Unable to create policy", { variant: "error" });
+      enqueueSnackbar('Unable to create policy', { variant: 'error' });
     } finally {
       setLoading(false);
     }

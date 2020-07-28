@@ -1,4 +1,5 @@
 import { ThemeProvider } from '@material-ui/core';
+import { SnackbarProvider } from 'notistack';
 import React from 'react';
 import { ApolloProvider } from 'react-apollo';
 import ReactDOM from 'react-dom';
@@ -11,7 +12,6 @@ import './index.css';
 import * as serviceWorker from './serviceWorker';
 import configureStore from './store';
 import appTheme from './theme';
-import { SnackbarProvider } from "notistack";
 
 const store = configureStore();
 
@@ -20,8 +20,8 @@ ReactDOM.render(
     <SnackbarProvider
       style={{ zIndex: 99999999999999999 }}
       anchorOrigin={{
-        vertical: "bottom",
-        horizontal: "right"
+        vertical: 'bottom',
+        horizontal: 'right',
       }}
       maxSnack={5}
     >
