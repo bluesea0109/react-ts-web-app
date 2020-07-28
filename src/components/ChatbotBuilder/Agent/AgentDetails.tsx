@@ -6,6 +6,7 @@ import ChatWithAgent from '../ChatWithAgent';
 import ConversationsTab from '../Conversations';
 import DataExportsTab from '../DataExports/DataExportsTab';
 import Examples from '../Examples/Examples';
+import GraphPolicy from '../GraphPolicy/GraphPolicy';
 import Intent from '../Intent/Intent';
 import Options from '../Options/Option';
 import Tag from '../Tags/Tag';
@@ -86,6 +87,11 @@ const AgentDetails = () => {
           {...a11yProps('NLU Examples')}
         />
         <Tab
+          value="graph-policy"
+          label="Graph Policy"
+          {...a11yProps('Graph Policy')}
+        />
+        <Tab
           value="upload-data"
           label="Upload Data"
           {...a11yProps('Upload Data')}
@@ -135,6 +141,7 @@ const AgentDetails = () => {
         <Examples />
       </TabPanel>
       {agentTab === 'upload-data' && <UploadDataTab />}
+      {agentTab === 'graph-policy' && <GraphPolicy />}
       {agentTab === 'exports' && <DataExportsTab />}
       {agentTab === 'training-jobs' && <TrainingJobsTab />}
       {agentTab === 'chat' && <ChatWithAgent />}
