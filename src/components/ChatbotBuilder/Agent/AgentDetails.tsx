@@ -6,7 +6,7 @@ import ChatWithAgent from '../ChatWithAgent';
 import ConversationsTab from '../Conversations';
 import DataExportsTab from '../DataExports/DataExportsTab';
 import Examples from '../Examples/Examples';
-import GraphPolicy from '../GraphPolicy/GraphPolicy';
+import GraphPolicy from '../GraphPolicy';
 import Intent from '../Intent/Intent';
 import Options from '../Options/Option';
 import Tag from '../Tags/Tag';
