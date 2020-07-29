@@ -51,9 +51,9 @@ const GraphPolicyUpload = ({onSuccess, onError}: IGraphPolicyUploadProps) => {
         await GraphPolicySchema.validate(json);
       } catch (e) {
         console.log(e);
-        if (onError) {
-          onError(e);
-        }
+        
+        onError?.(e);
+        
         throw new Error('JSON schema doesn\'t match required schema!');
       }
 
@@ -63,9 +63,7 @@ const GraphPolicyUpload = ({onSuccess, onError}: IGraphPolicyUploadProps) => {
       });
     } catch (e) {
       enqueueSnackbar(`Unable to parse json file: ${e.message}`, { variant: 'error' });
-      if (onError) {
-        onError(e);
-      }
+      onError?.(e);
     } finally {
       setLoading(false);
     }
@@ -85,14 +83,10 @@ const GraphPolicyUpload = ({onSuccess, onError}: IGraphPolicyUploadProps) => {
         data: null,
       });
       enqueueSnackbar('Graph Policy Created Successfully!', { variant: 'success' });
-      if (onSuccess) {
-        onSuccess();
-      }
+      onSuccess?.();
     } catch (e) {
       enqueueSnackbar('Unable to create policy', { variant: 'error' });
-      if (onError) {
-        onError(e);
-      }
+      onError?.(e);
     } finally {
       setLoading(false);
     }
