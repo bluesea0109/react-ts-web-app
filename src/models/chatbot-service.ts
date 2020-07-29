@@ -1,4 +1,3 @@
-// import {GraphPolicy} from '@bavard/graph-policy';
 
 export enum ChatbotLanguage {
   EN_US,
