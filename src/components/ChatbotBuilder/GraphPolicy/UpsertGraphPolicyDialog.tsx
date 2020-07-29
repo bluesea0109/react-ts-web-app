@@ -1,20 +1,20 @@
-import React from 'react';
-import ApolloClient from 'apollo-client';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { withApollo } from 'react-apollo';
+import ApolloClient from 'apollo-client';
 import { GraphQLError } from 'graphql';
+import React from 'react';
+import { withApollo } from 'react-apollo';
 import GraphPolicyUpload from './GraphPolicyUpload';
 
 interface IUpsertGraphPolicyDialogProps {
   client: ApolloClient<object>;
   open: boolean;
-  onCancel: ()=>void;
-  onSuccess?: ()=>void;
+  onCancel: () => void;
+  onSuccess?: () => void;
 }
 
 interface IUpsertGraphPolicyDialogState {
@@ -35,12 +35,12 @@ class UpsertGraphPolicyDialog extends React.Component<IUpsertGraphPolicyDialogPr
       status: '',
     };
   }
-  
+
   onError = (error?: Error) => {
     this.setState({
       error: error || null,
-      status: error?.message || ''
-    })
+      status: error?.message || '',
+    });
   }
 
   onCancel = () => {
@@ -53,17 +53,17 @@ class UpsertGraphPolicyDialog extends React.Component<IUpsertGraphPolicyDialogPr
 
   onSuccess = () => {
     this.setState({
-      policySaved: true
-    })
-    if(this.props.onSuccess) {
+      policySaved: true,
+    });
+    if (this.props.onSuccess) {
       this.props.onSuccess();
     }
   }
-  
+
   render() {
     const state = this.state;
 
-    let dialogContent = (
+    const dialogContent = (
       <DialogContent>
         <DialogContentText>
           {state.status}
@@ -92,7 +92,7 @@ class UpsertGraphPolicyDialog extends React.Component<IUpsertGraphPolicyDialogPr
                 {'Cancel'}
               </Button>
             }
-            
+
           </DialogActions>
         </Dialog>
       </React.Fragment>

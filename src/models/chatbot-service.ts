@@ -167,5 +167,5 @@ export interface IGraphPolicy {
   agentId: number;
   name: string;
   data: any;
-  isActive: boolean;  
+  isActive: boolean;
 }

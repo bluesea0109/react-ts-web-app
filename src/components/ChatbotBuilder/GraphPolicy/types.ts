@@ -1,7 +1,7 @@
 import { IGraphPolicy } from '../../../models/chatbot-service';
 
 export interface IGetGraphPoliciesQueryResult {
-  ChatbotService_graphPolicies: IGraphPolicy[]
+  ChatbotService_graphPolicies: IGraphPolicy[];
 }
 
 export interface IDeleteGraphPolicyMutationResult {

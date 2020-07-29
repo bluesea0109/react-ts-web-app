@@ -7,11 +7,11 @@ import { useParams } from 'react-router';
 import { createGraphPolicyMutation } from './gql';
 
 interface IGraphPolicyUploadProps {
-  onSuccess?:()=>void;
-  onError?:(error:Error)=>void;
+  onSuccess?: () => void;
+  onError?: (error: Error) => void;
 }
 
-const GraphPolicyUpload = ({onSuccess, onError}:IGraphPolicyUploadProps) => {
+const GraphPolicyUpload = ({onSuccess, onError}: IGraphPolicyUploadProps) => {
   const { agentId } = useParams();
   const { enqueueSnackbar } = useSnackbar();
   const numAgentId = Number(agentId);
@@ -51,7 +51,7 @@ const GraphPolicyUpload = ({onSuccess, onError}:IGraphPolicyUploadProps) => {
         await GraphPolicySchema.validate(json);
       } catch (e) {
         console.log(e);
-        if(onError) {
+        if (onError) {
           onError(e);
         }
         throw new Error('JSON schema doesn\'t match required schema!');
@@ -63,7 +63,7 @@ const GraphPolicyUpload = ({onSuccess, onError}:IGraphPolicyUploadProps) => {
       });
     } catch (e) {
       enqueueSnackbar(`Unable to parse json file: ${e.message}`, { variant: 'error' });
-      if(onError) {
+      if (onError) {
         onError(e);
       }
     } finally {
@@ -85,12 +85,12 @@ const GraphPolicyUpload = ({onSuccess, onError}:IGraphPolicyUploadProps) => {
         data: null,
       });
       enqueueSnackbar('Graph Policy Created Successfully!', { variant: 'success' });
-      if(onSuccess) {
-        onSuccess()
+      if (onSuccess) {
+        onSuccess();
       }
     } catch (e) {
       enqueueSnackbar('Unable to create policy', { variant: 'error' });
-      if(onError) {
+      if (onError) {
         onError(e);
       }
     } finally {

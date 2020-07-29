@@ -1,9 +1,9 @@
 import {
+  Chip,
+  Fab,
   Paper,
   TableContainer,
   Typography,
-  Fab,
-  Chip
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Delete, Power } from '@material-ui/icons';
@@ -22,10 +22,10 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(2),
     },
     addButton: {
-      position: "absolute",
+      position: 'absolute',
       bottom: theme.spacing(3),
       right: theme.spacing(3),
-    }
+    },
   }),
 );
 
@@ -58,21 +58,21 @@ function GraphPoliciesTable({ policies, loading, onAdd, onEdit, onActivate, onDe
         title: 'Status',
         field: 'isActive',
         editable: 'never',
-        render: (rowData)=> {
+        render: (rowData) => {
           console.log(rowData);
           return (
           <div>
             {
-              rowData.isActive 
-              ? 
+              rowData.isActive
+              ?
               <Chip label="Active"/>
-              : 
-              <span/> 
+              :
+              <span/>
             }
           </div>
           );
-        }
-      }
+        },
+      },
     ],
     data: policies,
   });
@@ -96,7 +96,7 @@ function GraphPoliciesTable({ policies, loading, onAdd, onEdit, onActivate, onDe
             isLoading={loading}
             title={
               <span>
-                Graph Policies 
+                Graph Policies
               </span>
             }
             columns={state.columns}

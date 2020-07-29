@@ -22,7 +22,6 @@ export const activateGraphPolicyMutation = gql`
     }
 `;
 
-
 export const getGraphPoliciesQuery = gql`
     query ($agentId: Int!) {
       ChatbotService_graphPolicies(agentId: $agentId) {
