@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@apollo/react-hooks';
-import { Grid } from '@material-ui/core';
+import { Fab, Grid } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import AddIcon from '@material-ui/icons/Add';
 
 import React, { useState } from 'react';
 import {useParams} from 'react-router-dom';
@@ -29,6 +30,11 @@ const useStyles = makeStyles((theme: Theme) =>
       top: theme.spacing(10),
       left: -(theme.spacing(5)),
       zIndex: 10,
+    },
+    addButton: {
+      position: 'absolute',
+      bottom: theme.spacing(3),
+      right: theme.spacing(3),
     },
   }),
 );
@@ -98,13 +104,16 @@ export default function GraphPolicies() {
             <span/>
           }
           <GraphPoliciesTable loading={loading || queryResult?.loading } onActivate={handleActivatePolicy}
-            onDelete={handleDeletePolicy} policies={policies} onAdd={() => setUpsertDialogOpen(true)} />
+            onDelete={handleDeletePolicy} policies={policies} />
 
           <UpsertGraphPolicyDialog
             open={upsertDialogOpen}
             onSuccess={() => queryResult?.refetch()}
             onCancel={() => setUpsertDialogOpen(false)}/>
         </Grid>
+        <Fab color="primary" aria-label="add" onClick={() => setUpsertDialogOpen(true)} className={classes.addButton}>
+          <AddIcon />
+        </Fab>
       </Grid>
   );
 }
