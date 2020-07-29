@@ -1,13 +1,11 @@
 import {
   Chip,
-  Fab,
   Paper,
   TableContainer,
   Typography,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Delete, Power } from '@material-ui/icons';
-import AddIcon from '@material-ui/icons/Add';
 import 'firebase/auth';
 import MaterialTable, { Column } from 'material-table';
 import React, { useEffect } from 'react';
@@ -21,11 +19,6 @@ const useStyles = makeStyles((theme: Theme) =>
     paper: {
       padding: theme.spacing(2),
     },
-    addButton: {
-      position: 'absolute',
-      bottom: theme.spacing(3),
-      right: theme.spacing(3),
-    },
   }),
 );
 
@@ -37,13 +30,12 @@ interface GraphPolicyState {
 interface GraphPoliciesTableProps {
   policies: IGraphPolicy[] | undefined;
   loading?: boolean;
-  onAdd?: () => void;
   onDelete: (id: number) => void;
   onActivate: (id: number) => void;
   onEdit?: (id: number) => void;
 }
 
-function GraphPoliciesTable({ policies, loading, onAdd, onEdit, onActivate, onDelete }: GraphPoliciesTableProps) {
+function GraphPoliciesTable({ policies, loading, onEdit, onActivate, onDelete }: GraphPoliciesTableProps) {
   const classes = useStyles();
 
   const [state, setState] = React.useState<GraphPolicyState>({
@@ -127,9 +119,6 @@ function GraphPoliciesTable({ policies, loading, onAdd, onEdit, onActivate, onDe
               },
             ]}
           />
-          <Fab color="primary" aria-label="add" onClick={onAdd} className={classes.addButton}>
-            <AddIcon />
-          </Fab>
         </TableContainer>
       ) : (
         <Typography align="center" variant="h6">
