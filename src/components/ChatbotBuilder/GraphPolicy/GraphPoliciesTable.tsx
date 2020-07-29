@@ -1,18 +1,17 @@
 import {
-  Box, Button,
-  Grid,
   Paper,
   TableContainer,
   Typography,
   Fab,
+  Chip
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Edit } from '@material-ui/icons';
+import { Delete, Power } from '@material-ui/icons';
 import AddIcon from '@material-ui/icons/Add';
 import 'firebase/auth';
 import MaterialTable, { Column } from 'material-table';
 import React, { useEffect } from 'react';
-import { AnyAction } from '../../models/chatbot-service';
+import { IGraphPolicy } from '../../../models/chatbot-service';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -30,22 +29,24 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-interface ActionState {
-  columns: Column<AnyAction>[];
-  data: AnyAction[] | undefined;
+interface GraphPolicyState {
+  columns: Column<IGraphPolicy>[];
+  data: IGraphPolicy[] | undefined;
 }
 
 interface GraphPoliciesTableProps {
-  policies: any[];
+  policies: IGraphPolicy[] | undefined;
   loading?: boolean;
   onAdd?: () => void;
+  onDelete: (id: number) => void;
+  onActivate: (id: number) => void;
   onEdit?: (id: number) => void;
 }
 
-function GraphPoliciesTable({ policies, loading=false, onAdd, onEdit }: GraphPoliciesTableProps) {
+function GraphPoliciesTable({ policies, loading, onAdd, onEdit, onActivate, onDelete }: GraphPoliciesTableProps) {
   const classes = useStyles();
 
-  const [state, setState] = React.useState<ActionState>({
+  const [state, setState] = React.useState<GraphPolicyState>({
     columns: [
       { title: 'Policy Id', field: 'id', editable: 'never' },
       {
@@ -53,11 +54,25 @@ function GraphPoliciesTable({ policies, loading=false, onAdd, onEdit }: GraphPol
         field: 'name',
         editable: 'never',
       },
-      // {
-      //   title: 'Assigned To Agents',
-      //   field: 'assignedAgents',
-      //   editable: 'never',
-      // },
+      {
+        title: 'Status',
+        field: 'isActive',
+        editable: 'never',
+        render: (rowData)=> {
+          console.log(rowData);
+          return (
+          <div>
+            {
+              rowData.isActive 
+              ? 
+              <Chip label="Active"/>
+              : 
+              <span/> 
+            }
+          </div>
+          );
+        }
+      }
     ],
     data: policies,
   });
@@ -80,11 +95,12 @@ function GraphPoliciesTable({ policies, loading=false, onAdd, onEdit }: GraphPol
           <MaterialTable
             isLoading={loading}
             title={
-              "Graph Policies"
+              <span>
+                Graph Policies 
+              </span>
             }
             columns={state.columns}
             data={state.data}
-            detailPanel={({ tableData, ...actionDetails }: any) => <ActionDetailPanel action={actionDetails} />}
             options={{
               actionsColumnIndex: -1,
               filtering: true,
@@ -94,13 +110,19 @@ function GraphPoliciesTable({ policies, loading=false, onAdd, onEdit }: GraphPol
             }}
             actions={[
               {
-                icon: (props: any) => <Edit />,
-                tooltip: 'Edit',
+                icon: (props: any) => <Power />,
+                tooltip: 'Activate',
                 onClick: (event, rowData) => {
-                  const data = rowData as AnyAction;
-                  if((onEdit)) {
-                    onEdit(data.id);
-                  }
+                  const data = rowData as IGraphPolicy;
+                  onActivate(data.id);
+                },
+              },
+              {
+                icon: (props: any) => <Delete />,
+                tooltip: 'Delete',
+                onClick: (event, rowData) => {
+                  const data = rowData as IGraphPolicy;
+                  onDelete(data.id);
                 },
               },
             ]}
@@ -117,25 +139,5 @@ function GraphPoliciesTable({ policies, loading=false, onAdd, onEdit }: GraphPol
     </Paper>
   );
 }
-
-type OtherProps = { [index: string]: any };
-
-const ActionDetailPanel = ({ action }: { action: AnyAction }) => {
-    const { id, type, name, agentId, ...otherProps } = action;
-    const actionProps = otherProps as OtherProps;
-
-    return (
-      <Grid container={true}>
-        <Grid item={true} xs={6}>
-          {Array.from(Object.keys(actionProps)).map(key => (
-            <Box my={3} key={key}>
-              <Typography variant="h6" style={{ textTransform: 'capitalize', fontWeight: 'bold' }}>{key}</Typography>
-              <Typography variant="caption" style={{ textTransform: 'capitalize' }}>{actionProps[key]}</Typography>
-            </Box>
-          ))}
-        </Grid>
-      </Grid>
-    );
-};
 
 export default GraphPoliciesTable;

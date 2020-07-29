@@ -6,7 +6,12 @@ import React, { ChangeEvent, useState } from 'react';
 import { useParams } from 'react-router';
 import { createGraphPolicyMutation } from './gql';
 
-const GraphPolicy = () => {
+interface IGraphPolicyUploadProps {
+  onSuccess?:()=>void;
+  onError?:(error:Error)=>void;
+}
+
+const GraphPolicyUpload = ({onSuccess, onError}:IGraphPolicyUploadProps) => {
   const { agentId } = useParams();
   const { enqueueSnackbar } = useSnackbar();
   const numAgentId = Number(agentId);
@@ -45,6 +50,10 @@ const GraphPolicy = () => {
       try {
         await GraphPolicySchema.validate(json);
       } catch (e) {
+        console.log(e);
+        if(onError) {
+          onError(e);
+        }
         throw new Error('JSON schema doesn\'t match required schema!');
       }
 
@@ -54,6 +63,9 @@ const GraphPolicy = () => {
       });
     } catch (e) {
       enqueueSnackbar(`Unable to parse json file: ${e.message}`, { variant: 'error' });
+      if(onError) {
+        onError(e);
+      }
     } finally {
       setLoading(false);
     }
@@ -73,8 +85,14 @@ const GraphPolicy = () => {
         data: null,
       });
       enqueueSnackbar('Graph Policy Created Successfully!', { variant: 'success' });
+      if(onSuccess) {
+        onSuccess()
+      }
     } catch (e) {
       enqueueSnackbar('Unable to create policy', { variant: 'error' });
+      if(onError) {
+        onError(e);
+      }
     } finally {
       setLoading(false);
     }
@@ -116,10 +134,10 @@ const GraphPolicy = () => {
         <Typography>{'You may upload graph policy data as a JSON file'}</Typography>
       </Box>
       <Box mt={5}>
-        <Button disabled={isLoading} variant="contained" onClick={createGraphPolicy}>Submit</Button>
+        <Button disabled={isLoading} variant="contained" color="primary" onClick={createGraphPolicy}>Submit</Button>
       </Box>
     </Box>
   );
 };
 
-export default GraphPolicy;
+export default GraphPolicyUpload;

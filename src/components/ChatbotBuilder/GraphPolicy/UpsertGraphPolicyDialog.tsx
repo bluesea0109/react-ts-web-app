@@ -1,27 +1,27 @@
 import React from 'react';
 import ApolloClient from 'apollo-client';
-import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import LinearProgress from '@material-ui/core/LinearProgress';
 import { withApollo } from 'react-apollo';
 import { GraphQLError } from 'graphql';
+import GraphPolicyUpload from './GraphPolicyUpload';
 
 interface IUpsertGraphPolicyDialogProps {
   client: ApolloClient<object>;
+  open: boolean;
+  onCancel: ()=>void;
+  onSuccess?: ()=>void;
 }
 
 interface IUpsertGraphPolicyDialogState {
   open: boolean;
-  progress: number;
-  numCompleted: number;
-  total: number;
-  error: GraphQLError | null;
+  error: GraphQLError | Error | null;
   status: string;
+  policySaved: boolean;
 }
 
 class UpsertGraphPolicyDialog extends React.Component<IUpsertGraphPolicyDialogProps, IUpsertGraphPolicyDialogState> {
@@ -29,23 +29,37 @@ class UpsertGraphPolicyDialog extends React.Component<IUpsertGraphPolicyDialogPr
     super(props);
 
     this.state = {
-      open: true,
-      progress: 0.0,
-      numCompleted: 0,
-      total: 1,
+      open: props.open,
+      policySaved: false,
       error: null,
       status: '',
     };
   }
-  handleJsonFile() {
+  
+  onError = (error?: Error) => {
+    this.setState({
+      error: error || null,
+      status: error?.message || ''
+    })
+  }
 
+  onCancel = () => {
+    this.props.onCancel();
   }
-  handleClose() {
-    
-  }
-  onCancel() {
 
+  onClose = () => {
+    this.onCancel();
   }
+
+  onSuccess = () => {
+    this.setState({
+      policySaved: true
+    })
+    if(this.props.onSuccess) {
+      this.props.onSuccess();
+    }
+  }
+  
   render() {
     const state = this.state;
 
@@ -54,36 +68,23 @@ class UpsertGraphPolicyDialog extends React.Component<IUpsertGraphPolicyDialogPr
         <DialogContentText>
           {state.status}
         </DialogContentText>
-        <LinearProgress color="secondary" variant="determinate" value={state.progress} />
+        <GraphPolicyUpload onSuccess={this.onSuccess} onError={this.onError}/>
       </DialogContent>
     );
-
-    if (state.error) {
-      console.error(state.error);
-      dialogContent = (
-        <DialogContent>
-          <DialogContentText>
-            {'Something went wrong :('}
-          </DialogContentText>
-          <Typography>{'Please contact support@bavard.ai'}</Typography>
-        </DialogContent>
-      );
-    }
 
     return (
       <React.Fragment>
         <Dialog
-          open={state.open}
-          onClose={this.handleClose}
+          open={this.props.open}
           fullWidth={true}
         >
-          <DialogTitle>{'Upload Agent Data'}</DialogTitle>
+          <DialogTitle>{'Import Graph Policy File'}</DialogTitle>
           {dialogContent}
           <DialogActions>
             {
-              this.state.progress === 100
+              state.policySaved
               ?
-              <Button color="secondary" onClick={this.handleClose}>
+              <Button color="secondary" onClick={this.onClose}>
                 {'Close'}
               </Button>
               :
@@ -91,23 +92,9 @@ class UpsertGraphPolicyDialog extends React.Component<IUpsertGraphPolicyDialogPr
                 {'Cancel'}
               </Button>
             }
+            
           </DialogActions>
         </Dialog>
-        <Button
-          variant="contained"
-          component="label"
-          style={{ padding: 6 }}>
-          {'Upload JSON File'}
-          <input
-            name="json"
-            id="json"
-            accept="application/JSON"
-            type="file"
-            style={{ display: 'none' }}
-            multiple={false}
-            onChange={this.handleJsonFile}
-          />
-        </Button>
       </React.Fragment>
     );
   }

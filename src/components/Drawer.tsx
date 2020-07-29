@@ -105,14 +105,14 @@ function CustomDrawer(props: CustomDrawerProps) {
       >
         <ListItemText primary="Image Labeling" />
       </ListItem>
-      <ListItem
+      {/* <ListItem
         component={Link}
         to={createPath('graph-policies')}
         selected={location.pathname.includes('graph-policies')}
         button={true}
       >
         <ListItemText primary="Graph Policies" />
-      </ListItem>
+      </ListItem> */}
     </>
   );
 

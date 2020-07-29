@@ -3,7 +3,7 @@ import React from 'react';
 
 function ContentLoading(props: any) {
   return (
-    <Grid container={true} direction="column" justify="center" alignItems="center">
+    <Grid container={true} direction="column" justify="center" alignItems="center" {...props}>
       <CircularProgress color="secondary"/>
     </Grid>
   );

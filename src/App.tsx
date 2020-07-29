@@ -18,7 +18,7 @@ import ProjectSettings from './components/Dashboard/ProjectSettings';
 import Drawer from './components/Drawer';
 import ImageLabeling from './components/ImageLabeling';
 import QuestionAnswering from './components/QuestionAnswering';
-import GraphPolicies from './components/GraphPolicies';
+// import GraphPolicies from './components/GraphPolicies';
 import { IUser } from './models/user-service';
 
 const drawerWidth = 240;
@@ -169,9 +169,9 @@ function App() {
               <ChatbotBuilder user={data.currentUser} />
             </Route>
             <Route path="/orgs/:orgId/projects/:projectId/text-labeling" />
-            <Route path="/orgs/:orgId/projects/:projectId/graph-policies">
+            {/* <Route path="/orgs/:orgId/projects/:projectId/graph-policies">
               <GraphPolicies/>
-            </Route>
+            </Route> */}
             <Route exact={true} path="/no-project">
               <div className={classes.container}>
                 <Typography>
