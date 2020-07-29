@@ -51,9 +51,9 @@ const GraphPolicyUpload = ({onSuccess, onError}: IGraphPolicyUploadProps) => {
         await GraphPolicySchema.validate(json);
       } catch (e) {
         console.log(e);
-        
+
         onError?.(e);
-        
+
         throw new Error('JSON schema doesn\'t match required schema!');
       }
 
