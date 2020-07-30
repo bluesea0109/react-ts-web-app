@@ -39,6 +39,9 @@ const useStyles = makeStyles((theme: Theme) =>
       bottom: theme.spacing(3),
       right: theme.spacing(3),
     },
+    policyDialog: {
+      backgroundColor: theme.palette.background.paper,
+    },
     dialogClose: {
       float: 'right',
       cursor: 'pointer',
@@ -138,7 +141,7 @@ export default function GraphPolicies() {
 
           {
             selectedPolicy ?
-            <Dialog open={viewDialogOpen} fullScreen={true} scroll={'body'}>
+            <Dialog open={viewDialogOpen} fullScreen={true} scroll={'body'} className={classes.policyDialog}>
               <Typography className={classes.dialogTitle}>
                 Graph Policy {selectedPolicy.name}
               </Typography>
