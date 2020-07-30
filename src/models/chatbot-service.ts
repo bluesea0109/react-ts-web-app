@@ -1,4 +1,3 @@
-
 export enum ChatbotLanguage {
   EN_US,
   FR,
@@ -159,12 +158,4 @@ export interface IUserResponseOption extends IUserResponseOptionInput {
 export interface IUserResponseOptionInput {
   intentId: number;
   text: string;
-}
-
-export interface IGraphPolicy {
-  id: number;
-  agentId: number;
-  name: string;
-  data: any;
-  isActive: boolean;
 }

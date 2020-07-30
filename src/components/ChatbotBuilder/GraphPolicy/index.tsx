@@ -1,15 +1,18 @@
 import { useMutation, useQuery } from '@apollo/react-hooks';
-import { Fab, Grid } from '@material-ui/core';
+import { Dialog, Fab, Grid, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
+import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
 
 import React, { useState } from 'react';
 import {useParams} from 'react-router-dom';
 
 import { useSnackbar } from 'notistack';
+import {IAgentGraphPolicy} from '../../../models/graph-policy';
 import ContentLoading from '../../ContentLoading';
 import {activateGraphPolicyMutation, deleteGraphPolicyMutation, getGraphPoliciesQuery} from './gql';
 import GraphPoliciesTable from './GraphPoliciesTable';
+import GraphVisualizer from './GraphVisualizer';
 import {IGetGraphPoliciesQueryResult} from './types';
 import UpsertGraphPolicyDialog from './UpsertGraphPolicyDialog';
 
@@ -36,6 +39,18 @@ const useStyles = makeStyles((theme: Theme) =>
       bottom: theme.spacing(3),
       right: theme.spacing(3),
     },
+    dialogClose: {
+      float: 'right',
+      cursor: 'pointer',
+      position: 'absolute',
+      top: theme.spacing(2),
+      right: theme.spacing(2),
+    },
+    dialogTitle: {
+      position: 'absolute',
+      top: theme.spacing(2),
+      left: theme.spacing(2),
+    },
   }),
 );
 
@@ -44,7 +59,10 @@ export default function GraphPolicies() {
   let { agentId } = useParams();
   const { enqueueSnackbar } = useSnackbar();
   const [upsertDialogOpen, setUpsertDialogOpen] = useState(false);
+  const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const [selectedPolicy, selectPolicy] = useState<IAgentGraphPolicy|null>(null);
 
   agentId = parseInt(agentId);
 
@@ -92,6 +110,16 @@ export default function GraphPolicies() {
     setLoading(false);
   };
 
+  const handleViewPolicy = async(policy: IAgentGraphPolicy) => {
+    selectPolicy(policy);
+    setViewDialogOpen(true);
+  };
+
+  const handleClosePolicy = () => {
+    selectPolicy(null);
+    setViewDialogOpen(false);
+  };
+
   const policies = queryResult.data?.ChatbotService_graphPolicies;
 
   return (
@@ -104,7 +132,22 @@ export default function GraphPolicies() {
             <span/>
           }
           <GraphPoliciesTable loading={loading || queryResult?.loading } onActivate={handleActivatePolicy}
-            onDelete={handleDeletePolicy} policies={policies} />
+            onDelete={handleDeletePolicy}
+            onView={handleViewPolicy}
+            policies={policies} />
+
+          {
+            selectedPolicy ?
+            <Dialog open={viewDialogOpen} fullScreen={true} scroll={'body'}>
+              <Typography className={classes.dialogTitle}>
+                Graph Policy {selectedPolicy.name}
+              </Typography>
+              <CloseRoundedIcon className={classes.dialogClose} onClick={handleClosePolicy}/>
+              <GraphVisualizer policy={selectedPolicy}/>
+            </Dialog>
+            :
+            <></>
+          }
 
           <UpsertGraphPolicyDialog
             open={upsertDialogOpen}

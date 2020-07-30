@@ -5,11 +5,11 @@ import {
   Typography,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Delete, Power } from '@material-ui/icons';
+import { AccountTreeRounded, Delete, Power } from '@material-ui/icons';
 import 'firebase/auth';
 import MaterialTable, { Column } from 'material-table';
 import React, { useEffect } from 'react';
-import { IGraphPolicy } from '../../../models/chatbot-service';
+import { IAgentGraphPolicy } from '../../../models/graph-policy';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -23,19 +23,20 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface GraphPolicyState {
-  columns: Column<IGraphPolicy>[];
-  data: IGraphPolicy[] | undefined;
+  columns: Column<IAgentGraphPolicy>[];
+  data: IAgentGraphPolicy[] | undefined;
 }
 
 interface GraphPoliciesTableProps {
-  policies: IGraphPolicy[] | undefined;
+  policies: IAgentGraphPolicy[] | undefined;
   loading?: boolean;
   onDelete: (id: number) => void;
   onActivate: (id: number) => void;
   onEdit?: (id: number) => void;
+  onView?: (graph: IAgentGraphPolicy) => void;
 }
 
-function GraphPoliciesTable({ policies, loading, onEdit, onActivate, onDelete }: GraphPoliciesTableProps) {
+function GraphPoliciesTable({ policies, loading, onEdit, onView, onActivate, onDelete }: GraphPoliciesTableProps) {
   const classes = useStyles();
 
   const [state, setState] = React.useState<GraphPolicyState>({
@@ -51,7 +52,6 @@ function GraphPoliciesTable({ policies, loading, onEdit, onActivate, onDelete }:
         field: 'isActive',
         editable: 'never',
         render: (rowData) => {
-          console.log(rowData);
           return (
           <div>
             {
@@ -102,10 +102,18 @@ function GraphPoliciesTable({ policies, loading, onEdit, onActivate, onDelete }:
             }}
             actions={[
               {
+                icon: (props: any) => <AccountTreeRounded />,
+                tooltip: 'View Graph',
+                onClick: (event, rowData) => {
+                  const data = rowData as IAgentGraphPolicy;
+                  onView?.(data);
+                },
+              },
+              {
                 icon: (props: any) => <Power />,
                 tooltip: 'Activate',
                 onClick: (event, rowData) => {
-                  const data = rowData as IGraphPolicy;
+                  const data = rowData as IAgentGraphPolicy;
                   onActivate(data.id);
                 },
               },
@@ -113,7 +121,7 @@ function GraphPoliciesTable({ policies, loading, onEdit, onActivate, onDelete }:
                 icon: (props: any) => <Delete />,
                 tooltip: 'Delete',
                 onClick: (event, rowData) => {
-                  const data = rowData as IGraphPolicy;
+                  const data = rowData as IAgentGraphPolicy;
                   onDelete(data.id);
                 },
               },
