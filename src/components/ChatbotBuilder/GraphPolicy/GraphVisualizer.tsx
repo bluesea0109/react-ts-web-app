@@ -67,7 +67,7 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
       edges.push(
         <div className={classes.graphRow} key={`node_${node.nodeId}`}>
           {
-            node.outEdges.map((e) => {
+            node.outEdges?.map((e) => {
               const nodeData = _.find(policy.data.nodes, { nodeId: e.nodeId });
               if (nodeData) {
                 lines.push(

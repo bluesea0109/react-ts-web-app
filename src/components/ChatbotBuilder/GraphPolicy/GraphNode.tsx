@@ -52,7 +52,7 @@ export default function GraphNode({node, wrapperClassName}: IGraphNodeProps) {
             {node.utterance}
           </Alert>
 
-          {node.options.map((o) => {
+          {node.options?.map((o) => {
             return <Chip key={`${o.type}: ${o.intent}`} className={classes.chip} label={`${o.type}: ${o.intent}`} />;
           })}
         </CardContent>
