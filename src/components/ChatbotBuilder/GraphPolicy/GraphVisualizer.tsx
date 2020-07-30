@@ -65,20 +65,20 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
     const lines: any[] = [];
     if (node.outEdges?.length >= 1) {
       edges.push(
-        <div className={classes.graphRow}>
+        <div className={classes.graphRow} key={`node_${node.nodeId}`}>
           {
             node.outEdges.map((e) => {
               const nodeData = _.find(policy.data.nodes, { nodeId: e.nodeId });
               if (nodeData) {
                 lines.push(
-                  <SteppedLineTo from={`graph_node_${node.nodeId}`}
+                  <SteppedLineTo key={`line_${node.nodeId}_${e.nodeId}`} from={`graph_node_${node.nodeId}`}
                     fromAnchor="bottom"
                     to={`graph_node_${e.nodeId}`} toAnchor="top"
                     {...lineProps}
                      />,
                 );
                 return (
-                  <div>
+                  <div key={`node_${node.nodeId}_edge_${e.nodeId}`}>
                     {this.renderNodes(nodeData, e.intent )}
                   </div>
                 );
