@@ -3,7 +3,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import MessageIcon from '@material-ui/icons/Message';
 import Alert from '@material-ui/lab/Alert';
 import React from 'react';
-import {IGraphPolicyNode} from '../../../models/graph-policy';
+import {IGraphPolicyNode} from '@bavard/graph-policy';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -52,9 +52,9 @@ export default function GraphNode({node, wrapperClassName}: IGraphNodeProps) {
             {node.utterance}
           </Alert>
 
-          {node.options?.map((o) => {
+          {/* {node.options?.map((o) => {
             return <Chip key={`${o.type}: ${o.intent}`} className={classes.chip} label={`${o.type}: ${o.intent}`} />;
-          })}
+          })} */}
         </CardContent>
       </Card>
 
