@@ -1,11 +1,10 @@
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton, Grid, Card, List, ListItem, ListItemText, ListItemIcon, ListItemSecondaryAction} from '@material-ui/core';
+import { Typography, Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton, Grid, Paper, List, ListItem, ListItemText, ListItemIcon, ListItemSecondaryAction} from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import MessageIcon from '@material-ui/icons/Message';
-import {Image, TextFields, Delete} from '@material-ui/icons';
-import Alert from '@material-ui/lab/Alert';
+import {Image, TextFields, Delete, Add} from '@material-ui/icons';
 import React, {useState} from 'react';
-import {IGraphPolicyNode, GraphPolicy, GraphPolicyNode} from '@bavard/graph-policy';
+import { GraphPolicy} from '@bavard/graph-policy';
 import GraphNode from './GraphNode';
+import AddEdgeForm from './AddEdgeForm';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -15,12 +14,8 @@ const useStyles = makeStyles((theme: Theme) =>
     nodePaper: {
       backgroundColor: theme.palette.background.default,
       borderRadius: theme.spacing(1),
-      minWidth: 180,
-      maxWidth: 250,
-      textAlign: 'center',
-      overflow: 'hidden',
       margin: theme.spacing(1),
-      marginTop: theme.spacing(3),
+      padding: theme.spacing(2)
     },
   }),
 );
@@ -34,25 +29,27 @@ interface IGraphNodeProps {
 
 export default function EditNodeForm({nodeId, policy, onCancel, onSubmit}: IGraphNodeProps) {
   const classes = useStyles();
-  const [graphPolicy, setPolicy] = useState(policy);
-  const [node, setNode] = useState(graphPolicy.getNodeById(nodeId));
-
+  const [graphPolicy, setPolicy] = useState<GraphPolicy>(policy);
+  const node = graphPolicy.getNodeById(nodeId);
+  const [addingEdge, setAddingEdge] = useState(false);
+  const [numChanges, setNumStateChanges] = useState(0);
 
   const removeEdge = (edgeId: number) => {
-    console.log("REMOVING EDGE: ", edgeId);
     node?.removeEdge(edgeId);
-    console.log("EDGE REMOVED: ", node);
-    console.log("GRAPH POLICY: ", graphPolicy);
     setPolicy(graphPolicy);
-    console.log("POLICY SET: ", node);
-    setNode(node);
+    setNumStateChanges(numChanges+1)
   }
 
   if(!node) {
     return <></>
   }
 
-  console.log("NODE: ", node);
+  const handleAddEdge = (updPolicy: GraphPolicy) => {
+    setNumStateChanges(numChanges+1); 
+    setAddingEdge(false);
+    setPolicy(updPolicy);
+    setNumStateChanges(numChanges+1);
+  }
 
   return (
     <Dialog open={true} maxWidth={"lg"} onBackdropClick={onCancel} fullWidth={true}>
@@ -67,31 +64,47 @@ export default function EditNodeForm({nodeId, policy, onCancel, onSubmit}: IGrap
             />
           </Grid>
           <Grid item={true} lg={8} md={12}>
-            <List>
-              {node.toJsonObj().outEdges.map((e)=> {
-                return (
-                  <ListItem>
-                    <ListItemIcon>
-                      {e.option?.type === "IMAGE"? <Image/> : <TextFields/>}
-                    </ListItemIcon>
-                    <ListItemText>
-                      {e.option?.intent}
-                    </ListItemText>
-                    <ListItemSecondaryAction>
-                      <IconButton onClick={()=>{ removeEdge(e.nodeId) }}>
-                        <Delete/>
-                      </IconButton>
-                    </ListItemSecondaryAction>
-                  </ListItem>
-                )
-              })}
-            </List>
+            <Paper className={classes.nodePaper}>
+              <Typography variant={"h6"}>
+                Edges 
+                <IconButton onClick={()=>setAddingEdge(true)}>
+                  <Add/>
+                </IconButton>
+              </Typography>
+
+              {
+                addingEdge ?
+                <AddEdgeForm nodeId={node.nodeId} policy={graphPolicy} onSuccess={handleAddEdge} onCancel={()=>{}} />
+                :
+                <></>
+              }
+
+              <List>
+                {node.toJsonObj().outEdges.map((e, index)=> {
+                  return (
+                    <ListItem key={index}>
+                      <ListItemIcon>
+                        {e.option?.type === "IMAGE"? <Image/> : <TextFields/>}
+                      </ListItemIcon>
+                      <ListItemText>
+                        {e.option?.intent}
+                      </ListItemText>
+                      <ListItemSecondaryAction>
+                        <IconButton onClick={()=>{ removeEdge(e.nodeId) }}>
+                          <Delete/>
+                        </IconButton>
+                      </ListItemSecondaryAction>
+                    </ListItem>
+                  )
+                })}
+              </List>
+            </Paper>
           </Grid>
         </Grid>    
       </DialogContent>
       <DialogActions>
         <Button onClick={onCancel}>Cancel</Button>
-        <Button color="primary" onClick={()=>onSubmit(graphPolicy)}>Submit</Button>
+        <Button variant="contained" color="primary" onClick={()=>onSubmit(graphPolicy)}>Submit</Button>
       </DialogActions>
     </Dialog>
   );

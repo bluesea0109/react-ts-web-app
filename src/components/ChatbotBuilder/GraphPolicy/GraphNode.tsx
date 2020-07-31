@@ -1,7 +1,7 @@
-import { Card, CardContent, Chip, Badge, Typography, Tooltip, IconButton, Box, CardActions } from '@material-ui/core';
+import { Card, CardContent, Chip, Badge, Typography, Tooltip, IconButton, CardActions } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import MessageIcon from '@material-ui/icons/Message';
-import {Add, Delete, Edit, FullscreenExit} from '@material-ui/icons';
+import {Add, Delete, Edit} from '@material-ui/icons';
 import Alert from '@material-ui/lab/Alert';
 import React from 'react';
 import {IGraphPolicyNode} from '@bavard/graph-policy';

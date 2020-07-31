@@ -1,17 +1,19 @@
-import { Box, Chip, Tooltip, Fab, DialogActions, Button, Dialog, DialogContent, DialogTitle, Grid } from '@material-ui/core';
-import {Add, Delete, Edit, CloseRounded} from '@material-ui/icons';
+import { Box, Chip, Tooltip, Snackbar, DialogActions, Button, Dialog, DialogContent, DialogTitle } from '@material-ui/core';
+import {Add} from '@material-ui/icons';
 import { Theme, withStyles } from '@material-ui/core/styles';
-import { useSnackbar } from 'notistack';
 import _ from 'lodash';
 import React from 'react';
 import LineTo, {SteppedLineTo} from 'react-lineto';
 import {IAgentGraphPolicy} from '../../../models/graph-policy';
-import {IGraphPolicyNode, GraphPolicy, GraphPolicyNode, UtteranceNode} from '@bavard/graph-policy';
+import {IGraphPolicyNode, GraphPolicy, } from '@bavard/graph-policy';
 import EditNodeForm from './EditNodeForm';
+import { updateGraphPolicyMutation } from './gql';
+import { Mutation, MutationFunction } from "react-apollo";
+import ContentLoading from '../../ContentLoading';
 import GraphNode from './GraphNode';
 
 interface IGraphPolicyVisualizerProps {
-  policy: IAgentGraphPolicy;
+  policy?: IAgentGraphPolicy;
   classes: {
     root: string;
     graphRow: string;
@@ -29,6 +31,9 @@ interface IGraphPolicyVisualizerState {
   showAddEdge: any;
   showDeleteNode: any;
   showEditNode: any;
+  loading: boolean;
+  showSnackbar: boolean;
+  snackbarText: string;
 }
 
 const styles = (theme: Theme) => ({
@@ -67,6 +72,9 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
       showAddNode: undefined,
       showEditNode: undefined,
       showDeleteNode: undefined,
+      loading: false,
+      showSnackbar: false,
+      snackbarText: ""
     };
   }
 
@@ -154,19 +162,18 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
 
   onAddEdge =(nodeId: number)=> {
     this.closeForms();
-    console.log("ADDING EDGE", nodeId);
     this.setState({showAddEdge: nodeId});
   }
 
   onDeleteNode =(nodeId: number)=> {
     this.closeForms();
-    console.log("DELETING NODE", nodeId);
+
     this.setState({showDeleteNode: nodeId});
   }
 
   onEditNode =(nodeId: number)=> {
     this.closeForms();
-    console.log("EDITING NODE", nodeId);
+    this.setState({showEditNode: nodeId});
   }
 
   closeForms=()=> {
@@ -195,7 +202,6 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
         <GraphNode 
           node={node} 
           wrapperClassName={`graph_node_${node.nodeId}`}
-          onAddEdge={this.onAddEdge}
           onDeleteNode={this.onDeleteNode}
           onEditNode={this.onEditNode}
           />
@@ -203,21 +209,28 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
     )
   }
 
-  renderAddEdgeForm = () => {
+  renderEditNodeForm = () => {
     let gp = this.getGraphPolicyFromState();
-    let node = gp?.getNodeById(this.state.showAddEdge);
+    let node = gp?.getNodeById(this.state.showEditNode);
 
     if(!node || !gp) {
       return <></>;
     }
 
     return (
-      <EditNodeForm policy={gp} nodeId={node.nodeId} onCancel={this.closeForms} onSubmit={()=>{}} />
+      <EditNodeForm policy={gp} nodeId={node.nodeId} onCancel={this.closeForms} onSubmit={this.handleEditNode} />
     )
   }
 
-  getRootNode = () => {
-
+  handleEditNode = (updatedPolicy:GraphPolicy) => {
+    let newPolicy = this.state.policy;
+    _.extend(newPolicy, {
+      data: updatedPolicy.toJsonObj()
+    });
+    this.setState({
+      policy: newPolicy,
+      showEditNode: null
+    });
   }
 
   getGraphPolicyFromState = ():GraphPolicy|undefined => {
@@ -231,7 +244,6 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
 
   deleteNode = (nodeId: number) => {
     let gp = this.getGraphPolicyFromState();
-    console.log("DELETING NODE: ", nodeId);
 
     gp?.deleteNode(nodeId);
 
@@ -273,9 +285,48 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
 
   renderStartButton() {
     if(!this.state.policy) {
-      return <Fab color="primary"><Add/></Fab>
+      return <Button variant="contained" color="primary" style={{position: "fixed", top: 10, left: "48%"}}><Add/></Button>
     }
     return <></>;
+  }
+
+  showSnackbar=(text:string)=> {
+    this.setState({
+      showSnackbar: true,
+      snackbarText: text
+    })
+  }
+  hideSnackbar=()=> {
+    this.setState({
+      showSnackbar: false,
+      snackbarText: ""
+    })
+  }
+
+  persistChanges=async(mutate:MutationFunction)=>{
+    if(!this.state.policy) {
+      return;
+    }
+    
+    this.setState({loading: true});
+    
+    try {
+      await mutate({
+        variables: {
+          id: this.state.policy?.id,
+          policy: {
+            name: this.state.policy.name,
+            data: this.state.policy?.data
+          }
+        }
+      });
+      this.showSnackbar("Changes Saved!")
+    }
+    catch(e) {
+      this.showSnackbar(e.message); 
+    }
+    
+    this.setState({loading: false});
   }
 
 
@@ -285,23 +336,32 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
 
     const policy = this.state.policy?.data;
     if (!policy?.rootNode) {
-      return <></>;
+      return <Button variant="contained" color="primary" style={{position: "fixed", top: 10, left: "48%"}}><Add/></Button>;
     }
 
     this.renderedNodeIds = [];
     this.renderedLinePairs = [];
     const treeContent = this.renderTree(policy.rootNode);
     
-
     return (
       <div className={classes.root}>
-        {this.renderStartButton()}
         {treeContent}
-        {this.state.showAddEdge && this.renderAddEdgeForm()}
+        {this.state.showEditNode && this.renderEditNodeForm()}
         {this.state.showDeleteNode && this.renderDeleteNodeForm()}
+        <div style={{position: "fixed", bottom: 5, left: "45%"}}>
+          <Mutation mutation={updateGraphPolicyMutation} variables={{id: this.state.policy?.id, policy: this.state.policy}}>
+            {(mutateFn:MutationFunction) => (
+              <Button variant="contained" color="primary" onClick={()=>this.persistChanges(mutateFn)}>Persist Changes</Button>
+            )}
+          </Mutation>
+          {this.state.loading && <ContentLoading/>}
+        </div>
+        <Snackbar open={this.state.showSnackbar} autoHideDuration={5000} onClose={this.hideSnackbar} message={this.state.snackbarText}/>
       </div>
     );
   }
 }
 
 export default withStyles(styles)(GraphPolicyVisualizer);
+
+
