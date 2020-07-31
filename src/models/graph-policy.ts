@@ -1,5 +1,5 @@
 // TODO - Expoert these from the npm module instead
-
+import {IGraphPolicy} from '@bavard/graph-policy';
 export interface IResponseOption {
   intent: string;
   type: OptionType;
@@ -24,12 +24,12 @@ export interface IAgentAction {
   utterance: string;
   options: IResponseOption[];
 }
-export interface IGraphPolicy {
-  version: string;
-  rootNode: IGraphPolicyNode;
-  currentNode: IGraphPolicyNode | null;
-  nodes: IGraphPolicyNode[];
-}
+// export interface IGraphPolicy {
+//   version: string;
+//   rootNode: IGraphPolicyNode;
+//   currentNode: IGraphPolicyNode | null;
+//   nodes: IGraphPolicyNode[];
+// }
 export declare type IGraphPolicyNode = IUtteranceNode;
 export interface IUtteranceNode {
   nodeId: number;

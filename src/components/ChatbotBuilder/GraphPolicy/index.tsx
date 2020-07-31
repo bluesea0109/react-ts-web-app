@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme: Theme) =>
     dialogClose: {
       float: 'right',
       cursor: 'pointer',
-      position: 'absolute',
+      position: 'fixed',
       top: theme.spacing(2),
       right: theme.spacing(2),
     },
