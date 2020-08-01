@@ -1,3 +1,4 @@
+import {IGraphPolicy} from '@bavard/graph-policy';
 
 export enum ChatbotLanguage {
   EN_US,
@@ -161,10 +162,10 @@ export interface IUserResponseOptionInput {
   text: string;
 }
 
-export interface IGraphPolicy {
+export interface IAgentGraphPolicy {
   id: number;
   agentId: number;
   name: string;
-  data: any;
+  data: IGraphPolicy;
   isActive: boolean;
 }

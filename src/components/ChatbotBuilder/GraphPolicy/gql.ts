@@ -6,8 +6,20 @@ export const createGraphPolicyMutation = gql`
         id
         agentId
         name
+        data
       }
     }
+`;
+
+export const updateGraphPolicyMutation = gql`
+  mutation ($id: Int!, $policy: ChatbotService_GraphPolicyInput!) {
+    ChatbotService_updateGraphPolicy(id: $id, policy: $policy) {
+      id
+      agentId
+      name
+      data
+    }
+  }
 `;
 
 export const deleteGraphPolicyMutation = gql`
