@@ -6,8 +6,9 @@ import _ from 'lodash';
 import React from 'react';
 import { Mutation, MutationFunction } from 'react-apollo';
 import LineTo, {SteppedLineTo} from 'react-lineto';
-import {IAgentGraphPolicy} from '../../../models/graph-policy';
+import {IAgentGraphPolicy} from '../../../models/chatbot-service';
 import ContentLoading from '../../ContentLoading';
+import CreatePolicyForm from './CreatePolicyForm';
 import EditNodeForm from './EditNodeForm';
 import { updateGraphPolicyMutation } from './gql';
 import GraphNode from './GraphNode';
@@ -26,9 +27,6 @@ interface IGraphPolicyVisualizerProps {
 interface IGraphPolicyVisualizerState {
   policy?: IAgentGraphPolicy;
   graphPolicyInstance?: GraphPolicy;
-  hoveredNodeId?: number;
-  showAddNode: any;
-  showAddEdge: any;
   showDeleteNode: any;
   showEditNode: any;
   loading: boolean;
@@ -40,12 +38,15 @@ const styles = (theme: Theme) => ({
   root: {
     width: '100%',
     display: 'flex',
+    justifyContent: 'space-between',
   },
   graphRow: {
     display: 'flex',
     justifyContent: 'space-around',
     width: '100%',
-    paddingBottom: theme.spacing(3),
+    paddingBottom: theme.spacing(2),
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1),
   },
   graphCol: {
     display: 'flex',
@@ -53,6 +54,8 @@ const styles = (theme: Theme) => ({
   intentChip: {
     maxWidth: 150,
     zIndex: 2,
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.primary.contrastText,
   },
   fullWidth: {
     width: '100%',
@@ -67,9 +70,6 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
     this.state = {
       policy: props.policy,
       graphPolicyInstance: undefined,
-      hoveredNodeId: undefined,
-      showAddEdge: undefined,
-      showAddNode: undefined,
       showEditNode: undefined,
       showDeleteNode: undefined,
       loading: false,
@@ -158,14 +158,8 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
     return content;
   }
 
-  onAddEdge = (nodeId: number) => {
-    this.closeForms();
-    this.setState({showAddEdge: nodeId});
-  }
-
   onDeleteNode = (nodeId: number) => {
     this.closeForms();
-
     this.setState({showDeleteNode: nodeId});
   }
 
@@ -176,8 +170,6 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
 
   closeForms = () => {
     this.setState({
-      showAddEdge: null,
-      showAddNode: null,
       showEditNode: null,
       showDeleteNode: null,
     });
@@ -325,13 +317,26 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
     this.setState({loading: false});
   }
 
+  handleNewPolicy = (policy: IAgentGraphPolicy) => {
+    this.setState({
+      policy,
+    });
+  }
+
+  renderNewPolicy() {
+    return (
+      <CreatePolicyForm onSuccess={this.handleNewPolicy}/>
+    );
+  }
+
   render() {
     const {classes} = this.props;
 
-    const policy = this.state.policy?.data;
-    if (!policy?.rootNode) {
-      return <Button variant="contained" color="primary" style={{position: 'fixed', top: 10, left: '48%'}}><Add/></Button>;
+    if (!this.state.policy) {
+      return this.renderNewPolicy();
     }
+
+    const policy = this.state.policy?.data;
 
     this.renderedNodeIds = [];
     this.renderedLinePairs = [];

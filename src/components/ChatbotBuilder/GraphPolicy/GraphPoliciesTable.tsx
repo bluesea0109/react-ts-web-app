@@ -9,7 +9,7 @@ import { AccountTreeRounded, Delete, Power } from '@material-ui/icons';
 import 'firebase/auth';
 import MaterialTable, { Column } from 'material-table';
 import React, { useEffect } from 'react';
-import { IAgentGraphPolicy } from '../../../models/graph-policy';
+import { IAgentGraphPolicy } from '../../../models/chatbot-service';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

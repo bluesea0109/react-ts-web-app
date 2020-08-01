@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@apollo/react-hooks';
-import { Dialog, Fab, Grid, Typography } from '@material-ui/core';
+import { Dialog, Fab, Grid } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
@@ -8,7 +8,7 @@ import React, { useState } from 'react';
 import {useParams} from 'react-router-dom';
 
 import { useSnackbar } from 'notistack';
-import {IAgentGraphPolicy} from '../../../models/graph-policy';
+import {IAgentGraphPolicy} from '../../../models/chatbot-service';
 import ContentLoading from '../../ContentLoading';
 import {activateGraphPolicyMutation, deleteGraphPolicyMutation, getGraphPoliciesQuery} from './gql';
 import GraphPoliciesTable from './GraphPoliciesTable';
@@ -65,7 +65,7 @@ export default function GraphPolicies() {
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const [selectedPolicy, selectPolicy] = useState<IAgentGraphPolicy|null>(null);
+  const [selectedPolicy, selectPolicy] = useState<IAgentGraphPolicy|undefined>();
 
   agentId = parseInt(agentId);
 
@@ -119,7 +119,7 @@ export default function GraphPolicies() {
   };
 
   const handleClosePolicy = () => {
-    selectPolicy(null);
+    selectPolicy(undefined);
     setViewDialogOpen(false);
   };
 
@@ -139,25 +139,17 @@ export default function GraphPolicies() {
             onView={handleViewPolicy}
             policies={policies} />
 
-          {
-            selectedPolicy ?
             <Dialog open={viewDialogOpen} fullScreen={true} scroll={'body'} className={classes.policyDialog}>
-              <Typography className={classes.dialogTitle}>
-                Graph Policy {selectedPolicy.name}
-              </Typography>
               <CloseRoundedIcon className={classes.dialogClose} onClick={handleClosePolicy}/>
               <GraphVisualizer policy={selectedPolicy}/>
             </Dialog>
-            :
-            <></>
-          }
 
-          <UpsertGraphPolicyDialog
+          {<UpsertGraphPolicyDialog
             open={upsertDialogOpen}
             onSuccess={() => queryResult?.refetch()}
-            onCancel={() => setUpsertDialogOpen(false)}/>
+            onCancel={() => setUpsertDialogOpen(false)}/>}
         </Grid>
-        <Fab color="primary" aria-label="add" onClick={() => setUpsertDialogOpen(true)} className={classes.addButton}>
+        <Fab color="primary" aria-label="add" onClick={() => setViewDialogOpen(true)} className={classes.addButton}>
           <AddIcon />
         </Fab>
       </Grid>

@@ -6,6 +6,7 @@ export const createGraphPolicyMutation = gql`
         id
         agentId
         name
+        data
       }
     }
 `;
@@ -16,6 +17,7 @@ export const updateGraphPolicyMutation = gql`
       id
       agentId
       name
+      data
     }
   }
 `;

@@ -1,4 +1,4 @@
-import { IAgentGraphPolicy } from '../../../models/graph-policy';
+import { IAgentGraphPolicy } from '../../../models/chatbot-service';
 
 export interface IGetGraphPoliciesQueryResult {
   ChatbotService_graphPolicies: IAgentGraphPolicy[];
@@ -6,6 +6,14 @@ export interface IGetGraphPoliciesQueryResult {
 
 export interface IDeleteGraphPolicyMutationResult {
   ChatbotService_deleteGraphPolicy: IAgentGraphPolicy;
+}
+
+export interface ICreateGraphPolicyMutationResult {
+  ChatbotService_createGraphPolicy: IAgentGraphPolicy;
+}
+
+export interface IUpdateGraphPolicyMutationResult {
+  ChatbotService_updateGraphPolicy: IAgentGraphPolicy;
 }
 
 export interface IActivateGraphPolicyMutationResult {
