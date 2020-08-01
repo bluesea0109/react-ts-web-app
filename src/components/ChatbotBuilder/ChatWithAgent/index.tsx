@@ -1,8 +1,10 @@
 import { useQuery } from '@apollo/react-hooks';
 import { createStyles, makeStyles, Theme, Typography } from '@material-ui/core';
+import gql from 'graphql-tag';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import config from '../../../config';
+import ContentLoading from '../../ContentLoading';
 import { getApiKeysQuery } from '../../Dashboard/ProjectSettings/gql';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -24,6 +26,7 @@ export default function ChatWithAgent() {
   const [isDebug, setIsDebug] = useState(false);
   const [error, setError] = useState<any>(null);
   const iframe = useRef<HTMLIFrameElement | null>(null);
+  const agentData = useQuery<IGetAgent>(GET_AGENT, { variables: { agentId: Number(agentId) } });
 
   const apiKeysQuery = useQuery(getApiKeysQuery, {
     variables: {
@@ -69,11 +72,15 @@ export default function ChatWithAgent() {
   // eslint-disable-next-line
   }, []);
 
+  if (agentData.loading) {
+    return <ContentLoading/>;
+  }
+
   const onIframeLoad = () => {
     console.log(agentId, apiKey.current);
 
     iframe.current?.contentWindow?.postMessage({
-      agentID: agentId,
+      uname: agentData.data?.ChatbotService_agent.uname,
       apiKey: apiKey.current,
       isActive: true,
     }, '*');
@@ -124,3 +131,17 @@ export default function ChatWithAgent() {
     </div>
   );
 }
+
+interface IGetAgent {
+  ChatbotService_agent: {
+    uname: string;
+  };
+}
+
+const GET_AGENT = gql`
+  query($agentId: Int!) {
+    ChatbotService_agent(agentId: $agentId) {
+      uname
+    }
+  }
+`;
