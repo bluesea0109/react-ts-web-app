@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
       borderRadius: theme.spacing(1),
       margin: theme.spacing(1),
       padding: theme.spacing(2),
+      backgroundColor: theme.palette.background.default,
     },
   }),
 );

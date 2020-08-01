@@ -10,22 +10,22 @@ import React from 'react';
 import { withApollo } from 'react-apollo';
 import GraphPolicyUpload from './GraphPolicyUpload';
 
-interface IUpsertGraphPolicyDialogProps {
+interface IUploadGraphPolicyDialogProps {
   client: ApolloClient<object>;
   open: boolean;
   onCancel: () => void;
   onSuccess?: () => void;
 }
 
-interface IUpsertGraphPolicyDialogState {
+interface IUploadGraphPolicyDialogState {
   open: boolean;
   error: GraphQLError | Error | null;
   status: string;
   policySaved: boolean;
 }
 
-class UpsertGraphPolicyDialog extends React.Component<IUpsertGraphPolicyDialogProps, IUpsertGraphPolicyDialogState> {
-  constructor(props: IUpsertGraphPolicyDialogProps) {
+class UploadGraphPolicyDialog extends React.Component<IUploadGraphPolicyDialogProps, IUploadGraphPolicyDialogState> {
+  constructor(props: IUploadGraphPolicyDialogProps) {
     super(props);
 
     this.state = {
@@ -100,4 +100,4 @@ class UpsertGraphPolicyDialog extends React.Component<IUpsertGraphPolicyDialogPr
   }
 }
 
-export default withApollo<IUpsertGraphPolicyDialogProps>(UpsertGraphPolicyDialog);
+export default withApollo<IUploadGraphPolicyDialogProps>(UploadGraphPolicyDialog);

@@ -1,11 +1,11 @@
 import {GraphPolicy, IGraphPolicyNode } from '@bavard/graph-policy';
-import { Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar, Tooltip } from '@material-ui/core';
+import { Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Snackbar, Tooltip } from '@material-ui/core';
 import { Theme, withStyles } from '@material-ui/core/styles';
 import {Add} from '@material-ui/icons';
 import _ from 'lodash';
 import React from 'react';
 import { Mutation, MutationFunction } from 'react-apollo';
-import LineTo, {SteppedLineTo} from 'react-lineto';
+import LineTo from 'react-lineto';
 import {IAgentGraphPolicy} from '../../../models/chatbot-service';
 import ContentLoading from '../../ContentLoading';
 import CreatePolicyForm from './CreatePolicyForm';
@@ -86,7 +86,7 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
       delay: true,
       borderStyle: 'solid',
       borderWidth: 1,
-      borderColor: '#666666',
+      borderColor: '#CCCCCC',
       within: classes.root,
     };
 
@@ -115,7 +115,7 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
                   );
                 } else {
                   lines.push(
-                    <SteppedLineTo key={`line_${node.nodeId}_${e.nodeId}`} from={`graph_node_${node.nodeId}`}
+                    <LineTo key={`line_${node.nodeId}_${e.nodeId}`} from={`graph_node_${node.nodeId}`}
                       fromAnchor="bottom"
                       to={`graph_node_${e.nodeId}`} toAnchor="top"
                       {...lineProps}/>,
@@ -325,7 +325,11 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
 
   renderNewPolicy() {
     return (
-      <CreatePolicyForm onSuccess={this.handleNewPolicy}/>
+      <Grid container={true}>
+        <Grid item={true} lg={6} sm={12}>
+          <CreatePolicyForm onSuccess={this.handleNewPolicy}/>
+        </Grid>
+      </Grid>
     );
   }
 

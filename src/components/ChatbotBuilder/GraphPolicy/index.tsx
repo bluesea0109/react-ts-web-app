@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@apollo/react-hooks';
-import { Dialog, Fab, Grid } from '@material-ui/core';
+import { Button, Dialog, Fab, Grid, Popover } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
@@ -14,7 +14,7 @@ import {activateGraphPolicyMutation, deleteGraphPolicyMutation, getGraphPolicies
 import GraphPoliciesTable from './GraphPoliciesTable';
 import GraphVisualizer from './GraphVisualizer';
 import {IGetGraphPoliciesQueryResult} from './types';
-import UpsertGraphPolicyDialog from './UpsertGraphPolicyDialog';
+import UploadGraphPolicyDialog from './UploadGraphPolicyDialog';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -54,6 +54,9 @@ const useStyles = makeStyles((theme: Theme) =>
       top: theme.spacing(2),
       left: theme.spacing(2),
     },
+    createButton: {
+      margin: theme.spacing(1),
+    },
   }),
 );
 
@@ -62,7 +65,8 @@ export default function GraphPolicies() {
   let { agentId } = useParams();
   const { enqueueSnackbar } = useSnackbar();
   const [upsertDialogOpen, setUpsertDialogOpen] = useState(false);
-  const [viewDialogOpen, setViewDialogOpen] = useState(false);
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const [popoverAnchor, setPopoverAnchor] = React.useState<HTMLButtonElement | null>(null);
   const [loading, setLoading] = useState(false);
 
   const [selectedPolicy, selectPolicy] = useState<IAgentGraphPolicy|undefined>();
@@ -115,12 +119,20 @@ export default function GraphPolicies() {
 
   const handleViewPolicy = async(policy: IAgentGraphPolicy) => {
     selectPolicy(policy);
-    setViewDialogOpen(true);
+    setUpsertDialogOpen(true);
   };
 
   const handleClosePolicy = () => {
     selectPolicy(undefined);
-    setViewDialogOpen(false);
+    setUpsertDialogOpen(false);
+  };
+
+  const showCreatePopover = (event: React.MouseEvent<HTMLButtonElement>|null) => {
+    if (event === null) {
+      setPopoverAnchor(null);
+    } else {
+      setPopoverAnchor(event.currentTarget);
+    }
   };
 
   const policies = queryResult.data?.ChatbotService_graphPolicies;
@@ -139,19 +151,37 @@ export default function GraphPolicies() {
             onView={handleViewPolicy}
             policies={policies} />
 
-            <Dialog open={viewDialogOpen} fullScreen={true} scroll={'body'} className={classes.policyDialog}>
+            <Dialog open={upsertDialogOpen} fullScreen={true} scroll={'body'} className={classes.policyDialog}>
               <CloseRoundedIcon className={classes.dialogClose} onClick={handleClosePolicy}/>
               <GraphVisualizer policy={selectedPolicy}/>
             </Dialog>
 
-          {<UpsertGraphPolicyDialog
-            open={upsertDialogOpen}
+          {<UploadGraphPolicyDialog
+            open={uploadDialogOpen}
             onSuccess={() => queryResult?.refetch()}
-            onCancel={() => setUpsertDialogOpen(false)}/>}
+            onCancel={() => setUploadDialogOpen(false)}/>}
         </Grid>
-        <Fab color="primary" aria-label="add" onClick={() => setViewDialogOpen(true)} className={classes.addButton}>
+        <Fab color="primary" aria-label="add" onClick={showCreatePopover} className={classes.addButton}>
           <AddIcon />
         </Fab>
+        <Popover
+          anchorOrigin={{
+            vertical: 'center',
+            horizontal: 'left',
+          }}
+          transformOrigin={{
+            vertical: 'center',
+            horizontal: 'right',
+          }}
+          open={Boolean(popoverAnchor)}
+          anchorEl={popoverAnchor}
+          onClose={() => showCreatePopover(null)}
+        >
+          <Button variant={'contained'} className={classes.createButton} color="primary"
+            onClick={() => setUpsertDialogOpen(true)}>Create Policy</Button>
+          <Button variant={'contained'} className={classes.createButton} color="primary"
+            onClick={() => setUploadDialogOpen(true)}>Upload Policy</Button>
+        </Popover>
       </Grid>
   );
 }
