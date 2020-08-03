@@ -1,12 +1,12 @@
+import { useLazyQuery } from '@apollo/react-hooks';
 import { Button, FormControl, FormControlLabel, FormLabel,
   InputLabel, MenuItem, Paper, Radio, RadioGroup, Select, TextField} from '@material-ui/core';
-import { useLazyQuery } from '@apollo/react-hooks';
-import {IGetImageUploadSignedUrlQueryResult} from './types';
-import {getSignedImgUploadUrlQuery} from './gql';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { useSnackbar } from 'notistack';
+import ContentLoading from '../../ContentLoading';
+import {getSignedImgUploadUrlQuery} from './gql';
 import ImageUploadPreviewer from './ImageUploadPreviewer';
-import ContentLoading from '../../ContentLoading'; 
+import {IGetImageUploadSignedUrlQueryResult} from './types';
 
 import {GraphPolicy, ImageOption, TextOption, UtteranceNode} from '@bavard/graph-policy';
 import React, {useState} from 'react';
@@ -53,30 +53,29 @@ export default function AddEdgeForm({agentId, nodeId, policy, onCancel, onSucces
   const [imgFile, setImgFile] = useState<File|undefined>(undefined);
   const [getSignedImgUploadUrl, signedImgUploadResult] = useLazyQuery<IGetImageUploadSignedUrlQueryResult>(getSignedImgUploadUrlQuery);
 
-
   const setEdgeNodeExists = (event: any) => {
     setNodeExists(event.target.value === 'true');
   };
 
   const prepareSignedUploadUrl = () => {
-    console.log("GETTING SIGNED UPLOAD URL");
-    if (optionType === 'IMAGE' && actionText.length >=1 && imgFile) {
+    console.log('GETTING SIGNED UPLOAD URL');
+    if (optionType === 'IMAGE' && actionText.length >= 1 && imgFile) {
       getSignedImgUploadUrl({
-        variables: { 
-          agentId: agentId,
-          basename: actionText
+        variables: {
+          agentId,
+          basename: actionText,
         },
       });
     }
-  }
+  };
 
   const handleImg = (file: File) => {
     setImgFile(file);
     prepareSignedUploadUrl();
-  }
+  };
 
   const handleSubmit = async() => {
-    
+
     if (!node) {
       return enqueueSnackbar('Parent node did not exist', { variant: 'error' });
     }
@@ -95,13 +94,13 @@ export default function AddEdgeForm({agentId, nodeId, policy, onCancel, onSucces
     if (optionType === 'TEXT') {
       node.addEdge(edgeNode, new TextOption(intent, actionText));
     } else if (optionType === 'IMAGE') {
-      if(!imgFile) {
+      if (!imgFile) {
         return enqueueSnackbar('Please select an image for the option', { variant: 'error' });
       }
 
       const uploadUrl = signedImgUploadResult.data?.ChatbotService_imageOptionUploadUrl?.url;
-      
-      if(!uploadUrl) {
+
+      if (!uploadUrl) {
         prepareSignedUploadUrl();
         return enqueueSnackbar('Image upload not ready. Please try in 10 seconds, or try a new image', { variant: 'error' });
       }
@@ -109,8 +108,7 @@ export default function AddEdgeForm({agentId, nodeId, policy, onCancel, onSucces
       try {
         setLoading(true);
         await uploadFileWithXhr(imgFile, uploadUrl);
-      }
-      catch(e) {
+      } catch (e) {
         enqueueSnackbar(`Error with uploading the image to GCS - ${JSON.stringify(e)}`, { variant: 'error' });
       }
       setLoading(false);
@@ -177,7 +175,7 @@ export default function AddEdgeForm({agentId, nodeId, policy, onCancel, onSucces
               <FormControlLabel value={'IMAGE'} control={<Radio />} label="Image" />
             </RadioGroup>
             {
-              optionType === "IMAGE" && (
+              optionType === 'IMAGE' && (
                 <ImageUploadPreviewer onChange={handleImg}/>
               )
             }
@@ -187,10 +185,12 @@ export default function AddEdgeForm({agentId, nodeId, policy, onCancel, onSucces
             <TextField name="intent" label="Intent" variant="outlined" onChange={(e) => setIntent(e.target.value as string)} />
           </FormControl>
           <FormControl variant="outlined" className={classes.formControl}>
-            <TextField name="text" label="Text/ImageName" variant="outlined" onBlur={(e) => {setActionText(e.target.value as string); prepareSignedUploadUrl();}} />
+            <TextField name="text" label="Text/ImageName" variant="outlined"
+              onBlur={(e) => {setActionText(e.target.value as string); prepareSignedUploadUrl(); }} />
           </FormControl>
 
-          <Button variant="contained" disabled={loading || signedImgUploadResult.loading} color="primary" type="submit" onClick={handleSubmit}>Add Edge</Button>
+          <Button variant="contained" disabled={loading || signedImgUploadResult.loading}
+            color="primary" type="submit" onClick={handleSubmit}>Add Edge</Button>
           {(loading || signedImgUploadResult.loading) && <ContentLoading/>}
     </Paper>
   );

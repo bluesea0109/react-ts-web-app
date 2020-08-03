@@ -22,6 +22,6 @@ export interface IActivateGraphPolicyMutationResult {
 
 export interface IGetImageUploadSignedUrlQueryResult {
   ChatbotService_imageOptionUploadUrl: {
-    url: string
-  }
+    url: string,
+  };
 }

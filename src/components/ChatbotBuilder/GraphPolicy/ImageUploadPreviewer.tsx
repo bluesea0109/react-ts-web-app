@@ -6,17 +6,17 @@ import React, {useState} from 'react';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     thumbnail: {
-      position: "absolute",
+      position: 'absolute',
       top: 0,
       left: 0,
-      width: "100%",
-      height: "100%",
-      borderRadius: theme.spacing(1)
+      width: '100%',
+      height: '100%',
+      borderRadius: theme.spacing(1),
     },
     uploadButton: {
       width: 100,
-      height: 100
-    }
+      height: 100,
+    },
   }),
 );
 
@@ -32,15 +32,15 @@ export default function ImageUpload({width, height, onChange}: IImageUploadProps
 
   const handleImg = (e: React.ChangeEvent<HTMLInputElement>) => {
     const reader = new FileReader();
-    reader.onload = ()=> {
+    reader.onload = () => {
       setImgUrl(reader.result?.toString());
-    }
-    if(e.target.files?.[0]) {
+    };
+    if (e.target.files?.[0]) {
       reader.readAsDataURL(e.target.files[0]);
       onChange?.(e.target?.files[0]);
     }
-    
-  }
+
+  };
 
   return (
     <Button

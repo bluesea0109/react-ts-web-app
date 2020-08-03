@@ -208,7 +208,8 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
     }
 
     return (
-      <EditNodeForm agentId={this.state.policy?.agentId} policy={gp} nodeId={node.nodeId} onCancel={this.closeForms} onSubmit={this.handleEditNode} />
+      <EditNodeForm agentId={this.state.policy?.agentId} policy={gp}
+        nodeId={node.nodeId} onCancel={this.closeForms} onSubmit={this.handleEditNode} />
     );
   }
 

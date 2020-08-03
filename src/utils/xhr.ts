@@ -1,5 +1,5 @@
-export const uploadFileWithXhr = async(file:File, url:string, method:string="POST"):Promise<any> => {
-  return new Promise((resolve, reject)=>{
+export const uploadFileWithXhr = async(file: File, url: string, method: string= 'POST'): Promise<any> => {
+  return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open('POST', url);
     xhr.setRequestHeader('Content-Type', file.type);
@@ -9,17 +9,17 @@ export const uploadFileWithXhr = async(file:File, url:string, method:string="POS
       } else {
           reject({
               status: this.status,
-              statusText: xhr.statusText
+              statusText: xhr.statusText,
           });
       }
     };
     xhr.onerror = function () {
       reject({
           status: this.status,
-          message: xhr.statusText
+          message: xhr.statusText,
       });
     };
-    
-    xhr.send(file); 
+
+    xhr.send(file);
   });
-}
+};
