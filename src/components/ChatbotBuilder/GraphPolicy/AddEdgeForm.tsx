@@ -1,10 +1,16 @@
 import { Button, FormControl, FormControlLabel, FormLabel,
   InputLabel, MenuItem, Paper, Radio, RadioGroup, Select, TextField} from '@material-ui/core';
+import { useLazyQuery } from '@apollo/react-hooks';
+import {IGetImageUploadSignedUrlQueryResult} from './types';
+import {getSignedImgUploadUrlQuery} from './gql';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { useSnackbar } from 'notistack';
+import ImageUploadPreviewer from './ImageUploadPreviewer';
+import ContentLoading from '../../ContentLoading'; 
 
 import {GraphPolicy, ImageOption, TextOption, UtteranceNode} from '@bavard/graph-policy';
 import React, {useState} from 'react';
+import {uploadFileWithXhr} from '../../../utils/xhr';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -13,7 +19,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     formControl: {
       width: '100%',
-      marginBottom: theme.spacing(1),
+      marginBottom: theme.spacing(2),
     },
     nodePaper: {
       borderRadius: theme.spacing(1),
@@ -24,13 +30,14 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface IGraphNodeProps {
+  agentId: number;
   nodeId: number;
   onCancel: () => void;
   onSuccess: (policy: GraphPolicy) => void;
   policy: GraphPolicy;
 }
 
-export default function AddEdgeForm({nodeId, policy, onCancel, onSuccess}: IGraphNodeProps) {
+export default function AddEdgeForm({agentId, nodeId, policy, onCancel, onSuccess}: IGraphNodeProps) {
   const classes = useStyles();
   const {enqueueSnackbar} = useSnackbar();
   const nodeList = policy.toJsonObj().nodes;
@@ -42,22 +49,37 @@ export default function AddEdgeForm({nodeId, policy, onCancel, onSuccess}: IGrap
   const [actionText, setActionText] = useState('');
   const [utterance, setUtterance] = useState('');
   const [actionName, setActionName] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [imgFile, setImgFile] = useState<File|undefined>(undefined);
+  const [getSignedImgUploadUrl, signedImgUploadResult] = useLazyQuery<IGetImageUploadSignedUrlQueryResult>(getSignedImgUploadUrlQuery);
+
 
   const setEdgeNodeExists = (event: any) => {
-    console.log(event?.target?.value);
     setNodeExists(event.target.value === 'true');
   };
 
-  const handleSubmit = () => {
+  const prepareSignedUploadUrl = () => {
+    console.log("GETTING SIGNED UPLOAD URL");
+    if (optionType === 'IMAGE' && actionText.length >=1 && imgFile) {
+      getSignedImgUploadUrl({
+        variables: { 
+          agentId: agentId,
+          basename: actionText
+        },
+      });
+    }
+  }
+
+  const handleImg = (file: File) => {
+    setImgFile(file);
+    prepareSignedUploadUrl();
+  }
+
+  const handleSubmit = async() => {
+    
     if (!node) {
       return enqueueSnackbar('Parent node did not exist', { variant: 'error' });
     }
-    console.log({
-      intent,
-      optionType,
-      actionText,
-      selectedNodeId,
-    });
 
     let edgeNode = policy.getNodeById(selectedNodeId);
 
@@ -70,18 +92,35 @@ export default function AddEdgeForm({nodeId, policy, onCancel, onSuccess}: IGrap
       return enqueueSnackbar('The selected edge is invalid', { variant: 'error' });
     }
 
-    console.log('EDGE NODE ', edgeNode);
-
     if (optionType === 'TEXT') {
       node.addEdge(edgeNode, new TextOption(intent, actionText));
     } else if (optionType === 'IMAGE') {
+      if(!imgFile) {
+        return enqueueSnackbar('Please select an image for the option', { variant: 'error' });
+      }
+
+      const uploadUrl = signedImgUploadResult.data?.ChatbotService_imageOptionUploadUrl?.url;
+      
+      if(!uploadUrl) {
+        prepareSignedUploadUrl();
+        return enqueueSnackbar('Image upload not ready. Please try in 10 seconds, or try a new image', { variant: 'error' });
+      }
+
+      try {
+        setLoading(true);
+        await uploadFileWithXhr(imgFile, uploadUrl);
+      }
+      catch(e) {
+        enqueueSnackbar(`Error with uploading the image to GCS - ${JSON.stringify(e)}`, { variant: 'error' });
+      }
+      setLoading(false);
+
       node.addEdge(edgeNode, new ImageOption(intent, actionText));
     }
 
     enqueueSnackbar('Edge added', { variant: 'success' });
     clearForm();
     const newPolicy = new GraphPolicy(policy.rootNode);
-    console.log('NEW POLICY: ', newPolicy);
     onSuccess(newPolicy);
   };
 
@@ -137,16 +176,22 @@ export default function AddEdgeForm({nodeId, policy, onCancel, onSuccess}: IGrap
               <FormControlLabel value={'TEXT'} control={<Radio />} label="Text" />
               <FormControlLabel value={'IMAGE'} control={<Radio />} label="Image" />
             </RadioGroup>
+            {
+              optionType === "IMAGE" && (
+                <ImageUploadPreviewer onChange={handleImg}/>
+              )
+            }
           </FormControl>
 
           <FormControl variant="outlined" className={classes.formControl}>
             <TextField name="intent" label="Intent" variant="outlined" onChange={(e) => setIntent(e.target.value as string)} />
           </FormControl>
           <FormControl variant="outlined" className={classes.formControl}>
-            <TextField name="text" label="Text/ImageName" variant="outlined" onChange={(e) => setActionText(e.target.value as string)} />
+            <TextField name="text" label="Text/ImageName" variant="outlined" onBlur={(e) => {setActionText(e.target.value as string); prepareSignedUploadUrl();}} />
           </FormControl>
 
-          <Button variant="contained" color="primary" type="submit" onClick={handleSubmit}>Add Edge</Button>
+          <Button variant="contained" disabled={loading || signedImgUploadResult.loading} color="primary" type="submit" onClick={handleSubmit}>Add Edge</Button>
+          {(loading || signedImgUploadResult.loading) && <ContentLoading/>}
     </Paper>
   );
 }

@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
     nodePaper: {
       backgroundColor: theme.palette.background.default,
       borderRadius: theme.spacing(1),
-      margin: theme.spacing(1),
+      marginTop: theme.spacing(3),
       padding: theme.spacing(2),
     },
   }),
@@ -25,11 +25,12 @@ const useStyles = makeStyles((theme: Theme) =>
 interface IGraphNodeProps {
   policy: GraphPolicy;
   nodeId: number;
+  agentId: number;
   onCancel: () => void;
   onSubmit: (policy: GraphPolicy) => void;
 }
 
-export default function EditNodeForm({nodeId, policy, onCancel, onSubmit}: IGraphNodeProps) {
+export default function EditNodeForm({nodeId, agentId, policy, onCancel, onSubmit}: IGraphNodeProps) {
   const classes = useStyles();
   const [graphPolicy, setPolicy] = useState<GraphPolicy>(policy);
   const node = graphPolicy.getNodeById(nodeId);
@@ -60,12 +61,12 @@ export default function EditNodeForm({nodeId, policy, onCancel, onSubmit}: IGrap
       </DialogTitle>
       <DialogContent>
         <Grid container={true} className={classes.fullWidth}>
-          <Grid item={true} lg={4} md={12}>
+          <Grid item={true} lg={3} md={12}>
             <GraphNode
               node={node.toJsonObj()}
             />
           </Grid>
-          <Grid item={true} lg={8} md={12}>
+          <Grid item={true} lg={4} md={12}>
             <Paper className={classes.nodePaper}>
               <Typography variant={'h6'}>
                 Edges
@@ -73,14 +74,6 @@ export default function EditNodeForm({nodeId, policy, onCancel, onSubmit}: IGrap
                   <Add/>
                 </IconButton>
               </Typography>
-
-              {
-                addingEdge ?
-                <AddEdgeForm nodeId={node.nodeId} policy={graphPolicy} onSuccess={handleAddEdge} onCancel={() => {}} />
-                :
-                <></>
-              }
-
               <List>
                 {node.toJsonObj().outEdges.map((e, index) => {
                   return (
@@ -101,6 +94,14 @@ export default function EditNodeForm({nodeId, policy, onCancel, onSubmit}: IGrap
                 })}
               </List>
             </Paper>
+          </Grid>
+          <Grid item={true} lg={5} md={12}>
+            {
+              addingEdge ?
+              <AddEdgeForm agentId={agentId} nodeId={node.nodeId} policy={graphPolicy} onSuccess={handleAddEdge} onCancel={() => {}} />
+              :
+              <></>
+            }
           </Grid>
         </Grid>
       </DialogContent>

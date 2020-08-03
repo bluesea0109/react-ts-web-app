@@ -203,12 +203,12 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
     const gp = this.getGraphPolicyFromState();
     const node = gp?.getNodeById(this.state.showEditNode);
 
-    if (!node || !gp) {
+    if (!node || !gp || !this.state.policy) {
       return <></>;
     }
 
     return (
-      <EditNodeForm policy={gp} nodeId={node.nodeId} onCancel={this.closeForms} onSubmit={this.handleEditNode} />
+      <EditNodeForm agentId={this.state.policy?.agentId} policy={gp} nodeId={node.nodeId} onCancel={this.closeForms} onSubmit={this.handleEditNode} />
     );
   }
 
