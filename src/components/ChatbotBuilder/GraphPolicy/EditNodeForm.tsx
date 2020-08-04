@@ -72,7 +72,7 @@ export default function EditNodeForm({nodeId, agentId, policy, onCancel, onSubmi
       return;
     }
     if (!actionName.length || !utterance.length) {
-      return enqueueSnackbar('Action name and Utterance are invalid', {variant: "error"});
+      return enqueueSnackbar('Action name and Utterance are invalid', {variant: 'error'});
     }
 
     node.setActionName(actionName);

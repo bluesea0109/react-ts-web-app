@@ -4,7 +4,7 @@ import { Button, FormControl, FormControlLabel, FormLabel, InputLabel,
   MenuItem, Paper, Radio, RadioGroup, Select, TextField, Typography} from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { useSnackbar } from 'notistack';
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {uploadFileWithFetch} from '../../../utils/xhr';
 import ContentLoading from '../../ContentLoading';
 import {getSignedImgUploadUrlQuery} from './gql';
@@ -119,7 +119,7 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , onCanc
         return enqueueSnackbar('Please select an image for the option', { variant: 'error' });
       }
 
-      const uploadUrl = signedImgUploadResult.data?.ChatbotService_imageOptionUploadUrl?.url.replace(/"/g, "");
+      const uploadUrl = signedImgUploadResult.data?.ChatbotService_imageOptionUploadUrl?.url.replace(/"/g, '');
 
       if (!uploadUrl) {
         prepareSignedUploadUrl();
@@ -128,7 +128,7 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , onCanc
 
       try {
         setLoading(true);
-        await uploadFileWithFetch(imgFile, uploadUrl, "PUT");
+        await uploadFileWithFetch(imgFile, uploadUrl, 'PUT');
       } catch (e) {
         enqueueSnackbar(`Error with uploading the image to GCS - ${JSON.stringify(e)}`, { variant: 'error' });
       }
@@ -216,7 +216,7 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , onCanc
                 onChange={(event) => setSelectedNodeId(event.target.value as number)}
                 label="Node"
               >
-                <MenuItem key={nodeList.length} value={0} disabled={true}></MenuItem>
+                <MenuItem key={nodeList.length} value={0} disabled={true}/>
                 {
                   nodeList.map((n, index) => {
                   return <MenuItem key={index}value={n.nodeId}>{n.nodeId}: {n.actionName}</MenuItem>;
@@ -225,7 +225,6 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , onCanc
               </Select>
           </FormControl>
       }
-
 
       <Button variant="contained" disabled={loading || signedImgUploadResult.loading}
         color="primary" type="submit" onClick={handleSubmit}>

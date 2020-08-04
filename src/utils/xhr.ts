@@ -3,7 +3,7 @@ export const uploadFileWithXhr = async(file: File, url: string, method: string= 
     const xhr = new XMLHttpRequest();
     xhr.open('POST', url);
     xhr.setRequestHeader('Content-Type', file.type);
-    
+
     xhr.onload = function () {
       if (this.status >= 200 && this.status < 300) {
           resolve(xhr.response);
@@ -25,11 +25,9 @@ export const uploadFileWithXhr = async(file: File, url: string, method: string= 
   });
 };
 
-export const uploadFileWithFetch = async(file: File, url: string, method:string = 'POST'): Promise<any>=> {
+export const uploadFileWithFetch = async(file: File, url: string, method: string = 'POST'): Promise<any> => {
   return await fetch(url, {
-    method: method,
-    body: file
+    method,
+    body: file,
   });
-}
-
-
+};
