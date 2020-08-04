@@ -208,13 +208,12 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
 
   renderEditNodeForm = () => {
     const gp = this.getGraphPolicyFromState();
-    console.log('GOT GP FROM STATE ', gp);
     const node = gp?.getNodeById(this.state.showEditNode);
 
     if (!node || !gp || !this.state.policy) {
       return <></>;
     }
-    console.log('RENDERING EDIT NODE FORM ', gp);
+    
     return (
       <EditNodeForm agentId={this.state.policy?.agentId} policy={gp}
         nodeId={node.nodeId} onCancel={this.closeForms} onSubmit={this.handleEditNode} />
@@ -222,7 +221,7 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
   }
 
   handleEditNode = (updatedPolicy: GraphPolicy) => {
-    console.log('UPDATED POLICY: ', updatedPolicy);
+    
     const newPolicy = this.state.policy;
     _.extend(newPolicy, {
       data: updatedPolicy.toJsonObj(),
@@ -239,7 +238,7 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
       console.error('No policy available');
       return;
     }
-    console.log('GETTING POLICY FROM STATE ', policy);
+    
     return GraphPolicy.fromJsonObj(policy.data);
   }
 

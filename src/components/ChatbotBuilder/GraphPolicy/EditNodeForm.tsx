@@ -4,6 +4,7 @@ import { Button, Dialog, DialogActions, DialogContent,
   ListItemIcon, ListItemSecondaryAction, ListItemText, Paper, TextField , Typography} from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import {Add, Delete, Edit, Image, TextFields} from '@material-ui/icons';
+import { useSnackbar } from 'notistack';
 import React, {useEffect, useState} from 'react';
 import GraphNode from './GraphNode';
 import UpsertEdgeForm from './UpsertEdgeForm';
@@ -43,6 +44,7 @@ export default function EditNodeForm({nodeId, agentId, policy, onCancel, onSubmi
   const [utterance, setUtterance] = useState(node?.toJsonObj().utterance || '');
   const [editingEdgeId, setEditingEdgeId] = useState<number|undefined>();
   const [numChanges, setNumStateChanges] = useState(0);
+  const {enqueueSnackbar} = useSnackbar();
 
   useEffect(() => {
     setUpsertingEdge(false);
@@ -70,7 +72,7 @@ export default function EditNodeForm({nodeId, agentId, policy, onCancel, onSubmi
       return;
     }
     if (!actionName.length || !utterance.length) {
-      return console.log('Action name and Utterance are invalid');
+      return enqueueSnackbar('Action name and Utterance are invalid', {variant: "error"});
     }
 
     node.setActionName(actionName);

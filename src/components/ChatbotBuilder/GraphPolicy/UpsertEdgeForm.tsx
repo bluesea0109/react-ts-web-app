@@ -4,8 +4,8 @@ import { Button, FormControl, FormControlLabel, FormLabel, InputLabel,
   MenuItem, Paper, Radio, RadioGroup, Select, TextField, Typography} from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { useSnackbar } from 'notistack';
-import React, {useState} from 'react';
-import {uploadFileWithXhr} from '../../../utils/xhr';
+import React, {useState, useEffect} from 'react';
+import {uploadFileWithFetch} from '../../../utils/xhr';
 import ContentLoading from '../../ContentLoading';
 import {getSignedImgUploadUrlQuery} from './gql';
 import ImageUploadPreviewer from './ImageUploadPreviewer';
@@ -52,8 +52,6 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , onCanc
     edge = node?.getEdgeById(edgeId);
   }
 
-  console.log('EDGE: ', edge);
-
   let edgeOption: TextOption| ImageOption | undefined;
   if (edge?.option?.type === 'TEXT') {
     edgeOption = edge.option as TextOption;
@@ -61,8 +59,6 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , onCanc
   if (edge?.option?.type === 'IMAGE') {
     edgeOption = edge.option as ImageOption;
   }
-
-  console.log('EDGE OPTION: ', edgeOption);
 
   const [nodeExists, setNodeExists] = useState(true);
   const [selectedNodeId, setSelectedNodeId] = useState<any>(edge?.dest.nodeId);
@@ -80,7 +76,6 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , onCanc
   };
 
   const prepareSignedUploadUrl = () => {
-    console.log('GETTING SIGNED UPLOAD URL');
     if (optionType === 'IMAGE' && actionText.length >= 1 && imgFile) {
       getSignedImgUploadUrl({
         variables: {
@@ -91,13 +86,13 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , onCanc
     }
   };
 
+  useEffect(prepareSignedUploadUrl, [imgFile]);
+
   const handleImg = (file: File) => {
     setImgFile(file);
-    prepareSignedUploadUrl();
   };
 
   const handleSubmit = async() => {
-
     if (!node) {
       return enqueueSnackbar('Parent node did not exist', { variant: 'error' });
     }
@@ -124,7 +119,7 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , onCanc
         return enqueueSnackbar('Please select an image for the option', { variant: 'error' });
       }
 
-      const uploadUrl = signedImgUploadResult.data?.ChatbotService_imageOptionUploadUrl?.url;
+      const uploadUrl = signedImgUploadResult.data?.ChatbotService_imageOptionUploadUrl?.url.replace(/"/g, "");
 
       if (!uploadUrl) {
         prepareSignedUploadUrl();
@@ -133,7 +128,7 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , onCanc
 
       try {
         setLoading(true);
-        await uploadFileWithXhr(imgFile, uploadUrl);
+        await uploadFileWithFetch(imgFile, uploadUrl, "PUT");
       } catch (e) {
         enqueueSnackbar(`Error with uploading the image to GCS - ${JSON.stringify(e)}`, { variant: 'error' });
       }
@@ -158,11 +153,9 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , onCanc
     setActionName('');
   };
 
-  console.log(policy);
-
   return (
     <Paper className={classes.nodePaper}>
-      <Typography variant={'subtitle1'} className={classes.formControl}>
+      <Typography variant={'h6'} className={classes.formControl}>
         {
           edge ?
           'Editing Edge'
@@ -170,10 +163,35 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , onCanc
           'Add a new edge'
         }
       </Typography>
+
+      <FormControl component="fieldset" className={classes.formControl}>
+        <FormLabel>Option Type {optionType}</FormLabel>
+        <RadioGroup name="responseType" defaultValue={optionType || 'TEXT'} onChange={(event) => {setOptionType(event.target.value); }}>
+          <FormControlLabel value={'TEXT'} control={<Radio />} label="Text" />
+          <FormControlLabel value={'IMAGE'} control={<Radio />} label="Image" />
+        </RadioGroup>
+        {
+          optionType === 'IMAGE' && (
+            <ImageUploadPreviewer onChange={handleImg}/>
+          )
+        }
+      </FormControl>
+
+      <FormControl variant="outlined" className={classes.formControl}>
+        <TextField name="intent" label="Intent" variant="outlined"
+          defaultValue={intent}
+          onChange={(e) => setIntent(e.target.value as string)} />
+      </FormControl>
+      <FormControl variant="outlined" className={classes.formControl}>
+        <TextField name="text" label="Text/ImageName" variant="outlined"
+          defaultValue={actionText}
+          onBlur={(e) => {setActionText(e.target.value as string); prepareSignedUploadUrl(); }} />
+      </FormControl>
+
       {
         !edge &&
         <FormControl component="fieldset" className={classes.formControl}>
-          <RadioGroup name="existingNode" value={nodeExists.toString()} onChange={setEdgeNodeExists}>
+          <RadioGroup name="existingNode" defaultValue={nodeExists.toString()} onChange={setEdgeNodeExists}>
             <FormControlLabel value={'true'} control={<Radio />} label="Existing Node" />
             <FormControlLabel value={'false'} control={<Radio />} label="Create a Node" />
           </RadioGroup>
@@ -194,10 +212,11 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , onCanc
           <FormControl variant="outlined" className={classes.formControl}>
             <InputLabel>Node</InputLabel>
               <Select
-                value={selectedNodeId}
+                value={selectedNodeId || 0}
                 onChange={(event) => setSelectedNodeId(event.target.value as number)}
                 label="Node"
               >
+                <MenuItem key={nodeList.length} value={0} disabled={true}></MenuItem>
                 {
                   nodeList.map((n, index) => {
                   return <MenuItem key={index}value={n.nodeId}>{n.nodeId}: {n.actionName}</MenuItem>;
@@ -207,40 +226,17 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , onCanc
           </FormControl>
       }
 
-          <FormControl component="fieldset" className={classes.formControl}>
-            <FormLabel>Option Type {optionType}</FormLabel>
-            <RadioGroup name="responseType" defaultValue={optionType || 'TEXT'} onChange={(event) => {setOptionType(event.target.value); }}>
-              <FormControlLabel value={'TEXT'} control={<Radio />} label="Text" />
-              <FormControlLabel value={'IMAGE'} control={<Radio />} label="Image" />
-            </RadioGroup>
-            {
-              optionType === 'IMAGE' && (
-                <ImageUploadPreviewer onChange={handleImg}/>
-              )
-            }
-          </FormControl>
 
-          <FormControl variant="outlined" className={classes.formControl}>
-            <TextField name="intent" label="Intent" variant="outlined"
-              defaultValue={intent}
-              onChange={(e) => setIntent(e.target.value as string)} />
-          </FormControl>
-          <FormControl variant="outlined" className={classes.formControl}>
-            <TextField name="text" label="Text/ImageName" variant="outlined"
-              defaultValue={actionText}
-              onBlur={(e) => {setActionText(e.target.value as string); prepareSignedUploadUrl(); }} />
-          </FormControl>
-
-          <Button variant="contained" disabled={loading || signedImgUploadResult.loading}
-            color="primary" type="submit" onClick={handleSubmit}>
-              {
-                edge ?
-                'Update Edge'
-                :
-                'Add edge'
-              }
-            </Button>
-          {(loading || signedImgUploadResult.loading) && <ContentLoading/>}
+      <Button variant="contained" disabled={loading || signedImgUploadResult.loading}
+        color="primary" type="submit" onClick={handleSubmit}>
+          {
+            edge ?
+            'Update Edge'
+            :
+            'Add edge'
+          }
+        </Button>
+      {(loading || signedImgUploadResult.loading) && <ContentLoading/>}
     </Paper>
   );
 }

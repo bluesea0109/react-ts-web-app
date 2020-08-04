@@ -108,7 +108,7 @@ export default function GraphPolicies() {
       });
       enqueueSnackbar('Deleted Policy', { variant: 'success' });
     } catch (e) {
-      console.log(e);
+      console.error(e);
       enqueueSnackbar(`Could not delete policy. Error ${e.message}`, { variant: 'error' });
     }
     setLoading(false);
