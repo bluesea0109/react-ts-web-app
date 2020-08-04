@@ -1,8 +1,9 @@
 import {GraphPolicy, IGraphPolicyNode } from '@bavard/graph-policy';
-import { Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Snackbar, Tooltip } from '@material-ui/core';
+import { Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Tooltip } from '@material-ui/core';
 import { Theme, withStyles } from '@material-ui/core/styles';
 import {Add} from '@material-ui/icons';
 import _ from 'lodash';
+import {withSnackbar, WithSnackbarProps} from 'notistack';
 import React from 'react';
 import { Mutation, MutationFunction } from 'react-apollo';
 import LineTo from 'react-lineto';
@@ -13,7 +14,7 @@ import EditNodeForm from './EditNodeForm';
 import { updateGraphPolicyMutation } from './gql';
 import GraphNode from './GraphNode';
 
-interface IGraphPolicyVisualizerProps {
+interface IGraphPolicyVisualizerProps extends WithSnackbarProps {
   policy?: IAgentGraphPolicy;
   classes: {
     root: string;
@@ -21,6 +22,7 @@ interface IGraphPolicyVisualizerProps {
     graphCol: string;
     intentChip: string;
     fullWidth: string;
+    nodeBox: string;
   };
 }
 
@@ -30,7 +32,6 @@ interface IGraphPolicyVisualizerState {
   showDeleteNode: any;
   showEditNode: any;
   loading: boolean;
-  showSnackbar: boolean;
   snackbarText: string;
 }
 
@@ -60,6 +61,10 @@ const styles = (theme: Theme) => ({
   fullWidth: {
     width: '100%',
   },
+  nodeBox: {
+    padding: theme.spacing(1),
+    paddingTop: theme.spacing(2),
+  },
 });
 
 class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps, IGraphPolicyVisualizerState> {
@@ -73,7 +78,6 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
       showEditNode: undefined,
       showDeleteNode: undefined,
       loading: false,
-      showSnackbar: false,
       snackbarText: '',
     };
   }
@@ -181,6 +185,7 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
       <Box display="flex" flexDirection="column"
         justifyContent="center" alignItems="center"
         key={node.nodeId}
+        className={classes.nodeBox}
         >
         {
           inIntent ?
@@ -189,12 +194,14 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
           </Tooltip>
           : <></>
         }
-        <GraphNode
-          node={node}
-          wrapperClassName={`graph_node_${node.nodeId}`}
-          onDeleteNode={this.onDeleteNode}
-          onEditNode={this.onEditNode}
-          />
+        <div className={classes.nodeBox}>
+          <GraphNode
+            node={node}
+            wrapperClassName={`graph_node_${node.nodeId}`}
+            onDeleteNode={this.onDeleteNode}
+            onEditNode={this.onEditNode}
+            />
+        </div>
       </Box>
     );
   }
@@ -203,16 +210,18 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
     const gp = this.getGraphPolicyFromState();
     const node = gp?.getNodeById(this.state.showEditNode);
 
-    if (!node || !gp) {
+    if (!node || !gp || !this.state.policy) {
       return <></>;
     }
 
     return (
-      <EditNodeForm policy={gp} nodeId={node.nodeId} onCancel={this.closeForms} onSubmit={this.handleEditNode} />
+      <EditNodeForm agentId={this.state.policy?.agentId} policy={gp}
+        nodeId={node.nodeId} onCancel={this.closeForms} onSubmit={this.handleEditNode} />
     );
   }
 
   handleEditNode = (updatedPolicy: GraphPolicy) => {
+
     const newPolicy = this.state.policy;
     _.extend(newPolicy, {
       data: updatedPolicy.toJsonObj(),
@@ -229,6 +238,7 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
       console.error('No policy available');
       return;
     }
+
     return GraphPolicy.fromJsonObj(policy.data);
   }
 
@@ -279,19 +289,6 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
     return <></>;
   }
 
-  showSnackbar = (text: string) => {
-    this.setState({
-      showSnackbar: true,
-      snackbarText: text,
-    });
-  }
-  hideSnackbar = () => {
-    this.setState({
-      showSnackbar: false,
-      snackbarText: '',
-    });
-  }
-
   persistChanges = async(mutate: MutationFunction) => {
     if (!this.state.policy) {
       return;
@@ -309,9 +306,9 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
           },
         },
       });
-      this.showSnackbar('Changes Saved!');
+      this.props.enqueueSnackbar('Changes Saved!', {variant: 'success'});
     } catch (e) {
-      this.showSnackbar(e.message);
+      this.props.enqueueSnackbar(e.message, {variant: 'error'});
     }
 
     this.setState({loading: false});
@@ -359,10 +356,9 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
           </Mutation>
           {this.state.loading && <ContentLoading/>}
         </div>
-        <Snackbar open={this.state.showSnackbar} autoHideDuration={5000} onClose={this.hideSnackbar} message={this.state.snackbarText}/>
       </div>
     );
   }
 }
 
-export default withStyles(styles)(GraphPolicyVisualizer);
+export default withSnackbar(withStyles(styles)(GraphPolicyVisualizer));

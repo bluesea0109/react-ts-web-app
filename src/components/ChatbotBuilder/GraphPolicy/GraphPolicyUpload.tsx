@@ -50,7 +50,7 @@ const GraphPolicyUpload = ({onSuccess, onError}: IGraphPolicyUploadProps) => {
       try {
         await GraphPolicySchema.validate(json);
       } catch (e) {
-        console.log(e);
+        console.error(e);
 
         onError?.(e);
 

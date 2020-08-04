@@ -19,3 +19,9 @@ export interface IUpdateGraphPolicyMutationResult {
 export interface IActivateGraphPolicyMutationResult {
   ChatbotService_updateActivePolicy: string;
 }
+
+export interface IGetImageUploadSignedUrlQueryResult {
+  ChatbotService_imageOptionUploadUrl: {
+    url: string,
+  };
+}
