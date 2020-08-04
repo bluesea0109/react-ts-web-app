@@ -3,6 +3,7 @@ export const uploadFileWithXhr = async(file: File, url: string, method: string= 
     const xhr = new XMLHttpRequest();
     xhr.open('POST', url);
     xhr.setRequestHeader('Content-Type', file.type);
+    // xhr.withCredentials = true;
     xhr.onload = function () {
       if (this.status >= 200 && this.status < 300) {
           resolve(xhr.response);

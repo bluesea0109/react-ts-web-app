@@ -1,8 +1,7 @@
 import {IGraphPolicyNode} from '@bavard/graph-policy';
-import { Badge, Card, CardActions, CardContent, Chip, IconButton, Tooltip, Typography } from '@material-ui/core';
+import { Card, CardActions, CardContent, Chip, IconButton, Tooltip, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import {Add, Delete, Edit} from '@material-ui/icons';
-import MessageIcon from '@material-ui/icons/Message';
 import Alert from '@material-ui/lab/Alert';
 import React from 'react';
 
@@ -15,11 +14,9 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.background.default,
       borderRadius: theme.spacing(1),
       minWidth: 180,
-      maxWidth: 250,
+      maxWidth: 300,
       textAlign: 'center',
       overflow: 'hidden',
-      margin: theme.spacing(1),
-      marginTop: theme.spacing(3),
     },
     chip: {
       margin: 2,
@@ -35,6 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     title: {
       marginBottom: theme.spacing(1),
+      fontWeight: 'bold',
     },
     nodeActionsContainer: {
       display: 'flex',
@@ -58,13 +56,12 @@ export default function GraphNode({node, wrapperClassName, onAddEdge, onEditNode
       <Card className={`${classes.nodePaper} ${wrapperClassName}`}>
         <CardContent>
           <Typography className={classes.title} variant="subtitle2">
-            <Badge badgeContent={node.nodeId} color={node.nodeId === 1 ? 'secondary' : 'primary'}/>
-            &nbsp;&nbsp;&nbsp;&nbsp; {node.actionName} &nbsp;
-              <Typography component="span" color="secondary" variant="subtitle2" align="right">
-                {node.nodeType}
-              </Typography>
+            {node.nodeId}. {node.actionName} &nbsp;
+            <Typography component="span" variant="subtitle2" color="secondary" align="right">
+              {node.nodeType}
+            </Typography>
           </Typography>
-          <Alert icon={<MessageIcon fontSize={'small'}/>} severity="info" className={classes.alert}>
+          <Alert icon={false} severity="info" className={classes.alert}>
             <Tooltip disableFocusListener={true} title={node.utterance}>
               <Typography component="div" className={classes.utteranceText} variant="caption">
                 {node.utterance}

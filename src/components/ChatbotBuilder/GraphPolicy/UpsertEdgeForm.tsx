@@ -1,16 +1,15 @@
 import { useLazyQuery } from '@apollo/react-hooks';
-import { Button, FormControl, FormControlLabel, FormLabel,
-  InputLabel, MenuItem, Paper, Radio, RadioGroup, Select, TextField} from '@material-ui/core';
+import {Edge, GraphPolicy, ImageOption , TextOption, UtteranceNode} from '@bavard/graph-policy';
+import { Button, FormControl, FormControlLabel, FormLabel, InputLabel,
+  MenuItem, Paper, Radio, RadioGroup, Select, TextField, Typography} from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { useSnackbar } from 'notistack';
+import React, {useState} from 'react';
+import {uploadFileWithXhr} from '../../../utils/xhr';
 import ContentLoading from '../../ContentLoading';
 import {getSignedImgUploadUrlQuery} from './gql';
 import ImageUploadPreviewer from './ImageUploadPreviewer';
 import {IGetImageUploadSignedUrlQueryResult} from './types';
-
-import {GraphPolicy, ImageOption, TextOption, UtteranceNode} from '@bavard/graph-policy';
-import React, {useState} from 'react';
-import {uploadFileWithXhr} from '../../../utils/xhr';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -23,30 +22,53 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     nodePaper: {
       borderRadius: theme.spacing(1),
-      margin: theme.spacing(1),
       padding: theme.spacing(2),
+      backgroundColor: theme.palette.background.default,
     },
   }),
 );
 
-interface IGraphNodeProps {
+interface IUpsertEdgeFormProps {
   agentId: number;
   nodeId: number;
   onCancel: () => void;
   onSuccess: (policy: GraphPolicy) => void;
   policy: GraphPolicy;
+  edgeId?: number;
 }
 
-export default function AddEdgeForm({agentId, nodeId, policy, onCancel, onSuccess}: IGraphNodeProps) {
+export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , onCancel, onSuccess}: IUpsertEdgeFormProps) {
   const classes = useStyles();
   const {enqueueSnackbar} = useSnackbar();
-  const nodeList = policy.toJsonObj().nodes;
+  const nodeList = policy.toJsonObj().nodes.filter((n) => {
+    return n.nodeId !== nodeId;
+  }).sort((a, b) => {
+    return a.nodeId - b.nodeId;
+  });
+
   const node = policy.getNodeById(nodeId);
+  let edge: Edge | undefined;
+  if (edgeId) {
+    edge = node?.getEdgeById(edgeId);
+  }
+
+  console.log('EDGE: ', edge);
+
+  let edgeOption: TextOption| ImageOption | undefined;
+  if (edge?.option?.type === 'TEXT') {
+    edgeOption = edge.option as TextOption;
+  }
+  if (edge?.option?.type === 'IMAGE') {
+    edgeOption = edge.option as ImageOption;
+  }
+
+  console.log('EDGE OPTION: ', edgeOption);
+
   const [nodeExists, setNodeExists] = useState(true);
-  const [selectedNodeId, setSelectedNodeId] = useState<any>(null);
-  const [optionType, setOptionType] = useState('TEXT');
-  const [intent, setIntent] = useState('');
-  const [actionText, setActionText] = useState('');
+  const [selectedNodeId, setSelectedNodeId] = useState<any>(edge?.dest.nodeId);
+  const [optionType, setOptionType] = useState<string>(edge?.option?.type || 'TEXT');
+  const [intent, setIntent] = useState(edge?.option?.intent || '');
+  const [actionText, setActionText] = useState<string>(edgeOption?.text || '');
   const [utterance, setUtterance] = useState('');
   const [actionName, setActionName] = useState('');
   const [loading, setLoading] = useState(false);
@@ -78,6 +100,10 @@ export default function AddEdgeForm({agentId, nodeId, policy, onCancel, onSucces
 
     if (!node) {
       return enqueueSnackbar('Parent node did not exist', { variant: 'error' });
+    }
+
+    if (edgeId) {
+      node.removeEdge(edgeId);
     }
 
     let edgeNode = policy.getNodeById(selectedNodeId);
@@ -113,7 +139,7 @@ export default function AddEdgeForm({agentId, nodeId, policy, onCancel, onSucces
       }
       setLoading(false);
 
-      node.addEdge(edgeNode, new ImageOption(intent, actionText));
+      node.addEdge(edgeNode, new ImageOption(intent, actionText, ''));
     }
 
     enqueueSnackbar('Edge added', { variant: 'success' });
@@ -132,17 +158,30 @@ export default function AddEdgeForm({agentId, nodeId, policy, onCancel, onSucces
     setActionName('');
   };
 
+  console.log(policy);
+
   return (
     <Paper className={classes.nodePaper}>
-      <FormControl component="fieldset" className={classes.formControl}>
-        <RadioGroup name="existingNode" value={nodeExists.toString()} onChange={setEdgeNodeExists}>
-          <FormControlLabel value={'true'} control={<Radio />} label="Existing Node" />
-          <FormControlLabel value={'false'} control={<Radio />} label="Create a Node" />
-        </RadioGroup>
-      </FormControl>
+      <Typography variant={'subtitle1'} className={classes.formControl}>
+        {
+          edge ?
+          'Editing Edge'
+          :
+          'Add a new edge'
+        }
+      </Typography>
+      {
+        !edge &&
+        <FormControl component="fieldset" className={classes.formControl}>
+          <RadioGroup name="existingNode" value={nodeExists.toString()} onChange={setEdgeNodeExists}>
+            <FormControlLabel value={'true'} control={<Radio />} label="Existing Node" />
+            <FormControlLabel value={'false'} control={<Radio />} label="Create a Node" />
+          </RadioGroup>
+        </FormControl>
+      }
 
       {
-        !nodeExists ?
+        !nodeExists && !edge ?
         <div>
           <FormControl variant="outlined" className={classes.formControl}>
             <TextField name="actionName" label="Action Name" variant="outlined" onChange={(e) => setActionName(e.target.value as string)} />
@@ -161,7 +200,7 @@ export default function AddEdgeForm({agentId, nodeId, policy, onCancel, onSucces
               >
                 {
                   nodeList.map((n, index) => {
-                    return <MenuItem key={index}value={n.nodeId}>{n.actionName}</MenuItem>;
+                  return <MenuItem key={index}value={n.nodeId}>{n.nodeId}: {n.actionName}</MenuItem>;
                   })
                 }
               </Select>
@@ -169,8 +208,8 @@ export default function AddEdgeForm({agentId, nodeId, policy, onCancel, onSucces
       }
 
           <FormControl component="fieldset" className={classes.formControl}>
-            <FormLabel>Option Type</FormLabel>
-            <RadioGroup name="responseType" value={optionType} onChange={(event) => {setOptionType(event.target.value); }}>
+            <FormLabel>Option Type {optionType}</FormLabel>
+            <RadioGroup name="responseType" defaultValue={optionType || 'TEXT'} onChange={(event) => {setOptionType(event.target.value); }}>
               <FormControlLabel value={'TEXT'} control={<Radio />} label="Text" />
               <FormControlLabel value={'IMAGE'} control={<Radio />} label="Image" />
             </RadioGroup>
@@ -182,15 +221,25 @@ export default function AddEdgeForm({agentId, nodeId, policy, onCancel, onSucces
           </FormControl>
 
           <FormControl variant="outlined" className={classes.formControl}>
-            <TextField name="intent" label="Intent" variant="outlined" onChange={(e) => setIntent(e.target.value as string)} />
+            <TextField name="intent" label="Intent" variant="outlined"
+              defaultValue={intent}
+              onChange={(e) => setIntent(e.target.value as string)} />
           </FormControl>
           <FormControl variant="outlined" className={classes.formControl}>
             <TextField name="text" label="Text/ImageName" variant="outlined"
+              defaultValue={actionText}
               onBlur={(e) => {setActionText(e.target.value as string); prepareSignedUploadUrl(); }} />
           </FormControl>
 
           <Button variant="contained" disabled={loading || signedImgUploadResult.loading}
-            color="primary" type="submit" onClick={handleSubmit}>Add Edge</Button>
+            color="primary" type="submit" onClick={handleSubmit}>
+              {
+                edge ?
+                'Update Edge'
+                :
+                'Add edge'
+              }
+            </Button>
           {(loading || signedImgUploadResult.loading) && <ContentLoading/>}
     </Paper>
   );

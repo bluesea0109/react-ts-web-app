@@ -19,6 +19,9 @@ const useStyles = makeStyles((theme: Theme) =>
     paper: {
       padding: theme.spacing(2),
     },
+    title: {
+      width: '100%',
+    },
   }),
 );
 
@@ -34,9 +37,10 @@ interface GraphPoliciesTableProps {
   onActivate: (id: number) => void;
   onEdit?: (id: number) => void;
   onView?: (graph: IAgentGraphPolicy) => void;
+  toolbarChildren?: any;
 }
 
-function GraphPoliciesTable({ policies, loading, onEdit, onView, onActivate, onDelete }: GraphPoliciesTableProps) {
+function GraphPoliciesTable({ policies , loading, toolbarChildren, onEdit, onView, onActivate, onDelete }: GraphPoliciesTableProps) {
   const classes = useStyles();
 
   const [state, setState] = React.useState<GraphPolicyState>({
@@ -82,57 +86,51 @@ function GraphPoliciesTable({ policies, loading, onEdit, onView, onActivate, onD
 
   return (
     <Paper className={classes.paper}>
-      {state && state.data && state.data.length > 0 ? (
-        <TableContainer component={Paper} aria-label="Graph Policies">
-          <MaterialTable
-            isLoading={loading}
-            title={
-              <span>
-                Graph Policies
-              </span>
-            }
-            columns={state.columns}
-            data={state.data}
-            options={{
-              actionsColumnIndex: -1,
-              filtering: true,
-              search: false,
-              paging: true,
-              pageSize: 10,
-            }}
-            actions={[
-              {
-                icon: (props: any) => <AccountTreeRounded />,
-                tooltip: 'View Graph',
-                onClick: (event, rowData) => {
-                  const data = rowData as IAgentGraphPolicy;
-                  onView?.(data);
-                },
+      <TableContainer component={Paper} aria-label="Graph Policies">
+        <MaterialTable
+          isLoading={loading}
+          title={
+            <Typography variant="h6" className={classes.title}>
+              Graph Policies {toolbarChildren}
+            </Typography>
+          }
+          columns={state.columns}
+          data={state.data || []}
+          options={{
+            actionsColumnIndex: -1,
+            filtering: true,
+            search: true,
+            paging: true,
+            pageSize: 10,
+          }}
+          actions={[
+            {
+              icon: (props: any) => <AccountTreeRounded />,
+              tooltip: 'View Graph',
+              onClick: (event, rowData) => {
+                const data = rowData as IAgentGraphPolicy;
+                onView?.(data);
               },
-              {
-                icon: (props: any) => <Power />,
-                tooltip: 'Activate',
-                onClick: (event, rowData) => {
-                  const data = rowData as IAgentGraphPolicy;
-                  onActivate(data.id);
-                },
+            },
+            {
+              icon: (props: any) => <Power />,
+              tooltip: 'Activate',
+              onClick: (event, rowData) => {
+                const data = rowData as IAgentGraphPolicy;
+                onActivate(data.id);
               },
-              {
-                icon: (props: any) => <Delete />,
-                tooltip: 'Delete',
-                onClick: (event, rowData) => {
-                  const data = rowData as IAgentGraphPolicy;
-                  onDelete(data.id);
-                },
+            },
+            {
+              icon: (props: any) => <Delete />,
+              tooltip: 'Delete',
+              onClick: (event, rowData) => {
+                const data = rowData as IAgentGraphPolicy;
+                onDelete(data.id);
               },
-            ]}
-          />
-        </TableContainer>
-      ) : (
-        <Typography align="center" variant="h6">
-          {'No Graph Policies Found'}
-        </Typography>
-      )}
+            },
+          ]}
+        />
+      </TableContainer>
     </Paper>
   );
 }
