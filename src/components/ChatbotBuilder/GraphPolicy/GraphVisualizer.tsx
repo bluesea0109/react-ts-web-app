@@ -23,6 +23,7 @@ interface IGraphPolicyVisualizerProps extends WithSnackbarProps {
     intentChip: string;
     fullWidth: string;
     nodeBox: string;
+    hidden: string;
   };
 }
 
@@ -33,6 +34,7 @@ interface IGraphPolicyVisualizerState {
   showEditNode: any;
   loading: boolean;
   snackbarText: string;
+  treeRenderCount: number;
 }
 
 const styles = (theme: Theme) => ({
@@ -65,6 +67,11 @@ const styles = (theme: Theme) => ({
     padding: theme.spacing(1),
     paddingTop: theme.spacing(2),
   },
+  hidden: {
+    width: 0,
+    height: 0,
+    opacity: 0
+  }
 });
 
 class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps, IGraphPolicyVisualizerState> {
@@ -79,7 +86,22 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
       showDeleteNode: undefined,
       loading: false,
       snackbarText: '',
+      treeRenderCount: 0
     };
+  }
+
+  updateDimensions = () => {
+    this.setState({
+      treeRenderCount: this.state.treeRenderCount + 1
+    })
+  }
+
+  componentDidMount(){
+    window.addEventListener("resize", this.updateDimensions);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.updateDimensions);
   }
 
   renderTree = (node: IGraphPolicyNode, inIntent?: string) => {

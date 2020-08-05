@@ -98,7 +98,6 @@ function GraphPoliciesTable({ policies , loading, toolbarChildren, onEdit, onVie
           data={state.data || []}
           options={{
             actionsColumnIndex: -1,
-            filtering: true,
             search: true,
             paging: true,
             pageSize: 10,
