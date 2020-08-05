@@ -1,3 +1,4 @@
+import { useMutation, useQuery } from '@apollo/client';
 import {
   Button,
   Chip,
@@ -21,7 +22,6 @@ import { Alert } from '@material-ui/lab';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import clsx from 'clsx';
 import React, { Fragment, useState } from 'react';
-import { useMutation, useQuery } from 'react-apollo';
 import { useParams } from 'react-router-dom';
 import {
   CHATBOT_GET_TAGS,

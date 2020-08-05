@@ -1,4 +1,5 @@
 
+import { useQuery } from '@apollo/client';
 import {
     Paper,
     Table,
@@ -13,7 +14,6 @@ import {
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import gql from 'graphql-tag';
 import React from 'react';
-import { useQuery } from 'react-apollo';
 import { useParams } from 'react-router';
 import {IInvitedMember} from '../../../models/user-service';
 import ApolloErrorPage from '../../ApolloErrorPage';

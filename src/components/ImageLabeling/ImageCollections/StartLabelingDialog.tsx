@@ -1,3 +1,4 @@
+import { useMutation } from '@apollo/client';
 import { Button, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, TextField } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -6,7 +7,6 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
 import React, { useState } from 'react';
-import { useMutation } from 'react-apollo';
 import { useHistory, useParams } from 'react-router';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';

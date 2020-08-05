@@ -1,6 +1,6 @@
+import { useQuery } from '@apollo/client';
 import { createStyles, Grid, makeStyles, Theme, Typography } from '@material-ui/core';
 import React from 'react';
-import { useQuery } from 'react-apollo';
 import { useParams } from 'react-router';
 import { GET_ORGS } from '../../../common-gql-queries';
 import { IOrg, IUser } from '../../../models/user-service';

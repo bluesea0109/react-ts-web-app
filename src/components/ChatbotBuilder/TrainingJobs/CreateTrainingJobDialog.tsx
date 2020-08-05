@@ -1,3 +1,4 @@
+import { useMutation } from '@apollo/client';
 import { Button } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -5,7 +6,6 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { useState } from 'react';
-import { useMutation } from 'react-apollo';
 import { CREATE_TRAINING_JOB, GET_TRAINING_JOBS } from '../../../common-gql-queries';
 import ContentLoading from '../../ContentLoading';
 

@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import { Badge, createStyles, Divider, Grid, List, ListItem, makeStyles, Paper, Theme, Typography } from '@material-ui/core';
 import _ from 'lodash';
 import React, { useState } from 'react';

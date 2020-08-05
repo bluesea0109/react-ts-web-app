@@ -1,3 +1,4 @@
+import { useMutation, useQuery } from '@apollo/client';
 import { createStyles, makeStyles, Theme } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -10,7 +11,6 @@ import TableRow from '@material-ui/core/TableRow';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import React, { useState } from 'react';
-import { useMutation, useQuery } from 'react-apollo';
 import { useHistory, useParams } from 'react-router-dom';
 import { IReviewQueue } from '../../../../models/image-labeling-service';
 import ApolloErrorPage from '../../../ApolloErrorPage';

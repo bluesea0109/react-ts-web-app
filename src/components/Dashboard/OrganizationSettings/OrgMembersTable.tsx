@@ -1,3 +1,4 @@
+import { useMutation } from '@apollo/client';
 import {
   Box,
   Paper,
@@ -17,7 +18,6 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import MuiAlert from '@material-ui/lab/Alert';
 import gql from 'graphql-tag';
 import React, { useState } from 'react';
-import { useMutation } from 'react-apollo';
 
 import { IMember, IUser } from '../../../models/user-service';
 import ContentLoading from '../../ContentLoading';

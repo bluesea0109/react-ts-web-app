@@ -1,7 +1,7 @@
+import { ApolloProvider } from '@apollo/client';
 import { ThemeProvider } from '@material-ui/core';
 import { SnackbarProvider } from 'notistack';
 import React from 'react';
-import { ApolloProvider } from 'react-apollo';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router } from 'react-router-dom';

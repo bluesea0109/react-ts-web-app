@@ -1,6 +1,5 @@
-import { OperationVariables } from '@apollo/react-common';
-import { useQuery } from '@apollo/react-hooks';
-import { QueryHookOptions } from '@apollo/react-hooks/lib/types';
+import { OperationVariables } from '@apollo/client';
+import { QueryHookOptions, useQuery } from '@apollo/client';
 import { DocumentNode } from 'graphql';
 import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';

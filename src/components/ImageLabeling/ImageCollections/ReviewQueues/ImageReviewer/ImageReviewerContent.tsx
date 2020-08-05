@@ -1,9 +1,9 @@
+import { useMutation } from '@apollo/client';
 import { Button, Typography } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import { createStyles, makeStyles, Theme, useTheme } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import React, { useState } from 'react';
-import { useMutation } from 'react-apollo';
 import { connect, ConnectedProps, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { ICategorySet, IImage, IReviewQueueImage } from '../../../../../models/image-labeling-service';

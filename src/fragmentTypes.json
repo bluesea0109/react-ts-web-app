@@ -1,1 +1,39 @@
-{"__schema":{"types":[{"kind":"INTERFACE","name":"ChatbotService_Action","possibleTypes":[{"name":"ChatbotService_UtteranceAction"}]},{"kind":"UNION","name":"ChatbotService_DialogueTurn","possibleTypes":[{"name":"ChatbotService_AgentAction"},{"name":"ChatbotService_UserAction"}]},{"kind":"INTERFACE","name":"ChatbotService_UserResponseOption","possibleTypes":[{"name":"ChatbotService_ImageOption"},{"name":"ChatbotService_TextOption"}]}]}}
+{
+  "__schema": {
+    "types": [
+      {
+        "kind": "INTERFACE",
+        "name": "ChatbotService_Action",
+        "possibleTypes": [
+          {
+            "name": "ChatbotService_UtteranceAction"
+          }
+        ]
+      },
+      {
+        "kind": "UNION",
+        "name": "ChatbotService_DialogueTurn",
+        "possibleTypes": [
+          {
+            "name": "ChatbotService_AgentAction"
+          },
+          {
+            "name": "ChatbotService_UserAction"
+          }
+        ]
+      },
+      {
+        "kind": "INTERFACE",
+        "name": "ChatbotService_UserResponseOption",
+        "possibleTypes": [
+          {
+            "name": "ChatbotService_ImageOption"
+          },
+          {
+            "name": "ChatbotService_TextOption"
+          }
+        ]
+      }
+    ]
+  }
+}

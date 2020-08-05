@@ -1,3 +1,4 @@
+import { withApollo, WithApolloClient } from '@apollo/client/react/hoc';
 import { Button, Typography } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -8,18 +9,17 @@ import IconButton from '@material-ui/core/IconButton';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Tooltip from '@material-ui/core/Tooltip';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import ApolloClient from 'apollo-client';
 import axios from 'axios';
 import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
 import _ from 'lodash';
 import React from 'react';
-import { withApollo } from 'react-apollo';
 
 interface IUploadImagesDialogProps {
   collectionId: number;
-  client: ApolloClient<object>;
 }
+
+type IProps = WithApolloClient<IUploadImagesDialogProps>;
 
 interface IUploadImagesDialogState {
   open: boolean;
@@ -29,8 +29,8 @@ interface IUploadImagesDialogState {
   error: GraphQLError | null;
 }
 
-class UploadImagesDialog extends React.Component<IUploadImagesDialogProps, IUploadImagesDialogState> {
-  constructor(props: IUploadImagesDialogProps) {
+class UploadImagesDialog extends React.Component<IProps, IUploadImagesDialogState> {
+  constructor(props: IProps) {
     super(props);
 
     this.state = {
@@ -53,7 +53,7 @@ class UploadImagesDialog extends React.Component<IUploadImagesDialogProps, IUplo
   }
 
   uploadSingle = async (file: File) => {
-    const res = await this.props.client.query({
+    const res = await this.props.client?.query({
       query: GET_UPLOAD_URL,
       variables: {
         collectionId: this.props.collectionId,
@@ -61,7 +61,7 @@ class UploadImagesDialog extends React.Component<IUploadImagesDialogProps, IUplo
       },
     });
 
-    if (res.errors?.[0]) {
+    if (res?.errors?.[0]) {
       console.error(res.errors[0]);
       this.setState({
         error: res.errors[0],
@@ -69,7 +69,7 @@ class UploadImagesDialog extends React.Component<IUploadImagesDialogProps, IUplo
       return;
     }
 
-    const uploadUrl = res.data.ImageLabelingService_uploadUrl;
+    const uploadUrl = res?.data.ImageLabelingService_uploadUrl;
 
     await axios.put(uploadUrl, file, {
       headers: {

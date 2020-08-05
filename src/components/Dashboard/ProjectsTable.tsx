@@ -1,9 +1,9 @@
 
+import { useMutation } from '@apollo/client';
 import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Toolbar, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import 'firebase/auth';
 import React from 'react';
-import { useMutation } from 'react-apollo';
 import { GET_CURRENT_USER, UPDATE_ACTIVE_ORG } from '../../common-gql-queries';
 import { IOrg, IProject } from '../../models/user-service';
 import ApolloErrorPage from '../ApolloErrorPage';

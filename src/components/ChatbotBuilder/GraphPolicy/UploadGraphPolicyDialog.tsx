@@ -1,17 +1,15 @@
+import { withApollo, WithApolloClient } from '@apollo/client/react/hoc';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import ApolloClient from 'apollo-client';
 import { GraphQLError } from 'graphql';
 import React from 'react';
-import { withApollo } from 'react-apollo';
 import GraphPolicyUpload from './GraphPolicyUpload';
 
 interface IUploadGraphPolicyDialogProps {
-  client: ApolloClient<object>;
   open: boolean;
   onCancel: () => void;
   onSuccess?: () => void;
@@ -24,7 +22,7 @@ interface IUploadGraphPolicyDialogState {
   policySaved: boolean;
 }
 
-class UploadGraphPolicyDialog extends React.Component<IUploadGraphPolicyDialogProps, IUploadGraphPolicyDialogState> {
+class UploadGraphPolicyDialog extends React.Component<WithApolloClient<IUploadGraphPolicyDialogProps>, IUploadGraphPolicyDialogState> {
   constructor(props: IUploadGraphPolicyDialogProps) {
     super(props);
 

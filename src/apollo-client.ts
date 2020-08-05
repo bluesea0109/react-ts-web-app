@@ -1,46 +1,9 @@
-// import { InMemoryCache } from 'apollo-cache-inmemory';
-// import { ApolloClient } from 'apollo-client';
-// import { setContext } from 'apollo-link-context';
-// import { createUploadLink } from 'apollo-upload-client';
-// import firebase from 'firebase/app';
-// import config from './config';
-
-// console.log('API URL:', config.apiUrl);
-// console.log('Project Id:', config.projectId);
-
-// const getIdToken = async () => {
-//   const user = firebase.auth().currentUser;
-//   if (user) {
-//     const token = await user.getIdToken();
-//     return token;
-//   }
-//   throw new Error('Failed to get firebase id token');
-// };
-
-// const authLink = setContext((_, { headers }) => {
-//   return getIdToken().then(token => {
-//     return {
-//       headers: {
-//         ...headers,
-//         authorization: `Bearer ${token}`,
-//       },
-//     };
-//   });
-// });
-
-// export default new ApolloClient({
-//   link: authLink.concat(createUploadLink({ uri: config.apiUrl })),
-//   cache: new InMemoryCache(),
-// });
-
-import { InMemoryCache, IntrospectionFragmentMatcher } from 'apollo-cache-inmemory';
-import { ApolloClient } from 'apollo-client';
-import { setContext } from 'apollo-link-context';
+import { ApolloClient, InMemoryCache } from '@apollo/client';
+import { setContext } from '@apollo/client/link/context';
 import { createUploadLink } from 'apollo-upload-client';
 import firebase from 'firebase/app';
 import { isEmpty } from 'lodash';
 import config from './config';
-import introspectionQueryResultData from './fragmentTypes.json';
 import { parseJwt } from './utils';
 
 console.log('API URL:', config.apiUrl);
@@ -104,14 +67,14 @@ const authLink = setContext((_, { headers }) => {
   });
 });
 
-const fragmentMatcher = new IntrospectionFragmentMatcher({
-  introspectionQueryResultData,
-});
-
 export const client = new ApolloClient({
-  link: authLink.concat(createUploadLink({ uri: config.apiUrl })),
+  link: authLink.concat(createUploadLink({ uri: config.apiUrl }) as any),
   cache: new InMemoryCache({
-    fragmentMatcher,
+    possibleTypes: {
+      ChatbotService_Action: ['ChatbotService_UtteranceAction'],
+      ChatbotService_DialogueTurn: ['ChatbotService_AgentAction', 'ChatbotService_UserAction'],
+      ChatbotService_UserResponseOption: ['ChatbotService_ImageOption', 'ChatbotService_TextOption'],
+    },
   }),
 });
 

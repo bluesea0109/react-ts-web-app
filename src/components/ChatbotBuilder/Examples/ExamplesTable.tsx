@@ -10,6 +10,7 @@ import {
 } from '@material-ui/core';
 import { Edit } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
+import _ from 'lodash';
 import MaterialTable, { Column } from 'material-table';
 import React, { useEffect, useState } from 'react';
 import { TextAnnotator } from 'react-text-annotate';
@@ -154,7 +155,7 @@ const ExamplesTable = (props: ExamplesTableProps) => {
             <Button disabled={loading} variant="contained" color="primary" onClick={onAdd}>Add New Example</Button>
           }
           columns={columns}
-          data={data || []}
+          data={data ? _.cloneDeep(data) : []}
           isLoading={loading}
           localization={{
             body: {

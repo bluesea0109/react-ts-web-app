@@ -1,3 +1,4 @@
+import { useMutation, useQuery } from '@apollo/client';
 import {
   Button,
   createStyles,
@@ -14,7 +15,6 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import gql from 'graphql-tag';
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
-import { useMutation, useQuery } from 'react-apollo';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 import { GET_CATEGORY_SETS } from '../../../../common-gql-queries';

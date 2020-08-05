@@ -1,3 +1,5 @@
+import { MutationFunction } from '@apollo/client';
+import { Mutation } from '@apollo/client/react/components';
 import {GraphPolicy, IGraphPolicyNode } from '@bavard/graph-policy';
 import { Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Tooltip } from '@material-ui/core';
 import { Theme, withStyles } from '@material-ui/core/styles';
@@ -5,7 +7,6 @@ import {Add} from '@material-ui/icons';
 import _ from 'lodash';
 import {withSnackbar, WithSnackbarProps} from 'notistack';
 import React from 'react';
-import { Mutation, MutationFunction } from 'react-apollo';
 import LineTo from 'react-lineto';
 import {IAgentGraphPolicy} from '../../../models/chatbot-service';
 import ContentLoading from '../../ContentLoading';

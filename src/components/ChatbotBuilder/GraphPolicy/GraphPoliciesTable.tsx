@@ -7,6 +7,7 @@ import {
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { AccountTreeRounded, Delete, Power } from '@material-ui/icons';
 import 'firebase/auth';
+import _ from 'lodash';
 import MaterialTable, { Column } from 'material-table';
 import React, { useEffect } from 'react';
 import { IAgentGraphPolicy } from '../../../models/chatbot-service';
@@ -95,7 +96,7 @@ function GraphPoliciesTable({ policies , loading, toolbarChildren, onEdit, onVie
             </Typography>
           }
           columns={state.columns}
-          data={state.data || []}
+          data={_.cloneDeep(state.data) || []}
           options={{
             actionsColumnIndex: -1,
             filtering: true,

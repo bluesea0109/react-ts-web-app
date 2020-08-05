@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/client';
 import { GraphPolicySchema } from '@bavard/graph-policy';
 import { Box, Button, TextField, Typography } from '@material-ui/core';
 import { useSnackbar } from 'notistack';

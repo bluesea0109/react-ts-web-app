@@ -1,9 +1,10 @@
-import { useMutation, useQuery } from '@apollo/react-hooks';
-import { Paper, TableContainer, Typography} from '@material-ui/core';
+import { useMutation, useQuery } from '@apollo/client';
+import { Paper, TableContainer, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import 'firebase/auth';
+import _ from 'lodash';
 import MaterialTable, { Column } from 'material-table';
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import { CHATBOT_DELETE_AGENT, CHATBOT_GET_AGENTS, CHATBOT_UPDATE_AGENT } from '../../../common-gql-queries';
@@ -23,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface IGetAgents {
-    ChatbotService_agents: IAgent[] | undefined;
+  ChatbotService_agents: IAgent[] | undefined;
 }
 
 interface AgentState {
@@ -35,12 +36,12 @@ function AgentsTable() {
   const classes = useStyles();
   const { projectId, orgId } = useParams();
   const agentsData = useQuery<IGetAgents>(CHATBOT_GET_AGENTS, { variables: { projectId } });
-  const [deleteAgent, { loading, error }] = useMutation(CHATBOT_DELETE_AGENT,  {
-    refetchQueries: [{ query: CHATBOT_GET_AGENTS, variables: { projectId }  }],
+  const [deleteAgent, { loading, error }] = useMutation(CHATBOT_DELETE_AGENT, {
+    refetchQueries: [{ query: CHATBOT_GET_AGENTS, variables: { projectId } }],
     awaitRefetchQueries: true,
   });
-  const [updateAgent, updatedData ] = useMutation(CHATBOT_UPDATE_AGENT,  {
-    refetchQueries: [{ query: CHATBOT_GET_AGENTS, variables: { projectId }  }],
+  const [updateAgent, updatedData] = useMutation(CHATBOT_UPDATE_AGENT, {
+    refetchQueries: [{ query: CHATBOT_GET_AGENTS, variables: { projectId } }],
     awaitRefetchQueries: true,
   });
   const agents: IAgent[] | undefined = agentsData && agentsData.data && agentsData.data.ChatbotService_agents;
@@ -48,90 +49,91 @@ function AgentsTable() {
     columns: [
       { title: 'Agent id', field: 'id', editable: 'never' },
       { title: 'Unique Name', field: 'uname', editable: 'never' },
-      { title: 'Name',
-         field: 'name',
-         render: rowData => <Link  to={`/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${rowData.id}/Actions`}>
-         {rowData.name}
-     </Link>,
-     editable: 'onUpdate',
+      {
+        title: 'Name',
+        field: 'name',
+        render: rowData => <Link to={`/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${rowData.id}/Actions`}>
+          {rowData.name}
+        </Link>,
+        editable: 'onUpdate',
       },
       { title: 'Language', field: 'language', editable: 'never' },
     ],
-    data: agents,
+    data: agents ? [...agents] : [],
   });
 
   useEffect(() => {
     if (agents) {
       setState({
         columns: state.columns,
-        data : [...agents],
+        data: [...agents],
       });
     }
 
-    return () => {};
+    return () => { };
   }, [agents, state.columns]);
 
   const commonError = agentsData.error ? agentsData.error : updatedData.error ? updatedData.error : error;
 
-  if (agentsData.loading || updatedData.loading || loading ) {
+  if (agentsData.loading || updatedData.loading || loading) {
     return <ContentLoading />;
   }
 
-  if ( commonError) {
+  if (commonError) {
     // TODO: handle errors
     return <ApolloErrorPage error={commonError} />;
   }
 
-  const deleteAgentHandler =  (agentId: number) => {
-     deleteAgent({
-        variables: {
-          agentId,
-        },
-      });
+  const deleteAgentHandler = (agentId: number) => {
+    deleteAgent({
+      variables: {
+        agentId,
+      },
+    });
   };
 
-  const updateAgentHandler =  (agentId: number, name: string) => {
+  const updateAgentHandler = (agentId: number, name: string) => {
     updateAgent({
-       variables: {
-         agentId,
-         name,
-       },
-     });
- };
+      variables: {
+        agentId,
+        name,
+      },
+    });
+  };
 
   return (
     <Paper className={classes.paper}>
       {state && state.data && state.data.length > 0 ? (
         <TableContainer component={Paper} aria-label="Agents">
           <MaterialTable
-      title="Agents Table"
-      columns={state.columns}
-      data={state.data}
-      options={{
-        actionsColumnIndex: -1,
-      }}
+            title="Agents Table"
+            columns={state.columns}
+            data={_.cloneDeep(state.data)}
+            options={{
+              actionsColumnIndex: -1,
+            }}
 
-      localization={{
-        body: {
-          editRow: {
-            deleteText : 'Are you sure delete this Agent?',
-          },
-        },
-      }}
-      editable={{
-        onRowUpdate: async (newData, oldData) => {
-          if (oldData) {
-            const dataId = oldData.id;
-            const dataName = newData.name;
-            updateAgentHandler(dataId, dataName);
-          }
-        },
-        onRowDelete: async (oldData) => {
-          const dataId = oldData.id;
-          deleteAgentHandler(dataId);
-        },
-      }}
-    />
+            localization={{
+              body: {
+                editRow: {
+                  deleteText: 'Are you sure delete this Agent?',
+                },
+              },
+            }}
+            editable={{
+              onRowUpdate: async (newData, oldData) => {
+                if (oldData) {
+                  const dataId = oldData.id;
+                  const dataName = newData.name;
+                  updateAgentHandler(dataId, dataName);
+                }
+              },
+              onRowDelete: async (oldData) => {
+                const dataId = oldData.id;
+                deleteAgentHandler(dataId);
+              },
+            }}
+          />
         </TableContainer>
       ) : (
           <Typography align="center" variant="h6">
