@@ -1,7 +1,7 @@
+import { useMutation } from '@apollo/client';
 import { createStyles, makeStyles, Theme, Typography } from '@material-ui/core';
 import gql from 'graphql-tag';
 import React, { useEffect } from 'react';
-import { useMutation } from 'react-apollo';
 import { useParams } from 'react-router-dom';
 import { resetApolloContext } from '../../../apollo-client';
 import {GET_CURRENT_USER, UPDATE_ACTIVE_ORG } from '../../../common-gql-queries';

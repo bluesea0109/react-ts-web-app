@@ -1,5 +1,5 @@
+import { useMutation, useQuery } from '@apollo/client';
 import React, { useEffect, useState } from 'react';
-import { useMutation, useQuery } from 'react-apollo';
 import { useParams } from 'react-router';
 import { CHATBOT_DELETE_EXAMPLE, CHATBOT_GET_TAGS } from '../../../common-gql-queries';
 import { IExample } from '../../../models/chatbot-service';

@@ -6,6 +6,7 @@ import {
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Edit } from '@material-ui/icons';
 import 'firebase/auth';
+import _ from 'lodash';
 import MaterialTable, { Column } from 'material-table';
 import React from 'react';
 import { AnyAction, IIntent } from '../../../models/chatbot-service';
@@ -61,7 +62,7 @@ function IntentsTable({ intents, actions, loading, onAdd, onEditIntent, onDelete
             <Button disabled={loading} variant="contained" color="primary" onClick={onAdd}>Add New Intent</Button>
           }
           columns={columns}
-          data={intents ?? []}
+          data={_.cloneDeep(intents)}
           options={{
             actionsColumnIndex: -1,
             paging: true,

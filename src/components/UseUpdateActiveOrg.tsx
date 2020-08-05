@@ -1,5 +1,5 @@
-import { useMutation, useQuery } from '@apollo/react-hooks';
-import { ApolloError } from 'apollo-client';
+import { useMutation, useQuery } from '@apollo/client';
+import { ApolloError } from '@apollo/client';
 import { useHistory, useLocation } from 'react-router';
 import { GET_CURRENT_USER, UPDATE_ACTIVE_ORG } from '../common-gql-queries';
 

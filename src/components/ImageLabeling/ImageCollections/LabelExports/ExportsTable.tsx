@@ -1,3 +1,4 @@
+import { useMutation, useQuery } from '@apollo/client';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Paper from '@material-ui/core/Paper';
@@ -19,7 +20,6 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import TableIcon from '@material-ui/icons/TableChart';
 import gql from 'graphql-tag';
 import React, { useState } from 'react';
-import { useMutation, useQuery } from 'react-apollo';
 import { useParams } from 'react-router-dom';
 import { ILabelsExport } from '../../../../models/image-labeling-service';
 import ApolloErrorPage from '../../../ApolloErrorPage';

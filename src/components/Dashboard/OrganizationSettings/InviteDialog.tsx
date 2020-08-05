@@ -1,3 +1,4 @@
+import { useMutation } from '@apollo/client';
 import { Button, Typography } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -13,7 +14,6 @@ import TextField from '@material-ui/core/TextField';
 import * as EmailValidator from 'email-validator';
 import gql from 'graphql-tag';
 import React, { useState } from 'react';
-import { useMutation } from 'react-apollo';
 import { useParams } from 'react-router';
 import { IUser } from '../../../models/user-service';
 import ApolloErrorPage from '../../ApolloErrorPage';

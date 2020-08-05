@@ -1,3 +1,4 @@
+import { useMutation, useQuery } from '@apollo/client';
 import {
   Button,
   Chip,
@@ -17,7 +18,6 @@ import {
 import { Delete, Edit, ExpandMore } from '@material-ui/icons';
 import clsx from 'clsx';
 import React, { useState } from 'react';
-import { useMutation, useQuery } from 'react-apollo';
 import { useParams } from 'react-router-dom';
 import {
   DELETE_TRAINING_CONVERSATION,

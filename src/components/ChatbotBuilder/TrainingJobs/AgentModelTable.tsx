@@ -1,3 +1,4 @@
+import { useQuery } from '@apollo/client';
 import { Typography } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import {
@@ -13,7 +14,6 @@ import TableRow from '@material-ui/core/TableRow';
 import Toolbar from '@material-ui/core/Toolbar';
 import gql from 'graphql-tag';
 import React from 'react';
-import { useQuery } from 'react-apollo';
 import { useParams } from 'react-router-dom';
 import { IAgentModelInfo } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';

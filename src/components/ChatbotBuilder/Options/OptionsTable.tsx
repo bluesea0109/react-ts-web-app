@@ -6,6 +6,7 @@ import {
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Edit } from '@material-ui/icons';
+import _ from 'lodash';
 import MaterialTable, { Column } from 'material-table';
 import React from 'react';
 import { IOption } from './types';
@@ -62,7 +63,7 @@ function OptionsTable({ options, loading, onAdd, onEditOption, onDeleteOption }:
             <Button disabled={loading} variant="contained" color="primary" onClick={onAdd}>Add New Option</Button>
           }
           columns={columns}
-          data={options ?? []}
+          data={_.cloneDeep(options)}
           detailPanel={({ tableData, ...optionDetails }: any) => <OptionDetailsPanel option={optionDetails}/>}
           options={{
             actionsColumnIndex: -1,

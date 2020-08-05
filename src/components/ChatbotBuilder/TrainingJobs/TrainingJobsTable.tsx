@@ -1,3 +1,4 @@
+import { useQuery } from '@apollo/client';
 import { Typography } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import {
@@ -12,7 +13,6 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Toolbar from '@material-ui/core/Toolbar';
 import React from 'react';
-import { useQuery } from 'react-apollo';
 import { useParams } from 'react-router-dom';
 import { GET_TRAINING_JOBS } from '../../../common-gql-queries';
 import { ITrainingJob } from '../../../models/chatbot-service';

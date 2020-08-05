@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@apollo/react-hooks';
+import { useMutation, useQuery } from '@apollo/client';
 import {
   LinearProgress,
   Paper,
@@ -7,6 +7,7 @@ import {
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import 'firebase/auth';
+import _ from 'lodash';
 import MaterialTable, { Column } from 'material-table';
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router';
@@ -139,7 +140,7 @@ function UtteranceActionsTable() {
           <MaterialTable
             title="Agents Table"
             columns={state.columns}
-            data={state.data}
+            data={_.cloneDeep(state.data)}
             options={{
               actionsColumnIndex: -1,
               pageSize: 20,

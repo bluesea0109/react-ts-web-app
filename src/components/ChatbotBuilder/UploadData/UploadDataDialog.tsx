@@ -1,3 +1,4 @@
+import { withApollo, WithApolloClient } from '@apollo/client/react/hoc';
 import { Button, Typography } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -5,12 +6,10 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import ApolloClient from 'apollo-client';
 import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
 import _ from 'lodash';
 import React from 'react';
-import { withApollo } from 'react-apollo';
 import { CHATBOT_CREATE_TAGS } from '../../../common-gql-queries';
 import { IExampleInput, UtteranceAction } from '../../../models/chatbot-service';
 import { ActionType } from '../../../models/chatbot-service';
@@ -20,8 +19,9 @@ import { IAgentAction, IAgentData, IAgentDataExample, IAgentDataIntent, IAgentDa
 
 interface IUploadDataDialogProps {
   agentId: number;
-  client: ApolloClient<object>;
 }
+
+type IProps = WithApolloClient<IUploadDataDialogProps>;
 
 interface IUploadDataDialogState {
   open: boolean;
@@ -32,8 +32,8 @@ interface IUploadDataDialogState {
   status: string;
 }
 
-class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDataDialogState> {
-  constructor(props: IUploadDataDialogProps) {
+class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
+  constructor(props: IProps) {
     super(props);
 
     this.state = {
@@ -62,7 +62,7 @@ class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDa
       status: 'Uploading examples',
     }));
 
-    const res = await this.props.client.mutate({
+    const res = await this.props.client?.mutate({
       mutation: UPLOAD_EXAMPLES,
       variables: {
         agentId: this.props.agentId,
@@ -70,7 +70,7 @@ class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDa
       },
     });
 
-    if (res.errors?.[0]) {
+    if (res?.errors?.[0]) {
       console.error(res.errors[0]);
       this.setState({
         error: res.errors[0],
@@ -129,7 +129,7 @@ class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDa
     // Todo Add a Backend Mutation to upload multiple actions at once
 
     const mutations = actions.map((a) => {
-      return this.props.client.mutate({
+      return this.props.client?.mutate({
         mutation,
         variables: {
           agentId: this.props.agentId,
@@ -146,7 +146,7 @@ class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDa
       console.error('Error: ', e);
     }
 
-    const savedActions = await this.props.client.query({
+    const savedActions = await this.props.client?.query({
       query: getActionsQuery,
       fetchPolicy: 'network-only',
       variables: {
@@ -167,7 +167,7 @@ class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDa
       status: 'Creating intents',
     });
 
-    const res = await this.props.client.mutate({
+    const res = await this.props.client?.mutate({
       mutation: createIntentMutation,
       variables: {
         agentId: this.props.agentId,
@@ -191,7 +191,7 @@ class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDa
 
     const intentIdsMap = new Map<string, number>();
 
-    const uploadedIntents: any[] = res.data.ChatbotService_createIntents;
+    const uploadedIntents: any[] = res?.data.ChatbotService_createIntents || [];
 
     uploadedIntents.forEach(x => {
       intentIdsMap.set(x.value, x.id);
@@ -209,7 +209,7 @@ class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDa
       status: 'Creating tag types',
     });
 
-    const res = await this.props.client.mutate({
+    const res = await this.props.client?.mutate({
       mutation: CHATBOT_CREATE_TAGS,
       variables: {
         agentId: this.props.agentId,
@@ -218,7 +218,7 @@ class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDa
     });
 
     const tagTypeIdsMap = new Map<string, number>();
-    const uploadedTagTypes: any[] = res.data.ChatbotService_createTagTypes;
+    const uploadedTagTypes: any[] = res?.data.ChatbotService_createTagTypes || [];
     uploadedTagTypes.forEach(x => {
       tagTypeIdsMap.set(x.value, x.id);
     });
@@ -390,7 +390,7 @@ class UploadDataDialog extends React.Component<IUploadDataDialogProps, IUploadDa
   }
 }
 
-export default withApollo<IUploadDataDialogProps>(UploadDataDialog);
+export default withApollo<IProps>(UploadDataDialog);
 
 const UPLOAD_EXAMPLES = gql`
   mutation ($agentId: Int!, $examples: [ChatbotService_ExampleInput!]!) {

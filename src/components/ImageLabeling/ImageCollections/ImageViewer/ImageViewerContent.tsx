@@ -1,3 +1,4 @@
+import { useApolloClient } from '@apollo/client';
 import { createStyles, makeStyles, Theme, Typography, useTheme } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -11,7 +12,6 @@ import ZoomOutIcon from '@material-ui/icons/ZoomOut';
 import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
 import React, { useState } from 'react';
-import { useApolloClient } from 'react-apollo';
 import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { getLabels } from '../../../../store/image-labeling/selectors';

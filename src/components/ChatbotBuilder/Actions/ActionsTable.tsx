@@ -8,6 +8,7 @@ import {
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Edit } from '@material-ui/icons';
 import 'firebase/auth';
+import _ from 'lodash';
 import MaterialTable, { Column } from 'material-table';
 import React, { useEffect } from 'react';
 import { AnyAction } from '../../../models/chatbot-service';
@@ -72,7 +73,7 @@ function ActionsTable({ onEditAction, actions, loading, onAdd }: ActionsTablePro
               <Button disabled={loading} variant="contained" color="primary" onClick={onAdd}>Add New Action</Button>
             }
             columns={state.columns}
-            data={state.data}
+            data={_.cloneDeep(state.data)}
             detailPanel={({ tableData, ...actionDetails }: any) => <ActionDetailPanel action={actionDetails} />}
             options={{
               actionsColumnIndex: -1,
