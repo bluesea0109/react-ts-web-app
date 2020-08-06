@@ -1,16 +1,17 @@
-import { useLazyQuery, useQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 import {Edge, GraphPolicy, ImageOption , TextOption, UtteranceNode} from '@bavard/graph-policy';
 import { Button, FormControl, FormControlLabel, FormLabel, InputLabel,
   MenuItem, Paper, Radio, RadioGroup, Select, TextField, Typography} from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { useSnackbar } from 'notistack';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import { IOptionImage } from '../../../models/chatbot-service';
 import {uploadFileWithFetch} from '../../../utils/xhr';
 import ContentLoading from '../../ContentLoading';
 import ImageSelectorGrid from '../../Utils/ImageSelectorGrid';
-import {getOptionImagesQuery, getSignedImgUploadUrlQuery} from './gql';
-import {IGetImageUploadSignedUrlQueryResult, IGetOptionImagesQueryResult} from './types';
+import { getSignedImgUploadUrlQuery} from './gql';
+import {IGetImageUploadSignedUrlQueryResult} from './types';
+import {OptionImagesContext} from '../../../context/OptionImages';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -79,10 +80,7 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , onCanc
   const [existingImg, setExistingImg] = useState<string | undefined>(edgeOption?.type === 'IMAGE' ? edgeOption?.text : undefined);
   const [getSignedImgUploadUrl, signedImgUploadResult] = useLazyQuery<IGetImageUploadSignedUrlQueryResult>(getSignedImgUploadUrlQuery);
 
-  const optionImages = useQuery<IGetOptionImagesQueryResult>(getOptionImagesQuery, {
-    fetchPolicy: 'cache-and-network',
-    variables: { agentId },
-  });
+  const optionImages = useContext(OptionImagesContext)?.optionImages || [];
 
   const setEdgeNodeExists = (event: any) => {
     setNodeExists(event.target.value === 'true');
@@ -129,7 +127,14 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , onCanc
     let edgeNode = policy.getNodeById(selectedNodeId);
 
     if (!edgeNode && !nodeExists && utterance && actionName) {
-      edgeNode = new UtteranceNode(policy.nodeCount() + 1, utterance, actionName);
+      let nodeNumber = 1;
+      policy.toJsonObj().nodes.forEach((n)=>{
+        if(n.nodeId > nodeNumber) {
+          nodeNumber = n.nodeId;
+        }
+      });
+      nodeNumber+=1;
+      edgeNode = new UtteranceNode(nodeNumber, utterance, actionName);
       setSelectedNodeId(edgeNode.nodeId);
     }
 
@@ -198,13 +203,10 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , onCanc
         </RadioGroup>
         {
           (optionType === 'IMAGE') && (
-            (!optionImages.loading) ?
-              <React.Fragment>
-                <ImageSelectorGrid onNewImg={handleNewImg} selectedImgName={actionText}
-                  images={optionImages?.data?.ChatbotService_optionImages || []} onSelect={handleSelectImg}/>
-              </React.Fragment>
-            :
-            <ContentLoading/>
+            <React.Fragment>
+              <ImageSelectorGrid onNewImg={handleNewImg} selectedImgName={actionText}
+                images={optionImages} onSelect={handleSelectImg}/>
+            </React.Fragment>
           )
         }
       </FormControl>
