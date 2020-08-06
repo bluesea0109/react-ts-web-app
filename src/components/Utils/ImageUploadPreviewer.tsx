@@ -11,11 +11,13 @@ const useStyles = makeStyles((theme: Theme) =>
       left: 0,
       width: '100%',
       height: '100%',
-      borderRadius: theme.spacing(1),
+      borderRadius: 0,
+      border: 'none'
     },
     uploadButton: {
-      width: 100,
-      height: 100,
+      width: '100%',
+      height: '100%',
+      borderRadius: 0
     },
   }),
 );

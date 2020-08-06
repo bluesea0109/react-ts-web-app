@@ -352,7 +352,7 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
         <div style={{position: 'fixed', bottom: 5, left: '45%'}}>
           <Mutation mutation={updateGraphPolicyMutation} variables={{id: this.state.policy?.id, policy: this.state.policy}}>
             {(mutateFn: MutationFunction) => (
-              <Button variant="contained" color="primary" onClick={() => this.persistChanges(mutateFn)}>Persist Changes</Button>
+              <Button variant="contained" disabled={this.state.loading} color="primary" onClick={() => this.persistChanges(mutateFn)}>Persist Changes</Button>
             )}
           </Mutation>
           {this.state.loading && <ContentLoading/>}

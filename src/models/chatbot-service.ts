@@ -169,3 +169,8 @@ export interface IAgentGraphPolicy {
   data: IGraphPolicy;
   isActive: boolean;
 }
+
+export interface IOptionImage {
+  url: string;
+  name: string;
+}
