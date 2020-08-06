@@ -27,5 +27,5 @@ export interface IGetImageUploadSignedUrlQueryResult {
 }
 
 export interface IGetOptionImagesQueryResult {
-  ChatbotService_optionImages: IOptionImage[]
+  ChatbotService_optionImages: IOptionImage[];
 }
