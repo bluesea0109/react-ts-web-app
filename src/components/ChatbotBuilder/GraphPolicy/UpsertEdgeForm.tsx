@@ -4,14 +4,14 @@ import { Button, FormControl, FormControlLabel, FormLabel, InputLabel,
   MenuItem, Paper, Radio, RadioGroup, Select, TextField, Typography} from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { useSnackbar } from 'notistack';
-import React, {useEffect, useState, useContext} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
+import {OptionImagesContext} from '../../../context/OptionImages';
 import { IOptionImage } from '../../../models/chatbot-service';
 import {uploadFileWithFetch} from '../../../utils/xhr';
 import ContentLoading from '../../ContentLoading';
 import ImageSelectorGrid from '../../Utils/ImageSelectorGrid';
 import { getSignedImgUploadUrlQuery} from './gql';
 import {IGetImageUploadSignedUrlQueryResult} from './types';
-import {OptionImagesContext} from '../../../context/OptionImages';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -128,12 +128,12 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , onCanc
 
     if (!edgeNode && !nodeExists && utterance && actionName) {
       let nodeNumber = 1;
-      policy.toJsonObj().nodes.forEach((n)=>{
-        if(n.nodeId > nodeNumber) {
+      policy.toJsonObj().nodes.forEach((n) => {
+        if (n.nodeId > nodeNumber) {
           nodeNumber = n.nodeId;
         }
       });
-      nodeNumber+=1;
+      nodeNumber += 1;
       edgeNode = new UtteranceNode(nodeNumber, utterance, actionName);
       setSelectedNodeId(edgeNode.nodeId);
     }
