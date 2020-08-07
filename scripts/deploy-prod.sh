@@ -10,7 +10,7 @@ gcp_project="bavard-prd"
 export REACT_APP_PROJECT_ID=$gcp_project
 export REACT_APP_ENV=prod
 
-npm install
+npm ci
 npm run build
 
 firebase deploy -f --token "$FIREBASE_TOKEN" --project $gcp_project --only hosting:bavard-ai
