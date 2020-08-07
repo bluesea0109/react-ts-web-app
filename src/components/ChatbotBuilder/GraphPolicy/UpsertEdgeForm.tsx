@@ -134,7 +134,7 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , onCanc
         }
       });
       nodeNumber += 1;
-      edgeNode = new UtteranceNode(nodeNumber, utterance, actionName);
+      edgeNode = new UtteranceNode(nodeNumber, actionName, utterance);
       setSelectedNodeId(edgeNode.nodeId);
     }
 

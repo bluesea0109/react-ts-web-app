@@ -70,6 +70,9 @@ const GraphPolicyUpload = ({onSuccess, onError}: IGraphPolicyUploadProps) => {
   };
 
   const createGraphPolicy = async () => {
+    if (!policy?.name || policy.name === '') {
+      return enqueueSnackbar('Please enter a name', { variant: 'error' });
+    }
     try {
       setLoading(true);
       await createPolicy({
