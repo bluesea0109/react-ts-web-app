@@ -4,11 +4,13 @@ import { Button, FormControl, FormControlLabel, FormLabel, InputLabel,
   MenuItem, Paper, Radio, RadioGroup, Select, TextField, Typography} from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { useSnackbar } from 'notistack';
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
+import {OptionImagesContext} from '../../../context/OptionImages';
+import { IOptionImage } from '../../../models/chatbot-service';
 import {uploadFileWithFetch} from '../../../utils/xhr';
 import ContentLoading from '../../ContentLoading';
-import {getSignedImgUploadUrlQuery} from './gql';
-import ImageUploadPreviewer from './ImageUploadPreviewer';
+import ImageSelectorGrid from '../../Utils/ImageSelectorGrid';
+import { getSignedImgUploadUrlQuery} from './gql';
 import {IGetImageUploadSignedUrlQueryResult} from './types';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -24,6 +26,12 @@ const useStyles = makeStyles((theme: Theme) =>
       borderRadius: theme.spacing(1),
       padding: theme.spacing(2),
       backgroundColor: theme.palette.background.default,
+    },
+    optionImage: {
+      width: 100,
+      height: 100,
+      borderRadius: theme.spacing(2),
+      backgroundColor: theme.palette.background.paper,
     },
   }),
 );
@@ -69,7 +77,10 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , onCanc
   const [actionName, setActionName] = useState('');
   const [loading, setLoading] = useState(false);
   const [imgFile, setImgFile] = useState<File|undefined>(undefined);
+  const [existingImg, setExistingImg] = useState<string | undefined>(edgeOption?.type === 'IMAGE' ? edgeOption?.text : undefined);
   const [getSignedImgUploadUrl, signedImgUploadResult] = useLazyQuery<IGetImageUploadSignedUrlQueryResult>(getSignedImgUploadUrlQuery);
+
+  const optionImages = useContext(OptionImagesContext)?.optionImages || [];
 
   const setEdgeNodeExists = (event: any) => {
     setNodeExists(event.target.value === 'true');
@@ -88,23 +99,42 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , onCanc
 
   useEffect(prepareSignedUploadUrl, [imgFile]);
 
-  const handleImg = (file: File) => {
+  const handleNewImg = (file: File) => {
     setImgFile(file);
+    setExistingImg(undefined);
+  };
+
+  const handleSelectImg = (img: IOptionImage) => {
+    setActionText(img.name);
+    setExistingImg(img.name);
   };
 
   const handleSubmit = async() => {
+    // Parent node must exist
     if (!node) {
       return enqueueSnackbar('Parent node did not exist', { variant: 'error' });
     }
 
+    // If the same node is already an edge, remove it, then modify and re-add
     if (edgeId) {
       node.removeEdge(edgeId);
+    }
+
+    if (!intent || !actionText) {
+      return enqueueSnackbar('Intent and Action Text/Image Name Are Required Fields', { variant: 'error' });
     }
 
     let edgeNode = policy.getNodeById(selectedNodeId);
 
     if (!edgeNode && !nodeExists && utterance && actionName) {
-      edgeNode = new UtteranceNode(policy.nodeCount() + 1, utterance, actionName);
+      let nodeNumber = 1;
+      policy.toJsonObj().nodes.forEach((n) => {
+        if (n.nodeId > nodeNumber) {
+          nodeNumber = n.nodeId;
+        }
+      });
+      nodeNumber += 1;
+      edgeNode = new UtteranceNode(nodeNumber, utterance, actionName);
       setSelectedNodeId(edgeNode.nodeId);
     }
 
@@ -115,26 +145,27 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , onCanc
     if (optionType === 'TEXT') {
       node.addEdge(edgeNode, new TextOption(intent, actionText));
     } else if (optionType === 'IMAGE') {
-      if (!imgFile) {
+      if (!imgFile && !existingImg) {
         return enqueueSnackbar('Please select an image for the option', { variant: 'error' });
       }
 
-      const uploadUrl = signedImgUploadResult.data?.ChatbotService_imageOptionUploadUrl?.url.replace(/"/g, '');
+      if (!existingImg && imgFile) {
+        const uploadUrl = signedImgUploadResult.data?.ChatbotService_imageOptionUploadUrl?.url.replace(/"/g, '');
+        if (!uploadUrl) {
+          prepareSignedUploadUrl();
+          return enqueueSnackbar('Image upload not ready. Please try in 10 seconds, or try a new image', { variant: 'error' });
+        }
 
-      if (!uploadUrl) {
-        prepareSignedUploadUrl();
-        return enqueueSnackbar('Image upload not ready. Please try in 10 seconds, or try a new image', { variant: 'error' });
+        try {
+          setLoading(true);
+          await uploadFileWithFetch(imgFile, uploadUrl, 'PUT');
+        } catch (e) {
+          enqueueSnackbar(`Error with uploading the image to GCS - ${JSON.stringify(e)}`, { variant: 'error' });
+        }
+        setLoading(false);
       }
 
-      try {
-        setLoading(true);
-        await uploadFileWithFetch(imgFile, uploadUrl, 'PUT');
-      } catch (e) {
-        enqueueSnackbar(`Error with uploading the image to GCS - ${JSON.stringify(e)}`, { variant: 'error' });
-      }
-      setLoading(false);
-
-      node.addEdge(edgeNode, new ImageOption(intent, actionText, ''));
+      node.addEdge(edgeNode, new ImageOption(intent, actionText, actionText));
     }
 
     enqueueSnackbar('Edge added', { variant: 'success' });
@@ -171,8 +202,11 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , onCanc
           <FormControlLabel value={'IMAGE'} control={<Radio />} label="Image" />
         </RadioGroup>
         {
-          optionType === 'IMAGE' && (
-            <ImageUploadPreviewer onChange={handleImg}/>
+          (optionType === 'IMAGE') && (
+            <React.Fragment>
+              <ImageSelectorGrid onNewImg={handleNewImg} selectedImgName={actionText}
+                images={optionImages} onSelect={handleSelectImg}/>
+            </React.Fragment>
           )
         }
       </FormControl>
@@ -182,10 +216,28 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , onCanc
           defaultValue={intent}
           onChange={(e) => setIntent(e.target.value as string)} />
       </FormControl>
+
       <FormControl variant="outlined" className={classes.formControl}>
-        <TextField name="text" label="Text/ImageName" variant="outlined"
-          defaultValue={actionText}
-          onBlur={(e) => {setActionText(e.target.value as string); prepareSignedUploadUrl(); }} />
+        {
+          optionType === 'TEXT' ?
+          <TextField name="text" label={'Text'}
+            variant="outlined"
+            defaultValue={actionText}
+            onBlur={(e) => {setActionText(e.target.value as string); prepareSignedUploadUrl(); }} />
+          : (
+              (existingImg) ?
+              <TextField name="text"
+                variant="outlined"
+                disabled={true}
+                value={actionText} />
+              :
+              <TextField name="text" label={'New Image Name'}
+                variant="outlined"
+                defaultValue={actionText}
+                onChange={(e) => { setActionText(e.target.value as string);  }}
+                onBlur={(e) => prepareSignedUploadUrl()} />
+          )
+        }
       </FormControl>
 
       {

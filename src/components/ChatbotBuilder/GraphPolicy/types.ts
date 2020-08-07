@@ -1,4 +1,4 @@
-import { IAgentGraphPolicy } from '../../../models/chatbot-service';
+import { IAgentGraphPolicy, IOptionImage } from '../../../models/chatbot-service';
 
 export interface IGetGraphPoliciesQueryResult {
   ChatbotService_graphPolicies: IAgentGraphPolicy[];
@@ -24,4 +24,8 @@ export interface IGetImageUploadSignedUrlQueryResult {
   ChatbotService_imageOptionUploadUrl: {
     url: string,
   };
+}
+
+export interface IGetOptionImagesQueryResult {
+  ChatbotService_optionImages: IOptionImage[];
 }

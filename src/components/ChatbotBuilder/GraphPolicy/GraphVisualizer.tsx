@@ -1,5 +1,5 @@
 import { MutationFunction } from '@apollo/client';
-import { Mutation } from '@apollo/client/react/components';
+import { Mutation, Query } from '@apollo/client/react/components';
 import {GraphPolicy, IGraphPolicyNode } from '@bavard/graph-policy';
 import { Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Tooltip } from '@material-ui/core';
 import { Theme, withStyles } from '@material-ui/core/styles';
@@ -8,12 +8,14 @@ import _ from 'lodash';
 import {withSnackbar, WithSnackbarProps} from 'notistack';
 import React from 'react';
 import LineTo from 'react-lineto';
+import {OptionImagesContext} from '../../../context/OptionImages';
 import {IAgentGraphPolicy} from '../../../models/chatbot-service';
 import ContentLoading from '../../ContentLoading';
 import CreatePolicyForm from './CreatePolicyForm';
 import EditNodeForm from './EditNodeForm';
-import { updateGraphPolicyMutation } from './gql';
+import { getOptionImagesQuery, updateGraphPolicyMutation } from './gql';
 import GraphNode from './GraphNode';
+import {IGetOptionImagesQueryResult} from './types';
 
 interface IGraphPolicyVisualizerProps extends WithSnackbarProps {
   policy?: IAgentGraphPolicy;
@@ -343,21 +345,37 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
     this.renderedNodeIds = [];
     this.renderedLinePairs = [];
     const treeContent = this.renderTree(policy.rootNode);
-
-    return (
+    const content = (
       <div className={classes.root}>
         {treeContent}
         {this.state.showEditNode && this.renderEditNodeForm()}
         {this.state.showDeleteNode && this.renderDeleteNodeForm()}
         <div style={{position: 'fixed', bottom: 5, left: '45%'}}>
-          <Mutation mutation={updateGraphPolicyMutation} variables={{id: this.state.policy?.id, policy: this.state.policy}}>
+          <Mutation mutation={updateGraphPolicyMutation}
+            refetchQueries={[{query: getOptionImagesQuery, variables: {agentId: this.state.policy?.agentId}}]}
+            variables={{id: this.state.policy?.id, policy: this.state.policy}}>
             {(mutateFn: MutationFunction) => (
-              <Button variant="contained" color="primary" onClick={() => this.persistChanges(mutateFn)}>Persist Changes</Button>
+              <Button variant="contained" disabled={this.state.loading}
+                color="primary" onClick={() => this.persistChanges(mutateFn)}>Persist Changes</Button>
             )}
           </Mutation>
           {this.state.loading && <ContentLoading/>}
         </div>
       </div>
+    );
+
+    return (
+      <Query<IGetOptionImagesQueryResult> query={getOptionImagesQuery} variables={{agentId: this.state.policy?.agentId}}>
+         {({ loading, data }) => {
+           if (loading) {
+             return <ContentLoading/>;
+           }
+           return (
+             <OptionImagesContext.Provider value={{optionImages: data?.ChatbotService_optionImages || []}}>
+               {content}
+             </OptionImagesContext.Provider>
+          ); }}
+        </Query>
     );
   }
 }
