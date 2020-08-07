@@ -73,8 +73,8 @@ const styles = (theme: Theme) => ({
   hidden: {
     width: 0,
     height: 0,
-    opacity: 0
-  }
+    opacity: 0,
+  },
 });
 
 class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps, IGraphPolicyVisualizerState> {
@@ -89,22 +89,22 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
       showDeleteNode: undefined,
       loading: false,
       snackbarText: '',
-      treeRenderCount: 0
+      treeRenderCount: 0,
     };
   }
 
   updateDimensions = () => {
     this.setState({
-      treeRenderCount: this.state.treeRenderCount + 1
-    })
+      treeRenderCount: this.state.treeRenderCount + 1,
+    });
   }
 
-  componentDidMount(){
-    window.addEventListener("resize", this.updateDimensions);
+  componentDidMount() {
+    window.addEventListener('resize', this.updateDimensions);
   }
 
   componentWillUnmount() {
-    window.removeEventListener("resize", this.updateDimensions);
+    window.removeEventListener('resize', this.updateDimensions);
   }
 
   renderTree = (node: IGraphPolicyNode, inIntent?: string) => {
