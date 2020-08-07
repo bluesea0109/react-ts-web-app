@@ -5,7 +5,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { AccountTreeRounded, Delete, Power } from '@material-ui/icons';
+import { AccountTreeRounded, Delete, GetApp, Power } from '@material-ui/icons';
 import 'firebase/auth';
 import _ from 'lodash';
 import MaterialTable, { Column } from 'material-table';
@@ -38,10 +38,11 @@ interface GraphPoliciesTableProps {
   onActivate: (id: number) => void;
   onEdit?: (id: number) => void;
   onView?: (graph: IAgentGraphPolicy) => void;
+  onExport?: (graph: IAgentGraphPolicy) => void;
   toolbarChildren?: any;
 }
 
-function GraphPoliciesTable({ policies , loading, toolbarChildren, onEdit, onView, onActivate, onDelete }: GraphPoliciesTableProps) {
+function GraphPoliciesTable({ policies , loading, toolbarChildren, onView, onActivate, onDelete, onExport }: GraphPoliciesTableProps) {
   const classes = useStyles();
 
   const [state, setState] = React.useState<GraphPolicyState>({
@@ -126,6 +127,14 @@ function GraphPoliciesTable({ policies , loading, toolbarChildren, onEdit, onVie
               onClick: (event, rowData) => {
                 const data = rowData as IAgentGraphPolicy;
                 onDelete(data.id);
+              },
+            },
+            {
+              icon: (props: any) => <GetApp />,
+              tooltip: 'Export',
+              onClick: (event, rowData) => {
+                const data = rowData as IAgentGraphPolicy;
+                onExport?.(data);
               },
             },
           ]}

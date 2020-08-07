@@ -2,12 +2,11 @@ import { useMutation, useQuery } from '@apollo/client';
 import { Button, Dialog, Grid } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
-
+import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
 import {useParams} from 'react-router-dom';
-
-import { useSnackbar } from 'notistack';
 import {IAgentGraphPolicy} from '../../../models/chatbot-service';
+import {exportJsonFileFromObj} from '../../../utils/exports';
 import {activateGraphPolicyMutation, deleteGraphPolicyMutation, getGraphPoliciesQuery} from './gql';
 import GraphPoliciesTable from './GraphPoliciesTable';
 import GraphVisualizer from './GraphVisualizer';
@@ -124,6 +123,12 @@ export default function GraphPolicies() {
     setUpsertDialogOpen(false);
   };
 
+  const handleExport = async(policy: IAgentGraphPolicy) => {
+    setLoading(true);
+    exportJsonFileFromObj(policy.data, `graph_policy_${policy.name}.json`);
+    setLoading(false);
+  };
+
   const policies = queryResult.data?.ChatbotService_graphPolicies;
 
   return (
@@ -132,6 +137,7 @@ export default function GraphPolicies() {
           <GraphPoliciesTable loading={loading || queryResult?.loading } onActivate={handleActivatePolicy}
             onDelete={handleDeletePolicy}
             onView={handleViewPolicy}
+            onExport={handleExport}
             policies={policies}
             toolbarChildren={
               <React.Fragment>
