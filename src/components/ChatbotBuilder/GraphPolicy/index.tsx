@@ -9,7 +9,7 @@ import {IAgentGraphPolicy} from '../../../models/chatbot-service';
 import {exportJsonFileFromObj} from '../../../utils/exports';
 import {activateGraphPolicyMutation, deleteGraphPolicyMutation, getGraphPoliciesQuery} from './gql';
 import GraphPoliciesTable from './GraphPoliciesTable';
-import GraphVisualizer from './GraphVisualizer';
+import GraphVisualEditor from './GraphVisualEditor';
 import {IGetGraphPoliciesQueryResult} from './types';
 import UploadGraphPolicyDialog from './UploadGraphPolicyDialog';
 
@@ -151,7 +151,7 @@ export default function GraphPolicies() {
 
             <Dialog open={upsertDialogOpen} fullScreen={true} scroll={'body'} className={classes.policyDialog}>
               <CloseRoundedIcon className={classes.dialogClose} onClick={handleClosePolicy}/>
-              <GraphVisualizer policy={selectedPolicy}/>
+              <GraphVisualEditor policy={selectedPolicy}/>
             </Dialog>
 
           {<UploadGraphPolicyDialog

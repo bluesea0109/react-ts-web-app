@@ -1,11 +1,14 @@
-import { GraphPolicy} from '@bavard/graph-policy';
-import { Button, Dialog, DialogActions, DialogContent,
-  DialogTitle, FormControl, Grid, IconButton, List, ListItem,
-  ListItemIcon, ListItemSecondaryAction, ListItemText, Paper, TextField , Typography} from '@material-ui/core';
+import { GraphPolicy, ImageOption, IOutEdge} from '@bavard/graph-policy';
+import { Avatar, Button, Dialog, DialogActions,
+  DialogContent, DialogTitle, FormControl, Grid, IconButton, List,
+  ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText ,
+  Paper, TextField, Typography} from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import {Add, Delete, Edit, Image, TextFields} from '@material-ui/icons';
+import {Add, Delete, Edit, TextFields} from '@material-ui/icons';
+import _ from 'lodash';
 import { useSnackbar } from 'notistack';
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
+import {OptionImagesContext} from '../../../context/OptionImages';
 import GraphNode from './GraphNode';
 import UpsertEdgeForm from './UpsertEdgeForm';
 
@@ -32,10 +35,11 @@ interface IGraphNodeProps {
   nodeId: number;
   agentId: number;
   onCancel: () => void;
+  onUpdate?: () => void;
   onSubmit: (policy: GraphPolicy) => void;
 }
 
-export default function EditNodeForm({nodeId, agentId, policy, onCancel, onSubmit}: IGraphNodeProps) {
+export default function EditNodeForm({nodeId, agentId, policy, onCancel, onSubmit, onUpdate}: IGraphNodeProps) {
   const classes = useStyles();
   const [graphPolicy, setPolicy] = useState<GraphPolicy>(policy);
   const node = graphPolicy.getNodeById(nodeId);
@@ -46,6 +50,7 @@ export default function EditNodeForm({nodeId, agentId, policy, onCancel, onSubmi
   const [numChanges, setNumStateChanges] = useState(0);
   const {enqueueSnackbar} = useSnackbar();
 
+  const optionImages = useContext(OptionImagesContext)?.optionImages || [];
   useEffect(() => {
     setUpsertingEdge(false);
   }, [editingEdgeId]);
@@ -53,6 +58,7 @@ export default function EditNodeForm({nodeId, agentId, policy, onCancel, onSubmi
   const removeEdge = (edgeId: number) => {
     node?.removeEdge(edgeId);
     setPolicy(graphPolicy);
+    onUpdate?.();
     setNumStateChanges(numChanges + 1);
   };
 
@@ -64,7 +70,19 @@ export default function EditNodeForm({nodeId, agentId, policy, onCancel, onSubmi
     setNumStateChanges(numChanges + 1);
     setUpsertingEdge(false);
     setPolicy(updPolicy);
+    onUpdate?.();
     setNumStateChanges(numChanges + 1);
+  };
+
+  const getImgUrl = (imgName: string) => {
+    return _.find(optionImages, { name: imgName })?.url;
+  };
+  const getAvatar = (edge: IOutEdge) => {
+    if (edge.option?.type === 'IMAGE') {
+      const optionImg = edge.option as ImageOption;
+      return <Avatar variant="rounded" src={getImgUrl(optionImg.imageName) || ''}/>;
+    }
+    return <TextFields/>;
   };
 
   const validateAndSubmit = () => {
@@ -116,9 +134,9 @@ export default function EditNodeForm({nodeId, agentId, policy, onCancel, onSubmi
                 {node.toJsonObj().outEdges.map((e, index) => {
                   return (
                     <ListItem key={index} selected={e.nodeId === editingEdgeId}>
-                      <ListItemIcon>
-                        {e.option?.type === 'IMAGE' ? <Image/> : <TextFields/>}
-                      </ListItemIcon>
+                      <ListItemAvatar>
+                        {getAvatar(e)}
+                      </ListItemAvatar>
                       <ListItemText>
                         {e.option?.intent}
                       </ListItemText>
