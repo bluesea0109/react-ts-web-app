@@ -17,7 +17,7 @@ import { getOptionImagesQuery, updateGraphPolicyMutation } from './gql';
 import GraphNode from './GraphNode';
 import {IGetOptionImagesQueryResult} from './types';
 
-interface IGraphPolicyVisualizerProps extends WithSnackbarProps {
+interface IGraphPolicyVisualEditorProps extends WithSnackbarProps {
   policy?: IAgentGraphPolicy;
   classes: {
     root: string;
@@ -30,7 +30,7 @@ interface IGraphPolicyVisualizerProps extends WithSnackbarProps {
   };
 }
 
-interface IGraphPolicyVisualizerState {
+interface IGraphPolicyVisualEditorState {
   policy?: IAgentGraphPolicy;
   graphPolicyInstance?: GraphPolicy;
   showDeleteNode: any;
@@ -77,10 +77,11 @@ const styles = (theme: Theme) => ({
   },
 });
 
-class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps, IGraphPolicyVisualizerState> {
+class GraphPolicyVisualEditor extends React.Component<IGraphPolicyVisualEditorProps, IGraphPolicyVisualEditorState> {
   renderedNodeIds: number[] = [];
   renderedLinePairs: string[] = [];
-  constructor(props: IGraphPolicyVisualizerProps) {
+  mutateFunction: MutationFunction|undefined = undefined;
+  constructor(props: IGraphPolicyVisualEditorProps) {
     super(props);
     this.state = {
       policy: props.policy,
@@ -240,8 +241,8 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
     }
 
     return (
-      <EditNodeForm agentId={this.state.policy?.agentId} policy={gp}
-        nodeId={node.nodeId} onCancel={this.closeForms} onSubmit={this.handleEditNode} />
+      <EditNodeForm agentId={this.state.policy?.agentId} policy={gp} nodeId={node.nodeId}
+        onCancel={this.closeForms} onSubmit={this.handleEditNode} onUpdate={this.persistChanges} />
     );
   }
 
@@ -254,7 +255,8 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
     this.setState({
       policy: newPolicy,
       showEditNode: null,
-    });
+    }, this.persistChanges);
+
   }
 
   getGraphPolicyFromState = (): GraphPolicy|undefined => {
@@ -314,9 +316,15 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
     return <></>;
   }
 
-  persistChanges = async(mutate: MutationFunction) => {
+  persistChanges = async() => {
     if (!this.state.policy) {
       return;
+    }
+
+    const mutate = this.mutateFunction;
+    if (!mutate) {
+      // This should ideally never trigger, because the UX renders within the Mutation Component
+      return this.props.enqueueSnackbar('Mutation Not Ready');
     }
 
     this.setState({loading: true});
@@ -376,10 +384,13 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
           <Mutation mutation={updateGraphPolicyMutation}
             refetchQueries={[{query: getOptionImagesQuery, variables: {agentId: this.state.policy?.agentId}}]}
             variables={{id: this.state.policy?.id, policy: this.state.policy}}>
-            {(mutateFn: MutationFunction) => (
-              <Button variant="contained" disabled={this.state.loading}
-                color="primary" onClick={() => this.persistChanges(mutateFn)}>Persist Changes</Button>
-            )}
+            {(mutateFn: MutationFunction) => {
+              this.mutateFunction = mutateFn;
+              return (
+                <Button variant="contained" disabled={this.state.loading}
+                  color="primary" onClick={this.persistChanges}>Persist Changes</Button>
+              );
+            }}
           </Mutation>
           {this.state.loading && <ContentLoading/>}
         </div>
@@ -402,4 +413,4 @@ class GraphPolicyVisualizer extends React.Component<IGraphPolicyVisualizerProps,
   }
 }
 
-export default withSnackbar(withStyles(styles)(GraphPolicyVisualizer));
+export default withSnackbar(withStyles(styles)(GraphPolicyVisualEditor));

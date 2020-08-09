@@ -1,9 +1,11 @@
-import {IGraphPolicyNode} from '@bavard/graph-policy';
-import { Card, CardActions, CardContent, Chip, IconButton, Tooltip, Typography } from '@material-ui/core';
+import {IGraphPolicyNode, ImageOption, IOutEdge} from '@bavard/graph-policy';
+import { Avatar, Card, CardActions, CardContent, IconButton, Paper, Tooltip, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import {Add, Delete, Edit} from '@material-ui/icons';
+import {Add, Delete, Edit, TextFields} from '@material-ui/icons';
 import Alert from '@material-ui/lab/Alert';
-import React from 'react';
+import _ from 'lodash';
+import React, { useContext } from 'react';
+import {OptionImagesContext} from '../../../context/OptionImages';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -18,10 +20,26 @@ const useStyles = makeStyles((theme: Theme) =>
       textAlign: 'center',
       overflow: 'hidden',
     },
-    chip: {
-      margin: 2,
-      height: 25,
+    optionContainer: {
+      display: 'flex',
+      flexWrap: 'wrap',
+    },
+    option: {
+      height: 30,
+      display: 'flex',
+      backgroundColor: theme.palette.background.paper,
       fontSize: 11,
+      padding: 2,
+      margin: 2,
+      borderRadius: theme.spacing(1),
+      alignItems: 'center',
+    },
+    optionText: {
+      padding: theme.spacing(1),
+    },
+    optionImg: {
+      height: 30,
+      width: 30,
     },
     alert: {
       marginBottom: theme.spacing(1),
@@ -52,6 +70,19 @@ interface IGraphNodeProps {
 export default function GraphNode({node, wrapperClassName, onAddEdge, onEditNode, onDeleteNode}: IGraphNodeProps) {
   const classes = useStyles();
 
+  const optionImages = useContext(OptionImagesContext)?.optionImages || [];
+  const getImgUrl = (imgName: string) => {
+    return _.find(optionImages, { name: imgName })?.url;
+  };
+
+  const getAvatar = (edge: IOutEdge) => {
+    if (edge.option?.type === 'IMAGE') {
+      const optionImg = edge.option as ImageOption;
+      return <Avatar className={classes.optionImg} variant="rounded" src={getImgUrl(optionImg.imageName) || ''}/>;
+    }
+    return <Avatar className={classes.optionImg} variant="rounded"><TextFields/></Avatar>;
+  };
+
   return (
       <Card className={`${classes.nodePaper} ${wrapperClassName}`}>
         <CardContent>
@@ -69,12 +100,26 @@ export default function GraphNode({node, wrapperClassName, onAddEdge, onEditNode
             </Tooltip>
           </Alert>
           {
-            node.outEdges?.map((e, index) => {
-              if (e.option?.intent) {
-                return <Chip key={`${index}`} className={classes.chip} label={e.option?.intent}/>;
+            (node.outEdges?.length >= 1) ?
+
+            <div className={classes.optionContainer}>
+              {node.outEdges.map((e, index) => {
+                if (e.option?.intent) {
+                  return (
+                    <Paper className={classes.option}>
+                      {getAvatar(e)}
+                      <div className={classes.optionText}>
+                        {e.option?.intent}
+                      </div>
+                    </Paper>
+                  );
+                }
+                return <></>;
+              })
               }
-              return <></>;
-            })
+            </div>
+            :
+            <></>
           }
         </CardContent>
         <CardActions className={classes.nodeActionsContainer}>
