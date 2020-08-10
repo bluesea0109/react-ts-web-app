@@ -1,4 +1,4 @@
-import { GraphPolicy, ImageOption, IOutEdge} from '@bavard/graph-policy';
+import { GraphPolicy, ImageOption, IOutEdge } from '@bavard/graph-policy';
 import { Avatar, Button, Dialog, DialogActions,
   DialogContent, DialogTitle, FormControl, Grid, IconButton, List,
   ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText ,

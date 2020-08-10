@@ -1,5 +1,5 @@
 import { useLazyQuery } from '@apollo/client';
-import {Edge, GraphPolicy, ImageOption , TextOption, UtteranceNode} from '@bavard/graph-policy';
+import { BaseEdge, EmptyEdge , GraphPolicy, ImageOption, SentEmailEdge, TextOption, UtteranceEdge, UtteranceNode} from '@bavard/graph-policy';
 import { Button, FormControl, FormControlLabel, FormLabel, InputLabel,
   MenuItem, Paper, Radio, RadioGroup, Select, TextField, Typography} from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -55,7 +55,7 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , onCanc
   });
 
   const node = policy.getNodeById(nodeId);
-  let edge: Edge | undefined;
+  let edge: BaseEdge | undefined;
   if (edgeId) {
     edge = node?.getEdgeById(edgeId);
   }
@@ -63,17 +63,19 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , onCanc
   let textOption: TextOption | undefined;
   let imgOption: ImageOption | undefined;
 
-  if (edge?.option?.type === 'TEXT') {
-    textOption = edge.option as TextOption;
-  } else if (edge?.option?.type === 'IMAGE') {
-    imgOption = edge.option as ImageOption;
+  if (edge instanceof UtteranceEdge) {
+    if (edge?.option?.type === 'TEXT') {
+      textOption = edge.option as TextOption;
+    } else if (edge?.option?.type === 'IMAGE') {
+      imgOption = edge.option as ImageOption;
+    }
   }
 
   const [nodeExists, setNodeExists] = useState(true);
   const [showFormErrors, setShowFormErrors] = useState(false);
   const [selectedNodeId, setSelectedNodeId] = useState<any>(edge?.dest.nodeId);
-  const [optionType, setOptionType] = useState<string>(edge?.option?.type || 'TEXT');
-  const [intent, setIntent] = useState(edge?.option?.intent || '');
+  const [optionType, setOptionType] = useState<string>(edge instanceof UtteranceEdge ? edge?.option?.type || 'TEXT' : '');
+  const [intent, setIntent] = useState(edge instanceof UtteranceEdge ? edge?.option?.intent || '' : '');
   const [actionText, setActionText] = useState<string>(textOption?.text || imgOption?.text || '');
   const [utterance, setUtterance] = useState('');
   const [actionName, setActionName] = useState('');
@@ -154,7 +156,7 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , onCanc
 
     // Handle option types
     if (optionType === 'TEXT') {
-      node.addEdge(edgeNode, new TextOption(intent, actionText));
+      node.addUtteranceEdge(edgeNode, new TextOption(intent, actionText));
     } else if (optionType === 'IMAGE') {
       // An old image or a new image file should exist
       if (!imgFile && !existingImg) {
@@ -184,7 +186,7 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , onCanc
       }
 
       // Add the new Image option
-      node.addEdge(edgeNode, new ImageOption(intent, actionText, imageName));
+      node.addUtteranceEdge(edgeNode, new ImageOption(intent, actionText, imageName));
     }
 
     enqueueSnackbar('Edge added', { variant: 'success' });
