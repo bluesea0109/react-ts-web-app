@@ -1,6 +1,6 @@
 import { MutationFunction } from '@apollo/client';
 import { Mutation, Query } from '@apollo/client/react/components';
-import {GraphPolicy, IGraphPolicyNode } from '@bavard/graph-policy';
+import {EmailNode, GraphPolicy, GraphPolicyNode, IGraphPolicyNode, UtteranceNode } from '@bavard/graph-policy';
 import { Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Tooltip } from '@material-ui/core';
 import { Theme, withStyles } from '@material-ui/core/styles';
 import {Add} from '@material-ui/icons';
@@ -108,9 +108,15 @@ class GraphPolicyVisualEditor extends React.Component<IGraphPolicyVisualEditorPr
     window.removeEventListener('resize', this.updateDimensions);
   }
 
-  renderTree = (node: IGraphPolicyNode, inIntent?: string) => {
+  renderTree = (gpNode: GraphPolicyNode | UtteranceNode | EmailNode | undefined, inIntent?: string) => {
     const {classes} = this.props;
     const policy = this.state.policy;
+    const gp = this.getGraphPolicyFromState();
+    const node = gpNode?.toJsonObj();
+
+    if (!gp || !policy || !node) {
+      return <></>;
+    }
 
     const defaultLineProps = {
       delay: true,
@@ -128,7 +134,8 @@ class GraphPolicyVisualEditor extends React.Component<IGraphPolicyVisualEditorPr
         <div className={classes.graphRow} key={`node_${node.nodeId}`}>
           {
             node.outEdges?.map((e) => {
-              const nodeData = _.find(policy?.data.nodes, { nodeId: e.nodeId });
+              const edgeNode = gp.getNodeById(e.nodeId);
+              const nodeData = edgeNode?.toJsonObj();
               // Handle Recursions and infinite loops
               if (nodeData && this.renderedLinePairs.indexOf(`${node.nodeId}_${e.nodeId}`) === -1) {
                 const lineProps = defaultLineProps;
@@ -153,9 +160,10 @@ class GraphPolicyVisualEditor extends React.Component<IGraphPolicyVisualEditorPr
                 }
 
                 this.renderedLinePairs.push(`${node.nodeId}_${e.nodeId}`);
+
                 return (
                   <div key={`node_${node.nodeId}_edge_${e.nodeId}`}>
-                    {this.renderTree(nodeData, e.option?.intent )}
+                    {this.renderTree(edgeNode, e.option?.intent )}
                   </div>
                 );
               } else {
@@ -173,8 +181,8 @@ class GraphPolicyVisualEditor extends React.Component<IGraphPolicyVisualEditorPr
       <div>
         <div className={classes.graphRow}>
           {
-            !isNodeRendered ?
-            this.renderEditableNode(node, inIntent)
+            !isNodeRendered && gpNode ?
+            this.renderEditableNode(gpNode, inIntent)
             :
             <></>
           }
@@ -205,7 +213,7 @@ class GraphPolicyVisualEditor extends React.Component<IGraphPolicyVisualEditorPr
     });
   }
 
-  renderEditableNode = (node: IGraphPolicyNode, inIntent?: string) => {
+  renderEditableNode = (node: GraphPolicyNode | UtteranceNode | EmailNode, inIntent?: string) => {
     const {classes} = this.props;
     return (
       <Box display="flex" flexDirection="column"
@@ -298,7 +306,7 @@ class GraphPolicyVisualEditor extends React.Component<IGraphPolicyVisualEditorPr
         <DialogContent>
           This will remove this node from the policy, and will delete all edges to this node
           <GraphNode
-            node={node.toJsonObj()}
+            node={node}
           />
         </DialogContent>
         <DialogActions>
@@ -366,15 +374,16 @@ class GraphPolicyVisualEditor extends React.Component<IGraphPolicyVisualEditorPr
   render() {
     const {classes} = this.props;
 
-    if (!this.state.policy) {
+    const policy = this.state.policy?.data;
+    const gp = this.getGraphPolicyFromState();
+
+    if (!policy || !gp) {
       return this.renderNewPolicy();
     }
 
-    const policy = this.state.policy?.data;
-
     this.renderedNodeIds = [];
     this.renderedLinePairs = [];
-    const treeContent = this.renderTree(policy.rootNode);
+    const treeContent = this.renderTree(gp.rootNode);
     const content = (
       <div className={classes.root}>
         {treeContent}

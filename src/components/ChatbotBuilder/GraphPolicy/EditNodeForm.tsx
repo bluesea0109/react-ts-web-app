@@ -1,16 +1,17 @@
-import { GraphPolicy, ImageOption, IOutEdge } from '@bavard/graph-policy';
+import { EmailNode, GraphPolicy, ImageOption, IOutEdge } from '@bavard/graph-policy';
 import { Avatar, Button, Dialog, DialogActions,
   DialogContent, DialogTitle, FormControl, Grid, IconButton, List,
-  ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText ,
+  ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText,
   Paper, TextField, Typography} from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import {Add, Delete, Edit, TextFields} from '@material-ui/icons';
+import {Add, ContactSupport, Delete, Edit, Email, TextFields} from '@material-ui/icons';
 import _ from 'lodash';
 import { useSnackbar } from 'notistack';
 import React, {useContext, useEffect, useState} from 'react';
 import {OptionImagesContext} from '../../../context/OptionImages';
+import EdgeChip from './EdgeChip';
 import GraphNode from './GraphNode';
-import UpsertEdgeForm from './UpsertEdgeForm';
+import UpsertEdge from './UpsertEdge';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -81,6 +82,10 @@ export default function EditNodeForm({nodeId, agentId, policy, onCancel, onSubmi
     if (edge.option?.type === 'IMAGE') {
       const optionImg = edge.option as ImageOption;
       return <Avatar variant="rounded" src={getImgUrl(optionImg.imageName) || ''}/>;
+    } else if (edge.type === 'CONFIRM') {
+      return <ContactSupport/>;
+    } else if (edge.type === 'EMAIL') {
+      return <Email/>;
     }
     return <TextFields/>;
   };
@@ -119,7 +124,7 @@ export default function EditNodeForm({nodeId, agentId, policy, onCancel, onSubmi
             </Paper>
 
             <GraphNode
-              node={node.toJsonObj()}
+              node={node}
             />
           </Grid>
           <Grid item={true} lg={4} md={12}>
@@ -130,34 +135,27 @@ export default function EditNodeForm({nodeId, agentId, policy, onCancel, onSubmi
                   <Add/>
                 </IconButton>
               </Typography>
-              <List>
+
                 {node.toJsonObj().outEdges.map((e, index) => {
                   return (
-                    <ListItem key={index} selected={e.nodeId === editingEdgeId}>
-                      <ListItemAvatar>
-                        {getAvatar(e)}
-                      </ListItemAvatar>
-                      <ListItemText>
-                        {e.option?.intent}
-                      </ListItemText>
-                      <ListItemSecondaryAction>
+                    <EdgeChip node={node} edgeId={e.nodeId} actions={
+                      <React.Fragment>
                         <IconButton onClick={() => { setEditingEdgeId(e.nodeId); setTimeout(() => setUpsertingEdge(true), 200); }}>
                           <Edit/>
                         </IconButton>
                         <IconButton onClick={() => { removeEdge(e.nodeId); }}>
                           <Delete/>
                         </IconButton>
-                      </ListItemSecondaryAction>
-                    </ListItem>
+                      </React.Fragment>
+                    }/>
                   );
                 })}
-              </List>
             </Paper>
           </Grid>
           <Grid item={true} lg={5} md={12}>
             {
               upsertingEdge ?
-              <UpsertEdgeForm agentId={agentId} edgeId={editingEdgeId} nodeId={node.nodeId}
+              <UpsertEdge agentId={agentId} edgeId={editingEdgeId} nodeId={node.nodeId}
                 policy={graphPolicy} onSuccess={handleAddEdge} onCancel={onCancel} />
               :
               <></>

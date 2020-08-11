@@ -1,11 +1,12 @@
-import {IGraphPolicyNode, ImageOption, IOutEdge} from '@bavard/graph-policy';
+import { GraphPolicyNode, ImageOption, IOutEdge} from '@bavard/graph-policy';
 import { Avatar, Card, CardActions, CardContent, IconButton, Paper, Tooltip, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import {Add, Delete, Edit, TextFields} from '@material-ui/icons';
+import {Add, ContactSupport, Delete, Edit, Email, NotInterested, TextFields} from '@material-ui/icons';
 import Alert from '@material-ui/lab/Alert';
 import _ from 'lodash';
 import React, { useContext } from 'react';
 import {OptionImagesContext} from '../../../context/OptionImages';
+import EdgeChip from './EdgeChip';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -60,7 +61,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface IGraphNodeProps {
-  node: IGraphPolicyNode;
+  node: GraphPolicyNode;
   wrapperClassName?: string;
   onAddEdge?: (nodeId: number) => void;
   onEditNode?: (nodeId: number) => void;
@@ -79,9 +80,17 @@ export default function GraphNode({node, wrapperClassName, onAddEdge, onEditNode
     if (edge.option?.type === 'IMAGE') {
       const optionImg = edge.option as ImageOption;
       return <Avatar className={classes.optionImg} variant="rounded" src={getImgUrl(optionImg.imageName) || ''}/>;
+    } else if (edge.type === 'CONFIRM') {
+      return <Avatar className={classes.optionImg} variant="rounded"><ContactSupport/></Avatar>;
+    } else if (edge.type === 'EMAIL') {
+      return <Avatar className={classes.optionImg} variant="rounded"><Email/></Avatar>;
+    } else if (edge.type === 'EMPTY') {
+      return <Avatar className={classes.optionImg} variant="rounded"><NotInterested/></Avatar>;
     }
     return <Avatar className={classes.optionImg} variant="rounded"><TextFields/></Avatar>;
   };
+
+  const nodeJson = node.toJsonObj();
 
   return (
       <Card className={`${classes.nodePaper} ${wrapperClassName}`}>
@@ -89,34 +98,22 @@ export default function GraphNode({node, wrapperClassName, onAddEdge, onEditNode
           <Typography className={classes.title} variant="subtitle2">
             {node.nodeId}. {node.actionName} &nbsp;
             <Typography component="span" variant="subtitle2" color="secondary" align="right">
-              {node.nodeType}
+              {nodeJson.nodeType}
             </Typography>
           </Typography>
           <Alert icon={false} severity="info" className={classes.alert}>
-            <Tooltip disableFocusListener={true} title={node.utterance}>
+            <Tooltip disableFocusListener={true} title={nodeJson.utterance}>
               <Typography component="div" className={classes.utteranceText} variant="caption">
-                {node.utterance}
+                {nodeJson.utterance}
               </Typography>
             </Tooltip>
           </Alert>
           {
-            (node.outEdges?.length >= 1) ?
-
+            (node.edges?.length >= 1) ?
             <div className={classes.optionContainer}>
-              {node.outEdges.map((e, index) => {
-                if (e.option?.intent) {
-                  return (
-                    <Paper className={classes.option}>
-                      {getAvatar(e)}
-                      <div className={classes.optionText}>
-                        {e.option?.intent}
-                      </div>
-                    </Paper>
-                  );
-                }
-                return <></>;
-              })
-              }
+              {node.toJsonObj().outEdges.map((e, index) => {
+                return <EdgeChip node={node} edgeId={e.nodeId} key={index}/>;
+              })}
             </div>
             :
             <></>
