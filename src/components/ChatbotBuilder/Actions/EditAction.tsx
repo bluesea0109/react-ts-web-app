@@ -16,6 +16,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { ActionType, AnyAction } from '../../../models/chatbot-service';
 import { Maybe } from '../../../utils/types';
+import RichTextInput from '../../Utils/RichTextInput';
 import { IOption } from '../Options/types';
 import { createActionMutation, getActionsQuery, updateActionMutation } from './gql';
 
@@ -208,18 +209,12 @@ const EditAction = (props: EditActionProps) => {
               <>
                 {actionType === ActionType.UTTERANCE_ACTION && (
                   <>
-                    <Grid item={true} xs={6}>
+                    <Grid item={true} xs={12}>
                       <Box p={2}>
-                        <TextField
-                          fullWidth={true}
-                          multiline={true}
-                          label="Utterance Text"
-                          disabled={isLoading}
-                          variant="outlined"
-                          rows={3}
+                        <RichTextInput
+                          label="Action Text"
                           value={currentAction?.text}
-                          onChange={e => setCurrentAction({ ...currentAction, text: e.target.value })}
-                          error={!!error}
+                          onChange={(html: string) => setCurrentAction({ ...currentAction, text: html })}
                         />
                       </Box>
                     </Grid>
