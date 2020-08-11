@@ -1,6 +1,6 @@
 import { MutationFunction } from '@apollo/client';
 import { Mutation, Query } from '@apollo/client/react/components';
-import {EmailNode, GraphPolicy, GraphPolicyNode, IGraphPolicyNode, UtteranceNode } from '@bavard/graph-policy';
+import {EmailNode, GraphPolicy, GraphPolicyNode, UtteranceNode } from '@bavard/graph-policy';
 import { Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Tooltip } from '@material-ui/core';
 import { Theme, withStyles } from '@material-ui/core/styles';
 import {Add} from '@material-ui/icons';

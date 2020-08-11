@@ -1,14 +1,11 @@
-import { EmailNode, GraphPolicy, ImageOption, IOutEdge } from '@bavard/graph-policy';
-import { Avatar, Button, Dialog, DialogActions,
-  DialogContent, DialogTitle, FormControl, Grid, IconButton, List,
-  ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText,
+import { GraphPolicy } from '@bavard/graph-policy';
+import {  Button, Dialog, DialogActions,
+  DialogContent, DialogTitle, FormControl, Grid, IconButton,
   Paper, TextField, Typography} from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import {Add, ContactSupport, Delete, Edit, Email, TextFields} from '@material-ui/icons';
-import _ from 'lodash';
+import {Add, Delete, Edit} from '@material-ui/icons';
 import { useSnackbar } from 'notistack';
-import React, {useContext, useEffect, useState} from 'react';
-import {OptionImagesContext} from '../../../context/OptionImages';
+import React, { useEffect, useState} from 'react';
 import EdgeChip from './EdgeChip';
 import GraphNode from './GraphNode';
 import UpsertEdge from './UpsertEdge';
@@ -51,7 +48,6 @@ export default function EditNodeForm({nodeId, agentId, policy, onCancel, onSubmi
   const [numChanges, setNumStateChanges] = useState(0);
   const {enqueueSnackbar} = useSnackbar();
 
-  const optionImages = useContext(OptionImagesContext)?.optionImages || [];
   useEffect(() => {
     setUpsertingEdge(false);
   }, [editingEdgeId]);
@@ -73,21 +69,6 @@ export default function EditNodeForm({nodeId, agentId, policy, onCancel, onSubmi
     setPolicy(updPolicy);
     onUpdate?.();
     setNumStateChanges(numChanges + 1);
-  };
-
-  const getImgUrl = (imgName: string) => {
-    return _.find(optionImages, { name: imgName })?.url;
-  };
-  const getAvatar = (edge: IOutEdge) => {
-    if (edge.option?.type === 'IMAGE') {
-      const optionImg = edge.option as ImageOption;
-      return <Avatar variant="rounded" src={getImgUrl(optionImg.imageName) || ''}/>;
-    } else if (edge.type === 'CONFIRM') {
-      return <ContactSupport/>;
-    } else if (edge.type === 'EMAIL') {
-      return <Email/>;
-    }
-    return <TextFields/>;
   };
 
   const validateAndSubmit = () => {
@@ -138,7 +119,7 @@ export default function EditNodeForm({nodeId, agentId, policy, onCancel, onSubmi
 
                 {node.toJsonObj().outEdges.map((e, index) => {
                   return (
-                    <EdgeChip node={node} edgeId={e.nodeId} actions={
+                    <EdgeChip node={node} key={`${node.nodeId}_${index}`} edgeId={e.nodeId} actions={
                       <React.Fragment>
                         <IconButton onClick={() => { setEditingEdgeId(e.nodeId); setTimeout(() => setUpsertingEdge(true), 200); }}>
                           <Edit/>

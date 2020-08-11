@@ -1,5 +1,6 @@
 import { useLazyQuery } from '@apollo/client';
-import { BaseEdge, ConfirmEdge , EmailNode, EmptyEdge, GraphEdgeType, GraphPolicy, GraphPolicyNode, ImageOption, TextOption, UtteranceEdge, UtteranceNode} from '@bavard/graph-policy';
+import { BaseEdge, ConfirmEdge , EmailNode, EmptyEdge, GraphEdgeType, GraphPolicy,
+  GraphPolicyNode, ImageOption, TextOption, UtteranceEdge, UtteranceNode} from '@bavard/graph-policy';
 import { Button, FormControl, FormControlLabel, FormLabel, InputLabel,
   MenuItem, Radio, RadioGroup, Select, TextField} from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -64,9 +65,11 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , edgeTy
     switch (edgeType) {
       case 'CONFIRM': {
         edge = node?.getEdgeById(edgeId) as ConfirmEdge;
+        break;
       }
       case 'EMPTY': {
         edge = node?.getEdgeById(edgeId) as EmptyEdge;
+        break;
       }
       case 'UTTERANCE': {
         edge = node?.getEdgeById(edgeId) as UtteranceEdge;
@@ -77,6 +80,7 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , edgeTy
             imgOption = edge.option as ImageOption;
           }
         }
+        break;
       }
     }
   }
@@ -85,7 +89,7 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , edgeTy
     if (n.nodeId === nodeId) {
       return false;
     }
-    if (node && _.find(nodeJson?.outEdges, {nodeId: n.nodeId}) && n.nodeId != edgeId) {
+    if (node && _.find(nodeJson?.outEdges, {nodeId: n.nodeId}) && n.nodeId !== edgeId) {
       return false;
     }
     return true;
@@ -99,8 +103,6 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , edgeTy
   const [optionType, setOptionType] = useState<string>(edge instanceof UtteranceEdge ? edge?.option?.type || 'TEXT' : 'TEXT');
   const [intent, setIntent] = useState(edge instanceof UtteranceEdge ? edge?.option?.intent || '' : '');
   const [actionText, setActionText] = useState<string>(textOption?.text || imgOption?.text || '');
-  const [utterance, setUtterance] = useState('');
-  const [actionName, setActionName] = useState('');
   const [imageName, setImageName] = useState(imgOption?.imageName || '');
   const [loading, setLoading] = useState(false);
   const [imgFile, setImgFile] = useState<File|undefined>(undefined);
@@ -271,8 +273,6 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , edgeTy
     setOptionType('TEXT');
     setActionText('');
     setSelectedNodeId(null);
-    setUtterance('');
-    setActionName('');
     setImageName('');
     setExistingImg('');
   };

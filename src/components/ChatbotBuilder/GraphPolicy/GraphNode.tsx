@@ -1,11 +1,9 @@
-import { GraphPolicyNode, ImageOption, IOutEdge} from '@bavard/graph-policy';
-import { Avatar, Card, CardActions, CardContent, IconButton, Paper, Tooltip, Typography } from '@material-ui/core';
+import { GraphPolicyNode } from '@bavard/graph-policy';
+import { Card, CardActions, CardContent, IconButton, Tooltip, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import {Add, ContactSupport, Delete, Edit, Email, NotInterested, TextFields} from '@material-ui/icons';
+import {Add, Delete, Edit} from '@material-ui/icons';
 import Alert from '@material-ui/lab/Alert';
-import _ from 'lodash';
-import React, { useContext } from 'react';
-import {OptionImagesContext} from '../../../context/OptionImages';
+import React from 'react';
 import EdgeChip from './EdgeChip';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -70,26 +68,6 @@ interface IGraphNodeProps {
 
 export default function GraphNode({node, wrapperClassName, onAddEdge, onEditNode, onDeleteNode}: IGraphNodeProps) {
   const classes = useStyles();
-
-  const optionImages = useContext(OptionImagesContext)?.optionImages || [];
-  const getImgUrl = (imgName: string) => {
-    return _.find(optionImages, { name: imgName })?.url;
-  };
-
-  const getAvatar = (edge: IOutEdge) => {
-    if (edge.option?.type === 'IMAGE') {
-      const optionImg = edge.option as ImageOption;
-      return <Avatar className={classes.optionImg} variant="rounded" src={getImgUrl(optionImg.imageName) || ''}/>;
-    } else if (edge.type === 'CONFIRM') {
-      return <Avatar className={classes.optionImg} variant="rounded"><ContactSupport/></Avatar>;
-    } else if (edge.type === 'EMAIL') {
-      return <Avatar className={classes.optionImg} variant="rounded"><Email/></Avatar>;
-    } else if (edge.type === 'EMPTY') {
-      return <Avatar className={classes.optionImg} variant="rounded"><NotInterested/></Avatar>;
-    }
-    return <Avatar className={classes.optionImg} variant="rounded"><TextFields/></Avatar>;
-  };
-
   const nodeJson = node.toJsonObj();
 
   return (

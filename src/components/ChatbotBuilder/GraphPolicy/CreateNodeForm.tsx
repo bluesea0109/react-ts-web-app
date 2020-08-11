@@ -1,7 +1,6 @@
 import { EmailNode, UtteranceNode } from '@bavard/graph-policy';
 import { FormControl, FormControlLabel, Radio, RadioGroup, TextField } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { useSnackbar } from 'notistack';
 import React, { useEffect, useState} from 'react';
 import {validateEmail} from '../../../utils/string';
 
@@ -35,21 +34,14 @@ interface ICreateNodeFormProps {
 
 export default function CreateNodeForm({ nodeId, onChange}: ICreateNodeFormProps) {
   const classes = useStyles();
-  const { enqueueSnackbar } = useSnackbar();
   const [showFormErrors, setShowFormErrors] = useState(false);
   const [utterance, setUtterance] = useState('');
   const [nodeType, setNodeType] = useState<string>('UtteranceNode');
   const [senderEmail, setSenderEmail] = useState('');
   const [actionName, setActionName] = useState('');
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    handleChange();
-  }, [senderEmail, actionName, utterance]);
 
   const handleUtteranceNode = async() => {
     const newNode = new UtteranceNode(nodeId, actionName, utterance);
-    console.log('NEW NODE: ', newNode);
     onChange(newNode);
   };
 
@@ -58,13 +50,11 @@ export default function CreateNodeForm({ nodeId, onChange}: ICreateNodeFormProps
       return;
     }
     const newNode = new EmailNode(nodeId, actionName, senderEmail, utterance);
-    console.log('NEW NODE: ', newNode);
     onChange(newNode);
   };
 
-  const handleChange = async() => {
+  const handleChange = () => {
     setShowFormErrors(true);
-    console.log({utterance, actionName, nodeId, nodeType});
 
     // Preliminary validation
     if (!utterance || !actionName || !nodeId) {
@@ -78,14 +68,12 @@ export default function CreateNodeForm({ nodeId, onChange}: ICreateNodeFormProps
     }
   };
 
-  const clearForm = () => {
-    setUtterance('');
-    setActionName('');
-  };
+  useEffect(handleChange, [senderEmail, actionName, utterance]);
 
   return (
     <div>
-      <RadioGroup name="responseType" defaultValue={nodeType || UtteranceNode.typename} onChange={(event) => {setNodeType(event.target.value); }}>
+      <RadioGroup name="responseType" defaultValue={nodeType || UtteranceNode.typename}
+        onChange={(event) => {setNodeType(event.target.value); }}>
         <FormControlLabel value={UtteranceNode.typename} control={<Radio />} label="Utterance Node" />
         <FormControlLabel value={EmailNode.typename} control={<Radio />} label="Email Node" />
       </RadioGroup>

@@ -1,8 +1,7 @@
-import {GraphPolicyNode, IGraphPolicyNode, ImageOption, IOutEdge} from '@bavard/graph-policy';
-import { Avatar, Card, CardActions, CardContent, IconButton, Paper, Tooltip, Typography } from '@material-ui/core';
+import {GraphPolicyNode, ImageOption, IOutEdge} from '@bavard/graph-policy';
+import { Avatar, Paper, Tooltip } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import {Add, ContactSupport, Delete, Edit, Email, NotInterested, TextFields} from '@material-ui/icons';
-import Alert from '@material-ui/lab/Alert';
+import {ContactSupport, Email, NotInterested, TextFields} from '@material-ui/icons';
 import _ from 'lodash';
 import React, { ReactElement, useContext } from 'react';
 import {OptionImagesContext} from '../../../context/OptionImages';
