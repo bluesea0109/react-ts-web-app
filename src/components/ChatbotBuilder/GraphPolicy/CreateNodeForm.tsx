@@ -37,7 +37,8 @@ export default function CreateNodeForm({ nodeId, onChange}: ICreateNodeFormProps
   const [showFormErrors, setShowFormErrors] = useState(false);
   const [utterance, setUtterance] = useState('');
   const [nodeType, setNodeType] = useState<string>('UtteranceNode');
-  const [senderEmail, setSenderEmail] = useState('');
+  const [fromEmail, setFromEmail] = useState('');
+  const [toEmail, setToEmail] = useState('');
   const [actionName, setActionName] = useState('');
 
   const handleUtteranceNode = async() => {
@@ -46,10 +47,10 @@ export default function CreateNodeForm({ nodeId, onChange}: ICreateNodeFormProps
   };
 
   const handleEmailNode = async() => {
-    if (!validateEmail(senderEmail)) {
+    if (!validateEmail(fromEmail) || !validateEmail(toEmail)) {
       return;
     }
-    const newNode = new EmailNode(nodeId, actionName, senderEmail, utterance);
+    const newNode = new EmailNode(nodeId, actionName, toEmail, fromEmail, utterance );
     onChange(newNode);
   };
 
@@ -68,7 +69,7 @@ export default function CreateNodeForm({ nodeId, onChange}: ICreateNodeFormProps
     }
   };
 
-  useEffect(handleChange, [senderEmail, actionName, utterance]);
+  useEffect(handleChange, [fromEmail, toEmail , actionName, utterance]);
 
   return (
     <div>
@@ -84,11 +85,18 @@ export default function CreateNodeForm({ nodeId, onChange}: ICreateNodeFormProps
       </FormControl>
       {
         nodeType === EmailNode.typename &&
-        <FormControl variant="outlined"  className={classes.formControl} >
-          <TextField name="senderEmail" error={showFormErrors && !validateEmail(senderEmail)}
-            required={true} label="Sender Email" variant="outlined"
-            onChange={(e) => setSenderEmail(e.target.value as string)} />
-        </FormControl>
+        <React.Fragment>
+          <FormControl variant="outlined"  className={classes.formControl} >
+            <TextField name="fromEmail" error={showFormErrors && !validateEmail(fromEmail)}
+              required={true} label="From Email" variant="outlined"
+              onChange={(e) => setFromEmail(e.target.value as string)} />
+          </FormControl>
+          <FormControl variant="outlined"  className={classes.formControl} >
+            <TextField name="toEmail" error={showFormErrors && !validateEmail(toEmail)}
+              required={true} label="To Email" variant="outlined"
+              onChange={(e) => setToEmail(e.target.value as string)} />
+          </FormControl>
+        </React.Fragment>
       }
 
       <FormControl variant="outlined"  className={classes.formControl} >
