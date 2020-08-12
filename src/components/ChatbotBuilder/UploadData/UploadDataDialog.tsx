@@ -11,11 +11,15 @@ import gql from 'graphql-tag';
 import _ from 'lodash';
 import React from 'react';
 import { CHATBOT_CREATE_TAGS } from '../../../common-gql-queries';
-import { IExampleInput, UtteranceAction } from '../../../models/chatbot-service';
+import { IAgentGraphPolicy, IExampleInput, UtteranceAction } from '../../../models/chatbot-service';
 import { ActionType } from '../../../models/chatbot-service';
 import { createActionMutation, getActionsQuery } from '../Actions/gql';
+import { createGraphPolicyMutation } from '../GraphPolicy/gql';
 import { createIntentMutation } from '../Intent/gql';
-import { IAgentAction, IAgentData, IAgentDataExample, IAgentDataIntent, IAgentDataIntentGqlVars  } from './types';
+import { createOptionMutation } from '../Options/gql';
+import { ICreateUserResponseOptionsMutationVars, IOptionType } from '../Options/types';
+import { IAgentAction, IAgentData, IAgentDataExample, IAgentDataIntent,
+  IAgentDataIntentGqlVars, IUserResponseOptionExport  } from './types';
 
 interface IUploadDataDialogProps {
   agentId: number;
@@ -33,6 +37,13 @@ interface IUploadDataDialogState {
 }
 
 class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
+  progressWeight = {
+    actions: 20,
+    intents: 20,
+    graphPolicies: 20,
+    options: 20,
+    exampleBatches: 20,
+  };
   constructor(props: IProps) {
     super(props);
 
@@ -141,6 +152,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
 
     try {
       await Promise.all(mutations);
+      this.incrProgress(this.progressWeight.actions);
 
     } catch (e) {
       console.error('Error: ', e);
@@ -200,8 +212,58 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     this.setState({
       status: '',
     });
-
+    this.incrProgress(this.progressWeight.intents);
     return intentIdsMap;
+  }
+
+  uploadOptions = async(userResponsOptions: IUserResponseOptionExport[], intentIdsMap: Map<string, number>) => {
+    this.setState({
+      status: 'Uploading user response options',
+    });
+
+    if (userResponsOptions.length === 0) {
+      return this.incrProgress(this.progressWeight.options);
+    }
+
+    for (const uro of userResponsOptions) {
+      const variables: ICreateUserResponseOptionsMutationVars = {
+        agentId: this.props.agentId,
+        userTextResponseOption: undefined,
+        userImageResponseOption: undefined,
+      };
+
+      try {
+        const intentId = intentIdsMap.get(uro.intent);
+        if (!intentId) {
+          throw new Error(`Intent Id did not exist for ${uro.intent}`);
+        }
+
+        if (uro.type === IOptionType.TEXT) {
+          variables.userTextResponseOption = {
+            type: uro.type,
+            intentId,
+            text: uro.text,
+          };
+        } else if (uro.type === IOptionType.IMAGE_LIST) {
+          variables.userImageResponseOption = {
+            type: uro.type,
+            intentId,
+            text: uro.text,
+            imageUrl: uro.image_url,
+          };
+        }
+
+        await this.props.client?.mutate({
+          mutation: createOptionMutation,
+          variables,
+        });
+        this.incrProgress(this.progressWeight.options / userResponsOptions.length);
+      } catch (e) {
+        this.setState({
+          error: new GraphQLError(e),
+        });
+      }
+    }
   }
 
   uploadTagTypes = async (tagTypes: string[]): Promise<Map<string, number>> => {
@@ -228,6 +290,13 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     });
 
     return tagTypeIdsMap;
+  }
+
+  incrProgress = (increment: number) => {
+    const p = this.state.progress;
+    this.setState({
+      progress: p + increment,
+    });
   }
 
   handleJsonFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -272,6 +341,8 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       const actions: UtteranceAction[] = await this.uploadUtteranceActions(data.utteranceActions);
       const intentIdsMap = await this.uploadIntents(data.intents, actions);
       const tagTypeIdsMap = await this.uploadTagTypes(data.tagTypes);
+      await this.uploadGraphPolicies(data.graphPolicies);
+      await this.uploadOptions(data.userResponseOptions, intentIdsMap);
 
       const preprocessedExamples: IExampleInput[] = data.examples.map(x => {
 
@@ -303,16 +374,13 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       for (const batch of exampleBatches) {
         await this.uploadBatch(batch);
         numCompleted += batch.length;
-        const progress = 100.0 * numCompleted / total;
-        if (progress === 100) {
-          status = 'Upload Complete!';
-        }
+        const progress = numCompleted / total;
         this.setState({
           status,
           numCompleted,
           total,
-          progress,
         });
+        this.incrProgress(progress * this.progressWeight.exampleBatches);
       }
 
     } catch (err) {
@@ -321,6 +389,46 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
         error: err,
       });
     }
+
+    if (this.state.error === null) {
+      this.setState({
+        progress: 100,
+      });
+    }
+
+  }
+
+  uploadGraphPolicies = async(graphPolicies: IAgentGraphPolicy[]): Promise<void> => {
+    this.setState({
+      status: 'Uploading Graph Policies',
+    });
+
+    if (graphPolicies.length === 0) {
+      return this.incrProgress(this.progressWeight.graphPolicies);
+    }
+
+    for (const gp of graphPolicies) {
+      const gpData = _.pick(gp, ['name', 'data']);
+      try {
+        await this.props.client?.mutate({
+          mutation: createGraphPolicyMutation,
+          variables: {
+            agentId: this.props.agentId,
+            policy: gpData,
+          },
+        });
+        this.incrProgress(this.progressWeight.graphPolicies / graphPolicies.length);
+      } catch (e) {
+        this.setState({
+          error: new GraphQLError(e),
+        });
+      }
+    }
+
+    this.setState({
+      status: 'Uploaded Graph Policies',
+    });
+
   }
 
   render() {
@@ -340,7 +448,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       dialogContent = (
         <DialogContent>
           <DialogContentText>
-            {'Something went wrong :('}
+            {JSON.stringify(state.error)}
           </DialogContentText>
           <Typography>{'Please contact support@bavard.ai'}</Typography>
         </DialogContent>

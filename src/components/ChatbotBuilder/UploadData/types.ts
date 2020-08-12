@@ -1,5 +1,5 @@
-import { ActionType } from '../../../models/chatbot-service';
-
+import { ActionType, IAgentGraphPolicy } from '../../../models/chatbot-service';
+import { IOptionType } from '../Options/types';
 export interface IAgentAction {
   type: ActionType;
   name: string;
@@ -17,6 +17,15 @@ export interface IAgentData {
   intents: IAgentDataIntent[];
   tagTypes: string[];
   examples: IAgentDataExample[];
+  graphPolicies: IAgentGraphPolicy[];
+  userResponseOptions: IUserResponseOptionExport[];
+}
+
+export interface IUserResponseOptionExport {
+  intent: string;
+  text: string;
+  image_url?: string;
+  type: IOptionType;
 }
 
 export interface IAgentDataIntent {
