@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import {useParams} from 'react-router-dom';
 import {IAgentGraphPolicy} from '../../../models/chatbot-service';
 import {exportJsonFileFromObj} from '../../../utils/exports';
-import {activateGraphPolicyMutation, deleteGraphPolicyMutation, getGraphPoliciesQuery} from './gql';
+import {activateGraphPolicyMutation, getGraphPoliciesQuery, deleteGraphPolicyMutation} from './gql';
 import GraphPoliciesTable from './GraphPoliciesTable';
 import GraphVisualEditor from './GraphVisualEditor';
 import {IGetGraphPoliciesQueryResult} from './types';
