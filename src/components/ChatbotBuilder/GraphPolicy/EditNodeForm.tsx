@@ -63,6 +63,9 @@ export default function EditNodeForm({nodeId, agentId, policy, onCancel, onSubmi
     return <></>;
   }
 
+  console.log('NODE: ', node);
+  console.log('NODE: ', policy);
+
   const handleAddEdge = (updPolicy: GraphPolicy) => {
     setNumStateChanges(numChanges + 1);
     setUpsertingEdge(false);
