@@ -88,6 +88,7 @@
     "@types/node-fetch": "^2.5.7",
     "@types/randomcolor": "^0.5.5",
     "@types/react-draft-wysiwyg": "^1.13.0",
+    "husky": "^4.2.5",
     "jest-fetch-mock": "^3.0.3",
     "prettier": "^2.0.5",
     "tslint": "^6.1.3",
