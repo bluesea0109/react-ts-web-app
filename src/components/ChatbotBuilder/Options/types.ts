@@ -8,6 +8,12 @@ export interface GetImageOptionUploadUrlQueryResult {
   };
 }
 
+export interface ICreateUserResponseOptionsMutationVars {
+  agentId: number;
+  userTextResponseOption: ITextOptionInput | undefined;
+  userImageResponseOption: IImageOptionInput | undefined;
+}
+
 export enum IOptionType {
   IMAGE_LIST = 'IMAGE_LIST',
   TEXT = 'TEXT',
@@ -22,6 +28,7 @@ export interface ITextOptionInput {
 export interface IImageOptionInput {
   intentId: number;
   text: string;
+  imageUrl?: string;
   type: IOptionType;
 }
 
