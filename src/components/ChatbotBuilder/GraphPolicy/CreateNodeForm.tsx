@@ -50,12 +50,7 @@ export default function CreateNodeForm({ nodeId, onChange}: ICreateNodeFormProps
     if (!validateEmail(fromEmail) || !validateEmail(toEmail)) {
       return;
     }
-
-    console.log({ nodeId, actionName, toEmail, fromEmail, utterance });
-    const foo = new EmailNode(1, 'a', 'foo', 'bar', 'foobar');
-    console.log('NODE FOO ', foo);
     const newNode = new EmailNode(nodeId, actionName, toEmail, fromEmail, utterance );
-    console.log('NEW NODE ', newNode);
     onChange(newNode);
   };
 
