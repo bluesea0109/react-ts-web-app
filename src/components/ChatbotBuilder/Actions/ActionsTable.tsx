@@ -115,7 +115,9 @@ const ActionDetailPanel = ({ action }: { action: AnyAction }) => {
           {Array.from(Object.keys(actionProps)).map(key => (
             <Box my={3} key={key}>
               <Typography variant="h6" style={{ textTransform: 'capitalize', fontWeight: 'bold' }}>{key}</Typography>
-              <Typography variant="caption" style={{ textTransform: 'capitalize' }}>{actionProps[key]}</Typography>
+              <Typography variant="caption" style={{ textTransform: 'capitalize' }}>
+                {JSON.stringify(actionProps[key])}
+              </Typography>
             </Box>
           ))}
         </Grid>
