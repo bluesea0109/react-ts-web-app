@@ -12,23 +12,15 @@ import { IOptionImage } from '../../../models/chatbot-service';
 import {uploadFileWithFetch} from '../../../utils/xhr';
 import ContentLoading from '../../ContentLoading';
 import ImageSelectorGrid from '../../Utils/ImageSelectorGrid';
-import CreateNodeForm from './CreateNodeForm';
 import { getSignedImgUploadUrlQuery} from './gql';
 import {IGetImageUploadSignedUrlQueryResult} from './types';
+import UpsertNodeForm from './UpsertNodeForm';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    fullWidth: {
-      width: '100%',
-    },
     formControl: {
       width: '100%',
       marginBottom: theme.spacing(2),
-    },
-    nodePaper: {
-      borderRadius: theme.spacing(1),
-      padding: theme.spacing(2),
-      backgroundColor: theme.palette.background.default,
     },
     optionImage: {
       width: 100,
@@ -108,6 +100,7 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , edgeTy
   const [imgFile, setImgFile] = useState<File|undefined>(undefined);
   const [newNode, setNewNode] = useState<GraphPolicyNode|undefined>(undefined);
   const [existingImg, setExistingImg] = useState<string | undefined>(imgOption?.imageName || undefined);
+  const [imgCaption, setImgCaption] = useState(imgOption?.caption || '');
   const [getSignedImgUploadUrl, signedImgUploadResult] = useLazyQuery<IGetImageUploadSignedUrlQueryResult>(getSignedImgUploadUrlQuery);
 
   const optionImages = useContext(OptionImagesContext)?.optionImages || [];
@@ -139,7 +132,7 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , edgeTy
     setExistingImg(img.name);
   };
 
-  const handleNewNode = (node: UtteranceNode | EmailNode | undefined) => {
+  const handleNewNode = (node: GraphPolicyNode | UtteranceNode | EmailNode | undefined) => {
     setNewNode(node);
   };
 
@@ -183,7 +176,7 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , edgeTy
       }
 
       // Add the new Image option
-      node.addUtteranceEdge(edgeNode, new ImageOption(intent, actionText, imageName));
+      node.addUtteranceEdge(edgeNode, new ImageOption(intent, actionText, imageName, imgCaption));
     }
 
     return true;
@@ -348,6 +341,16 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , edgeTy
             : <></>
           }
         </FormControl>
+
+        <FormControl variant="outlined" className={classes.formControl}>
+          <TextField name="imageCaption" label={'Image Caption'}
+            variant="outlined"
+            required={false}
+            onChange={(e) => setImgCaption(e.target.value as string)}
+            defaultValue={imgCaption}
+            />
+        </FormControl>
+
       </React.Fragment>
     );
 
@@ -368,7 +371,7 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , edgeTy
 
       {
         !nodeExists && !edge ?
-        <CreateNodeForm nodeId={getNewNodeId()} onChange={handleNewNode} />
+        <UpsertNodeForm nodeId={getNewNodeId()} onChange={handleNewNode} />
         :
           <FormControl variant="outlined" className={classes.formControl} required={true}
             error={showFormErrors && !selectedNodeId}>

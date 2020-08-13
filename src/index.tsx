@@ -24,7 +24,7 @@ ReactDOM.render(
               <SnackbarProvider
                 style={{ zIndex: 99999999999999999 }}
                 anchorOrigin={{
-                  vertical: 'bottom',
+                  vertical: 'top',
                   horizontal: 'right',
                 }}
                 maxSnack={5}
