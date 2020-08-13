@@ -22,10 +22,9 @@ export const getLiveConversationsQuery = gql`
             type
             userResponseOptions {
               id
-              actionId
               intentId
               intent
-              text
+              type
             }
           }
         }
