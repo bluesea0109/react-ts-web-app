@@ -401,7 +401,7 @@ class GraphPolicyVisualEditor extends React.Component<IGraphPolicyVisualEditorPr
               this.mutateFunction = mutateFn;
               return (
                 <Button variant="contained" disabled={this.state.loading}
-                  color="primary" onClick={this.persistChanges}>Persist Changes</Button>
+                  color="primary" onClick={this.persistChanges}>Save Changes</Button>
               );
             }}
           </Mutation>
