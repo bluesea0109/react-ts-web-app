@@ -100,14 +100,6 @@ export default function EditNodeForm({nodeId, agentId, policy, onCancel, onSubmi
           <Grid item={true} lg={3} md={12}>
             <Paper className={classes.nodePaper}>
               <UpsertNodeForm nodeId={node.nodeId} node={node} onChange={setUpdatedNodeData}/>
-              {/* <FormControl variant="outlined" className={classes.formControl}>
-                <TextField name="actionName" defaultValue={actionName} label="Action Name"
-                  variant="outlined" onChange={(e) => setActionName(e.target.value as string)} />
-              </FormControl>
-              <FormControl variant="outlined" className={classes.formControl}>
-                <TextField multiline={true} rowsMax={5} name="utterance" defaultValue={utterance}
-                  label="Utterance" variant="outlined" onChange={(e) => setUtterance(e.target.value as string)} />
-              </FormControl> */}
             </Paper>
 
             <GraphNode
