@@ -65,14 +65,7 @@ function CustomDrawer(props: CustomDrawerProps) {
 
   const requiresActiveProjectListItems = (
     <>
-      <ListItem
-        component={Link}
-        to={createPath('qa')}
-        selected={location.pathname.includes('/qa')}
-        button={true}
-      >
-        <ListItemText primary="Question Answering" />
-      </ListItem>
+
       {/* <ListItem
         component={Link}
         to={createPath('text-summarization')}
@@ -91,19 +84,27 @@ function CustomDrawer(props: CustomDrawerProps) {
       </ListItem>
       <ListItem
         component={Link}
-        to={createPath('text-labeling')}
-        selected={location.pathname.includes('text-labeling')}
-        button={true}
-      >
-        <ListItemText primary="Text Labeling" />
-      </ListItem>
-      <ListItem
-        component={Link}
         to={createPath('image-labeling/collections')}
         selected={location.pathname.includes('image-labeling')}
         button={true}
       >
         <ListItemText primary="Image Labeling" />
+      </ListItem>
+      <ListItem
+        component={Link}
+        to={createPath('qa')}
+        selected={location.pathname.includes('/qa')}
+        button={true}
+      >
+        <ListItemText primary="FAQ Service" />
+      </ListItem>
+      <ListItem
+        component={Link}
+        to={createPath('text-labeling')}
+        selected={location.pathname.includes('text-labeling')}
+        button={true}
+      >
+        <ListItemText primary="Text Labeling" />
       </ListItem>
     </>
   );

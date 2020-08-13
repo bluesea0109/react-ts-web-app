@@ -16,8 +16,9 @@ import AcceptInvite from './components/Dashboard/Invites/AcceptInvite';
 import OrganizationSettings from './components/Dashboard/OrganizationSettings';
 import ProjectSettings from './components/Dashboard/ProjectSettings';
 import Drawer from './components/Drawer';
+import FAQService from './components/FAQService';
 import ImageLabeling from './components/ImageLabeling';
-import QuestionAnswering from './components/QuestionAnswering';
+import TextLabeling from './components/TextLabeling';
 import { IUser } from './models/user-service';
 
 const drawerWidth = 240;
@@ -156,7 +157,10 @@ function App() {
               <ProjectSettings />
             </Route>
             <Route path="/orgs/:orgId/projects/:projectId/qa">
-              <QuestionAnswering />
+              <FAQService />
+            </Route>
+            <Route path="/orgs/:orgId/projects/:projectId/text-labeling">
+              <TextLabeling />
             </Route>
             {/* <Route path="/orgs/:orgId/projects/:projectId/text-summarization">
             <TextSummarization />
