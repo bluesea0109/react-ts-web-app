@@ -2,6 +2,7 @@ import { Box, makeStyles, Tab, Tabs, Theme } from '@material-ui/core';
 import React from 'react';
 import { useHistory, useParams } from 'react-router';
 import Actions from '../Actions/Actions';
+import AgentSettings from '../AgentSettings/AgentSettings';
 import ChatWithAgent from '../ChatWithAgent';
 import ConversationsTab from '../Conversations';
 import DataExportsTab from '../DataExports/DataExportsTab';
@@ -121,6 +122,11 @@ const AgentDetails = () => {
           label="Live conversations"
           {...a11yProps('Live conversations')}
         />
+        <Tab
+          value="settings"
+          label="settings"
+          {...a11yProps('Settings')}
+        />
       </Tabs>
       <TabPanel className={classes.tabPanel} value={agentTab} index="Actions">
         <Actions />
@@ -147,6 +153,7 @@ const AgentDetails = () => {
       {agentTab === 'chat' && <ChatWithAgent />}
       {agentTab === 'training-conversations' && <TrainingConversations />}
       {agentTab === 'live-conversations' && <ConversationsTab />}
+      {agentTab === 'settings' && <AgentSettings />}
     </div>
   );
 };

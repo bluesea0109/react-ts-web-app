@@ -100,7 +100,7 @@ const EditOption = (props: EditOptionProps) => {
               },
             });
 
-            const path = url.split('?')[0].split('/images/')[1];
+            const path = url.split('?')[0].split('/uro-images/')[1];
             setCurrentOption(currentOption => ({ ...currentOption, imageUrl: path }) as any);
           } catch (e) {
             console.log(e);
