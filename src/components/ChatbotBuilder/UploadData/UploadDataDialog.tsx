@@ -1,3 +1,4 @@
+import { ApolloQueryResult } from '@apollo/client';
 import { withApollo, WithApolloClient } from '@apollo/client/react/hoc';
 import { Button, Typography } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
@@ -13,11 +14,11 @@ import React from 'react';
 import { CHATBOT_CREATE_TAGS } from '../../../common-gql-queries';
 import { IAgentGraphPolicy, IExampleInput, UtteranceAction } from '../../../models/chatbot-service';
 import { ActionType } from '../../../models/chatbot-service';
-import { createActionMutation, getActionsQuery } from '../Actions/gql';
+import { createActionMutation, getActionsQuery , updateActionMutation } from '../Actions/gql';
 import { createGraphPolicyMutation } from '../GraphPolicy/gql';
 import { createIntentMutation } from '../Intent/gql';
-import { createOptionMutation } from '../Options/gql';
-import { ICreateUserResponseOptionsMutationVars, IOptionType } from '../Options/types';
+import { createOptionMutation, getOptionsQuery } from '../Options/gql';
+import { GetOptionsQueryResult, ICreateUserResponseOptionsMutationVars, IOption, IOptionType } from '../Options/types';
 import { IAgentAction, IAgentData, IAgentDataExample, IAgentDataIntent,
   IAgentDataIntentGqlVars, IUserResponseOptionExport  } from './types';
 
@@ -38,11 +39,12 @@ interface IUploadDataDialogState {
 
 class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
   progressWeight = {
-    actions: 20,
+    actions: 10,
     intents: 20,
     graphPolicies: 20,
-    options: 20,
+    options: 10,
     exampleBatches: 20,
+    reuploadActionsWithUros: 20,
   };
   constructor(props: IProps) {
     super(props);
@@ -130,14 +132,49 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     return data;
   }
 
+  updateUtteranceActions = async(actionsFromJson: IAgentAction[],
+    actions: UtteranceAction[], intentIdsMap?: Map<string, number>, uros?: IOption[]): Promise<any> => {
+    const mutation = updateActionMutation(ActionType.UTTERANCE_ACTION);
+
+    let mutations = actionsFromJson.map((a) => {
+      const id = _.find(actions, { name: a.name })?.id;
+      let uroIds = (a.userResponseOptions || []).map((o) => {
+        const uro = _.find(uros, { intent: o.intent });
+        return uro?.id;
+      });
+
+      uroIds = _.compact(uroIds);
+
+      if (id && uroIds.length >= 1) {
+        return this.props.client?.mutate({
+          mutation,
+          variables: {
+            actionId: id,
+            text: a.text,
+            userResponseOptions: uroIds,
+          },
+        });
+      }
+      return undefined;
+    });
+
+    mutations = _.compact(mutations);
+    try {
+      await Promise.all(mutations);
+      this.incrProgress(this.progressWeight.reuploadActionsWithUros);
+
+    } catch (e) {
+      console.error('Error: ', e);
+    }
+
+  }
+
   uploadUtteranceActions = async(actions: IAgentAction[]): Promise<UtteranceAction[]> => {
     this.setState({
       status: 'Creating utterance actions',
     });
 
     const mutation = createActionMutation(ActionType.UTTERANCE_ACTION);
-
-    // Todo Add a Backend Mutation to upload multiple actions at once
 
     const mutations = actions.map((a) => {
       return this.props.client?.mutate({
@@ -216,7 +253,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     return intentIdsMap;
   }
 
-  uploadOptions = async(userResponsOptions: IUserResponseOptionExport[], intentIdsMap: Map<string, number>) => {
+  uploadOptions = async(userResponsOptions: IUserResponseOptionExport[], intentIdsMap: Map<string, number>): Promise<any> => {
     this.setState({
       status: 'Uploading user response options',
     });
@@ -264,6 +301,17 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
         });
       }
     }
+
+    const savedOptions: ApolloQueryResult<GetOptionsQueryResult>|undefined = await this.props.client?.query({
+      query: getOptionsQuery,
+      fetchPolicy: 'network-only',
+      variables: {
+        agentId: this.props.agentId,
+      },
+    });
+
+    return savedOptions?.data?.ChatbotService_userResponseOptions || [];
+
   }
 
   uploadTagTypes = async (tagTypes: string[]): Promise<Map<string, number>> => {
@@ -342,7 +390,9 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       const intentIdsMap = await this.uploadIntents(data.intents, actions);
       const tagTypeIdsMap = await this.uploadTagTypes(data.tagTypes);
       await this.uploadGraphPolicies(data.graphPolicies);
-      await this.uploadOptions(data.userResponseOptions, intentIdsMap);
+      const uros = await this.uploadOptions(data.userResponseOptions, intentIdsMap);
+
+      await this.updateUtteranceActions(data.utteranceActions, actions, intentIdsMap, uros);
 
       const preprocessedExamples: IExampleInput[] = data.examples.map(x => {
 
