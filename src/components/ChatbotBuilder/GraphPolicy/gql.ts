@@ -41,7 +41,9 @@ export const updateGraphPolicyMutation = gql`
 
 export const deleteGraphPolicyMutation = gql`
     mutation ($id: Int!) {
-      ChatbotService_deleteGraphPolicy(id: $id)
+      ChatbotService_deleteGraphPolicy(id: $id) {
+        id
+      }
     }
 `;
 
