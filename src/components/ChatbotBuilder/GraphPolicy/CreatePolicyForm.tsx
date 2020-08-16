@@ -7,6 +7,7 @@ import React, {useState} from 'react';
 import {useParams} from 'react-router-dom';
 import {IAgentGraphPolicy} from '../../../models/chatbot-service';
 import ContentLoading from '../../ContentLoading';
+import RichTextInput from '../../Utils/RichTextInput';
 import { createGraphPolicyMutation } from './gql';
 import { ICreateGraphPolicyMutationResult } from './types';
 
@@ -103,9 +104,12 @@ export default function CreatePolicyForm({onSuccess}: IGraphNodeProps) {
           onChange={(e) => setActionName(e.target.value as string)} />
       </FormControl>
       <FormControl variant="outlined" className={classes.formControl}>
-        <TextField disabled={loading || mutationData.loading}
-          name="utterance" label="Utterance" variant="outlined"
-          onChange={(e) => setUtterance(e.target.value as string)} />
+        <RichTextInput
+          label="Utterance"
+          value={utterance}
+          disabled={loading || mutationData.loading}
+          onChange={(value: string) => setUtterance(value)}
+        />
       </FormControl>
       <Button variant="contained" disabled={loading || mutationData.loading}
         color="primary" type="submit" onClick={handleSubmit}>Save</Button>
