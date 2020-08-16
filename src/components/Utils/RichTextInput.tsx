@@ -6,9 +6,9 @@ import React, { useEffect, useState } from 'react';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
-interface RichTextInputProps {
+interface RichTextInputProps extends React.HTMLProps<HTMLTextAreaElement> {
   label: string;
-  value: string | null;
+  value?: string;
   onChange: any;
 }
 
@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme =>
   }),
 );
 
-const RichTextInput = ({ value, onChange, label }: RichTextInputProps) => {
+const RichTextInput = ({ value, onChange, label, ...otherProps }: RichTextInputProps) => {
   const classes = useStyles();
 
   const [state, setState] = useState<{
@@ -50,7 +50,7 @@ const RichTextInput = ({ value, onChange, label }: RichTextInputProps) => {
     }
 
     setState({
-      value,
+      value: !!value ? value : null,
       editorState,
     });
   }, [value]);
@@ -79,6 +79,7 @@ const RichTextInput = ({ value, onChange, label }: RichTextInputProps) => {
         disabled={true}
         style={{ display: 'none' }}
         value={state.value || ''}
+        {...otherProps}
       />
     </div>
   );

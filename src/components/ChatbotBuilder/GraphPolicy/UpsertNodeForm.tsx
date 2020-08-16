@@ -3,6 +3,7 @@ import { FormControl, FormControlLabel, Radio, RadioGroup, TextField } from '@ma
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { useEffect, useState} from 'react';
 import {validateEmail} from '../../../utils/string';
+import RichTextInput from '../../Utils/RichTextInput';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -109,10 +110,11 @@ export default function UpsertNodeForm({ nodeId, node, onChange}: IUpsertNodeFor
       }
 
       <FormControl variant="outlined"  className={classes.formControl} >
-        <TextField name="utterance" error={showFormErrors && utterance === ''}
-          defaultValue={utterance}
-          required={true} label="Utterance" variant="outlined"
-          onChange={(e) => setUtterance(e.target.value as string)} />
+        <RichTextInput
+          label="Utterance"
+          value={utterance}
+          onChange={(value: string) => setUtterance(value)}
+        />
       </FormControl>
     </div>
   );
