@@ -128,7 +128,6 @@ const AgentSettings = () => {
   };
 
   const onUpdateSettingsClicked = async () => {
-    const { name } = settings;
     let { icon } = settings;
 
     if (icon && icon.indexOf('https://') !== -1) {
@@ -140,7 +139,7 @@ const AgentSettings = () => {
         variables: {
           uname: agentUname,
           settings: {
-            name,
+            ...settings,
             icon,
           },
         },
