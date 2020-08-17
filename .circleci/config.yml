@@ -20,6 +20,7 @@ references:
 
   deploy-dev: &deploy-dev
     <<: *default_config
+    resource_class: large
     steps:
       - checkout
       - run:
@@ -32,6 +33,7 @@ references:
 
   deploy-prod: &deploy-prod
     <<: *default_config
+    resource_class: large
     steps:
       - checkout
       - run:
