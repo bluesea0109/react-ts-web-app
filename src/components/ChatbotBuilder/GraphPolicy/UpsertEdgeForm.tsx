@@ -217,12 +217,11 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , edgeTy
     }
 
     let position = node.edges.length;
-    console.log('POSITION: ', position);
 
     // If the same node is already an edge, remove it, then modify and re-add
     if (edgeId) {
       position = node.getEdgePosition(edgeId);
-      console.log('ORIG POSITION: ', position);
+
       node.removeEdge(edgeId);
     }
 

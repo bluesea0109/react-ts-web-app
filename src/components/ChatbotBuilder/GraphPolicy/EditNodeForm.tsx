@@ -1,7 +1,7 @@
 import { EmailNode, GraphPolicy, GraphPolicyNode, UtteranceNode } from '@bavard/graph-policy';
 import {  Button, Dialog, DialogActions,
   DialogContent, DialogTitle, Grid, IconButton,
-  Paper,  Typography} from '@material-ui/core';
+  Paper,  Tooltip, Typography} from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import {Add, ArrowDropDown, ArrowDropUp, Delete, Edit} from '@material-ui/icons';
 import { useSnackbar } from 'notistack';
@@ -25,6 +25,18 @@ const useStyles = makeStyles((theme: Theme) =>
     formControl: {
       width: '100%',
       marginBottom: theme.spacing(2),
+    },
+    edgeActions: {
+      opacity: 0,
+      width: 300,
+      display: 'flex',
+      justifyContent: 'flex-end',
+      '&:hover': {
+        opacity: 1,
+      },
+    },
+    deleteIcon: {
+      color: theme.palette.error.main,
     },
   }),
 );
@@ -68,9 +80,8 @@ export default function EditNodeForm({nodeId, agentId, policy, onCancel, onSubmi
     if (newPos >= 0) {
       node.setEdgePosition(edgeId, newPos);
     }
-    console.log('NODE ', node.edges);
-    setNumStateChanges(numChanges + 1);
 
+    setNumStateChanges(numChanges + 1);
   };
 
   const decEdgePosition = (edgeId: number) => {
@@ -79,7 +90,6 @@ export default function EditNodeForm({nodeId, agentId, policy, onCancel, onSubmi
       node.setEdgePosition(edgeId, newPos);
     }
 
-    console.log('NODE ', node.edges);
     setNumStateChanges(numChanges + 1);
   };
 
@@ -138,32 +148,39 @@ export default function EditNodeForm({nodeId, agentId, policy, onCancel, onSubmi
                 {node.toJsonObj().outEdges.map((e, index) => {
                   return (
                     <EdgeChip node={node} key={`${node.nodeId}_${index}`} edgeId={e.nodeId} actions={
-                      <React.Fragment>
+                      <div className={classes.edgeActions}>
                         {
                           index !== 0 && (
-                            <IconButton size="small"
-                              onClick={() => { decEdgePosition(e.nodeId); }}>
-                              <ArrowDropUp/>
-                            </IconButton>
+                            <Tooltip title="Move up">
+                              <IconButton size="small"
+                                onClick={() => { decEdgePosition(e.nodeId); }}>
+                                <ArrowDropUp/>
+                              </IconButton>
+                            </Tooltip>
                           )
                         }
                         {
                           index < node?.edges.length - 1 && (
-                            <IconButton size="small"
-                              onClick={() => { incEdgePosition(e.nodeId); }}>
-                              <ArrowDropDown/>
-                            </IconButton>
+                            <Tooltip title="Move down">
+                              <IconButton size="small"
+                                onClick={() => { incEdgePosition(e.nodeId); }}>
+                                <ArrowDropDown/>
+                              </IconButton>
+                            </Tooltip>
                           )
                         }
-
-                        <IconButton size="small"
-                          onClick={() => { setEditingEdgeId(e.nodeId); setTimeout(() => setUpsertingEdge(true), 200); }}>
-                          <Edit/>
-                        </IconButton>
-                        <IconButton size="small" onClick={() => { removeEdge(e.nodeId); }}>
-                          <Delete/>
-                        </IconButton>
-                      </React.Fragment>
+                        <Tooltip title="Edit Edge">
+                          <IconButton size="small"
+                            onClick={() => { setEditingEdgeId(e.nodeId); setTimeout(() => setUpsertingEdge(true), 200); }}>
+                            <Edit/>
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Delete Edge">
+                          <IconButton className={classes.deleteIcon} size="small" onClick={() => { removeEdge(e.nodeId); }}>
+                            <Delete/>
+                          </IconButton>
+                        </Tooltip>
+                      </div>
                     }/>
                   );
                 })}
