@@ -99,8 +99,6 @@ const AgentSettings = () => {
     // eslint-disable-next-line
   }, [imageUploadUrlQuery.data]);
 
-  const loading = isFileLoading || imageUploadUrlQuery.loading || botSettings.loading || updateBotSettingsMutationData.loading;
-
   const updateSettings = (field: string, value: any) => setSettings({ ...settings, [field]: value });
 
   const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
@@ -109,17 +107,29 @@ const AgentSettings = () => {
   };
 
   const onUpdateSettingsClicked = async () => {
+    const { name } = settings;
+    let { icon } = settings;
+
+    if (icon && icon.indexOf('https://') !== -1) {
+      icon = icon.split('?')[0].split('/bot-icons/')[1];
+    }
+
     try {
       await updateBotSettings({
         variables: {
           uname: agentUname,
-          settings,
+          settings: {
+            name,
+            icon,
+          },
         },
       });
     } catch (e) {
       enqueueSnackbar('An error occurred while updating settings', { variant: 'error' });
     }
   };
+
+  const loading = isFileLoading || imageUploadUrlQuery.loading || botSettings.loading || updateBotSettingsMutationData.loading;
 
   return (
     <Box py={4} px={2} width="100%">
@@ -141,12 +151,14 @@ const AgentSettings = () => {
         <Grid item={true} xs={6}>
           <Box p={2}>
             <Button
+              disabled={loading}
               variant="contained"
               component="label"
               style={{ padding: 6 }}>
               {!file && !settings.icon && 'Add Image'}
               {(!!file || (!!settings.icon && settings.icon !== '')) && 'Replace Image'}
               <input
+                disabled={loading}
                 name="image"
                 id="image"
                 accept="image/*"
@@ -169,7 +181,7 @@ const AgentSettings = () => {
           )}
         </Grid>
       </Grid>
-      <Button variant="outlined" onClick={onUpdateSettingsClicked}>Update Settings</Button>
+      <Button disabled={loading} variant="outlined" onClick={onUpdateSettingsClicked}>Update Settings</Button>
     </Box>
   );
 };
