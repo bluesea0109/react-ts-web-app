@@ -34,10 +34,7 @@ const useStyles = makeStyles((theme: Theme) =>
       '&:hover': {
         opacity: 1,
       },
-    },
-    deleteIcon: {
-      color: theme.palette.error.main,
-    },
+    }
   }),
 );
 
@@ -151,7 +148,7 @@ export default function EditNodeForm({nodeId, agentId, policy, onCancel, onSubmi
                       <div className={classes.edgeActions}>
                         {
                           index !== 0 && (
-                            <Tooltip title="Move up">
+                            <Tooltip placement="top" title="Move up">
                               <IconButton size="small"
                                 onClick={() => { decEdgePosition(e.nodeId); }}>
                                 <ArrowDropUp/>
@@ -161,7 +158,7 @@ export default function EditNodeForm({nodeId, agentId, policy, onCancel, onSubmi
                         }
                         {
                           index < node?.edges.length - 1 && (
-                            <Tooltip title="Move down">
+                            <Tooltip placement="top" title="Move down">
                               <IconButton size="small"
                                 onClick={() => { incEdgePosition(e.nodeId); }}>
                                 <ArrowDropDown/>
@@ -169,14 +166,14 @@ export default function EditNodeForm({nodeId, agentId, policy, onCancel, onSubmi
                             </Tooltip>
                           )
                         }
-                        <Tooltip title="Edit Edge">
+                        <Tooltip placement="top" title="Edit Edge">
                           <IconButton size="small"
                             onClick={() => { setEditingEdgeId(e.nodeId); setTimeout(() => setUpsertingEdge(true), 200); }}>
                             <Edit/>
                           </IconButton>
                         </Tooltip>
-                        <Tooltip title="Delete Edge">
-                          <IconButton className={classes.deleteIcon} size="small" onClick={() => { removeEdge(e.nodeId); }}>
+                        <Tooltip placement="top" title="Delete Edge">
+                          <IconButton size="small" onClick={() => { removeEdge(e.nodeId); }}>
                             <Delete/>
                           </IconButton>
                         </Tooltip>
