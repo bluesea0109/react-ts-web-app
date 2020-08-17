@@ -120,8 +120,6 @@ const AgentSettings = () => {
     // eslint-disable-next-line
   }, [imageUploadUrlQuery.data]);
 
-  const loading = isFileLoading || imageUploadUrlQuery.loading || botSettings.loading || updateBotSettingsMutationData.loading;
-
   const updateSettings = (field: string, value: any) => setSettings({ ...settings, [field]: value });
 
   const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
@@ -130,17 +128,29 @@ const AgentSettings = () => {
   };
 
   const onUpdateSettingsClicked = async () => {
+    const { name } = settings;
+    let { icon } = settings;
+
+    if (icon && icon.indexOf('https://') !== -1) {
+      icon = icon.split('?')[0].split('/bot-icons/')[1];
+    }
+
     try {
       await updateBotSettings({
         variables: {
           uname: agentUname,
-          settings,
+          settings: {
+            name,
+            icon,
+          },
         },
       });
     } catch (e) {
       enqueueSnackbar('An error occurred while updating settings', { variant: 'error' });
     }
   };
+
+  const loading = isFileLoading || imageUploadUrlQuery.loading || botSettings.loading || updateBotSettingsMutationData.loading;
 
   return (
     <Box py={4} px={2} width="100%">
@@ -162,12 +172,14 @@ const AgentSettings = () => {
         <Grid item={true} xs={6}>
           <Box p={2}>
             <Button
+              disabled={loading}
               variant="contained"
               component="label"
               style={{ padding: 6 }}>
               {!file && !settings.icon && 'Add Image'}
               {(!!file || (!!settings.icon && settings.icon !== '')) && 'Replace Image'}
               <input
+                disabled={loading}
                 name="image"
                 id="image"
                 accept="image/*"
@@ -194,10 +206,15 @@ const AgentSettings = () => {
             <Typography variant="h6">Widget Primary Color</Typography>
             <Box mt={2} width="100%" height={100} style={{ backgroundColor: `rgba(${settings.primaryColor.r}, ${settings.primaryColor.g}, ${settings.primaryColor.b}, ${settings.primaryColor.a})`}} />
             <Box mt={5} mb={1} mx="auto">
-              <TwitterPicker color={settings.primaryColor} onChange={color => updateSettings('primaryColor', color.rgb)} />
+              <TwitterPicker
+                triangle="hide"
+                color={settings.primaryColor}
+                onChange={color => updateSettings('primaryColor', color.rgb)} />
             </Box>
             <Box mt={4} mb={1} mx="auto">
-              <AlphaPicker color={settings.primaryColor} onChange={color => updateSettings('primaryColor', color.rgb)} />
+              <AlphaPicker
+                color={settings.primaryColor}
+                onChange={color => updateSettings('primaryColor', color.rgb)} />
             </Box>
           </Box>
         </Grid>
@@ -206,16 +223,21 @@ const AgentSettings = () => {
             <Typography variant="h6">Widget Primary Background</Typography>
             <Box mt={2} width="100%" height={100} style={{ backgroundColor: `rgba(${settings.primaryBg.r}, ${settings.primaryBg.g}, ${settings.primaryBg.b}, ${settings.primaryBg.a})`}} />
             <Box mt={5} mb={1} mx="auto">
-              <TwitterPicker color={settings.primaryBg} onChange={color => updateSettings('primaryBg', color.rgb)} />
+              <TwitterPicker
+                triangle="hide"
+                color={settings.primaryBg}
+                onChange={color => updateSettings('primaryBg', color.rgb)} />
             </Box>
             <Box mt={4} mb={1} mx="auto">
-              <AlphaPicker color={settings.primaryBg} onChange={color => updateSettings('primaryBg', color.rgb)} />
+              <AlphaPicker
+                color={settings.primaryBg}
+                onChange={color => updateSettings('primaryBg', color.rgb)} />
             </Box>
           </Box>
         </Grid>
       </Grid>
       <Box mt={4} width="100%" display="flex" justifyContent="center">
-        <Button variant="outlined" onClick={onUpdateSettingsClicked}>Update Settings</Button>
+        <Button disabled={loading} variant="outlined" onClick={onUpdateSettingsClicked}>Update Settings</Button>
       </Box>
     </Box>
   );
