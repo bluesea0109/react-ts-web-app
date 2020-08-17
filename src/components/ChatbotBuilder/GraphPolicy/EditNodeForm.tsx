@@ -3,7 +3,7 @@ import {  Button, Dialog, DialogActions,
   DialogContent, DialogTitle, Grid, IconButton,
   Paper,  Typography} from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import {Add, Delete, Edit} from '@material-ui/icons';
+import {Add, ArrowDropDown, ArrowDropUp, Delete, Edit} from '@material-ui/icons';
 import { useSnackbar } from 'notistack';
 import React, { useEffect, useState} from 'react';
 import EdgeChip from './EdgeChip';
@@ -63,6 +63,26 @@ export default function EditNodeForm({nodeId, agentId, policy, onCancel, onSubmi
     return <></>;
   }
 
+  const incEdgePosition = (edgeId: number) => {
+    const newPos = node.getEdgePosition(edgeId) + 1;
+    if (newPos >= 0) {
+      node.setEdgePosition(edgeId, newPos);
+    }
+    console.log('NODE ', node.edges);
+    setNumStateChanges(numChanges + 1);
+
+  };
+
+  const decEdgePosition = (edgeId: number) => {
+    const newPos = node.getEdgePosition(edgeId) - 1;
+    if (newPos >= 0) {
+      node.setEdgePosition(edgeId, newPos);
+    }
+
+    console.log('NODE ', node.edges);
+    setNumStateChanges(numChanges + 1);
+  };
+
   const handleAddEdge = (updPolicy: GraphPolicy) => {
     setNumStateChanges(numChanges + 1);
     setUpsertingEdge(false);
@@ -119,10 +139,28 @@ export default function EditNodeForm({nodeId, agentId, policy, onCancel, onSubmi
                   return (
                     <EdgeChip node={node} key={`${node.nodeId}_${index}`} edgeId={e.nodeId} actions={
                       <React.Fragment>
-                        <IconButton onClick={() => { setEditingEdgeId(e.nodeId); setTimeout(() => setUpsertingEdge(true), 200); }}>
+                        {
+                          index !== 0 && (
+                            <IconButton size="small"
+                              onClick={() => { decEdgePosition(e.nodeId); }}>
+                              <ArrowDropUp/>
+                            </IconButton>
+                          )
+                        }
+                        {
+                          index < node?.edges.length - 1 && (
+                            <IconButton size="small"
+                              onClick={() => { incEdgePosition(e.nodeId); }}>
+                              <ArrowDropDown/>
+                            </IconButton>
+                          )
+                        }
+
+                        <IconButton size="small"
+                          onClick={() => { setEditingEdgeId(e.nodeId); setTimeout(() => setUpsertingEdge(true), 200); }}>
                           <Edit/>
                         </IconButton>
-                        <IconButton onClick={() => { removeEdge(e.nodeId); }}>
+                        <IconButton size="small" onClick={() => { removeEdge(e.nodeId); }}>
                           <Delete/>
                         </IconButton>
                       </React.Fragment>

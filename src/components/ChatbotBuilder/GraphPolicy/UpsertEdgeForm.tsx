@@ -136,7 +136,7 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , edgeTy
     setNewNode(node);
   };
 
-  const addUtteranceEdge = async (edgeNode: GraphPolicyNode) => {
+  const addUtteranceEdge = async (edgeNode: GraphPolicyNode, position?: number) => {
     if (!node) {
       return enqueueSnackbar('Parent node does not exist', { variant: 'error' });
     }
@@ -147,7 +147,7 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , edgeTy
     }
 
     if (optionType === 'TEXT') {
-      node.addUtteranceEdge(edgeNode, new TextOption(intent, actionText));
+      node.addUtteranceEdge(edgeNode, new TextOption(intent, actionText), position);
     } else if (optionType === 'IMAGE') {
       // An old image or a new image file should exist
       if (!imgFile && !existingImg) {
@@ -176,36 +176,36 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , edgeTy
       }
 
       // Add the new Image option
-      node.addUtteranceEdge(edgeNode, new ImageOption(intent, actionText, imageName, imgCaption));
+      node.addUtteranceEdge(edgeNode, new ImageOption(intent, actionText, imageName, imgCaption), position);
     }
 
     return true;
 
   };
 
-  const addEmailEdge = async (edgeNode: GraphPolicyNode) => {
+  const addEmailEdge = async (edgeNode: GraphPolicyNode, position?: number) => {
     if (!node) {
       return enqueueSnackbar('Parent node does not exist', { variant: 'error' });
     }
     // TODO - add a function to add email edge if different from others
     // TODO Add Custom Validators for email edge if exists
-    node.addConfirmEdge(edgeNode);
+    node.addConfirmEdge(edgeNode, position);
   };
 
-  const addConfirmEdge = async (edgeNode: GraphPolicyNode) => {
+  const addConfirmEdge = async (edgeNode: GraphPolicyNode, position?: number) => {
     if (!node) {
       return enqueueSnackbar('Parent node does not exist', { variant: 'error' });
     }
     // TODO Add Custom Validators for confirm edge if exists
-    node.addConfirmEdge(edgeNode);
+    node.addConfirmEdge(edgeNode, position);
   };
 
-  const addEmptyEdge = async (edgeNode: GraphPolicyNode) => {
+  const addEmptyEdge = async (edgeNode: GraphPolicyNode, position?: number) => {
     if (!node) {
       return enqueueSnackbar('Parent node does not exist', { variant: 'error' });
     }
     // TODO Add Custom Validators for empty edge if exists
-    node.addEmptyEdge(edgeNode);
+    node.addEmptyEdge(edgeNode, position);
   };
 
   const handleSubmit = async() => {
@@ -216,8 +216,13 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , edgeTy
       return enqueueSnackbar('Parent node does not exist', { variant: 'error' });
     }
 
+    let position = node.edges.length;
+    console.log('POSITION: ', position);
+
     // If the same node is already an edge, remove it, then modify and re-add
     if (edgeId) {
+      position = node.getEdgePosition(edgeId);
+      console.log('ORIG POSITION: ', position);
       node.removeEdge(edgeId);
     }
 
@@ -238,19 +243,19 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , edgeTy
 
     switch (edgeType) {
       case 'UTTERANCE': {
-        await addUtteranceEdge(edgeNode);
+        await addUtteranceEdge(edgeNode, position);
         break;
       }
       case 'EMAIL': {
-        await addEmailEdge(edgeNode);
+        await addEmailEdge(edgeNode, position);
         break;
       }
       case 'CONFIRM': {
-        await addConfirmEdge(edgeNode);
+        await addConfirmEdge(edgeNode, position);
         break;
       }
       case 'EMPTY': {
-        await addEmptyEdge(edgeNode);
+        await addEmptyEdge(edgeNode, position);
       }
     }
 
