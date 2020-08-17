@@ -1,16 +1,31 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { Box, Grid, TextField } from '@material-ui/core';
+import { Box, Grid, TextField, Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import axios from 'axios';
 import gql from 'graphql-tag';
 import { useSnackbar } from 'notistack';
 import React, { ChangeEvent, useEffect, useState } from 'react';
+import { AlphaPicker, TwitterPicker } from 'react-color';
 import { useParams } from 'react-router-dom';
 import { CHATBOT_GET_AGENT } from '../../../common-gql-queries';
 import { IAgent } from '../../../models/chatbot-service';
 import { Maybe } from '../../../utils/types';
 import { getBotSettingsQuery, updateBotSettingsMutation } from './gql';
-import { BotSettings } from './types';
+import { BotSettings, ColorItem } from './types';
+
+const DEFAULT_PRIMARY_COLOR: ColorItem = {
+  r: 10,
+  g: 91,
+  b: 255,
+  a: 1,
+};
+
+const DEFAULT_PRIMARY_BG: ColorItem = {
+  r: 10,
+  g: 103,
+  b: 238,
+  a: 1.00,
+};
 
 const AgentSettings = () => {
   const { agentId } = useParams();
@@ -19,6 +34,8 @@ const AgentSettings = () => {
   const [settings, setSettings] = useState<BotSettings>({
     name: '',
     icon: undefined,
+    primaryColor: DEFAULT_PRIMARY_COLOR,
+    primaryBg: DEFAULT_PRIMARY_BG,
   });
 
   const [isFileLoading, setIsFileLoading] = useState(false);
@@ -64,7 +81,11 @@ const AgentSettings = () => {
     }
 
     if (!!updatedSettings && !!updatedSettings.name) {
-      setSettings(updatedSettings);
+      setSettings({
+        ...updatedSettings,
+        primaryColor: DEFAULT_PRIMARY_COLOR,
+        primaryBg: DEFAULT_PRIMARY_BG,
+      });
     }
 
     // eslint-disable-next-line
@@ -168,8 +189,34 @@ const AgentSettings = () => {
             </Box>
           )}
         </Grid>
+        <Grid item={true} xs={6}>
+          <Box p={2} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Typography variant="h6">Widget Primary Color</Typography>
+            <Box mt={2} width="100%" height={100} style={{ backgroundColor: `rgba(${settings.primaryColor.r}, ${settings.primaryColor.g}, ${settings.primaryColor.b}, ${settings.primaryColor.a})`}} />
+            <Box mt={5} mb={1} mx="auto">
+              <TwitterPicker color={settings.primaryColor} onChange={color => updateSettings('primaryColor', color.rgb)} />
+            </Box>
+            <Box mt={4} mb={1} mx="auto">
+              <AlphaPicker color={settings.primaryColor} onChange={color => updateSettings('primaryColor', color.rgb)} />
+            </Box>
+          </Box>
+        </Grid>
+        <Grid item={true} xs={6}>
+          <Box p={2} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Typography variant="h6">Widget Primary Background</Typography>
+            <Box mt={2} width="100%" height={100} style={{ backgroundColor: `rgba(${settings.primaryBg.r}, ${settings.primaryBg.g}, ${settings.primaryBg.b}, ${settings.primaryBg.a})`}} />
+            <Box mt={5} mb={1} mx="auto">
+              <TwitterPicker color={settings.primaryBg} onChange={color => updateSettings('primaryBg', color.rgb)} />
+            </Box>
+            <Box mt={4} mb={1} mx="auto">
+              <AlphaPicker color={settings.primaryBg} onChange={color => updateSettings('primaryBg', color.rgb)} />
+            </Box>
+          </Box>
+        </Grid>
       </Grid>
-      <Button variant="outlined" onClick={onUpdateSettingsClicked}>Update Settings</Button>
+      <Box mt={4} width="100%" display="flex" justifyContent="center">
+        <Button variant="outlined" onClick={onUpdateSettingsClicked}>Update Settings</Button>
+      </Box>
     </Box>
   );
 };
