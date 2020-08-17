@@ -7,9 +7,6 @@ import UpsertEdgeForm from './UpsertEdgeForm';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    fullWidth: {
-      width: '100%',
-    },
     formControl: {
       width: '100%',
       marginBottom: theme.spacing(2),
@@ -18,12 +15,6 @@ const useStyles = makeStyles((theme: Theme) =>
       borderRadius: theme.spacing(1),
       padding: theme.spacing(2),
       backgroundColor: theme.palette.background.default,
-    },
-    optionImage: {
-      width: 100,
-      height: 100,
-      borderRadius: theme.spacing(2),
-      backgroundColor: theme.palette.background.paper,
     },
   }),
 );

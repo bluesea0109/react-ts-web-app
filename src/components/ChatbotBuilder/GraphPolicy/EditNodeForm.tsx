@@ -1,14 +1,15 @@
-import { GraphPolicy } from '@bavard/graph-policy';
+import { EmailNode, GraphPolicy, GraphPolicyNode, UtteranceNode } from '@bavard/graph-policy';
 import {  Button, Dialog, DialogActions,
-  DialogContent, DialogTitle, FormControl, Grid, IconButton,
-  Paper, TextField, Typography} from '@material-ui/core';
+  DialogContent, DialogTitle, Grid, IconButton,
+  Paper,  Tooltip, Typography} from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import {Add, Delete, Edit} from '@material-ui/icons';
+import {Add, ArrowDropDown, ArrowDropUp, Delete, Edit} from '@material-ui/icons';
 import { useSnackbar } from 'notistack';
 import React, { useEffect, useState} from 'react';
 import EdgeChip from './EdgeChip';
 import GraphNode from './GraphNode';
 import UpsertEdge from './UpsertEdge';
+import UpsertNodeForm from './UpsertNodeForm';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -24,6 +25,15 @@ const useStyles = makeStyles((theme: Theme) =>
     formControl: {
       width: '100%',
       marginBottom: theme.spacing(2),
+    },
+    edgeActions: {
+      opacity: 0,
+      width: 300,
+      display: 'flex',
+      justifyContent: 'flex-end',
+      '&:hover': {
+        opacity: 1,
+      },
     },
   }),
 );
@@ -41,9 +51,8 @@ export default function EditNodeForm({nodeId, agentId, policy, onCancel, onSubmi
   const classes = useStyles();
   const [graphPolicy, setPolicy] = useState<GraphPolicy>(policy);
   const node = graphPolicy.getNodeById(nodeId);
+  const [updatedNodeData, setUpdatedNodeData] = useState<GraphPolicyNode|UtteranceNode|EmailNode|undefined>(node);
   const [upsertingEdge, setUpsertingEdge] = useState(false);
-  const [actionName, setActionName] = useState(node?.actionName || '');
-  const [utterance, setUtterance] = useState(node?.toJsonObj().utterance || '');
   const [editingEdgeId, setEditingEdgeId] = useState<number|undefined>();
   const [numChanges, setNumStateChanges] = useState(0);
   const {enqueueSnackbar} = useSnackbar();
@@ -63,6 +72,24 @@ export default function EditNodeForm({nodeId, agentId, policy, onCancel, onSubmi
     return <></>;
   }
 
+  const incEdgePosition = (edgeId: number) => {
+    const newPos = node.getEdgePosition(edgeId) + 1;
+    if (newPos >= 0) {
+      node.setEdgePosition(edgeId, newPos);
+    }
+
+    setNumStateChanges(numChanges + 1);
+  };
+
+  const decEdgePosition = (edgeId: number) => {
+    const newPos = node.getEdgePosition(edgeId) - 1;
+    if (newPos >= 0) {
+      node.setEdgePosition(edgeId, newPos);
+    }
+
+    setNumStateChanges(numChanges + 1);
+  };
+
   const handleAddEdge = (updPolicy: GraphPolicy) => {
     setNumStateChanges(numChanges + 1);
     setUpsertingEdge(false);
@@ -75,12 +102,17 @@ export default function EditNodeForm({nodeId, agentId, policy, onCancel, onSubmi
     if (!node) {
       return;
     }
-    if (!actionName.length || !utterance.length) {
-      return enqueueSnackbar('Action name and Utterance are invalid', {variant: 'error'});
+    if (!updatedNodeData?.actionName || !updatedNodeData?.toJsonObj().utterance) {
+      return enqueueSnackbar('Node data is invalid');
     }
 
-    node.setActionName(actionName);
-    node.setUtterance(utterance);
+    node.setActionName(updatedNodeData.actionName);
+    node.setUtterance(updatedNodeData.toJsonObj().utterance);
+
+    if (node instanceof EmailNode && updatedNodeData instanceof EmailNode) {
+      node.setFromEmail(updatedNodeData.from);
+      node.setToEmail(updatedNodeData.to);
+    }
 
     onSubmit(graphPolicy);
   };
@@ -94,14 +126,7 @@ export default function EditNodeForm({nodeId, agentId, policy, onCancel, onSubmi
         <Grid container={true} className={classes.fullWidth} spacing={2}>
           <Grid item={true} lg={3} md={12}>
             <Paper className={classes.nodePaper}>
-              <FormControl variant="outlined" className={classes.formControl}>
-                <TextField name="actionName" defaultValue={actionName} label="Action Name"
-                  variant="outlined" onChange={(e) => setActionName(e.target.value as string)} />
-              </FormControl>
-              <FormControl variant="outlined" className={classes.formControl}>
-                <TextField multiline={true} rowsMax={5} name="utterance" defaultValue={utterance}
-                  label="Utterance" variant="outlined" onChange={(e) => setUtterance(e.target.value as string)} />
-              </FormControl>
+              <UpsertNodeForm nodeId={node.nodeId} node={node} onChange={setUpdatedNodeData}/>
             </Paper>
 
             <GraphNode
@@ -120,14 +145,39 @@ export default function EditNodeForm({nodeId, agentId, policy, onCancel, onSubmi
                 {node.toJsonObj().outEdges.map((e, index) => {
                   return (
                     <EdgeChip node={node} key={`${node.nodeId}_${index}`} edgeId={e.nodeId} actions={
-                      <React.Fragment>
-                        <IconButton onClick={() => { setEditingEdgeId(e.nodeId); setTimeout(() => setUpsertingEdge(true), 200); }}>
-                          <Edit/>
-                        </IconButton>
-                        <IconButton onClick={() => { removeEdge(e.nodeId); }}>
-                          <Delete/>
-                        </IconButton>
-                      </React.Fragment>
+                      <div className={classes.edgeActions}>
+                        {
+                          index !== 0 && (
+                            <Tooltip placement="top" title="Move up">
+                              <IconButton size="small"
+                                onClick={() => { decEdgePosition(e.nodeId); }}>
+                                <ArrowDropUp/>
+                              </IconButton>
+                            </Tooltip>
+                          )
+                        }
+                        {
+                          index < node?.edges.length - 1 && (
+                            <Tooltip placement="top" title="Move down">
+                              <IconButton size="small"
+                                onClick={() => { incEdgePosition(e.nodeId); }}>
+                                <ArrowDropDown/>
+                              </IconButton>
+                            </Tooltip>
+                          )
+                        }
+                        <Tooltip placement="top" title="Edit Edge">
+                          <IconButton size="small"
+                            onClick={() => { setEditingEdgeId(e.nodeId); setTimeout(() => setUpsertingEdge(true), 200); }}>
+                            <Edit/>
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip placement="top" title="Delete Edge">
+                          <IconButton size="small" onClick={() => { removeEdge(e.nodeId); }}>
+                            <Delete/>
+                          </IconButton>
+                        </Tooltip>
+                      </div>
                     }/>
                   );
                 })}

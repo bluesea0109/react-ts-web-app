@@ -118,7 +118,7 @@ const ActionDetailPanel = ({ action }: { action: AnyAction }) => {
               {key === 'text' ? (
                 <p dangerouslySetInnerHTML={{ __html: actionProps[key] }} />
               ) : (
-                <Typography variant="caption" style={{ textTransform: 'capitalize' }}>{actionProps[key]}</Typography>
+                <Typography variant="caption" style={{ textTransform: 'capitalize' }}>{JSON.stringify(actionProps[key])}</Typography>
               )}
             </Box>
           ))}

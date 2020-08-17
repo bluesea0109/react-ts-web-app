@@ -75,9 +75,6 @@ const Examples = () => {
   });
 
   const [createExample, createExampleMutationData] = useMutation<CreateExampleMutationResult>(createExampleMutation, {
-    variables: {
-      agentId: numAgentId,
-    },
     ...refetchOptions,
   });
 
@@ -118,6 +115,7 @@ const Examples = () => {
     const mutationOpts = {
       variables: {
         example,
+        agentId: numAgentId,
       },
     };
 

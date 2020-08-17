@@ -338,12 +338,16 @@ class GraphPolicyVisualEditor extends React.Component<IGraphPolicyVisualEditorPr
     this.setState({loading: true});
 
     try {
+      const policyData = this.state.policy?.data;
+      if (policyData.intents.length === 0) {
+        policyData.intents.push('default');
+      }
       await mutate({
         variables: {
           id: this.state.policy?.id,
           policy: {
             name: this.state.policy.name,
-            data: this.state.policy?.data,
+            data: policyData,
           },
         },
       });
@@ -397,7 +401,7 @@ class GraphPolicyVisualEditor extends React.Component<IGraphPolicyVisualEditorPr
               this.mutateFunction = mutateFn;
               return (
                 <Button variant="contained" disabled={this.state.loading}
-                  color="primary" onClick={this.persistChanges}>Persist Changes</Button>
+                  color="primary" onClick={this.persistChanges}>Save Changes</Button>
               );
             }}
           </Mutation>

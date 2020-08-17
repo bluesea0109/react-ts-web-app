@@ -80,10 +80,10 @@ export default function GraphNode({node, wrapperClassName, onAddEdge, onEditNode
             </Typography>
           </Typography>
           <Alert icon={false} severity="info" className={classes.alert}>
-            <Tooltip disableFocusListener={true} title={nodeJson.utterance}>
-              <Typography component="div" className={classes.utteranceText} variant="caption">
-                {nodeJson.utterance}
-              </Typography>
+            <Tooltip disableFocusListener={true} title={
+              <p dangerouslySetInnerHTML={{ __html: nodeJson.utterance }} />
+            }>
+              <p dangerouslySetInnerHTML={{ __html: nodeJson.utterance }} />
             </Tooltip>
           </Alert>
           {

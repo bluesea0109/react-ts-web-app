@@ -121,6 +121,7 @@ export default function GraphPolicies() {
   const handleClosePolicy = () => {
     selectPolicy(undefined);
     setUpsertDialogOpen(false);
+    queryResult.refetch();
   };
 
   const handleExport = async(policy: IAgentGraphPolicy) => {
