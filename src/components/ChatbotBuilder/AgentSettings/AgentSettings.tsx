@@ -82,9 +82,9 @@ const AgentSettings = () => {
 
     if (!!updatedSettings && !!updatedSettings.name) {
       setSettings({
-        ...updatedSettings,
         primaryColor: DEFAULT_PRIMARY_COLOR,
         primaryBg: DEFAULT_PRIMARY_BG,
+        ...updatedSettings,
       });
     }
 
