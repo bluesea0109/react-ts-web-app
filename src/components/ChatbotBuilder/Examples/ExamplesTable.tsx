@@ -152,7 +152,7 @@ const ExamplesTable = (props: ExamplesTableProps) => {
       <TableContainer component={Paper} aria-label="Examples">
         <MaterialTable
           title={
-            <Button disabled={loading} variant="contained" color="primary" onClick={onAdd}>Add New Example</Button>
+            <Button disabled={loading} variant="contained" color="primary" onClick={onAdd}>Add New Examples</Button>
           }
           columns={columns}
           data={data ? _.cloneDeep(data) : []}

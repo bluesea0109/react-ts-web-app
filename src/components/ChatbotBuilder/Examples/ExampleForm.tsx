@@ -43,7 +43,8 @@ const ExampleForm = ({ loading, example, tags, intents, error, onExampleUpdate }
         })) ?? [],
       });
     }
-  }, [currentExample, intent, intents, onExampleUpdate, state.value, tags]);
+  // eslint-disable-next-line
+  }, [currentExample, intent, intents, state.value, tags]);
 
   useEffect(() => {
     const randColors = randomcolor({
@@ -79,7 +80,7 @@ const ExampleForm = ({ loading, example, tags, intents, error, onExampleUpdate }
     const intent = intents.find(({ id }: any) => id === example?.intentId);
     setIntent(intent?.value);
     // eslint-disable-next-line
-  }, [example]);
+  }, []);
 
   const updateTagsOnText = (updatedTags: any[]) => {
     setState({
@@ -166,4 +167,4 @@ const ExampleForm = ({ loading, example, tags, intents, error, onExampleUpdate }
   );
 };
 
-export default ExampleForm;
+export default React.memo(ExampleForm);
