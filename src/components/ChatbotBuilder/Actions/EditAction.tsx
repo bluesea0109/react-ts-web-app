@@ -1,5 +1,13 @@
 import { useMutation } from '@apollo/client';
-import { Box, Checkbox, CircularProgress, DialogContent, Grid, LinearProgress, TextField } from '@material-ui/core';
+import {
+  Box,
+  Checkbox,
+  CircularProgress,
+  DialogContent,
+  Grid,
+  LinearProgress,
+  TextField,
+} from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -14,11 +22,12 @@ import CloseIcon from '@material-ui/icons/Close';
 import { Autocomplete } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { ActionType, AnyAction } from '../../../models/chatbot-service';
+import { ActionType, AnyAction, IUserResponseOption } from '../../../models/chatbot-service';
 import { Maybe } from '../../../utils/types';
 import RichTextInput from '../../Utils/RichTextInput';
 import { IOption } from '../Options/types';
 import { createActionMutation, getActionsQuery, updateActionMutation } from './gql';
+import SortableOptions from './SortableOptions';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -57,7 +66,15 @@ const EditAction = (props: EditActionProps) => {
   const classes = useStyles();
   const [currentAction, setCurrentAction] = useState<Maybe<AnyAction>>(action);
   const [actionType, setActionType] = useState<Maybe<ActionType>>();
-  const [selectedOptions, setSelectedOptions] = useState<number[]>([]);
+  const [selectedOptions, setSelectedOptions] = useState<number[]>(currentAction?.userResponseOptions?.map(uro => uro.id) ?? []);
+
+  useEffect(() => {
+    setSelectedOptions(currentAction?.userResponseOptions?.map(uro => uro.id) ?? []);
+  }, [currentAction]);
+
+  const updateSortableList = (updatedList: { id: number }[]) => {
+    setSelectedOptions([ ...updatedList.map(ul => ul.id) ]);
+  };
 
   const [createAction, createActionMutationData] = useMutation(createActionMutation(actionType ?? ''), {
     refetchQueries: [{ query: getActionsQuery, variables: { agentId: numAgentId } }],
@@ -162,8 +179,6 @@ const EditAction = (props: EditActionProps) => {
                 />
               </Box>
             </Grid>
-          </Grid>
-          <Grid container={true}>
             <Grid item={true} xs={6}>
               <Box p={2}>
                 <Autocomplete
@@ -178,6 +193,25 @@ const EditAction = (props: EditActionProps) => {
                 />
               </Box>
             </Grid>
+            {!!currentAction && (
+              <>
+                {actionType === ActionType.UTTERANCE_ACTION && (
+                  <>
+                    <Grid item={true} xs={12}>
+                      <Box p={2}>
+                        <RichTextInput
+                          label="Action Text"
+                          value={currentAction?.text}
+                          onChange={(html: string) => setCurrentAction({ ...currentAction, text: html })}
+                        />
+                      </Box>
+                    </Grid>
+                  </>
+                )}
+              </>
+            )}
+          </Grid>
+          <Grid container={true}>
             <Grid item={true} xs={6}>
               <Box p={2}>
                 <Autocomplete
@@ -204,24 +238,17 @@ const EditAction = (props: EditActionProps) => {
                   renderInput={(params) => <TextField {...params} label="Response Options" variant="outlined" />}
                 />
               </Box>
-            </Grid>
-            {!!currentAction && (
-              <>
-                {actionType === ActionType.UTTERANCE_ACTION && (
-                  <>
-                    <Grid item={true} xs={12}>
-                      <Box p={2}>
-                        <RichTextInput
-                          label="Action Text"
-                          value={currentAction?.text}
-                          onChange={(html: string) => setCurrentAction({ ...currentAction, text: html })}
-                        />
-                      </Box>
-                    </Grid>
-                  </>
+              <Box p={2}>
+                {!!currentAction && !!currentAction.userResponseOptions && (
+                  <SortableOptions
+                    options={selectedOptions.map(so => {
+                      return currentAction.userResponseOptions?.find(uro => uro.id === so) as IUserResponseOption;
+                    })}
+                    setOptions={updateSortableList}
+                  />
                 )}
-              </>
-            )}
+              </Box>
+            </Grid>
           </Grid>
         </Box>
       </DialogContent>
