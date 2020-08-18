@@ -21,7 +21,7 @@ const ExampleForm = ({ loading, example, tags, intents, error, onExampleUpdate }
   const defaultIntent = example?.intentName ?? intents.find(intent => example?.intentId === intent.id)?.value ?? intents?.[0].value;
   const [intent, setIntent] = useState<string>(defaultIntent);
 
-  const defaultTag = example?.tags?.[0].value ?? tags?.[0].value;
+  const defaultTag = example?.tags?.[0]?.value ?? tags?.[0]?.value;
   const [tag, setTag] = useState<string>(defaultTag);
 
   const [
