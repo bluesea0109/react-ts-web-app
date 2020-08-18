@@ -1,12 +1,12 @@
 import { Box, Grid, TextField } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import { Autocomplete } from '@material-ui/lab';
-import randomcolor from 'randomcolor';
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { TextAnnotator } from 'react-text-annotate';
 import { IExample } from '../../../models/chatbot-service';
 import { Maybe } from '../../../utils/types';
 import { ExamplesError } from './types';
+import { useNewExample } from './useNewExample';
 
 interface ExampleFormProps {
   loading: boolean;
@@ -18,83 +18,9 @@ interface ExampleFormProps {
 }
 
 const ExampleForm = ({ loading, example, tags, intents, error, onExampleUpdate }: ExampleFormProps) => {
-  const [currentExample, setCurrentExample] = useState<Maybe<IExample>>(example);
-  const [state, setState] = useState<any>({});
-  const [intent, setIntent] = useState<string>('');
-  const colors = useRef<any>({});
-
-  useEffect(() => {
-    if (!!currentExample) {
-      const currIntent = intents.find((i: any) => i.value === intent);
-      onExampleUpdate({
-        id: currentExample.id,
-        agentId: currentExample.agentId,
-        text: currentExample.text,
-        intentId: currIntent?.id,
-        intentName: currIntent?.name,
-        tags: state.value?.map((tag: any) => ({
-          start: tag.start,
-          end: tag.end,
-          tagType: {
-            value: tag.tag,
-            agentId: currentExample.agentId,
-            id: tags.find((t: any) => t.value === tag.tag).id,
-          },
-        })) ?? [],
-      });
-    }
-  // eslint-disable-next-line
-  }, [currentExample, intent, intents, state.value, tags]);
-
-  useEffect(() => {
-    const randColors = randomcolor({
-      luminosity: 'light',
-      count: tags.length,
-    });
-
-    let currIndex = 0;
-
-    tags.forEach((tag: any) => {
-      colors.current = {
-        ...colors.current,
-        [tag.value]: randColors[currIndex],
-      };
-
-      currIndex += 1;
-    });
-  }, [tags]);
-
-  useEffect(() => {
-    setCurrentExample(example);
-    setState({
-      value: example?.tags.map((tag: any) => {
-        return {
-          start: tag.start,
-          end: tag.end,
-          tag: tag.tagType.value,
-        };
-      }),
-      tag: tags[0]?.value,
-    });
-
-    const intent = intents.find(({ id }: any) => id === example?.intentId);
-    setIntent(intent?.value);
-    // eslint-disable-next-line
-  }, []);
-
-  const updateTagsOnText = (updatedTags: any[]) => {
-    setState({
-      ...state,
-      value: [ ...updatedTags ],
-    });
-  };
-
-  const onExampleTextChange = (e: any) => {
-    const updatedExample = { ...(currentExample as IExample) };
-    updatedExample.text = e.target.value;
-
-    setCurrentExample({ ...updatedExample });
-  };
+  const [values, updateValues] = useNewExample({ example, intents, tags, onExampleUpdate });
+  const { state, intent, colors, updatedExample } = values;
+  const { setState, setIntent, updateTagsOnText, onExampleTextChange } = updateValues;
 
   return (
     <Grid container={true}>
@@ -118,7 +44,7 @@ const ExampleForm = ({ loading, example, tags, intents, error, onExampleUpdate }
             multiline={true}
             variant="outlined"
             rows={20}
-            value={currentExample?.text}
+            value={updatedExample?.text}
             onChange={onExampleTextChange}
             error={error === ExamplesError.CREATE_ERROR_DUPLICATE_EXAMPLE}
           />
@@ -151,7 +77,7 @@ const ExampleForm = ({ loading, example, tags, intents, error, onExampleUpdate }
                 lineHeight: 1.5,
                 pointerEvents: (loading || !state.tag || tags?.length === 0) ? 'none' : 'auto',
               }}
-              content={currentExample?.text ?? ''}
+              content={updatedExample?.text ?? ''}
               value={state.value}
               onChange={(value: any) => updateTagsOnText(value)}
               getSpan={span => ({
