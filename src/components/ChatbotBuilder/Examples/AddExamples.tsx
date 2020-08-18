@@ -67,13 +67,9 @@ const AddExamples = ({
   const lastID = useRef(0);
   const { enqueueSnackbar } = useSnackbar();
 
-  const updateTag = (e: ChangeEvent<{}>, tag: any) => examples.length === 0 ?
-    setTag(tag?.value ?? '') :
-    enqueueSnackbar('Please create a new set of examples to update tag', { variant: 'warning' });
+  const updateTag = (e: ChangeEvent<{}>, tag: any) => setTag(tag?.value ?? '');
 
-  const updateIntent = (e: ChangeEvent<{}>, intent: IIntent | null) => examples.length === 0 ?
-    setIntent(intent?.value ?? '') :
-    enqueueSnackbar('Please create a new set of examples to update intent', { variant: 'warning' });
+  const updateIntent = (e: ChangeEvent<{}>, intent: IIntent | null) => setIntent(intent?.value ?? '');
 
   const onExampleUpdate = (id: number) => (updatedExample: any) => {
     const index = examples.findIndex(ex => ex.id === id);
@@ -89,11 +85,6 @@ const AddExamples = ({
   };
 
   const onAddExample = () => {
-    if (tag === '' || intent === '') {
-      enqueueSnackbar('Make sure you\'ve selected an intent and a tag before creating an example', { variant: 'warning' });
-      return;
-    }
-
     const currentIntent = intents.find(int => int.value === intent);
     const currentExamples = Array.from([...examples]);
     setExamples([
@@ -121,23 +112,28 @@ const AddExamples = ({
   const [createExamples] = useMutation(createExamplesMutation);
 
   const saveChanges = async () => {
-    setLoading(true);
+    const currentIntent = intents.find(int => int.value === intent);
+    if (intent === '' || !currentIntent) {
+      enqueueSnackbar('Make sure you\'ve selected an intent before proceeding', { variant: 'warning' });
+      return;
+    }
 
     const hasNoEmptyExamples = examples.reduce((prev, curr) => prev && !!curr.text, true);
 
     if (!hasNoEmptyExamples) {
       enqueueSnackbar('Please make sure no example is empty before proceeding', { variant: 'error' });
-      setLoading(false);
       return;
     }
 
     try {
+      setLoading(true);
+
       await createExamples({
         variables: {
           agentId: numAgentId,
           examples: examples.map(ex => ({
             text: ex.text,
-            intentId: ex.intentId,
+            intentId: currentIntent.id,
             tags: ex.tags.map((tag: any) => ({
               start: tag.start,
               end: tag.end,
