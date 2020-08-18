@@ -229,7 +229,7 @@ const AddExamples = ({
           </Grid>
         ))}
       </Grid>
-      <Box mt={3} display="flex" justifyContent="center">
+      <Box mt={3} display="flex" justifyContent="center" mb={4}>
         <Button disabled={loading} variant="contained" color="primary" onClick={onAddExample}>Add New Item</Button>
       </Box>
     </Dialog>
