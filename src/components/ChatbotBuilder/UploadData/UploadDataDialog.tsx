@@ -12,7 +12,7 @@ import gql from 'graphql-tag';
 import _ from 'lodash';
 import React from 'react';
 import { CHATBOT_CREATE_TAGS } from '../../../common-gql-queries';
-import { IAgentGraphPolicy, IExampleInput, UtteranceAction } from '../../../models/chatbot-service';
+import { IAgentGraphPolicy, IExampleInput, IUtteranceAction } from '../../../models/chatbot-service';
 import { ActionType } from '../../../models/chatbot-service';
 import { createActionMutation, getActionsQuery , updateActionMutation } from '../Actions/gql';
 import { createGraphPolicyMutation } from '../GraphPolicy/gql';
@@ -133,7 +133,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
   }
 
   updateUtteranceActions = async(actionsFromJson: IAgentAction[],
-    actions: UtteranceAction[], intentIdsMap?: Map<string, number>, uros?: IOption[]): Promise<any> => {
+    actions: IUtteranceAction[], intentIdsMap?: Map<string, number>, uros?: IOption[]): Promise<any> => {
     const mutation = updateActionMutation(ActionType.UTTERANCE_ACTION);
 
     let mutations = actionsFromJson.map((a) => {
@@ -169,7 +169,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
 
   }
 
-  uploadUtteranceActions = async(actions: IAgentAction[]): Promise<UtteranceAction[]> => {
+  uploadUtteranceActions = async(actions: IAgentAction[]): Promise<IUtteranceAction[]> => {
     this.setState({
       status: 'Creating utterance actions',
     });
@@ -211,7 +211,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
 
   }
 
-  uploadIntents = async (intents: IAgentDataIntent[], actions: UtteranceAction[] ): Promise<Map<string, number>> => {
+  uploadIntents = async (intents: IAgentDataIntent[], actions: IUtteranceAction[] ): Promise<Map<string, number>> => {
     this.setState({
       status: 'Creating intents',
     });
@@ -386,7 +386,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
 
       // Upload Utterance Actions.
       // TODO - modify the backend code to make this an upsert. It currently throws an error if you upload duplicates
-      const actions: UtteranceAction[] = await this.uploadUtteranceActions(data.utteranceActions);
+      const actions: IUtteranceAction[] = await this.uploadUtteranceActions(data.utteranceActions);
       const intentIdsMap = await this.uploadIntents(data.intents, actions);
       const tagTypeIdsMap = await this.uploadTagTypes(data.tagTypes);
       await this.uploadGraphPolicies(data.graphPolicies);
