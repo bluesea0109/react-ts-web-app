@@ -141,8 +141,7 @@ const Examples = () => {
           setExampleError(ExamplesError.CREATE_ERROR_DUPLICATE_EXAMPLE);
         }
       } else {
-        setCurrentEdit(null);
-        setNewExample(null);
+        onExampleEditClose();
       }
     } catch (e) {
       if (`${e}`.indexOf('duplicate key') !== -1) {
