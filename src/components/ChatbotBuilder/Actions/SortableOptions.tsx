@@ -35,14 +35,11 @@ const SortableListContainer = SortableContainer(({ items }: { items: { id: numbe
 const SortableOptions = ({ options, setOptions }: { options: IUserResponseOption[], setOptions: (updatedOptions: any[]) => void }) => {
   const [items, setItems] = useState<{ id: number, text: string }[]>(options.map(opt => ({ id: opt.id, text: opt.text })));
 
-  console.log(options);
-
   useEffect(() => {
     setItems(options.map(opt => ({ id: opt.id, text: opt.text })));
   }, [options]);
 
   const onSortEnd = ({ oldIndex, newIndex }: { oldIndex: number, newIndex: number }) => {
-    // setItems(items => arrayMove(items, oldIndex, newIndex));
     setOptions(arrayMove(options, oldIndex, newIndex));
   };
 
