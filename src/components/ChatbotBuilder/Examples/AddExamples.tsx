@@ -247,7 +247,6 @@ interface AddExampleItemProps {
 
 const AddExampleItem = ({ loading, error, tag, tags, example, onExampleUpdate }: AddExampleItemProps) => {
   const [
-    colors,
     exampleText,
     setExampleText,
     annotatorState,
@@ -318,7 +317,7 @@ const AddExampleItem = ({ loading, error, tag, tags, example, onExampleUpdate }:
               getSpan={span => ({
                 ...span,
                 tag,
-                color: colors.current[tag],
+                color: 'rgb(132, 210, 255)',
               })}
             />
           </Box>

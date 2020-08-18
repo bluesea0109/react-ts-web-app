@@ -25,11 +25,11 @@ const ExampleForm = ({ loading, example, tags, intents, error, onExampleUpdate }
   const [tag, setTag] = useState<string>(defaultTag);
 
   const [
-    colors,
     exampleText,
     setExampleText,
     annotatorState,
     setAnnotatorState,
+    colors,
   ] = useEditExampleAnnotation({ tags, example });
 
   useEffect(() => {
