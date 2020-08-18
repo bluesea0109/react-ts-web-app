@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Grid, LinearProgress, TextField } from '@material-ui/core';
+import { CircularProgress, LinearProgress } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -9,12 +9,10 @@ import Toolbar from '@material-ui/core/Toolbar';
 import { TransitionProps } from '@material-ui/core/transitions';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
-import { Autocomplete } from '@material-ui/lab';
-import randomcolor from 'randomcolor';
-import React, { useEffect, useRef, useState } from 'react';
-import { TextAnnotator } from 'react-text-annotate';
+import React, { useState } from 'react';
 import { IExample } from '../../../models/chatbot-service';
 import { Maybe } from '../../../utils/types';
+import ExampleForm from './ExampleForm';
 import { ExamplesError } from './types';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -47,87 +45,17 @@ type EditExampleProps = {
 };
 
 const EditExample = (props: EditExampleProps) => {
-  const { loading, example, tags, intents, onEditExampleClose, onSaveExample, error } = props;
+  const { loading, example, tags, intents, onEditExampleClose, onSaveExample } = props;
 
-  const classes = useStyles();
-  const [currentExample, setCurrentExample] = useState<Maybe<IExample>>(example);
-  const [state, setState] = useState<any>({});
-  const [intent, setIntent] = useState<string>('');
-  const colors = useRef<any>({});
-
-  useEffect(() => {
-    const randColors = randomcolor({
-      luminosity: 'light',
-      count: tags.length,
-    });
-
-    let currIndex = 0;
-
-    tags.forEach((tag: any) => {
-      colors.current = {
-        ...colors.current,
-        [tag.value]: randColors[currIndex],
-      };
-
-      currIndex += 1;
-    });
-  }, [tags]);
-
-  useEffect(() => {
-    setCurrentExample(example);
-    setState({
-      value: example?.tags.map((tag: any) => {
-        return {
-          start: tag.start,
-          end: tag.end,
-          tag: tag.tagType.value,
-        };
-      }),
-      tag: tags[0]?.value,
-    });
-
-    const intent = intents.find(({ id }: any) => id === example?.intentId);
-    setIntent(intent?.value);
-  // eslint-disable-next-line
-  }, [example]);
-
-  const updateTagsOnText = (updatedTags: any[]) => {
-    setState({
-      ...state,
-      value: [ ...updatedTags ],
-    });
-  };
-
-  const onExampleTextChange = (e: any) => {
-    const updatedExample = { ...(currentExample as IExample) };
-    updatedExample.text = e.target.value;
-
-    setCurrentExample({ ...updatedExample });
-  };
+  const [updatedExample, setUpdatedExample] = useState<any>();
 
   const saveChanges = async () => {
-    if (!!currentExample) {
-      const currIntent = intents.find((i: any) => i.value === intent);
-      const finalExampleObj = {
-        id: currentExample.id,
-        agentId: currentExample.agentId,
-        text: currentExample.text,
-        intentId: currIntent?.id,
-        intentName: currIntent?.name,
-        tags: state.value.map((tag: any) => ({
-          start: tag.start,
-          end: tag.end,
-          tagType: {
-            value: tag.tag,
-            agentId: currentExample.agentId,
-            id: tags.find((t: any) => t.value === tag.tag).id,
-          },
-        })),
-      };
-
-      await onSaveExample(finalExampleObj);
+    if (!!updatedExample) {
+      await onSaveExample(updatedExample);
     }
   };
+
+  const classes = useStyles();
 
   return (
     <Dialog fullScreen={true} open={!!example} TransitionComponent={Transition}>
@@ -137,7 +65,7 @@ const EditExample = (props: EditExampleProps) => {
             <CloseIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
-            {currentExample?.id === -1 ? 'Create New Example' : `Edit Example #${currentExample?.id}`}
+            {example?.id === -1 ? 'Create New Example' : `Edit Example #${example?.id}`}
           </Typography>
           <Button disabled={loading} autoFocus={true} color="inherit" onClick={saveChanges}>
             {loading && (
@@ -146,78 +74,18 @@ const EditExample = (props: EditExampleProps) => {
                 size={20}
               />
             )}
-            {!loading && (currentExample?.id === -1 ? 'Create' : 'Save')}
+            {!loading && (example?.id === -1 ? 'Create' : 'Save')}
           </Button>
         </Toolbar>
         {loading && <LinearProgress color="secondary" />}
       </AppBar>
-      <Grid container={true}>
-        <Grid item={true} xs={6}>
-          <Box px={2} py={4}>
-            <Box mb={5}>
-              <Autocomplete
-                disabled={loading}
-                id="intentSelector"
-                options={intents}
-                getOptionLabel={(option: any) => option.value}
-                value={intents.find((i: any) => i.value === intent)}
-                onChange={(e, intent) => setIntent(intent?.value)}
-                style={{ width: 300 }}
-                renderInput={(params) => <TextField {...params} label="Intents" variant="outlined" />}
-              />
-            </Box>
-            <TextField
-              disabled={loading}
-              fullWidth={true}
-              multiline={true}
-              variant="outlined"
-              rows={20}
-              value={currentExample?.text}
-              onChange={onExampleTextChange}
-              error={error === ExamplesError.CREATE_ERROR_DUPLICATE_EXAMPLE}
-            />
-            <Typography variant="h6" color="error" style={{ fontWeight: 'bold', marginTop: 16 }}>
-              {
-                error === ExamplesError.CREATE_ERROR_DUPLICATE_EXAMPLE ?
-                  'Cannot create duplicate example entry. Please try again with different values.' :
-                  null
-              }
-            </Typography>
-          </Box>
-        </Grid>
-        <Grid item={true} xs={6}>
-          <Box px={2} py={4}>
-            <Box mb={5}>
-              <Autocomplete
-                disabled={loading}
-                id="tagSelector"
-                options={tags}
-                getOptionLabel={(option: any) => option.value}
-                defaultValue={tags[0]}
-                onChange={(e, tag) => setState({ ...state, tag: tag?.value })}
-                style={{ width: 300 }}
-                renderInput={(params) => <TextField {...params} label="Tags" variant="outlined" />}
-              />
-            </Box>
-            <Box p={2} border="1px solid rgba(0, 0, 0, 0.23)" borderRadius={4}>
-              <TextAnnotator
-                style={{
-                  lineHeight: 1.5,
-                  pointerEvents: loading ? 'none' : 'auto',
-                }}
-                content={currentExample?.text ?? ''}
-                value={state.value}
-                onChange={(value: any) => updateTagsOnText(value)}
-                getSpan={span => ({
-                  ...span,
-                  tag: state.tag,
-                  color: colors.current[state.tag],
-                })}
-              />
-            </Box>
-          </Box>
-        </Grid>
-      </Grid>
+      <ExampleForm
+        loading={loading}
+        example={example}
+        tags={tags}
+        intents={intents}
+        onExampleUpdate={setUpdatedExample}
+      />
     </Dialog>
   );
 };
