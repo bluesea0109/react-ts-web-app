@@ -1,4 +1,4 @@
-import {IGraphPolicy} from '@bavard/graph-policy';
+import { IGraphPolicy } from '@bavard/graph-policy';
 
 export enum ChatbotLanguage {
   EN_US,
@@ -24,7 +24,7 @@ export interface IExample {
   agentId: number;
   intentName?: any;
   text: string;
-  tags: any;
+  tags: any[];
 }
 
 export interface IExampleInput {

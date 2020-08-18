@@ -5,7 +5,6 @@ import { CHATBOT_DELETE_EXAMPLE, CHATBOT_GET_TAGS } from '../../../common-gql-qu
 import { IExample } from '../../../models/chatbot-service';
 import { Maybe } from '../../../utils/types';
 import ApolloErrorPage from '../../ApolloErrorPage';
-import AddExamples from './AddExamples';
 import EditExample from './EditExample';
 import ExamplesTable from './ExamplesTable';
 import { createExampleMutation, getExamplesQuery, getIntentsQuery, saveExampleMutation } from './gql';
@@ -201,13 +200,7 @@ const Examples = () => {
             error={exampleError}
           />
           {!!newExample && (
-            <AddExamples
-              refetchOptions={refetchOptions}
-              agentId={numAgentId}
-              tags={tags}
-              intents={intents}
-              onEditExampleClose={onExampleEditClose}
-            />
+            <div />
           )}
         </>
       )}

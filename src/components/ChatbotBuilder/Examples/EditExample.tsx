@@ -45,7 +45,7 @@ type EditExampleProps = {
 };
 
 const EditExample = (props: EditExampleProps) => {
-  const { loading, example, tags, intents, onEditExampleClose, onSaveExample, error } = props;
+  const { loading, example, tags, intents, onEditExampleClose, onSaveExample } = props;
 
   const [updatedExample, setUpdatedExample] = useState<any>();
 
@@ -84,7 +84,6 @@ const EditExample = (props: EditExampleProps) => {
         example={example}
         tags={tags}
         intents={intents}
-        error={error}
         onExampleUpdate={setUpdatedExample}
       />
     </Dialog>
