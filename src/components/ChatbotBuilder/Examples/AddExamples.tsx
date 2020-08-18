@@ -123,6 +123,14 @@ const AddExamples = ({
   const saveChanges = async () => {
     setLoading(true);
 
+    const hasNoEmptyExamples = examples.reduce((prev, curr) => prev && !!curr.text, true);
+
+    if (!hasNoEmptyExamples) {
+      enqueueSnackbar('Please make sure no example is empty before proceeding', { variant: 'error' });
+      setLoading(false);
+      return;
+    }
+
     try {
       await createExamples({
         variables: {
