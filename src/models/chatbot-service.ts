@@ -38,20 +38,6 @@ export enum ActionType {
   UTTERANCE_ACTION = 'UTTERANCE_ACTION',
 }
 
-export interface ActionBase {
-  id: number;
-  agentId: number;
-  name: string;
-  type?: ActionType;
-}
-
-export interface UtteranceAction extends ActionBase {
-  text: string;
-  type: ActionType;
-}
-
-export type AnyAction = UtteranceAction;
-
 export interface IIntent {
   id: number;
   agentId: number;
@@ -137,7 +123,6 @@ export interface IUserTagValues {
 
 export interface IAgentAction {
   action: IUtteranceAction;
-  userResponseOptions?: IUserResponseOption[] | null;
 }
 
 interface IActionBase {
@@ -145,11 +130,14 @@ interface IActionBase {
   agentId: number;
   name: string;
   type: ActionType;
+  userResponseOptions?: IUserResponseOption[] | null;
 }
 
 export interface IUtteranceAction extends IActionBase {
   text: string;
 }
+
+export type AnyAction = IUtteranceAction;
 
 export interface IUserResponseOption extends IUserResponseOptionInput {
   id: number;
