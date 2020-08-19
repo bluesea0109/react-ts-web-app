@@ -230,6 +230,7 @@ const AddExamples = ({
               <Grid container={true} alignItems="center" spacing={2}>
                 <Grid item={true} style={{ flexGrow: 1 }}>
                   <TextField
+                    fullWidth={true}
                     id="name"
                     label="Tag Name"
                     type="text"
