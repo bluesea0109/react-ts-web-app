@@ -1,8 +1,6 @@
 import { createMuiTheme, ThemeOptions } from '@material-ui/core/styles';
-import shadows from '@material-ui/core/styles/shadows';
 
 const baseTheme: ThemeOptions = {
-  shadows: shadows.fill('none'),
   overrides: {
     // Name of the component ⚛️ / style sheet
     // MuiButton: {
