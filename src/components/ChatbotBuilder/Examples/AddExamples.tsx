@@ -232,7 +232,7 @@ const AddExamples = ({
                   <TextField
                     fullWidth={true}
                     id="name"
-                    label="Tag Name"
+                    label="New Tag Name"
                     type="text"
                     value={newTag}
                     variant="outlined"
@@ -266,13 +266,11 @@ const AddExamples = ({
                     getOptionLabel={(option: any) => option.value}
                     value={tags.find(t => t.value === tag) ?? null as any}
                     onChange={updateTag}
-                    renderInput={(params) => <TextField {...params} label="Tags" variant="outlined" />}
+                    renderInput={(params) => <TextField {...params} label="Selected Tag Type" variant="outlined" />}
                   />
                 </Grid>
                 <Grid item={true}>
-                  <IconButton onClick={() => setAddTag(true)}>
-                    <Add />
-                  </IconButton>
+                  <Button variant="contained" color="secondary" style={{ height: 52 }} onClick={() => setAddTag(true)}>Add New</Button>
                 </Grid>
               </Grid>
             )}
