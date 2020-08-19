@@ -8,7 +8,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import { TransitionProps } from '@material-ui/core/transitions';
 import Typography from '@material-ui/core/Typography';
-import { Add, Check, Close, Delete } from '@material-ui/icons';
+import { Check, Close, Delete } from '@material-ui/icons';
 import CloseIcon from '@material-ui/icons/Close';
 import { Autocomplete } from '@material-ui/lab';
 import gql from 'graphql-tag';
@@ -317,7 +317,7 @@ interface AddExampleItemProps {
   onExampleUpdate: (updatedExample: any) => void;
 }
 
-const AddExampleItem = ({ loading, error, tag, tags, example, onExampleUpdate }: AddExampleItemProps) => {
+export const AddExampleItem = ({ loading, error, tag, tags, example, onExampleUpdate }: AddExampleItemProps) => {
   const [
     exampleText,
     setExampleText,
