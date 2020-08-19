@@ -8,7 +8,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import { TransitionProps } from '@material-ui/core/transitions';
 import Typography from '@material-ui/core/Typography';
-import { Delete } from '@material-ui/icons';
+import { Check, Close, Delete } from '@material-ui/icons';
 import CloseIcon from '@material-ui/icons/Close';
 import { Autocomplete } from '@material-ui/lab';
 import gql from 'graphql-tag';
@@ -16,6 +16,7 @@ import { useSnackbar } from 'notistack';
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import { TextAnnotator } from 'react-text-annotate';
+import { CHATBOT_CREATE_TAGS, CHATBOT_GET_TAGS } from '../../../common-gql-queries';
 import { IExample, IIntent } from '../../../models/chatbot-service';
 import { Maybe } from '../../../utils/types';
 import { ExamplesError } from './types';
@@ -62,6 +63,8 @@ const AddExamples = ({
   const numAgentId = Number(agentId);
   const [intent, setIntent] = useState<string>('');
   const [tag, setTag] = useState<string>('');
+  const [addTag, setAddTag] = useState(false);
+  const [newTag, setNewTag] = useState('');
   const [loading, setLoading] = useState(false);
   const [examples, setExamples] = useState<any[]>([]);
   const lastID = useRef(0);
@@ -110,6 +113,10 @@ const AddExamples = ({
   };
 
   const [createExamples] = useMutation(createExamplesMutation);
+  const [createTags] = useMutation(CHATBOT_CREATE_TAGS,  {
+    refetchQueries: [{ query: CHATBOT_GET_TAGS, variables: { agentId : numAgentId }  }],
+    awaitRefetchQueries: true,
+  });
 
   const saveChanges = async () => {
     const currentIntent = intents.find(int => int.value === intent);
@@ -149,6 +156,30 @@ const AddExamples = ({
       onEditExampleClose();
     } catch (e) {
       enqueueSnackbar('Unable to create examples.', { variant: 'error' });
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const createTag = async () => {
+    if (newTag === '') {
+      enqueueSnackbar('Can\'t create empty tag', { variant: 'error' });
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await createTags({
+        variables: {
+          agentId: numAgentId ,
+          values: [newTag],
+        },
+      });
+      setNewTag('');
+      setAddTag(false);
+    } catch (e) {
+      enqueueSnackbar('Unable to create tag.', { variant: 'error' });
       console.error(e);
     } finally {
       setLoading(false);
@@ -195,17 +226,54 @@ const AddExamples = ({
         </Grid>
         <Grid item={true} xs={6}>
           <Box px={2} my={5}>
-            <Autocomplete
-              fullWidth={true}
-              disableClearable={true}
-              disabled={loading}
-              id="tagSelector"
-              options={tags}
-              getOptionLabel={(option: any) => option.value}
-              value={tags.find(t => t.value === tag) ?? null as any}
-              onChange={updateTag}
-              renderInput={(params) => <TextField {...params} label="Tags" variant="outlined" />}
-            />
+            {addTag && (
+              <Grid container={true} alignItems="center" spacing={2}>
+                <Grid item={true} style={{ flexGrow: 1 }}>
+                  <TextField
+                    fullWidth={true}
+                    id="name"
+                    label="New Tag Name"
+                    type="text"
+                    value={newTag}
+                    variant="outlined"
+                    onChange={(e: any) => setNewTag(e.target.value.replace(/ /g, '_') as string)}
+                  />
+                </Grid>
+                <Grid item={true}>
+                  <IconButton onClick={createTag}>
+                    <Check />
+                  </IconButton>
+                </Grid>
+                <Grid item={true}>
+                  <IconButton onClick={() => {
+                    setNewTag('');
+                    setAddTag(false);
+                  }}>
+                    <Close />
+                  </IconButton>
+                </Grid>
+              </Grid>
+            )}
+            {!addTag && (
+              <Grid container={true} alignItems="center" spacing={2}>
+                <Grid item={true} style={{ flexGrow: 1 }}>
+                  <Autocomplete
+                    fullWidth={true}
+                    disableClearable={true}
+                    disabled={loading}
+                    id="tagSelector"
+                    options={tags}
+                    getOptionLabel={(option: any) => option.value}
+                    value={tags.find(t => t.value === tag) ?? null as any}
+                    onChange={updateTag}
+                    renderInput={(params) => <TextField {...params} label="Selected Tag Type" variant="outlined" />}
+                  />
+                </Grid>
+                <Grid item={true}>
+                  <Button variant="contained" color="secondary" style={{ height: 52 }} onClick={() => setAddTag(true)}>Add New</Button>
+                </Grid>
+              </Grid>
+            )}
           </Box>
         </Grid>
         {examples.map(example => (
@@ -249,7 +317,7 @@ interface AddExampleItemProps {
   onExampleUpdate: (updatedExample: any) => void;
 }
 
-const AddExampleItem = ({ loading, error, tag, tags, example, onExampleUpdate }: AddExampleItemProps) => {
+export const AddExampleItem = ({ loading, error, tag, tags, example, onExampleUpdate }: AddExampleItemProps) => {
   const [
     exampleText,
     setExampleText,
