@@ -138,6 +138,7 @@ function DataExportsTable() {
           <TableRow>
             <TableCell align="left">Id</TableCell>
             <TableCell align="left">Status</TableCell>
+            <TableCell align="left">Type</TableCell>
             <TableCell align="left">Info</TableCell>
             <TableCell align="left">Created At</TableCell>
             <TableCell align="left">Creator</TableCell>
@@ -151,6 +152,7 @@ function DataExportsTable() {
               <TableRow key={dataExport.id} hover={true}>
                 <TableCell align="left">{dataExport.id}</TableCell>
                 <TableCell align="left">{dataExport.status}</TableCell>
+                <TableCell align="left">{dataExport.kind}</TableCell>
                 <TableCell align="left">{dataExport.info}</TableCell>
                 <TableCell align="left">
                   {new Date(parseInt(dataExport.createdAt)).toISOString()}
@@ -201,6 +203,7 @@ const GET_DATA_EXPORTS = gql`
       agentId
       status
       info
+      kind
       createdAt
       creator
       url

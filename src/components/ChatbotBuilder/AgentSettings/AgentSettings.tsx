@@ -2,7 +2,6 @@ import { useMutation, useQuery } from '@apollo/client';
 import { Box, Grid, TextField, Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import axios from 'axios';
-import gql from 'graphql-tag';
 import { useSnackbar } from 'notistack';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { AlphaPicker, TwitterPicker } from 'react-color';
@@ -10,8 +9,8 @@ import { useParams } from 'react-router-dom';
 import { CHATBOT_GET_AGENT } from '../../../common-gql-queries';
 import { IAgent } from '../../../models/chatbot-service';
 import { Maybe } from '../../../utils/types';
-import { getBotSettingsQuery, updateBotSettingsMutation } from './gql';
-import { BotSettings, ColorItem } from './types';
+import { botIconUploadQuery, getBotSettingsQuery, updateBotSettingsMutation } from './gql';
+import { BotSettings, ColorItem, IBotIconUploadUrlQueryResult } from './types';
 
 const DEFAULT_PRIMARY_COLOR: ColorItem = {
   r: 10,
@@ -52,13 +51,7 @@ const AgentSettings = () => {
     skip: !agentUname,
   });
 
-  const imageUploadUrlQuery = useQuery<{ ChatbotService_botIconUploadUrl: { url: string } }>(gql`
-      query($agentId: Int!, $basename: String!) {
-          ChatbotService_botIconUploadUrl(agentId: $agentId, basename: $basename) {
-              url
-          }
-      }
-  `, {
+  const imageUploadUrlQuery = useQuery<IBotIconUploadUrlQueryResult>(botIconUploadQuery, {
     variables: {
       agentId: numAgentId,
       basename: file?.name,

@@ -26,7 +26,7 @@ export const uploadFileWithXhr = async(file: File, url: string, method: string= 
 };
 
 export const uploadFileWithFetch = async(file: File, url: string, method: string = 'POST'): Promise<any> => {
-  return await fetch(url, {
+  return await fetch(url.replace(/"/g, ''), {
     method,
     body: file,
   });

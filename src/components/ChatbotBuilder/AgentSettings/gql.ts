@@ -11,3 +11,11 @@ export const getBotSettingsQuery = gql`
     ChatbotService_botSettings(uname: $uname)
   }
 `;
+
+export const botIconUploadQuery = gql`
+  query($agentId: Int!, $basename: String!) {
+    ChatbotService_botIconUploadUrl(agentId: $agentId, basename: $basename) {
+        url
+    }
+  }
+`;
