@@ -10,13 +10,15 @@ export const getActionsQuery = gql`
       type
       userResponseOptions {
         id
-        intentId
-        intent
         type
         ... on ChatbotService_TextOption {
+          intentId
+          intent
           text
         }
         ... on ChatbotService_ImageOption {
+          intentId
+          intent
           imageUrl
           text
         }
