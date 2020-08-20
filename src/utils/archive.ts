@@ -8,7 +8,7 @@ export const readAgentZipfile = async (file: File): Promise<IAgentArchiveFiles> 
     botIcons: [],
   };
   const zip = await JSZip.loadAsync(file);
-  console.log({zip});
+
   for (const key of Object.keys(zip.files)) {
     const file = zip.files[key];
     if (!file.dir && key.slice(-5) === '.json') {
