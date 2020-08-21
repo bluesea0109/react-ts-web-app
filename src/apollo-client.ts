@@ -73,7 +73,11 @@ export const client = new ApolloClient({
     possibleTypes: {
       ChatbotService_Action: ['ChatbotService_UtteranceAction'],
       ChatbotService_DialogueTurn: ['ChatbotService_AgentAction', 'ChatbotService_UserAction'],
-      ChatbotService_UserResponseOption: ['ChatbotService_ImageOption', 'ChatbotService_TextOption'],
+      ChatbotService_UserResponseOption: [
+        'ChatbotService_ImageOption',
+        'ChatbotService_TextOption',
+        'ChatbotService_HyperlinkOption',
+      ],
     },
   }),
 });
