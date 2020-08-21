@@ -18,13 +18,14 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function UploadDataTab() {
   const classes = useStyles();
   let { agentId } = useParams();
+  const { projectId } = useParams();
   agentId = parseInt(agentId, 10);
 
   return (
     <div className={classes.root}>
       <Grid container={true} spacing={2}>
         <Grid item={true} xs={12}>
-          <UploadDataDialog agentId={agentId} />
+          <UploadDataDialog agentId={agentId} projectId={projectId} />
         </Grid>
         <Grid item={true} xs={12}>
           <Typography>{'You may upload agent data as a JSON file with the following format'}</Typography>
