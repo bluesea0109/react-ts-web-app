@@ -124,6 +124,7 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , edgeTy
 
   const handleNewImg = (file: File) => {
     setImgFile(file);
+    setImageName(file.name);
     setExistingImg(undefined);
   };
 
@@ -335,7 +336,7 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , edgeTy
               :
               <TextField name="imgNameNew" label={'New Image Name'}
                 variant="outlined"
-                defaultValue={imageName}
+                value={imageName}
                 required={true}
                 error={showFormErrors && imageName === ''}
                 onChange={(e) => { setImageName(e.target.value as string);  }}

@@ -1,4 +1,4 @@
-import { ActionType, IAgentGraphPolicy } from '../../../models/chatbot-service';
+import { ActionType, IAgent, IAgentGraphPolicy } from '../../../models/chatbot-service';
 import { IOptionType } from '../Options/types';
 export interface IAgentAction {
   type: ActionType;
@@ -13,12 +13,23 @@ export interface IUserResponseAction {
 }
 
 export interface IAgentData {
+  uname: string;
+  name?: string;
   utteranceActions: IAgentAction[];
   intents: IAgentDataIntent[];
   tagTypes: string[];
   examples: IAgentDataExample[];
   graphPolicies: IAgentGraphPolicy[];
   userResponseOptions: IUserResponseOptionExport[];
+  settings?: any;
+}
+
+export interface IGetAgentQueryResult {
+  ChatbotService_agent: IAgent;
+}
+
+export interface ICreateAgentMutationResult {
+  ChatbotService_createAgent: IAgent;
 }
 
 export interface IUserResponseOptionExport {
