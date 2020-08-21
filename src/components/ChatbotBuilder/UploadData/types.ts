@@ -21,6 +21,11 @@ export interface IAgentData {
   examples: IAgentDataExample[];
   graphPolicies: IAgentGraphPolicy[];
   userResponseOptions: IUserResponseOptionExport[];
+  settings?: any;
+}
+
+export interface IGetAgentQueryResult {
+  ChatbotService_agent: IAgent;
 }
 
 export interface ICreateAgentMutationResult {

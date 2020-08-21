@@ -12,13 +12,13 @@ import Alert from '@material-ui/lab/Alert';
 import gql from 'graphql-tag';
 import _ from 'lodash';
 import React from 'react';
-import { CHATBOT_CREATE_AGENT, CHATBOT_CREATE_TAGS, CHATBOT_GET_AGENTS } from '../../../common-gql-queries';
+import { CHATBOT_CREATE_AGENT, CHATBOT_CREATE_TAGS, CHATBOT_GET_AGENT, CHATBOT_GET_AGENTS } from '../../../common-gql-queries';
 import { IAgentGraphPolicy, IExampleInput, IUtteranceAction } from '../../../models/chatbot-service';
 import { ActionType } from '../../../models/chatbot-service';
 import { readAgentZipfile } from '../../../utils/archive';
 import {uploadFileWithFetch} from '../../../utils/xhr';
 import { createActionMutation, getActionsQuery , updateActionMutation } from '../Actions/gql';
-import { botIconUploadQuery } from '../AgentSettings/gql';
+import { botIconUploadQuery, updateBotSettingsMutation } from '../AgentSettings/gql';
 import {IBotIconUploadUrlQueryResult} from '../AgentSettings/types';
 import { getSignedImgUploadUrlQuery} from '../GraphPolicy/gql';
 import { activateGraphPolicyMutation, createGraphPolicyMutation } from '../GraphPolicy/gql';
@@ -26,8 +26,8 @@ import {ICreateGraphPolicyMutationResult, IGetImageUploadSignedUrlQueryResult} f
 import { createIntentMutation } from '../Intent/gql';
 import { createOptionMutation, getOptionsQuery } from '../Options/gql';
 import { GetOptionsQueryResult, ICreateUserResponseOptionsMutationVars, IOption, IOptionType } from '../Options/types';
-import { IAgentAction, IAgentData, IAgentDataExample, IAgentDataIntent,
-  IAgentDataIntentGqlVars, ICreateAgentMutationResult, IUserResponseOptionExport  } from './types';
+import { IAgentAction, IAgentData, IAgentDataExample, IAgentDataIntent, IAgentDataIntentGqlVars,
+  ICreateAgentMutationResult, IGetAgentQueryResult, IUserResponseOptionExport  } from './types';
 
 interface IUploadDataDialogProps {
   agentId?: number;
@@ -77,8 +77,9 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     options: 10,
     exampleBatches: 10,
     reuploadActionsWithUros: 10,
+    settings: 5,
     uroImages: 25,
-    botIcons: 25,
+    botIcons: 20,
   };
   constructor(props: IProps) {
     super(props);
@@ -164,6 +165,48 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     }
     data.examples = removeDuplicates(data.examples);
     return data;
+  }
+
+  uploadSettings = async(settings: any) => {
+    this.setState({
+      status: 'Uploading settings',
+    });
+    let uname = this.props.uname;
+    if (_.isEmpty(settings)) {
+      return this.incrProgress(this.progressWeight.settings);
+    }
+
+    if (!uname) {
+      const agentQueryResult = await this.props.client?.query<IGetAgentQueryResult>({
+        query: CHATBOT_GET_AGENT,
+        variables: {
+          agentId: this.state.agentId,
+        },
+      });
+
+      uname = agentQueryResult?.data?.ChatbotService_agent.uname;
+    }
+
+    if (!uname) {
+      return this.addToErrors('Could not update settings', 'Agent uname was not found');
+    }
+
+    try {
+      const result = await this.props.client?.mutate({
+        mutation: updateBotSettingsMutation,
+        variables: {
+          uname,
+          settings,
+        },
+      });
+      if (result?.errors) {
+        throw new Error(JSON.stringify(result.errors));
+      }
+      this.incrProgress(this.progressWeight.settings);
+    } catch (e) {
+      this.addToErrors('Error updating settings', JSON.stringify(e));
+    }
+
   }
 
   updateUtteranceActions = async(actionsFromJson: IAgentAction[],
@@ -579,6 +622,8 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       const uros = await this.uploadOptions(data.userResponseOptions, intentIdsMap);
 
       await this.updateUtteranceActions(data.utteranceActions, actions, intentIdsMap, uros);
+
+      this.uploadSettings(data.settings);
 
       const preprocessedExamples: IExampleInput[] = data.examples.map(x => {
 
