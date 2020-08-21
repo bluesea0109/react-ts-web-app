@@ -158,7 +158,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     };
 
     const data = JSON.parse(json) as IAgentData;
-    console.log('DATA: ', data);
+
     if (!data.name) {
       data.name = data.uname;
     }
@@ -412,8 +412,6 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
   }
 
   ensureAgentExists = async(data: IAgentData) => {
-    console.log('UNAME ', this.props.uname);
-    console.log('NAME ', this.props.name);
     this.setState({
       status: 'Creating Agent',
     });
@@ -437,13 +435,10 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
           awaitRefetchQueries: false,
         });
 
-        console.log('CRAETE AGENT RESULT: ', createAgentResult);
-
         if (createAgentResult?.data?.ChatbotService_createAgent?.id) {
           this.setState({
             agentId: createAgentResult.data.ChatbotService_createAgent.id,
           }, () => {
-            console.log('RESOLVING PROMISE');
             resolve();
           });
         } else {
@@ -562,8 +557,6 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     if (!this.state.agentId) {
       await this.ensureAgentExists(data);
     }
-
-    console.log('AGENT ID AFTER ENSURE: ', this.state.agentId);
 
     try {
       let numCompleted = 0;
