@@ -22,17 +22,11 @@ import UploadDataDialog from '../UploadData/UploadDataDialog';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      padding: theme.spacing(3),
-    },
     inputBox: {
       margin: theme.spacing(1),
     },
     button: {
       margin: theme.spacing(1),
-    },
-    orText: {
-      color: theme.palette.grey[500],
     },
     formCard: {
       backgroundColor: theme.palette.background.default,
