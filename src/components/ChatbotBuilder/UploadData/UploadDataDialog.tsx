@@ -1,5 +1,5 @@
 import { ApolloQueryResult } from '@apollo/client';
-import { withApollo, WithApolloClient, } from '@apollo/client/react/hoc';
+import { withApollo, WithApolloClient } from '@apollo/client/react/hoc';
 import { Button, Typography } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -21,8 +21,8 @@ import { createActionMutation, getActionsQuery , updateActionMutation } from '..
 import { botIconUploadQuery } from '../AgentSettings/gql';
 import {IBotIconUploadUrlQueryResult} from '../AgentSettings/types';
 import { getSignedImgUploadUrlQuery} from '../GraphPolicy/gql';
-import { createGraphPolicyMutation, activateGraphPolicyMutation } from '../GraphPolicy/gql';
-import {IGetImageUploadSignedUrlQueryResult, ICreateGraphPolicyMutationResult} from '../GraphPolicy/types';
+import { activateGraphPolicyMutation, createGraphPolicyMutation } from '../GraphPolicy/gql';
+import {ICreateGraphPolicyMutationResult, IGetImageUploadSignedUrlQueryResult} from '../GraphPolicy/types';
 import { createIntentMutation } from '../Intent/gql';
 import { createOptionMutation, getOptionsQuery } from '../Options/gql';
 import { GetOptionsQueryResult, ICreateUserResponseOptionsMutationVars, IOption, IOptionType } from '../Options/types';
@@ -574,12 +574,12 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
             policy: gpData,
           },
         });
-        if(gp.isActive && createResult?.data?.ChatbotService_createGraphPolicy.id) {
+        if (gp.isActive && createResult?.data?.ChatbotService_createGraphPolicy.id) {
           await this.props.client?.mutate({
             mutation: activateGraphPolicyMutation,
             variables: {
               agentId: this.props.agentId,
-              id: createResult.data.ChatbotService_createGraphPolicy.id
+              id: createResult.data.ChatbotService_createGraphPolicy.id,
             },
           });
         }
