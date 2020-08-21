@@ -17,6 +17,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Toolbar from '@material-ui/core/Toolbar';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import DeleteIcon from '@material-ui/icons/Delete';
+import FolderIcon from '@material-ui/icons/Folder';
 import TableIcon from '@material-ui/icons/TableChart';
 import gql from 'graphql-tag';
 import React, { useState } from 'react';
@@ -78,11 +79,12 @@ function DataExportsTable() {
     return exports.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
   };
 
-  const onExportClick = async () => {
+  const onExportClick = async (kind: 'json'|'zip') => {
     // create export mutation
     createExport({
       variables: {
         agentId,
+        kind,
       },
     });
   };
@@ -117,9 +119,15 @@ function DataExportsTable() {
   return (
     <Paper className={classes.paper}>
       <Toolbar variant="dense">
-        <Button onClick={onExportClick}>
+        <Button onClick={() => onExportClick('json')}>
           {'Export to JSON'}
           <TableIcon
+            className={classes.rightIcon}
+            color="secondary"/>
+        </Button>
+        <Button onClick={() => onExportClick('zip')}>
+          {'Export to Zip'}
+          <FolderIcon
             className={classes.rightIcon}
             color="secondary"/>
         </Button>
@@ -130,6 +138,8 @@ function DataExportsTable() {
           <TableRow>
             <TableCell align="left">Id</TableCell>
             <TableCell align="left">Status</TableCell>
+            <TableCell align="left">Type</TableCell>
+            <TableCell align="left">Info</TableCell>
             <TableCell align="left">Created At</TableCell>
             <TableCell align="left">Creator</TableCell>
             <TableCell align="left">Download</TableCell>
@@ -142,6 +152,8 @@ function DataExportsTable() {
               <TableRow key={dataExport.id} hover={true}>
                 <TableCell align="left">{dataExport.id}</TableCell>
                 <TableCell align="left">{dataExport.status}</TableCell>
+                <TableCell align="left">{dataExport.kind}</TableCell>
+                <TableCell align="left">{dataExport.info}</TableCell>
                 <TableCell align="left">
                   {new Date(parseInt(dataExport.createdAt)).toISOString()}
                 </TableCell>
@@ -190,6 +202,8 @@ const GET_DATA_EXPORTS = gql`
       id
       agentId
       status
+      info
+      kind
       createdAt
       creator
       url
@@ -198,8 +212,8 @@ const GET_DATA_EXPORTS = gql`
 `;
 
 const CREATE_EXPORT = gql`
-  mutation createDataExport($agentId: Int!) {
-    ChatbotService_createDataExport(agentId: $agentId) {
+  mutation createDataExport($agentId: Int!, $kind: String) {
+    ChatbotService_createDataExport(agentId: $agentId, kind: $kind) {
       id
       agentId
       status

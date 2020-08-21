@@ -61,6 +61,8 @@ export interface IDataExport {
   id: number;
   agentId: number;
   status: string;
+  info?: string;
+  kind?: string;
   creator: string;
   createdAt: string;
   url: string;

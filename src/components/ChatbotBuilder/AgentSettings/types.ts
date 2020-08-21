@@ -11,3 +11,9 @@ export interface BotSettings {
   primaryColor: ColorItem;
   primaryBg: ColorItem;
 }
+
+export interface IBotIconUploadUrlQueryResult {
+  ChatbotService_botIconUploadUrl: {
+    url: string;
+  };
+}

@@ -7,15 +7,22 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import { GraphQLError } from 'graphql';
+import { Theme, withStyles } from '@material-ui/core/styles';
+import Alert from '@material-ui/lab/Alert';
 import gql from 'graphql-tag';
 import _ from 'lodash';
 import React from 'react';
 import { CHATBOT_CREATE_TAGS } from '../../../common-gql-queries';
 import { IAgentGraphPolicy, IExampleInput, IUtteranceAction } from '../../../models/chatbot-service';
 import { ActionType } from '../../../models/chatbot-service';
+import { readAgentZipfile } from '../../../utils/archive';
+import {uploadFileWithFetch} from '../../../utils/xhr';
 import { createActionMutation, getActionsQuery , updateActionMutation } from '../Actions/gql';
+import { botIconUploadQuery } from '../AgentSettings/gql';
+import {IBotIconUploadUrlQueryResult} from '../AgentSettings/types';
+import { getSignedImgUploadUrlQuery} from '../GraphPolicy/gql';
 import { createGraphPolicyMutation } from '../GraphPolicy/gql';
+import {IGetImageUploadSignedUrlQueryResult} from '../GraphPolicy/types';
 import { createIntentMutation } from '../Intent/gql';
 import { createOptionMutation, getOptionsQuery } from '../Options/gql';
 import { GetOptionsQueryResult, ICreateUserResponseOptionsMutationVars, IOption, IOptionType } from '../Options/types';
@@ -24,27 +31,46 @@ import { IAgentAction, IAgentData, IAgentDataExample, IAgentDataIntent,
 
 interface IUploadDataDialogProps {
   agentId: number;
+  classes: {
+    alert: string;
+    uploadButton: string;
+  };
 }
 
 type IProps = WithApolloClient<IUploadDataDialogProps>;
+
+interface IError {
+  title: string;
+  details: string;
+}
 
 interface IUploadDataDialogState {
   open: boolean;
   progress: number;
   numCompleted: number;
   total: number;
-  error: GraphQLError | null;
+  error: IError[];
   status: string;
 }
+const styles = (theme: Theme) => ({
+  alert: {
+    'word-break': 'break-word',
+  },
+  uploadButton: {
+    margin: theme.spacing(1),
+  },
+});
 
 class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
   progressWeight = {
-    actions: 10,
-    intents: 20,
-    graphPolicies: 20,
+    actions: 5,
+    intents: 5,
+    graphPolicies: 10,
     options: 10,
-    exampleBatches: 20,
-    reuploadActionsWithUros: 20,
+    exampleBatches: 10,
+    reuploadActionsWithUros: 10,
+    uroImages: 25,
+    botIcons: 25,
   };
   constructor(props: IProps) {
     super(props);
@@ -54,7 +80,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       progress: 0.0,
       numCompleted: 0,
       total: 1,
-      error: null,
+      error: [],
       status: '',
     };
   }
@@ -67,6 +93,12 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       numCompleted: 0,
       total: 1,
     });
+  }
+
+  addToErrors = (title: string, details: string) => {
+    const errors = this.state.error;
+    errors.push({ title, details });
+    this.setState({error: errors});
   }
 
   uploadBatch = async (examples: IExampleInput[]) => {
@@ -84,9 +116,8 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     });
 
     if (res?.errors?.[0]) {
-      console.error(res.errors[0]);
+      this.addToErrors(`Errors in uploading examples`, JSON.stringify(res.errors[0].message));
       this.setState({
-        error: res.errors[0],
         status: '',
       });
       return;
@@ -102,17 +133,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     this.handleClose();
   }
 
-  readFile = async (file: File): Promise<IAgentData> => {
-    const reader = new FileReader();
-    const json = await new Promise<string>((resolve, reject) => {
-      reader.onload = () => {
-        resolve(reader.result as string);
-      };
-      reader.onerror = () => {
-        reject(reader.result);
-      };
-      reader.readAsText(file, 'utf-8');
-    });
+  formatJsonData = (json: string): IAgentData => {
 
     const removeDuplicates = (exs: IAgentDataExample[]) => {
       const seen = new Set<string>();
@@ -161,11 +182,10 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     mutations = _.compact(mutations);
     try {
       await Promise.all(mutations);
-      this.incrProgress(this.progressWeight.reuploadActionsWithUros);
-
     } catch (e) {
-      console.error('Error: ', e);
+      this.addToErrors(`Errors in updating utterance actions`, JSON.stringify(e));
     }
+    this.incrProgress(this.progressWeight.reuploadActionsWithUros);
 
   }
 
@@ -189,11 +209,11 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
 
     try {
       await Promise.all(mutations);
-      this.incrProgress(this.progressWeight.actions);
-
     } catch (e) {
       console.error('Error: ', e);
+      this.addToErrors(`Errors in uploading utterance actions`, JSON.stringify(e));
     }
+    this.incrProgress(this.progressWeight.actions);
 
     const savedActions = await this.props.client?.query({
       query: getActionsQuery,
@@ -246,9 +266,6 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       intentIdsMap.set(x.value, x.id);
     });
 
-    this.setState({
-      status: '',
-    });
     this.incrProgress(this.progressWeight.intents);
     return intentIdsMap;
   }
@@ -296,9 +313,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
         });
         this.incrProgress(this.progressWeight.options / userResponsOptions.length);
       } catch (e) {
-        this.setState({
-          error: new GraphQLError(e),
-        });
+        this.addToErrors( `Errors in uploading options`, JSON.stringify(e));
       }
     }
 
@@ -333,10 +348,6 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       tagTypeIdsMap.set(x.value, x.id);
     });
 
-    this.setState({
-      status: '',
-    });
-
     return tagTypeIdsMap;
   }
 
@@ -347,32 +358,130 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     });
   }
 
+  uploadImage = async(imgFile: File, type: 'uro-images' | 'bot-icons') => {
+    let url: string|undefined;
+
+    if (type === 'uro-images') {
+      const signedUrl: ApolloQueryResult<IGetImageUploadSignedUrlQueryResult>|undefined = await this.props.client?.query({
+        query: getSignedImgUploadUrlQuery,
+        variables: {
+          agentId: this.props.agentId,
+          basename: imgFile.name,
+        },
+      });
+
+      url = signedUrl?.data?.ChatbotService_imageOptionUploadUrl.url;
+    } else if (type === 'bot-icons') {
+      const signedUrl: ApolloQueryResult<IBotIconUploadUrlQueryResult>|undefined = await this.props.client?.query({
+        query: botIconUploadQuery,
+        variables: {
+          agentId: this.props.agentId,
+          basename: imgFile.name,
+        },
+      });
+
+      url = signedUrl?.data?.ChatbotService_botIconUploadUrl.url;
+    }
+
+    if (!url) {
+      this.addToErrors(`Error in uploading Image: ${imgFile.name}`,  `Failed to get signed upload url`);
+      return;
+    }
+
+    try {
+      await uploadFileWithFetch(imgFile, url, 'PUT');
+    } catch (e) {
+      this.addToErrors(`Error in uploading Image: ${imgFile.name}`,  JSON.stringify(e));
+    }
+  }
+
+  handleZipFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) { return; }
+
+    const file = files[0];
+    const zipContents = await readAgentZipfile(file);
+    // JSON config file
+    if (zipContents.agentConfig) {
+      const data = this.formatJsonData(zipContents.agentConfig);
+      await this.processJsonData(data);
+    }
+    // URO Images
+    if (zipContents.uroImages.length >= 1) {
+      this.setState({
+        status: 'Uploading URO images',
+      });
+      for (const img of zipContents.uroImages) {
+        await this.uploadImage(img, 'uro-images');
+        this.incrProgress(this.progressWeight.uroImages / zipContents.uroImages.length);
+      }
+    } else {
+      this.incrProgress(this.progressWeight.uroImages);
+    }
+    // Bot Icons
+    if (zipContents.botIcons.length >= 1) {
+      this.setState({
+        status: 'Uploading Bot Icons',
+      });
+      for (const img of zipContents.botIcons) {
+        await this.uploadImage(img, 'bot-icons');
+        this.incrProgress(this.progressWeight.botIcons / zipContents.botIcons.length);
+      }
+    } else {
+      this.incrProgress(this.progressWeight.botIcons);
+    }
+
+    this.setState({
+      status: 'Import completed',
+    });
+  }
+
   handleJsonFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     let status = '';
-    try {
+    const files = e.target.files;
+    if (!files || files.length === 0) { return; }
 
-      const files = e.target.files;
-      if (!files || files.length === 0) { return; }
+    const file = files[0];
 
-      const file = files[0];
+    this.setState(s => ({
+      ...s,
+      open: true,
+    }));
 
+    if (file.type !== 'application/json') {
+      // set error message
+      status = 'Invalid file type';
       this.setState(s => ({
         ...s,
-        open: true,
+        status,
       }));
+      return;
+    }
 
-      if (file.type !== 'application/json') {
-        // set error message
-        status = 'Invalid file type';
-        this.setState(s => ({
-          ...s,
-          status,
-        }));
-        return;
-      }
+    const reader = new FileReader();
+    const json = await new Promise<string>((resolve, reject) => {
+      reader.onload = () => {
+        resolve(reader.result as string);
+      };
+      reader.onerror = () => {
+        reject(reader.result);
+      };
+      reader.readAsText(file, 'utf-8');
+    });
 
-      const data = await this.readFile(file);
+    const data = this.formatJsonData(json);
 
+    await this.processJsonData(data);
+    // No images on json file
+    this.incrProgress(this.progressWeight.uroImages + this.progressWeight.botIcons);
+    this.setState({
+      status: 'Data upload complete',
+    });
+  }
+
+  processJsonData = async (data: IAgentData) => {
+    let status = '';
+    try {
       let numCompleted = 0;
       const total = data.examples.length;
 
@@ -435,12 +544,10 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
 
     } catch (err) {
       console.error(err);
-      this.setState({
-        error: err,
-      });
+      this.addToErrors(`Errors in uploading examples`, JSON.stringify(err));
     }
 
-    if (this.state.error === null) {
+    if (this.state.error.length === 0) {
       this.setState({
         progress: 100,
       });
@@ -469,9 +576,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
         });
         this.incrProgress(this.progressWeight.graphPolicies / graphPolicies.length);
       } catch (e) {
-        this.setState({
-          error: new GraphQLError(e),
-        });
+        this.addToErrors(`Errors in uploading Graph Policies`, JSON.stringify(e));
       }
     }
 
@@ -483,27 +588,25 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
 
   render() {
     const state = this.state;
+    const {classes} = this.props;
 
-    let dialogContent = (
+    const dialogContent = (
       <DialogContent>
         <DialogContentText>
           {state.status}
         </DialogContentText>
         <LinearProgress color="secondary" variant="determinate" value={state.progress} />
+
+        {state.error.map((e, index) => {
+          return (
+          <Alert severity="error" key={index} className={classes.alert}>
+            <Typography variant="subtitle1" color="error">{e.title}</Typography>
+            {e.details}
+          </Alert>
+          );
+        })}
       </DialogContent>
     );
-
-    if (state.error) {
-      console.error(state.error);
-      dialogContent = (
-        <DialogContent>
-          <DialogContentText>
-            {JSON.stringify(state.error)}
-          </DialogContentText>
-          <Typography>{'Please contact support@bavard.ai'}</Typography>
-        </DialogContent>
-      );
-    }
 
     return (
       <React.Fragment>
@@ -531,6 +634,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
         <Button
           variant="contained"
           component="label"
+          className={classes.uploadButton}
           style={{ padding: 6 }}>
           {'Upload JSON File'}
           <input
@@ -543,12 +647,28 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
             onChange={this.handleJsonFile}
           />
         </Button>
+        <Button
+          variant="contained"
+          component="label"
+          className={classes.uploadButton}
+          style={{ padding: 6 }}>
+          {'Upload Zip File'}
+          <input
+            name="zipfile"
+            id="zipfile"
+            accept="zip,application/octet-stream,application/zip,application/x-zip,application/x-zip-compressed"
+            type="file"
+            style={{ display: 'none' }}
+            multiple={false}
+            onChange={this.handleZipFile}
+          />
+        </Button>
       </React.Fragment>
     );
   }
 }
 
-export default withApollo<IProps>(UploadDataDialog);
+export default withStyles(styles)(withApollo<IProps>(UploadDataDialog));
 
 const UPLOAD_EXAMPLES = gql`
   mutation ($agentId: Int!, $examples: [ChatbotService_ExampleInput!]!) {
