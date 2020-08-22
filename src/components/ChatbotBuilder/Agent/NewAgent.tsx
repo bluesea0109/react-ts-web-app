@@ -2,7 +2,6 @@ import { useMutation } from '@apollo/client';
 import {
   Button,
   Card,
-  CardActionArea,
   CardContent,
   CardHeader,
   createStyles,
@@ -101,26 +100,21 @@ const NewAgent: React.FC<INewAgentProps> = ({ user }) => {
         />
         <br />
       </CardContent>
-      <CardActionArea>
-        <CardContent>
-          <Button
-            className={clsx(classes.button)}
-            variant="contained"
-            color="primary"
-            disabled={loading || !name}
-            onClick={onSubmit}>
-            Create Without Data
-          </Button>
-          {
-            (uname.length >= 1 && name.length >= 1) &&
-            <UploadDataDialog projectId={projectId} uname={uname} name={name}
-              buttonsDisabled={loading || !uname || !name} onSuccess={onUploadComplete}
-              onError={onUploadComplete}
-              onCancel={onUploadComplete}
-            />
-          }
-        </CardContent>
-      </CardActionArea>
+      <CardContent>
+        <Button
+          className={clsx(classes.button)}
+          variant="contained"
+          color="primary"
+          disabled={loading || !name}
+          onClick={onSubmit}>
+          Create Without Data
+        </Button>
+        <UploadDataDialog projectId={projectId} uname={uname} name={name}
+          buttonsDisabled={loading || !uname || !name} onSuccess={onUploadComplete}
+          onError={onUploadComplete}
+          onCancel={onUploadComplete}
+        />
+      </CardContent>
     </Card>
   );
 };

@@ -99,9 +99,13 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
 
   handleClose = () => {
     this.setState({
+      agentId: undefined,
       open: false,
+      progress: 0.0,
       numCompleted: 0,
       total: 1,
+      error: [],
+      status: '',
     });
   }
 
