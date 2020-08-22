@@ -164,3 +164,11 @@ export interface IOptionImage {
   url: string;
   name: string;
 }
+
+export interface IPublishedAgent {
+  id: number;
+  agentId: number;
+  createdAt: string;
+  status: string;
+  agentData: any;
+}
