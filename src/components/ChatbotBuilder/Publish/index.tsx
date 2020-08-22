@@ -60,11 +60,13 @@ export default function PublishAgent() {
     setLoading(false);
   };
 
+  const agents = queryResult.data?.ChatbotService_getPublishedAgents;
+
   return (
     <Grid container={true} spacing={2} className={classes.root}>
       <Grid item={true} xs={12}>
         <PublishedAgentsTable
-          publishedAgents={queryResult.data?.ChatbotService_getPublishedAgents}
+          publishedAgents={agents}
           loading={queryResult.loading || loading}
           toolbarChildren={
             <Button variant="contained" color="primary" onClick={handlePublish}>

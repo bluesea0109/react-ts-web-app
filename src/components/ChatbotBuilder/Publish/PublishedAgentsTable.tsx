@@ -43,7 +43,8 @@ function PublishedAgentsTable({
       {
         title: 'Agent Data',
         field: 'agentData',
-        render: (agent) => JSON.stringify(agent, null, 2),
+        render: (agent) =>
+          `${JSON.stringify(agent.agentData, null, 2).slice(0, 200)}...`,
       },
     ],
     data: publishedAgents,
