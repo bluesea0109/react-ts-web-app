@@ -10,6 +10,7 @@ import Examples from '../Examples/Examples';
 import GraphPolicy from '../GraphPolicy';
 import Intent from '../Intent/Intent';
 import Options from '../Options/Option';
+import PublishAgent from '../Publish';
 import Tag from '../Tags/Tag';
 import TrainingConversations from '../TrainingConversations';
 import TrainingJobsTab from '../TrainingJobs/TrainingJobsTab';
@@ -122,11 +123,8 @@ const AgentDetails = () => {
           label="Live conversations"
           {...a11yProps('Live conversations')}
         />
-        <Tab
-          value="settings"
-          label="settings"
-          {...a11yProps('Settings')}
-        />
+        <Tab value="settings" label="settings" {...a11yProps('Settings')} />
+        <Tab value="publish" label="publish" {...a11yProps('Publish')} />
       </Tabs>
       <TabPanel className={classes.tabPanel} value={agentTab} index="Actions">
         <Actions />
@@ -154,6 +152,7 @@ const AgentDetails = () => {
       {agentTab === 'training-conversations' && <TrainingConversations />}
       {agentTab === 'live-conversations' && <ConversationsTab />}
       {agentTab === 'settings' && <AgentSettings />}
+      {agentTab === 'publish' && <PublishAgent />}
     </div>
   );
 };
