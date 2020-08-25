@@ -170,5 +170,5 @@ export interface IPublishedAgent {
   agentId: number;
   createdAt: string;
   status: string;
-  agentData: any;
+  dialogueConfig: any;
 }

@@ -62,11 +62,11 @@ function PublishedAgentsTable({
       },
       {
         title: 'Agent Data',
-        field: 'agentData',
+        field: 'dialogueConfig',
         render: (agent) => (
           <IconButton
             onClick={() =>
-              downloadJson(agent.agentData, agent.agentId, agent.id)
+              downloadJson(agent.dialogueConfig, agent.agentId, agent.id)
             }>
             <GetAppIcon />
           </IconButton>
