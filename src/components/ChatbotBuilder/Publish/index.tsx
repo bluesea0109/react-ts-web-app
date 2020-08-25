@@ -11,6 +11,8 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { CHATBOT_GET_AGENT } from '../../../common-gql-queries';
+import { IAgent } from '../../../models/chatbot-service';
 import { getApiKeysQuery } from '../../Dashboard/ProjectSettings/gql';
 import { getPublishedAgentsQuery, publishAgentMutation } from './gql';
 import PublishedAgentsTable from './PublishedAgentsTable';
@@ -42,6 +44,13 @@ export default function PublishAgent() {
       projectId,
     },
   });
+
+  const agentQueryResult = useQuery<{ ChatbotService_agent: IAgent }>(
+    CHATBOT_GET_AGENT,
+    { variables: { agentId } },
+  );
+
+  const agentUname = agentQueryResult.data?.ChatbotService_agent.uname;
 
   const [publishAgent] = useMutation(publishAgentMutation, {
     refetchQueries: [
@@ -106,7 +115,7 @@ export default function PublishAgent() {
           />
           <CardContent>
             <AgentEmbedCode
-              agentId={agentId}
+              agentUname={agentUname || '<your-agent-uname>'}
               apiKey={apiKeyQueryResult.data?.apiKey?.key || '<your-api-key>'}
             />
           </CardContent>
