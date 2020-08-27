@@ -1,6 +1,7 @@
 
-import { useQuery } from '@apollo/client';
+import { useMutation, useQuery} from '@apollo/client';
 import {
+    Button,
     Paper,
     Table,
     TableBody,
@@ -49,12 +50,25 @@ function InvitedMemberTable() {
   const invitedMember: IInvitedMember[] | undefined = invitedMemberData
                         && invitedMemberData.data && invitedMemberData.data.orgMemberInvites;
 
-  if (invitedMemberData.loading) {
+  const [doRevokeInvitation, revokeInvitationResp] = useMutation(REVOKE_INVITATION);
+  const revokeInvitation = (invite: IInvitedMember) => {
+    doRevokeInvitation({
+      variables: {
+        orgId: invite.orgId,
+        inviteId: invite.id,
+      },
+    });
+  };
+
+  if (invitedMemberData.loading || revokeInvitationResp.loading) {
     return <ContentLoading />;
   }
 
   if (invitedMemberData.error) {
     return <ApolloErrorPage error={invitedMemberData.error}/>;
+  }
+  if (revokeInvitationResp.error) {
+    return <ApolloErrorPage error={revokeInvitationResp.error} />;
   }
 
   return (
@@ -72,6 +86,7 @@ function InvitedMemberTable() {
                 <TableCell>Sender Name</TableCell>
                 <TableCell>Sender Email</TableCell>
                 <TableCell>Role</TableCell>
+                <TableCell>Revoke Invitation</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -84,6 +99,9 @@ function InvitedMemberTable() {
                                 <TableCell>{item.senderName}</TableCell>
                                 <TableCell>{item.senderEmail}</TableCell>
                                 <TableCell>{item.role}</TableCell>
+                                <TableCell>
+                                  <Button variant="contained" onClick={() => revokeInvitation(item)}>Revoke</Button>
+                                </TableCell>
                             </TableRow>
                         );
                     })
@@ -114,4 +132,14 @@ const GET_INVITED_ORG_MEMBERS = gql`
         }
     }
 `;
+
+const REVOKE_INVITATION = gql`
+  mutation($orgId: String!, $inviteId: String!) {
+    deleteOrgMemberInvite(
+      orgId: $orgId
+      inviteId: $inviteId
+    )
+  }
+`;
+
 export default InvitedMemberTable;
