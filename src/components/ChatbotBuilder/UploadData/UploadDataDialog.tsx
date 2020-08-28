@@ -142,13 +142,13 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       error: [],
       status: '',
     });
-  };
+  }
 
   addToErrors = (title: string, details: string) => {
     const errors = this.state.error;
     errors.push({ title, details });
     this.setState({ error: errors });
-  };
+  }
 
   uploadBatch = async (examples: IExampleInput[]) => {
     this.setState((s) => ({
@@ -168,7 +168,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     if (res?.errors?.[0]) {
       this.addToErrors(
         `Errors in uploading examples`,
-        JSON.stringify(res.errors[0].message)
+        JSON.stringify(res.errors[0].message),
       );
       this.setState({
         status: '',
@@ -179,13 +179,13 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     this.setState({
       status: '',
     });
-  };
+  }
 
   onCancel = () => {
     this.cancelled = true;
     this.handleClose();
     this.props.onCancel?.();
-  };
+  }
 
   formatJsonData = (json: string): IAgentData => {
     const removeDuplicates = (exs: IAgentDataExample[]) => {
@@ -208,7 +208,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     }
     data.examples = removeDuplicates(data.examples);
     return data;
-  };
+  }
 
   uploadSettings = async (settings: any) => {
     this.setState({
@@ -235,7 +235,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     if (!uname) {
       return this.addToErrors(
         'Could not update settings',
-        'Agent uname was not found'
+        'Agent uname was not found',
       );
     }
 
@@ -254,13 +254,13 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     } catch (e) {
       this.addToErrors('Error updating settings', JSON.stringify(e));
     }
-  };
+  }
 
   updateUtteranceActions = async (
     actionsFromJson: IAgentAction[],
     actions: IUtteranceAction[],
     intentIdsMap?: Map<string, number>,
-    uros?: IOption[]
+    uros?: IOption[],
   ): Promise<any> => {
     const mutation = updateActionMutation(ActionType.UTTERANCE_ACTION);
 
@@ -292,14 +292,14 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     } catch (e) {
       this.addToErrors(
         `Errors in updating utterance actions`,
-        JSON.stringify(e)
+        JSON.stringify(e),
       );
     }
     this.incrProgress(this.progressWeight.reuploadActionsWithUros);
-  };
+  }
 
   uploadUtteranceActions = async (
-    actions: IAgentAction[]
+    actions: IAgentAction[],
   ): Promise<IUtteranceAction[]> => {
     this.setState({
       status: 'Creating utterance actions',
@@ -325,7 +325,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       console.error('Error: ', e);
       this.addToErrors(
         `Errors in uploading utterance actions`,
-        JSON.stringify(e)
+        JSON.stringify(e),
       );
     }
     this.incrProgress(this.progressWeight.actions);
@@ -343,11 +343,11 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     });
 
     return savedActions?.data?.ChatbotService_actions || [];
-  };
+  }
 
   uploadIntents = async (
     intents: IAgentDataIntent[],
-    actions: IUtteranceAction[]
+    actions: IUtteranceAction[],
   ): Promise<Map<string, number>> => {
     this.setState({
       status: 'Creating intents',
@@ -386,11 +386,11 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
 
     this.incrProgress(this.progressWeight.intents);
     return intentIdsMap;
-  };
+  }
 
   uploadOptions = async (
     userResponsOptions: IUserResponseOptionExport[],
-    intentIdsMap: Map<string, number>
+    intentIdsMap: Map<string, number>,
   ): Promise<any> => {
     if (!this.state.agentId) {
       return;
@@ -437,7 +437,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
           variables,
         });
         this.incrProgress(
-          this.progressWeight.options / userResponsOptions.length
+          this.progressWeight.options / userResponsOptions.length,
         );
       } catch (e) {
         this.addToErrors(`Errors in uploading options`, JSON.stringify(e));
@@ -455,7 +455,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     });
 
     return savedOptions?.data?.ChatbotService_userResponseOptions || [];
-  };
+  }
 
   uploadTagTypes = async (tagTypes: string[]): Promise<Map<string, number>> => {
     this.setState({
@@ -479,14 +479,14 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     });
 
     return tagTypeIdsMap;
-  };
+  }
 
   incrProgress = (increment: number) => {
     const p = this.state.progress;
     this.setState({
       progress: p + increment,
     });
-  };
+  }
 
   uploadImage = async (imgFile: File, type: 'uro-images' | 'bot-icons') => {
     let url: string | undefined;
@@ -520,7 +520,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     if (!url) {
       this.addToErrors(
         `Error in uploading Image: ${imgFile.name}`,
-        `Failed to get signed upload url`
+        `Failed to get signed upload url`,
       );
       return;
     }
@@ -530,10 +530,10 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     } catch (e) {
       this.addToErrors(
         `Error in uploading Image: ${imgFile.name}`,
-        JSON.stringify(e)
+        JSON.stringify(e),
       );
     }
-  };
+  }
 
   ensureAgentExists = async (data: IAgentData) => {
     this.setState({
@@ -570,7 +570,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
             },
             () => {
               resolve();
-            }
+            },
           );
         } else {
           throw new Error('Agent was not created');
@@ -580,7 +580,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
         resolve();
       }
     });
-  };
+  }
 
   handleZipFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -603,7 +603,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       for (const img of zipContents.uroImages) {
         await this.uploadImage(img, 'uro-images');
         this.incrProgress(
-          this.progressWeight.uroImages / zipContents.uroImages.length
+          this.progressWeight.uroImages / zipContents.uroImages.length,
         );
       }
     } else {
@@ -617,7 +617,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       for (const img of zipContents.botIcons) {
         await this.uploadImage(img, 'bot-icons');
         this.incrProgress(
-          this.progressWeight.botIcons / zipContents.botIcons.length
+          this.progressWeight.botIcons / zipContents.botIcons.length,
         );
       }
     } else {
@@ -633,7 +633,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     } else {
       this.props.onSuccess?.();
     }
-  };
+  }
 
   handleJsonFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     let status = '';
@@ -675,7 +675,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     await this.processJsonData(data);
     // No images on json file
     this.incrProgress(
-      this.progressWeight.uroImages + this.progressWeight.botIcons
+      this.progressWeight.uroImages + this.progressWeight.botIcons,
     );
     this.setState({
       status: 'Data upload complete',
@@ -686,7 +686,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     } else {
       this.props.onSuccess?.();
     }
-  };
+  }
 
   processJsonData = async (data: IAgentData) => {
     let status = '';
@@ -713,21 +713,21 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       // Upload Utterance Actions.
       // TODO - modify the backend code to make this an upsert. It currently throws an error if you upload duplicates
       const actions: IUtteranceAction[] = await this.uploadUtteranceActions(
-        data.utteranceActions
+        data.utteranceActions,
       );
       const intentIdsMap = await this.uploadIntents(data.intents, actions);
       const tagTypeIdsMap = await this.uploadTagTypes(data.tagTypes);
       await this.uploadGraphPolicies(data.graphPolicies);
       const uros = await this.uploadOptions(
         data.userResponseOptions,
-        intentIdsMap
+        intentIdsMap,
       );
 
       await this.updateUtteranceActions(
         data.utteranceActions,
         actions,
         intentIdsMap,
-        uros
+        uros,
       );
 
       this.uploadSettings(data.settings);
@@ -779,10 +779,10 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
         progress: 100,
       });
     }
-  };
+  }
 
   uploadGraphPolicies = async (
-    graphPolicies: IAgentGraphPolicy[]
+    graphPolicies: IAgentGraphPolicy[],
   ): Promise<void> => {
     this.setState({
       status: 'Uploading Graph Policies',
@@ -818,12 +818,12 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
           });
         }
         this.incrProgress(
-          this.progressWeight.graphPolicies / graphPolicies.length
+          this.progressWeight.graphPolicies / graphPolicies.length,
         );
       } catch (e) {
         this.addToErrors(
           `Errors in uploading Graph Policies`,
-          JSON.stringify(e)
+          JSON.stringify(e),
         );
       }
     }
@@ -831,7 +831,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     this.setState({
       status: 'Uploaded Graph Policies',
     });
-  };
+  }
 
   render() {
     const state = this.state;
