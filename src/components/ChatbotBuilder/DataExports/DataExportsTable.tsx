@@ -2,11 +2,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Paper from '@material-ui/core/Paper';
-import {
-  createStyles,
-  makeStyles,
-  Theme,
-} from '@material-ui/core/styles';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -34,7 +30,8 @@ const useStyles = makeStyles((theme: Theme) =>
     paper: {
       margin: theme.spacing(1),
     },
-  }));
+  }),
+);
 
 function DataExportsTable() {
   const rowsPerPage = 10;
@@ -45,23 +42,29 @@ function DataExportsTable() {
   interface IGetDataExports {
     ChatbotService_dataExports: IDataExport[];
   }
-  const getExports = useQuery<IGetDataExports>(GET_DATA_EXPORTS, { variables: { agentId } });
+  const getExports = useQuery<IGetDataExports>(GET_DATA_EXPORTS, {
+    variables: { agentId },
+  });
   const [createExport, createExportResult] = useMutation(CREATE_EXPORT, {
-    refetchQueries: [{
-      query: GET_DATA_EXPORTS,
-      variables: {
-        agentId,
+    refetchQueries: [
+      {
+        query: GET_DATA_EXPORTS,
+        variables: {
+          agentId,
+        },
       },
-    }],
+    ],
     awaitRefetchQueries: true,
   });
   const [deleteExport, deleteExportResult] = useMutation(DELETE_EXPORT, {
-    refetchQueries: [{
-      query: GET_DATA_EXPORTS,
-      variables: {
-        agentId,
+    refetchQueries: [
+      {
+        query: GET_DATA_EXPORTS,
+        variables: {
+          agentId,
+        },
       },
-    }],
+    ],
     awaitRefetchQueries: true,
   });
 
@@ -70,7 +73,10 @@ function DataExportsTable() {
     page: 0,
   });
 
-  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, page: number) => {
+  const handleChangePage = (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    page: number,
+  ) => {
     setState({ ...state, page });
   };
 
@@ -79,7 +85,7 @@ function DataExportsTable() {
     return exports.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
   };
 
-  const onExportClick = async (kind: 'json'|'zip') => {
+  const onExportClick = async (kind: 'JSON' | 'ZIP') => {
     // create export mutation
     createExport({
       variables: {
@@ -98,18 +104,22 @@ function DataExportsTable() {
   };
 
   if (getExports.error) {
-    return <ApolloErrorPage error={getExports.error}/>;
+    return <ApolloErrorPage error={getExports.error} />;
   }
 
   if (createExportResult.error) {
-    return <ApolloErrorPage error={createExportResult.error}/>;
+    return <ApolloErrorPage error={createExportResult.error} />;
   }
 
   if (deleteExportResult.error) {
-    return <ApolloErrorPage error={deleteExportResult.error}/>;
+    return <ApolloErrorPage error={deleteExportResult.error} />;
   }
 
-  if (getExports.loading || createExportResult.loading || deleteExportResult.loading) {
+  if (
+    getExports.loading ||
+    createExportResult.loading ||
+    deleteExportResult.loading
+  ) {
     return <ContentLoading />;
   }
 
@@ -119,17 +129,13 @@ function DataExportsTable() {
   return (
     <Paper className={classes.paper}>
       <Toolbar variant="dense">
-        <Button onClick={() => onExportClick('json')}>
+        <Button onClick={() => onExportClick('JSON')}>
           {'Export to JSON'}
-          <TableIcon
-            className={classes.rightIcon}
-            color="secondary"/>
+          <TableIcon className={classes.rightIcon} color="secondary" />
         </Button>
-        <Button onClick={() => onExportClick('zip')}>
+        <Button onClick={() => onExportClick('ZIP')}>
           {'Export to Zip'}
-          <FolderIcon
-            className={classes.rightIcon}
-            color="secondary"/>
+          <FolderIcon className={classes.rightIcon} color="secondary" />
         </Button>
         {/* <IconButtonRefresh onClick={this.reload} /> */}
       </Toolbar>
@@ -212,7 +218,10 @@ const GET_DATA_EXPORTS = gql`
 `;
 
 const CREATE_EXPORT = gql`
-  mutation createDataExport($agentId: Int!, $kind: String) {
+  mutation createDataExport(
+    $agentId: Int!
+    $kind: ChatbotService_DataExportKind
+  ) {
     ChatbotService_createDataExport(agentId: $agentId, kind: $kind) {
       id
       agentId
