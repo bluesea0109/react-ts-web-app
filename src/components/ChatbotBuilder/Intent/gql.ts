@@ -1,8 +1,16 @@
 import gql from 'graphql-tag';
 
 export const createIntentMutation = gql`
-  mutation($agentId: Int!, $intents: [ChatbotService_IntentInput!]!) {
-    ChatbotService_createIntents(agentId: $agentId, intents: $intents) {
+  mutation(
+    $agentId: Int!
+    $intents: [ChatbotService_IntentInput!]!
+    $upsert: Boolean
+  ) {
+    ChatbotService_createIntents(
+      agentId: $agentId
+      intents: $intents
+      upsert: $upsert
+    ) {
       id
       agentId
       value
@@ -24,7 +32,11 @@ export const getIntentsQuery = gql`
 
 export const updateIntentMutation = gql`
   mutation($intentId: Int!, $value: String!, $defaultAction: Int) {
-    ChatbotService_updateIntent(intentId: $intentId, value: $value, defaultAction: $defaultAction) {
+    ChatbotService_updateIntent(
+      intentId: $intentId
+      value: $value
+      defaultAction: $defaultAction
+    ) {
       id
       agentId
       value
