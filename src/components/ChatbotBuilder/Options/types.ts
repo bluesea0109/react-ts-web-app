@@ -12,6 +12,7 @@ export interface ICreateUserResponseOptionsMutationVars {
   agentId: number;
   userTextResponseOption: ITextOptionInput | undefined;
   userImageResponseOption: IImageOptionInput | undefined;
+  upsert: boolean;
 }
 
 export enum IOptionType {

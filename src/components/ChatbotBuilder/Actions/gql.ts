@@ -33,8 +33,20 @@ export const getActionsQuery = gql`
 export const createActionMutation = (type: string) => {
   if (type === ActionType.UTTERANCE_ACTION) {
     return gql`
-      mutation($agentId: Int!, $text: String!, $name: String!, $userResponseOptions: [Int!]) {
-        ChatbotService_createUtteranceAction(agentId: $agentId, text: $text, name: $name, userResponseOptionIDs: $userResponseOptions) {
+      mutation(
+        $agentId: Int!
+        $text: String!
+        $name: String!
+        $userResponseOptions: [Int!]
+        $upsert: Boolean
+      ) {
+        ChatbotService_createUtteranceAction(
+          agentId: $agentId
+          text: $text
+          name: $name
+          userResponseOptionIDs: $userResponseOptions
+          upsert: $upsert
+        ) {
           id
           text
         }
@@ -42,11 +54,11 @@ export const createActionMutation = (type: string) => {
     `;
   } else {
     return gql`
-        mutation {
-          EmptyMutation {
-            emptyField
-          }
+      mutation {
+        EmptyMutation {
+          emptyField
         }
+      }
     `;
   }
 };
@@ -55,7 +67,11 @@ export const updateActionMutation = (type: string) => {
   if (type === ActionType.UTTERANCE_ACTION) {
     return gql`
       mutation($actionId: Int!, $text: String!, $userResponseOptions: [Int!]) {
-        ChatbotService_updateUtteranceAction(id: $actionId, text: $text, userResponseOptionIDs: $userResponseOptions) {
+        ChatbotService_updateUtteranceAction(
+          id: $actionId
+          text: $text
+          userResponseOptionIDs: $userResponseOptions
+        ) {
           id
           text
         }
@@ -63,11 +79,11 @@ export const updateActionMutation = (type: string) => {
     `;
   } else {
     return gql`
-        mutation {
-          EmptyMutation {
-            emptyField
-          }
+      mutation {
+        EmptyMutation {
+          emptyField
         }
+      }
     `;
   }
 };
@@ -76,7 +92,9 @@ export const deleteActionMutation = (type: string) => {
   if (type === ActionType.UTTERANCE_ACTION) {
     return gql`
       mutation($utteranceActionId: Int!) {
-        ChatbotService_deleteUtteranceAction(utteranceActionId: $utteranceActionId) {
+        ChatbotService_deleteUtteranceAction(
+          utteranceActionId: $utteranceActionId
+        ) {
           id
           text
         }

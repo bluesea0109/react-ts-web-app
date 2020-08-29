@@ -12,22 +12,57 @@ import Alert from '@material-ui/lab/Alert';
 import gql from 'graphql-tag';
 import _ from 'lodash';
 import React from 'react';
-import { CHATBOT_CREATE_AGENT, CHATBOT_CREATE_TAGS, CHATBOT_GET_AGENT, CHATBOT_GET_AGENTS } from '../../../common-gql-queries';
-import { IAgentGraphPolicy, IExampleInput, IUtteranceAction } from '../../../models/chatbot-service';
+import {
+  CHATBOT_CREATE_AGENT,
+  CHATBOT_CREATE_TAGS,
+  CHATBOT_GET_AGENT,
+  CHATBOT_GET_AGENTS,
+} from '../../../common-gql-queries';
+import {
+  IAgentGraphPolicy,
+  IExampleInput,
+  IUtteranceAction,
+} from '../../../models/chatbot-service';
 import { ActionType } from '../../../models/chatbot-service';
 import { readAgentZipfile } from '../../../utils/archive';
-import {uploadFileWithFetch} from '../../../utils/xhr';
-import { createActionMutation, getActionsQuery , updateActionMutation } from '../Actions/gql';
-import { botIconUploadQuery, updateBotSettingsMutation } from '../AgentSettings/gql';
-import {IBotIconUploadUrlQueryResult} from '../AgentSettings/types';
-import { getSignedImgUploadUrlQuery} from '../GraphPolicy/gql';
-import { activateGraphPolicyMutation, createGraphPolicyMutation } from '../GraphPolicy/gql';
-import {ICreateGraphPolicyMutationResult, IGetImageUploadSignedUrlQueryResult} from '../GraphPolicy/types';
+import { uploadFileWithFetch } from '../../../utils/xhr';
+import {
+  createActionMutation,
+  getActionsQuery,
+  updateActionMutation,
+} from '../Actions/gql';
+import {
+  botIconUploadQuery,
+  updateBotSettingsMutation,
+} from '../AgentSettings/gql';
+import { IBotIconUploadUrlQueryResult } from '../AgentSettings/types';
+import { getSignedImgUploadUrlQuery } from '../GraphPolicy/gql';
+import {
+  activateGraphPolicyMutation,
+  createGraphPolicyMutation,
+} from '../GraphPolicy/gql';
+import {
+  ICreateGraphPolicyMutationResult,
+  IGetImageUploadSignedUrlQueryResult,
+} from '../GraphPolicy/types';
 import { createIntentMutation } from '../Intent/gql';
 import { createOptionMutation, getOptionsQuery } from '../Options/gql';
-import { GetOptionsQueryResult, ICreateUserResponseOptionsMutationVars, IOption, IOptionType } from '../Options/types';
-import { IAgentAction, IAgentData, IAgentDataExample, IAgentDataIntent, IAgentDataIntentGqlVars,
-  ICreateAgentMutationResult, IGetAgentQueryResult, IUserResponseOptionExport  } from './types';
+import {
+  GetOptionsQueryResult,
+  ICreateUserResponseOptionsMutationVars,
+  IOption,
+  IOptionType,
+} from '../Options/types';
+import {
+  IAgentAction,
+  IAgentData,
+  IAgentDataExample,
+  IAgentDataIntent,
+  IAgentDataIntentGqlVars,
+  ICreateAgentMutationResult,
+  IGetAgentQueryResult,
+  IUserResponseOptionExport,
+} from './types';
 
 interface IUploadDataDialogProps {
   agentId?: number;
@@ -52,7 +87,7 @@ interface IError {
 }
 
 interface IUploadDataDialogState {
-  agentId: number|undefined;
+  agentId: number | undefined;
   open: boolean;
   progress: number;
   numCompleted: number;
@@ -112,11 +147,11 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
   addToErrors = (title: string, details: string) => {
     const errors = this.state.error;
     errors.push({ title, details });
-    this.setState({error: errors});
+    this.setState({ error: errors });
   }
 
   uploadBatch = async (examples: IExampleInput[]) => {
-    this.setState(s => ({
+    this.setState((s) => ({
       ...s,
       status: 'Uploading examples',
     }));
@@ -126,11 +161,15 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       variables: {
         agentId: this.state.agentId,
         examples,
+        upsert: true,
       },
     });
 
     if (res?.errors?.[0]) {
-      this.addToErrors(`Errors in uploading examples`, JSON.stringify(res.errors[0].message));
+      this.addToErrors(
+        `Errors in uploading examples`,
+        JSON.stringify(res.errors[0].message),
+      );
       this.setState({
         status: '',
       });
@@ -152,7 +191,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     const removeDuplicates = (exs: IAgentDataExample[]) => {
       const seen = new Set<string>();
       const result: IAgentDataExample[] = [];
-      exs.forEach(ex => {
+      exs.forEach((ex) => {
         if (seen.has(ex.intent + ex.text)) {
           return;
         }
@@ -171,7 +210,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     return data;
   }
 
-  uploadSettings = async(settings: any) => {
+  uploadSettings = async (settings: any) => {
     this.setState({
       status: 'Uploading settings',
     });
@@ -181,7 +220,9 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     }
 
     if (!uname) {
-      const agentQueryResult = await this.props.client?.query<IGetAgentQueryResult>({
+      const agentQueryResult = await this.props.client?.query<
+        IGetAgentQueryResult
+      >({
         query: CHATBOT_GET_AGENT,
         variables: {
           agentId: this.state.agentId,
@@ -192,7 +233,10 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     }
 
     if (!uname) {
-      return this.addToErrors('Could not update settings', 'Agent uname was not found');
+      return this.addToErrors(
+        'Could not update settings',
+        'Agent uname was not found',
+      );
     }
 
     try {
@@ -210,11 +254,14 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     } catch (e) {
       this.addToErrors('Error updating settings', JSON.stringify(e));
     }
-
   }
 
-  updateUtteranceActions = async(actionsFromJson: IAgentAction[],
-    actions: IUtteranceAction[], intentIdsMap?: Map<string, number>, uros?: IOption[]): Promise<any> => {
+  updateUtteranceActions = async (
+    actionsFromJson: IAgentAction[],
+    actions: IUtteranceAction[],
+    intentIdsMap?: Map<string, number>,
+    uros?: IOption[],
+  ): Promise<any> => {
     const mutation = updateActionMutation(ActionType.UTTERANCE_ACTION);
 
     let mutations = actionsFromJson.map((a) => {
@@ -243,13 +290,17 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     try {
       await Promise.all(mutations);
     } catch (e) {
-      this.addToErrors(`Errors in updating utterance actions`, JSON.stringify(e));
+      this.addToErrors(
+        `Errors in updating utterance actions`,
+        JSON.stringify(e),
+      );
     }
     this.incrProgress(this.progressWeight.reuploadActionsWithUros);
-
   }
 
-  uploadUtteranceActions = async(actions: IAgentAction[]): Promise<IUtteranceAction[]> => {
+  uploadUtteranceActions = async (
+    actions: IAgentAction[],
+  ): Promise<IUtteranceAction[]> => {
     this.setState({
       status: 'Creating utterance actions',
     });
@@ -263,6 +314,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
           agentId: this.state.agentId,
           text: a.text,
           name: a.name,
+          upsert: true,
         },
       });
     });
@@ -271,7 +323,10 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       await Promise.all(mutations);
     } catch (e) {
       console.error('Error: ', e);
-      this.addToErrors(`Errors in uploading utterance actions`, JSON.stringify(e));
+      this.addToErrors(
+        `Errors in uploading utterance actions`,
+        JSON.stringify(e),
+      );
     }
     this.incrProgress(this.progressWeight.actions);
 
@@ -288,10 +343,12 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     });
 
     return savedActions?.data?.ChatbotService_actions || [];
-
   }
 
-  uploadIntents = async (intents: IAgentDataIntent[], actions: IUtteranceAction[] ): Promise<Map<string, number>> => {
+  uploadIntents = async (
+    intents: IAgentDataIntent[],
+    actions: IUtteranceAction[],
+  ): Promise<Map<string, number>> => {
     this.setState({
       status: 'Creating intents',
     });
@@ -300,6 +357,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       mutation: createIntentMutation,
       variables: {
         agentId: this.state.agentId,
+        upsert: true,
         intents: intents.map((x) => {
           const intent: IAgentDataIntentGqlVars = {
             value: x.intent,
@@ -322,7 +380,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
 
     const uploadedIntents: any[] = res?.data.ChatbotService_createIntents || [];
 
-    uploadedIntents.forEach(x => {
+    uploadedIntents.forEach((x) => {
       intentIdsMap.set(x.value, x.id);
     });
 
@@ -330,7 +388,10 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     return intentIdsMap;
   }
 
-  uploadOptions = async(userResponsOptions: IUserResponseOptionExport[], intentIdsMap: Map<string, number>): Promise<any> => {
+  uploadOptions = async (
+    userResponsOptions: IUserResponseOptionExport[],
+    intentIdsMap: Map<string, number>,
+  ): Promise<any> => {
     if (!this.state.agentId) {
       return;
     }
@@ -347,6 +408,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
         agentId: this.state.agentId,
         userTextResponseOption: undefined,
         userImageResponseOption: undefined,
+        upsert: true,
       };
 
       try {
@@ -374,13 +436,17 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
           mutation: createOptionMutation,
           variables,
         });
-        this.incrProgress(this.progressWeight.options / userResponsOptions.length);
+        this.incrProgress(
+          this.progressWeight.options / userResponsOptions.length,
+        );
       } catch (e) {
-        this.addToErrors( `Errors in uploading options`, JSON.stringify(e));
+        this.addToErrors(`Errors in uploading options`, JSON.stringify(e));
       }
     }
 
-    const savedOptions: ApolloQueryResult<GetOptionsQueryResult>|undefined = await this.props.client?.query({
+    const savedOptions:
+      | ApolloQueryResult<GetOptionsQueryResult>
+      | undefined = await this.props.client?.query({
       query: getOptionsQuery,
       fetchPolicy: 'network-only',
       variables: {
@@ -389,7 +455,6 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     });
 
     return savedOptions?.data?.ChatbotService_userResponseOptions || [];
-
   }
 
   uploadTagTypes = async (tagTypes: string[]): Promise<Map<string, number>> => {
@@ -402,12 +467,14 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       variables: {
         agentId: this.state.agentId,
         values: tagTypes,
+        upsert: true,
       },
     });
 
     const tagTypeIdsMap = new Map<string, number>();
-    const uploadedTagTypes: any[] = res?.data.ChatbotService_createTagTypes || [];
-    uploadedTagTypes.forEach(x => {
+    const uploadedTagTypes: any[] =
+      res?.data.ChatbotService_createTagTypes || [];
+    uploadedTagTypes.forEach((x) => {
       tagTypeIdsMap.set(x.value, x.id);
     });
 
@@ -421,11 +488,13 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     });
   }
 
-  uploadImage = async(imgFile: File, type: 'uro-images' | 'bot-icons') => {
-    let url: string|undefined;
+  uploadImage = async (imgFile: File, type: 'uro-images' | 'bot-icons') => {
+    let url: string | undefined;
 
     if (type === 'uro-images') {
-      const signedUrl: ApolloQueryResult<IGetImageUploadSignedUrlQueryResult>|undefined = await this.props.client?.query({
+      const signedUrl:
+        | ApolloQueryResult<IGetImageUploadSignedUrlQueryResult>
+        | undefined = await this.props.client?.query({
         query: getSignedImgUploadUrlQuery,
         variables: {
           agentId: this.state.agentId,
@@ -435,7 +504,9 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
 
       url = signedUrl?.data?.ChatbotService_imageOptionUploadUrl.url;
     } else if (type === 'bot-icons') {
-      const signedUrl: ApolloQueryResult<IBotIconUploadUrlQueryResult>|undefined = await this.props.client?.query({
+      const signedUrl:
+        | ApolloQueryResult<IBotIconUploadUrlQueryResult>
+        | undefined = await this.props.client?.query({
         query: botIconUploadQuery,
         variables: {
           agentId: this.state.agentId,
@@ -447,25 +518,33 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     }
 
     if (!url) {
-      this.addToErrors(`Error in uploading Image: ${imgFile.name}`,  `Failed to get signed upload url`);
+      this.addToErrors(
+        `Error in uploading Image: ${imgFile.name}`,
+        `Failed to get signed upload url`,
+      );
       return;
     }
 
     try {
       await uploadFileWithFetch(imgFile, url, 'PUT');
     } catch (e) {
-      this.addToErrors(`Error in uploading Image: ${imgFile.name}`,  JSON.stringify(e));
+      this.addToErrors(
+        `Error in uploading Image: ${imgFile.name}`,
+        JSON.stringify(e),
+      );
     }
   }
 
-  ensureAgentExists = async(data: IAgentData) => {
+  ensureAgentExists = async (data: IAgentData) => {
     this.setState({
       status: 'Creating Agent',
     });
     // Returns a promise to await the state
-    return new Promise(async(resolve) => {
+    return new Promise(async (resolve) => {
       try {
-        const createAgentResult = await this.props.client?.mutate<ICreateAgentMutationResult>({
+        const createAgentResult = await this.props.client?.mutate<
+          ICreateAgentMutationResult
+        >({
           mutation: CHATBOT_CREATE_AGENT,
           variables: {
             name: this.props.name || data.name,
@@ -473,21 +552,26 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
             projectId: this.props.projectId,
             language: 'EN_US',
           },
-          refetchQueries: [{
-            query: CHATBOT_GET_AGENTS,
-            variables: {
-              projectId: this.props.projectId,
+          refetchQueries: [
+            {
+              query: CHATBOT_GET_AGENTS,
+              variables: {
+                projectId: this.props.projectId,
+              },
             },
-          }],
+          ],
           awaitRefetchQueries: false,
         });
 
         if (createAgentResult?.data?.ChatbotService_createAgent?.id) {
-          this.setState({
-            agentId: createAgentResult.data.ChatbotService_createAgent.id,
-          }, () => {
-            resolve();
-          });
+          this.setState(
+            {
+              agentId: createAgentResult.data.ChatbotService_createAgent.id,
+            },
+            () => {
+              resolve();
+            },
+          );
         } else {
           throw new Error('Agent was not created');
         }
@@ -500,7 +584,9 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
 
   handleZipFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (!files || files.length === 0) { return; }
+    if (!files || files.length === 0) {
+      return;
+    }
 
     const file = files[0];
     const zipContents = await readAgentZipfile(file);
@@ -516,7 +602,9 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       });
       for (const img of zipContents.uroImages) {
         await this.uploadImage(img, 'uro-images');
-        this.incrProgress(this.progressWeight.uroImages / zipContents.uroImages.length);
+        this.incrProgress(
+          this.progressWeight.uroImages / zipContents.uroImages.length,
+        );
       }
     } else {
       this.incrProgress(this.progressWeight.uroImages);
@@ -528,7 +616,9 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       });
       for (const img of zipContents.botIcons) {
         await this.uploadImage(img, 'bot-icons');
-        this.incrProgress(this.progressWeight.botIcons / zipContents.botIcons.length);
+        this.incrProgress(
+          this.progressWeight.botIcons / zipContents.botIcons.length,
+        );
       }
     } else {
       this.incrProgress(this.progressWeight.botIcons);
@@ -543,17 +633,18 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     } else {
       this.props.onSuccess?.();
     }
-
   }
 
   handleJsonFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     let status = '';
     const files = e.target.files;
-    if (!files || files.length === 0) { return; }
+    if (!files || files.length === 0) {
+      return;
+    }
 
     const file = files[0];
 
-    this.setState(s => ({
+    this.setState((s) => ({
       ...s,
       open: true,
     }));
@@ -561,7 +652,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     if (file.type !== 'application/json') {
       // set error message
       status = 'Invalid file type';
-      this.setState(s => ({
+      this.setState((s) => ({
         ...s,
         status,
       }));
@@ -583,7 +674,9 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
 
     await this.processJsonData(data);
     // No images on json file
-    this.incrProgress(this.progressWeight.uroImages + this.progressWeight.botIcons);
+    this.incrProgress(
+      this.progressWeight.uroImages + this.progressWeight.botIcons,
+    );
     this.setState({
       status: 'Data upload complete',
     });
@@ -609,7 +702,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       let numCompleted = 0;
       const total = data.examples.length;
 
-      this.setState(s => ({
+      this.setState((s) => ({
         ...s,
         open: true,
         numCompleted,
@@ -619,18 +712,27 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
 
       // Upload Utterance Actions.
       // TODO - modify the backend code to make this an upsert. It currently throws an error if you upload duplicates
-      const actions: IUtteranceAction[] = await this.uploadUtteranceActions(data.utteranceActions);
+      const actions: IUtteranceAction[] = await this.uploadUtteranceActions(
+        data.utteranceActions,
+      );
       const intentIdsMap = await this.uploadIntents(data.intents, actions);
       const tagTypeIdsMap = await this.uploadTagTypes(data.tagTypes);
       await this.uploadGraphPolicies(data.graphPolicies);
-      const uros = await this.uploadOptions(data.userResponseOptions, intentIdsMap);
+      const uros = await this.uploadOptions(
+        data.userResponseOptions,
+        intentIdsMap,
+      );
 
-      await this.updateUtteranceActions(data.utteranceActions, actions, intentIdsMap, uros);
+      await this.updateUtteranceActions(
+        data.utteranceActions,
+        actions,
+        intentIdsMap,
+        uros,
+      );
 
       this.uploadSettings(data.settings);
 
-      const preprocessedExamples: IExampleInput[] = data.examples.map(x => {
-
+      const preprocessedExamples: IExampleInput[] = data.examples.map((x) => {
         const intentId = intentIdsMap.get(x.intent);
         if (!intentId) {
           throw new Error(`Failed to get id for intent: ${x.intent}`);
@@ -639,7 +741,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
         return {
           intentId,
           text: x.text,
-          tags: x.tags.map(tag => {
+          tags: x.tags.map((tag) => {
             const tagTypeId = tagTypeIdsMap.get(tag.tagType);
             if (!tagTypeId) {
               throw new Error(`Failed to id for tagType: ${tag.tagType}`);
@@ -667,7 +769,6 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
         });
         this.incrProgress(progress * this.progressWeight.exampleBatches);
       }
-
     } catch (err) {
       console.error(err);
       this.addToErrors(`Errors in uploading examples`, JSON.stringify(err));
@@ -678,10 +779,11 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
         progress: 100,
       });
     }
-
   }
 
-  uploadGraphPolicies = async(graphPolicies: IAgentGraphPolicy[]): Promise<void> => {
+  uploadGraphPolicies = async (
+    graphPolicies: IAgentGraphPolicy[],
+  ): Promise<void> => {
     this.setState({
       status: 'Uploading Graph Policies',
     });
@@ -693,14 +795,20 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     for (const gp of graphPolicies) {
       const gpData = _.pick(gp, ['name', 'data']);
       try {
-        const createResult = await this.props.client?.mutate<ICreateGraphPolicyMutationResult>({
+        const createResult = await this.props.client?.mutate<
+          ICreateGraphPolicyMutationResult
+        >({
           mutation: createGraphPolicyMutation,
           variables: {
             agentId: this.state.agentId,
             policy: gpData,
+            upsert: true,
           },
         });
-        if (gp.isActive && createResult?.data?.ChatbotService_createGraphPolicy.id) {
+        if (
+          gp.isActive &&
+          createResult?.data?.ChatbotService_createGraphPolicy.id
+        ) {
           await this.props.client?.mutate({
             mutation: activateGraphPolicyMutation,
             variables: {
@@ -709,35 +817,43 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
             },
           });
         }
-        this.incrProgress(this.progressWeight.graphPolicies / graphPolicies.length);
+        this.incrProgress(
+          this.progressWeight.graphPolicies / graphPolicies.length,
+        );
       } catch (e) {
-        this.addToErrors(`Errors in uploading Graph Policies`, JSON.stringify(e));
+        this.addToErrors(
+          `Errors in uploading Graph Policies`,
+          JSON.stringify(e),
+        );
       }
     }
 
     this.setState({
       status: 'Uploaded Graph Policies',
     });
-
   }
 
   render() {
     const state = this.state;
-    const {classes} = this.props;
+    const { classes } = this.props;
 
     const dialogContent = (
       <DialogContent>
-        <DialogContentText>
-          {state.status}
-        </DialogContentText>
-        <LinearProgress color="secondary" variant="determinate" value={state.progress} />
+        <DialogContentText>{state.status}</DialogContentText>
+        <LinearProgress
+          color="secondary"
+          variant="determinate"
+          value={state.progress}
+        />
 
         {state.error.map((e, index) => {
           return (
-          <Alert severity="error" key={index} className={classes.alert}>
-            <Typography variant="subtitle1" color="error">{e.title}</Typography>
-            {e.details}
-          </Alert>
+            <Alert severity="error" key={index} className={classes.alert}>
+              <Typography variant="subtitle1" color="error">
+                {e.title}
+              </Typography>
+              {e.details}
+            </Alert>
           );
         })}
       </DialogContent>
@@ -745,25 +861,19 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
 
     return (
       <React.Fragment>
-        <Dialog
-          open={state.open}
-          onClose={this.handleClose}
-          fullWidth={true}
-        >
+        <Dialog open={state.open} onClose={this.handleClose} fullWidth={true}>
           <DialogTitle>{'Upload Agent Data'}</DialogTitle>
           {dialogContent}
           <DialogActions>
-            {
-              this.state.progress === 100
-              ?
+            {this.state.progress === 100 ? (
               <Button color="secondary" onClick={this.handleClose}>
                 {'Close'}
               </Button>
-              :
+            ) : (
               <Button color="secondary" onClick={this.onCancel}>
                 {'Cancel'}
               </Button>
-            }
+            )}
           </DialogActions>
         </Dialog>
         <Button
@@ -808,7 +918,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
 export default withStyles(styles)(withApollo<IProps>(UploadDataDialog));
 
 const UPLOAD_EXAMPLES = gql`
-  mutation ($agentId: Int!, $examples: [ChatbotService_ExampleInput!]!) {
+  mutation($agentId: Int!, $examples: [ChatbotService_ExampleInput!]!) {
     ChatbotService_uploadExamples(agentId: $agentId, examples: $examples)
   }
 `;

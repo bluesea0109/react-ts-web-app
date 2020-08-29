@@ -24,7 +24,11 @@ export const getIntentsQuery = gql`
 
 export const updateIntentMutation = gql`
   mutation($intentId: Int!, $value: String!, $defaultAction: Int) {
-    ChatbotService_updateIntent(intentId: $intentId, value: $value, defaultAction: $defaultAction) {
+    ChatbotService_updateIntent(
+      intentId: $intentId
+      value: $value
+      defaultAction: $defaultAction
+    ) {
       id
       agentId
       value
