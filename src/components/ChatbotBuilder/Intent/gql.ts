@@ -1,16 +1,8 @@
 import gql from 'graphql-tag';
 
 export const createIntentMutation = gql`
-  mutation(
-    $agentId: Int!
-    $intents: [ChatbotService_IntentInput!]!
-    $upsert: Boolean
-  ) {
-    ChatbotService_createIntents(
-      agentId: $agentId
-      intents: $intents
-      upsert: $upsert
-    ) {
+  mutation($agentId: Int!, $intents: [ChatbotService_IntentInput!]!) {
+    ChatbotService_createIntents(agentId: $agentId, intents: $intents) {
       id
       agentId
       value
