@@ -1,16 +1,15 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { Box, Grid, TextField, Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
-import axios from 'axios';
 import { useSnackbar } from 'notistack';
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AlphaPicker, TwitterPicker } from 'react-color';
 import { useParams } from 'react-router-dom';
 import { CHATBOT_GET_AGENT } from '../../../common-gql-queries';
 import { IAgent } from '../../../models/chatbot-service';
-import { Maybe } from '../../../utils/types';
-import { botIconUploadQuery, getBotSettingsQuery, updateBotSettingsMutation } from './gql';
-import { BotSettings, ColorItem, IBotIconUploadUrlQueryResult } from './types';
+import { getBotSettingsQuery, updateBotSettingsMutation } from './gql';
+import ImageUploader from './ImageUploader';
+import { BotSettings, ColorItem } from './types';
 
 const DEFAULT_PRIMARY_COLOR: ColorItem = {
   r: 10,
@@ -37,9 +36,6 @@ const AgentSettings = () => {
     primaryBg: DEFAULT_PRIMARY_BG,
   });
 
-  const [isFileLoading, setIsFileLoading] = useState(false);
-  const [file, setFile] = useState<Maybe<File>>(null);
-
   const agentsData = useQuery<{ ChatbotService_agent: IAgent }>(CHATBOT_GET_AGENT, { variables: { agentId: numAgentId } });
 
   const agentUname = agentsData.data?.ChatbotService_agent.uname;
@@ -49,14 +45,6 @@ const AgentSettings = () => {
       uname: agentUname,
     },
     skip: !agentUname,
-  });
-
-  const imageUploadUrlQuery = useQuery<IBotIconUploadUrlQueryResult>(botIconUploadQuery, {
-    variables: {
-      agentId: numAgentId,
-      basename: file?.name,
-    },
-    skip: !file,
   });
 
   const [updateBotSettings, updateBotSettingsMutationData] = useMutation(updateBotSettingsMutation, {
@@ -69,10 +57,6 @@ const AgentSettings = () => {
   const updatedSettings = botSettings.data?.ChatbotService_botSettings;
 
   useEffect(() => {
-    if (!updatedSettings && file) {
-      setFile(null);
-    }
-
     if (!!updatedSettings && !!updatedSettings.name) {
       setSettings({
         primaryColor: DEFAULT_PRIMARY_COLOR,
@@ -84,47 +68,17 @@ const AgentSettings = () => {
     // eslint-disable-next-line
   }, [updatedSettings]);
 
-  useEffect(() => {
-    if (!!file) {
-      const url = imageUploadUrlQuery.data?.ChatbotService_botIconUploadUrl.url;
-
-      if (!!url) {
-        (async () => {
-          try {
-            await axios.put(url, file, {
-              headers: {
-                'Content-Type': file.type,
-              },
-            });
-
-            const path = url.split('?')[0].split('/bot-icons/')[1];
-
-            setSettings({ ...settings, icon: path });
-          } catch (e) {
-            console.log(e);
-            console.log(e.response);
-            enqueueSnackbar('An error occurred while uploading image', { variant: 'error' });
-          }
-
-          setIsFileLoading(false);
-        })();
-      }
-    }
-    // eslint-disable-next-line
-  }, [imageUploadUrlQuery.data]);
-
-  const updateSettings = (field: string, value: any) => setSettings({ ...settings, [field]: value });
-
-  const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
-    setIsFileLoading(true);
-    setFile(e.target.files?.[0]);
-  };
+  const updateSettings = (field: keyof BotSettings, value: any) => setSettings({ ...settings, [field]: value });
 
   const onUpdateSettingsClicked = async () => {
-    let { icon } = settings;
+    let { icon, logo } = settings;
 
     if (icon && icon.indexOf('https://') !== -1) {
       icon = icon.split('?')[0].split('/bot-icons/')[1];
+    }
+
+    if (logo && logo.indexOf('https://') !== -1) {
+      logo = logo.split('?')[0].split('/bot-icons/')[1];
     }
 
     try {
@@ -134,6 +88,7 @@ const AgentSettings = () => {
           settings: {
             ...settings,
             icon,
+            logo,
           },
         },
       });
@@ -142,7 +97,7 @@ const AgentSettings = () => {
     }
   };
 
-  const loading = isFileLoading || imageUploadUrlQuery.loading || botSettings.loading || updateBotSettingsMutationData.loading;
+  const loading = botSettings.loading || updateBotSettingsMutationData.loading;
 
   return (
     <Box py={4} px={2} width="100%">
@@ -150,12 +105,10 @@ const AgentSettings = () => {
         <Grid item={true} xs={6}>
           <Box p={2}>
             <TextField
-              label="Option Text"
+              label="Agent Name"
               disabled={loading}
               fullWidth={true}
-              multiline={true}
               variant="outlined"
-              rows={4}
               value={settings.name}
               onChange={e => updateSettings('name', e.target.value)}
             />
@@ -163,35 +116,47 @@ const AgentSettings = () => {
         </Grid>
         <Grid item={true} xs={6}>
           <Box p={2}>
-            <Button
+            <TextField
+              label="Greeting Title"
               disabled={loading}
-              variant="contained"
-              component="label"
-              style={{ padding: 6 }}>
-              {!file && !settings.icon && 'Add Image'}
-              {(!!file || (!!settings.icon && settings.icon !== '')) && 'Replace Image'}
-              <input
-                disabled={loading}
-                name="image"
-                id="image"
-                accept="image/*"
-                type="file"
-                style={{ display: 'none' }}
-                multiple={false}
-                onChange={handleImageUpload}
-              />
-            </Button>
+              fullWidth={true}
+              variant="outlined"
+              value={settings.title}
+              onChange={e => updateSettings('title', e.target.value)}
+            />
           </Box>
-          {!!file && (
-            <Box p={2}>
-              <img src={URL.createObjectURL(file)} alt="" style={{ maxWidth: 400, maxHeight: 400, objectFit: 'contain' }} />
-            </Box>
-          )}
-          {(!file && !!settings.icon && settings.icon !== '') && (
-            <Box p={2}>
-              <img src={settings.icon} alt="" style={{ maxWidth: 400, maxHeight: 400, objectFit: 'contain' }} />
-            </Box>
-          )}
+        </Grid>
+        <Grid item={true} xs={6}>
+          <Box p={2}>
+            <TextField
+              label="Greeting Subtitle"
+              disabled={loading}
+              fullWidth={true}
+              multiline={true}
+              variant="outlined"
+              rows={4}
+              value={settings.subtitle}
+              onChange={e => updateSettings('subtitle', e.target.value)}
+            />
+          </Box>
+        </Grid>
+      </Grid>
+      <Grid container={true}>
+        <Grid item={true} xs={6}>
+          <ImageUploader
+            loading={loading}
+            currentImage={settings.icon}
+            label="Widget Avatar"
+            onImageUpload={(url: string) => updateSettings('icon', url)}
+          />
+        </Grid>
+        <Grid item={true} xs={6}>
+          <ImageUploader
+            loading={loading}
+            currentImage={settings.logo}
+            label="Brand Logo"
+            onImageUpload={(url: string) => updateSettings('logo', url)}
+          />
         </Grid>
         <Grid item={true} xs={6}>
           <Box p={2} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

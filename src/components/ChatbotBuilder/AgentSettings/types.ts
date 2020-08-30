@@ -7,7 +7,10 @@ export interface ColorItem {
 
 export interface BotSettings {
   name: string;
+  title?: string;
+  subtitle?: string;
   icon?: string;
+  logo?: string;
   primaryColor: ColorItem;
   primaryBg: ColorItem;
 }
