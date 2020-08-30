@@ -1,13 +1,13 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import { useQuery } from '@apollo/client';
 import { Box, Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import axios from 'axios';
-import { useQuery } from '@apollo/client';
-import { IBotIconUploadUrlQueryResult } from './types';
-import { botIconUploadQuery } from './gql';
-import { Maybe } from '../../../utils/types';
-import { useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
+import React, { ChangeEvent, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { Maybe } from '../../../utils/types';
+import { botIconUploadQuery } from './gql';
+import { IBotIconUploadUrlQueryResult } from './types';
 
 const ImageUploader = ({ onImageUpload, isLoading, currentImage, label }: any) => {
   const { agentId } = useParams();

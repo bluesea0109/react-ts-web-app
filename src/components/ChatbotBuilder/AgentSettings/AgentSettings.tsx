@@ -8,8 +8,8 @@ import { useParams } from 'react-router-dom';
 import { CHATBOT_GET_AGENT } from '../../../common-gql-queries';
 import { IAgent } from '../../../models/chatbot-service';
 import { getBotSettingsQuery, updateBotSettingsMutation } from './gql';
-import { BotSettings, ColorItem } from './types';
 import ImageUploader from './ImageUploader';
+import { BotSettings, ColorItem } from './types';
 
 const DEFAULT_PRIMARY_COLOR: ColorItem = {
   r: 10,
