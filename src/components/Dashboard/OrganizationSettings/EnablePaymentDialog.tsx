@@ -1,10 +1,9 @@
-import { Button, FormControl, FormLabel, TextField, Typography } from '@material-ui/core';
+import { Button, TextField, Typography } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import * as EmailValidator from 'email-validator';
 
@@ -16,23 +15,14 @@ import ContentLoading from '../../ContentLoading';
 
 import {
   CardElement, Elements,
-  PaymentRequestButtonElement,
   useElements,
   useStripe,
 } from '@stripe/react-stripe-js';
 import { loadStripe, StripeCardElement } from '@stripe/stripe-js';
 
-import { type } from 'os';
 import config from '../../../config';
 
 const stripePromise = loadStripe(config.stripePublicKey);
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    formControl: {
-      marginTop: theme.spacing(2),
-    },
-  }),
-);
 
 interface IAllProps {
   orgId: string;
@@ -42,8 +32,6 @@ interface IAllProps {
 }
 
 function CheckoutForm(props: IAllProps) {
-  const classes = useStyles();
-
   const stripe = useStripe();
   const elements = useElements();
   const [state, setState] = useState({
