@@ -62,7 +62,7 @@ function AgentsTable() {
         render: (rowData) => (
           <Link
             to={`/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${rowData.id}/Actions`}>
-            {rowData.name}
+            {rowData.uname}
           </Link>
         ),
       },
