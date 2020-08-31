@@ -185,6 +185,9 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     const removeDuplicates = (exs: IAgentDataExample[]) => {
       const seen = new Set<string>();
       const result: IAgentDataExample[] = [];
+      if (!exs) {
+        exs = [];
+      }
       exs.forEach((ex) => {
         if (seen.has(ex.intent + ex.text)) {
           return;
@@ -837,6 +840,12 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
   render() {
     const state = this.state;
     const { classes } = this.props;
+    const evenSteps = _.filter(state.steps, (s, index) => {
+      return index % 2 === 0;
+    });
+    const oddSteps = _.filter(state.steps, (s, index) => {
+      return index % 2 !== 0;
+    });
 
     const dialogContent = (
       <DialogContent>
@@ -851,19 +860,13 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
         </Typography>
         <Grid container={true}>
           <Grid item={true} xs={6}>
-            {state.steps.map((s, index) => {
-              if (index % 2 === 0) {
-                return this.renderStep(s);
-              }
-              return <></>;
+            {evenSteps.map((s) => {
+              return this.renderStep(s);
             })}
           </Grid>
           <Grid item={true} xs={6}>
-            {state.steps.map((s, index) => {
-              if (index % 2 !== 0) {
-                return this.renderStep(s);
-              }
-              return <></>;
+            {oddSteps.map((s) => {
+              return this.renderStep(s);
             })}
           </Grid>
         </Grid>
