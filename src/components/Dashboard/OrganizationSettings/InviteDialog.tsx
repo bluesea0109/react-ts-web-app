@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { Button, Typography } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -19,6 +19,9 @@ import { IUser } from '../../../models/user-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 
+import DisablePaymentDialog from './DisablePaymentDialog';
+import EnablePaymentDialog from './EnablePaymentDialog';
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -35,29 +38,50 @@ interface IProps {
   user: IUser;
 }
 
+interface IGetOrgBilling {
+  billingEnabled: boolean;
+}
+
 export default function InviteDialog(props: IProps) {
   const classes = useStyles();
   const [state, setState] = useState({
-    open: false,
+    inviteModalOpen: false,
+    paymentModalOpen: false,
+    disablePayment: false,
     role: 'editor',
     email: '',
   });
   const { orgId } = useParams();
 
-  const [inviteOrgMember, { error, loading }] = useMutation(INVITE_ORG_MEMBER);
+  const { error, loading, data } = useQuery<IGetOrgBilling>(GET_ORG_BILLING, { variables: { id: orgId } });
+  const [inviteOrgMember, inviteOrgMemberResp] = useMutation(INVITE_ORG_MEMBER);
 
   const validateInput = () => {
     return EmailValidator.validate(state.email);
   };
 
-  const handleOpen = () => {
-    setState({ ...state, open: true });
+  const handleOpenInvite = () => {
+    setState({ ...state, inviteModalOpen: true });
   };
 
-  const handleClose = () => {
-    setState({ ...state, open: false });
+  const handleCloseInvite = () => {
+    setState({ ...state, inviteModalOpen: false });
   };
 
+  const handleEnablePaymentClick = () => {
+    setState({ ...state, paymentModalOpen: true });
+  };
+
+  const handleDisablePaymentClick = () => {
+    setState({ ...state, disablePayment: true });
+  };
+  const handleCloseDisablePayment = () => {
+    setState({ ...state, disablePayment: false });
+  };
+
+  const handleClosePayment = () => {
+    setState({ ...state, paymentModalOpen: false });
+  };
   const handleChange = (name: string) => (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
@@ -86,15 +110,15 @@ export default function InviteDialog(props: IProps) {
         <Typography>{'Error: User member type unknown.'}</Typography>
       </DialogContent>
     );
-  } else if (error) {
+  } else if (inviteOrgMemberResp.error) {
     dialogContent = (
       <React.Fragment>
         <DialogContent>
-          <ApolloErrorPage error={error} />
+          <ApolloErrorPage error={inviteOrgMemberResp.error} />
         </DialogContent>
       </React.Fragment>
     );
-  } else if (loading) {
+  } else if (inviteOrgMemberResp.loading) {
     dialogContent = (
       <React.Fragment>
         <DialogContent>
@@ -102,7 +126,7 @@ export default function InviteDialog(props: IProps) {
         </DialogContent>
       </React.Fragment>
     );
-  } else {
+  } else if (state.inviteModalOpen) {
     dialogContent = (
       <React.Fragment>
         <DialogContent>
@@ -151,17 +175,42 @@ export default function InviteDialog(props: IProps) {
     );
   }
 
+  const renderBillingAction = () => {
+    if (error) {
+      return null;
+    }
+    if (loading) {
+      return (<Button size="small">
+        <ContentLoading />
+      </Button>
+      );
+    }
+    if (data && data.billingEnabled) {
+      return (<Button size="small" onClick={handleDisablePaymentClick}>
+        {'Disable Payment'}
+      </Button>
+      );
+    }
+    if (data && data.billingEnabled) {
+      return (<Button size="small" onClick={handleEnablePaymentClick}>
+        {'Enable Payment'}
+      </Button>
+      );
+    }
+    return null;
+  };
+
   return (
     <div className={classes.root} color="inherit">
       <Dialog
         fullWidth={true}
-        open={state.open}
-        onClose={handleClose}
+        open={state.inviteModalOpen}
+        onClose={handleCloseInvite}
         aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Invite Project Member</DialogTitle>
         {dialogContent}
         <DialogActions>
-          <Button color="primary" onClick={handleClose}>
+          <Button color="primary" onClick={handleCloseInvite}>
             {'Cancel'}
           </Button>
           <Button
@@ -172,9 +221,21 @@ export default function InviteDialog(props: IProps) {
           </Button>
         </DialogActions>
       </Dialog>
-      <Button size="small" onClick={handleOpen}>
+      <EnablePaymentDialog
+        orgId={orgId}
+        billingEmail={''}
+        open={state.paymentModalOpen}
+        onClose={handleClosePayment}
+      />
+      <DisablePaymentDialog
+        orgId={orgId}
+        open={state.disablePayment}
+        onClose={handleCloseDisablePayment}
+      />
+      <Button size="small" onClick={handleOpenInvite}>
         {'Invite Member'}
       </Button>
+      {renderBillingAction()}
     </div>
   );
 }
@@ -189,4 +250,12 @@ const INVITE_ORG_MEMBER = gql`
       id
     }
   }
+`;
+
+const GET_ORG_BILLING = gql`
+query($id: String) {
+  orgBilling(id: $id) {
+    billingEnabled
+  }
+}
 `;

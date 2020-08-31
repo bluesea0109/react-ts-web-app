@@ -31,10 +31,10 @@ interface IGetOrgs {
 export default function OrganizationSettings(props: IOrgSettingsProps) {
   const classes = useStyles();
   const { orgId } = useParams();
-  const { error, loading, data, refetch } = useQuery<IGetOrgs>(GET_ORGS, { variables: { id: orgId }});
+  const { error, loading, data, refetch } = useQuery<IGetOrgs>(GET_ORGS, { variables: { id: orgId } });
 
   if (error) {
-    return <ApolloErrorPage error={error}/>;
+    return <ApolloErrorPage error={error} />;
   }
 
   if (loading || !data) {
@@ -46,17 +46,16 @@ export default function OrganizationSettings(props: IOrgSettingsProps) {
   }
 
   const org = data.orgs[0];
-
   return (
     <div className={classes.root}>
       <Typography>{'Organization Settings'}</Typography>
       <Grid item={true} container={true} xs={12} spacing={2}>
-          <Grid item={true} xs={12} sm={6}>
-             <OrgMembersTable members={org.members || []} user={props.user} refetchOrgs={refetch} />
-          </Grid>
-          <Grid item={true} xs={12} sm={6}>
-            <OrginvitedMember />
-          </Grid>
+        <Grid item={true} xs={12} sm={6}>
+          <OrgMembersTable members={org.members || []} user={props.user} refetchOrgs={refetch} />
+        </Grid>
+        <Grid item={true} xs={12} sm={6}>
+          <OrginvitedMember />
+        </Grid>
       </Grid>
     </div>
   );
