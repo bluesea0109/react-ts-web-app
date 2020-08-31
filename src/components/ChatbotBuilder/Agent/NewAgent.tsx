@@ -14,7 +14,10 @@ import {
 import clsx from 'clsx';
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
-import { CHATBOT_CREATE_AGENT, CHATBOT_GET_AGENTS } from '../../../common-gql-queries';
+import {
+  CHATBOT_CREATE_AGENT,
+  CHATBOT_GET_AGENTS,
+} from '../../../common-gql-queries';
 import { IUser } from '../../../models/user-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import UploadDataDialog from '../UploadData/UploadDataDialog';
@@ -40,14 +43,13 @@ interface INewAgentProps {
 
 const NewAgent: React.FC<INewAgentProps> = ({ user }) => {
   const classes = useStyles();
-  const [name, setName] = useState<string>('');
   const [uname, setUname] = useState<string>('');
 
   const { projectId } = useParams();
-  const [createAgent, { loading, error }] = useMutation(CHATBOT_CREATE_AGENT,  {
-    refetchQueries: [{ query: CHATBOT_GET_AGENTS, variables: { projectId }  }],
+  const [createAgent, { loading, error }] = useMutation(CHATBOT_CREATE_AGENT, {
+    refetchQueries: [{ query: CHATBOT_GET_AGENTS, variables: { projectId } }],
     awaitRefetchQueries: true,
-    onError: () => { },
+    onError: () => {},
     errorPolicy: 'ignore',
   });
 
@@ -56,28 +58,30 @@ const NewAgent: React.FC<INewAgentProps> = ({ user }) => {
     return <ApolloErrorPage error={error} />;
   }
 
-  const onSubmit =  () => {
-    if (!user.activeProject) { return; }
+  const onSubmit = () => {
+    if (!user.activeProject) {
+      return;
+    }
     createAgent({
       variables: {
         projectId,
         uname,
-        name,
         language: 'EN_US',
       },
     });
-    setName('');
+
     setUname('');
   };
 
   const onUploadComplete = () => {
-    setName('');
     setUname('');
   };
 
   return (
     <Card className={classes.formCard}>
-      <CardHeader title={<Typography variant="h6">Create New Agent</Typography>}/>
+      <CardHeader
+        title={<Typography variant="h6">Create New Agent</Typography>}
+      />
       <CardContent>
         {loading && <LinearProgress />}
         <TextField
@@ -89,15 +93,6 @@ const NewAgent: React.FC<INewAgentProps> = ({ user }) => {
           onChange={(e: any) => setUname(e.target.value as string)}
           className={clsx(classes.inputBox)}
         />
-        <TextField
-          id="name"
-          label="Agent Name"
-          type="text"
-          value={name}
-          variant="outlined"
-          onChange={(e: any) => setName(e.target.value as string)}
-          className={clsx(classes.inputBox)}
-        />
         <br />
       </CardContent>
       <CardContent>
@@ -105,12 +100,15 @@ const NewAgent: React.FC<INewAgentProps> = ({ user }) => {
           className={clsx(classes.button)}
           variant="contained"
           color="primary"
-          disabled={loading || !name}
+          disabled={loading || !uname}
           onClick={onSubmit}>
           Create Without Data
         </Button>
-        <UploadDataDialog projectId={projectId} uname={uname} name={name}
-          buttonsDisabled={loading || !uname || !name} onSuccess={onUploadComplete}
+        <UploadDataDialog
+          projectId={projectId}
+          uname={uname}
+          buttonsDisabled={loading || !uname}
+          onSuccess={onUploadComplete}
           onError={onUploadComplete}
           onCancel={onUploadComplete}
         />
