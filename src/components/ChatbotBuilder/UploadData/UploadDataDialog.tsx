@@ -678,28 +678,12 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
   }
 
   handleJsonFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    let status = '';
     const files = e.target.files;
     if (!files || files.length === 0) {
       return;
     }
 
     const file = files[0];
-
-    this.setState((s) => ({
-      ...s,
-      open: true,
-    }));
-
-    if (file.type !== 'application/json') {
-      // set error message
-      status = 'Invalid file type';
-      this.setState((s) => ({
-        ...s,
-        status,
-      }));
-      return;
-    }
 
     const reader = new FileReader();
     const json = await new Promise<string>((resolve, reject) => {
