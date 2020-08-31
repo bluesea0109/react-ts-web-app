@@ -7,6 +7,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Grid from '@material-ui/core/Grid';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import { Theme, withStyles } from '@material-ui/core/styles';
 import { CheckCircle, Error as ErrorIcon } from '@material-ui/icons';
 import Alert from '@material-ui/lab/Alert';
@@ -19,12 +20,12 @@ import {
   CHATBOT_GET_AGENT,
   CHATBOT_GET_AGENTS,
 } from '../../../common-gql-queries';
+import { ActionType } from '../../../models/chatbot-service';
 import {
   IAgentGraphPolicy,
   IExampleInput,
   IUtteranceAction,
 } from '../../../models/chatbot-service';
-import { ActionType } from '../../../models/chatbot-service';
 import { readAgentZipfile } from '../../../utils/archive';
 import { uploadFileWithFetch } from '../../../utils/xhr';
 import {
@@ -74,6 +75,7 @@ interface IUploadDataDialogProps {
   classes: {
     alert: string;
     uploadButton: string;
+    linearProg: string;
   };
   onSuccess?: () => void;
   onError?: () => void;
@@ -104,6 +106,7 @@ type stepName =
 interface IStep {
   name: string;
   status: stepStatus;
+  progress: number;
 }
 
 interface IUploadDataDialogState {
@@ -120,6 +123,10 @@ const styles = (theme: Theme) => ({
   },
   uploadButton: {
     margin: theme.spacing(1),
+  },
+  linearProg: {
+    width: 190,
+    marginTop: theme.spacing(1),
   },
 });
 
@@ -139,7 +146,6 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
 
   handleClose = () => {
     this.setState({
-      agentId: undefined,
       open: false,
       error: [],
       steps: [],
@@ -394,6 +400,8 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       return this.setStepStatus('Options', 'completed');
     }
 
+    let optNum = 1;
+
     try {
       for (const uro of userResponsOptions) {
         const variables: ICreateUserResponseOptionsMutationVars = {
@@ -426,6 +434,12 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
           mutation: createOptionMutation,
           variables,
         });
+        this.setStepStatus(
+          'Options',
+          'importing',
+          Math.ceil((optNum * 100) / userResponsOptions.length),
+        );
+        optNum++;
       }
       this.setStepStatus('Options', 'completed');
     } catch (e) {
@@ -469,13 +483,22 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     return tagTypeIdsMap;
   }
 
-  setStepStatus = (name: stepName, status: stepStatus) => {
+  setStepStatus = (
+    name: stepName,
+    status: stepStatus,
+    progress: number = 0,
+  ) => {
     let steps = this.state.steps;
     let exists = false;
+
+    if (status === 'completed') {
+      progress = 100;
+    }
 
     steps = steps.map((s) => {
       if (s.name === name) {
         s.status = status;
+        s.progress = progress;
         exists = true;
       }
       return s;
@@ -485,6 +508,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       steps.push({
         name,
         status,
+        progress,
       });
     }
     this.setState({ steps });
@@ -613,9 +637,16 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     }
     // URO Images
     if (zipContents.uroImages.length >= 1) {
+      let fileNum = 1;
       this.setStepStatus('URO Images', 'importing');
       for (const img of zipContents.uroImages) {
         await this.uploadImage(img, 'uro-images');
+        this.setStepStatus(
+          'URO Images',
+          'importing',
+          Math.ceil((fileNum * 100) / zipContents.uroImages.length),
+        );
+        fileNum++;
       }
       this.setStepStatus('URO Images', 'completed');
     } else {
@@ -624,8 +655,15 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     // Bot Icons
     if (zipContents.botIcons.length >= 1) {
       this.setStepStatus('Bot Icons', 'importing');
+      let fileNum = 1;
       for (const img of zipContents.botIcons) {
         await this.uploadImage(img, 'bot-icons');
+        this.setStepStatus(
+          'Bot Icons',
+          'importing',
+          Math.ceil((fileNum * 100) / zipContents.uroImages.length),
+        );
+        fileNum++;
       }
       this.setStepStatus('Bot Icons', 'completed');
     } else {
@@ -700,34 +738,32 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       this.setStepStatus('Create Agent', 'completed');
     }
 
+    // Upload Utterance Actions.
+    // TODO - modify the backend code to make this an upsert. It currently throws an error if you upload duplicates
+    const actions: IUtteranceAction[] = await this.uploadUtteranceActions(
+      data.utteranceActions,
+    );
+    const intentIdsMap = await this.uploadIntents(data.intents, actions);
+
+    const tagTypeIdsMap = await this.uploadTagTypes(data.tagTypes);
+
+    await this.uploadGraphPolicies(data.graphPolicies);
+
+    const uros = await this.uploadOptions(
+      data.userResponseOptions || [],
+      intentIdsMap,
+    );
+
+    await this.updateUtteranceActions(
+      data.utteranceActions,
+      actions,
+      intentIdsMap,
+      uros,
+    );
+
+    this.uploadSettings(data.settings);
+
     try {
-      this.setState((s) => ({
-        ...s,
-        open: true,
-      }));
-
-      // Upload Utterance Actions.
-      // TODO - modify the backend code to make this an upsert. It currently throws an error if you upload duplicates
-      const actions: IUtteranceAction[] = await this.uploadUtteranceActions(
-        data.utteranceActions,
-      );
-      const intentIdsMap = await this.uploadIntents(data.intents, actions);
-      const tagTypeIdsMap = await this.uploadTagTypes(data.tagTypes);
-      await this.uploadGraphPolicies(data.graphPolicies);
-      const uros = await this.uploadOptions(
-        data.userResponseOptions,
-        intentIdsMap,
-      );
-
-      await this.updateUtteranceActions(
-        data.utteranceActions,
-        actions,
-        intentIdsMap,
-        uros,
-      );
-
-      this.uploadSettings(data.settings);
-
       const preprocessedExamples: IExampleInput[] = data.examples.map((x) => {
         const intentId = intentIdsMap.get(x.intent);
         if (!intentId) {
@@ -739,6 +775,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
           text: x.text,
           tags: x.tags.map((tag) => {
             const tagTypeId = tagTypeIdsMap.get(tag.tagType);
+
             if (!tagTypeId) {
               throw new Error(`Failed to id for tagType: ${tag.tagType}`);
             }
@@ -752,11 +789,16 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       });
 
       const exampleBatches = _.chunk(preprocessedExamples, 100);
-
+      let batchNum = 1;
+      this.setStepStatus('Examples', 'importing');
       for (const batch of exampleBatches) {
         await this.uploadBatch(batch);
-
-        this.setStepStatus('Examples', 'importing');
+        this.setStepStatus(
+          'Examples',
+          'importing',
+          Math.ceil((batchNum * 100) / exampleBatches.length),
+        );
+        batchNum++;
       }
 
       this.setStepStatus('Examples', 'completed');
@@ -771,9 +813,11 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
   ): Promise<void> => {
     this.setStepStatus('Graph Policies', 'importing');
 
-    if (graphPolicies.length === 0) {
+    if (!graphPolicies || graphPolicies.length === 0) {
       return this.setStepStatus('Graph Policies', 'completed');
     }
+
+    let gpNum = 1;
 
     try {
       for (const gp of graphPolicies) {
@@ -801,6 +845,12 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
             },
           });
         }
+        this.setStepStatus(
+          'Graph Policies',
+          'importing',
+          Math.ceil((gpNum * 100) / graphPolicies.length),
+        );
+        gpNum++;
       }
       this.setStepStatus('Graph Policies', 'completed');
     } catch (e) {
@@ -820,7 +870,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
           ) : s.status === 'error' ? (
             <ErrorIcon />
           ) : (
-            <CircularProgress size={20} />
+            <CircularProgress color="secondary" size={20} />
           )
         }
         className={classes.alert}
@@ -832,7 +882,21 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
             : 'info'
         }
         key={s.name}>
-        {s.status === 'importing' ? 'Importing... ' : ''} {s.name}
+        <div>
+          {s.status === 'importing' ? 'Importing... ' : ''} {s.name}
+        </div>
+
+        <div className={classes.linearProg}>
+          {s.status === 'importing' ? (
+            <LinearProgress
+              variant="determinate"
+              color="secondary"
+              value={s.progress}
+            />
+          ) : (
+            <div />
+          )}
+        </div>
       </Alert>
     );
   }
@@ -859,12 +923,12 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
           )}
         </Typography>
         <Grid container={true}>
-          <Grid item={true} xs={6}>
+          <Grid item={true} sm={12} md={6}>
             {evenSteps.map((s) => {
               return this.renderStep(s);
             })}
           </Grid>
-          <Grid item={true} xs={6}>
+          <Grid item={true} sm={12} md={6}>
             {oddSteps.map((s) => {
               return this.renderStep(s);
             })}
