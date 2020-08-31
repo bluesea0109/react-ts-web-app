@@ -19,6 +19,8 @@ import { IUser } from '../../../models/user-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 
+import PaymentDialog from './PaymentDialog';
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -38,7 +40,8 @@ interface IProps {
 export default function InviteDialog(props: IProps) {
   const classes = useStyles();
   const [state, setState] = useState({
-    open: false,
+    inviteModalOpen: false,
+    paymentModalOpen: false,
     role: 'editor',
     email: '',
   });
@@ -50,12 +53,20 @@ export default function InviteDialog(props: IProps) {
     return EmailValidator.validate(state.email);
   };
 
-  const handleOpen = () => {
-    setState({ ...state, open: true });
+  const handleOpenInvite = () => {
+    setState({ ...state, inviteModalOpen: true });
   };
 
-  const handleClose = () => {
-    setState({ ...state, open: false });
+  const handleCloseInvite = () => {
+    setState({ ...state, inviteModalOpen: false });
+  };
+
+  const handleOpenPayment = () => {
+    setState({ ...state, paymentModalOpen: true });
+  };
+
+  const handleClosePayment = () => {
+    setState({ ...state, paymentModalOpen: false });
   };
 
   const handleChange = (name: string) => (
@@ -102,7 +113,7 @@ export default function InviteDialog(props: IProps) {
         </DialogContent>
       </React.Fragment>
     );
-  } else {
+  } else if (state.inviteModalOpen) {
     dialogContent = (
       <React.Fragment>
         <DialogContent>
@@ -155,13 +166,13 @@ export default function InviteDialog(props: IProps) {
     <div className={classes.root} color="inherit">
       <Dialog
         fullWidth={true}
-        open={state.open}
-        onClose={handleClose}
+        open={state.inviteModalOpen}
+        onClose={handleCloseInvite}
         aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Invite Project Member</DialogTitle>
         {dialogContent}
         <DialogActions>
-          <Button color="primary" onClick={handleClose}>
+          <Button color="primary" onClick={handleCloseInvite}>
             {'Cancel'}
           </Button>
           <Button
@@ -172,8 +183,17 @@ export default function InviteDialog(props: IProps) {
           </Button>
         </DialogActions>
       </Dialog>
-      <Button size="small" onClick={handleOpen}>
+      <PaymentDialog
+        orgId={orgId}
+        billingEmail={''}
+        open={state.paymentModalOpen}
+        onClose={handleClosePayment}
+      />
+      <Button size="small" onClick={handleOpenInvite}>
         {'Invite Member'}
+      </Button>
+      <Button size="small" onClick={handleOpenPayment}>
+        {'Enable Payment'}
       </Button>
     </div>
   );

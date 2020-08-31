@@ -6,6 +6,7 @@ const dev = {
   apiUrl: 'https://api-gateway-dot-bavard-dev.appspot.com/graphql',
   predictionServiceUrl: 'https://prediction-service-dot-bavard-dev.appspot.com/graphql',
   chatbotUrl: 'https://bavard-chatbot.web.app/widget/index.html',
+  stripePublicKey: 'pk_test_51HL9t1DslhlvaFGjUIoSzWldID1pYsNstl7pRQadJQ2EGohCGoXuGrrEPr8K7bj4NyZKlwU3vMv8fM2bRSrvSNHK00nQSkQKke',
   firebase: {
     apiKey: 'AIzaSyDwt9YZ88n3dsp2bHS0nV7uU2oUULQLdo0',
     authDomain: 'bavard-dev.firebaseapp.com',
@@ -24,6 +25,7 @@ const prod = {
   apiUrl: 'https://api-gateway-dot-bavard-prod/graphql',
   predictionServiceUrl: 'https://prediction-service-dot-bavard-prod.appspot.com/graphql',
   chatbotUrl: 'https://bavard-chatbot.web.app/widget/index.html',
+  stripePublicKey: '',
   firebase: {
     apiKey: 'AIzaSyDwt9YZ88n3dsp2bHS0nV7uU2oUULQLdo0',
     authDomain: 'bavard-dev.firebaseapp.com',
@@ -42,6 +44,7 @@ const local = {
   apiUrl: 'http://localhost:8081/graphql',
   predictionServiceUrl: 'https://prediction-service-dot-bavard-dev.appspot.com/graphql',
   chatbotUrl: 'http://localhost:8000/public/index.html',
+  stripePublicKey: 'pk_test_51HL9t1DslhlvaFGjUIoSzWldID1pYsNstl7pRQadJQ2EGohCGoXuGrrEPr8K7bj4NyZKlwU3vMv8fM2bRSrvSNHK00nQSkQKke',
   firebase: {
     apiKey: 'AIzaSyDwt9YZ88n3dsp2bHS0nV7uU2oUULQLdo0',
     authDomain: 'bavard-dev.firebaseapp.com',
