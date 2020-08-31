@@ -810,7 +810,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     const { classes } = this.props;
     return (
       <Alert
-        variant="filled"
+        variant="outlined"
         icon={
           s.status === 'completed' ? (
             <CheckCircle />
