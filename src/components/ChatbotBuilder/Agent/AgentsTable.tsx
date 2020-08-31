@@ -10,7 +10,6 @@ import { Link } from 'react-router-dom';
 import {
   CHATBOT_DELETE_AGENT,
   CHATBOT_GET_AGENTS,
-  CHATBOT_UPDATE_AGENT,
 } from '../../../common-gql-queries';
 import { IAgent } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
@@ -46,10 +45,7 @@ function AgentsTable() {
     refetchQueries: [{ query: CHATBOT_GET_AGENTS, variables: { projectId } }],
     awaitRefetchQueries: true,
   });
-  const [updateAgent, updatedData] = useMutation(CHATBOT_UPDATE_AGENT, {
-    refetchQueries: [{ query: CHATBOT_GET_AGENTS, variables: { projectId } }],
-    awaitRefetchQueries: true,
-  });
+
   const agents: IAgent[] | undefined =
     agentsData && agentsData.data && agentsData.data.ChatbotService_agents;
   const [state, setState] = React.useState<AgentState>({
@@ -82,13 +78,9 @@ function AgentsTable() {
     return () => {};
   }, [agents, state.columns]);
 
-  const commonError = agentsData.error
-    ? agentsData.error
-    : updatedData.error
-    ? updatedData.error
-    : error;
+  const commonError = agentsData.error ? agentsData.error : error;
 
-  if (agentsData.loading || updatedData.loading || loading) {
+  if (agentsData.loading || loading) {
     return <ContentLoading />;
   }
 
@@ -101,15 +93,6 @@ function AgentsTable() {
     deleteAgent({
       variables: {
         agentId,
-      },
-    });
-  };
-
-  const updateAgentHandler = (agentId: number, name: string) => {
-    updateAgent({
-      variables: {
-        agentId,
-        name,
       },
     });
   };
@@ -133,13 +116,6 @@ function AgentsTable() {
               },
             }}
             editable={{
-              onRowUpdate: async (newData, oldData) => {
-                if (oldData) {
-                  const dataId = oldData.id;
-                  const dataName = newData.name;
-                  updateAgentHandler(dataId, dataName);
-                }
-              },
               onRowDelete: async (oldData) => {
                 const dataId = oldData.id;
                 deleteAgentHandler(dataId);

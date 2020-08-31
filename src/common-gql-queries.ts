@@ -146,7 +146,6 @@ export const CHATBOT_GET_AGENTS = gql`
       id
       projectId
       uname
-      name
       language
       userIntents {
         id
@@ -172,7 +171,6 @@ export const CHATBOT_GET_AGENT = gql`
       id
       projectId
       uname
-      name
       language
       userIntents {
         id
@@ -215,19 +213,16 @@ export const CHATBOT_CREATE_AGENT = gql`
   mutation(
     $projectId: String!
     $uname: String!
-    $name: String!
     $language: ChatbotService_LanguageEnum!
   ) {
     ChatbotService_createAgent(
       projectId: $projectId
       uname: $uname
-      name: $name
       language: $language
     ) {
       id
       projectId
       uname
-      name
       language
       # tags
       userIntents {
@@ -261,17 +256,15 @@ export const CHATBOT_DELETE_AGENT = gql`
     ChatbotService_deleteAgent(agentId: $agentId) {
       id
       projectId
-      name
     }
   }
 `;
 
 export const CHATBOT_UPDATE_AGENT = gql`
-  mutation($agentId: Int!, $uname: String, $name: String) {
-    ChatbotService_updateAgent(agentId: $agentId, uname: $uname, name: $name) {
+  mutation($agentId: Int!, $uname: String) {
+    ChatbotService_updateAgent(agentId: $agentId, uname: $uname) {
       id
       uname
-      name
     }
   }
 `;
