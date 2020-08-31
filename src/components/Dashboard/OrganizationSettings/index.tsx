@@ -46,7 +46,6 @@ export default function OrganizationSettings(props: IOrgSettingsProps) {
   }
 
   const org = data.orgs[0];
-  console.log(org);
   return (
     <div className={classes.root}>
       <Typography>{'Organization Settings'}</Typography>
