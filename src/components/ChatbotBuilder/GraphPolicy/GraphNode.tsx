@@ -1,10 +1,18 @@
 import { GraphPolicyNode } from '@bavard/graph-policy';
-import { Card, CardActions, CardContent, IconButton, Tooltip, Typography } from '@material-ui/core';
+import {
+  Card,
+  CardActions,
+  CardContent,
+  IconButton,
+  Tooltip,
+  Typography,
+} from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import {Add, Delete, Edit} from '@material-ui/icons';
+import { Add, Delete, Edit } from '@material-ui/icons';
 import Alert from '@material-ui/lab/Alert';
 import React from 'react';
 import EdgeChip from './EdgeChip';
+import NodeOptionChip from './NodeOptionChip';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -66,64 +74,89 @@ interface IGraphNodeProps {
   onDeleteNode?: (nodeId: number) => void;
 }
 
-export default function GraphNode({node, wrapperClassName, onAddEdge, onEditNode, onDeleteNode}: IGraphNodeProps) {
+export default function GraphNode({
+  node,
+  wrapperClassName,
+  onAddEdge,
+  onEditNode,
+  onDeleteNode,
+}: IGraphNodeProps) {
   const classes = useStyles();
   const nodeJson = node.toJsonObj();
 
   return (
-      <Card className={`${classes.nodePaper} ${wrapperClassName}`}>
-        <CardContent>
-          <Typography className={classes.title} variant="subtitle2">
-            {node.nodeId}. {node.actionName} &nbsp;
-            <Typography component="span" variant="subtitle2" color="secondary" align="right">
-              {nodeJson.nodeType}
-            </Typography>
+    <Card className={`${classes.nodePaper} ${wrapperClassName}`}>
+      <CardContent>
+        <Typography className={classes.title} variant="subtitle2">
+          {node.nodeId}. {node.actionName} &nbsp;
+          <Typography
+            component="span"
+            variant="subtitle2"
+            color="secondary"
+            align="right">
+            {nodeJson.nodeType}
           </Typography>
-          <Alert icon={false} severity="info" className={classes.alert}>
-            <Tooltip disableFocusListener={true} title={
+        </Typography>
+        <Alert icon={false} severity="info" className={classes.alert}>
+          <Tooltip
+            disableFocusListener={true}
+            title={
               <p dangerouslySetInnerHTML={{ __html: nodeJson.utterance }} />
             }>
-              <p dangerouslySetInnerHTML={{ __html: nodeJson.utterance }} />
-            </Tooltip>
-          </Alert>
-          {
-            (node.edges?.length >= 1) ?
-            <div className={classes.optionContainer}>
-              {node.toJsonObj().outEdges.map((e, index) => {
-                return <EdgeChip node={node} edgeId={e.nodeId} key={index}/>;
-              })}
-            </div>
-            :
-            <></>
-          }
-        </CardContent>
-        <CardActions className={classes.nodeActionsContainer}>
-          {
-            onAddEdge &&
-              <Tooltip title="Add an edge">
-                <IconButton color="secondary" size="small" onClick={() => onAddEdge(node.nodeId)}>
-                  <Add />
-                </IconButton>
-              </Tooltip>
-          }
-          {
-            onEditNode &&
-            <Tooltip title="Edit this node">
-              <IconButton color="default" size="small" onClick={() => onEditNode(node.nodeId)}>
-                <Edit />
-              </IconButton>
-            </Tooltip>
-          }
-          {
-            onDeleteNode &&
-            <Tooltip title="Delete this node">
-              <IconButton color="default" size="small" onClick={() => onDeleteNode(node.nodeId)}>
-                <Delete />
-              </IconButton>
-            </Tooltip>
-          }
-        </CardActions>
-      </Card>
-
+            <p dangerouslySetInnerHTML={{ __html: nodeJson.utterance }} />
+          </Tooltip>
+        </Alert>
+        {node.edges?.length >= 1 ? (
+          <div className={classes.optionContainer}>
+            {node.toJsonObj().outEdges.map((e, index) => {
+              return <EdgeChip node={node} edgeId={e.nodeId} key={index} />;
+            })}
+          </div>
+        ) : (
+          <></>
+        )}
+        {node.options?.length >= 1 ? (
+          <div className={classes.optionContainer}>
+            {node.options.map((o, index) => {
+              return <NodeOptionChip option={o} key={index} />;
+            })}
+          </div>
+        ) : (
+          <></>
+        )}
+      </CardContent>
+      <CardActions className={classes.nodeActionsContainer}>
+        {onAddEdge && (
+          <Tooltip title="Add an edge">
+            <IconButton
+              color="secondary"
+              size="small"
+              onClick={() => onAddEdge(node.nodeId)}>
+              <Add />
+            </IconButton>
+          </Tooltip>
+        )}
+        {onEditNode && (
+          <Tooltip title="Edit this node">
+            <IconButton
+              color="default"
+              size="small"
+              onClick={() => onEditNode(node.nodeId)}>
+              <Edit />
+            </IconButton>
+          </Tooltip>
+        )}
+        {onDeleteNode && (
+          <Tooltip title="Delete this node">
+            <IconButton
+              color="default"
+              size="small"
+              onClick={() => onDeleteNode(node.nodeId)}>
+              <Delete />
+            </IconButton>
+          </Tooltip>
+        )}
+      </CardActions>
+    </Card>
   );
 }

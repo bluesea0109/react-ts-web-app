@@ -1,8 +1,18 @@
-import { EmailNode, GraphPolicyNode, UtteranceNode } from '@bavard/graph-policy';
-import { FormControl, FormControlLabel, Radio, RadioGroup, TextField } from '@material-ui/core';
+import {
+  EmailNode,
+  GraphPolicyNode,
+  UtteranceNode,
+} from '@bavard/graph-policy';
+import {
+  FormControl,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  TextField,
+} from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import React, { useEffect, useState} from 'react';
-import {validateEmail} from '../../../utils/string';
+import React, { useEffect, useState } from 'react';
+import { validateEmail } from '../../../utils/string';
 import RichTextInput from '../../Utils/RichTextInput';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -15,21 +25,33 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface IUpsertNodeFormProps {
-  onChange: (node: GraphPolicyNode | UtteranceNode | EmailNode | undefined) => void;
+  onChange: (
+    node: GraphPolicyNode | UtteranceNode | EmailNode | undefined,
+  ) => void;
   nodeId: number;
   node?: GraphPolicyNode | UtteranceNode | EmailNode;
 }
 
-export default function UpsertNodeForm({ nodeId, node, onChange}: IUpsertNodeFormProps) {
+export default function UpsertNodeForm({
+  nodeId,
+  node,
+  onChange,
+}: IUpsertNodeFormProps) {
   const classes = useStyles();
   const [showFormErrors, setShowFormErrors] = useState(false);
   const [utterance, setUtterance] = useState(node?.toJsonObj().utterance || '');
-  const [nodeType, setNodeType] = useState<string>(node?.type || 'UtteranceNode');
-  const [fromEmail, setFromEmail] = useState(node instanceof EmailNode ? node.from : '');
-  const [toEmail, setToEmail] = useState(node instanceof EmailNode ? node.to : '');
+  const [nodeType, setNodeType] = useState<string>(
+    node?.type || 'UtteranceNode',
+  );
+  const [fromEmail, setFromEmail] = useState(
+    node instanceof EmailNode ? node.from : '',
+  );
+  const [toEmail, setToEmail] = useState(
+    node instanceof EmailNode ? node.to : '',
+  );
   const [actionName, setActionName] = useState(node?.actionName || '');
 
-  const handleUtteranceNode = async() => {
+  const handleUtteranceNode = async () => {
     if (node) {
       node.setActionName(actionName);
       node.setUtterance(utterance);
@@ -40,7 +62,7 @@ export default function UpsertNodeForm({ nodeId, node, onChange}: IUpsertNodeFor
     }
   };
 
-  const handleEmailNode = async() => {
+  const handleEmailNode = async () => {
     if (!validateEmail(fromEmail) || !validateEmail(toEmail)) {
       return;
     }
@@ -52,7 +74,13 @@ export default function UpsertNodeForm({ nodeId, node, onChange}: IUpsertNodeFor
       node.setUtterance(utterance);
       onChange(node);
     } else {
-      const newNode = new EmailNode(nodeId, actionName, toEmail, fromEmail, utterance );
+      const newNode = new EmailNode(
+        nodeId,
+        actionName,
+        toEmail,
+        fromEmail,
+        utterance,
+      );
       onChange(newNode);
     }
   };
@@ -72,44 +100,68 @@ export default function UpsertNodeForm({ nodeId, node, onChange}: IUpsertNodeFor
     }
   };
 
-  useEffect(handleChange, [fromEmail, toEmail , actionName, utterance]);
-
-  console.log('NODE ', nodeId, node);
+  useEffect(handleChange, [fromEmail, toEmail, actionName, utterance]);
 
   return (
     <div>
       <FormControl className={classes.formControl} disabled={!!node}>
-        <RadioGroup name="responseType" defaultValue={nodeType || UtteranceNode.typename}
-          onChange={(event) => {setNodeType(event.target.value); }}>
-          <FormControlLabel value={UtteranceNode.typename} control={<Radio />} label="Utterance Node" />
-          <FormControlLabel value={EmailNode.typename} control={<Radio />} label="Email Node" />
+        <RadioGroup
+          name="responseType"
+          defaultValue={nodeType || UtteranceNode.typename}
+          onChange={(event) => {
+            setNodeType(event.target.value);
+          }}>
+          <FormControlLabel
+            value={UtteranceNode.typename}
+            control={<Radio />}
+            label="Utterance Node"
+          />
+          <FormControlLabel
+            value={EmailNode.typename}
+            control={<Radio />}
+            label="Email Node"
+          />
         </RadioGroup>
       </FormControl>
       <FormControl variant="outlined" className={classes.formControl}>
-        <TextField name="actionName" error={showFormErrors && actionName === ''}
+        <TextField
+          name="actionName"
+          error={showFormErrors && actionName === ''}
           defaultValue={actionName}
-          required={true} label="Action Name" variant="outlined"
-          onChange={(e) => setActionName(e.target.value as string)} />
+          required={true}
+          label="Action Name"
+          variant="outlined"
+          onChange={(e) => setActionName(e.target.value as string)}
+        />
       </FormControl>
-      {
-        nodeType === EmailNode.typename &&
+      {nodeType === EmailNode.typename && (
         <React.Fragment>
-          <FormControl variant="outlined"  className={classes.formControl} >
-            <TextField name="fromEmail" error={showFormErrors && !validateEmail(fromEmail)}
+          <FormControl variant="outlined" className={classes.formControl}>
+            <TextField
+              name="fromEmail"
+              error={showFormErrors && !validateEmail(fromEmail)}
               defaultValue={fromEmail}
-              required={true} label="From Email" variant="outlined"
-              onChange={(e) => setFromEmail(e.target.value as string)} />
+              required={true}
+              label="From Email"
+              variant="outlined"
+              onChange={(e) => setFromEmail(e.target.value as string)}
+            />
           </FormControl>
-          <FormControl variant="outlined"  className={classes.formControl} >
-            <TextField name="toEmail" error={showFormErrors && !validateEmail(toEmail)}
+          <FormControl variant="outlined" className={classes.formControl}>
+            <TextField
+              name="toEmail"
+              error={showFormErrors && !validateEmail(toEmail)}
               defaultValue={toEmail}
-              required={true} label="To Email" variant="outlined"
-              onChange={(e) => setToEmail(e.target.value as string)} />
+              required={true}
+              label="To Email"
+              variant="outlined"
+              onChange={(e) => setToEmail(e.target.value as string)}
+            />
           </FormControl>
         </React.Fragment>
-      }
+      )}
 
-      <FormControl variant="outlined"  className={classes.formControl} >
+      <FormControl variant="outlined" className={classes.formControl}>
         <RichTextInput
           label="Utterance"
           value={utterance}
