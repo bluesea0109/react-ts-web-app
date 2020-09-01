@@ -16,6 +16,7 @@ import {
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
+import { validateUrl } from '../../../utils/string';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -70,7 +71,7 @@ export default function UpsertNodeOptionForm({
   const handleSubmit = async () => {
     setShowFormErrors(true);
 
-    if (!text || !targetLink) {
+    if (!text || !targetLink || !validateUrl(targetLink)) {
       return;
     }
 
@@ -133,7 +134,7 @@ export default function UpsertNodeOptionForm({
             label={'Target Link'}
             variant="outlined"
             required={true}
-            error={showFormErrors && targetLink === ''}
+            error={showFormErrors && !validateUrl(targetLink)}
             onChange={(e) => setTargetLink(e.target.value as string)}
             defaultValue={targetLink}
           />
