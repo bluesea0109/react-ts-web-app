@@ -51,7 +51,12 @@ export default function OrganizationSettings(props: IOrgSettingsProps) {
       <Typography>{'Organization Settings'}</Typography>
       <Grid item={true} container={true} xs={12} spacing={2}>
         <Grid item={true} xs={12} sm={6}>
-          <OrgMembersTable members={org.members || []} user={props.user} refetchOrgs={refetch} />
+          <OrgMembersTable
+            billingEnabled={org.billingEnabled || false}
+            members={org.members || []}
+            user={props.user}
+            refetchOrgs={refetch}
+          />
         </Grid>
         <Grid item={true} xs={12} sm={6}>
           <OrginvitedMember />

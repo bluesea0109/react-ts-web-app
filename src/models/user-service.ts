@@ -10,6 +10,7 @@ export interface IUser {
 export interface IOrg {
   id: string;
   name: string;
+  billingEnabled: boolean;
   members?: IMember[];
   projects?: IProject[];
   currentUserMember?: IMember;
