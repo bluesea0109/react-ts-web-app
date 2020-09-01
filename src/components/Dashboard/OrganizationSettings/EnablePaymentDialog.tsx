@@ -38,9 +38,11 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       display: 'flex',
       flexWrap: 'wrap',
+      padding: theme.spacing(1),
     },
-    formControl: {
-      marginTop: theme.spacing(2),
+    button: {
+      backgroundColor: '#0000FF',
+      color: '#FFFFFF',
     },
   }),
 );
@@ -218,8 +220,8 @@ function CheckoutForm() {
         {dialogContent}
         {dialogActions}
       </Dialog>
-      <Button size="small" onClick={handleOpen}>
-        {'Enable Payment'}
+      <Button size="small" variant="contained" className={classes.button} onClick={handleOpen}>
+        {'Enable Billing'}
       </Button>
     </div>
   );

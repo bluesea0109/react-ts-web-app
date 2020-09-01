@@ -6,6 +6,8 @@ import { GET_ORGS } from '../../../common-gql-queries';
 import { IOrg, IUser } from '../../../models/user-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
+import DisablePaymentDialog from './DisablePaymentDialog';
+import EnablePaymentDialog from './EnablePaymentDialog';
 import OrginvitedMember from './OrgInvitedMember';
 import OrgMembersTable from './OrgMembersTable';
 
@@ -51,8 +53,10 @@ export default function OrganizationSettings(props: IOrgSettingsProps) {
       <Typography>{'Organization Settings'}</Typography>
       <Grid item={true} container={true} xs={12} spacing={2}>
         <Grid item={true} xs={12} sm={6}>
+          {console.log(org)}
+          {org.billingEnabled === true && <DisablePaymentDialog user={props.user} />}
+          {org.billingEnabled === false && <EnablePaymentDialog user={props.user} />}
           <OrgMembersTable
-            billingEnabled={org.billingEnabled || false}
             members={org.members || []}
             user={props.user}
             refetchOrgs={refetch}

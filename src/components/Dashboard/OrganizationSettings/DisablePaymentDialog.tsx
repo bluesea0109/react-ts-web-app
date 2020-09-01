@@ -24,9 +24,11 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       display: 'flex',
       flexWrap: 'wrap',
+      padding: theme.spacing(1),
     },
-    formControl: {
-      marginTop: theme.spacing(2),
+    button: {
+      backgroundColor: '#FF0000',
+      color: '#FFFFFF',
     },
   }),
 );
@@ -124,8 +126,8 @@ export default function PaymentDialog(props: IAllProps) {
         {dialogContent}
         {dialogActions}
       </Dialog>
-      <Button size="small" onClick={handleOpen}>
-        {'Disable Payment'}
+      <Button size="small" variant="contained" className={classes.button} onClick={handleOpen}>
+        {'Disable Billing'}
       </Button>
     </div>
   );

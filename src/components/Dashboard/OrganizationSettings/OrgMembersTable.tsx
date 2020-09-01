@@ -25,8 +25,6 @@ import IconButtonDelete from '../../IconButtons/IconButtonDelete';
 import IconButtonEdit from '../../IconButtons/IconButtonEdit';
 import ConfirmDialog from '../../Utils/ConfirmDialog';
 import ChangeRoleDialog from './changeRoleDialog';
-import DisablePaymentDialog from './DisablePaymentDialog';
-import EnablePaymentDialog from './EnablePaymentDialog';
 import InviteDialog from './InviteDialog';
 
 interface IAlertProps {
@@ -62,7 +60,6 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface IOrgMembersTableProps {
-  billingEnabled: boolean;
   user: IUser;
   members: IMember[];
   refetchOrgs: () => void;
@@ -207,8 +204,6 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
         <Typography variant="h6">{'Org Members'}</Typography>
         <Typography className={classes.grow} />
         {role === 'owner' ? <InviteDialog user={props.user} /> : null}
-        {role === 'owner' && props.billingEnabled === true && <DisablePaymentDialog user={props.user} />}
-        {role === 'owner' && props.billingEnabled === false && <EnablePaymentDialog user={props.user} />}
       </Toolbar>
       {loading ? (
         <ContentLoading />
