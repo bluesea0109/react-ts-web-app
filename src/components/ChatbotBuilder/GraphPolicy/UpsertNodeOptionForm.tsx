@@ -1,15 +1,15 @@
 import {
   GraphPolicy,
-  ResponseOption,
   HyperlinkOption,
+  ResponseOption,
 } from '@bavard/graph-policy';
 import {
   Button,
   FormControl,
   FormControlLabel,
   FormLabel,
-  Radio,
   Paper,
+  Radio,
   RadioGroup,
   TextField,
 } from '@material-ui/core';
@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme: Theme) =>
       borderRadius: theme.spacing(1),
       padding: theme.spacing(2),
     },
-  })
+  }),
 );
 
 interface IUpsertNodeOptionFormProps {
@@ -61,10 +61,10 @@ export default function UpsertNodeOptionForm({
 
   const [optionType, setOptionType] = useState<string>('HYPERLINK');
   const [text, setText] = useState<string>(
-    option instanceof HyperlinkOption ? option.text : ''
+    option instanceof HyperlinkOption ? option.text : '',
   );
   const [targetLink, setTargetLink] = useState<string>(
-    option instanceof HyperlinkOption ? option.targetLink : ''
+    option instanceof HyperlinkOption ? option.targetLink : '',
   );
 
   const handleSubmit = async () => {

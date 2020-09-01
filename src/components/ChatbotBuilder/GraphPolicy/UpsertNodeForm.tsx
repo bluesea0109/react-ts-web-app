@@ -21,12 +21,12 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       marginBottom: theme.spacing(2),
     },
-  })
+  }),
 );
 
 interface IUpsertNodeFormProps {
   onChange: (
-    node: GraphPolicyNode | UtteranceNode | EmailNode | undefined
+    node: GraphPolicyNode | UtteranceNode | EmailNode | undefined,
   ) => void;
   nodeId: number;
   node?: GraphPolicyNode | UtteranceNode | EmailNode;
@@ -41,13 +41,13 @@ export default function UpsertNodeForm({
   const [showFormErrors, setShowFormErrors] = useState(false);
   const [utterance, setUtterance] = useState(node?.toJsonObj().utterance || '');
   const [nodeType, setNodeType] = useState<string>(
-    node?.type || 'UtteranceNode'
+    node?.type || 'UtteranceNode',
   );
   const [fromEmail, setFromEmail] = useState(
-    node instanceof EmailNode ? node.from : ''
+    node instanceof EmailNode ? node.from : '',
   );
   const [toEmail, setToEmail] = useState(
-    node instanceof EmailNode ? node.to : ''
+    node instanceof EmailNode ? node.to : '',
   );
   const [actionName, setActionName] = useState(node?.actionName || '');
 
@@ -79,7 +79,7 @@ export default function UpsertNodeForm({
         actionName,
         toEmail,
         fromEmail,
-        utterance
+        utterance,
       );
       onChange(newNode);
     }

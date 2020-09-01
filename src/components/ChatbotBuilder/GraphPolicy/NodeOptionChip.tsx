@@ -1,4 +1,4 @@
-import { ResponseOption, HyperlinkOption } from '@bavard/graph-policy';
+import { HyperlinkOption, ResponseOption } from '@bavard/graph-policy';
 import { Avatar, Paper, Tooltip } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Link } from '@material-ui/icons';
@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
       right: theme.spacing(1),
       zIndex: 1,
     },
-  })
+  }),
 );
 
 interface IChipProps {

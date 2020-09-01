@@ -2,8 +2,8 @@ import {
   EmailNode,
   GraphPolicy,
   GraphPolicyNode,
-  UtteranceNode,
   HyperlinkOption,
+  UtteranceNode,
 } from '@bavard/graph-policy';
 import {
   Button,
@@ -28,8 +28,8 @@ import {
 import { useSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
 import EdgeChip from './EdgeChip';
-import NodeOptionChip from './NodeOptionChip';
 import GraphNode from './GraphNode';
+import NodeOptionChip from './NodeOptionChip';
 import UpsertEdge from './UpsertEdge';
 import UpsertNodeForm from './UpsertNodeForm';
 import UpsertNodeOptionForm from './UpsertNodeOptionForm';
@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme: Theme) =>
         opacity: 1,
       },
     },
-  })
+  }),
 );
 
 interface IGraphNodeProps {
