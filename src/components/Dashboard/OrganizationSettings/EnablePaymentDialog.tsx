@@ -1,15 +1,19 @@
+import React from 'react';
+import { useParams } from 'react-router';
+
 import { Button, TextField, Typography } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import React, { useState } from 'react';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
 import * as EmailValidator from 'email-validator';
 
 import { useMutation } from '@apollo/client';
 import gql from 'graphql-tag';
 
+import { IUser } from '../../../models/user-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 
@@ -25,20 +29,43 @@ import config from '../../../config';
 const stripePromise = loadStripe(config.stripePublicKey);
 
 interface IAllProps {
-  orgId: string;
-  billingEmail: string;
-  open: any;
-  onClose: any;
+  user: IUser;
+
 }
 
-function CheckoutForm(props: IAllProps) {
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      padding: theme.spacing(1),
+    },
+    button: {
+      backgroundColor: '#0000FF',
+      color: '#FFFFFF',
+    },
+  }),
+);
+
+function CheckoutForm() {
+  const classes = useStyles();
   const stripe = useStripe();
   const elements = useElements();
-  const [state, setState] = useState({
+  const [state, setState] = React.useState({
+    modalOpen: false,
     email: '',
   });
+  const { orgId } = useParams();
 
   const [doEnableBilling, enableBillingResp] = useMutation(ENABLE_BILLING);
+
+  const handleOpen = () => {
+    setState({ ...state, modalOpen: true });
+  };
+
+  const handleClose = () => {
+    setState({ ...state, modalOpen: false });
+  };
 
   const handleChange = (name: string) => (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -48,6 +75,7 @@ function CheckoutForm(props: IAllProps) {
       [name]: event.target.value,
     });
   };
+
   const validateInput = () => {
     return EmailValidator.validate(state.email);
   };
@@ -84,9 +112,9 @@ function CheckoutForm(props: IAllProps) {
     // enable billing
     doEnableBilling({
       variables: {
-        orgId: props.orgId,
+        orgId,
         stripeToken,
-        billingEmail: props.billingEmail,
+        billingEmail: state.email,
       },
     });
   };
@@ -94,7 +122,7 @@ function CheckoutForm(props: IAllProps) {
   let dialogActions = (
     <React.Fragment>
       <DialogActions>
-        <Button color="primary" onClick={props.onClose}>
+        <Button color="primary" onClick={handleClose}>
           {'Cancel'}
         </Button>
         <Button
@@ -135,7 +163,7 @@ function CheckoutForm(props: IAllProps) {
     dialogActions = (
       <React.Fragment>
         <DialogActions>
-          <Button color="primary" onClick={props.onClose}>
+          <Button color="primary" onClick={handleClose}>
             {'Close'}
           </Button>
         </DialogActions>
@@ -182,27 +210,27 @@ function CheckoutForm(props: IAllProps) {
   }
 
   return (
-    <Dialog
-      fullWidth={true}
-      open={props.open}
-      onClose={props.onClose}
-      aria-labelledby="form-dialog-title">
-      <DialogTitle id="form-dialog-title">Enable Payment</DialogTitle>
-      {dialogContent}
-      {dialogActions}
-    </Dialog>
+    <div className={classes.root} color="inherit">
+      <Dialog
+        fullWidth={true}
+        open={state.modalOpen}
+        onClose={handleClose}
+        aria-labelledby="form-dialog-title">
+        <DialogTitle id="form-dialog-title">Enable Payment</DialogTitle>
+        {dialogContent}
+        {dialogActions}
+      </Dialog>
+      <Button size="small" variant="contained" className={classes.button} onClick={handleOpen}>
+        {'Enable Billing'}
+      </Button>
+    </div>
   );
 }
 
 export default function PaymentDialog(props: IAllProps) {
   return (
     <Elements stripe={stripePromise}>
-      <CheckoutForm
-        orgId={props.orgId}
-        billingEmail={props.billingEmail}
-        open={props.open}
-        onClose={props.onClose}
-      />
+      <CheckoutForm />
     </Elements>
   );
 }

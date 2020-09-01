@@ -1,35 +1,67 @@
+import React from 'react';
+import { useParams } from 'react-router';
+
 import { Button, Typography } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import React from 'react';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
 import { useMutation } from '@apollo/client';
 import gql from 'graphql-tag';
 
+import { IUser } from '../../../models/user-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 
 interface IAllProps {
-  orgId: string;
-  open: any;
-  onClose: any;
+  user: IUser;
 }
 
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      padding: theme.spacing(1),
+    },
+    button: {
+      backgroundColor: '#FF0000',
+      color: '#FFFFFF',
+    },
+  }),
+);
+
 export default function PaymentDialog(props: IAllProps) {
+  const classes = useStyles();
+  const [state, setState] = React.useState({
+    modalOpen: false,
+    role: 'editor',
+  });
+  const { orgId } = useParams();
+
   const [doDisableBilling, disableBillingResp] = useMutation(DISABLE_BILLING);
+
+  const handleOpen = () => {
+    setState({ ...state, modalOpen: true });
+  };
+
+  const handleClose = () => {
+    setState({ ...state, modalOpen: false });
+  };
+
   const handleDisableClick = () => {
     doDisableBilling({
       variables: {
-        orgId: props.orgId,
+        orgId,
       },
     });
   };
 
   let dialogActions = (
     <DialogActions>
-      <Button color="primary" onClick={props.onClose}>
+      <Button color="primary" onClick={handleClose}>
         {'NO'}
       </Button>
       <Button
@@ -58,7 +90,7 @@ export default function PaymentDialog(props: IAllProps) {
         </DialogContent>
       </React.Fragment>
     );
-  } else if (disableBillingResp.called && disableBillingResp.data && disableBillingResp.data.BillingService_enableBilling) {
+  } else if (disableBillingResp.called && disableBillingResp.data && disableBillingResp.data.BillingService_disableBilling) {
     dialogContent = (
       <React.Fragment>
         <DialogContent>
@@ -69,7 +101,7 @@ export default function PaymentDialog(props: IAllProps) {
     dialogActions = (
       <React.Fragment>
         <DialogActions>
-          <Button color="primary" onClick={props.onClose}>
+          <Button color="primary" onClick={handleClose}>
             {'Close'}
           </Button>
         </DialogActions>
@@ -84,15 +116,20 @@ export default function PaymentDialog(props: IAllProps) {
       </React.Fragment>);
   }
   return (
-    <Dialog
-      fullWidth={true}
-      open={props.open}
-      onClose={props.onClose}
-      aria-labelledby="form-dialog-title">
-      <DialogTitle id="form-dialog-title">Disable Payment</DialogTitle>
-      {dialogContent}
-      {dialogActions}
-    </Dialog>
+    <div className={classes.root} color="inherit">
+      <Dialog
+        fullWidth={true}
+        open={state.modalOpen}
+        onClose={handleClose}
+        aria-labelledby="form-dialog-title">
+        <DialogTitle id="form-dialog-title">Disable Payment</DialogTitle>
+        {dialogContent}
+        {dialogActions}
+      </Dialog>
+      <Button size="small" variant="contained" className={classes.button} onClick={handleOpen}>
+        {'Disable Billing'}
+      </Button>
+    </div>
   );
 }
 

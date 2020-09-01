@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme: Theme) =>
       maxHeight: '75vh',
     },
     tableHeader: {
-      '& th' : {
+      '& th': {
         backgroundColor: '#f5f5f5',
       },
     },
@@ -163,19 +163,19 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
         <TableCell align="left">{member.user?.name || 'unknown'}</TableCell>
         <TableCell align="left">{member.user?.email || 'unknown'}</TableCell>
         <TableCell align="left">{member.role}
-            <IconButtonEdit
-              tooltip="Change Role"
-              onClick={() => {
-                setchangeConfirm(true);
-                setSelectedMember(member);
-              }}
-            />
-            <ChangeRoleDialog
-              open={changeConfirm}
-              setOpen={setchangeConfirm}
-              member={selectedMember}
-              onUpdateCallback={onUpdateCallback}
-            />
+          <IconButtonEdit
+            tooltip="Change Role"
+            onClick={() => {
+              setchangeConfirm(true);
+              setSelectedMember(member);
+            }}
+          />
+          <ChangeRoleDialog
+            open={changeConfirm}
+            setOpen={setchangeConfirm}
+            member={selectedMember}
+            onUpdateCallback={onUpdateCallback}
+          />
         </TableCell>
         <TableCell align="left">
           <IconButtonDelete
@@ -208,39 +208,39 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
       {loading ? (
         <ContentLoading />
       ) : (
-        <TableContainer className={classes.tableContainer}>
-          <Table stickyHeader={true} aria-label="sticky table">
-            <TableHead>
-              <TableRow className={classes.tableHeader}>
-                <TableCell align="left">Name</TableCell>
-                <TableCell align="left">Email</TableCell>
-                <TableCell align="left">Role</TableCell>
-                <TableCell align="left">Options</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {pageItems.map((member, i) => {
-                return getTableRow(member, i);
-              })}
-            </TableBody>
-            <TableFooter>
-              <TableRow>
-                <TablePagination
-                  rowsPerPageOptions={[5]}
-                  colSpan={3}
-                  count={props.members?.length || 0}
-                  rowsPerPage={state.rowsPerPage}
-                  page={state.page}
-                  SelectProps={{
-                    native: true,
-                  }}
-                  onChangePage={handleChangePage}
-                />
-              </TableRow>
-            </TableFooter>
-          </Table>
-        </TableContainer>
-      )}
+          <TableContainer className={classes.tableContainer}>
+            <Table stickyHeader={true} aria-label="sticky table">
+              <TableHead>
+                <TableRow className={classes.tableHeader}>
+                  <TableCell align="left">Name</TableCell>
+                  <TableCell align="left">Email</TableCell>
+                  <TableCell align="left">Role</TableCell>
+                  <TableCell align="left">Options</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {pageItems.map((member, i) => {
+                  return getTableRow(member, i);
+                })}
+              </TableBody>
+              <TableFooter>
+                <TableRow>
+                  <TablePagination
+                    rowsPerPageOptions={[5]}
+                    colSpan={3}
+                    count={props.members?.length || 0}
+                    rowsPerPage={state.rowsPerPage}
+                    page={state.page}
+                    SelectProps={{
+                      native: true,
+                    }}
+                    onChangePage={handleChangePage}
+                  />
+                </TableRow>
+              </TableFooter>
+            </Table>
+          </TableContainer>
+        )}
       <Snackbar
         open={openSnackBar}
         autoHideDuration={6000}
@@ -250,10 +250,10 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
             {'A Member is removed successfully!'}
           </Alert>
         ) : (
-          <Alert onClose={handleCloseSnackBar} severity="error">
-            {'Sorry, we couldn\'t remove the member.'}
-          </Alert>
-        )}
+            <Alert onClose={handleCloseSnackBar} severity="error">
+              {'Sorry, we couldn\'t remove the member.'}
+            </Alert>
+          )}
       </Snackbar>
     </Paper>
   );

@@ -74,6 +74,7 @@ export const GET_ORGS = gql`
     orgs(id: $id) {
       id
       name
+      billingEnabled
       members {
         orgId
         uid
