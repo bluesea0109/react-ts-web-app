@@ -17,24 +17,23 @@ const store = configureStore();
 
 ReactDOM.render(
   <React.StrictMode>
-      <ApolloProvider client={client}>
-        <Provider store={store}>
-          <Router>
-            <ThemeProvider theme={appTheme.getMuiTheme()}>
-              <SnackbarProvider
-                style={{ zIndex: 99999999999999999 }}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                maxSnack={5}
-              >
+    <ApolloProvider client={client}>
+      <Provider store={store}>
+        <Router>
+          <ThemeProvider theme={appTheme.getMuiTheme()}>
+            <SnackbarProvider
+              style={{ zIndex: 99999999999999999 }}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              maxSnack={5}>
               <AppAuthWrapper />
-              </SnackbarProvider>
-            </ThemeProvider>
-          </Router>
-        </Provider>
-      </ApolloProvider>
+            </SnackbarProvider>
+          </ThemeProvider>
+        </Router>
+      </Provider>
+    </ApolloProvider>
   </React.StrictMode>,
   document.getElementById('root'),
 );
