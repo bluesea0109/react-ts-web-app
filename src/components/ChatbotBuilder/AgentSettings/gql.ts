@@ -7,8 +7,8 @@ export const updateBotSettingsMutation = gql`
 `;
 
 export const getBotSettingsQuery = gql`
-  query($uname: String!) {
-    ChatbotService_botSettings(uname: $uname)
+  query($uname: String!, $dev: Boolean) {
+    ChatbotService_botSettings(uname: $uname, dev: $dev)
   }
 `;
 
