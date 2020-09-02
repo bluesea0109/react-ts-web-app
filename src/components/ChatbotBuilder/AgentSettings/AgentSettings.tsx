@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { Box, Grid, TextField, Typography } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
+import { Box, Button, Grid, TextField, Typography } from '@material-ui/core';
+import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab/';
 import { useSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
 import { AlphaPicker, TwitterPicker } from 'react-color';
@@ -31,9 +31,14 @@ const AgentSettings = () => {
   const { enqueueSnackbar } = useSnackbar();
   const [settings, setSettings] = useState<BotSettings>({
     name: '',
+    title: '',
+    subtitle: '',
     icon: undefined,
     primaryColor: DEFAULT_PRIMARY_COLOR,
     primaryBg: DEFAULT_PRIMARY_BG,
+  });
+  const [state, setState] = React.useState({
+    mode: 'dev',
   });
 
   const agentsData = useQuery<{ ChatbotService_agent: IAgent }>(CHATBOT_GET_AGENT, { variables: { agentId: numAgentId } });
@@ -50,7 +55,7 @@ const AgentSettings = () => {
 
   const [updateBotSettings, updateBotSettingsMutationData] = useMutation(updateBotSettingsMutation, {
     refetchQueries: [
-      { query: getBotSettingsQuery, variables: { uname: agentUname }},
+      { query: getBotSettingsQuery, variables: { uname: agentUname } },
     ],
     awaitRefetchQueries: true,
   });
@@ -102,12 +107,30 @@ const AgentSettings = () => {
 
   return (
     <Box py={4} px={2} width="100%">
+      <Box mt={1} width="100%" display="flex" justifyContent="space-between">
+        <ToggleButtonGroup
+          value={state.mode === 'dev' ? 'left' : 'right'}
+          exclusive={true}
+          onChange={(event, newAlignment) => {
+            setState({ ...state, mode: newAlignment === 'left' ? 'dev' : 'published' });
+          }}
+          aria-label="text alignment"
+        >
+          <ToggleButton disabled={loading} value="left" aria-label="left aligned">
+            DEV
+          </ToggleButton>
+          <ToggleButton disabled={loading} value="right" aria-label="right aligned">
+            PUBLISHED
+          </ToggleButton>
+        </ToggleButtonGroup>
+        {state.mode === 'dev' && <Button disabled={loading} variant="outlined" onClick={onUpdateSettingsClicked}>Update Settings</Button>}
+      </Box>
       <Grid container={true}>
         <Grid item={true} xs={6}>
           <Box p={2}>
             <TextField
               label="Agent Name"
-              disabled={loading}
+              disabled={loading || state.mode === 'published'}
               fullWidth={true}
               variant="outlined"
               value={settings.name}
@@ -119,7 +142,7 @@ const AgentSettings = () => {
           <Box p={2}>
             <TextField
               label="Greeting Title"
-              disabled={loading}
+              disabled={loading || state.mode === 'published'}
               fullWidth={true}
               variant="outlined"
               value={settings.title}
@@ -131,7 +154,7 @@ const AgentSettings = () => {
           <Box p={2}>
             <TextField
               label="Greeting Subtitle"
-              disabled={loading}
+              disabled={loading || state.mode === 'published'}
               fullWidth={true}
               multiline={true}
               variant="outlined"
@@ -145,7 +168,7 @@ const AgentSettings = () => {
       <Grid container={true}>
         <Grid item={true} xs={6}>
           <ImageUploader
-            loading={loading}
+            isLoading={loading || state.mode === 'published'}
             currentImage={settings.icon}
             label="Widget Avatar"
             onImageUpload={(url: string) => updateSettings('icon', url)}
@@ -153,7 +176,7 @@ const AgentSettings = () => {
         </Grid>
         <Grid item={true} xs={6}>
           <ImageUploader
-            loading={loading}
+            isLoading={loading || state.mode === 'published'}
             currentImage={settings.logo}
             label="Brand Logo"
             onImageUpload={(url: string) => updateSettings('logo', url)}
@@ -162,40 +185,42 @@ const AgentSettings = () => {
         <Grid item={true} xs={6}>
           <Box p={2} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Typography variant="h6">Widget Primary Color</Typography>
-            <Box mt={2} width="100%" height={100} style={{ backgroundColor: `rgba(${settings.primaryColor.r}, ${settings.primaryColor.g}, ${settings.primaryColor.b}, ${settings.primaryColor.a})`}} />
+            <Box mt={2} width="100%" height={100} style={{ backgroundColor: `rgba(${settings.primaryColor.r}, ${settings.primaryColor.g}, ${settings.primaryColor.b}, ${settings.primaryColor.a})` }} />
             <Box mt={5} mb={1} mx="auto">
-              <TwitterPicker
+              {state.mode === 'dev' && <TwitterPicker
                 triangle="hide"
                 color={settings.primaryColor}
-                onChange={color => updateSettings('primaryColor', color.rgb)} />
+                onChange={color => updateSettings('primaryColor', color.rgb)} />}
             </Box>
             <Box mt={4} mb={1} mx="auto">
-              <AlphaPicker
+              {state.mode === 'dev' && <AlphaPicker
                 color={settings.primaryColor}
-                onChange={color => updateSettings('primaryColor', color.rgb)} />
+                onChange={color => updateSettings('primaryColor', color.rgb)} />}
             </Box>
           </Box>
         </Grid>
         <Grid item={true} xs={6}>
           <Box p={2} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Typography variant="h6">Widget Primary Background</Typography>
-            <Box mt={2} width="100%" height={100} style={{ backgroundColor: `rgba(${settings.primaryBg.r}, ${settings.primaryBg.g}, ${settings.primaryBg.b}, ${settings.primaryBg.a})`}} />
+            <Box mt={2} width="100%" height={100} style={{ backgroundColor: `rgba(${settings.primaryBg.r}, ${settings.primaryBg.g}, ${settings.primaryBg.b}, ${settings.primaryBg.a})` }} />
             <Box mt={5} mb={1} mx="auto">
-              <TwitterPicker
+              {state.mode === 'dev' && <TwitterPicker
                 triangle="hide"
                 color={settings.primaryBg}
                 onChange={color => updateSettings('primaryBg', color.rgb)} />
+              }
             </Box>
             <Box mt={4} mb={1} mx="auto">
-              <AlphaPicker
+              {state.mode === 'dev' && <AlphaPicker
                 color={settings.primaryBg}
                 onChange={color => updateSettings('primaryBg', color.rgb)} />
+              }
             </Box>
           </Box>
         </Grid>
       </Grid>
       <Box mt={4} width="100%" display="flex" justifyContent="center">
-        <Button disabled={loading} variant="outlined" onClick={onUpdateSettingsClicked}>Update Settings</Button>
+        {state.mode === 'dev' && <Button disabled={loading} variant="outlined" onClick={onUpdateSettingsClicked}>Update Settings</Button>}
       </Box>
     </Box>
   );
