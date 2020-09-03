@@ -48,7 +48,7 @@ const AgentSettings = () => {
   const botSettings = useQuery<{ ChatbotService_botSettings: any }>(getBotSettingsQuery, {
     variables: {
       uname: agentUname,
-      dev: true,
+      dev: state.mode === 'dev',
     },
     skip: !agentUname,
   });
@@ -98,6 +98,7 @@ const AgentSettings = () => {
           },
         },
       });
+      botSettings.refetch();
     } catch (e) {
       enqueueSnackbar('An error occurred while updating settings', { variant: 'error' });
     }
