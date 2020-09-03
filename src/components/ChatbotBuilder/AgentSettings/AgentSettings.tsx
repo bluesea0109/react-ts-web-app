@@ -48,7 +48,7 @@ const AgentSettings = () => {
   const botSettings = useQuery<{ ChatbotService_botSettings: any }>(getBotSettingsQuery, {
     variables: {
       uname: agentUname,
-      dev: state.mode === 'dev' ? true : false,
+      dev: state.mode === 'dev',
     },
     skip: !agentUname,
   });
