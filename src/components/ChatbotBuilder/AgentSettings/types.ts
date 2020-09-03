@@ -13,6 +13,7 @@ export interface BotSettings {
   logo?: string;
   primaryColor: ColorItem;
   primaryBg: ColorItem;
+  widgetBg: string;
 }
 
 export interface IBotIconUploadUrlQueryResult {
