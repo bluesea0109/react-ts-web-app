@@ -36,7 +36,8 @@ const DEFAULT_PRIMARY_BG: ColorItem = {
   a: 1.0,
 };
 
-const DEFAULT_WIDGET_BG = '#FFFFFF';
+const DEFAULT_WIDGET_BG =
+  'linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 100%)';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -103,6 +104,7 @@ const AgentSettings = () => {
       setSettings({
         primaryColor: DEFAULT_PRIMARY_COLOR,
         primaryBg: DEFAULT_PRIMARY_BG,
+        widgetBg: DEFAULT_WIDGET_BG,
         ...updatedSettings,
       });
     }
@@ -329,7 +331,13 @@ const AgentSettings = () => {
           </Grid>
 
           <Grid item={true} xs={4}>
-            <GradientPicker color="#FFFFF" label="Widget Background Color" />
+            <GradientPicker
+              defaultValue={settings.widgetBg}
+              label="Widget Background Color"
+              onChange={(gradient) =>
+                updateSettings('widgetBg', gradient.cssBackground)
+              }
+            />
           </Grid>
 
           <Grid xs={12} item={true}>

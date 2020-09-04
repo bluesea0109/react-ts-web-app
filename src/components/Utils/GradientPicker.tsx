@@ -3,7 +3,9 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Paper,
   Slider,
+  TextField,
   Tooltip,
   Typography,
 } from '@material-ui/core';
@@ -21,15 +23,11 @@ import {
   CallMade,
   CallReceived,
   Delete,
+  Edit,
 } from '@material-ui/icons';
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { ColorResult, SketchPicker } from 'react-color';
-
-export interface IGradientPickerProps {
-  color: string;
-  label?: string;
-}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -41,6 +39,9 @@ const useStyles = makeStyles((theme: Theme) =>
     card: {
       backgroundColor: theme.palette.background.default,
       padding: theme.spacing(2),
+    },
+    textField: {
+      width: '100%',
     },
     point: {
       width: 10,
@@ -55,6 +56,16 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       display: 'flex',
       justifyContent: 'center',
+    },
+    paper: {
+      padding: theme.spacing(2),
+      position: 'relative',
+      width: '100%',
+    },
+    editCssIcon: {
+      position: 'absolute',
+      top: 5,
+      right: 5,
     },
     thumbIcon: {
       position: 'absolute',
@@ -86,31 +97,6 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-// const GradientMap = {
-//   linear: {
-//     top: {
-//       '-moz-linear-gradient': 'top',
-//       '-webkit-linear-gradient': 'top',
-//       'linear-gradient': 'to bottom',
-//     },
-//     left: {
-//       '-moz-linear-gradient': 'left',
-//       '-webkit-linear-gradient': 'left',
-//       'linear-gradient': 'to right',
-//     },
-//     '-45deg': {
-//       '-moz-linear-gradient': '-45deg',
-//       '-webkit-linear-gradient': '-45deg',
-//       'linear-gradient': '135deg',
-//     },
-//     '45deg': {
-//       '-moz-linear-gradient': '45deg',
-//       '-webkit-linear-gradient': '45deg',
-//       'linear-gradient': '45deg',
-//     },
-//   },
-// };
-
 interface IGradientPoint {
   position: number;
   color: {
@@ -131,6 +117,11 @@ type GradientDirection =
 interface IGradientSpec {
   direction: GradientDirection;
   points: IGradientPoint[];
+}
+
+export interface IGradient {
+  gradient: IGradientSpec;
+  cssBackground: string;
 }
 
 const BLACK = {
@@ -181,15 +172,88 @@ const GradientSlider = withStyles({
   },
 })(Slider);
 
-const GradientPicker = ({ color, label }: IGradientPickerProps) => {
+export interface IGradientPickerProps {
+  defaultValue?: string;
+  label?: string;
+  onChange?: (result: IGradient) => void;
+}
+
+const GradientPicker = ({
+  defaultValue,
+  label,
+  onChange,
+}: IGradientPickerProps) => {
   const classes = useStyles();
 
-  const [gradient, setGradient] = useState(DEFAULT_GRADIENT);
+  const gradientToCss = (gradient: IGradientSpec) => {
+    let browserParam = 'linear-gradient';
+    if (gradient.direction === 'ellipse at center') {
+      browserParam = 'radial-gradient';
+    }
+
+    const pointsStr = gradient.points.map((p) => {
+      return `${rgbaFromGradientPoint(p)} ${p.position}%`;
+    });
+
+    const css = `${browserParam}(${gradient.direction}, ${pointsStr.join(
+      ', ',
+    )})`;
+
+    cssToGradient(css);
+
+    return css;
+  };
+
+  const cssToGradient = (css: string) => {
+    const direction = css.split('(')[1]?.split(',')[0] as GradientDirection;
+    const rgbas = css.split('rgba(');
+    rgbas.shift();
+
+    const points = rgbas.map((rgba: string) => {
+      const position = parseInt(rgba.split(/[ %]+/)[1]);
+      const split = rgba.split(',');
+
+      const point: IGradientPoint = {
+        position,
+        color: {
+          r: parseInt(split[0]),
+          g: parseInt(split[1]),
+          b: parseInt(split[2]),
+          a: parseInt(split[3]),
+        },
+      };
+      return point;
+    });
+
+    const result: IGradientSpec = {
+      direction,
+      points,
+    };
+
+    return result;
+  };
+
+  const [gradient, setGradient] = useState(
+    defaultValue ? cssToGradient(defaultValue) : DEFAULT_GRADIENT,
+  );
   const [editingPoint, setEditingPoint] = useState<number | undefined>();
   const [gradientTypesMenu, showGradientTypesMenu] = useState(false);
   const [gradientTypesAnchor, setAnchor] = useState<null | HTMLElement>(null);
+  const [editingCss, setEditingCss] = useState(false);
 
-  useEffect(() => {});
+  useEffect(() => {
+    if (defaultValue) {
+      setGradient(cssToGradient(defaultValue));
+    }
+  }, [defaultValue]);
+
+  useEffect(() => {
+    onChange?.({
+      gradient,
+      cssBackground: gradientToCss(gradient),
+    });
+    // eslint-disable-next-line
+  }, [gradient]);
 
   const setColor = (color?: ColorResult, pointIndex?: number) => {
     if (!((pointIndex as number) >= 0)) {
@@ -255,23 +319,6 @@ const GradientPicker = ({ color, label }: IGradientPickerProps) => {
     return `rgba(${point.color.r},${point.color.g},${point.color.b},${
       point.color.a || 1
     })`;
-  };
-
-  const gradientToCss = (gradient: IGradientSpec) => {
-    let browserParam = 'linear-gradient';
-    if (gradient.direction === 'ellipse at center') {
-      browserParam = 'radial-gradient';
-    }
-
-    const pointsStr = gradient.points.map((p) => {
-      return `${rgbaFromGradientPoint(p)} ${p.position}%`;
-    });
-
-    const css = `${browserParam}(${gradient.direction}, ${pointsStr.join(
-      ', ',
-    )})`;
-
-    return css;
   };
 
   const setGradientDirection = (value: GradientDirection) => {
@@ -430,6 +477,38 @@ const GradientPicker = ({ color, label }: IGradientPickerProps) => {
             onChange={(newColor) => setColor(newColor, editingPoint)}
           />
         )}
+      </Box>
+      <Box className={classes.relativeContainer} mt={5} mb={1} mx="auto">
+        <Paper className={classes.paper}>
+          {!editingCss && (
+            <div>
+              {gradientToCss(gradient)}
+              <IconButton
+                className={classes.editCssIcon}
+                size="small"
+                onClick={() => setEditingCss(true)}>
+                <Edit />
+              </IconButton>
+            </div>
+          )}
+
+          {editingCss && (
+            <div>
+              <TextField
+                className={classes.textField}
+                label="css: background-color"
+                multiline={true}
+                rows={4}
+                defaultValue={gradientToCss(gradient)}
+                onBlur={(event) => {
+                  setGradient(cssToGradient(event.target.value));
+                  setEditingCss(false);
+                }}
+                variant="outlined"
+              />
+            </div>
+          )}
+        </Paper>
       </Box>
     </div>
   );

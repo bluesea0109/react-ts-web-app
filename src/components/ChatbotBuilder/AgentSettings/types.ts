@@ -1,3 +1,4 @@
+import { IGradient } from '../../Utils/GradientPicker';
 export interface ColorItem {
   r: number;
   g: number;
