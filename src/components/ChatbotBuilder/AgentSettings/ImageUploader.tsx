@@ -9,7 +9,12 @@ import { Maybe } from '../../../utils/types';
 import { botIconUploadQuery } from './gql';
 import { IBotIconUploadUrlQueryResult } from './types';
 
-const ImageUploader = ({ onImageUpload, isLoading, currentImage, label }: any) => {
+const ImageUploader = ({
+  onImageUpload,
+  isLoading,
+  currentImage,
+  label,
+}: any) => {
   const { agentId } = useParams();
   const numAgentId = Number(agentId);
   const { enqueueSnackbar } = useSnackbar();
@@ -27,13 +32,16 @@ const ImageUploader = ({ onImageUpload, isLoading, currentImage, label }: any) =
     }
   }, [currentImage]);
 
-  const imageUploadUrlQuery = useQuery<IBotIconUploadUrlQueryResult>(botIconUploadQuery, {
-    variables: {
-      agentId: numAgentId,
-      basename: file?.name,
+  const imageUploadUrlQuery = useQuery<IBotIconUploadUrlQueryResult>(
+    botIconUploadQuery,
+    {
+      variables: {
+        agentId: numAgentId,
+        basename: file?.name,
+      },
+      skip: !file,
     },
-    skip: !file,
-  });
+  );
 
   useEffect(() => {
     if (!!file) {
@@ -54,7 +62,9 @@ const ImageUploader = ({ onImageUpload, isLoading, currentImage, label }: any) =
           } catch (e) {
             console.log(e);
             console.log(e.response);
-            enqueueSnackbar('An error occurred while uploading image', { variant: 'error' });
+            enqueueSnackbar('An error occurred while uploading image', {
+              variant: 'error',
+            });
           }
 
           setIsFileLoading(false);
@@ -70,15 +80,12 @@ const ImageUploader = ({ onImageUpload, isLoading, currentImage, label }: any) =
     <Box>
       <Box p={2}>
         <Box mb={2}>
-          <Typography variant="h6">{label}</Typography>
+          <Typography variant="subtitle1">{label}</Typography>
         </Box>
-        <Button
-          disabled={loading}
-          variant="contained"
-          component="label"
-          style={{ padding: 6 }}>
+        <Button disabled={loading} variant="contained" component="label">
           {!file && !currentImage && 'Add Image'}
-          {(!!file || (!!currentImage && currentImage !== '')) && 'Replace Image'}
+          {(!!file || (!!currentImage && currentImage !== '')) &&
+            'Replace Image'}
           <input
             disabled={loading}
             name="image"
@@ -93,12 +100,20 @@ const ImageUploader = ({ onImageUpload, isLoading, currentImage, label }: any) =
       </Box>
       {!!file && (
         <Box p={2}>
-          <img src={URL.createObjectURL(file)} alt="" style={{ maxWidth: 400, maxHeight: 400, objectFit: 'contain' }} />
+          <img
+            src={URL.createObjectURL(file)}
+            alt=""
+            style={{ width: 100, height: 100, objectFit: 'cover' }}
+          />
         </Box>
       )}
-      {(!file && !!currentImage && currentImage !== '') && (
+      {!file && !!currentImage && currentImage !== '' && (
         <Box p={2}>
-          <img src={currentImage} alt="" style={{ maxWidth: 400, maxHeight: 400, objectFit: 'contain' }} />
+          <img
+            src={currentImage}
+            alt=""
+            style={{ width: 100, height: 100, objectFit: 'cover' }}
+          />
         </Box>
       )}
     </Box>

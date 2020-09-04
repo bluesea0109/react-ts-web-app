@@ -1,3 +1,4 @@
+import { IGradient } from '../../Utils/GradientPicker';
 export interface ColorItem {
   r: number;
   g: number;
@@ -13,6 +14,7 @@ export interface BotSettings {
   logo?: string;
   primaryColor: ColorItem;
   primaryBg: ColorItem;
+  widgetBg: string;
 }
 
 export interface IBotIconUploadUrlQueryResult {
