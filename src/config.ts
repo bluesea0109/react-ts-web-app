@@ -2,8 +2,8 @@ import firebase from 'firebase/app';
 
 const dev = {
   projectId: 'bavard-dev',
-  apiBaseUrl: 'https://api-gateway-dot-bavard-dev.appspot.com',
-  apiUrl: 'https://api-gateway-dot-bavard-dev.appspot.com/graphql',
+  apiBaseUrl: 'https://api-gateway-6ocpybjo4q-uw.a.run.app',
+  apiUrl: 'https://api-gateway-6ocpybjo4q-uw.a.run.app/graphql',
   predictionServiceUrl: 'https://prediction-service-dot-bavard-dev.appspot.com/graphql',
   chatbotUrl: 'https://bavard-chatbot.web.app/widget/index.html',
   stripePublicKey: 'pk_test_51HL9t1DslhlvaFGjUIoSzWldID1pYsNstl7pRQadJQ2EGohCGoXuGrrEPr8K7bj4NyZKlwU3vMv8fM2bRSrvSNHK00nQSkQKke',
