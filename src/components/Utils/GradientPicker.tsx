@@ -74,20 +74,24 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.grey[500],
     },
     addButton: {
+      height: 25,
+      width: 25,
       position: 'absolute',
       bottom: 5,
       left: 'calc(50% - 20px)',
-      backgroundColor: 'rgba(255,255,255,.7)',
+      backgroundColor: 'rgba(255,255,255,.9)',
       color: theme.palette.grey[500],
       '&:hover': {
         backgroundColor: 'rgba(255,255,255,1)',
       },
     },
     gradientTypeButton: {
+      height: 20,
+      width: 20,
       position: 'absolute',
       left: 5,
       top: 5,
-      backgroundColor: 'rgba(255,255,255,.7)',
+      backgroundColor: 'rgba(255,255,255,.9)',
       color: theme.palette.grey[500],
       '&:hover': {
         backgroundColor: 'rgba(255,255,255,1)',
@@ -165,17 +169,17 @@ const directionIconMap = {
 
 const GradientSlider = withStyles({
   rail: {
-    opacity: 0.1,
+    opacity: 0,
   },
   track: {
-    opacity: 0.1,
+    opacity: 0,
   },
 })(Slider);
 
 export interface IGradientPickerProps {
   defaultValue?: string;
   label?: string;
-  onChange?: (result: IGradient) => void;
+  onChange?: (result: string) => void;
 }
 
 const GradientPicker = ({
@@ -199,8 +203,6 @@ const GradientPicker = ({
       ', ',
     )})`;
 
-    cssToGradient(css);
-
     return css;
   };
 
@@ -211,7 +213,7 @@ const GradientPicker = ({
 
     const points = rgbas.map((rgba: string) => {
       const position = parseInt(rgba.split(/[ %]+/)[1]);
-      const split = rgba.split(',');
+      const split = rgba.split(/[,)]+/);
 
       const point: IGradientPoint = {
         position,
@@ -219,7 +221,7 @@ const GradientPicker = ({
           r: parseInt(split[0]),
           g: parseInt(split[1]),
           b: parseInt(split[2]),
-          a: parseInt(split[3]),
+          a: parseFloat(split[3]),
         },
       };
       return point;
@@ -233,12 +235,24 @@ const GradientPicker = ({
     return result;
   };
 
+  const rgbaFromGradientPoint = (point: IGradientPoint) => {
+    let alpha = 1;
+    if (point.color.a !== undefined) {
+      alpha = point.color.a;
+    }
+
+    const rgbastr = `rgba(${point.color.r},${point.color.g},${point.color.b},${alpha})`;
+
+    return rgbastr;
+  };
+
   const [gradient, setGradient] = useState(
     defaultValue ? cssToGradient(defaultValue) : DEFAULT_GRADIENT,
   );
   const [editingPoint, setEditingPoint] = useState<number | undefined>();
   const [gradientTypesMenu, showGradientTypesMenu] = useState(false);
   const [gradientTypesAnchor, setAnchor] = useState<null | HTMLElement>(null);
+
   const [editingCss, setEditingCss] = useState(false);
 
   useEffect(() => {
@@ -247,13 +261,10 @@ const GradientPicker = ({
     }
   }, [defaultValue]);
 
-  useEffect(() => {
-    onChange?.({
-      gradient,
-      cssBackground: gradientToCss(gradient),
-    });
-    // eslint-disable-next-line
-  }, [gradient]);
+  const updateGradient = (newGradient: IGradientSpec) => {
+    setGradient(newGradient);
+    onChange?.(gradientToCss(newGradient));
+  };
 
   const setColor = (color?: ColorResult, pointIndex?: number) => {
     if (!((pointIndex as number) >= 0)) {
@@ -261,6 +272,7 @@ const GradientPicker = ({
     }
 
     let rgb = color?.rgb;
+
     if (!rgb) {
       rgb = gradient.points[pointIndex as number].color;
     }
@@ -279,10 +291,11 @@ const GradientPicker = ({
       return p;
     });
 
-    setGradient({
+    const grad = {
       direction: gradient.direction,
       points: newPoints,
-    });
+    };
+    updateGradient(grad);
   };
 
   const addNewPoint = () => {
@@ -300,7 +313,7 @@ const GradientPicker = ({
       points,
     };
 
-    setGradient(newGradient);
+    updateGradient(newGradient);
     setEditingPoint(newPointIndex);
   };
 
@@ -309,22 +322,18 @@ const GradientPicker = ({
       return index !== position;
     });
 
-    setGradient({
+    const grad = {
       direction: gradient.direction,
       points,
-    });
-  };
-
-  const rgbaFromGradientPoint = (point: IGradientPoint) => {
-    return `rgba(${point.color.r},${point.color.g},${point.color.b},${
-      point.color.a || 1
-    })`;
+    };
+    updateGradient(grad);
+    onChange?.(gradientToCss(grad));
   };
 
   const setGradientDirection = (value: GradientDirection) => {
     const newGradient = gradient;
     newGradient.direction = value;
-    setGradient(newGradient);
+    updateGradient(newGradient);
     showGradientTypesMenu(false);
   };
 
@@ -338,7 +347,7 @@ const GradientPicker = ({
       return p;
     });
 
-    setGradient(newGradient);
+    updateGradient(newGradient);
     setColor(undefined, editingPoint);
   };
 
@@ -438,7 +447,6 @@ const GradientPicker = ({
           }}
           step={5}
           onChangeCommitted={handleSliderChange}
-          onChange={handleSliderChange}
           defaultValue={_.map(DEFAULT_GRADIENT.points, 'position') || []}
           value={_.map(gradient.points, 'position') || []}
         />
@@ -469,13 +477,15 @@ const GradientPicker = ({
 
       <Box className={classes.relativeContainer} mt={5} mb={1} mx="auto">
         {(editingPoint as number) >= 0 && (
-          <SketchPicker
-            className={classes.sketchPicker}
-            color={rgbaFromGradientPoint(
-              gradient.points[editingPoint as number],
-            )}
-            onChange={(newColor) => setColor(newColor, editingPoint)}
-          />
+          <div>
+            <SketchPicker
+              className={classes.sketchPicker}
+              color={rgbaFromGradientPoint(
+                gradient.points[editingPoint as number],
+              )}
+              onChange={(newColor) => setColor(newColor, editingPoint)}
+            />
+          </div>
         )}
       </Box>
       <Box className={classes.relativeContainer} mt={5} mb={1} mx="auto">
@@ -501,7 +511,7 @@ const GradientPicker = ({
                 rows={4}
                 defaultValue={gradientToCss(gradient)}
                 onBlur={(event) => {
-                  setGradient(cssToGradient(event.target.value));
+                  updateGradient(cssToGradient(event.target.value));
                   setEditingCss(false);
                 }}
                 variant="outlined"

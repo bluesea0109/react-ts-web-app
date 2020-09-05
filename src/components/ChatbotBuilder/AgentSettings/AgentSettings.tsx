@@ -322,11 +322,9 @@ const AgentSettings = () => {
 
       <Grid item={true} xs={4}>
         <GradientPicker
-          defaultValue={settings.widgetBg}
+          defaultValue={updatedSettings?.widgetBg}
           label="Widget Background Color"
-          onChange={(gradient) =>
-            updateSettings('widgetBg', gradient.cssBackground)
-          }
+          onChange={(gradient) => updateSettings('widgetBg', gradient)}
         />
       </Grid>
 
