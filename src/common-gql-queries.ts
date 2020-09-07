@@ -39,6 +39,10 @@ export const CREATE_ORG = gql`
     createOrg(name: $name) {
       id
       name
+      members {
+        uid
+        role
+      }
     }
   }
 `;

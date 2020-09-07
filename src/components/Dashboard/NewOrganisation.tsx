@@ -1,9 +1,22 @@
 import { useMutation } from '@apollo/client';
-import { Button, Card, createStyles, LinearProgress, makeStyles, TextField, Theme, Typography } from '@material-ui/core';
+import {
+  Button,
+  Card,
+  createStyles,
+  LinearProgress,
+  makeStyles,
+  TextField,
+  Theme,
+  Typography,
+} from '@material-ui/core';
 import clsx from 'clsx';
 import React, { useState } from 'react';
 import { resetApolloContext } from '../../apollo-client';
-import { CREATE_ORG, GET_CURRENT_USER } from '../../common-gql-queries';
+import {
+  CREATE_ORG,
+  GET_CURRENT_USER,
+  UPDATE_ACTIVE_ORG,
+} from '../../common-gql-queries';
 import ApolloErrorPage from '../ApolloErrorPage';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -27,26 +40,49 @@ function NewOrganisation() {
   });
 
   const [createOrg, { loading, error }] = useMutation(CREATE_ORG, {
-    refetchQueries: [{
-      query: GET_CURRENT_USER,
-    }],
+    refetchQueries: [
+      {
+        query: GET_CURRENT_USER,
+      },
+    ],
+    awaitRefetchQueries: true,
+  });
+
+  const [activateOrg, activateResult] = useMutation(UPDATE_ACTIVE_ORG, {
+    refetchQueries: [
+      {
+        query: GET_CURRENT_USER,
+      },
+    ],
     awaitRefetchQueries: true,
   });
 
   if (error) {
     // TODO: handle errors
-    return <ApolloErrorPage error={error}/>;
+    return <ApolloErrorPage error={error} />;
   }
 
   const submit = async () => {
-    await createOrg({ variables: { name: state.name } });
+    const org = await createOrg({ variables: { name: state.name } });
+    // This should happen before activating, otherwise it fails
     resetApolloContext();
-    setState({ name: ''});
+
+    const orgId = org.data.createOrg?.id;
+
+    if (orgId) {
+      await activateOrg({
+        variables: {
+          orgId,
+        },
+      });
+    }
+
+    setState({ name: '' });
   };
 
   return (
     <Card className={clsx(classes.root)}>
-      {loading && <LinearProgress />}
+      {(loading || activateResult.loading) && <LinearProgress />}
       <Typography variant="h4">{'New Organisation'}</Typography>
       <br />
       <TextField
@@ -55,11 +91,18 @@ function NewOrganisation() {
         type="string"
         value={state.name || ''}
         variant="outlined"
-        onChange={(e: any) => setState({ ...state, name: (e.target.value) })}
+        onChange={(e: any) => setState({ ...state, name: e.target.value })}
         className={clsx(classes.inputBox)}
       />
       <br />
-      <Button className={clsx(classes.button)} disabled={loading || !state.name} variant="contained" color="primary" onClick={submit}>{'Submit'}</Button>
+      <Button
+        className={clsx(classes.button)}
+        disabled={loading || activateResult.loading || !state.name}
+        variant="contained"
+        color="primary"
+        onClick={submit}>
+        {'Submit'}
+      </Button>
     </Card>
   );
 }
