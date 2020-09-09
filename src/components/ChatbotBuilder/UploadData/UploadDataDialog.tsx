@@ -237,7 +237,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
           slots,
         },
       });
-      console.log('SLOTS RESULT: ', result);
+
       if (result?.errors) {
         throw new Error(JSON.stringify(result.errors));
       }
@@ -275,7 +275,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
             conversation: tcInput,
           },
         });
-        console.log('TC RESULT: ', result);
+
         if (result?.errors) {
           throw new Error(JSON.stringify(result.errors));
         }
@@ -298,7 +298,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
 
   uploadEmailActions = async (emailActions: IEmailAction[]) => {
     this.setStepStatus('Email Actions', 'importing');
-    console.log('EMAIL ACTIONS: ', emailActions);
+
     if (emailActions.length === 0) {
       return this.setStepStatus('Email Actions', 'completed');
     }
@@ -318,7 +318,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
             userResponseOptionIDs: _.map(ea.userResponseOptions || [], 'id'),
           },
         });
-        console.log('EA RESULT: ', result);
+
         if (result?.errors) {
           throw new Error(JSON.stringify(result.errors));
         }
