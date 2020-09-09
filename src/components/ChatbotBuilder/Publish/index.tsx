@@ -64,7 +64,7 @@ export default function PublishAgent() {
 
   const [publishAgent] = useMutation(publishAgentMutation, {
     refetchQueries: [
-      { query: getPublishedAgentsQuery, variables: { agentId } },
+      { query: getPublishedAgentsQuery, variables: { agentId, settingsOnly: state.settingsOnly } },
     ],
     awaitRefetchQueries: true,
   });
@@ -86,7 +86,7 @@ export default function PublishAgent() {
     setState((prevState) => ({ ...prevState, loading: true, modalOpen: false }));
     try {
       const result = await publishAgent({
-        variables: { agentId },
+        variables: { agentId, settingsOnly: state.settingsOnly },
       });
       if (result.errors) {
         throw new Error(JSON.stringify(result.errors));
