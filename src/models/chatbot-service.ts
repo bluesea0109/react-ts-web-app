@@ -36,6 +36,7 @@ export interface IExampleInput {
 export enum ActionType {
   NEW_ACTION = 'NEW_ACTION',
   UTTERANCE_ACTION = 'UTTERANCE_ACTION',
+  EMAIL_ACTION = 'EMAIL_ACTION',
 }
 
 export interface IIntent {
@@ -139,6 +140,12 @@ export interface IUtteranceAction extends IActionBase {
   text: string;
 }
 
+export interface IEmailAction extends IActionBase {
+  to: string;
+  from?: string;
+  text: string;
+}
+
 export type AnyAction = IUtteranceAction;
 
 export interface IUserResponseOption extends IUserResponseOptionInput {
@@ -171,4 +178,9 @@ export interface IPublishedAgent {
   createdAt: string;
   status: string;
   dialogueConfig: any;
+}
+
+export interface ISlot {
+  name: string;
+  type: string;
 }

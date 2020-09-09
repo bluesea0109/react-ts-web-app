@@ -26,8 +26,8 @@ import { useParams } from 'react-router-dom';
 import {
   CHATBOT_GET_TAGS,
   CHATBOT_GET_UTTERANCE_ACTIONS,
-  CREATE_TRAINING_CONVERSATIONS,
-  UPDATE_TRAINING_CONVERSATIONS,
+  CREATE_TRAINING_CONVERSATION,
+  UPDATE_TRAINING_CONVERSATION,
 } from '../../../common-gql-queries';
 import {
   IIntent,
@@ -86,8 +86,8 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
   const [actionType, setActionType] = useState<string>('UTTER');
   const [loading, setLoding] = useState<boolean>(false);
 
-  const [createConversations] = useMutation(CREATE_TRAINING_CONVERSATIONS);
-  const [updateConversations] = useMutation(UPDATE_TRAINING_CONVERSATIONS);
+  const [createConversation] = useMutation(CREATE_TRAINING_CONVERSATION);
+  const [updateConversation] = useMutation(UPDATE_TRAINING_CONVERSATION);
   const intentsData = useQuery<IGetIntents>(getIntentsQuery, {
     variables: { agentId: numAgentId },
   });
@@ -192,7 +192,7 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
         if (isUpdate) {
           agentActions.map((i: any) => i.isAgent && delete i.isAgent);
           userActions.map((i: any) => i.isUser && delete i.isUser);
-          response = await updateConversations({
+          response = await updateConversation({
             variables: {
               conversationId: conversation?.id,
               agentId: numAgentId,
@@ -201,7 +201,7 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
             },
           });
         } else {
-          response = await createConversations({
+          response = await createConversation({
             variables: {
               conversation: {
                 agentId: numAgentId,

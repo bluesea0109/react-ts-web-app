@@ -16,11 +16,18 @@ import _ from 'lodash';
 import React from 'react';
 import {
   CHATBOT_CREATE_AGENT,
+  CHATBOT_CREATE_EMAIL_ACTION,
+  CHATBOT_CREATE_SLOTS,
   CHATBOT_CREATE_TAGS,
   CHATBOT_GET_AGENT,
   CHATBOT_GET_AGENTS,
+  CREATE_TRAINING_CONVERSATION,
 } from '../../../common-gql-queries';
-import { ActionType } from '../../../models/chatbot-service';
+import {
+  ActionType,
+  IEmailAction,
+  ISlot,
+} from '../../../models/chatbot-service';
 import {
   IAgentGraphPolicy,
   IExampleInput,
@@ -57,12 +64,14 @@ import {
 } from '../Options/types';
 import {
   IAgentAction,
-  IAgentData,
-  IAgentDataExample,
+  IAgentDataExport,
   IAgentDataIntent,
   IAgentDataIntentGqlVars,
   ICreateAgentMutationResult,
   IGetAgentQueryResult,
+  INLUExample,
+  ITrainingConversation,
+  ITrainingConversationMutationInput,
   IUserResponseOptionExport,
 } from './types';
 
@@ -98,10 +107,13 @@ type stepName =
   | 'Graph Policies'
   | 'Options'
   | 'Update Utterance Actions'
-  | 'Settings'
+  | 'Widget Config'
   | 'Examples'
   | 'URO Images'
-  | 'Bot Icons';
+  | 'Bot Icons'
+  | 'Email Actions'
+  | 'Training Conversations'
+  | 'Slots';
 
 interface IStep {
   name: string;
@@ -131,7 +143,7 @@ const styles = (theme: Theme) => ({
 });
 
 class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
-  totalSteps = 11;
+  totalSteps = 14;
   constructor(props: IProps) {
     super(props);
 
@@ -187,10 +199,10 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     this.props.onCancel?.();
   }
 
-  formatJsonData = (json: string): IAgentData => {
-    const removeDuplicates = (exs: IAgentDataExample[]) => {
+  formatJsonData = (json: string): IAgentDataExport => {
+    const removeDuplicates = (exs: INLUExample[]) => {
       const seen = new Set<string>();
-      const result: IAgentDataExample[] = [];
+      const result: INLUExample[] = [];
       if (!exs) {
         exs = [];
       }
@@ -204,19 +216,126 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       return result;
     };
 
-    const data = JSON.parse(json) as IAgentData;
+    const data = JSON.parse(json) as IAgentDataExport;
 
-    if (!data.name) {
-      data.name = data.uname;
-    }
-    data.examples = removeDuplicates(data.examples);
+    data.nluData.examples = removeDuplicates(data.nluData.examples);
     return data;
+  }
+
+  uploadSlots = async (slots: ISlot[]) => {
+    this.setStepStatus('Slots', 'importing');
+
+    if (slots.length === 0) {
+      return this.setStepStatus('Slots', 'completed');
+    }
+
+    try {
+      const result = await this.props.client?.mutate({
+        mutation: CHATBOT_CREATE_SLOTS,
+        variables: {
+          agentId: this.state.agentId,
+          slots,
+        },
+      });
+      console.log('SLOTS RESULT: ', result);
+      if (result?.errors) {
+        throw new Error(JSON.stringify(result.errors));
+      }
+    } catch (e) {
+      this.setStepStatus('Slots', 'error');
+      this.addToErrors('Error in uploading slots', JSON.stringify(e));
+    }
+
+    this.setStepStatus('Slots', 'completed');
+  }
+
+  uploadTrainingConversations = async (
+    trainingConversations: ITrainingConversation[],
+  ) => {
+    this.setStepStatus('Training Conversations', 'importing');
+
+    if (trainingConversations.length === 0) {
+      return this.setStepStatus('Training Conversations', 'completed');
+    }
+
+    let done = 0;
+    try {
+      if (!this.state.agentId) {
+        throw new Error('Agent does not exist');
+      }
+      const length = trainingConversations.length;
+      for (const tc of trainingConversations) {
+        const tcInput: ITrainingConversationMutationInput = {
+          agentId: this.state.agentId,
+          ...tc,
+        };
+        const result = await this.props.client?.mutate({
+          mutation: CREATE_TRAINING_CONVERSATION,
+          variables: {
+            conversation: tcInput,
+          },
+        });
+        console.log('TC RESULT: ', result);
+        if (result?.errors) {
+          throw new Error(JSON.stringify(result.errors));
+        }
+        done++;
+        this.setStepStatus(
+          'Training Conversations',
+          'importing',
+          done / length,
+        );
+      }
+      this.setStepStatus('Training Conversations', 'completed');
+    } catch (e) {
+      this.setStepStatus('Training Conversations', 'error');
+      this.addToErrors(
+        'Error in uploading Training Conversations',
+        JSON.stringify(e),
+      );
+    }
+  }
+
+  uploadEmailActions = async (emailActions: IEmailAction[]) => {
+    this.setStepStatus('Email Actions', 'importing');
+    console.log('EMAIL ACTIONS: ', emailActions);
+    if (emailActions.length === 0) {
+      return this.setStepStatus('Email Actions', 'completed');
+    }
+
+    try {
+      const length = emailActions.length;
+      let done = 0;
+      for (const ea of emailActions) {
+        const result = await this.props.client?.mutate({
+          mutation: CHATBOT_CREATE_EMAIL_ACTION,
+          variables: {
+            agentId: this.state.agentId,
+            name: ea.name,
+            text: ea.text,
+            to: ea.to,
+            from: ea.from,
+            userResponseOptionIDs: _.map(ea.userResponseOptions || [], 'id'),
+          },
+        });
+        console.log('EA RESULT: ', result);
+        if (result?.errors) {
+          throw new Error(JSON.stringify(result.errors));
+        }
+        done++;
+        this.setStepStatus('Email Actions', 'importing', done / length);
+      }
+      this.setStepStatus('Email Actions', 'completed');
+    } catch (e) {
+      this.setStepStatus('Email Actions', 'error');
+      this.addToErrors('Error in uploading Email Actions', JSON.stringify(e));
+    }
   }
 
   uploadSettings = async (settings: any) => {
     let uname = this.props.uname;
     if (_.isEmpty(settings)) {
-      return this.setStepStatus('Settings', 'completed');
+      return this.setStepStatus('Widget Config', 'completed');
     }
 
     if (!uname) {
@@ -239,7 +358,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       );
     }
 
-    this.setStepStatus('Settings', 'importing');
+    this.setStepStatus('Widget Config', 'importing');
 
     try {
       const result = await this.props.client?.mutate({
@@ -253,10 +372,10 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
         throw new Error(JSON.stringify(result.errors));
       }
 
-      this.setStepStatus('Settings', 'completed');
+      this.setStepStatus('Widget Config', 'completed');
     } catch (e) {
       this.addToErrors('Error updating settings', JSON.stringify(e));
-      this.setStepStatus('Settings', 'error');
+      this.setStepStatus('Widget Config', 'error');
     }
   }
 
@@ -575,7 +694,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     }
   }
 
-  ensureAgentExists = async (data: IAgentData) => {
+  ensureAgentExists = async (data: IAgentDataExport) => {
     // Returns a promise to await the state
     return new Promise(async (resolve) => {
       this.setStepStatus('Create Agent', 'importing');
@@ -585,8 +704,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
         >({
           mutation: CHATBOT_CREATE_AGENT,
           variables: {
-            name: this.props.name || data.name,
-            uname: this.props.uname || data.uname,
+            uname: this.props.uname || data.dialogueConfig.uname,
             projectId: this.props.projectId,
             language: 'EN_US',
           },
@@ -711,7 +829,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     }
   }
 
-  processJsonData = async (data: IAgentData) => {
+  processJsonData = async (data: IAgentDataExport) => {
     this.setState({
       open: true,
     });
@@ -725,52 +843,60 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     // Upload Utterance Actions.
     // TODO - modify the backend code to make this an upsert. It currently throws an error if you upload duplicates
     const actions: IUtteranceAction[] = await this.uploadUtteranceActions(
-      data.utteranceActions,
+      data.dialogueConfig.utteranceActions,
     );
-    const intentIdsMap = await this.uploadIntents(data.intents, actions);
+    const intentIdsMap = await this.uploadIntents(
+      data.dialogueConfig.intents,
+      actions,
+    );
 
-    const tagTypeIdsMap = await this.uploadTagTypes(data.tagTypes);
+    const tagTypeIdsMap = await this.uploadTagTypes(data.nluData.tagTypes);
 
-    await this.uploadGraphPolicies(data.graphPolicies);
+    await this.uploadGraphPolicies(data.dialogueConfig.graphPolicies);
 
     const uros = await this.uploadOptions(
-      data.userResponseOptions || [],
+      data.dialogueConfig.userResponseOptions || [],
       intentIdsMap,
     );
 
     await this.updateUtteranceActions(
-      data.utteranceActions,
+      data.dialogueConfig.utteranceActions,
       actions,
       intentIdsMap,
       uros,
     );
 
-    this.uploadSettings(data.settings);
+    this.uploadSettings(data.widgetConfig);
+    this.uploadSlots(data.dialogueConfig.slots);
+    this.uploadEmailActions(data.dialogueConfig.emailActions);
+    this.uploadTrainingConversations(data.trainingConversations);
 
     try {
-      const preprocessedExamples: IExampleInput[] = data.examples.map((x) => {
-        const intentId = intentIdsMap.get(x.intent);
-        if (!intentId) {
-          throw new Error(`Failed to get id for intent: ${x.intent}`);
-        }
+      const preprocessedExamples: IExampleInput[] = data.nluData.examples.map(
+        (x) => {
+          const intentId = intentIdsMap.get(x.intent || '');
+          if (!intentId) {
+            throw new Error(`Failed to get id for intent: ${x.intent}`);
+          }
 
-        return {
-          intentId,
-          text: x.text,
-          tags: x.tags.map((tag) => {
-            const tagTypeId = tagTypeIdsMap.get(tag.tagType);
+          return {
+            intentId,
+            text: x.text,
+            tags: x.tags.map((tag) => {
+              const tagTypeId = tagTypeIdsMap.get(tag.tagType);
 
-            if (!tagTypeId) {
-              throw new Error(`Failed to id for tagType: ${tag.tagType}`);
-            }
-            return {
-              start: tag.start,
-              end: tag.end,
-              tagTypeId,
-            };
-          }),
-        };
-      });
+              if (!tagTypeId) {
+                throw new Error(`Failed to id for tagType: ${tag.tagType}`);
+              }
+              return {
+                start: tag.start,
+                end: tag.end,
+                tagTypeId,
+              };
+            }),
+          };
+        },
+      );
 
       const exampleBatches = _.chunk(preprocessedExamples, 100);
       let batchNum = 1;
