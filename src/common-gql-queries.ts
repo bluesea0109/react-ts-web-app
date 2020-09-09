@@ -64,6 +64,44 @@ export const UPDATE_ACTIVE_ORG = gql`
   }
 `;
 
+export const CHATBOT_CREATE_SLOTS = gql`
+  mutation($agentId: Int!, $slots: [ChatbotService_SlotInput!]!) {
+    ChatbotService_createSlots(agentId: $agentId, slots: $slots) {
+      id
+      agentId
+      name
+      type
+    }
+  }
+`;
+
+export const CHATBOT_CREATE_EMAIL_ACTION = gql`
+  mutation(
+    $agentId: Int!
+    $name: String!
+    $text: String!
+    $to: String!
+    $from: String
+    $userResponseOptionIDs: [Int!]
+  ) {
+    ChatbotService_createEmailAction(
+      agentId: $agentId
+      name: $name
+      text: $text
+      to: $to
+      from: $from
+      userResponseOptionIDs: $userResponseOptionIDs
+    ) {
+      agentId
+      name
+      id
+      from
+      to
+      text
+    }
+  }
+`;
+
 export const GET_PROJECTS = gql`
   query($orgId: String!) {
     projects(orgId: $orgId) {
@@ -435,7 +473,7 @@ export const CREATE_TRAINING_JOB = gql`
   }
 `;
 
-export const CREATE_TRAINING_CONVERSATIONS = gql`
+export const CREATE_TRAINING_CONVERSATION = gql`
   mutation($conversation: ChatbotService_TrainingConversationInput!) {
     ChatbotService_createTrainingConversation(conversation: $conversation) {
       agentId
@@ -480,7 +518,7 @@ export const GET_TRAINING_CONVERSATIONS = gql`
   }
 `;
 
-export const UPDATE_TRAINING_CONVERSATIONS = gql`
+export const UPDATE_TRAINING_CONVERSATION = gql`
   mutation(
     $conversationId: Int!
     $agentId: Int!
