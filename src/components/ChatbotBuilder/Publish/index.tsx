@@ -4,6 +4,12 @@ import {
   Card,
   CardContent,
   CardHeader,
+  Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Grid,
   Typography,
 } from '@material-ui/core';
@@ -37,7 +43,11 @@ export default function PublishAgent() {
   agentId = parseInt(agentId);
   const { projectId } = useParams();
   const { enqueueSnackbar } = useSnackbar();
-  const [loading, setLoading] = useState(false);
+  const [state, setState] = useState({
+    loading: false,
+    modalOpen: false,
+    settingsOnly: true,
+  });
   const apiKeyQueryResult = useQuery(getApiKeysQuery, {
     fetchPolicy: 'cache-and-network',
     variables: {
@@ -68,8 +78,12 @@ export default function PublishAgent() {
     },
   );
 
-  const handlePublish = async () => {
-    setLoading(true);
+  const handlePublish = () => {
+    setState((prevState) => ({ ...prevState, modalOpen: true }));
+  };
+
+  const handleConfirm = async () => {
+    setState((prevState) => ({ ...prevState, loading: true, modalOpen: false }));
     try {
       const result = await publishAgent({
         variables: { agentId },
@@ -87,9 +101,20 @@ export default function PublishAgent() {
       );
     }
 
-    setLoading(false);
+    setState((prevState) => ({ ...prevState, loading: false }));
   };
 
+  const handleCancel = () => {
+    setState((prevState) => ({ ...prevState, modalOpen: false }));
+  };
+
+  const handleCloseDialogue = () => {
+    setState((prevState) => ({ ...prevState, modalOpen: false }));
+  };
+
+  const toggleSettingsOnly = () => {
+    setState((prevState) => ({ ...prevState, settingsOnly: !prevState.settingsOnly }));
+  };
   const agents = queryResult.data?.ChatbotService_getPublishedAgents;
 
   return (
@@ -98,7 +123,7 @@ export default function PublishAgent() {
         <PublishedAgentsTable
           containerClassName={classes.table}
           publishedAgents={agents}
-          loading={queryResult.loading || loading}
+          loading={queryResult.loading || state.loading}
           toolbarChildren={
             <Button variant="contained" color="primary" onClick={handlePublish}>
               Publish
@@ -121,6 +146,32 @@ export default function PublishAgent() {
           </CardContent>
         </Card>
       </Grid>
+      <Dialog
+        open={state.modalOpen}
+        onClose={handleCloseDialogue}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{'Do you want to publish?'}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Please tick the box for settings only publish
+            <Checkbox
+              checked={state.settingsOnly}
+              onChange={toggleSettingsOnly}
+              inputProps={{ 'aria-label': 'primary checkbox' }}
+            />
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleConfirm} color="primary">
+            CONFIRM
+          </Button>
+          <Button onClick={handleCancel} color="primary" autoFocus={true}>
+            CANCEL
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Grid>
   );
 }
