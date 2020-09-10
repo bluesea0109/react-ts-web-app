@@ -3,7 +3,6 @@ import {
   Box,
   CircularProgress,
   DialogContent,
-  Divider,
   Grid,
   LinearProgress,
   TextField,
@@ -18,9 +17,8 @@ import Toolbar from '@material-ui/core/Toolbar';
 import { TransitionProps } from '@material-ui/core/transitions';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
-import gql from 'graphql-tag';
 import { useSnackbar } from 'notistack';
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router';
 import { createSlotMutation, getSlotsQuery } from './gql';
 
@@ -43,12 +41,6 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const createExamplesMutation = gql`
-  mutation($agentId: Int!, $examples: [ChatbotService_ExampleInput!]!) {
-    ChatbotService_uploadExamples(agentId: $agentId, examples: $examples)
-  }
-`;
-
 type AddSlotProps = {
   onAddSlotClose: () => void;
 };
@@ -63,7 +55,6 @@ const AddSlot = (props: AddSlotProps) => {
   });
   const { agentId } = useParams();
   const numAgentId = Number(agentId);
-  const lastID = useRef(0);
   const { enqueueSnackbar } = useSnackbar();
 
   const [createSlot] = useMutation(createSlotMutation, {
@@ -83,7 +74,7 @@ const AddSlot = (props: AddSlotProps) => {
       setLoading(true);
 
       const { name, type } = newSlot;
-      const resp = await createSlot({
+      await createSlot({
         variables: {
           agentId: numAgentId,
           slots: [
