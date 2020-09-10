@@ -21,14 +21,12 @@ interface SlotsTableProps {
   onEditSlot: (id: number) => void;
   onDeleteSlot: (id: number) => void | Promise<void>;
   slots: ISlot[];
-  actions: AnyAction[];
   loading: boolean;
   onAdd: () => void;
 }
 
 function SlotsTable({
   slots,
-  actions,
   loading,
   onAdd,
   onEditSlot,

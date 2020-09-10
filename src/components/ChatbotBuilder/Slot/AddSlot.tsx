@@ -22,7 +22,6 @@ import gql from 'graphql-tag';
 import { useSnackbar } from 'notistack';
 import React, { useRef, useState } from 'react';
 import { useParams } from 'react-router';
-import { AnyAction } from '../../../models/chatbot-service';
 import { createSlotMutation, getSlotsQuery } from './gql';
 
 const useStyles = makeStyles((theme: Theme) =>

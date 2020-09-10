@@ -17,7 +17,7 @@ import { TransitionProps } from '@material-ui/core/transitions';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import React, { useEffect, useState } from 'react';
-import { AnyAction, ISlot } from '../../../models/chatbot-service';
+import { ISlot } from '../../../models/chatbot-service';
 import { Maybe } from '../../../utils/types';
 
 const useStyles = makeStyles((theme: Theme) =>

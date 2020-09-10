@@ -4,8 +4,6 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { ISlot } from '../../../models/chatbot-service';
 import { Maybe } from '../../../utils/types';
-import { getActionsQuery } from '../Actions/gql';
-import { GetActionsQueryResult } from '../Actions/types';
 import AddSlot from './AddSlot';
 import EditSlot from './EditSlot';
 import { deleteSlotMutation, getSlotsQuery, updateSlotMutation } from './gql';
@@ -37,10 +35,6 @@ const SlotSection: React.FC = () => {
       variables: { agentId: numAgentId },
     },
   );
-
-  const getActionsQueryData = useQuery<GetActionsQueryResult>(getActionsQuery, {
-    variables: { agentId: numAgentId },
-  });
 
   const [updateSlot, updateSlotMutationData] = useMutation(updateSlotMutation, {
     refetchQueries: [
@@ -91,20 +85,17 @@ const SlotSection: React.FC = () => {
   const isLoading =
     loading ||
     updateSlotMutationData.loading ||
-    deleteSlotMutationData.loading ||
-    getActionsQueryData.loading;
+    deleteSlotMutationData.loading;
 
   const isErrorOccurred =
     error ||
     updateSlotMutationData.error ||
-    deleteSlotMutationData.error ||
-    getActionsQueryData.error;
+    deleteSlotMutationData.error;
 
   return (
     <div className={classes.root}>
       <SlotsTable
         slots={slots ?? []}
-        actions={getActionsQueryData.data?.ChatbotService_actions ?? []}
         loading={isLoading}
         onAdd={() => setIsNewSlot(true)}
         onEditSlot={onEditSlot}
