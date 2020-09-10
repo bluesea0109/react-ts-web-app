@@ -4,7 +4,7 @@ import { Edit } from '@material-ui/icons';
 import _ from 'lodash';
 import MaterialTable, { Column } from 'material-table';
 import React from 'react';
-import { AnyAction, ISlot } from '../../../models/chatbot-service';
+import { ISlot } from '../../../models/chatbot-service';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

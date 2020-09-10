@@ -63,6 +63,10 @@ function CustomDrawer(props: CustomDrawerProps) {
     return `/orgs/${user.activeProject.orgId}`;
   };
 
+  const createChatbotPath = (path: string = ''): string => {
+    return `${createPath('chatbot-builder')}/${path}`;
+  };
+
   const requiresActiveProjectListItems = (
     <>
 
@@ -77,11 +81,21 @@ function CustomDrawer(props: CustomDrawerProps) {
       <ListItem
         component={Link}
         to={createPath('chatbot-builder')}
-        selected={location.pathname.includes('chatbot-builder')}
+        selected={/chatbot-builder$/.test(location.pathname)}
         button={true}
       >
         <ListItemText primary="Chatbot Builder" />
       </ListItem>
+      <List component="div" disablePadding={true}>
+        <ListItem className={classes.nested}
+          component={Link}
+          to={createChatbotPath('slots')}
+          selected={/slots$/.test(location.pathname)}
+          button={true}
+        >
+          <ListItemText primary="Slot" />
+        </ListItem>
+      </List>
       <ListItem
         component={Link}
         to={createPath('image-labeling/collections')}
