@@ -17,6 +17,7 @@ import { useParams } from 'react-router-dom';
 import { CHATBOT_GET_AGENT } from '../../../common-gql-queries';
 import { IAgent } from '../../../models/chatbot-service';
 import GradientPicker from '../../Utils/GradientPicker';
+import ContentLoading from '../../ContentLoading';
 import { getBotSettingsQuery, updateBotSettingsMutation } from './gql';
 import ImageUploader from './ImageUploader';
 import { BotSettings } from './types';
@@ -30,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.background.default,
       padding: theme.spacing(2),
     },
-  }),
+  })
 );
 
 const AgentSettings = () => {
@@ -53,7 +54,7 @@ const AgentSettings = () => {
 
   const agentsData = useQuery<{ ChatbotService_agent: IAgent }>(
     CHATBOT_GET_AGENT,
-    { variables: { agentId: numAgentId } },
+    { variables: { agentId: numAgentId } }
   );
 
   const agentUname = agentsData.data?.ChatbotService_agent.uname;
@@ -65,7 +66,7 @@ const AgentSettings = () => {
         uname: agentUname,
         dev: state.mode === 'dev',
       },
-    },
+    }
   );
 
   const [updateBotSettings, updateBotSettingsMutationData] = useMutation(
@@ -75,7 +76,7 @@ const AgentSettings = () => {
         { query: getBotSettingsQuery, variables: { uname: agentUname } },
       ],
       awaitRefetchQueries: true,
-    },
+    }
   );
 
   const updatedSettings = botSettings.data?.ChatbotService_botSettings;
@@ -133,6 +134,7 @@ const AgentSettings = () => {
     <Grid container={true} spacing={2} className={classes.root}>
       <Grid item={true} xs={12}>
         <Typography variant="h6">Agent Settings</Typography>
+        {loading && <ContentLoading />}
         <Box
           display="flex"
           justifyContent="space-between"
