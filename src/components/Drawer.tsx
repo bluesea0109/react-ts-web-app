@@ -77,7 +77,7 @@ function CustomDrawer(props: CustomDrawerProps) {
       <ListItem
         component={Link}
         to={createPath('chatbot-builder')}
-        selected={location.pathname.includes('chatbot-builder')}
+        selected={/chatbot-builder$/.test(location.pathname)}
         button={true}
       >
         <ListItemText primary="Chatbot Builder" />

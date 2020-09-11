@@ -181,6 +181,8 @@ export interface IPublishedAgent {
 }
 
 export interface ISlot {
+  id: number;
+  agentId: number;
   name: string;
   type: string;
 }

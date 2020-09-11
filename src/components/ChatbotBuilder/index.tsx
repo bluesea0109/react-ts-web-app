@@ -11,8 +11,7 @@ const AgentWarpper: React.FC<IChatbotBuilderProps> = ({ user }) => {
   return (
     <Switch>
       <Route exact={true} path="/orgs/:orgId/projects/:projectId/chatbot-builder">
-        <Agent user={user}
-      />
+        <Agent user={user} />
       </Route>
       <Route
         exact={true} path="/orgs/:orgId/projects/:projectId/chatbot-builder/agents/:agentId/:agentTab"

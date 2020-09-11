@@ -11,6 +11,7 @@ import GraphPolicy from '../GraphPolicy';
 import Intent from '../Intent/Intent';
 import Options from '../Options/Option';
 import PublishAgent from '../Publish';
+import Slot from '../Slot/Slot';
 import Tag from '../Tags/Tag';
 import TrainingConversations from '../TrainingConversations';
 import TrainingJobsTab from '../TrainingJobs/TrainingJobsTab';
@@ -143,6 +144,9 @@ const AgentDetails = () => {
         value={agentTab}
         index="nluExamples">
         <Examples />
+      </TabPanel>
+      <TabPanel className={classes.tabPanel} value={agentTab} index="Slots">
+        <Slot />
       </TabPanel>
       {agentTab === 'upload-data' && <UploadDataTab />}
       {agentTab === 'graph-policy' && <GraphPolicy />}
