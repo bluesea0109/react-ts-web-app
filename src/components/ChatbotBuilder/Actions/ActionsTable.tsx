@@ -1,3 +1,4 @@
+import { BaseAgentAction } from '@bavard/agent-config';
 import {
   Box, Button,
   Grid,
@@ -11,7 +12,6 @@ import 'firebase/auth';
 import _ from 'lodash';
 import MaterialTable, { Column } from 'material-table';
 import React, { useEffect } from 'react';
-import { AnyAction } from '../../../models/chatbot-service';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,13 +25,13 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface ActionState {
-  columns: Column<AnyAction>[];
-  data: AnyAction[] | undefined;
+  columns: Column<BaseAgentAction>[];
+  data: BaseAgentAction[] | undefined;
 }
 
 interface ActionsTableProps {
-  onEditAction: (id: number) => void;
-  actions: AnyAction[];
+  onEditAction: (name: string) => void;
+  actions: BaseAgentAction[];
   loading: boolean;
   onAdd: () => void;
 }
@@ -87,8 +87,8 @@ function ActionsTable({ onEditAction, actions, loading, onAdd }: ActionsTablePro
                 icon: (props: any) => <Edit />,
                 tooltip: 'Edit Action',
                 onClick: (event, rowData) => {
-                  const data = rowData as AnyAction;
-                  onEditAction(data.id);
+                  const data = rowData as BaseAgentAction;
+                  onEditAction(data.name);
                 },
               },
             ]}
@@ -105,8 +105,8 @@ function ActionsTable({ onEditAction, actions, loading, onAdd }: ActionsTablePro
 
 type OtherProps = { [index: string]: any };
 
-const ActionDetailPanel = ({ action }: { action: AnyAction }) => {
-    const { id, type, name, agentId, ...otherProps } = action;
+const ActionDetailPanel = ({ action }: { action: BaseAgentAction }) => {
+    const { type, name, ...otherProps } = action;
     const actionProps = otherProps as OtherProps;
 
     return (

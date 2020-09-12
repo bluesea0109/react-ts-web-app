@@ -1,8 +1,16 @@
+import { useQuery } from '@apollo/client';
+import { AgentConfig } from '@bavard/agent-config';
 import { Box, makeStyles, Tab, Tabs, Theme } from '@material-ui/core';
 import React from 'react';
 import { useHistory, useParams } from 'react-router';
+import { useSetRecoilState } from 'recoil';
+import { CHATBOT_GET_AGENT } from '../../../common-gql-queries';
+import { IAgent } from '../../../models/chatbot-service';
+import ApolloErrorPage from '../../ApolloErrorPage';
+import ContentLoading from '../../ContentLoading';
 import Actions from '../Actions/Actions';
 import AgentSettings from '../AgentSettings/AgentSettings';
+import { currentAgentConfig } from '../atoms';
 import ChatWithAgent from '../ChatWithAgent';
 import ConversationsTab from '../Conversations';
 import DataExportsTab from '../DataExports/DataExportsTab';
@@ -60,10 +68,30 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
+interface IGetAgent {
+  ChatbotService_agent: IAgent;
+}
+
 const AgentDetails = () => {
   const classes = useStyles();
   const { orgId, projectId, agentId, agentTab } = useParams();
   const history = useHistory();
+  const setConfig = useSetRecoilState(currentAgentConfig);
+
+  const { error, loading, data } = useQuery<IGetAgent>(CHATBOT_GET_AGENT, {
+    variables: { agentId: Number(agentId) },
+    onCompleted: (data) => {
+      setConfig(AgentConfig.fromJsonObj(data.ChatbotService_agent.config));
+    },
+  });
+
+  if (error) {
+    return <ApolloErrorPage error={error}/>;
+  }
+
+  if (loading || !data) {
+    return <ContentLoading />;
+  }
 
   const handleChangeTab = (event: any, value: any) => {
     history.push({

@@ -1,3 +1,4 @@
+import { IAgentConfig, IWidgetSettings } from '@bavard/agent-config';
 import { IGraphPolicy } from '@bavard/graph-policy';
 
 export enum ChatbotLanguage {
@@ -14,8 +15,8 @@ export interface IAgent {
   id: number;
   projectId: string;
   uname: string;
-  name: string;
-  language: string;
+  config: IAgentConfig;
+  widgetSetings: IWidgetSettings;
 }
 
 export interface IExample {
