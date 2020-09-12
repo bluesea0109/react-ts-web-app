@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
+import { AGENT_SETTINGS_DEFAULTS } from '@bavard/common';
 import {
   Box,
   Button,
@@ -15,27 +16,11 @@ import { AlphaPicker, TwitterPicker } from 'react-color';
 import { useParams } from 'react-router-dom';
 import { CHATBOT_GET_AGENT } from '../../../common-gql-queries';
 import { IAgent } from '../../../models/chatbot-service';
+import ContentLoading from '../../ContentLoading';
 import GradientPicker from '../../Utils/GradientPicker';
 import { getBotSettingsQuery, updateBotSettingsMutation } from './gql';
 import ImageUploader from './ImageUploader';
-import { BotSettings, ColorItem } from './types';
-
-const DEFAULT_PRIMARY_COLOR: ColorItem = {
-  r: 10,
-  g: 91,
-  b: 255,
-  a: 1,
-};
-
-const DEFAULT_PRIMARY_BG: ColorItem = {
-  r: 10,
-  g: 103,
-  b: 238,
-  a: 1.0,
-};
-
-const DEFAULT_WIDGET_BG =
-  'linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 100%)';
+import { BotSettings } from './types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -58,10 +43,10 @@ const AgentSettings = () => {
     name: '',
     title: '',
     subtitle: '',
-    icon: undefined,
-    primaryColor: DEFAULT_PRIMARY_COLOR,
-    primaryBg: DEFAULT_PRIMARY_BG,
-    widgetBg: DEFAULT_WIDGET_BG,
+    icon: AGENT_SETTINGS_DEFAULTS.icon,
+    primaryColor: AGENT_SETTINGS_DEFAULTS.primaryColor,
+    primaryBg: AGENT_SETTINGS_DEFAULTS.primaryBg,
+    widgetBg: AGENT_SETTINGS_DEFAULTS.widgetBg,
   });
   const [state, setState] = React.useState({
     mode: 'dev',
@@ -99,9 +84,10 @@ const AgentSettings = () => {
   useEffect(() => {
     if (!!updatedSettings && !!updatedSettings.name) {
       setSettings({
-        primaryColor: DEFAULT_PRIMARY_COLOR,
-        primaryBg: DEFAULT_PRIMARY_BG,
-        widgetBg: DEFAULT_WIDGET_BG,
+        primaryColor: AGENT_SETTINGS_DEFAULTS.primaryColor,
+        primaryBg: AGENT_SETTINGS_DEFAULTS.primaryColor,
+        widgetBg: AGENT_SETTINGS_DEFAULTS.widgetBg,
+        icon: AGENT_SETTINGS_DEFAULTS.icon,
         ...updatedSettings,
       });
     }
@@ -148,6 +134,7 @@ const AgentSettings = () => {
     <Grid container={true} spacing={2} className={classes.root}>
       <Grid item={true} xs={12}>
         <Typography variant="h6">Agent Settings</Typography>
+        {loading && <ContentLoading />}
         <Box
           display="flex"
           justifyContent="space-between"
