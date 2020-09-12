@@ -62,7 +62,7 @@ function AgentsTable() {
           </Link>
         ),
       },
-      { title: 'Language', field: 'language', editable: 'never' },
+      { title: 'Language', field: 'config.language', editable: 'never' },
     ],
     data: agents ? [...agents] : [],
   });

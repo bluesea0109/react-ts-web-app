@@ -66,7 +66,6 @@ const NewAgent: React.FC<INewAgentProps> = ({ user }) => {
       variables: {
         projectId,
         uname,
-        language: 'EN_US',
       },
     });
 

@@ -5,6 +5,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router } from 'react-router-dom';
+import {
+  RecoilRoot,
+} from 'recoil';
 import { client } from './apollo-client';
 import AppAuthWrapper from './AppAuthWrapper';
 import './config'; // initializes firebase
@@ -17,23 +20,25 @@ const store = configureStore();
 
 ReactDOM.render(
   <React.StrictMode>
-    <ApolloProvider client={client}>
-      <Provider store={store}>
-        <Router>
-          <ThemeProvider theme={appTheme.getMuiTheme()}>
-            <SnackbarProvider
-              style={{ zIndex: 99999999999999999 }}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              maxSnack={5}>
-              <AppAuthWrapper />
-            </SnackbarProvider>
-          </ThemeProvider>
-        </Router>
-      </Provider>
-    </ApolloProvider>
+    <RecoilRoot>
+      <ApolloProvider client={client}>
+        <Provider store={store}>
+          <Router>
+            <ThemeProvider theme={appTheme.getMuiTheme()}>
+              <SnackbarProvider
+                style={{ zIndex: 99999999999999999 }}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left',
+                }}
+                maxSnack={5}>
+                <AppAuthWrapper />
+              </SnackbarProvider>
+            </ThemeProvider>
+          </Router>
+        </Provider>
+      </ApolloProvider>
+    </RecoilRoot>
   </React.StrictMode>,
   document.getElementById('root'),
 );
