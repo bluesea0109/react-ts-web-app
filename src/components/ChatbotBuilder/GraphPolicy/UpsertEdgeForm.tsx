@@ -1,6 +1,7 @@
 import { useLazyQuery } from '@apollo/client';
 import { BaseEdge, ConfirmEdge , EmailNode, EmptyEdge, GraphEdgeType, GraphPolicy,
-  GraphPolicyNode, ImageOption, TextOption, UtteranceEdge, UtteranceNode} from '@bavard/graph-policy';
+  GraphPolicyNode, UtteranceEdge, UtteranceNode} from '@bavard//agent-config/dist/graph-policy';
+import { ImageOption, TextOption } from '@bavard/agent-config';
 import { Button, FormControl, FormControlLabel, FormLabel, InputLabel,
   MenuItem, Radio, RadioGroup, Select, TextField} from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';

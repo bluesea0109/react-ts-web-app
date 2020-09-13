@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { GraphPolicySchema } from '@bavard/graph-policy';
+import { GraphPolicySchema } from '@bavard/agent-config/dist/graph-policy';
 import { Box, Button, TextField, Typography } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
 import React, { ChangeEvent, useState } from 'react';

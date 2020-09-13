@@ -1,9 +1,7 @@
-import { useMutation } from '@apollo/client';
 import {
   Button,
   Card,
   createStyles,
-  LinearProgress,
   makeStyles,
   TextField,
   Theme,
@@ -11,9 +9,8 @@ import {
 } from '@material-ui/core';
 import clsx from 'clsx';
 import React, { useState } from 'react';
-import { useParams } from 'react-router';
-import { CHATBOT_CREATE_TAGS, CHATBOT_GET_TAGS } from '../../../common-gql-queries';
-import ApolloErrorPage from '../../ApolloErrorPage';
+import { useRecoilState } from 'recoil';
+import { currentAgentConfig } from '../atoms';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -31,41 +28,29 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const NewTag: React.FC = () => {
   const classes = useStyles();
-  const [value, setValue] = useState<string>('');
-  const { agentId } = useParams();
-  const numAgentId = Number(agentId);
-  const [createTags, { loading, error }] = useMutation(CHATBOT_CREATE_TAGS,  {
-    refetchQueries: [{ query: CHATBOT_GET_TAGS, variables: { agentId : numAgentId }  }],
-    awaitRefetchQueries: true,
-  });
+  const [tagName, setTagName] = useState<string>('');
+  const [config, setConfig] = useRecoilState(currentAgentConfig);
 
-  if (error) {
-    // TODO: handle errors
-    return <ApolloErrorPage error={error} />;
+  if (!config) {
+    return <Typography>Agent config is empty.</Typography>;
   }
 
-  const onSubmit =  () => {
-    createTags({
-      variables: {
-        agentId: numAgentId ,
-        values: [value],
-      },
-    });
-    setValue('');
+  const onSubmit = () => {
+    config.addTagType(tagName);
+    setTagName('');
   };
 
   return (
     <Card className={clsx(classes.root)}>
-      {loading && <LinearProgress />}
       <Typography variant="h4">New Tag</Typography>
       <br />
       <TextField
         id="name"
         label="Tag Name"
         type="text"
-        value={value}
+        value={tagName}
         variant="outlined"
-        onChange={(e: any) => setValue(e.target.value as string)}
+        onChange={(e: any) => setTagName(e.target.value as string)}
         className={clsx(classes.inputBox)}
       />
       <br />
@@ -73,7 +58,7 @@ const NewTag: React.FC = () => {
         className={clsx(classes.button)}
         variant="contained"
         color="primary"
-        disabled={loading || !value}
+        disabled={!tagName}
         onClick={onSubmit}>
         Submit
       </Button>

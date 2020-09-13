@@ -1,4 +1,5 @@
 import { useMutation } from '@apollo/client';
+import { BaseAgentAction, IIntent } from '@bavard/agent-config';
 import { Box, CircularProgress, DialogContent, Divider, Grid, LinearProgress, TextField } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
@@ -17,8 +18,6 @@ import { useSnackbar } from 'notistack';
 import React, { ChangeEvent, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import { CHATBOT_CREATE_TAGS, CHATBOT_GET_TAGS } from '../../../common-gql-queries';
-import { AnyAction } from '../../../models/chatbot-service';
-import { AddExampleItem } from '../Examples/AddExamples';
 import { createIntentMutation, getIntentsQuery } from './gql';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -47,18 +46,18 @@ const createExamplesMutation = gql`
 `;
 
 type AddIntentProps = {
-  actions: AnyAction[];
+  actions: BaseAgentAction[];
   onAddIntentClose: () => void;
-  tags: any[];
+  tags: string[];
 };
 
 const AddIntent = (props: AddIntentProps) => {
   const classes = useStyles();
   const { onAddIntentClose, actions, tags } = props;
   const [loading, setLoading] = useState(false);
-  const [newIntent, setNewIntent] = useState({
-    value: '',
-    defaultAction: null,
+  const [newIntent, setNewIntent] = useState<IIntent>({
+    name: '',
+    defaultActionName: undefined,
   });
   const { agentId } = useParams();
   const numAgentId = Number(agentId);
@@ -70,18 +69,6 @@ const AddIntent = (props: AddIntentProps) => {
   const { enqueueSnackbar } = useSnackbar();
 
   const updateTag = (e: ChangeEvent<{}>, tag: any) => setTag(tag?.value ?? '');
-
-  const onExampleUpdate = (id: number) => (updatedExample: any) => {
-    const index = examples.findIndex(ex => ex.id === id);
-    const updatedExamples = Array.from([...examples]);
-    updatedExamples.splice(index, 1, {
-      ...updatedExample,
-      intentId: undefined,
-      intentName: undefined,
-    });
-
-    setExamples([ ...updatedExamples ]);
-  };
 
   const onAddExample = () => {
     const currentExamples = Array.from([...examples]);
@@ -118,7 +105,7 @@ const AddIntent = (props: AddIntentProps) => {
   });
 
   const saveChanges = async () => {
-    if (newIntent.value === '') {
+    if (newIntent.name === '') {
       enqueueSnackbar('Intent can\'t be empty', { variant: 'warning' });
       return;
     }
@@ -133,12 +120,12 @@ const AddIntent = (props: AddIntentProps) => {
     try {
       setLoading(true);
 
-      const { value, defaultAction } = newIntent;
+      const { name, defaultActionName } = newIntent;
       const resp = await createIntent({
         variables: {
           agentId: numAgentId,
           intents: [
-            { value, defaultAction: defaultAction !== -1 ? defaultAction : null },
+            { name, defaultActionName },
           ],
         },
       });
@@ -235,8 +222,8 @@ const AddIntent = (props: AddIntentProps) => {
                   label="Intent Value (No Spaces Allowed)"
                   disabled={loading}
                   variant="outlined"
-                  value={newIntent.value}
-                  onChange={e => setNewIntent({ ...newIntent, value: e.target.value.replace(/ /g, '+') })}
+                  value={newIntent.name}
+                  onChange={e => setNewIntent({ ...newIntent, name: e.target.value.replace(/ /g, '+') })}
                 />
               </Box>
             </Grid>
@@ -247,9 +234,9 @@ const AddIntent = (props: AddIntentProps) => {
                   disabled={loading}
                   id="intentDefaultActionSelector"
                   options={actions}
-                  getOptionLabel={(option: AnyAction) => option.name}
-                  value={actions.find(a => a.id === newIntent?.defaultAction)}
-                  onChange={(e, action) => setNewIntent({ ...newIntent, defaultAction: action?.id } as any)}
+                  getOptionLabel={(option: BaseAgentAction) => option.name}
+                  value={actions.find(a => a.name === newIntent?.defaultActionName)}
+                  onChange={(e, action) => setNewIntent({ ...newIntent, defaultActionName: action?.name })}
                   renderInput={(params) => <TextField {...params} label="Default Action" variant="outlined" />}
                 />
               </Box>
@@ -297,7 +284,7 @@ const AddIntent = (props: AddIntentProps) => {
                           id="tagSelector"
                           options={tags}
                           getOptionLabel={(option: any) => option.value}
-                          value={tags.find(t => t.value === tag) ?? null as any}
+                          value={tags.find(t => t === tag) ?? null as any}
                           onChange={updateTag}
                           renderInput={(params) => <TextField {...params} label="Selected Tag Type" variant="outlined" />}
                         />
@@ -329,13 +316,6 @@ const AddIntent = (props: AddIntentProps) => {
                       </Grid>
                     </Grid>
                   </Box>
-                  <AddExampleItem
-                    loading={loading}
-                    example={example}
-                    tag={tag}
-                    tags={tags}
-                    onExampleUpdate={onExampleUpdate(example.id)}
-                  />
                 </Grid>
               ))}
             </Grid>

@@ -1,18 +1,11 @@
-import { useMutation, useQuery } from '@apollo/client';
+import { IIntent } from '@bavard/agent-config';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { CHATBOT_GET_TAGS } from '../../../common-gql-queries';
-import { IIntent } from '../../../models/chatbot-service';
-import { Maybe } from '../../../utils/types';
-import { getActionsQuery } from '../Actions/gql';
-import { GetActionsQueryResult } from '../Actions/types';
-import { TagsQueryResult } from '../Examples/types';
+import { useRecoilState } from 'recoil';
+import { currentAgentConfig } from '../atoms';
 import AddIntent from './AddIntent';
 import EditIntent from './EditIntent';
-import { deleteIntentMutation, getIntentsQuery, updateIntentMutation } from './gql';
 import IntentsTable from './IntentsTable';
-import { GetIntentsQueryResult } from './types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -28,81 +21,46 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const IntentSection: React.FC = () => {
   const classes = useStyles();
-  const { agentId } = useParams();
-  const numAgentId = Number(agentId);
-  const [currentIntent, setCurrentIntent] = useState<Maybe<number>>();
-  const [newIntent, setNewIntent] = useState(false);
+  const [currentIntent, setCurrentIntent] = useState<IIntent | undefined>();
+  const [newIntent, setNewIntent] = useState<boolean>(false);
+  const [config, setConfig] = useRecoilState(currentAgentConfig);
 
-  const { data, loading, error } = useQuery<GetIntentsQueryResult>(getIntentsQuery, {
-    variables: { agentId: numAgentId },
-  });
+  if (!config) {
+    return <p>Agent config is empty.</p>;
+  }
 
-  const getActionsQueryData = useQuery<GetActionsQueryResult>(getActionsQuery, {
-    variables: { agentId: numAgentId },
-  });
+  const intents = config.getIntents();
+  const actions = config.getActions();
+  const tagTypes = config.getTagTypes();
 
-  const [updateIntent, updateIntentMutationData] = useMutation(updateIntentMutation, {
-    refetchQueries: [{ query: getIntentsQuery, variables: { agentId: numAgentId } }],
-    awaitRefetchQueries: true,
-  });
-
-  const [deleteIntent, deleteIntentMutationData] = useMutation(deleteIntentMutation, {
-      refetchQueries: [{ query: getIntentsQuery, variables: { agentId: numAgentId } }],
-      awaitRefetchQueries: true,
-    },
-  );
-
-  const intents: Maybe<IIntent[]> = data?.ChatbotService_intents;
-
-  const tagsData = useQuery<TagsQueryResult>(CHATBOT_GET_TAGS, { variables: { agentId: numAgentId } });
-  const tags = tagsData.data?.ChatbotService_tagTypes;
-
-  const onEditIntent = (id: number) => {
-    setCurrentIntent(id);
+  const onEditIntent = (intent: IIntent) => {
+    setCurrentIntent(intent);
   };
 
-  const onSaveIntent = async (intentData: IIntent) => {
-    await updateIntent({
-      variables: {
-        intentId: intentData.id,
-        value: intentData.value,
-        defaultAction: intentData.defaultAction,
-      },
-    });
-
-    setCurrentIntent(null);
+  const onSaveIntent = async (intent: IIntent) => {
+    config.deleteIntent(intent.name);
+    config.addIntent(intent.name, intent.defaultActionName);
+    setConfig(config);
     setNewIntent(false);
+    setCurrentIntent(undefined);
   };
 
-  const onDeleteIntent = async (intentId: number) => {
-    await deleteIntent({
-      variables: {
-        intentId,
-      },
-    });
+  const onDeleteIntent = async (intent: IIntent) => {
+    config.deleteIntent(intent.name);
+    setConfig(config);
+    setCurrentIntent(undefined);
   };
 
   const onEditIntentClose = () => {
-    setCurrentIntent(null);
+    setCurrentIntent(undefined);
     setNewIntent(false);
   };
-
-  const isLoading = loading ||
-    updateIntentMutationData.loading ||
-    deleteIntentMutationData.loading ||
-    getActionsQueryData.loading;
-
-  const isErrorOccurred = error ||
-    updateIntentMutationData.error ||
-    deleteIntentMutationData.error ||
-    getActionsQueryData.error;
 
   return (
     <div className={classes.root}>
       <IntentsTable
         intents={intents ?? []}
-        actions={getActionsQueryData.data?.ChatbotService_actions ?? []}
-        loading={isLoading}
+        actions={actions}
         onAdd={() => setNewIntent(true)}
         onEditIntent={onEditIntent}
         onDeleteIntent={onDeleteIntent}
@@ -110,18 +68,16 @@ const IntentSection: React.FC = () => {
       {!!intents && (
         <>
           <EditIntent
-            isLoading={isLoading}
-            actions={getActionsQueryData.data?.ChatbotService_actions ?? []}
-            intent={intents.find(x => x.id === currentIntent)}
+            actions={actions}
+            intent={currentIntent}
             onEditIntentClose={onEditIntentClose}
             onSaveIntent={onSaveIntent}
-            error={isErrorOccurred}
           />
           {newIntent && (
             <AddIntent
-              actions={getActionsQueryData.data?.ChatbotService_actions ?? []}
+              actions={actions}
               onAddIntentClose={onEditIntentClose}
-              tags={tags ?? []}
+              tags={Array.from(tagTypes.values())}
             />
           )}
         </>

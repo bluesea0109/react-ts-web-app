@@ -1,15 +1,12 @@
-import { useMutation, useQuery } from '@apollo/client';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
 import 'firebase/auth';
 import React, {useState} from 'react';
-import { useParams } from 'react-router';
-import { CHATBOT_DELETE_TAG, CHATBOT_GET_TAGS } from '../../../common-gql-queries';
+import { useRecoilState } from 'recoil';
+import { currentAgentConfig } from '../atoms';
 import { ITagType } from '../../../models/chatbot-service';
-import ApolloErrorPage from '../../ApolloErrorPage';
-import ContentLoading from '../../ContentLoading';
 import ConfirmDialog from '../../Utils/ConfirmDialog';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -23,42 +20,17 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-interface IGetTags {
-  ChatbotService_tagTypes: ITagType[] | undefined;
-}
-
 function TagsTable() {
   const classes = useStyles();
-  const { agentId } = useParams();
-  const [confirmOpen, setConfirmOpen ] = useState(false);
-  const numAgentId = Number(agentId);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [config, setConfig] = useRecoilState(currentAgentConfig);
 
-  const tagsData = useQuery<IGetTags>(CHATBOT_GET_TAGS, { variables: { agentId: numAgentId } });
-  const [deleteTag, { loading, error }] = useMutation(CHATBOT_DELETE_TAG,  {
-    refetchQueries: [{ query: CHATBOT_GET_TAGS, variables: { agentId : numAgentId }  }],
-    awaitRefetchQueries: true,
-  });
-
-  const commonError = tagsData.error ? tagsData.error : error;
-
-  if (tagsData.loading || loading) {
-    return <ContentLoading />;
+  if (!config) {
+    return <Typography>Agent config is empty.</Typography>;
   }
 
-  if ( commonError) {
-    // TODO: handle errors
-    return <ApolloErrorPage error={commonError} />;
-  }
+  const tags = config.getTagTypes();
 
-  const deleteTagHandler =  (tagTypeId: number) => {
-    deleteTag({
-        variables: {
-          tagTypeId,
-        },
-      });
-  };
-
-  const tags = tagsData.data && tagsData.data.ChatbotService_tagTypes;
   return (
     <Paper className={classes.paper}>
       {tags ? (
@@ -75,7 +47,7 @@ function TagsTable() {
               {tags.map((tag: ITagType) => (
                 <TableRow key={tag.id}>
                   <TableCell>
-                        {tag.value}
+                    {tag.value}
                   </TableCell>
                   <TableCell>{tag.id}</TableCell>
                   <TableCell>
@@ -87,7 +59,6 @@ function TagsTable() {
                         open={confirmOpen}
                         setOpen={setConfirmOpen}
                         onConfirm={() => deleteTagHandler(tag.id)}
-
                      >
                         Are you sure you want to delete this tag?
                     </ConfirmDialog>

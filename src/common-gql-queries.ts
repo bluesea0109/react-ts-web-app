@@ -189,21 +189,8 @@ export const CHATBOT_GET_AGENTS = gql`
       id
       projectId
       uname
-      language
-      userIntents {
-        id
-        agentId
-        value
-      }
-      utteranceActions {
-        id
-        text
-      }
-      tagTypes {
-        id
-        agentId
-        value
-      }
+      config
+      widgetSettings
     }
   }
 `;
@@ -214,21 +201,8 @@ export const CHATBOT_GET_AGENT = gql`
       id
       projectId
       uname
-      language
-      userIntents {
-        id
-        agentId
-        value
-      }
-      utteranceActions {
-        id
-        text
-      }
-      tagTypes {
-        id
-        agentId
-        value
-      }
+      config
+      widgetSettings
     }
   }
 `;
@@ -256,40 +230,18 @@ export const CHATBOT_CREATE_AGENT = gql`
   mutation(
     $projectId: String!
     $uname: String!
-    $language: ChatbotService_LanguageEnum!
+    $config: JSON
   ) {
     ChatbotService_createAgent(
       projectId: $projectId
       uname: $uname
-      language: $language
+      config: $config
     ) {
       id
       projectId
       uname
-      language
-      # tags
-      userIntents {
-        id
-        agentId
-        value
-        examples {
-          id
-          intentId
-          agentId
-          text
-          tags {
-            id
-            exampleId
-            tagTypeId
-            start
-            end
-          }
-        }
-      }
-      utteranceActions {
-        id
-        text
-      }
+      config
+      widgetSettings
     }
   }
 `;
@@ -304,10 +256,12 @@ export const CHATBOT_DELETE_AGENT = gql`
 `;
 
 export const CHATBOT_UPDATE_AGENT = gql`
-  mutation($agentId: Int!, $uname: String) {
-    ChatbotService_updateAgent(agentId: $agentId, uname: $uname) {
+  mutation($agentId: Int!, $config: JSON!) {
+    ChatbotService_updateAgent(agentId: $agentId, config: $config) {
       id
       uname
+      config
+      widgetSettings
     }
   }
 `;

@@ -1,4 +1,4 @@
-import { GraphPolicyNode } from '@bavard/graph-policy';
+import { GraphPolicyNode } from '@bavard/agent-config/dist/graph-policy';
 import {
   Card,
   CardActions,
