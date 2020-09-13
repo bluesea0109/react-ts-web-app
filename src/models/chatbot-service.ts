@@ -1,5 +1,5 @@
 import { IAgentConfig, IWidgetSettings } from '@bavard/agent-config';
-import { IGraphPolicy } from '@bavard/graph-policy';
+import { IGraphPolicy } from '@bavard/agent-config/dist/graph-policy';
 
 export enum ChatbotLanguage {
   EN_US,
@@ -38,13 +38,6 @@ export enum ActionType {
   NEW_ACTION = 'NEW_ACTION',
   UTTERANCE_ACTION = 'UTTERANCE_ACTION',
   EMAIL_ACTION = 'EMAIL_ACTION',
-}
-
-export interface IIntent {
-  id: number;
-  agentId: number;
-  defaultAction: number;
-  value: string;
 }
 
 export interface ITagType {

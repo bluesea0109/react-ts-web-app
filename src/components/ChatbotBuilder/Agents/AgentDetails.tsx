@@ -21,9 +21,7 @@ import Options from '../Options/Option';
 import PublishAgent from '../Publish';
 import Slot from '../Slot/Slot';
 import Tag from '../Tags/Tag';
-import TrainingConversations from '../TrainingConversations';
 import TrainingJobsTab from '../TrainingJobs/TrainingJobsTab';
-import UploadDataTab from '../UploadData/UploadDataTab';
 
 interface TabPanelProps {
   className?: string;
@@ -176,12 +174,10 @@ const AgentDetails = () => {
       <TabPanel className={classes.tabPanel} value={agentTab} index="Slots">
         <Slot />
       </TabPanel>
-      {agentTab === 'upload-data' && <UploadDataTab />}
       {agentTab === 'graph-policy' && <GraphPolicy />}
       {agentTab === 'exports' && <DataExportsTab />}
       {agentTab === 'training-jobs' && <TrainingJobsTab />}
       {agentTab === 'chat' && <ChatWithAgent />}
-      {agentTab === 'training-conversations' && <TrainingConversations />}
       {agentTab === 'live-conversations' && <ConversationsTab />}
       {agentTab === 'settings' && <AgentSettings />}
       {agentTab === 'publish' && <PublishAgent />}

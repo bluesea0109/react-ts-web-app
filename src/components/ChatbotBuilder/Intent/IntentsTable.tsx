@@ -1,3 +1,4 @@
+import { BaseAgentAction, IIntent } from '@bavard/agent-config';
 import {
   Button,
   Paper,
@@ -9,7 +10,6 @@ import 'firebase/auth';
 import _ from 'lodash';
 import MaterialTable, { Column } from 'material-table';
 import React from 'react';
-import { AnyAction, IIntent } from '../../../models/chatbot-service';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -23,15 +23,14 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface IntentsTableProps {
-  onEditIntent: (id: number) => void;
-  onDeleteIntent: (id: number) => void | Promise<void>;
+  onEditIntent: (intent: IIntent) => void;
+  onDeleteIntent: (intent: IIntent) => void | Promise<void>;
   intents: IIntent[];
-  actions: AnyAction[];
-  loading: boolean;
+  actions: BaseAgentAction[];
   onAdd: () => void;
 }
 
-function IntentsTable({ intents, actions, loading, onAdd, onEditIntent, onDeleteIntent }: IntentsTableProps) {
+function IntentsTable({ intents, actions, onAdd, onEditIntent, onDeleteIntent }: IntentsTableProps) {
   const classes = useStyles();
   const columns: Column<IIntent>[] = [
     { title: 'Intent id', field: 'id', editable: 'never' },
@@ -42,24 +41,22 @@ function IntentsTable({ intents, actions, loading, onAdd, onEditIntent, onDelete
     },
     {
       title: 'Default Action',
-      render: rowData => actions
-        .find(a => a.id === rowData.defaultAction)?.name ??
+      render: rowData => rowData.defaultActionName ??
         <Typography style={{ color: '#808080' }}>N/A</Typography>,
       editable: 'never',
     },
   ];
 
-  const deleteIntentHandler = async (intentId: number) => {
-    await onDeleteIntent(intentId);
+  const deleteIntentHandler = async (intent: IIntent) => {
+    await onDeleteIntent(intent);
   };
 
   return (
     <Paper className={classes.paper}>
       <TableContainer component={Paper} aria-label="Agents">
         <MaterialTable
-          isLoading={loading}
           title={
-            <Button disabled={loading} variant="contained" color="primary" onClick={onAdd}>Add New Intent</Button>
+            <Button variant="contained" color="primary" onClick={onAdd}>Add New Intent</Button>
           }
           columns={columns}
           data={_.cloneDeep(intents)}
@@ -81,14 +78,13 @@ function IntentsTable({ intents, actions, loading, onAdd, onEditIntent, onDelete
               tooltip: 'Edit Intent',
               onClick: (event, rowData) => {
                 const data = rowData as IIntent;
-                onEditIntent(data.id);
+                onEditIntent(data);
               },
             },
           ]}
           editable={{
-            onRowDelete: async (oldData) => {
-              const dataId = oldData.id;
-              await deleteIntentHandler(dataId);
+            onRowDelete: async (intent) => {
+              await deleteIntentHandler(intent);
             },
           }}
         />

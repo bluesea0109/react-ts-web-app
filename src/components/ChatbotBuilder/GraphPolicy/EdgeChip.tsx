@@ -1,4 +1,5 @@
-import {GraphPolicyNode, ImageOption, IOutEdge} from '@bavard/graph-policy';
+import { ImageOption } from '@bavard/agent-config';
+import {GraphPolicyNode, IOutEdge} from '@bavard/agent-config/dist/graph-policy';
 import { Avatar, Paper, Tooltip } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Email, Feedback, NotInterested, TextFields} from '@material-ui/icons';

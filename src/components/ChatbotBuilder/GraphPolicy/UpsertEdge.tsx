@@ -1,4 +1,4 @@
-import { BaseEdge, GraphEdgeType, GraphPolicy} from '@bavard/graph-policy';
+import { BaseEdge, GraphEdgeType, GraphPolicy} from '@bavard/agent-config/dist/graph-policy';
 import { FormControl, FormControlLabel, FormLabel,
   Paper, Radio, RadioGroup, Typography} from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
