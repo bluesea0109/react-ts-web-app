@@ -175,9 +175,6 @@ const AgentDetails = () => {
         index="nluExamples">
         <Examples />
       </TabPanel>
-      <TabPanel className={classes.tabPanel} value={agentTab} index="Slots">
-        <Slot />
-      </TabPanel>
       {agentTab === 'graph-policy' && <GraphPolicy />}
       {agentTab === 'exports' && <DataExportsTab />}
       {agentTab === 'training-jobs' && <TrainingJobsTab />}
