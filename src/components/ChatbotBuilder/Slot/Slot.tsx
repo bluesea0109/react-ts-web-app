@@ -50,7 +50,7 @@ const SlotSection: React.FC = () => {
     awaitRefetchQueries: true,
   });
 
-  const slots: Maybe<ISlot[]> = data?.ChatbotService_slots;
+  const slots: Maybe<ISlot[]> = data?.ChatbotService_getSlots;
 
   const onEditSlot = (id: number) => {
     setCurrentSlot(id);
