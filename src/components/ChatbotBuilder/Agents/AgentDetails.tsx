@@ -110,6 +110,7 @@ const AgentDetails = () => {
         <Tab value="Intents" label="Intents" {...a11yProps('Intents')} />
         <Tab value="Options" label="Options" {...a11yProps('Options')} />
         <Tab value="Tags" label="Tags" {...a11yProps('Tags')} />
+        <Tab value="Slots" label="Slots" {...a11yProps('Slots')} />
         <Tab
           value="nluExamples"
           label="NLU Examples"
@@ -164,6 +165,9 @@ const AgentDetails = () => {
       </TabPanel>
       <TabPanel className={classes.tabPanel} value={agentTab} index="Tags">
         <Tag />
+      </TabPanel>
+      <TabPanel className={classes.tabPanel} value={agentTab} index="Slots">
+        <Slot />
       </TabPanel>
       <TabPanel
         className={classes.tabPanel}
