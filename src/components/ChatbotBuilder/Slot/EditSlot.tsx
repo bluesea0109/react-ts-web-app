@@ -1,3 +1,4 @@
+import { ISlot } from '@bavard/agent-config';
 import {
   Box,
   CircularProgress,
@@ -17,7 +18,6 @@ import { TransitionProps } from '@material-ui/core/transitions';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import React, { useEffect, useState } from 'react';
-import { ISlot } from '../../../models/chatbot-service';
 import { Maybe } from '../../../utils/types';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -40,7 +40,6 @@ const Transition = React.forwardRef(function Transition(
 });
 
 type EditSlotProps = {
-  isLoading: boolean;
   slot?: ISlot;
   onEditSlotClose: () => void;
   onSaveSlot: (slotData: ISlot) => void | Promise<void>;
@@ -48,7 +47,7 @@ type EditSlotProps = {
 };
 
 const EditSlot = (props: EditSlotProps) => {
-  const { isLoading, slot, onEditSlotClose, onSaveSlot } = props;
+  const { slot, onEditSlotClose, onSaveSlot } = props;
 
   const classes = useStyles();
   const [currentSlot, setCurrentSlot] = useState<Maybe<ISlot>>(slot);
@@ -59,15 +58,17 @@ const EditSlot = (props: EditSlotProps) => {
   }, [slot]);
 
   const saveChanges = async () => {
-    if (!!currentSlot) {
-      const { tableData, ...slotData } = currentSlot as any;
-      setSaveLoading(true);
-      await onSaveSlot(slotData);
-      setSaveLoading(false);
+    if (!currentSlot) {
+      return;
     }
+
+    const { tableData, ...slotData } = currentSlot as any;
+    setSaveLoading(true);
+    await onSaveSlot(slotData);
+    setSaveLoading(false);
   };
 
-  const loading = isLoading || saveLoading;
+  const loading = saveLoading;
 
   return (
     <Dialog fullScreen={true} open={!!slot} TransitionComponent={Transition}>
@@ -82,9 +83,9 @@ const EditSlot = (props: EditSlotProps) => {
             <CloseIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
-            {currentSlot?.id === -1
+            {!currentSlot
               ? 'Create New Slot'
-              : `Edit Slot #${currentSlot?.id}`}
+              : `Edit Slot "${currentSlot.name}"`}
           </Typography>
           <Button
             disabled={loading}
@@ -92,7 +93,7 @@ const EditSlot = (props: EditSlotProps) => {
             color="inherit"
             onClick={saveChanges}>
             {loading && <CircularProgress color="secondary" size={20} />}
-            {!loading && (currentSlot?.id === -1 ? 'Create' : 'Save')}
+            {!loading && (!currentSlot ? 'Create' : 'Save')}
           </Button>
         </Toolbar>
         {loading && <LinearProgress color="secondary" />}

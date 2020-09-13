@@ -1,10 +1,10 @@
+import { ISlot } from '@bavard/agent-config';
 import { Button, Paper, TableContainer } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Edit } from '@material-ui/icons';
 import _ from 'lodash';
 import MaterialTable, { Column } from 'material-table';
 import React from 'react';
-import { ISlot } from '../../../models/chatbot-service';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -18,16 +18,14 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface SlotsTableProps {
-  onEditSlot: (id: number) => void;
-  onDeleteSlot: (id: number) => void | Promise<void>;
+  onEditSlot: (slot: ISlot) => void;
+  onDeleteSlot: (slot: ISlot) => void | Promise<void>;
   slots: ISlot[];
-  loading: boolean;
   onAdd: () => void;
 }
 
 function SlotsTable({
   slots,
-  loading,
   onAdd,
   onEditSlot,
   onDeleteSlot,
@@ -38,18 +36,16 @@ function SlotsTable({
     { title: 'Type', field: 'type', editable: 'never' },
   ];
 
-  const deleteSlotHandler = async (id: number) => {
-    await onDeleteSlot(id);
+  const deleteSlotHandler = async (slot: ISlot) => {
+    await onDeleteSlot(slot);
   };
 
   return (
     <Paper className={classes.paper}>
       <TableContainer component={Paper} aria-label="Slots">
         <MaterialTable
-          isLoading={loading}
           title={
             <Button
-              disabled={loading}
               variant="contained"
               color="primary"
               onClick={onAdd}>
@@ -74,11 +70,11 @@ function SlotsTable({
             {
               icon: (props: any) => <Edit />,
               tooltip: 'Edit Slot',
-              onClick: (_, rowData) => onEditSlot((rowData as ISlot).id),
+              onClick: (_, rowData) => onEditSlot((rowData as ISlot)),
             },
           ]}
           editable={{
-            onRowDelete: (oldData) => deleteSlotHandler((oldData as ISlot).id),
+            onRowDelete: (slot) => deleteSlotHandler((slot as ISlot)),
           }}
         />
       </TableContainer>

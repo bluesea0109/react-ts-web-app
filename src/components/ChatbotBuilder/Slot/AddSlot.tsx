@@ -1,4 +1,5 @@
 import { useMutation } from '@apollo/client';
+import { ISlot } from '@bavard/agent-config';
 import {
   Box,
   CircularProgress,
@@ -49,7 +50,7 @@ const AddSlot = (props: AddSlotProps) => {
   const classes = useStyles();
   const { onAddSlotClose } = props;
   const [loading, setLoading] = useState(false);
-  const [newSlot, setNewSlot] = useState({
+  const [newSlot, setNewSlot] = useState<ISlot>({
     name: '',
     type: '',
   });
@@ -78,10 +79,7 @@ const AddSlot = (props: AddSlotProps) => {
         variables: {
           agentId: numAgentId,
           slots: [
-            {
-              name,
-              type,
-            },
+            { name, type },
           ],
         },
       });
