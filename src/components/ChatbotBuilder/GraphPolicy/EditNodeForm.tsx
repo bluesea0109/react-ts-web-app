@@ -1,10 +1,10 @@
+import { IHyperlinkOption } from '@bavard/agent-config';
 import {
   EmailNode,
   GraphPolicy,
   GraphPolicyNode,
-  HyperlinkOption,
   UtteranceNode,
-} from '@bavard/graph-policy';
+} from '@bavard/agent-config/dist/graph-policy';
 import {
   Button,
   Dialog,
@@ -297,8 +297,8 @@ export default function EditNodeForm({
               </Typography>
 
               {node.options.map((o, index) => {
-                if (o instanceof HyperlinkOption) {
-                  const opt = o as HyperlinkOption;
+                if (o.type === 'HYPERLINK') {
+                  const opt = o as IHyperlinkOption;
                   return (
                     <NodeOptionChip
                       option={opt}

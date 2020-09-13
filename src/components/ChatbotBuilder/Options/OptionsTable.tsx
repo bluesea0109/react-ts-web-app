@@ -1,3 +1,4 @@
+import { IResponseOption } from '@bavard/agent-config';
 import {
   Box,
   Button, Grid,
@@ -9,7 +10,6 @@ import { Edit } from '@material-ui/icons';
 import _ from 'lodash';
 import MaterialTable, { Column } from 'material-table';
 import React from 'react';
-import { IOption } from './types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -23,16 +23,15 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface OptionsTableProps {
-  onEditOption: (id: number) => void;
-  onDeleteOption: (id: number) => void | Promise<void>;
-  options: IOption[];
-  loading: boolean;
+  onEditOption: (option: IResponseOption) => void;
+  onDeleteOption: (option: IResponseOption) => void | Promise<void>;
+  options: IResponseOption[];
   onAdd: () => void;
 }
 
-function OptionsTable({ options, loading, onAdd, onEditOption, onDeleteOption }: OptionsTableProps) {
+function OptionsTable({ options, onAdd, onEditOption, onDeleteOption }: OptionsTableProps) {
   const classes = useStyles();
-  const columns: Column<IOption>[] = [
+  const columns: Column<IResponseOption>[] = [
     {
       title: 'Option ID',
       field: 'id',
@@ -50,17 +49,16 @@ function OptionsTable({ options, loading, onAdd, onEditOption, onDeleteOption }:
     },
   ];
 
-  const deleteOptionHandler = async (optionId: number) => {
-    await onDeleteOption(optionId);
+  const deleteOptionHandler = async (option: IResponseOption) => {
+    await onDeleteOption(option);
   };
 
   return (
     <Paper className={classes.paper}>
       <TableContainer component={Paper} aria-label="Options">
         <MaterialTable
-          isLoading={loading}
           title={
-            <Button disabled={loading} variant="contained" color="primary" onClick={onAdd}>Add New Option</Button>
+            <Button variant="contained" color="primary" onClick={onAdd}>Add New Option</Button>
           }
           columns={columns}
           data={_.cloneDeep(options)}
@@ -82,15 +80,14 @@ function OptionsTable({ options, loading, onAdd, onEditOption, onDeleteOption }:
               icon: (props: any) => <Edit/>,
               tooltip: 'Edit Option',
               onClick: (event, rowData) => {
-                const data = rowData as IOption;
-                onEditOption(data.id);
+                const data = rowData as IResponseOption;
+                onEditOption(data);
               },
             },
           ]}
           editable={{
-            onRowDelete: async (oldData) => {
-              const dataId = oldData.id;
-              await deleteOptionHandler(dataId);
+            onRowDelete: async (data) => {
+              await deleteOptionHandler(data);
             },
           }}
         />
@@ -101,8 +98,8 @@ function OptionsTable({ options, loading, onAdd, onEditOption, onDeleteOption }:
 
 type OtherProps = { [index: string]: any };
 
-const OptionDetailsPanel = ({ option }: { option: IOption }) => {
-  const { id, intentId, intent, type, agentId, ...otherProps } = option;
+const OptionDetailsPanel = ({ option }: { option: IResponseOption }) => {
+  const { intent, type, ...otherProps } = option;
   const optionProps = otherProps as OtherProps;
 
   return (

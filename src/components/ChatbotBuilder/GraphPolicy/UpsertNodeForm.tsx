@@ -2,7 +2,7 @@ import {
   EmailNode,
   GraphPolicyNode,
   UtteranceNode,
-} from '@bavard/graph-policy';
+} from '@bavard/agent-config/dist/graph-policy';
 import {
   FormControl,
   FormControlLabel,

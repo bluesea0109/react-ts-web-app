@@ -1,3 +1,4 @@
+import { BaseAgentAction, IIntent } from '@bavard/agent-config';
 import { Box, CircularProgress, DialogContent, Grid, LinearProgress, TextField } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
@@ -9,9 +10,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import { TransitionProps } from '@material-ui/core/transitions';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
-import { Autocomplete } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
-import { AnyAction, IIntent } from '../../../models/chatbot-service';
 import { Maybe } from '../../../utils/types';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -34,16 +33,15 @@ const Transition = React.forwardRef(function Transition(
 });
 
 type EditIntentProps = {
-  isLoading: boolean;
   intent?: IIntent;
-  actions: AnyAction[];
+  actions: BaseAgentAction[];
   onEditIntentClose: () => void;
   onSaveIntent: (intentData: IIntent) => void | Promise<void>;
   error?: Error;
 };
 
 const EditIntent = (props: EditIntentProps) => {
-  const { isLoading, intent, onEditIntentClose, actions, onSaveIntent } = props;
+  const { intent, onEditIntentClose, onSaveIntent } = props;
 
   const classes = useStyles();
   const [currentIntent, setCurrentIntent] = useState<Maybe<IIntent>>(intent);
@@ -62,7 +60,7 @@ const EditIntent = (props: EditIntentProps) => {
     }
   };
 
-  const loading = isLoading || saveLoading;
+  const loading = saveLoading;
 
   return (
     <Dialog fullScreen={true} open={!!intent} TransitionComponent={Transition}>
@@ -72,7 +70,7 @@ const EditIntent = (props: EditIntentProps) => {
             <CloseIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
-            {currentIntent?.id === -1 ? 'Create New Intent' : `Edit Intent #${currentIntent?.id}`}
+            {!currentIntent ? 'Create New Intent' : `Edit Intent "${currentIntent.name}"`}
           </Typography>
           <Button disabled={loading} autoFocus={true} color="inherit" onClick={saveChanges}>
             {loading && (
@@ -81,7 +79,7 @@ const EditIntent = (props: EditIntentProps) => {
                 size={20}
               />
             )}
-            {!loading && (currentIntent?.id === -1 ? 'Create' : 'Save')}
+            {!loading && (!currentIntent ? 'Create' : 'Save')}
           </Button>
         </Toolbar>
         {loading && <LinearProgress color="secondary" />}
@@ -96,24 +94,24 @@ const EditIntent = (props: EditIntentProps) => {
                   label="Intent Value (No Spaces Allowed)"
                   disabled={loading}
                   variant="outlined"
-                  value={currentIntent?.value}
+                  value={currentIntent}
                   onChange={e => setCurrentIntent({ ...currentIntent, value: e.target.value.replace(/ /g, '+') } as any)}
                 />
               </Box>
             </Grid>
             <Grid item={true} xs={6}>
-              <Box p={2}>
+              {/* <Box p={2}>
                 <Autocomplete
                   fullWidth={true}
                   disabled={loading}
                   id="intentDefaultActionSelector"
                   options={actions}
                   getOptionLabel={(option: AnyAction) => option.name}
-                  value={actions.find(a => a.id === currentIntent?.defaultAction)}
+                  value={actions.find(a => a.name === currentIntent?.defaultActionName)}
                   onChange={(e, action) => setCurrentIntent({ ...currentIntent, defaultAction: action?.id } as any)}
                   renderInput={(params) => <TextField {...params} label="Default Action" variant="outlined" />}
                 />
-              </Box>
+              </Box> */}
             </Grid>
           </Grid>
         </Box>

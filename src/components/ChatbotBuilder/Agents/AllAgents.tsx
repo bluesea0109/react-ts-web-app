@@ -21,7 +21,7 @@ interface IChatbotBuilderAgentProps {
   user: IUser;
 }
 
-const ChatbotBuilder: React.FC<IChatbotBuilderAgentProps> = ({ user }) => {
+const AllAgents: React.FC<IChatbotBuilderAgentProps> = ({ user }) => {
   const classes = useStyles();
   const activeProj = user.activeProject;
 
@@ -45,4 +45,4 @@ const ChatbotBuilder: React.FC<IChatbotBuilderAgentProps> = ({ user }) => {
   );
 };
 
-export default ChatbotBuilder;
+export default AllAgents;

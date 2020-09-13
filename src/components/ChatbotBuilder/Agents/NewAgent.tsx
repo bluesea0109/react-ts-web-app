@@ -20,7 +20,6 @@ import {
 } from '../../../common-gql-queries';
 import { IUser } from '../../../models/user-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
-import UploadDataDialog from '../UploadData/UploadDataDialog';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -66,14 +65,9 @@ const NewAgent: React.FC<INewAgentProps> = ({ user }) => {
       variables: {
         projectId,
         uname,
-        language: 'EN_US',
       },
     });
 
-    setUname('');
-  };
-
-  const onUploadComplete = () => {
     setUname('');
   };
 
@@ -104,14 +98,6 @@ const NewAgent: React.FC<INewAgentProps> = ({ user }) => {
           onClick={onSubmit}>
           Create Without Data
         </Button>
-        <UploadDataDialog
-          projectId={projectId}
-          uname={uname}
-          buttonsDisabled={loading || !uname}
-          onSuccess={onUploadComplete}
-          onError={onUploadComplete}
-          onCancel={onUploadComplete}
-        />
       </CardContent>
     </Card>
   );

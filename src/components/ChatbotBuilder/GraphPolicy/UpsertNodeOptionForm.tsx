@@ -1,8 +1,7 @@
+import { HyperlinkOption, IResponseOption } from '@bavard/agent-config';
 import {
   GraphPolicy,
-  HyperlinkOption,
-  ResponseOption,
-} from '@bavard/graph-policy';
+} from '@bavard/agent-config/dist/graph-policy';
 import {
   Button,
   FormControl,
@@ -39,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface IUpsertNodeOptionFormProps {
-  option?: ResponseOption;
+  option?: IResponseOption;
   optionIndex?: number;
   nodeId: number;
   onSuccess: (policy: GraphPolicy) => void;
