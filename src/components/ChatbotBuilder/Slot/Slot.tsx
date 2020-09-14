@@ -1,5 +1,6 @@
-import { ISlot } from '@bavard/agent-config';
+import { AgentConfig, ISlot } from '@bavard/agent-config';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import _ from 'lodash';
 import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { currentAgentConfig } from '../atoms';
@@ -23,7 +24,7 @@ const SlotSection: React.FC = () => {
   const classes = useStyles();
   const [currentSlot, setCurrentSlot] = useState<ISlot | undefined>();
   const [isNewSlot, setIsNewSlot] = useState<boolean>(false);
-  const [config, setConfig] = useRecoilState(currentAgentConfig);
+  const [config, setConfig] = useRecoilState<AgentConfig | undefined>(currentAgentConfig);
 
   if (!config) {
     return <p>Agent config is empty.</p>;
@@ -36,16 +37,22 @@ const SlotSection: React.FC = () => {
   };
 
   const onSaveSlot = async (slot: ISlot) => {
-    config.deleteSlot(slot.name);
-    config.addSlot(slot.name, slot.type);
-    setConfig(config);
+    if (!currentSlot) { return; }
+    const newConfig = _.cloneDeep<AgentConfig>(config);
+    newConfig
+      .deleteSlot(currentSlot.name)
+      .addSlot(slot.name, slot.type);
+    setConfig(newConfig);
+
     setIsNewSlot(false);
     setCurrentSlot(undefined);
   };
 
   const onDeleteSlot = async (slot: ISlot) => {
-    config.deleteSlot(slot.name);
-    setConfig(config);
+    const newConfig = _.cloneDeep<AgentConfig>(config);
+    newConfig.deleteSlot(slot.name);
+    setConfig(newConfig);
+
     setCurrentSlot(undefined);
   };
 
