@@ -16,7 +16,7 @@ export interface IAgent {
   projectId: string;
   uname: string;
   config: IAgentConfig;
-  widgetSetings: IWidgetSettings;
+  widgetSettings: IWidgetSettings;
 }
 
 export interface IExample {
