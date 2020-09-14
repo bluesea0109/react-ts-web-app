@@ -56,13 +56,16 @@ function a11yProps(index: any) {
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
-  root: {
+  container: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
   },
   tabsContainer: {
     flex: '1 1 0',
     display: 'flex',
     overflow: 'auto',
-    height: '50%',
+    height: '100%',
   },
   tabPanel: {
     overflow: 'auto',
@@ -119,7 +122,7 @@ const AgentDetails = () => {
   };
 
   return (
-    <div>
+    <div className={classes.container}>
       <Toolbar className={classes.toolbar} variant="dense">
         <Button variant="contained" onClick={saveAgent}>{'Save Agent'}</Button>
       </Toolbar>
