@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { AgentConfig } from '@bavard/agent-config';
 import { Box, Button, makeStyles, Tab, Tabs, Theme, Toolbar } from '@material-ui/core';
+import _ from 'lodash';
 import React from 'react';
 import { useHistory, useParams } from 'react-router';
 import { useRecoilState } from 'recoil';
@@ -111,7 +112,10 @@ const AgentDetails = () => {
   };
 
   const saveAgent = () => {
-    updateAgent({ variables: { agentId: Number(agentId), config: config?.toJsonObj() } });
+    if (!!config) {
+      const newConfig = _.cloneDeep(config)?.toJsonObj();
+      updateAgent({ variables: { agentId: Number(agentId), config: newConfig } });
+    }
   };
 
   return (
