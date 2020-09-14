@@ -40,13 +40,15 @@ const Transition = React.forwardRef(function Transition(
 type EditSlotProps = {
   slot?: ISlot;
   onEditSlotClose: () => void;
-  onSaveSlot: (slotData: ISlot) => void | Promise<void>;
+  onSaveSlot: (slotData: ISlot) => void;
   error?: Error;
 };
 
-const EditSlot = (props: EditSlotProps) => {
-  const { slot, onEditSlotClose, onSaveSlot } = props;
-
+const EditSlot = ({
+  slot,
+  onEditSlotClose,
+  onSaveSlot,
+}: EditSlotProps) => {
   const classes = useStyles();
   const [currentSlot, setCurrentSlot] = useState<Maybe<ISlot>>(slot);
 
@@ -54,7 +56,7 @@ const EditSlot = (props: EditSlotProps) => {
     setCurrentSlot(slot);
   }, [slot]);
 
-  const saveChanges = async () => {
+  const saveChanges = () => {
     if (!currentSlot) {
       return;
     }

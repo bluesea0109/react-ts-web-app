@@ -1,10 +1,11 @@
-import { IHyperlinkOption } from '@bavard/agent-config';
 import {
   EmailNode,
   GraphPolicy,
   GraphPolicyNode,
+  IHyperlinkOption,
   UtteranceNode,
-} from '@bavard/agent-config/dist/graph-policy';
+} from '@bavard/agent-config';
+
 import {
   Button,
   Dialog,
@@ -69,7 +70,7 @@ interface IGraphNodeProps {
   nodeId: number;
   agentId: number;
   onCancel: () => void;
-  onUpdate?: () => void;
+  onUpdate?: (policy: GraphPolicy) => void;
   onSubmit: (policy: GraphPolicy) => void;
 }
 
@@ -119,7 +120,7 @@ export default function EditNodeForm({
   const removeEdge = (edgeId: number) => {
     node?.removeEdge(edgeId);
     setPolicy(graphPolicy);
-    onUpdate?.();
+    onUpdate?.(graphPolicy);
     setNumStateChanges(numChanges + 1);
   };
 
@@ -161,7 +162,7 @@ export default function EditNodeForm({
     setNumStateChanges(numChanges + 1);
     activateForm(null);
     setPolicy(updPolicy);
-    onUpdate?.();
+    onUpdate?.(updPolicy);
     setNumStateChanges(numChanges + 1);
   };
 
@@ -169,7 +170,7 @@ export default function EditNodeForm({
     setNumStateChanges(numChanges + 1);
     activateForm(null);
     setPolicy(updPolicy);
-    onUpdate?.();
+    onUpdate?.(updPolicy);
     setNumStateChanges(numChanges + 1);
   };
 

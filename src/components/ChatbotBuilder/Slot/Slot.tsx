@@ -36,7 +36,7 @@ const SlotSection: React.FC = () => {
     setCurrentSlot(slot);
   };
 
-  const onSaveSlot = async (slot: ISlot) => {
+  const onSaveSlot = (slot: ISlot) => {
     if (!currentSlot) { return; }
     const newConfig = _.cloneDeep<AgentConfig>(config);
     newConfig
@@ -48,7 +48,7 @@ const SlotSection: React.FC = () => {
     setCurrentSlot(undefined);
   };
 
-  const onDeleteSlot = async (slot: ISlot) => {
+  const onDeleteSlot = (slot: ISlot) => {
     const newConfig = _.cloneDeep<AgentConfig>(config);
     newConfig.deleteSlot(slot.name);
     setConfig(newConfig);
