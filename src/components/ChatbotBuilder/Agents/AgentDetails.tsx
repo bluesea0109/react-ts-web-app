@@ -84,7 +84,7 @@ const AgentDetails = () => {
   });
 
   if (error) {
-    return <ApolloErrorPage error={error}/>;
+    return <ApolloErrorPage error={error} />;
   }
 
   if (loading || !data) {
