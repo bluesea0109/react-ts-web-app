@@ -1,10 +1,10 @@
-import { useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { AgentConfig } from '@bavard/agent-config';
 import { Box, Button, makeStyles, Tab, Tabs, Theme, Toolbar } from '@material-ui/core';
 import React from 'react';
 import { useHistory, useParams } from 'react-router';
-import { useSetRecoilState } from 'recoil';
-import { CHATBOT_GET_AGENT } from '../../../common-gql-queries';
+import { useRecoilState } from 'recoil';
+import { CHATBOT_GET_AGENT, CHATBOT_UPDATE_AGENT } from '../../../common-gql-queries';
 import { IAgent } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
@@ -81,7 +81,7 @@ const AgentDetails = () => {
   const classes = useStyles();
   const { orgId, projectId, agentId, agentTab } = useParams();
   const history = useHistory();
-  const setConfig = useSetRecoilState(currentAgentConfig);
+  const [config, setConfig] = useRecoilState(currentAgentConfig);
 
   const { error, loading, data } = useQuery<IGetAgent>(CHATBOT_GET_AGENT, {
     variables: { agentId: Number(agentId) },
@@ -90,11 +90,16 @@ const AgentDetails = () => {
     },
   });
 
+  const [updateAgent, updateAgentData] = useMutation(CHATBOT_UPDATE_AGENT, {
+    refetchQueries: [{ query: CHATBOT_GET_AGENT, variables: { agentId: Number(agentId) } }],
+    awaitRefetchQueries: true,
+  });
+
   if (error) {
     return <ApolloErrorPage error={error} />;
   }
 
-  if (loading || !data) {
+  if (loading || updateAgentData?.loading || !data) {
     return <ContentLoading />;
   }
 
@@ -104,9 +109,15 @@ const AgentDetails = () => {
     });
   };
 
+  const saveAgent = () => {
+    updateAgent({ variables: { agentId: Number(agentId), config: config?.toJsonObj() } });
+  };
+
   return (
     <div>
-      <Toolbar className={classes.toolbar} variant="dense"><Button variant="contained">{'Save Agent'}</Button></Toolbar>
+      <Toolbar className={classes.toolbar} variant="dense">
+        <Button variant="contained" onClick={saveAgent}>{'Save Agent'}</Button>
+      </Toolbar>
       <div className={classes.tabsContainer}>
         <Tabs
           value={agentTab}
