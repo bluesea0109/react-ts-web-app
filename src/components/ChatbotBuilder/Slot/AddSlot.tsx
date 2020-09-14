@@ -46,9 +46,10 @@ type AddSlotProps = {
   onAddSlotClose: () => void;
 };
 
-const AddSlot = (props: AddSlotProps) => {
+const AddSlot = ({
+  onAddSlotClose,
+}: AddSlotProps) => {
   const classes = useStyles();
-  const { onAddSlotClose } = props;
   const [loading, setLoading] = useState(false);
   const [newSlot, setNewSlot] = useState<ISlot>({
     name: '',
@@ -61,7 +62,7 @@ const AddSlot = (props: AddSlotProps) => {
     return <Typography>Agent config is empty.</Typography>;
   }
 
-  const saveChanges = async () => {
+  const saveChanges = () => {
     if (newSlot.name === '' || newSlot.type === '') {
       enqueueSnackbar('Slot can\'t be empty', { variant: 'warning' });
       return;

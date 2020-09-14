@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface SlotsTableProps {
   onEditSlot: (slot: ISlot) => void;
-  onDeleteSlot: (slot: ISlot) => void | Promise<void>;
+  onDeleteSlot: (slot: ISlot) => void;
   slots: ISlot[];
   onAdd: () => void;
 }
@@ -36,8 +36,8 @@ function SlotsTable({
     { title: 'Type', field: 'type', editable: 'never' },
   ];
 
-  const deleteSlotHandler = async (slot: ISlot) => {
-    await onDeleteSlot(slot);
+  const deleteSlotHandler = (slot: ISlot) => {
+    onDeleteSlot(slot);
   };
 
   return (
@@ -74,7 +74,7 @@ function SlotsTable({
             },
           ]}
           editable={{
-            onRowDelete: (slot) => deleteSlotHandler((slot as ISlot)),
+            onRowDelete: async (slot) => deleteSlotHandler((slot as ISlot)),
           }}
         />
       </TableContainer>

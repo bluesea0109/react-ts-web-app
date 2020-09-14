@@ -1,5 +1,6 @@
-import { IIntent } from '@bavard/agent-config';
+import { AgentConfig, IIntent } from '@bavard/agent-config';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import _ from 'lodash';
 import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { currentAgentConfig } from '../atoms';
@@ -23,7 +24,7 @@ const IntentSection: React.FC = () => {
   const classes = useStyles();
   const [currentIntent, setCurrentIntent] = useState<IIntent | undefined>();
   const [newIntent, setNewIntent] = useState<boolean>(false);
-  const [config, setConfig] = useRecoilState(currentAgentConfig);
+  const [config, setConfig] = useRecoilState<AgentConfig | undefined>(currentAgentConfig);
 
   if (!config) {
     return <p>Agent config is empty.</p>;
@@ -37,17 +38,23 @@ const IntentSection: React.FC = () => {
     setCurrentIntent(intent);
   };
 
-  const onSaveIntent = async (intent: IIntent) => {
-    config.deleteIntent(intent.name);
-    config.addIntent(intent.name, intent.defaultActionName);
-    setConfig(config);
+  const onSaveIntent = (intent: IIntent) => {
+    if (!currentIntent) { return; }
+    const newConfig = _.cloneDeep(config);
+    newConfig
+      .deleteIntent(currentIntent.name)
+      .addIntent(intent.name, intent.defaultActionName);
+    setConfig(newConfig);
+
     setNewIntent(false);
     setCurrentIntent(undefined);
   };
 
-  const onDeleteIntent = async (intent: IIntent) => {
-    config.deleteIntent(intent.name);
-    setConfig(config);
+  const onDeleteIntent = (intent: IIntent) => {
+    const newConfig = _.cloneDeep(config);
+    newConfig.deleteIntent(intent.name);
+    setConfig(newConfig);
+
     setCurrentIntent(undefined);
   };
 
