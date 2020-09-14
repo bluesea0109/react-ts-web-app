@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client';
 import { AgentConfig } from '@bavard/agent-config';
-import { Box, makeStyles, Tab, Tabs, Theme } from '@material-ui/core';
+import { Box, Button, makeStyles, Tab, Tabs, Theme, Toolbar } from '@material-ui/core';
 import React from 'react';
 import { useHistory, useParams } from 'react-router';
 import { useSetRecoilState } from 'recoil';
@@ -56,13 +56,16 @@ function a11yProps(index: any) {
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
-    flex: '1 1 0',
-    display: 'flex',
-    overflow: 'auto',
+
   },
   tabPanel: {
     overflow: 'auto',
     width: '100%',
+  },
+  toolbar: {
+    background: '#f5f5f5',
+    display: 'flex',
+    justifyContent: 'flex-end',
   },
 }));
 
@@ -84,7 +87,7 @@ const AgentDetails = () => {
   });
 
   if (error) {
-    return <ApolloErrorPage error={error}/>;
+    return <ApolloErrorPage error={error} />;
   }
 
   if (loading || !data) {
@@ -99,6 +102,7 @@ const AgentDetails = () => {
 
   return (
     <div className={classes.root}>
+      <Toolbar className={classes.toolbar} variant="dense"><Button variant="contained">{'Save Agent'}</Button></Toolbar>
       <Tabs
         value={agentTab}
         onChange={handleChangeTab}
