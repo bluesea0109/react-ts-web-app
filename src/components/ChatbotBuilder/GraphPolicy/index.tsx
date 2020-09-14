@@ -91,7 +91,7 @@ export default function GraphPolicies() {
   const handleActivatePolicy = async (name: string) => {
     setLoading(true);
 
-    config.activePolicyName = name;
+    config.setActivePolicyName(name);
 
     const mutationResult = await updateAgent({
       variables: {

@@ -65,7 +65,7 @@ export default function CreatePolicyForm({
 
     const rootNode = new UtteranceNode(1, actionName, utterance);
     const policy = new GraphPolicy(policyName, rootNode);
-    policy.intents.add('default');
+    policy.addIntent('default');
 
     await config.addGraphPolicy(policy);
 
