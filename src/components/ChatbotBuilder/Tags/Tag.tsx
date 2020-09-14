@@ -1,3 +1,4 @@
+import { AgentConfig } from '@bavard/agent-config';
 import { Grid, Paper, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
@@ -20,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const TagSection: React.FC = () => {
   const classes = useStyles();
-  const [config] = useRecoilState(currentAgentConfig);
+  const [config] = useRecoilState<AgentConfig | undefined>(currentAgentConfig);
 
   if (!config) {
     return <Typography>Agent config is empty.</Typography>;
