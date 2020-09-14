@@ -25,7 +25,7 @@ const TagSection: React.FC = () => {
   if (!config) {
     return <Typography>Agent config is empty.</Typography>;
   }
-  
+
   return (
     <div className={classes.root}>
       <Grid item={true} xs={12} sm={12}>

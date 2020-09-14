@@ -5,9 +5,9 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import 'firebase/auth';
 import React, {useState} from 'react';
 import { useRecoilState } from 'recoil';
-import { currentAgentConfig } from '../atoms';
 import { ITagType } from '../../../models/chatbot-service';
 import ConfirmDialog from '../../Utils/ConfirmDialog';
+import { currentAgentConfig } from '../atoms';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
