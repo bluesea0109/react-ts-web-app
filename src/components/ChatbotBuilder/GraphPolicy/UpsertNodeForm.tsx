@@ -58,6 +58,7 @@ export default function UpsertNodeForm({
       onChange(node);
     } else {
       const newNode = new UtteranceNode(nodeId, actionName, utterance);
+
       onChange(newNode);
     }
   };

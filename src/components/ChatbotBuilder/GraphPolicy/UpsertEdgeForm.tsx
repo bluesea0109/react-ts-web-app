@@ -1,20 +1,39 @@
 import { useLazyQuery } from '@apollo/client';
-import { BaseEdge, ConfirmEdge , EmailNode, EmptyEdge, GraphEdgeType, GraphPolicy,
-  GraphPolicyNode, UtteranceEdge, UtteranceNode} from '@bavard//agent-config/dist/graph-policy';
+import {
+  BaseEdge,
+  ConfirmEdge,
+  EmailNode,
+  EmptyEdge,
+  GraphEdgeType,
+  GraphPolicy,
+  GraphPolicyNode,
+  UtteranceEdge,
+  UtteranceNode,
+} from '@bavard//agent-config/dist/graph-policy';
 import { ImageOption, TextOption } from '@bavard/agent-config';
-import { Button, FormControl, FormControlLabel, FormLabel, InputLabel,
-  MenuItem, Radio, RadioGroup, Select, TextField} from '@material-ui/core';
+import {
+  Button,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  InputLabel,
+  MenuItem,
+  Radio,
+  RadioGroup,
+  Select,
+  TextField,
+} from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import _ from 'lodash';
 import { useSnackbar } from 'notistack';
-import React, {useContext, useEffect, useState} from 'react';
-import {OptionImagesContext} from '../../../context/OptionImages';
+import React, { useContext, useEffect, useState } from 'react';
+import { OptionImagesContext } from '../../../context/OptionImages';
 import { IOptionImage } from '../../../models/chatbot-service';
-import {uploadFileWithFetch} from '../../../utils/xhr';
+import { uploadFileWithFetch } from '../../../utils/xhr';
 import ContentLoading from '../../ContentLoading';
 import ImageSelectorGrid from '../../Utils/ImageSelectorGrid';
-import { getSignedImgUploadUrlQuery} from './gql';
-import {IGetImageUploadSignedUrlQueryResult} from './types';
+import { getSignedImgUploadUrlQuery } from './gql';
+import { IGetImageUploadSignedUrlQueryResult } from './types';
 import UpsertNodeForm from './UpsertNodeForm';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -42,9 +61,17 @@ interface IUpsertEdgeFormProps {
   edgeType: GraphEdgeType;
 }
 
-export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , edgeType, onCancel, onSuccess}: IUpsertEdgeFormProps) {
+export default function UpsertEdgeForm({
+  agentId,
+  nodeId,
+  policy,
+  edgeId,
+  edgeType,
+  onCancel,
+  onSuccess,
+}: IUpsertEdgeFormProps) {
   const classes = useStyles();
-  const {enqueueSnackbar} = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
 
   const node = policy.getNodeById(nodeId);
   const nodeJson = node?.toJsonObj();
@@ -78,31 +105,50 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , edgeTy
     }
   }
 
-  const nodeList = policy.toJsonObj().nodes.filter((n) => {
-    if (n.nodeId === nodeId) {
-      return false;
-    }
-    if (node && _.find(nodeJson?.outEdges, {nodeId: n.nodeId}) && n.nodeId !== edgeId) {
-      return false;
-    }
-    return true;
-  }).sort((a, b) => {
-    return a.nodeId - b.nodeId;
-  });
+  const nodeList = policy
+    .toJsonObj()
+    .nodes.filter((n) => {
+      if (n.nodeId === nodeId) {
+        return false;
+      }
+      if (
+        node &&
+        _.find(nodeJson?.outEdges, { nodeId: n.nodeId }) &&
+        n.nodeId !== edgeId
+      ) {
+        return false;
+      }
+      return true;
+    })
+    .sort((a, b) => {
+      return a.nodeId - b.nodeId;
+    });
 
   const [nodeExists, setNodeExists] = useState(true);
   const [showFormErrors, setShowFormErrors] = useState(false);
   const [selectedNodeId, setSelectedNodeId] = useState<any>(edge?.dest.nodeId);
-  const [optionType, setOptionType] = useState<string>(edge instanceof UtteranceEdge ? edge?.option?.type || 'TEXT' : 'TEXT');
-  const [intent, setIntent] = useState(edge instanceof UtteranceEdge ? edge?.option?.intent || '' : '');
-  const [actionText, setActionText] = useState<string>(textOption?.text || imgOption?.text || '');
+  const [optionType, setOptionType] = useState<string>(
+    edge instanceof UtteranceEdge ? edge?.option?.type || 'TEXT' : 'TEXT',
+  );
+  const [intent, setIntent] = useState(
+    edge instanceof UtteranceEdge ? edge?.option?.intent || '' : '',
+  );
+  const [actionText, setActionText] = useState<string>(
+    textOption?.text || imgOption?.text || '',
+  );
   const [imageName, setImageName] = useState(imgOption?.imageName || '');
   const [loading, setLoading] = useState(false);
-  const [imgFile, setImgFile] = useState<File|undefined>(undefined);
-  const [newNode, setNewNode] = useState<GraphPolicyNode|undefined>(undefined);
-  const [existingImg, setExistingImg] = useState<string | undefined>(imgOption?.imageName || undefined);
+  const [imgFile, setImgFile] = useState<File | undefined>(undefined);
+  const [newNode, setNewNode] = useState<GraphPolicyNode | undefined>(
+    undefined,
+  );
+  const [existingImg, setExistingImg] = useState<string | undefined>(
+    imgOption?.imageName || undefined,
+  );
   const [imgCaption, setImgCaption] = useState(imgOption?.caption || '');
-  const [getSignedImgUploadUrl, signedImgUploadResult] = useLazyQuery<IGetImageUploadSignedUrlQueryResult>(getSignedImgUploadUrlQuery);
+  const [getSignedImgUploadUrl, signedImgUploadResult] = useLazyQuery<
+    IGetImageUploadSignedUrlQueryResult
+  >(getSignedImgUploadUrlQuery);
 
   const optionImages = useContext(OptionImagesContext)?.optionImages || [];
 
@@ -134,13 +180,20 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , edgeTy
     setExistingImg(img.name);
   };
 
-  const handleNewNode = (node: GraphPolicyNode | UtteranceNode | EmailNode | undefined) => {
+  const handleNewNode = (
+    node: GraphPolicyNode | UtteranceNode | EmailNode | undefined,
+  ) => {
     setNewNode(node);
   };
 
-  const addUtteranceEdge = async (edgeNode: GraphPolicyNode, position?: number) => {
+  const addUtteranceEdge = async (
+    edgeNode: GraphPolicyNode,
+    position?: number,
+  ) => {
     if (!node) {
-      return enqueueSnackbar('Parent node does not exist', { variant: 'error' });
+      return enqueueSnackbar('Parent node does not exist', {
+        variant: 'error',
+      });
     }
 
     // Preliminary validation
@@ -149,20 +202,35 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , edgeTy
     }
 
     if (optionType === 'TEXT') {
-      node.addUtteranceEdge(edgeNode, new TextOption(intent, actionText), position);
+      node.addUtteranceEdge(
+        edgeNode,
+        new TextOption(intent, actionText),
+        position,
+      );
     } else if (optionType === 'IMAGE') {
       // An old image or a new image file should exist
       if (!imgFile && !existingImg) {
-        return enqueueSnackbar('Please select an image for the option', { variant: 'error' });
+        return enqueueSnackbar('Please select an image for the option', {
+          variant: 'error',
+        });
       }
 
       // New image file has been selected
       if (!existingImg && imgFile) {
         // Get a signed upload url
-        const uploadUrl = signedImgUploadResult.data?.ChatbotService_imageOptionUploadUrl?.url.replace(/"/g, '');
+        const uploadUrl = signedImgUploadResult.data?.ChatbotService_imageOptionUploadUrl?.url.replace(
+          /"/g,
+          '',
+        );
         // The upload url isn't ready. Wait for a few
-        if (!uploadUrl || uploadUrl.indexOf(encodeURIComponent(imageName)) === -1) {
-          enqueueSnackbar('Image upload not ready. Please try in 10 seconds, or try a new image', { variant: 'error' });
+        if (
+          !uploadUrl ||
+          uploadUrl.indexOf(encodeURIComponent(imageName)) === -1
+        ) {
+          enqueueSnackbar(
+            'Image upload not ready. Please try in 10 seconds, or try a new image',
+            { variant: 'error' },
+          );
           prepareSignedUploadUrl();
           return;
         }
@@ -172,31 +240,44 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , edgeTy
           setLoading(true);
           await uploadFileWithFetch(imgFile, uploadUrl, 'PUT');
         } catch (e) {
-          enqueueSnackbar(`Error with uploading the image to GCS - ${JSON.stringify(e)}`, { variant: 'error' });
+          enqueueSnackbar(
+            `Error with uploading the image to GCS - ${JSON.stringify(e)}`,
+            { variant: 'error' },
+          );
         }
         setLoading(false);
       }
 
       // Add the new Image option
-      node.addUtteranceEdge(edgeNode, new ImageOption(intent, actionText, imageName, imgCaption), position);
+      node.addUtteranceEdge(
+        edgeNode,
+        new ImageOption(intent, actionText, imageName, imgCaption),
+        position,
+      );
     }
 
     return true;
-
   };
 
   const addEmailEdge = async (edgeNode: GraphPolicyNode, position?: number) => {
     if (!node) {
-      return enqueueSnackbar('Parent node does not exist', { variant: 'error' });
+      return enqueueSnackbar('Parent node does not exist', {
+        variant: 'error',
+      });
     }
     // TODO - add a function to add email edge if different from others
     // TODO Add Custom Validators for email edge if exists
     node.addConfirmEdge(edgeNode, position);
   };
 
-  const addConfirmEdge = async (edgeNode: GraphPolicyNode, position?: number) => {
+  const addConfirmEdge = async (
+    edgeNode: GraphPolicyNode,
+    position?: number,
+  ) => {
     if (!node) {
-      return enqueueSnackbar('Parent node does not exist', { variant: 'error' });
+      return enqueueSnackbar('Parent node does not exist', {
+        variant: 'error',
+      });
     }
     // TODO Add Custom Validators for confirm edge if exists
     node.addConfirmEdge(edgeNode, position);
@@ -204,18 +285,22 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , edgeTy
 
   const addEmptyEdge = async (edgeNode: GraphPolicyNode, position?: number) => {
     if (!node) {
-      return enqueueSnackbar('Parent node does not exist', { variant: 'error' });
+      return enqueueSnackbar('Parent node does not exist', {
+        variant: 'error',
+      });
     }
     // TODO Add Custom Validators for empty edge if exists
     node.addEmptyEdge(edgeNode, position);
   };
 
-  const handleSubmit = async() => {
+  const handleSubmit = async () => {
     setShowFormErrors(true);
 
     // Parent node must exist
     if (!node) {
-      return enqueueSnackbar('Parent node does not exist', { variant: 'error' });
+      return enqueueSnackbar('Parent node does not exist', {
+        variant: 'error',
+      });
     }
 
     let position = node.edges.length;
@@ -237,7 +322,9 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , edgeTy
 
     // If something went wrong with selecting / creating the edge node
     if (!edgeNode) {
-      return enqueueSnackbar('The selected edge is invalid', { variant: 'error' });
+      return enqueueSnackbar('The selected edge is invalid', {
+        variant: 'error',
+      });
     }
 
     setSelectedNodeId(edgeNode.nodeId);
@@ -262,7 +349,8 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , edgeTy
 
     enqueueSnackbar('Edge added', { variant: 'success' });
     clearForm();
-    const newPolicy = new GraphPolicy(policy.rootNode);
+    const newPolicy = new GraphPolicy(policy.policyName, policy.rootNode);
+
     onSuccess(newPolicy);
   };
 
@@ -290,123 +378,163 @@ export default function UpsertEdgeForm({agentId, nodeId, policy, edgeId , edgeTy
   const renderUtteranceEdgeFields = () => {
     return (
       <React.Fragment>
-        <FormControl component="fieldset" className={classes.formControl} required={true} error={showFormErrors && !optionType}>
+        <FormControl
+          component="fieldset"
+          className={classes.formControl}
+          required={true}
+          error={showFormErrors && !optionType}>
           <FormLabel>Option Type {optionType}</FormLabel>
-          <RadioGroup name="responseType" defaultValue={optionType} onChange={(event) => {setOptionType(event.target.value); }}>
+          <RadioGroup
+            name="responseType"
+            defaultValue={optionType}
+            onChange={(event) => {
+              setOptionType(event.target.value);
+            }}>
             <FormControlLabel value={'TEXT'} control={<Radio />} label="Text" />
-            <FormControlLabel value={'IMAGE'} control={<Radio />} label="Image" />
+            <FormControlLabel
+              value={'IMAGE'}
+              control={<Radio />}
+              label="Image"
+            />
           </RadioGroup>
-          {
-            (optionType === 'IMAGE') && (
-              <React.Fragment>
-                <ImageSelectorGrid onNewImg={handleNewImg} selectedImgName={imageName}
-                  images={optionImages} onSelect={handleSelectImg}/>
-              </React.Fragment>
-            )
-          }
+          {optionType === 'IMAGE' && (
+            <React.Fragment>
+              <ImageSelectorGrid
+                onNewImg={handleNewImg}
+                selectedImgName={imageName}
+                images={optionImages}
+                onSelect={handleSelectImg}
+              />
+            </React.Fragment>
+          )}
         </FormControl>
 
         <FormControl variant="outlined" className={classes.formControl}>
-          <TextField name="intent" label="Intent" variant="outlined"
+          <TextField
+            name="intent"
+            label="Intent"
+            variant="outlined"
             required={true}
             error={showFormErrors && intent === ''}
             defaultValue={intent}
-            onChange={(e) => setIntent(e.target.value as string)} />
+            onChange={(e) => setIntent(e.target.value as string)}
+          />
         </FormControl>
 
         <FormControl variant="outlined" className={classes.formControl}>
-          <TextField name="text" label={'Text'}
+          <TextField
+            name="text"
+            label={'Text'}
             variant="outlined"
             required={true}
             error={showFormErrors && actionText === ''}
             onChange={(e) => setActionText(e.target.value as string)}
             defaultValue={actionText}
-            />
+          />
         </FormControl>
 
         <FormControl variant="outlined" className={classes.formControl}>
-          {
-            optionType === 'IMAGE' ?
-            (
-              (existingImg) ?
-              <TextField name="imgNameExisting"
+          {optionType === 'IMAGE' ? (
+            existingImg ? (
+              <TextField
+                name="imgNameExisting"
                 variant="outlined"
                 disabled={true}
                 required={true}
-                value={existingImg} />
-              :
-              <TextField name="imgNameNew" label={'New Image Name'}
+                value={existingImg}
+              />
+            ) : (
+              <TextField
+                name="imgNameNew"
+                label={'New Image Name'}
                 variant="outlined"
                 value={imageName}
                 required={true}
                 error={showFormErrors && imageName === ''}
-                onChange={(e) => { setImageName(e.target.value as string);  }}
+                onChange={(e) => {
+                  setImageName(e.target.value as string);
+                }}
                 onBlur={prepareSignedUploadUrl}
-                />
+              />
             )
-            : <></>
-          }
+          ) : (
+            <></>
+          )}
         </FormControl>
 
         <FormControl variant="outlined" className={classes.formControl}>
-          <TextField name="imageCaption" label={'Image Caption'}
+          <TextField
+            name="imageCaption"
+            label={'Image Caption'}
             variant="outlined"
             required={false}
             onChange={(e) => setImgCaption(e.target.value as string)}
             defaultValue={imgCaption}
-            />
+          />
         </FormControl>
-
       </React.Fragment>
     );
-
   };
 
   return (
     <div>
       {edgeType === 'UTTERANCE' && renderUtteranceEdgeFields()}
-      {
-        !edge &&
+      {!edge && (
         <FormControl component="fieldset" className={classes.formControl}>
-          <RadioGroup name="existingNode" defaultValue={nodeExists.toString()} onChange={setEdgeNodeExists}>
-            <FormControlLabel value={'true'} control={<Radio />} label="Existing Node" />
-            <FormControlLabel value={'false'} control={<Radio />} label="Create a Node" />
+          <RadioGroup
+            name="existingNode"
+            defaultValue={nodeExists.toString()}
+            onChange={setEdgeNodeExists}>
+            <FormControlLabel
+              value={'true'}
+              control={<Radio />}
+              label="Existing Node"
+            />
+            <FormControlLabel
+              value={'false'}
+              control={<Radio />}
+              label="Create a Node"
+            />
           </RadioGroup>
         </FormControl>
-      }
+      )}
 
-      {
-        !nodeExists && !edge ?
+      {!nodeExists && !edge ? (
         <UpsertNodeForm nodeId={getNewNodeId()} onChange={handleNewNode} />
-        :
-          <FormControl variant="outlined" className={classes.formControl} required={true}
-            error={showFormErrors && !selectedNodeId}>
-            <InputLabel>Node</InputLabel>
-              <Select
-                value={selectedNodeId || 0}
-                onChange={(event) => setSelectedNodeId(event.target.value as number)}
-                label="Node"
-              >
-                <MenuItem key={nodeList.length} value={0} disabled={true}/>
-                {
-                  nodeList.map((n, index) => {
-                  return <MenuItem key={index}value={n.nodeId}>{n.nodeId}: {n.actionName}</MenuItem>;
-                  })
-                }
-              </Select>
-          </FormControl>
-      }
+      ) : (
+        <FormControl
+          variant="outlined"
+          className={classes.formControl}
+          required={true}
+          error={showFormErrors && !selectedNodeId}>
+          <InputLabel>Node</InputLabel>
+          <Select
+            value={selectedNodeId || 0}
+            onChange={(event) =>
+              setSelectedNodeId(event.target.value as number)
+            }
+            label="Node">
+            <MenuItem key={nodeList.length} value={0} disabled={true} />
+            {nodeList.map((n, index) => {
+              return (
+                <MenuItem key={index} value={n.nodeId}>
+                  {n.nodeId}: {n.actionName}
+                </MenuItem>
+              );
+            })}
+          </Select>
+        </FormControl>
+      )}
 
-      <Button variant="contained" disabled={loading || signedImgUploadResult.loading}
-        color="primary" type="submit" onClick={handleSubmit}>
-          {
-            edge ?
-            'Update Edge'
-            :
-            'Add edge'
-          }
-        </Button>
-      {(loading || signedImgUploadResult.loading) && <ContentLoading/>}
+      <Button
+        variant="contained"
+        disabled={loading || signedImgUploadResult.loading}
+        color="primary"
+        type="submit"
+        onClick={handleSubmit}>
+        {edge ? 'Update Edge' : 'Add edge'}
+      </Button>
+      {(loading || signedImgUploadResult.loading) && <ContentLoading />}
     </div>
   );
 }
