@@ -1,9 +1,8 @@
+import { ISlot } from '@bavard/agent-config';
 import {
   Box,
-  CircularProgress,
   DialogContent,
   Grid,
-  LinearProgress,
   TextField,
 } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
@@ -17,7 +16,6 @@ import { TransitionProps } from '@material-ui/core/transitions';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import React, { useEffect, useState } from 'react';
-import { ISlot } from '../../../models/chatbot-service';
 import { Maybe } from '../../../utils/types';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -40,7 +38,6 @@ const Transition = React.forwardRef(function Transition(
 });
 
 type EditSlotProps = {
-  isLoading: boolean;
   slot?: ISlot;
   onEditSlotClose: () => void;
   onSaveSlot: (slotData: ISlot) => void | Promise<void>;
@@ -48,33 +45,29 @@ type EditSlotProps = {
 };
 
 const EditSlot = (props: EditSlotProps) => {
-  const { isLoading, slot, onEditSlotClose, onSaveSlot } = props;
+  const { slot, onEditSlotClose, onSaveSlot } = props;
 
   const classes = useStyles();
   const [currentSlot, setCurrentSlot] = useState<Maybe<ISlot>>(slot);
-  const [saveLoading, setSaveLoading] = useState(false);
 
   useEffect(() => {
     setCurrentSlot(slot);
   }, [slot]);
 
   const saveChanges = async () => {
-    if (!!currentSlot) {
-      const { tableData, ...slotData } = currentSlot as any;
-      setSaveLoading(true);
-      await onSaveSlot(slotData);
-      setSaveLoading(false);
+    if (!currentSlot) {
+      return;
     }
-  };
 
-  const loading = isLoading || saveLoading;
+    const { ...slotData } = currentSlot as any;
+    onSaveSlot(slotData);
+  };
 
   return (
     <Dialog fullScreen={true} open={!!slot} TransitionComponent={Transition}>
       <AppBar className={classes.appBar}>
         <Toolbar>
           <IconButton
-            disabled={loading}
             edge="start"
             color="inherit"
             onClick={onEditSlotClose}
@@ -82,20 +75,17 @@ const EditSlot = (props: EditSlotProps) => {
             <CloseIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
-            {currentSlot?.id === -1
+            {!currentSlot
               ? 'Create New Slot'
-              : `Edit Slot #${currentSlot?.id}`}
+              : `Edit Slot "${currentSlot.name}"`}
           </Typography>
           <Button
-            disabled={loading}
             autoFocus={true}
             color="inherit"
             onClick={saveChanges}>
-            {loading && <CircularProgress color="secondary" size={20} />}
-            {!loading && (currentSlot?.id === -1 ? 'Create' : 'Save')}
+            {!currentSlot ? 'Create' : 'Save'}
           </Button>
         </Toolbar>
-        {loading && <LinearProgress color="secondary" />}
       </AppBar>
       <DialogContent>
         <Box my={4}>
@@ -105,7 +95,6 @@ const EditSlot = (props: EditSlotProps) => {
                 <TextField
                   fullWidth={true}
                   label="Slot Name"
-                  disabled={loading}
                   variant="outlined"
                   value={currentSlot?.name}
                   onChange={(e) =>
@@ -124,7 +113,6 @@ const EditSlot = (props: EditSlotProps) => {
                 <TextField
                   fullWidth={true}
                   label="Slot Type"
-                  disabled={loading}
                   variant="outlined"
                   value={currentSlot?.type}
                   onChange={(e) =>

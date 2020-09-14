@@ -1,14 +1,12 @@
-import { useMutation, useQuery } from '@apollo/client';
+import { AgentConfig, ISlot } from '@bavard/agent-config';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import _ from 'lodash';
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { ISlot } from '../../../models/chatbot-service';
-import { Maybe } from '../../../utils/types';
+import { useRecoilState } from 'recoil';
+import { currentAgentConfig } from '../atoms';
 import AddSlot from './AddSlot';
 import EditSlot from './EditSlot';
-import { deleteSlotMutation, getSlotsQuery, updateSlotMutation } from './gql';
 import SlotsTable from './SlotsTable';
-import { GetSlotsQueryResult } from './types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -24,79 +22,49 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const SlotSection: React.FC = () => {
   const classes = useStyles();
-  const { agentId } = useParams();
-  const numAgentId = Number(agentId);
-  const [currentSlot, setCurrentSlot] = useState<Maybe<number>>();
-  const [isNewSlot, setIsNewSlot] = useState(false);
+  const [currentSlot, setCurrentSlot] = useState<ISlot | undefined>();
+  const [isNewSlot, setIsNewSlot] = useState<boolean>(false);
+  const [config, setConfig] = useRecoilState<AgentConfig | undefined>(currentAgentConfig);
 
-  const { data, loading, error } = useQuery<GetSlotsQueryResult>(
-    getSlotsQuery,
-    {
-      variables: { agentId: numAgentId },
-    },
-  );
+  if (!config) {
+    return <p>Agent config is empty.</p>;
+  }
 
-  const [updateSlot, updateSlotMutationData] = useMutation(updateSlotMutation, {
-    refetchQueries: [
-      { query: getSlotsQuery, variables: { agentId: numAgentId } },
-    ],
-    awaitRefetchQueries: true,
-  });
+  const slots = config.getSlots();
 
-  const [deleteSlot, deleteSlotMutationData] = useMutation(deleteSlotMutation, {
-    refetchQueries: [
-      { query: getSlotsQuery, variables: { agentId: numAgentId } },
-    ],
-    awaitRefetchQueries: true,
-  });
-
-  const slots: Maybe<ISlot[]> = data?.ChatbotService_getSlots;
-
-  const onEditSlot = (id: number) => {
-    setCurrentSlot(id);
+  const onEditSlot = (slot: ISlot) => {
+    setCurrentSlot(slot);
   };
 
-  const onSaveSlot = async (slotData: ISlot) => {
-    await updateSlot({
-      variables: {
-        id: slotData.id,
-        name: slotData.name,
-        type: slotData.type,
-      },
-    });
+  const onSaveSlot = async (slot: ISlot) => {
+    if (!currentSlot) { return; }
+    const newConfig = _.cloneDeep<AgentConfig>(config);
+    newConfig
+      .deleteSlot(currentSlot.name)
+      .addSlot(slot.name, slot.type);
+    setConfig(newConfig);
 
-    setCurrentSlot(null);
     setIsNewSlot(false);
+    setCurrentSlot(undefined);
   };
 
-  const onDeleteSlot = async (slotId: number) => {
-    await deleteSlot({
-      variables: {
-        slotId,
-      },
-    });
+  const onDeleteSlot = async (slot: ISlot) => {
+    const newConfig = _.cloneDeep<AgentConfig>(config);
+    newConfig.deleteSlot(slot.name);
+    setConfig(newConfig);
+
+    setCurrentSlot(undefined);
   };
 
   const onEditSlotClose = () => {
-    setCurrentSlot(null);
+    setCurrentSlot(undefined);
     setIsNewSlot(false);
   };
-
-  const isLoading =
-    loading ||
-    updateSlotMutationData.loading ||
-    deleteSlotMutationData.loading;
-
-  const isErrorOccurred =
-    error ||
-    updateSlotMutationData.error ||
-    deleteSlotMutationData.error;
 
   return (
     <div className={classes.root}>
       <SlotsTable
         slots={slots ?? []}
-        loading={isLoading}
         onAdd={() => setIsNewSlot(true)}
         onEditSlot={onEditSlot}
         onDeleteSlot={onDeleteSlot}
@@ -104,11 +72,9 @@ const SlotSection: React.FC = () => {
       {!!slots && (
         <>
           <EditSlot
-            isLoading={isLoading}
-            slot={slots.find((x) => x.id === currentSlot)}
+            slot={currentSlot}
             onEditSlotClose={onEditSlotClose}
             onSaveSlot={onSaveSlot}
-            error={isErrorOccurred}
           />
           {isNewSlot && (
             <AddSlot

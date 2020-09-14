@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client';
+import { AgentConfig, ISlot } from '@bavard/agent-config';
 import {
   Box,
   CircularProgress,
@@ -17,10 +17,11 @@ import Toolbar from '@material-ui/core/Toolbar';
 import { TransitionProps } from '@material-ui/core/transitions';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
+import _ from 'lodash';
 import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
-import { useParams } from 'react-router';
-import { createSlotMutation, getSlotsQuery } from './gql';
+import { useRecoilState } from 'recoil';
+import { currentAgentConfig } from '../atoms';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -49,20 +50,16 @@ const AddSlot = (props: AddSlotProps) => {
   const classes = useStyles();
   const { onAddSlotClose } = props;
   const [loading, setLoading] = useState(false);
-  const [newSlot, setNewSlot] = useState({
+  const [newSlot, setNewSlot] = useState<ISlot>({
     name: '',
     type: '',
   });
-  const { agentId } = useParams();
-  const numAgentId = Number(agentId);
+  const [config, setConfig] = useRecoilState<AgentConfig | undefined>(currentAgentConfig);
   const { enqueueSnackbar } = useSnackbar();
 
-  const [createSlot] = useMutation(createSlotMutation, {
-    refetchQueries: [
-      { query: getSlotsQuery, variables: { agentId: numAgentId } },
-    ],
-    awaitRefetchQueries: true,
-  });
+  if (!config) {
+    return <Typography>Agent config is empty.</Typography>;
+  }
 
   const saveChanges = async () => {
     if (newSlot.name === '' || newSlot.type === '') {
@@ -74,21 +71,14 @@ const AddSlot = (props: AddSlotProps) => {
       setLoading(true);
 
       const { name, type } = newSlot;
-      await createSlot({
-        variables: {
-          agentId: numAgentId,
-          slots: [
-            {
-              name,
-              type,
-            },
-          ],
-        },
-      });
+      const newConfig = _.cloneDeep<AgentConfig>(config);
+      newConfig.addSlot(name, type);
+      setConfig(newConfig);
 
       enqueueSnackbar('Slot created successfully', { variant: 'success' });
       onAddSlotClose();
     } catch (e) {
+      console.log(e);
       enqueueSnackbar('Unable to create slot.', { variant: 'error' });
     } finally {
       setLoading(false);
