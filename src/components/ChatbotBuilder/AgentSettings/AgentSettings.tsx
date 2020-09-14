@@ -59,7 +59,7 @@ const AgentSettings = () => {
 
   const agentUname = agentsData.data?.ChatbotService_agent.uname;
 
-  const botSettings = useQuery<{ ChatbotService_botSettings: any }>(
+  const botSettings = useQuery<{ ChatbotService_widgetSettings: any }>(
     getBotSettingsQuery,
     {
       variables: {
@@ -79,7 +79,7 @@ const AgentSettings = () => {
     },
   );
 
-  const updatedSettings = botSettings.data?.ChatbotService_botSettings;
+  const updatedSettings = botSettings.data?.ChatbotService_widgetSettings;
 
   useEffect(() => {
     if (!!updatedSettings && !!updatedSettings.name) {

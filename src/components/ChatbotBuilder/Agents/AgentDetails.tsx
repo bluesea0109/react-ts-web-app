@@ -61,6 +61,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     flex: '1 1 0',
     display: 'flex',
     overflow: 'auto',
+    height: '50%',
   },
   tabPanel: {
     overflow: 'auto',
