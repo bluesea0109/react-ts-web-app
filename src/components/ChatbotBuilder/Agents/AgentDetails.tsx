@@ -85,7 +85,7 @@ const AgentDetails = () => {
   const [config, setConfig] = useRecoilState(currentAgentConfig);
   const [widgetSettings, setWidgetSettings] = useRecoilState(currentWidgetSettings);
 
-  const { error, loading, data } = useQuery<IGetAgent>(CHATBOT_GET_AGENT, {
+  const { error, loading, data, refetch } = useQuery<IGetAgent>(CHATBOT_GET_AGENT, {
     variables: { agentId: Number(agentId) },
     onCompleted: (data) => {
       setConfig(AgentConfig.fromJsonObj(data.ChatbotService_agent.config));
@@ -112,7 +112,7 @@ const AgentDetails = () => {
     });
   };
 
-  const saveAgent = () => {
+  const saveAgent = async () => {
     updateAgent({
       variables: {
         agentId: Number(agentId),
@@ -121,6 +121,12 @@ const AgentDetails = () => {
         settings: widgetSettings,
       },
     });
+    const result = await refetch();
+    const agentData = result?.data?.ChatbotService_agent;
+    if (agentData) {
+      setConfig(AgentConfig.fromJsonObj(agentData.config));
+      setWidgetSettings(agentData?.widgetSettings);
+    }
   };
 
   return (
