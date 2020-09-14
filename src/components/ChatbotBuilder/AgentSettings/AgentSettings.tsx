@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
+import { AgentConfig } from '@bavard/agent-config';
 import { AGENT_SETTINGS_DEFAULTS } from '@bavard/common';
 import {
   Box,
@@ -14,11 +15,14 @@ import { useSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
 import { AlphaPicker, TwitterPicker } from 'react-color';
 import { useParams } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+
 import { CHATBOT_GET_AGENT } from '../../../common-gql-queries';
 import { IAgent } from '../../../models/chatbot-service';
 import ContentLoading from '../../ContentLoading';
 import GradientPicker from '../../Utils/GradientPicker';
-import { getBotSettingsQuery, updateBotSettingsMutation } from './gql';
+import { currentAgentConfig, currentWidgetSettings } from '../atoms';
+import { updateBotSettingsMutation } from './gql';
 import ImageUploader from './ImageUploader';
 import { BotSettings } from './types';
 
@@ -38,6 +42,10 @@ const AgentSettings = () => {
   const classes = useStyles();
   const { agentId } = useParams();
   const numAgentId = Number(agentId);
+
+  const [config, setConfig] = useRecoilState(currentAgentConfig);
+  const [widgetSettings, setWidgetSettings] = useRecoilState(currentWidgetSettings);
+
   const { enqueueSnackbar } = useSnackbar();
   const [settings, setSettings] = useState<BotSettings>({
     name: '',
@@ -54,40 +62,26 @@ const AgentSettings = () => {
 
   const agentsData = useQuery<{ ChatbotService_agent: IAgent }>(
     CHATBOT_GET_AGENT,
-    { variables: { agentId: numAgentId } },
-  );
-
-  const agentUname = agentsData.data?.ChatbotService_agent.uname;
-
-  const botSettings = useQuery<{ ChatbotService_widgetSettings: any }>(
-    getBotSettingsQuery,
     {
-      variables: {
-        uname: agentUname,
-        dev: state.mode === 'dev',
+      variables: { agentId: numAgentId },
+      onCompleted: (data) => {
+        setConfig(AgentConfig.fromJsonObj(data.ChatbotService_agent.config));
+        setWidgetSettings(data.ChatbotService_agent.widgetSettings);
       },
     },
   );
 
+  const agentUname = config?.toJsonObj()?.uname;
+
   const [updateBotSettings, updateBotSettingsMutationData] = useMutation(
     updateBotSettingsMutation,
-    {
-      refetchQueries: [
-        { query: getBotSettingsQuery, variables: { uname: agentUname } },
-      ],
-      awaitRefetchQueries: true,
-    },
   );
 
-  const updatedSettings = botSettings.data?.ChatbotService_widgetSettings;
+  const updatedSettings = widgetSettings;
 
   useEffect(() => {
     if (!!updatedSettings && !!updatedSettings.name) {
       setSettings({
-        primaryColor: AGENT_SETTINGS_DEFAULTS.primaryColor,
-        primaryBg: AGENT_SETTINGS_DEFAULTS.primaryColor,
-        widgetBg: AGENT_SETTINGS_DEFAULTS.widgetBg,
-        icon: AGENT_SETTINGS_DEFAULTS.icon,
         ...updatedSettings,
       });
     }
@@ -120,7 +114,8 @@ const AgentSettings = () => {
           },
         },
       });
-      botSettings.refetch();
+      const result = await agentsData.refetch();
+      setWidgetSettings(result?.data?.ChatbotService_agent.widgetSettings);
     } catch (e) {
       enqueueSnackbar('An error occurred while updating settings', {
         variant: 'error',
@@ -128,7 +123,7 @@ const AgentSettings = () => {
     }
   };
 
-  const loading = botSettings.loading || updateBotSettingsMutationData.loading;
+  const loading = agentsData.loading || updateBotSettingsMutationData.loading;
 
   return (
     <Grid container={true} spacing={2} className={classes.root}>

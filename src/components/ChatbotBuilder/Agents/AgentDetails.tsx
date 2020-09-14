@@ -4,13 +4,13 @@ import { Box, Button, makeStyles, Tab, Tabs, Theme, Toolbar } from '@material-ui
 import React from 'react';
 import { useHistory, useParams } from 'react-router';
 import { useRecoilState } from 'recoil';
-import { CHATBOT_GET_AGENT, CHATBOT_UPDATE_AGENT } from '../../../common-gql-queries';
+import { CHATBOT_GET_AGENT, CHATBOT_SAVE_CONFIG_AND_SETTINGS } from '../../../common-gql-queries';
 import { IAgent } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 import Actions from '../Actions/Actions';
 import AgentSettings from '../AgentSettings/AgentSettings';
-import { currentAgentConfig } from '../atoms';
+import { currentAgentConfig, currentWidgetSettings } from '../atoms';
 import ChatWithAgent from '../ChatWithAgent';
 import ConversationsTab from '../Conversations';
 import DataExportsTab from '../DataExports/DataExportsTab';
@@ -83,15 +83,17 @@ const AgentDetails = () => {
   const { orgId, projectId, agentId, agentTab } = useParams();
   const history = useHistory();
   const [config, setConfig] = useRecoilState(currentAgentConfig);
+  const [widgetSettings, setWidgetSettings] = useRecoilState(currentWidgetSettings);
 
   const { error, loading, data } = useQuery<IGetAgent>(CHATBOT_GET_AGENT, {
     variables: { agentId: Number(agentId) },
     onCompleted: (data) => {
       setConfig(AgentConfig.fromJsonObj(data.ChatbotService_agent.config));
+      setWidgetSettings(data.ChatbotService_agent.widgetSettings);
     },
   });
 
-  const [updateAgent, updateAgentData] = useMutation(CHATBOT_UPDATE_AGENT, {
+  const [updateAgent, updateAgentData] = useMutation(CHATBOT_SAVE_CONFIG_AND_SETTINGS, {
     refetchQueries: [{ query: CHATBOT_GET_AGENT, variables: { agentId: Number(agentId) } }],
     awaitRefetchQueries: true,
   });
@@ -111,7 +113,14 @@ const AgentDetails = () => {
   };
 
   const saveAgent = () => {
-    updateAgent({ variables: { agentId: Number(agentId), config: config?.toJsonObj() } });
+    updateAgent({
+      variables: {
+        agentId: Number(agentId),
+        config: config?.toJsonObj(),
+        uname: config?.toJsonObj().uname,
+        settings: widgetSettings,
+      },
+    });
   };
 
   return (

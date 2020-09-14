@@ -266,6 +266,18 @@ export const CHATBOT_UPDATE_AGENT = gql`
   }
 `;
 
+export const CHATBOT_SAVE_CONFIG_AND_SETTINGS = gql`
+  mutation($agentId: Int!, $config: JSON!, $uname: String!, $settings: JSON!) {
+    ChatbotService_updateAgent(agentId: $agentId, config: $config) {
+      id
+      uname
+      config
+      widgetSettings
+    }
+    ChatbotService_updateWidgetSettings(uname: $uname, settings: $settings)
+  }
+`;
+
 export const CHATBOT_CREATE_TAGS = gql`
   mutation($agentId: Int!, $values: [String!]!, $upsert: Boolean) {
     ChatbotService_createTagTypes(
