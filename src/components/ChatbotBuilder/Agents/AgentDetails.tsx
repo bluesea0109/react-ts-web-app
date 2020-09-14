@@ -56,7 +56,11 @@ function a11yProps(index: any) {
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
-
+  },
+  tabsContainer: {
+    flex: '1 1 0',
+    display: 'flex',
+    overflow: 'auto',
   },
   tabPanel: {
     overflow: 'auto',
@@ -101,91 +105,93 @@ const AgentDetails = () => {
   };
 
   return (
-    <div className={classes.root}>
+    <div>
       <Toolbar className={classes.toolbar} variant="dense"><Button variant="contained">{'Save Agent'}</Button></Toolbar>
-      <Tabs
-        value={agentTab}
-        onChange={handleChangeTab}
-        indicatorColor="secondary"
-        variant="scrollable"
-        orientation="vertical"
-        textColor="primary">
-        <Tab value="Actions" label="Actions" {...a11yProps('Actions')} />
-        <Tab value="Intents" label="Intents" {...a11yProps('Intents')} />
-        <Tab value="Options" label="Options" {...a11yProps('Options')} />
-        <Tab value="Tags" label="Tags" {...a11yProps('Tags')} />
-        <Tab value="Slots" label="Slots" {...a11yProps('Slots')} />
-        <Tab
-          value="nluExamples"
-          label="NLU Examples"
-          {...a11yProps('NLU Examples')}
-        />
-        <Tab
-          value="graph-policy"
-          label="Graph Policy"
-          {...a11yProps('Graph Policy')}
-        />
-        <Tab
-          value="upload-data"
-          label="Upload Data"
-          {...a11yProps('Upload Data')}
-        />
-        <Tab
-          value="exports"
-          label="Data Exports"
-          {...a11yProps('Data Exports')}
-        />
-        <Tab
-          value="training-jobs"
-          label="Training Jobs"
-          {...a11yProps('Training Jobs')}
-        />
-        <Tab
-          value="chat"
-          label="Chat with Agent"
-          {...a11yProps('Chat with Agent')}
-        />
-        <Tab
-          value="training-conversations"
-          label="Training conversations"
-          {...a11yProps('Training conversations')}
-        />
-        <Tab
-          value="live-conversations"
-          label="Live conversations"
-          {...a11yProps('Live conversations')}
-        />
-        <Tab value="settings" label="settings" {...a11yProps('Settings')} />
-        <Tab value="publish" label="publish" {...a11yProps('Publish')} />
-      </Tabs>
-      <TabPanel className={classes.tabPanel} value={agentTab} index="Actions">
-        <Actions />
-      </TabPanel>
-      <TabPanel className={classes.tabPanel} value={agentTab} index="Intents">
-        <Intent />
-      </TabPanel>
-      <TabPanel className={classes.tabPanel} value={agentTab} index="Options">
-        <Options />
-      </TabPanel>
-      <TabPanel className={classes.tabPanel} value={agentTab} index="Tags">
-        <Tag />
-      </TabPanel>
-      <TabPanel className={classes.tabPanel} value={agentTab} index="Slots">
-        <Slot />
-      </TabPanel>
-      <TabPanel
-        className={classes.tabPanel}
-        value={agentTab}
-        index="nluExamples">
-        <Examples />
-      </TabPanel>
-      {agentTab === 'graph-policy' && <GraphPolicy />}
-      {agentTab === 'exports' && <DataExportsTab />}
-      {agentTab === 'training-jobs' && <TrainingJobsTab />}
-      {agentTab === 'chat' && <ChatWithAgent />}
-      {agentTab === 'live-conversations' && <ConversationsTab />}
-      {agentTab === 'settings' && <AgentSettings />}
-      {agentTab === 'publish' && <PublishAgent />}
+      <div className={classes.tabsContainer}>
+        <Tabs
+          value={agentTab}
+          onChange={handleChangeTab}
+          indicatorColor="secondary"
+          variant="scrollable"
+          orientation="vertical"
+          textColor="primary">
+          <Tab value="Actions" label="Actions" {...a11yProps('Actions')} />
+          <Tab value="Intents" label="Intents" {...a11yProps('Intents')} />
+          <Tab value="Options" label="Options" {...a11yProps('Options')} />
+          <Tab value="Tags" label="Tags" {...a11yProps('Tags')} />
+          <Tab value="Slots" label="Slots" {...a11yProps('Slots')} />
+          <Tab
+            value="nluExamples"
+            label="NLU Examples"
+            {...a11yProps('NLU Examples')}
+          />
+          <Tab
+            value="graph-policy"
+            label="Graph Policy"
+            {...a11yProps('Graph Policy')}
+          />
+          <Tab
+            value="upload-data"
+            label="Upload Data"
+            {...a11yProps('Upload Data')}
+          />
+          <Tab
+            value="exports"
+            label="Data Exports"
+            {...a11yProps('Data Exports')}
+          />
+          <Tab
+            value="training-jobs"
+            label="Training Jobs"
+            {...a11yProps('Training Jobs')}
+          />
+          <Tab
+            value="chat"
+            label="Chat with Agent"
+            {...a11yProps('Chat with Agent')}
+          />
+          <Tab
+            value="training-conversations"
+            label="Training conversations"
+            {...a11yProps('Training conversations')}
+          />
+          <Tab
+            value="live-conversations"
+            label="Live conversations"
+            {...a11yProps('Live conversations')}
+          />
+          <Tab value="settings" label="settings" {...a11yProps('Settings')} />
+          <Tab value="publish" label="publish" {...a11yProps('Publish')} />
+        </Tabs>
+        <TabPanel className={classes.tabPanel} value={agentTab} index="Actions">
+          <Actions />
+        </TabPanel>
+        <TabPanel className={classes.tabPanel} value={agentTab} index="Intents">
+          <Intent />
+        </TabPanel>
+        <TabPanel className={classes.tabPanel} value={agentTab} index="Options">
+          <Options />
+        </TabPanel>
+        <TabPanel className={classes.tabPanel} value={agentTab} index="Tags">
+          <Tag />
+        </TabPanel>
+        <TabPanel className={classes.tabPanel} value={agentTab} index="Slots">
+          <Slot />
+        </TabPanel>
+        <TabPanel
+          className={classes.tabPanel}
+          value={agentTab}
+          index="nluExamples">
+          <Examples />
+        </TabPanel>
+        {agentTab === 'graph-policy' && <GraphPolicy />}
+        {agentTab === 'exports' && <DataExportsTab />}
+        {agentTab === 'training-jobs' && <TrainingJobsTab />}
+        {agentTab === 'chat' && <ChatWithAgent />}
+        {agentTab === 'live-conversations' && <ConversationsTab />}
+        {agentTab === 'settings' && <AgentSettings />}
+        {agentTab === 'publish' && <PublishAgent />}
+      </div>
     </div>
   );
 };
