@@ -1,16 +1,11 @@
-import {
-  Chip,
-  Paper,
-  TableContainer,
-  Typography,
-} from '@material-ui/core';
+import { GraphPolicy } from '@bavard/agent-config';
+import { Chip, Paper, TableContainer, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { AccountTreeRounded, Delete, GetApp, Power } from '@material-ui/icons';
 import 'firebase/auth';
 import _ from 'lodash';
 import MaterialTable, { Column } from 'material-table';
 import React, { useEffect } from 'react';
-import { IAgentGraphPolicy } from '../../../models/chatbot-service';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,30 +22,39 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface GraphPolicyState {
-  columns: Column<IAgentGraphPolicy>[];
-  data: IAgentGraphPolicy[] | undefined;
+  columns: Column<GraphPolicy>[];
+  data: GraphPolicy[] | undefined;
 }
 
 interface GraphPoliciesTableProps {
-  policies: IAgentGraphPolicy[] | undefined;
+  policies: GraphPolicy[] | undefined;
   loading?: boolean;
-  onDelete: (id: number) => void;
-  onActivate: (id: number) => void;
-  onEdit?: (id: number) => void;
-  onView?: (graph: IAgentGraphPolicy) => void;
-  onExport?: (graph: IAgentGraphPolicy) => void;
+  activePolicyName?: string;
+  onDelete: (name: string) => void;
+  onActivate: (name: string) => void;
+  onEdit?: (name: string) => void;
+  onView?: (name: string) => void;
+  onExport?: (name: string) => void;
   toolbarChildren?: any;
 }
 
-function GraphPoliciesTable({ policies , loading, toolbarChildren, onView, onActivate, onDelete, onExport }: GraphPoliciesTableProps) {
+function GraphPoliciesTable({
+  policies,
+  loading,
+  toolbarChildren,
+  activePolicyName,
+  onView,
+  onActivate,
+  onDelete,
+  onExport,
+}: GraphPoliciesTableProps) {
   const classes = useStyles();
 
   const [state, setState] = React.useState<GraphPolicyState>({
     columns: [
-      { title: 'Policy Id', field: 'id', editable: 'never' },
       {
         title: 'Name',
-        field: 'name',
+        field: 'policyName',
         editable: 'never',
       },
       {
@@ -59,15 +63,13 @@ function GraphPoliciesTable({ policies , loading, toolbarChildren, onView, onAct
         editable: 'never',
         render: (rowData) => {
           return (
-          <div>
-            {
-              rowData.isActive
-              ?
-              <Chip label="Active"/>
-              :
-              <span/>
-            }
-          </div>
+            <div>
+              {rowData.policyName === activePolicyName ? (
+                <Chip label="Active" />
+              ) : (
+                <span />
+              )}
+            </div>
           );
         },
       },
@@ -109,32 +111,32 @@ function GraphPoliciesTable({ policies , loading, toolbarChildren, onView, onAct
               icon: (props: any) => <AccountTreeRounded />,
               tooltip: 'View Graph',
               onClick: (event, rowData) => {
-                const data = rowData as IAgentGraphPolicy;
-                onView?.(data);
+                const data = rowData as GraphPolicy;
+                onView?.(data.policyName);
               },
             },
             {
               icon: (props: any) => <Power />,
               tooltip: 'Activate',
               onClick: (event, rowData) => {
-                const data = rowData as IAgentGraphPolicy;
-                onActivate(data.id);
+                const data = rowData as GraphPolicy;
+                onActivate(data.policyName);
               },
             },
             {
               icon: (props: any) => <Delete />,
               tooltip: 'Delete',
               onClick: (event, rowData) => {
-                const data = rowData as IAgentGraphPolicy;
-                onDelete(data.id);
+                const data = rowData as GraphPolicy;
+                onDelete(data.policyName);
               },
             },
             {
               icon: (props: any) => <GetApp />,
               tooltip: 'Export',
               onClick: (event, rowData) => {
-                const data = rowData as IAgentGraphPolicy;
-                onExport?.(data);
+                const data = rowData as GraphPolicy;
+                onExport?.(data.policyName);
               },
             },
           ]}

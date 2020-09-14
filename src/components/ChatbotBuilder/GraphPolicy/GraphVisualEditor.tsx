@@ -1,24 +1,43 @@
 import { MutationFunction } from '@apollo/client';
 import { Mutation, Query } from '@apollo/client/react/components';
-import {EmailNode, GraphPolicy, GraphPolicyNode, UtteranceNode } from '@bavard/agent-config/dist/graph-policy';
-import { Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Tooltip } from '@material-ui/core';
+import {
+  AgentConfig,
+  EmailNode,
+  GraphPolicy,
+  GraphPolicyNode,
+  UtteranceNode,
+} from '@bavard/agent-config';
+import {
+  Box,
+  Button,
+  Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Grid,
+  Tooltip,
+} from '@material-ui/core';
 import { Theme, withStyles } from '@material-ui/core/styles';
-import {Add} from '@material-ui/icons';
+import { Add } from '@material-ui/icons';
 import _ from 'lodash';
-import {withSnackbar, WithSnackbarProps} from 'notistack';
+import { withSnackbar, WithSnackbarProps } from 'notistack';
 import React from 'react';
 import LineTo from 'react-lineto';
-import {OptionImagesContext} from '../../../context/OptionImages';
-import {IAgentGraphPolicy} from '../../../models/chatbot-service';
+import { OptionImagesContext } from '../../../context/OptionImages';
+
+import { CHATBOT_UPDATE_AGENT } from '../../../common-gql-queries';
 import ContentLoading from '../../ContentLoading';
 import CreatePolicyForm from './CreatePolicyForm';
 import EditNodeForm from './EditNodeForm';
-import { getOptionImagesQuery, updateGraphPolicyMutation } from './gql';
+import { getOptionImagesQuery } from './gql';
 import GraphNode from './GraphNode';
-import {IGetOptionImagesQueryResult} from './types';
+import { IGetOptionImagesQueryResult } from './types';
 
 interface IGraphPolicyVisualEditorProps extends WithSnackbarProps {
-  policy?: IAgentGraphPolicy;
+  agentId: number;
+  policyName?: string;
+  agentConfig: AgentConfig;
   classes: {
     root: string;
     graphRow: string;
@@ -31,7 +50,10 @@ interface IGraphPolicyVisualEditorProps extends WithSnackbarProps {
 }
 
 interface IGraphPolicyVisualEditorState {
-  policy?: IAgentGraphPolicy;
+  agentId: number;
+  policyName?: string;
+  policy?: GraphPolicy;
+  agentConfig: AgentConfig;
   graphPolicyInstance?: GraphPolicy;
   showDeleteNode: any;
   showEditNode: any;
@@ -77,14 +99,22 @@ const styles = (theme: Theme) => ({
   },
 });
 
-class GraphPolicyVisualEditor extends React.Component<IGraphPolicyVisualEditorProps, IGraphPolicyVisualEditorState> {
+class GraphPolicyVisualEditor extends React.Component<
+  IGraphPolicyVisualEditorProps,
+  IGraphPolicyVisualEditorState
+> {
   renderedNodeIds: number[] = [];
   renderedLinePairs: string[] = [];
-  mutateFunction: MutationFunction|undefined = undefined;
+  mutateFunction: MutationFunction | undefined = undefined;
   constructor(props: IGraphPolicyVisualEditorProps) {
     super(props);
     this.state = {
-      policy: props.policy,
+      agentId: props.agentId,
+      policyName: props.policyName,
+      policy: props.policyName
+        ? props.agentConfig.getGraphPolicy(props.policyName)
+        : undefined,
+      agentConfig: props.agentConfig,
       graphPolicyInstance: undefined,
       showEditNode: undefined,
       showDeleteNode: undefined,
@@ -108,13 +138,17 @@ class GraphPolicyVisualEditor extends React.Component<IGraphPolicyVisualEditorPr
     window.removeEventListener('resize', this.updateDimensions);
   }
 
-  renderTree = (gpNode: GraphPolicyNode | UtteranceNode | EmailNode | undefined, inIntent?: string) => {
-    const {classes} = this.props;
-    const policy = this.state.policy;
-    const gp = this.getGraphPolicyFromState();
+  renderTree = (
+    gpNode: GraphPolicyNode | UtteranceNode | EmailNode | undefined,
+    inIntent?: string,
+  ) => {
+    const { classes } = this.props;
+    const gp = this.state.policy;
+    const policyJson = gp?.toJsonObj();
+
     const node = gpNode?.toJsonObj();
 
-    if (!gp || !policy || !node) {
+    if (!gp || !policyJson || !node) {
       return <></>;
     }
 
@@ -132,60 +166,68 @@ class GraphPolicyVisualEditor extends React.Component<IGraphPolicyVisualEditorPr
     if (node.outEdges?.length >= 1) {
       edges.push(
         <div className={classes.graphRow} key={`node_${node.nodeId}`}>
-          {
-            node.outEdges?.map((e) => {
-              const edgeNode = gp.getNodeById(e.nodeId);
-              const nodeData = edgeNode?.toJsonObj();
-              // Handle Recursions and infinite loops
-              if (nodeData && this.renderedLinePairs.indexOf(`${node.nodeId}_${e.nodeId}`) === -1) {
-                const lineProps = defaultLineProps;
+          {node.outEdges?.map((e) => {
+            const edgeNode = gp.getNodeById(e.nodeId);
+            const nodeData = edgeNode?.toJsonObj();
+            // Handle Recursions and infinite loops
+            if (
+              nodeData &&
+              this.renderedLinePairs.indexOf(`${node.nodeId}_${e.nodeId}`) ===
+                -1
+            ) {
+              const lineProps = defaultLineProps;
 
-                if (e.nodeId < node.nodeId) {
-                  lineProps.borderStyle = 'dashed';
-                  lineProps.borderColor = '#CCCCCC';
-                  lines.push(
-                    <LineTo key={`line_${node.nodeId}_${e.nodeId}`} from={`graph_node_${node.nodeId}`}
+              if (e.nodeId < node.nodeId) {
+                lineProps.borderStyle = 'dashed';
+                lineProps.borderColor = '#CCCCCC';
+                lines.push(
+                  <LineTo
+                    key={`line_${node.nodeId}_${e.nodeId}`}
+                    from={`graph_node_${node.nodeId}`}
                     fromAnchor="bottom left"
-                    to={`graph_node_${e.nodeId}`} toAnchor="top right"
+                    to={`graph_node_${e.nodeId}`}
+                    toAnchor="top right"
                     {...lineProps}
-                     />,
-                  );
-                } else {
-                  lines.push(
-                    <LineTo key={`line_${node.nodeId}_${e.nodeId}`} from={`graph_node_${node.nodeId}`}
-                      fromAnchor="bottom"
-                      to={`graph_node_${e.nodeId}`} toAnchor="top"
-                      {...lineProps}/>,
-                  );
-                }
-
-                this.renderedLinePairs.push(`${node.nodeId}_${e.nodeId}`);
-
-                return (
-                  <div key={`node_${node.nodeId}_edge_${e.nodeId}`}>
-                    {this.renderTree(edgeNode, e.option?.intent )}
-                  </div>
+                  />,
                 );
               } else {
-                return <></>;
+                lines.push(
+                  <LineTo
+                    key={`line_${node.nodeId}_${e.nodeId}`}
+                    from={`graph_node_${node.nodeId}`}
+                    fromAnchor="bottom"
+                    to={`graph_node_${e.nodeId}`}
+                    toAnchor="top"
+                    {...lineProps}
+                  />,
+                );
               }
-            })
-          }
+
+              this.renderedLinePairs.push(`${node.nodeId}_${e.nodeId}`);
+
+              return (
+                <div key={`node_${node.nodeId}_edge_${e.nodeId}`}>
+                  {this.renderTree(edgeNode, e.option?.intent)}
+                </div>
+              );
+            } else {
+              return <></>;
+            }
+          })}
         </div>,
       );
     }
 
-    const isNodeRendered = (this.renderedNodeIds.indexOf(node.nodeId) >= 0);
+    const isNodeRendered = this.renderedNodeIds.indexOf(node.nodeId) >= 0;
 
     const content = (
       <div>
         <div className={classes.graphRow}>
-          {
-            !isNodeRendered && gpNode ?
+          {!isNodeRendered && gpNode ? (
             this.renderEditableNode(gpNode, inIntent)
-            :
+          ) : (
             <></>
-          }
+          )}
         </div>
         {edges}
         {lines}
@@ -198,12 +240,12 @@ class GraphPolicyVisualEditor extends React.Component<IGraphPolicyVisualEditorPr
 
   onDeleteNode = (nodeId: number) => {
     this.closeForms();
-    this.setState({showDeleteNode: nodeId});
+    this.setState({ showDeleteNode: nodeId });
   }
 
   onEditNode = (nodeId: number) => {
     this.closeForms();
-    this.setState({showEditNode: nodeId});
+    this.setState({ showEditNode: nodeId });
   }
 
   closeForms = () => {
@@ -213,72 +255,76 @@ class GraphPolicyVisualEditor extends React.Component<IGraphPolicyVisualEditorPr
     });
   }
 
-  renderEditableNode = (node: GraphPolicyNode | UtteranceNode | EmailNode, inIntent?: string) => {
-    const {classes} = this.props;
+  renderEditableNode = (
+    node: GraphPolicyNode | UtteranceNode | EmailNode,
+    inIntent?: string,
+  ) => {
+    const { classes } = this.props;
     return (
-      <Box display="flex" flexDirection="column"
-        justifyContent="center" alignItems="center"
+      <Box
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
         key={node.nodeId}
-        className={classes.nodeBox}
-        >
-        {
-          inIntent ?
+        className={classes.nodeBox}>
+        {inIntent ? (
           <Tooltip title={`Intent: ${inIntent}`}>
-            <Chip className={classes.intentChip} label={inIntent}/>
+            <Chip className={classes.intentChip} label={inIntent} />
           </Tooltip>
-          : <></>
-        }
+        ) : (
+          <></>
+        )}
         <div className={classes.nodeBox}>
           <GraphNode
             node={node}
             wrapperClassName={`graph_node_${node.nodeId}`}
             onDeleteNode={this.onDeleteNode}
             onEditNode={this.onEditNode}
-            />
+          />
         </div>
       </Box>
     );
   }
 
   renderEditNodeForm = () => {
-    const gp = this.getGraphPolicyFromState();
+    const gp = this.state.policy;
     const node = gp?.getNodeById(this.state.showEditNode);
 
-    if (!node || !gp || !this.state.policy) {
+    if (!node || !gp) {
       return <></>;
     }
 
     return (
-      <EditNodeForm agentId={this.state.policy?.agentId} policy={gp} nodeId={node.nodeId}
-        onCancel={this.closeForms} onSubmit={this.handleEditNode} onUpdate={this.persistChanges} />
+      <EditNodeForm
+        agentId={this.state.agentId}
+        policy={gp}
+        nodeId={node.nodeId}
+        onCancel={this.closeForms}
+        onSubmit={this.handleEditNode}
+        onUpdate={this.persistChanges}
+      />
     );
   }
 
   handleEditNode = (updatedPolicy: GraphPolicy) => {
-
     const newPolicy = this.state.policy;
     _.extend(newPolicy, {
       data: updatedPolicy.toJsonObj(),
     });
-    this.setState({
-      policy: newPolicy,
-      showEditNode: null,
-    }, this.persistChanges);
-
-  }
-
-  getGraphPolicyFromState = (): GraphPolicy|undefined => {
-    const policy = this.state.policy;
-    if (!policy) {
-      console.error('No policy available');
-      return;
-    }
-
-    return GraphPolicy.fromJsonObj(policy.data);
+    this.setState(
+      {
+        policy: newPolicy,
+        showEditNode: null,
+      },
+      () => {
+        this.persistChanges(updatedPolicy);
+      },
+    );
   }
 
   deleteNode = (nodeId: number) => {
-    const gp = this.getGraphPolicyFromState();
+    const gp = this.state.policy;
 
     gp?.deleteNode(nodeId);
 
@@ -291,7 +337,7 @@ class GraphPolicyVisualEditor extends React.Component<IGraphPolicyVisualEditorPr
   }
 
   renderDeleteNodeForm = () => {
-    const gp = this.getGraphPolicyFromState();
+    const gp = this.state.policy;
     const node = gp?.getNodeById(this.state.showDeleteNode);
 
     if (!node) {
@@ -300,18 +346,19 @@ class GraphPolicyVisualEditor extends React.Component<IGraphPolicyVisualEditorPr
 
     return (
       <Dialog open={true} maxWidth={'md'} onBackdropClick={this.closeForms}>
-        <DialogTitle>
-          Are you sure you want to delete this node?
-        </DialogTitle>
+        <DialogTitle>Are you sure you want to delete this node?</DialogTitle>
         <DialogContent>
-          This will remove this node from the policy, and will delete all edges to this node
-          <GraphNode
-            node={node}
-          />
+          This will remove this node from the policy, and will delete all edges
+          to this node
+          <GraphNode node={node} />
         </DialogContent>
         <DialogActions>
           <Button onClick={this.closeForms}>Cancel</Button>
-          <Button color="primary" onClick={() => this.deleteNode(this.state.showDeleteNode)}>Delete</Button>
+          <Button
+            color="primary"
+            onClick={() => this.deleteNode(this.state.showDeleteNode)}>
+            Delete
+          </Button>
         </DialogActions>
       </Dialog>
     );
@@ -319,13 +366,23 @@ class GraphPolicyVisualEditor extends React.Component<IGraphPolicyVisualEditorPr
 
   renderStartButton() {
     if (!this.state.policy) {
-      return <Button variant="contained" color="primary" style={{position: 'fixed', top: 10, left: '48%'}}><Add/></Button>;
+      return (
+        <Button
+          variant="contained"
+          color="primary"
+          style={{ position: 'fixed', top: 10, left: '48%' }}>
+          <Add />
+        </Button>
+      );
     }
     return <></>;
   }
 
-  persistChanges = async() => {
-    if (!this.state.policy) {
+  persistChanges = async (policy: GraphPolicy) => {
+    this.setState({
+      policy,
+    });
+    if (!policy) {
       return;
     }
 
@@ -335,31 +392,38 @@ class GraphPolicyVisualEditor extends React.Component<IGraphPolicyVisualEditorPr
       return this.props.enqueueSnackbar('Mutation Not Ready');
     }
 
-    this.setState({loading: true});
+    this.setState({ loading: true });
 
     try {
-      const policyData = this.state.policy?.data;
+      const policyData = policy.toJsonObj();
       if (policyData.intents.length === 0) {
         policyData.intents.push('default');
       }
+
+      const updatedPolicy = GraphPolicy.fromJsonObj(policyData);
+
+      const updatedConfig = this.state.agentConfig;
+      updatedConfig.addGraphPolicy(updatedPolicy);
+
+      this.setState({
+        agentConfig: updatedConfig,
+      });
+
       await mutate({
         variables: {
-          id: this.state.policy?.id,
-          policy: {
-            name: this.state.policy.name,
-            data: policyData,
-          },
+          agentId: this.state.agentId,
+          config: updatedConfig.toJsonObj(),
         },
       });
-      this.props.enqueueSnackbar('Changes Saved!', {variant: 'success'});
+      this.props.enqueueSnackbar('Changes Saved!', { variant: 'success' });
     } catch (e) {
-      this.props.enqueueSnackbar(e.message, {variant: 'error'});
+      this.props.enqueueSnackbar(e.message, { variant: 'error' });
     }
 
-    this.setState({loading: false});
+    this.setState({ loading: false });
   }
 
-  handleNewPolicy = (policy: IAgentGraphPolicy) => {
+  handleNewPolicy = (policy: GraphPolicy) => {
     this.setState({
       policy,
     });
@@ -369,19 +433,21 @@ class GraphPolicyVisualEditor extends React.Component<IGraphPolicyVisualEditorPr
     return (
       <Grid container={true}>
         <Grid item={true} lg={6} sm={12}>
-          <CreatePolicyForm onSuccess={this.handleNewPolicy}/>
+          <CreatePolicyForm onSuccess={this.handleNewPolicy} />
         </Grid>
       </Grid>
     );
   }
 
   render() {
-    const {classes} = this.props;
+    const { classes } = this.props;
 
-    const policy = this.state.policy?.data;
-    const gp = this.getGraphPolicyFromState();
+    const gp = this.state.policy;
+    const policyJson = gp?.toJsonObj();
 
-    if (!policy || !gp) {
+    const { agentId } = this.state;
+
+    if (!policyJson || !gp) {
       return this.renderNewPolicy();
     }
 
@@ -393,35 +459,51 @@ class GraphPolicyVisualEditor extends React.Component<IGraphPolicyVisualEditorPr
         {treeContent}
         {this.state.showEditNode && this.renderEditNodeForm()}
         {this.state.showDeleteNode && this.renderDeleteNodeForm()}
-        <div style={{position: 'fixed', bottom: 5, left: '45%'}}>
-          <Mutation mutation={updateGraphPolicyMutation}
-            refetchQueries={[{query: getOptionImagesQuery, variables: {agentId: this.state.policy?.agentId}}]}
-            variables={{id: this.state.policy?.id, policy: this.state.policy}}>
+        <div style={{ position: 'fixed', bottom: 5, left: '45%' }}>
+          <Mutation
+            mutation={CHATBOT_UPDATE_AGENT}
+            refetchQueries={[
+              {
+                query: getOptionImagesQuery,
+                variables: { agentId },
+              },
+            ]}>
             {(mutateFn: MutationFunction) => {
               this.mutateFunction = mutateFn;
               return (
-                <Button variant="contained" disabled={this.state.loading}
-                  color="primary" onClick={this.persistChanges}>Save Changes</Button>
+                <Button
+                  variant="contained"
+                  disabled={this.state.loading}
+                  color="primary"
+                  onClick={() =>
+                    this.state.policy && this.persistChanges(this.state.policy)
+                  }>
+                  Save Changes
+                </Button>
               );
             }}
           </Mutation>
-          {this.state.loading && <ContentLoading/>}
+          {this.state.loading && <ContentLoading />}
         </div>
       </div>
     );
 
     return (
-      <Query<IGetOptionImagesQueryResult> query={getOptionImagesQuery} variables={{agentId: this.state.policy?.agentId}}>
-         {({ loading, data }) => {
-           if (loading) {
-             return <ContentLoading/>;
-           }
-           return (
-             <OptionImagesContext.Provider value={{optionImages: data?.ChatbotService_optionImages || []}}>
-               {content}
-             </OptionImagesContext.Provider>
-          ); }}
-        </Query>
+      <Query<IGetOptionImagesQueryResult>
+        query={getOptionImagesQuery}
+        variables={{ agentId }}>
+        {({ loading, data }) => {
+          if (loading) {
+            return <ContentLoading />;
+          }
+          return (
+            <OptionImagesContext.Provider
+              value={{ optionImages: data?.ChatbotService_optionImages || [] }}>
+              {content}
+            </OptionImagesContext.Provider>
+          );
+        }}
+      </Query>
     );
   }
 }
