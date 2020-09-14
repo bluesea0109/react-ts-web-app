@@ -50,7 +50,7 @@ function TagsTable() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {[...Array.from(tags)].map((tag: string) => (
+              {Array.from(tags).map((tag: string) => (
                 <TableRow key={tag}>
                   <TableCell>
                     {tag}
