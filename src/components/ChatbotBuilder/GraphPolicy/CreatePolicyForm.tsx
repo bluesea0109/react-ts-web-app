@@ -1,15 +1,22 @@
 import { useMutation } from '@apollo/client';
-import {GraphPolicy, UtteranceNode} from '@bavard/agent-config/dist/graph-policy';
-import { Button, FormControl, Paper,  TextField, Typography} from '@material-ui/core';
+import { GraphPolicy, UtteranceNode } from '@bavard/agent-config';
+import {
+  Button,
+  FormControl,
+  Paper,
+  TextField,
+  Typography,
+} from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { useSnackbar } from 'notistack';
-import React, {useState} from 'react';
-import {useParams} from 'react-router-dom';
-import {IAgentGraphPolicy} from '../../../models/chatbot-service';
+import React, { useState } from 'react';
+import { useRecoilState } from 'recoil';
+import { currentAgentConfig } from '../atoms';
+
+import { useParams } from 'react-router-dom';
+import { CHATBOT_UPDATE_AGENT } from '../../../common-gql-queries';
 import ContentLoading from '../../ContentLoading';
 import RichTextInput from '../../Utils/RichTextInput';
-import { createGraphPolicyMutation } from './gql';
-import { ICreateGraphPolicyMutationResult } from './types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -29,56 +36,61 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-interface IGraphNodeProps {
-  onSuccess?: (policy: IAgentGraphPolicy) => void;
+interface ICreatePolicyFormProps {
+  onSuccess?: (policy: GraphPolicy) => void;
 }
 
-export default function CreatePolicyForm({onSuccess}: IGraphNodeProps) {
+export default function CreatePolicyForm({
+  onSuccess,
+}: ICreatePolicyFormProps) {
   const classes = useStyles();
-  const {enqueueSnackbar} = useSnackbar();
-  let {agentId} = useParams();
-  agentId = parseInt(agentId);
+  const { enqueueSnackbar } = useSnackbar();
 
   const [utterance, setUtterance] = useState('');
   const [policyName, setPolicyName] = useState('');
   const [actionName, setActionName] = useState('');
-  const [createPolicy, mutationData] = useMutation<ICreateGraphPolicyMutationResult>(createGraphPolicyMutation);
+  const { agentId } = useParams();
+  const [config, setConfig] = useRecoilState(currentAgentConfig);
+  const [updateAgent] = useMutation(CHATBOT_UPDATE_AGENT);
 
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async() => {
-
-    if (!agentId || policyName === '' || actionName === '' || utterance === '') {
-      return enqueueSnackbar('Please fill out all the fields', { variant: 'error' });
+  const handleSubmit = async () => {
+    if (policyName === '' || actionName === '' || utterance === '' || !config) {
+      return enqueueSnackbar('Please fill out all the fields', {
+        variant: 'error',
+      });
     }
+    setLoading(true);
 
     const rootNode = new UtteranceNode(1, actionName, utterance);
-    const policy = new GraphPolicy(rootNode);
+    const policy = new GraphPolicy(policyName, rootNode);
+    policy.intents.add('default');
 
-    const policyData = policy.toJsonObj();
-    policyData.intents.push('default');
+    await config.addGraphPolicy(policy);
 
-    const variables =  {
-      agentId,
-      policy: {
-        name: policyName,
-        data: policyData,
+    setConfig(config);
+
+    const mutationResult = await updateAgent({
+      variables: {
+        agentId: parseInt(agentId),
+        config: config.toJsonObj(),
       },
-    };
+    });
 
-    try {
-      setLoading(true);
-      const result = await createPolicy({ variables });
-      enqueueSnackbar('New Policy Created', { variant: 'success' });
-      clearForm();
-      if (result.data?.ChatbotService_createGraphPolicy) {
-        onSuccess?.(result.data.ChatbotService_createGraphPolicy);
-      }
-
-    } catch (e) {
-      enqueueSnackbar(e.message, { variant: 'error' });
-    }
     setLoading(false);
+
+    if (mutationResult.errors?.length) {
+      return enqueueSnackbar(JSON.stringify(mutationResult.errors), {
+        variant: 'error',
+      });
+    }
+
+    clearForm();
+    enqueueSnackbar('Policy Created', {
+      variant: 'success',
+    });
+    onSuccess?.(policy);
   };
 
   const clearForm = () => {
@@ -91,29 +103,42 @@ export default function CreatePolicyForm({onSuccess}: IGraphNodeProps) {
     <Paper className={classes.nodePaper}>
       <Typography variant={'h6'}>Create Policy</Typography>
       <FormControl variant="outlined" className={classes.formControl}>
-        <TextField disabled={loading || mutationData.loading}
-          name="policyName" label="Policy Name"
+        <TextField
+          disabled={loading}
+          name="policyName"
+          label="Policy Name"
           variant="outlined"
-          onChange={(e) => setPolicyName(e.target.value as string)} />
+          onChange={(e) => setPolicyName(e.target.value as string)}
+        />
       </FormControl>
 
       <Typography variant={'subtitle2'}>Root Node</Typography>
       <FormControl variant="outlined" className={classes.formControl}>
-        <TextField disabled={loading || mutationData.loading}
-          name="actionName" label="Action Name" variant="outlined"
-          onChange={(e) => setActionName(e.target.value as string)} />
+        <TextField
+          disabled={loading}
+          name="actionName"
+          label="Action Name"
+          variant="outlined"
+          onChange={(e) => setActionName(e.target.value as string)}
+        />
       </FormControl>
       <FormControl variant="outlined" className={classes.formControl}>
         <RichTextInput
           label="Utterance"
           value={utterance}
-          disabled={loading || mutationData.loading}
+          disabled={loading}
           onChange={(value: string) => setUtterance(value)}
         />
       </FormControl>
-      <Button variant="contained" disabled={loading || mutationData.loading}
-        color="primary" type="submit" onClick={handleSubmit}>Save</Button>
-      {(loading || mutationData.loading) && <ContentLoading/>}
+      <Button
+        variant="contained"
+        disabled={loading}
+        color="primary"
+        type="submit"
+        onClick={handleSubmit}>
+        Save
+      </Button>
+      {loading && <ContentLoading />}
     </Paper>
   );
 }
