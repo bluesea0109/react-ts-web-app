@@ -214,8 +214,7 @@ const AddExamples = ({
               disableClearable={true}
               id="intentSelector"
               options={intents}
-              getOptionLabel={(option: any) => option.value}
-              value={intents.find((i: any) => i.value === intent) ?? null as any}
+              value={intent}
               onChange={updateIntent}
               renderInput={(params) => <TextField {...params} label="Intents" variant="outlined" />}
             />
@@ -260,7 +259,6 @@ const AddExamples = ({
                     disabled={loading}
                     id="tagTypeSelector"
                     options={tagTypes}
-                    getOptionLabel={(option: any) => option.value}
                     value={tagType ?? null}
                     onChange={updateTagType}
                     renderInput={(params) => <TextField {...params} label="Selected Tag Type" variant="outlined" />}

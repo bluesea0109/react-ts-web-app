@@ -26,7 +26,7 @@ export interface ExamplesFilter {
 const initialColumns: Column<any>[] = [
   {
     title: 'Intent',
-    field: 'intentName',
+    field: 'intent',
     editable: 'never',
     filtering: true,
   },
@@ -122,6 +122,8 @@ const ExamplesTable = (props: ExamplesTableProps) => {
   // eslint-disable-next-line
   }, [intent]);
 
+  console.log('auto complete intents', intents);
+
   useEffect(() => {
     if (examples && intents) {
       const updatedColumns = [...columns];
@@ -131,7 +133,6 @@ const ExamplesTable = (props: ExamplesTableProps) => {
           <Autocomplete
             id="intentSelector"
             options={intents}
-            getOptionLabel={(option: any) => option.value}
             value={intent}
             onChange={(e, intent) => {
               setIntent(intent || undefined);
