@@ -171,7 +171,7 @@ export interface IPublishedAgent {
   agentId: number;
   createdAt: string;
   status: string;
-  dialogueConfig: any;
+  config: any;
 }
 
 export interface ISlot {
