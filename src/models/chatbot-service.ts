@@ -1,5 +1,5 @@
 import { IAgentAction, IAgentConfig, IWidgetSettings } from '@bavard/agent-config';
-import { IGraphPolicy, ITagValue } from '@bavard/agent-config/dist/graph-policy';
+import { IGraphPolicy } from '@bavard/agent-config/dist/graph-policy';
 
 export enum ChatbotLanguage {
   EN_US,

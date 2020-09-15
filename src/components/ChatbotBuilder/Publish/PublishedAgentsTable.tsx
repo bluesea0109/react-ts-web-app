@@ -84,7 +84,7 @@ function PublishedAgentsTable({
       });
     }
 
-    return () => {};
+    return () => { };
   }, [publishedAgents, state.columns]);
 
   return (
