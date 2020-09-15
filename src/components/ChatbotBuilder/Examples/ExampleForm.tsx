@@ -72,8 +72,7 @@ const ExampleForm = ({ loading, example, tagTypes, intents, error, onExampleUpda
               disabled={loading}
               id="intentSelector"
               options={intents}
-              getOptionLabel={(option: any) => option.value}
-              value={intents.find((i: any) => i.value === intent)}
+              value={intent}
               onChange={updateIntent}
               style={{ width: 300 }}
               renderInput={(params) => <TextField {...params} label="Intents" variant="outlined" />}
@@ -105,7 +104,6 @@ const ExampleForm = ({ loading, example, tagTypes, intents, error, onExampleUpda
               disabled={loading}
               id="tagSelector"
               options={tagTypes}
-              getOptionLabel={(option: any) => option.value}
               defaultValue={tagTypes?.[0]}
               onChange={updateTagType}
               style={{ width: 300 }}

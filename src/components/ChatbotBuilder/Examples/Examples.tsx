@@ -80,6 +80,7 @@ const Examples = () => {
 
   const tagTypes = Array.from(config.getTagTypes());
   const intents = Array.from(config.getIntents().map(x => x.name));
+  console.log('intents', intents);
 
   const examples = examplesData.data.ChatbotService_examples || [];
 
