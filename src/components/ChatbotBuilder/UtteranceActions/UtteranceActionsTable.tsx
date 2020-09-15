@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
+import { IUtteranceAction } from '@bavard/agent-config';
 import {
   LinearProgress,
   Paper,
@@ -16,7 +17,6 @@ import {
   CHATBOT_GET_UTTERANCE_ACTIONS,
   CHATBOT_UPDATE_UTTERANCE_ACTION,
 } from '../../../common-gql-queries';
-import { IUtteranceAction } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -41,7 +41,7 @@ interface ActionState {
 
 function UtteranceActionsTable() {
   const classes = useStyles();
-  const { agentId } = useParams();
+  const { agentId } = useParams<{ agentId: string }>();
   const numAgentId = Number(agentId);
 
   const actionsData = useQuery<IGetUtteranceActions>(
@@ -110,22 +110,22 @@ function UtteranceActionsTable() {
     return <ApolloErrorPage error={commonError} />;
   }
 
-  const deleteUtteranceActionHandler = async (utteranceActionId: number) => {
+  const deleteUtteranceActionHandler = async (name: string) => {
     await deleteAction({
       variables: {
-        utteranceActionId,
+        name,
       },
     });
   };
 
   const updateUtteranceActionHandler = async (
-    utteranceActionId: number,
-    text: string,
+    name: string,
+    utterance: string,
   ) => {
     await updateAction({
       variables: {
-        utteranceActionId,
-        text,
+        name,
+        utterance,
       },
     });
   };
@@ -155,14 +155,12 @@ function UtteranceActionsTable() {
             editable={{
               onRowUpdate: async (newData, oldData) => {
                 if (oldData) {
-                  const dataId = oldData.id;
-                  const text = newData.text;
-                  await updateUtteranceActionHandler(dataId, text);
+                  const text = newData.utterance;
+                  await updateUtteranceActionHandler(oldData.name, text);
                 }
               },
               onRowDelete: async (oldData) => {
-                const dataId = oldData.id;
-                await deleteUtteranceActionHandler(dataId);
+                await deleteUtteranceActionHandler(oldData.name);
               },
             }}
           />
