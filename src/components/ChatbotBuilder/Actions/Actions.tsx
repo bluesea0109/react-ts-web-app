@@ -1,12 +1,12 @@
-import { BaseAgentAction } from '@bavard/agent-config';
-import { Grid, Paper, Typography } from '@material-ui/core';
+import { AgentConfig, BaseAgentAction, IResponseOption } from '@bavard/agent-config';
+import { Grid, Paper } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import _ from 'lodash';
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
-import { Maybe } from '../../../utils/types';
+import { useRecoilState } from 'recoil';
 import { currentAgentConfig } from '../atoms';
 import ActionsTable from './ActionsTable';
+import EditAction from './EditAction';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -22,32 +22,66 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Actions = () => {
   const classes = useStyles();
-  const { agentId } = useParams();
-  const config = useRecoilValue(currentAgentConfig);
+  const [currentAction, setCurrentAction] = useState<BaseAgentAction | undefined>();
+  const [isNewAction, setIsNewAction] = useState<boolean>(false);
+  const [config, setConfig] = useRecoilState<AgentConfig | undefined>(currentAgentConfig);
 
-  // eslint-disable-next-line
-  const [currentAction, setCurrentAction] = useState<Maybe<string>>();
-  // eslint-disable-next-line
-  const [newAction, setNewAction] = useState<boolean>(false);
+  if (!config) {
+    return <p>Agent config is empty.</p>;
+  }
 
-  const actions: Maybe<BaseAgentAction[]> = config?.getActions();
+  const actions: BaseAgentAction[] = config.getActions();
+
+  const onEditAction = (action: BaseAgentAction) => {
+    setCurrentAction(action);
+  };
+
+  const onSaveAction = (action: BaseAgentAction) => {
+    if (!currentAction) { return; }
+    const newConfig = _.cloneDeep<AgentConfig>(config);
+    newConfig
+      .deleteAction(currentAction.name)
+      .addAction(action);
+    setConfig(newConfig);
+
+    setIsNewAction(false);
+    setCurrentAction(undefined);
+  };
+
+  const onDeleteAction = (action: BaseAgentAction) => {
+    const newConfig = _.cloneDeep<AgentConfig>(config);
+    newConfig.deleteAction(action.name);
+    setConfig(newConfig);
+
+    setCurrentAction(undefined);
+  };
+
+  const onEditActionClose = () => {
+    setCurrentAction(undefined);
+    setIsNewAction(false);
+  };
 
   return (
     <div className={classes.root}>
       <Grid item={true} xs={12} sm={12}>
         <Paper className={classes.paper}>
-          {agentId ? (
-            <ActionsTable
-              loading={false}
-              actions={actions ?? []}
-              onEditAction={setCurrentAction}
-              onAdd={() => setNewAction(true)}
-            />
-          ) : (
-              <Typography>{'No Action is found'}</Typography>
-            )}
+          <ActionsTable
+            actions={actions ?? []}
+            onEditAction={onEditAction}
+            onDeleteAction={onDeleteAction}
+            onAdd={() => setIsNewAction(true)}
+          />
         </Paper>
       </Grid>
+      {!!actions && (
+        <EditAction
+          action={currentAction}
+          isNewAction={isNewAction}
+          options={[]}
+          onSaveAction={onSaveAction}
+          onEditActionClose={onEditActionClose}
+        />
+      )}
     </div>
   );
 };

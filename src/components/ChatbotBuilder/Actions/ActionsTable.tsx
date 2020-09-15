@@ -30,23 +30,23 @@ interface ActionState {
 }
 
 interface ActionsTableProps {
-  onEditAction: (name: string) => void;
+  onEditAction: (action: BaseAgentAction) => void;
+  onDeleteAction: (action: BaseAgentAction) => void;
   actions: BaseAgentAction[];
-  loading: boolean;
   onAdd: () => void;
 }
 
-function ActionsTable({ onEditAction, actions, loading, onAdd }: ActionsTableProps) {
+function ActionsTable({
+  onAdd,
+  onEditAction,
+  onDeleteAction,
+  actions,
+}: ActionsTableProps) {
   const classes = useStyles();
 
   const [state, setState] = React.useState<ActionState>({
     columns: [
-      { title: 'Action id', field: 'id', editable: 'never' },
-      {
-        title: 'Name',
-        field: 'name',
-        editable: 'never',
-      },
+      { title: 'Action Name', field: 'name', editable: 'never' },
       { title: 'Action Type', field: 'type', editable: 'never' },
     ],
     data: actions,
@@ -68,9 +68,8 @@ function ActionsTable({ onEditAction, actions, loading, onAdd }: ActionsTablePro
       {state && state.data && state.data.length > 0 ? (
         <TableContainer component={Paper} aria-label="Agents">
           <MaterialTable
-            isLoading={loading}
             title={
-              <Button disabled={loading} variant="contained" color="primary" onClick={onAdd}>Add New Action</Button>
+              <Button variant="contained" color="primary" onClick={onAdd}>Add New Action</Button>
             }
             columns={state.columns}
             data={_.cloneDeep(state.data)}
@@ -84,14 +83,14 @@ function ActionsTable({ onEditAction, actions, loading, onAdd }: ActionsTablePro
             }}
             actions={[
               {
-                icon: (props: any) => <Edit />,
+                icon: (_: any) => <Edit />,
                 tooltip: 'Edit Action',
-                onClick: (event, rowData) => {
-                  const data = rowData as BaseAgentAction;
-                  onEditAction(data.name);
-                },
+                onClick: (_, rowData) => onEditAction(rowData as BaseAgentAction),
               },
             ]}
+            editable={{
+              onRowDelete: async (action) => onDeleteAction(action as BaseAgentAction),
+            }}
           />
         </TableContainer>
       ) : (
@@ -106,25 +105,25 @@ function ActionsTable({ onEditAction, actions, loading, onAdd }: ActionsTablePro
 type OtherProps = { [index: string]: any };
 
 const ActionDetailPanel = ({ action }: { action: BaseAgentAction }) => {
-    const { type, name, ...otherProps } = action;
-    const actionProps = otherProps as OtherProps;
+  const { type, name, ...otherProps } = action;
+  const actionProps = otherProps as OtherProps;
 
-    return (
-      <Grid container={true}>
-        <Grid item={true} xs={6}>
-          {Array.from(Object.keys(actionProps)).map(key => (
-            <Box my={3} key={key}>
-              <Typography variant="h6" style={{ textTransform: 'capitalize', fontWeight: 'bold' }}>{key}</Typography>
-              {key === 'text' ? (
-                <p dangerouslySetInnerHTML={{ __html: actionProps[key] }} />
-              ) : (
-                <Typography variant="caption" style={{ textTransform: 'capitalize' }}>{JSON.stringify(actionProps[key])}</Typography>
-              )}
-            </Box>
-          ))}
-        </Grid>
+  return (
+    <Grid container={true}>
+      <Grid item={true} xs={6}>
+        {Array.from(Object.keys(actionProps)).map(key => (
+          <Box my={3} key={key}>
+            <Typography variant="h6" style={{ textTransform: 'capitalize', fontWeight: 'bold' }}>{key}</Typography>
+            {key === 'text' ? (
+              <p dangerouslySetInnerHTML={{ __html: actionProps[key] }} />
+            ) : (
+              <Typography variant="caption" style={{ textTransform: 'capitalize' }}>{JSON.stringify(actionProps[key])}</Typography>
+            )}
+          </Box>
+        ))}
       </Grid>
-    );
+    </Grid>
+  );
 };
 
 export default ActionsTable;
