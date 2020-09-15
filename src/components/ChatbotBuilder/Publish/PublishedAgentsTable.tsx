@@ -62,7 +62,7 @@ function PublishedAgentsTable({
       },
       {
         title: 'Agent Data',
-        field: 'Config',
+        field: 'config',
         render: (agent) => (
           <IconButton
             onClick={() =>

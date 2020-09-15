@@ -1,3 +1,4 @@
+import { IResponseOption } from '@bavard/agent-config';
 import { List, ListItem, ListItemIcon, ListItemSecondaryAction, ListItemText } from '@material-ui/core';
 import DragHandleIcon from '@material-ui/icons/DragHandle';
 import React, { useEffect, useState } from 'react';
@@ -7,7 +8,6 @@ import {
   SortableElement,
   SortableHandle,
 } from 'react-sortable-hoc';
-import { IUserResponseOption } from '../../../models/chatbot-service';
 
 const DragHandle = SortableHandle(() => (
   <ListItemIcon>
@@ -24,19 +24,19 @@ const SortableItem = SortableElement(({ text }: { text: string }) => (
   </ListItem>
 ));
 
-const SortableListContainer = SortableContainer(({ items }: { items: { id: number, text: string }[]}) => (
+const SortableListContainer = SortableContainer(({ items }: { items: { text: string }[]}) => (
   <List component="div">
-    {items.map(({ id, text }, index) => (
-      <SortableItem key={id} index={index} text={text} />
+    {items.map(({ text }, index) => (
+      <SortableItem key={index} index={index} text={text} />
     ))}
   </List>
 ));
 
-const SortableOptions = ({ options, setOptions }: { options: IUserResponseOption[], setOptions: (updatedOptions: any[]) => void }) => {
-  const [items, setItems] = useState<{ id: number, text: string }[]>(options.map(opt => ({ id: opt.id, text: opt.text })));
+const SortableOptions = ({ options, setOptions }: { options: IResponseOption[], setOptions: (updatedOptions: any[]) => void }) => {
+  const [items, setItems] = useState<{ text: string }[]>(options.map(opt => ({ text: opt.text })));
 
   useEffect(() => {
-    setItems(options.map(opt => ({ id: opt.id, text: opt.text })));
+    setItems(options.map(opt => ({ text: opt.text })));
   }, [options]);
 
   const onSortEnd = ({ oldIndex, newIndex }: { oldIndex: number, newIndex: number }) => {
