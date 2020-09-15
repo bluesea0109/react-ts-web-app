@@ -1,4 +1,4 @@
-import { IAgentAction } from "@bavard/agent-config";
+import { IAgentAction } from '@bavard/agent-config';
 
 export enum ActionsError {
   UNKNOWN_ERROR = 'UNKNOWN_ERROR',

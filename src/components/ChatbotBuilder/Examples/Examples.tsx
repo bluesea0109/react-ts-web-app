@@ -17,7 +17,6 @@ import { CreateExampleMutationResult, ExamplesError, ExamplesFilter, ExamplesQue
 
 export const EXAMPLES_LIMIT = 10;
 
-
 const Examples = () => {
   const { agentId } = useParams<{ agentId: string }>();
   const [filters, setFilters] = useState<ExamplesFilter>();
@@ -51,7 +50,6 @@ const Examples = () => {
     awaitRefetchQueries: true,
   };
 
-
   const [deleteExample, deleteExampleMutation] = useMutation(CHATBOT_DELETE_EXAMPLE, {
     ...refetchOptions,
   });
@@ -69,15 +67,15 @@ const Examples = () => {
     enqueueSnackbar('An error occurred while loading NLU Examples.', {
       variant: 'error',
     });
-    return <div></div>
+    return  <div/>;
   }
 
   if (!config) {
-    return <Typography>{"Agent config is empty."}</Typography>
+    return <Typography>{'Agent config is empty.'}</Typography>;
   }
 
   if (examplesData.loading || !examplesData.data) {
-    return <ContentLoading/>
+    return <ContentLoading/>;
   }
 
   const tagTypes = Array.from(config.getTagTypes());
@@ -168,7 +166,6 @@ const Examples = () => {
       tags: [],
     });
   };
-
 
   return (
     <>

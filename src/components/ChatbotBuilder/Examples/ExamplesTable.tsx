@@ -116,7 +116,7 @@ const ExamplesTable = (props: ExamplesTableProps) => {
   useEffect(() => {
     if (intent && prevIntent !== intent) {
       updateFilters({
-        intent
+        intent,
       });
     }
   // eslint-disable-next-line
