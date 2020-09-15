@@ -24,19 +24,24 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface IntentsTableProps {
   onEditIntent: (intent: IIntent) => void;
-  onDeleteIntent: (intent: IIntent) => void | Promise<void>;
+  onDeleteIntent: (intent: IIntent) => void;
   intents: IIntent[];
   actions: BaseAgentAction[];
   onAdd: () => void;
 }
 
-function IntentsTable({ intents, actions, onAdd, onEditIntent, onDeleteIntent }: IntentsTableProps) {
+function IntentsTable({
+  intents,
+  actions,
+  onAdd,
+  onEditIntent,
+  onDeleteIntent,
+}: IntentsTableProps) {
   const classes = useStyles();
   const columns: Column<IIntent>[] = [
-    { title: 'Intent id', field: 'id', editable: 'never' },
     {
       title: 'Name',
-      field: 'value',
+      field: 'name',
       editable: 'never',
     },
     {
@@ -47,8 +52,8 @@ function IntentsTable({ intents, actions, onAdd, onEditIntent, onDeleteIntent }:
     },
   ];
 
-  const deleteIntentHandler = async (intent: IIntent) => {
-    await onDeleteIntent(intent);
+  const deleteIntentHandler = (intent: IIntent) => {
+    onDeleteIntent(intent);
   };
 
   return (
@@ -74,7 +79,7 @@ function IntentsTable({ intents, actions, onAdd, onEditIntent, onDeleteIntent }:
           }}
           actions={[
             {
-              icon: (props: any) => <Edit />,
+              icon: () => <Edit />,
               tooltip: 'Edit Intent',
               onClick: (event, rowData) => {
                 const data = rowData as IIntent;
@@ -83,9 +88,7 @@ function IntentsTable({ intents, actions, onAdd, onEditIntent, onDeleteIntent }:
             },
           ]}
           editable={{
-            onRowDelete: async (intent) => {
-              await deleteIntentHandler(intent);
-            },
+            onRowDelete: async (intent) => deleteIntentHandler(intent),
           }}
         />
       </TableContainer>

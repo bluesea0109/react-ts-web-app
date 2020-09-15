@@ -55,13 +55,16 @@ function a11yProps(index: any) {
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
-  root: {
+  container: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
   },
   tabsContainer: {
     flex: '1 1 0',
     display: 'flex',
     overflow: 'auto',
-    height: '50%',
+    height: '100%',
   },
   tabPanel: {
     overflow: 'auto',
@@ -85,7 +88,7 @@ const AgentDetails = () => {
   const [config, setConfig] = useRecoilState(currentAgentConfig);
   const [widgetSettings, setWidgetSettings] = useRecoilState(currentWidgetSettings);
 
-  const { error, loading, data, refetch } = useQuery<IGetAgent>(CHATBOT_GET_AGENT, {
+  const { error, loading, data } = useQuery<IGetAgent>(CHATBOT_GET_AGENT, {
     variables: { agentId: Number(agentId) },
     onCompleted: (data) => {
       setConfig(AgentConfig.fromJsonObj(data.ChatbotService_agent.config));
@@ -112,25 +115,21 @@ const AgentDetails = () => {
     });
   };
 
-  const saveAgent = async () => {
-    updateAgent({
-      variables: {
-        agentId: Number(agentId),
-        config: config?.toJsonObj(),
-        uname: config?.toJsonObj().uname,
-        settings: widgetSettings,
-      },
-    });
-    const result = await refetch();
-    const agentData = result?.data?.ChatbotService_agent;
-    if (agentData) {
-      setConfig(AgentConfig.fromJsonObj(agentData.config));
-      setWidgetSettings(agentData?.widgetSettings);
+  const saveAgent = () => {
+    if (!!config) {
+      updateAgent({
+        variables: {
+          agentId: Number(agentId),
+          config: config.toJsonObj(),
+          uname: config?.toJsonObj().uname,
+          settings: widgetSettings,
+        },
+      });
     }
   };
 
   return (
-    <div>
+    <div className={classes.container}>
       <Toolbar className={classes.toolbar} variant="dense">
         <Button variant="contained" onClick={saveAgent}>{'Save Agent'}</Button>
       </Toolbar>

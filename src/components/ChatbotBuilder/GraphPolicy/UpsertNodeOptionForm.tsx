@@ -1,7 +1,5 @@
 import { HyperlinkOption, IResponseOption } from '@bavard/agent-config';
-import {
-  GraphPolicy,
-} from '@bavard/agent-config/dist/graph-policy';
+import { GraphPolicy } from '@bavard/agent-config/dist/graph-policy';
 import {
   Button,
   FormControl,
@@ -82,7 +80,7 @@ export default function UpsertNodeOptionForm({
 
     enqueueSnackbar('Option added', { variant: 'success' });
     clearForm();
-    const newPolicy = new GraphPolicy(policy.rootNode);
+    const newPolicy = new GraphPolicy(policy.policyName, policy.rootNode);
     onSuccess(newPolicy);
   };
 
