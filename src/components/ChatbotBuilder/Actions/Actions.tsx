@@ -45,6 +45,7 @@ const Actions = () => {
     setConfig(newConfig);
 
     setIsNewAction(false);
+
     setCurrentAction(undefined);
   };
 
@@ -77,7 +78,6 @@ const Actions = () => {
         <EditAction
           action={currentAction}
           isNewAction={isNewAction}
-          options={[]}
           onSaveAction={onSaveAction}
           onEditActionClose={onEditActionClose}
         />

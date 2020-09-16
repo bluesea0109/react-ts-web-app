@@ -1,7 +1,6 @@
 import { BaseAgentAction, EAgentActionTypes, IResponseOption, UtteranceAction } from '@bavard/agent-config';
 import {
   Box,
-  Checkbox,
   DialogContent,
   Grid,
   TextField,
@@ -21,7 +20,7 @@ import { Autocomplete } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 import { Maybe } from '../../../utils/types';
 import RichTextInput from '../../Utils/RichTextInput';
-import SortableOptions from './SortableOptions';
+import Option from './Option';
 ​
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -44,7 +43,6 @@ const Transition = React.forwardRef(function Transition(
 ​
 type EditActionProps = {
   action?: BaseAgentAction;
-  options: IResponseOption[];
   isNewAction: boolean;
   onSaveAction: (agentAction: BaseAgentAction) => void;
   onEditActionClose: () => void;
@@ -55,7 +53,6 @@ const checkboxCheckedIcon = <CheckBox fontSize="small" />;
 ​
 const EditAction = ({
   action,
-  options,
   isNewAction,
   onSaveAction,
   onEditActionClose,
@@ -63,16 +60,8 @@ const EditAction = ({
   const classes = useStyles();
   const [currentAction, setCurrentAction] = useState<Maybe<BaseAgentAction>>(action);
   const [actionType, setActionType] = useState<Maybe<EAgentActionTypes>>();
-  const [selectedOptions, setSelectedOptions] = useState<string[]>(currentAction?.options.map(option => option.text) ?? []);
+  const [options, setOptions] = useState<Maybe<IResponseOption[]>>(currentAction?.options);
 ​
-  useEffect(() => {
-    setSelectedOptions(currentAction?.options.map(option => option.text) ?? []);
-  }, [currentAction]);
-​
-  const updateSortableList = (updatedList: { text: string }[]) => {
-    setSelectedOptions([ ...updatedList.map(ul => ul.text) ]);
-  };
-
   useEffect(() => {
     setCurrentAction(action);
     if (action?.type === EAgentActionTypes.EMAIL_ACTION || action?.type === EAgentActionTypes.UTTERANCE_ACTION) {
@@ -109,7 +98,7 @@ const EditAction = ({
               <Box p={2}>
                 <TextField
                   fullWidth={true}
-                  label={`Action Name ${!isNewAction ? '(Read-Only)' : ''}`}
+                  label={`Action Name`}
                   variant="outlined"
                   value={currentAction?.name}
                   onChange={isNewAction ? e => setCurrentAction({ ...currentAction, name: e.target.value } as BaseAgentAction) : undefined}
@@ -150,40 +139,9 @@ const EditAction = ({
           </Grid>
           <Grid container={true}>
             <Grid item={true} xs={6}>
-              <Box p={2}>
-                <Autocomplete
-                  fullWidth={true}
-                  multiple={true}
-                  disableCloseOnSelect={true}
-                  id="optionsSelector"
-                  options={options}
-                  getOptionLabel={(option: IResponseOption) => option.text}
-                  renderOption={(option, { selected }) => (
-                    <React.Fragment>
-                      <Checkbox
-                        icon={checkboxIcon}
-                        checkedIcon={checkboxCheckedIcon}
-                        style={{ marginRight: 8 }}
-                        checked={selected}
-                      />
-                      {option.text}
-                    </React.Fragment>
-                  )}
-                  value={options.filter(opt => selectedOptions.includes(opt.text)) as any}
-                  onChange={(e, options) => setSelectedOptions(options?.map(opt => opt.text))}
-                  renderInput={(params) => <TextField {...params} label="Response Options" variant="outlined" />}
-                />
-              </Box>
-              <Box p={2}>
-                {!!currentAction && !!currentAction.options && (
-                  <SortableOptions
-                    options={selectedOptions.map(so => {
-                      return currentAction.options?.find(uro => uro.text === so) as IResponseOption;
-                    })}
-                    setOptions={updateSortableList}
-                  />
-                )}
-              </Box>
+              {!!currentAction && !!currentAction.options && (
+                <Option />
+              )}
             </Grid>
           </Grid>
         </Box>
