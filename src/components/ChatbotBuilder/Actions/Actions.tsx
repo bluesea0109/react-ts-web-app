@@ -4,7 +4,6 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import _ from 'lodash';
 import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
-import { IAgent } from '../../../models/chatbot-service';
 import { currentAgentConfig } from '../atoms';
 import ActionsTable from './ActionsTable';
 import EditAction from './EditAction';
