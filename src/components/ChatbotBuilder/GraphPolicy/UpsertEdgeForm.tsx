@@ -142,6 +142,7 @@ export default function UpsertEdgeForm({
   const [newNode, setNewNode] = useState<GraphPolicyNode | undefined>(
     undefined,
   );
+
   const [existingImg, setExistingImg] = useState<string | undefined>(
     imgOption?.imageName || undefined,
   );

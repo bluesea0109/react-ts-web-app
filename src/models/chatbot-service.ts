@@ -1,4 +1,8 @@
-import { IAgentAction, IAgentConfig, IWidgetSettings } from '@bavard/agent-config';
+import {
+  IAgentAction,
+  IAgentConfig,
+  IWidgetSettings,
+} from '@bavard/agent-config';
 import { IGraphPolicy } from '@bavard/agent-config/dist/graph-policy';
 
 export enum ChatbotLanguage {
@@ -23,6 +27,12 @@ export interface INLUExampleTag {
   tagType: string;
   start: number;
   end: number;
+}
+
+export interface INLUExampleInput {
+  text: string;
+  intent: string;
+  tags: INLUExampleTag[];
 }
 
 export interface INLUExample {
