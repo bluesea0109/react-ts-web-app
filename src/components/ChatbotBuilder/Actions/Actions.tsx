@@ -1,4 +1,4 @@
-import { AgentConfig, BaseAgentAction, EAgentActionTypes, IAgentAction, IResponseOption, UtteranceAction } from '@bavard/agent-config';
+import { AgentConfig, BaseAgentAction, UtteranceAction } from '@bavard/agent-config';
 import { Grid, Paper } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import _ from 'lodash';
@@ -46,7 +46,7 @@ const Actions = () => {
     const newConfig = _.cloneDeep<AgentConfig>(config);
     newConfig
       .deleteAction(currentAction.name)
-      .addAction(action.toJsonObj());
+      .addAction(action as any);
     setConfig(newConfig);
 
     setIsNewAction(false);

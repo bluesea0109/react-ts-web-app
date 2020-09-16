@@ -1,4 +1,4 @@
-import { IResponseOption } from '@bavard/agent-config';
+import { EResponseOptionTypes, IResponseOption } from '@bavard/agent-config';
 import {
   Box,
   DialogContent,
@@ -15,6 +15,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import { TransitionProps } from '@material-ui/core/transitions';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
+import { Autocomplete } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 import { Maybe } from '../../../utils/types';
 
@@ -52,6 +53,12 @@ const EditOption = ({
 }: EditOptionProps) => {
   const classes = useStyles();
   const [currentOption, setCurrentOption] = useState<Maybe<IResponseOption>>(option);
+  const availableOptions = [
+    EResponseOptionTypes.TEXT,
+    EResponseOptionTypes.IMAGE,
+    EResponseOptionTypes.HYPERLINK,
+    EResponseOptionTypes.OTHER_OPTIONS,
+  ];
 
   useEffect(() => {
     setCurrentOption(option);
@@ -113,17 +120,14 @@ const EditOption = ({
           <Grid container={true}>
             <Grid item={true} xs={6}>
               <Box p={2}>
-                <TextField
+                <Autocomplete
                   fullWidth={true}
-                  label="Option Type"
-                  variant="outlined"
-                  value={currentOption?.type}
-                  onChange={(e) =>
-                    setCurrentOption({
-                      ...currentOption,
-                      type: e.target.value,
-                    } as any)
-                  }
+                  id="actionTypeSelector"
+                  options={availableOptions}
+                  getOptionLabel={(option: any) => option}
+                  value={currentOption?.type ?? null}
+                  onChange={(e, optionType) => setCurrentOption({ ...currentOption, type: optionType as EResponseOptionTypes} as any)}
+                  renderInput={(params) => <TextField {...params} label="Option Type" variant="outlined" />}
                 />
               </Box>
             </Grid>

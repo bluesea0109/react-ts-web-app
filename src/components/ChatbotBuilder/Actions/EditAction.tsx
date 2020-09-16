@@ -14,7 +14,6 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import { TransitionProps } from '@material-ui/core/transitions';
 import Typography from '@material-ui/core/Typography';
-import { CheckBox, CheckBoxOutlineBlank } from '@material-ui/icons';
 import CloseIcon from '@material-ui/icons/Close';
 import { Autocomplete } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
@@ -48,29 +47,21 @@ type EditActionProps = {
   onEditActionClose: () => void;
 };
 
-const EditAction = ({
-  action,
-  isNewAction,
-  onSaveAction,
-  onEditActionClose,
-}: EditActionProps) => {
+const EditAction = ({ action, isNewAction, onSaveAction, onEditActionClose }: EditActionProps) => {
   const classes = useStyles();
   const [currentAction, setCurrentAction] = useState<Maybe<BaseAgentAction>>(action);
-  const [actionType, setActionType] = useState<Maybe<EAgentActionTypes>>();
-  const [options, setOptions] = useState<Maybe<IResponseOption[]>>(currentAction?.options);
 
   useEffect(() => {
     setCurrentAction(action);
-    if (action?.type === EAgentActionTypes.EMAIL_ACTION || action?.type === EAgentActionTypes.UTTERANCE_ACTION) {
-      setActionType(action?.type);
-    } else {
-      setActionType(undefined);
-    }
   }, [action]);
 
   const saveChanges = () => {
     if (!currentAction) { return; }
     onSaveAction(currentAction);
+  };
+
+  const onSaveOptions = (options: IResponseOption[]) => {
+    setCurrentAction({ ...currentAction, options } as BaseAgentAction);
   };
 
   return (
@@ -99,7 +90,6 @@ const EditAction = ({
                   variant="outlined"
                   value={currentAction?.name}
                   onChange={isNewAction ? e => setCurrentAction({ ...currentAction, name: e.target.value } as BaseAgentAction) : undefined}
-                  helperText="You can't update this field for an action once created"
                 />
               </Box>
             </Grid>
@@ -110,34 +100,32 @@ const EditAction = ({
                   id="actionTypeSelector"
                   options={[EAgentActionTypes.EMAIL_ACTION, EAgentActionTypes.UTTERANCE_ACTION]}
                   getOptionLabel={(option: any) => option}
-                  value={actionType ?? currentAction?.type ?? null}
-                  onChange={(e, actionType) => setActionType(actionType as EAgentActionTypes)}
+                  value={currentAction?.type ?? null}
+                  onChange={(e, actionType) => setCurrentAction({ ...currentAction, type: actionType } as BaseAgentAction)}
                   renderInput={(params) => <TextField {...params} label="Action Type" variant="outlined" />}
                 />
               </Box>
             </Grid>
             {!!currentAction && (
               <>
-                {actionType === EAgentActionTypes.UTTERANCE_ACTION && (
-                  <>
-                    <Grid item={true} xs={12}>
-                      <Box p={2}>
-                        <RichTextInput
-                          label="Action Text"
-                          value={(currentAction as UtteranceAction)?.utterance}
-                          onChange={(html: string) => setCurrentAction({ ...currentAction, utterance: html } as UtteranceAction)}
-                        />
-                      </Box>
-                    </Grid>
-                  </>
+                {currentAction.type === EAgentActionTypes.UTTERANCE_ACTION && (
+                  <Grid item={true} xs={12}>
+                    <Box p={2}>
+                      <RichTextInput
+                        label="Action Text"
+                        value={(currentAction as UtteranceAction)?.utterance}
+                        onChange={(html: string) => setCurrentAction({ ...currentAction, utterance: html } as UtteranceAction)}
+                      />
+                    </Box>
+                  </Grid>
                 )}
               </>
             )}
           </Grid>
           <Grid container={true}>
-            <Grid item={true} xs={6}>
+            <Grid item={true} xs={12}>
               {!!currentAction && !!currentAction.options && (
-                <Option />
+                <Option onSave={onSaveOptions}/>
               )}
             </Grid>
           </Grid>

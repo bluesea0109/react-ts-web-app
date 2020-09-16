@@ -1,4 +1,5 @@
-import { IResponseOption } from '@bavard/agent-config';
+import { EResponseOptionTypes, IResponseOption } from '@bavard/agent-config';
+import { Button } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { useState } from 'react';
 import EditOption from './EditOption';
@@ -16,7 +17,13 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const Options = () => {
+type OptionsProps = {
+  onSave: (options: IResponseOption[]) => void;
+};
+
+const Options = ({
+  onSave,
+}: OptionsProps) => {
   const classes = useStyles();
 
   const [options, setOptions] = useState<IResponseOption[]>([]);
@@ -25,10 +32,10 @@ const Options = () => {
 
   const onAdd = () => {
     setCurrentOption({
-      type: 'TEXT',
+      type: EResponseOptionTypes.TEXT,
       text: '',
       intent: '',
-    });
+    } as IResponseOption);
   };
 
   const onEditOption = (option: IResponseOption) => {
@@ -58,22 +65,24 @@ const Options = () => {
 
   return (
     <div className={classes.root}>
+      <Button variant="contained" onClick={_ => onSave(options)}>
+        Save Options
+      </Button>
       <OptionsTable
         options={options ?? []}
         onAdd={onAdd}
         onEditOption={onEditOption}
         onDeleteOption={onDeleteOption}
       />
-      {!!options && (
-        <>
-          <EditOption
-            option={currentOption}
-            isNewOption={isNewOption}
-            onSaveOption={onSaveOption}
-            onEditOptionClose={onEditOptionClose}
-          />
-        </>
-      )}
+      {
+        !!options &&
+        <EditOption
+          option={currentOption}
+          isNewOption={isNewOption}
+          onSaveOption={onSaveOption}
+          onEditOptionClose={onEditOptionClose}
+        />
+      }
     </div>
   );
 };
