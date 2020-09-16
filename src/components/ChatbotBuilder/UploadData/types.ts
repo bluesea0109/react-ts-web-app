@@ -1,47 +1,11 @@
+import { IAgentConfig } from '@bavard/agent-config';
 import { OptionType } from '@bavard/agent-config';
-import { AgentSettings, BotSettings } from '@bavard/common';
+import { BotSettings } from '@bavard/common';
 import {
-  ActionType,
   IAgent,
   IAgentGraphPolicy,
-  IEmailAction,
-  ISlot,
+  INLUExample,
 } from '../../../models/chatbot-service';
-export interface IAgentAction {
-  type: ActionType;
-  name: string;
-  text: string;
-  userResponseOptions: IUserResponseAction[];
-}
-
-export interface IUserResponseAction {
-  intent: string;
-  action: string;
-}
-
-export interface IAgentDialogueConfig {
-  projectId: string;
-  agentId: number;
-  uname: string;
-  intents: IAgentDataIntent[];
-  tagTypes: string[];
-  slots: ISlot[];
-  utteranceActions: IAgentAction[];
-  emailActions: IEmailAction[];
-  userResponseOptions: IUserResponseOptionExport[];
-  graphPolicies: IAgentGraphPolicy[];
-}
-export interface INLUExample {
-  intent?: string;
-  text: string;
-  tags: ITag[];
-}
-
-interface ITag {
-  tagType: string;
-  start: number;
-  end: number;
-}
 
 export interface INLUTrainingData {
   intents: string[];
@@ -50,10 +14,10 @@ export interface INLUTrainingData {
 }
 
 export interface IAgentDataExport {
-  dialogueConfig: IAgentDialogueConfig;
+  config: IAgentConfig;
   trainingConversations: ITrainingConversation[];
   nluData: INLUTrainingData;
-  widgetConfig: BotSettings;
+  widgetSettings: BotSettings;
   apiKey?: string;
 }
 
@@ -86,19 +50,6 @@ export interface ICreateAgentMutationResult {
   ChatbotService_createAgent: IAgent;
 }
 
-export interface IUserResponseOptionExport {
-  intent: string;
-  text: string;
-  image_url?: string;
-  type: OptionType;
-}
-
-export interface IAgentDataIntent {
-  intent: string;
-  defaultAction?: number | null;
-}
-
-export interface IAgentDataIntentGqlVars {
-  value: string;
-  defaultAction?: number | null;
+export interface IUpdateAgentMutationResult {
+  ChatbotService_UpdateAgent: IAgent;
 }

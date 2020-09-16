@@ -1,10 +1,21 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { AgentConfig } from '@bavard/agent-config';
-import { Box, Button, makeStyles, Tab, Tabs, Theme, Toolbar } from '@material-ui/core';
+import {
+  Box,
+  Button,
+  makeStyles,
+  Tab,
+  Tabs,
+  Theme,
+  Toolbar,
+} from '@material-ui/core';
 import React from 'react';
 import { useHistory, useParams } from 'react-router';
 import { useRecoilState } from 'recoil';
-import { CHATBOT_GET_AGENT, CHATBOT_SAVE_CONFIG_AND_SETTINGS } from '../../../common-gql-queries';
+import {
+  CHATBOT_GET_AGENT,
+  CHATBOT_SAVE_CONFIG_AND_SETTINGS,
+} from '../../../common-gql-queries';
 import { IAgent } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
@@ -21,6 +32,7 @@ import PublishAgent from '../Publish';
 import Slot from '../Slot/Slot';
 import Tag from '../Tags/Tag';
 import TrainingJobsTab from '../TrainingJobs/TrainingJobsTab';
+import UploadDataTab from '../UploadData/UploadDataTab';
 
 interface TabPanelProps {
   className?: string;
@@ -85,20 +97,28 @@ const AgentDetails = () => {
   const { orgId, projectId, agentId, agentTab } = useParams();
   const history = useHistory();
   const [config, setConfig] = useRecoilState(currentAgentConfig);
-  const [widgetSettings, setWidgetSettings] = useRecoilState(currentWidgetSettings);
+  const [widgetSettings, setWidgetSettings] = useRecoilState(
+    currentWidgetSettings,
+  );
 
   const { error, loading, data } = useQuery<IGetAgent>(CHATBOT_GET_AGENT, {
     variables: { agentId: Number(agentId) },
     onCompleted: (data) => {
+      console.log(data);
       setConfig(AgentConfig.fromJsonObj(data.ChatbotService_agent.config));
       setWidgetSettings(data.ChatbotService_agent.widgetSettings);
     },
   });
 
-  const [updateAgent, updateAgentData] = useMutation(CHATBOT_SAVE_CONFIG_AND_SETTINGS, {
-    refetchQueries: [{ query: CHATBOT_GET_AGENT, variables: { agentId: Number(agentId) } }],
-    awaitRefetchQueries: true,
-  });
+  const [updateAgent, updateAgentData] = useMutation(
+    CHATBOT_SAVE_CONFIG_AND_SETTINGS,
+    {
+      refetchQueries: [
+        { query: CHATBOT_GET_AGENT, variables: { agentId: Number(agentId) } },
+      ],
+      awaitRefetchQueries: true,
+    },
+  );
 
   if (error) {
     return <ApolloErrorPage error={error} />;
@@ -130,7 +150,9 @@ const AgentDetails = () => {
   return (
     <div className={classes.container}>
       <Toolbar className={classes.toolbar} variant="dense">
-        <Button variant="contained" onClick={saveAgent}>{'Save Agent'}</Button>
+        <Button variant="contained" onClick={saveAgent}>
+          {'Save Agent'}
+        </Button>
       </Toolbar>
       <div className={classes.tabsContainer}>
         <Tabs
@@ -212,6 +234,7 @@ const AgentDetails = () => {
         {agentTab === 'live-conversations' && <ConversationsTab />}
         {agentTab === 'settings' && <AgentSettings />}
         {agentTab === 'publish' && <PublishAgent />}
+        {agentTab === 'upload-data' && <UploadDataTab />}
       </div>
     </div>
   );
