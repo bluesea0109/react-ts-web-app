@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const AgentActionsSection: React.FC = () => {
   const classes = useStyles();
-  const { agentId } = useParams();
+  const { agentId } = useParams<{ agentId: string}>();
 
   return (
     <div className={classes.root}>

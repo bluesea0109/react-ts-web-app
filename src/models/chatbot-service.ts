@@ -1,4 +1,8 @@
-import { IAgentConfig, IWidgetSettings } from '@bavard/agent-config';
+import {
+  IAgentAction,
+  IAgentConfig,
+  IWidgetSettings,
+} from '@bavard/agent-config';
 import { IGraphPolicy } from '@bavard/agent-config/dist/graph-policy';
 
 export enum ChatbotLanguage {
@@ -19,37 +23,24 @@ export interface IAgent {
   widgetSettings: IWidgetSettings;
 }
 
-export interface IExample {
-  id: number;
-  intentId: number | null;
-  agentId: number;
-  intentName?: any;
-  text: string;
-  tags: any[];
-}
-
-export interface IExampleInput {
-  intentId: number | null;
-  text: string;
-  tags: IExampleTagInput[];
-}
-
-export enum ActionType {
-  NEW_ACTION = 'NEW_ACTION',
-  UTTERANCE_ACTION = 'UTTERANCE_ACTION',
-  EMAIL_ACTION = 'EMAIL_ACTION',
-}
-
-export interface ITagType {
-  id: number;
-  agentId: number;
-  value: string;
-}
-
-export interface IExampleTagInput {
-  tagTypeId: number;
+export interface INLUExampleTag {
+  tagType: string;
   start: number;
   end: number;
+}
+
+export interface INLUExampleInput {
+  text: string;
+  intent: string;
+  tags: INLUExampleTag[];
+}
+
+export interface INLUExample {
+  id: number;
+  agentId: number;
+  intent: string;
+  text: string;
+  tags: INLUExampleTag[];
 }
 
 export interface IDataExport {
@@ -75,15 +66,13 @@ export interface IAgentModelInfo {
 
 export interface IDialogueTurn {
   actor: ChatbotActorEnum;
-  utterance: string;
-  utteranceActionId?: number;
-  customActionId?: number;
+  action: IAgentAction;
 }
 
 export interface IConversation {
   id: number;
   agentId: number;
-  turns: (IUserAction | IAgentAction)[];
+  turns: IDialogueTurn[];
 }
 
 export interface ITrainingConversations {
@@ -118,41 +107,6 @@ export interface IUserTagValues {
   value: string;
 }
 
-export interface IAgentAction {
-  action: IUtteranceAction;
-}
-
-interface IActionBase {
-  id: number;
-  agentId: number;
-  name: string;
-  type: ActionType;
-  userResponseOptions?: IUserResponseOption[] | null;
-}
-
-export interface IUtteranceAction extends IActionBase {
-  text: string;
-}
-
-export interface IEmailAction extends IActionBase {
-  to: string;
-  from?: string;
-  text: string;
-}
-
-export type AnyAction = IUtteranceAction;
-
-export interface IUserResponseOption extends IUserResponseOptionInput {
-  id: number;
-  agentId: number;
-  actionId: number;
-}
-
-export interface IUserResponseOptionInput {
-  intentId: number;
-  text: string;
-}
-
 export interface IAgentGraphPolicy {
   id: number;
   agentId: number;
@@ -171,7 +125,8 @@ export interface IPublishedAgent {
   agentId: number;
   createdAt: string;
   status: string;
-  dialogueConfig: any;
+  config: IAgentConfig;
+  widgetSettings: IWidgetSettings;
 }
 
 export interface ISlot {

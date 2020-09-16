@@ -12,6 +12,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import clsx from 'clsx';
+import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
 import {
@@ -20,6 +21,7 @@ import {
 } from '../../../common-gql-queries';
 import { IUser } from '../../../models/user-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
+import UploadDataDialog from '../UploadData/UploadDataDialog';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -43,19 +45,25 @@ interface INewAgentProps {
 const NewAgent: React.FC<INewAgentProps> = ({ user }) => {
   const classes = useStyles();
   const [uname, setUname] = useState<string>('');
+  const { enqueueSnackbar } = useSnackbar();
 
   const { projectId } = useParams();
   const [createAgent, { loading, error }] = useMutation(CHATBOT_CREATE_AGENT, {
     refetchQueries: [{ query: CHATBOT_GET_AGENTS, variables: { projectId } }],
     awaitRefetchQueries: true,
-    onError: () => {},
-    errorPolicy: 'ignore',
+    onError: (err) => {
+      enqueueSnackbar(JSON.stringify(err), { variant: 'error' });
+    },
   });
 
   if (error) {
     // TODO: handle errors
     return <ApolloErrorPage error={error} />;
   }
+
+  const onUploadComplete = () => {
+    setUname('');
+  };
 
   const onSubmit = () => {
     if (!user.activeProject) {
@@ -98,6 +106,14 @@ const NewAgent: React.FC<INewAgentProps> = ({ user }) => {
           onClick={onSubmit}>
           Create Without Data
         </Button>
+        <UploadDataDialog
+          uname={uname}
+          projectId={projectId}
+          buttonsDisabled={loading || !uname}
+          onSuccess={onUploadComplete}
+          onError={onUploadComplete}
+          onCancel={onUploadComplete}
+        />
       </CardContent>
     </Card>
   );

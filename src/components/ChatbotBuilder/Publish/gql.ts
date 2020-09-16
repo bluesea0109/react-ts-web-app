@@ -7,7 +7,7 @@ export const publishAgentMutation = gql`
       agentId
       status
       createdAt
-      dialogueConfig
+      config
     }
   }
 `;
@@ -19,7 +19,7 @@ export const getPublishedAgentsQuery = gql`
       agentId
       status
       createdAt
-      dialogueConfig
+      config
     }
   }
 `;
