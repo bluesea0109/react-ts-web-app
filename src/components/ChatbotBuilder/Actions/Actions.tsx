@@ -1,4 +1,4 @@
-import { AgentConfig, BaseAgentAction, IResponseOption } from '@bavard/agent-config';
+import { AgentConfig, BaseAgentAction, IResponseOption, EAgentActionTypes, IAgentAction, UtteranceAction } from '@bavard/agent-config';
 import { Grid, Paper } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import _ from 'lodash';
@@ -7,6 +7,7 @@ import { useRecoilState } from 'recoil';
 import { currentAgentConfig } from '../atoms';
 import ActionsTable from './ActionsTable';
 import EditAction from './EditAction';
+import { IAgent } from '../../../models/chatbot-service';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -32,6 +33,11 @@ const Actions = () => {
 
   const actions: BaseAgentAction[] = config.getActions();
 
+  const onAdd = () => {
+    setIsNewAction(true);
+    setCurrentAction(new UtteranceAction('', ''));
+  }
+
   const onEditAction = (action: BaseAgentAction) => {
     setCurrentAction(action);
   };
@@ -45,7 +51,6 @@ const Actions = () => {
     setConfig(newConfig);
 
     setIsNewAction(false);
-
     setCurrentAction(undefined);
   };
 
@@ -68,9 +73,9 @@ const Actions = () => {
         <Paper className={classes.paper}>
           <ActionsTable
             actions={actions ?? []}
+            onAdd={onAdd}
             onEditAction={onEditAction}
             onDeleteAction={onDeleteAction}
-            onAdd={() => setIsNewAction(true)}
           />
         </Paper>
       </Grid>

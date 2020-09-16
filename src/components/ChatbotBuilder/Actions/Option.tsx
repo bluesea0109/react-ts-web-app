@@ -23,16 +23,20 @@ const Options = () => {
   const [currentOption, setCurrentOption] = useState<IResponseOption | undefined>(undefined);
   const [isNewOption, setIsNewOption] = useState<boolean>(false);
 
+  const onAdd = () => {
+    setCurrentOption({
+      type: 'TEXT',
+      text: '',
+      intent: '',
+    });
+  }
+
   const onEditOption = (option: IResponseOption) => {
     setCurrentOption(option);
   };
 
   const onDeleteOption = (option: IResponseOption) => {
     setOptions([...options.filter(each => each.text !== option.text)]);
-  };
-
-  const onAddOption = (option: IResponseOption) => {
-    setOptions([...options, option]);
   };
 
   const onSaveOption = (option: IResponseOption) => {
@@ -56,7 +60,7 @@ const Options = () => {
     <div className={classes.root}>
       <OptionsTable
         options={options ?? []}
-        onAdd={() => setIsNewOption(true)}
+        onAdd={onAdd}
         onEditOption={onEditOption}
         onDeleteOption={onDeleteOption}
       />
