@@ -17,7 +17,6 @@ import DataExportsTab from '../DataExports/DataExportsTab';
 import Examples from '../Examples/Examples';
 import GraphPolicy from '../GraphPolicy';
 import Intent from '../Intent/Intent';
-import Options from '../Options/Option';
 import PublishAgent from '../Publish';
 import Slot from '../Slot/Slot';
 import Tag from '../Tags/Tag';
@@ -143,7 +142,6 @@ const AgentDetails = () => {
           textColor="primary">
           <Tab value="Actions" label="Actions" {...a11yProps('Actions')} />
           <Tab value="Intents" label="Intents" {...a11yProps('Intents')} />
-          <Tab value="Options" label="Options" {...a11yProps('Options')} />
           <Tab value="Tags" label="Tags" {...a11yProps('Tags')} />
           <Tab value="Slots" label="Slots" {...a11yProps('Slots')} />
           <Tab
@@ -194,9 +192,6 @@ const AgentDetails = () => {
         </TabPanel>
         <TabPanel className={classes.tabPanel} value={agentTab} index="Intents">
           <Intent />
-        </TabPanel>
-        <TabPanel className={classes.tabPanel} value={agentTab} index="Options">
-          <Options />
         </TabPanel>
         <TabPanel className={classes.tabPanel} value={agentTab} index="Tags">
           <Tag />

@@ -41,7 +41,7 @@ const Actions = () => {
     const newConfig = _.cloneDeep<AgentConfig>(config);
     newConfig
       .deleteAction(currentAction.name)
-      .addAction(action);
+      .addAction(action.toJsonObj());
     setConfig(newConfig);
 
     setIsNewAction(false);

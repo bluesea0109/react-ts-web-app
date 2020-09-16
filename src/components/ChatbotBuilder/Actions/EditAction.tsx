@@ -21,7 +21,7 @@ import React, { useEffect, useState } from 'react';
 import { Maybe } from '../../../utils/types';
 import RichTextInput from '../../Utils/RichTextInput';
 import Option from './Option';
-​
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     appBar: {
@@ -33,24 +33,21 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   }),
 );
-​
+
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & { children?: React.ReactElement },
   ref: React.Ref<unknown>,
 ) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
-​
+
 type EditActionProps = {
   action?: BaseAgentAction;
   isNewAction: boolean;
   onSaveAction: (agentAction: BaseAgentAction) => void;
   onEditActionClose: () => void;
 };
-​
-const checkboxIcon = <CheckBoxOutlineBlank fontSize="small" />;
-const checkboxCheckedIcon = <CheckBox fontSize="small" />;
-​
+
 const EditAction = ({
   action,
   isNewAction,
@@ -61,7 +58,7 @@ const EditAction = ({
   const [currentAction, setCurrentAction] = useState<Maybe<BaseAgentAction>>(action);
   const [actionType, setActionType] = useState<Maybe<EAgentActionTypes>>();
   const [options, setOptions] = useState<Maybe<IResponseOption[]>>(currentAction?.options);
-​
+
   useEffect(() => {
     setCurrentAction(action);
     if (action?.type === EAgentActionTypes.EMAIL_ACTION || action?.type === EAgentActionTypes.UTTERANCE_ACTION) {
@@ -70,12 +67,12 @@ const EditAction = ({
       setActionType(undefined);
     }
   }, [action]);
-​
+
   const saveChanges = () => {
     if (!currentAction) { return; }
     onSaveAction(currentAction);
   };
-​
+
   return (
     <Dialog fullScreen={true} open={!!action} TransitionComponent={Transition}>
       <AppBar className={classes.appBar}>
@@ -149,5 +146,5 @@ const EditAction = ({
     </Dialog>
   );
 };
-​
+
 export default EditAction;
