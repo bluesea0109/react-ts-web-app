@@ -81,7 +81,7 @@ const EditAction = ({
             <CloseIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
-            {isNewAction ? 'Create New Action' : `Edit Action #${currentAction?.name}`}
+            {isNewAction ? 'Create New Action' : `Edit Action: ${currentAction?.name}`}
           </Typography>
           <Button autoFocus={true} color="inherit" onClick={saveChanges}>
             {isNewAction ? 'Create' : 'Save'}
@@ -95,7 +95,7 @@ const EditAction = ({
               <Box p={2}>
                 <TextField
                   fullWidth={true}
-                  label={`Action Name`}
+                  label="Action Name"
                   variant="outlined"
                   value={currentAction?.name}
                   onChange={isNewAction ? e => setCurrentAction({ ...currentAction, name: e.target.value } as BaseAgentAction) : undefined}
@@ -124,7 +124,7 @@ const EditAction = ({
                       <Box p={2}>
                         <RichTextInput
                           label="Action Text"
-                          value={currentAction?.name}
+                          value={(currentAction as UtteranceAction)?.utterance}
                           onChange={(html: string) => setCurrentAction({ ...currentAction, utterance: html } as UtteranceAction)}
                         />
                       </Box>
