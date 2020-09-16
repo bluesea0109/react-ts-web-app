@@ -1,4 +1,9 @@
-import { BaseAgentAction, EAgentActionTypes, IResponseOption, UtteranceAction } from '@bavard/agent-config';
+import {
+  BaseAgentAction,
+  EAgentActionTypes,
+  IResponseOption,
+  UtteranceAction,
+} from '@bavard/agent-config';
 import {
   Box,
   DialogContent,
@@ -60,8 +65,29 @@ const EditAction = ({ action, isNewAction, onSaveAction, onEditActionClose }: Ed
     onSaveAction(currentAction);
   };
 
-  const onSaveOptions = (options: IResponseOption[]) => {
-    setCurrentAction({ ...currentAction, options } as BaseAgentAction);
+  const onDeleteOption = (option: IResponseOption) => {
+    if (!currentAction?.options) { return; }
+    setCurrentAction({
+      ...currentAction,
+      options: [...currentAction?.options.filter(opt => opt.text !== option.text)],
+    } as BaseAgentAction);
+  };
+
+  const onAddOption = (option: IResponseOption) => {
+    setCurrentAction({
+      ...currentAction,
+      options: [...(currentAction?.options || []), option],
+    } as BaseAgentAction);
+  };
+
+  const onUpdateOption = (text: string, option: IResponseOption) => {
+    setCurrentAction({
+      ...currentAction,
+      options: [
+        ...(currentAction?.options || []).filter(opt => opt.text !== text),
+        option,
+      ],
+    } as BaseAgentAction);
   };
 
   return (
@@ -125,7 +151,12 @@ const EditAction = ({ action, isNewAction, onSaveAction, onEditActionClose }: Ed
           <Grid container={true}>
             <Grid item={true} xs={12}>
               {!!currentAction && !!currentAction.options && (
-                <Option onSave={onSaveOptions}/>
+                <Option
+                  options={currentAction.options}
+                  onAddOption={onAddOption}
+                  onDeleteOption={onDeleteOption}
+                  onUpdateOption={onUpdateOption}
+                />
               )}
             </Grid>
           </Grid>

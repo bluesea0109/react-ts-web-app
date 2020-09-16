@@ -1,4 +1,7 @@
-import { EResponseOptionTypes, IResponseOption } from '@bavard/agent-config';
+import {
+  EResponseOptionTypes,
+  IResponseOption,
+} from '@bavard/agent-config';
 import {
   Box,
   DialogContent,
@@ -41,6 +44,7 @@ const Transition = React.forwardRef(function Transition(
 type EditOptionProps = {
   option?: IResponseOption;
   isNewOption: boolean;
+  onAddOption: (optionData: IResponseOption) => void;
   onSaveOption: (optionData: IResponseOption) => void;
   onEditOptionClose: () => void;
 };
@@ -48,6 +52,7 @@ type EditOptionProps = {
 const EditOption = ({
   option,
   isNewOption,
+  onAddOption,
   onSaveOption,
   onEditOptionClose,
 }: EditOptionProps) => {
@@ -57,7 +62,6 @@ const EditOption = ({
     EResponseOptionTypes.TEXT,
     EResponseOptionTypes.IMAGE,
     EResponseOptionTypes.HYPERLINK,
-    EResponseOptionTypes.OTHER_OPTIONS,
   ];
 
   useEffect(() => {
@@ -70,7 +74,7 @@ const EditOption = ({
     }
 
     const { ...optionData } = currentOption as any;
-    onSaveOption(optionData);
+    isNewOption ? onAddOption(optionData) : onSaveOption(optionData);
   };
 
   return (

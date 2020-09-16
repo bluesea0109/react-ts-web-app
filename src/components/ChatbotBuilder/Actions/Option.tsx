@@ -1,5 +1,7 @@
-import { EResponseOptionTypes, IResponseOption } from '@bavard/agent-config';
-import { Button } from '@material-ui/core';
+import {
+  EResponseOptionTypes,
+  IResponseOption,
+} from '@bavard/agent-config';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { useState } from 'react';
 import EditOption from './EditOption';
@@ -18,15 +20,20 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 type OptionsProps = {
-  onSave: (options: IResponseOption[]) => void;
+  options: IResponseOption[];
+  onAddOption: (option: IResponseOption) => void;
+  onDeleteOption: (option: IResponseOption) => void;
+  onUpdateOption: (text: string, option: IResponseOption) => void;
 };
 
 const Options = ({
-  onSave,
+  options,
+  onAddOption,
+  onDeleteOption,
+  onUpdateOption,
 }: OptionsProps) => {
   const classes = useStyles();
 
-  const [options, setOptions] = useState<IResponseOption[]>([]);
   const [currentOption, setCurrentOption] = useState<IResponseOption | undefined>(undefined);
   const [isNewOption, setIsNewOption] = useState<boolean>(false);
 
@@ -42,18 +49,9 @@ const Options = ({
     setCurrentOption(option);
   };
 
-  const onDeleteOption = (option: IResponseOption) => {
-    setOptions([...options.filter(each => each.text !== option.text)]);
-  };
-
   const onSaveOption = (option: IResponseOption) => {
     if (!currentOption) { return; }
-    const newOptions = [
-      ...options.filter(each => each.text !== currentOption.text),
-      option,
-    ];
-    setOptions(newOptions);
-
+    onUpdateOption(currentOption.text, option);
     setIsNewOption(false);
     setCurrentOption(undefined);
   };
@@ -65,9 +63,6 @@ const Options = ({
 
   return (
     <div className={classes.root}>
-      <Button variant="contained" onClick={_ => onSave(options)}>
-        Save Options
-      </Button>
       <OptionsTable
         options={options ?? []}
         onAdd={onAdd}
@@ -79,6 +74,7 @@ const Options = ({
         <EditOption
           option={currentOption}
           isNewOption={isNewOption}
+          onAddOption={onAddOption}
           onSaveOption={onSaveOption}
           onEditOptionClose={onEditOptionClose}
         />
