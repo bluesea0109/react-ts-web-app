@@ -97,7 +97,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     sketchPicker: {},
-  })
+  }),
 );
 
 interface IGradientPoint {
@@ -206,7 +206,7 @@ const GradientPicker = ({
     });
 
     const css = `${browserParam}(${gradient.direction}, ${pointsStr.join(
-      ', '
+      ', ',
     )})`;
 
     return css;
@@ -263,7 +263,7 @@ const GradientPicker = ({
   };
 
   const [gradient, setGradient] = useState(
-    defaultValue ? cssToGradient(defaultValue) : DEFAULT_GRADIENT
+    defaultValue ? cssToGradient(defaultValue) : DEFAULT_GRADIENT,
   );
   const [editingPoint, setEditingPoint] = useState<number | undefined>();
   const [gradientTypesMenu, showGradientTypesMenu] = useState(false);
@@ -479,7 +479,7 @@ const GradientPicker = ({
             <SketchPicker
               className={classes.sketchPicker}
               color={rgbaFromGradientPoint(
-                gradient.points[editingPoint as number]
+                gradient.points[editingPoint as number],
               )}
               onChange={(newColor) => setColor(newColor, editingPoint)}
             />
