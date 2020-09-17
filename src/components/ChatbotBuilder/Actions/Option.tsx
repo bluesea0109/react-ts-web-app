@@ -1,9 +1,12 @@
 import {
+  AgentConfig,
   EResponseOptionTypes,
   IResponseOption,
 } from '@bavard/agent-config';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { useState } from 'react';
+import { useRecoilState } from 'recoil';
+import { currentAgentConfig } from '../atoms';
 import EditOption from './EditOption';
 import OptionsTable from './OptionsTable';
 
@@ -34,8 +37,15 @@ const Options = ({
 }: OptionsProps) => {
   const classes = useStyles();
 
+  const [config] = useRecoilState<AgentConfig | undefined>(currentAgentConfig);
   const [currentOption, setCurrentOption] = useState<IResponseOption | undefined>(undefined);
   const [isNewOption, setIsNewOption] = useState<boolean>(false);
+
+  if (!config) {
+    return <p>Agent config is empty.</p>;
+  }
+
+  const intents = config.getIntents();
 
   const onAdd = () => {
     setCurrentOption({
@@ -74,6 +84,7 @@ const Options = ({
         <EditOption
           option={currentOption}
           isNewOption={isNewOption}
+          intents={intents}
           onAddOption={onAddOption}
           onSaveOption={onSaveOption}
           onEditOptionClose={onEditOptionClose}

@@ -1,6 +1,7 @@
 import {
   EResponseOptionTypes,
   IResponseOption,
+  IIntent,
 } from '@bavard/agent-config';
 import {
   Box,
@@ -44,6 +45,7 @@ const Transition = React.forwardRef(function Transition(
 type EditOptionProps = {
   option?: IResponseOption;
   isNewOption: boolean;
+  intents: IIntent[];
   onAddOption: (optionData: IResponseOption) => void;
   onSaveOption: (optionData: IResponseOption) => void;
   onEditOptionClose: () => void;
@@ -52,6 +54,7 @@ type EditOptionProps = {
 const EditOption = ({
   option,
   isNewOption,
+  intents,
   onAddOption,
   onSaveOption,
   onEditOptionClose,
@@ -126,7 +129,7 @@ const EditOption = ({
               <Box p={2}>
                 <Autocomplete
                   fullWidth={true}
-                  id="actionTypeSelector"
+                  id="optionTypeSelector"
                   options={availableOptions}
                   getOptionLabel={(option: any) => option}
                   value={currentOption?.type ?? null}
@@ -139,17 +142,14 @@ const EditOption = ({
           <Grid container={true}>
             <Grid item={true} xs={6}>
               <Box p={2}>
-                <TextField
+                <Autocomplete
                   fullWidth={true}
-                  label="Option Intent"
-                  variant="outlined"
-                  value={currentOption?.intent}
-                  onChange={(e) =>
-                    setCurrentOption({
-                      ...currentOption,
-                      intent: e.target.value,
-                    } as any)
-                  }
+                  id="optionIntentSelector"
+                  options={intents.map(intent => intent.name)}
+                  getOptionLabel={(option: any) => option}
+                  value={currentOption?.intent ?? null}
+                  onChange={(_, optionIntent) => setCurrentOption({ ...currentOption, intent: optionIntent } as any)}
+                  renderInput={(params) => <TextField {...params} label="Option Intent" variant="outlined" />}
                 />
               </Box>
             </Grid>
