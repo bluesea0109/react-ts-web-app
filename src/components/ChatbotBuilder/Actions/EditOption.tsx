@@ -1,7 +1,7 @@
 import {
   EResponseOptionTypes,
-  IResponseOption,
   IIntent,
+  IResponseOption,
 } from '@bavard/agent-config';
 import {
   Box,
