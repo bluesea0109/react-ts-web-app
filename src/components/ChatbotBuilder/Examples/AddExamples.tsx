@@ -16,11 +16,14 @@ import { useSnackbar } from 'notistack';
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import { TextAnnotator } from 'react-text-annotate';
-import { CHATBOT_CREATE_TAGS, CHATBOT_GET_TAGS } from '../../../common-gql-queries';
 import { INLUExample } from '../../../models/chatbot-service';
 import { Maybe } from '../../../utils/types';
 import { ExamplesError } from './types';
 import { useEditExampleAnnotation } from './useEditExample';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { currentAgentConfig, currentWidgetSettings } from '../atoms';
+import { cloneDeep } from '@apollo/client/utilities';
+import { CHATBOT_GET_AGENT, CHATBOT_SAVE_CONFIG_AND_SETTINGS } from '../../../common-gql-queries';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -48,21 +51,24 @@ const createExamplesMutation = gql`
 `;
 
 const AddExamples = ({
-   intents,
-   tagTypes,
    onEditExampleClose,
    refetchOptions,
 }: {
-  intents: string[];
-  tagTypes: string[],
   onEditExampleClose: () => void;
   refetchOptions: any;
 }) => {
+  const [_config, setConfig] = useRecoilState(currentAgentConfig);
+  const config = cloneDeep(_config);
+  const widgetSettings = useRecoilValue(currentWidgetSettings);
+
+  const intents = Array.from(config?.getIntents().map(x => x.name) ?? []);
+  const tagTypes = Array.from(config?.getTagTypes() ?? []);
+
   const classes = useStyles();
   const { agentId } = useParams<{ agentId: string }>();
   const numAgentId = Number(agentId);
-  const [intent, setIntent] = useState<string>('');
-  const [tagType, setTagType] = useState<string>('');
+  const [intent, setIntent] = useState<string | undefined>();
+  const [tagType, setTagType] = useState<string | undefined>();
   const [addTag, setAddTag] = useState(false);
   const [newTag, setNewTag] = useState('');
   const [loading, setLoading] = useState(false);
@@ -70,8 +76,17 @@ const AddExamples = ({
   const lastID = useRef(0);
   const { enqueueSnackbar } = useSnackbar();
 
-  const updateTagType = (e: ChangeEvent<{}>, tagType: string | null) => setTagType(tagType ?? '');
+  const [updateAgent] = useMutation(
+    CHATBOT_SAVE_CONFIG_AND_SETTINGS,
+    {
+      refetchQueries: [
+        { query: CHATBOT_GET_AGENT, variables: { agentId: Number(agentId) } },
+      ],
+      awaitRefetchQueries: true,
+    },
+  );
 
+  const updateTagType = (e: ChangeEvent<{}>, tagType: string | null) => setTagType(tagType ?? '');
   const updateIntent = (e: ChangeEvent<{}>, intent: string | null) => setIntent(intent ?? '');
 
   const onExampleUpdate = (id: number) => (updatedExample: INLUExample) => {
@@ -80,7 +95,7 @@ const AddExamples = ({
     const currentIntent = intent;
     updatedExamples.splice(index, 1, {
       ...updatedExample,
-      intent: currentIntent,
+      intent: currentIntent ?? '',
     });
 
     setExamples([ ...updatedExamples ]);
@@ -93,7 +108,7 @@ const AddExamples = ({
       {
         id: lastID.current + 1,
         agentId: numAgentId,
-        intent,
+        intent: intent ?? '',
         tags: [],
         text: '',
       },
@@ -111,10 +126,6 @@ const AddExamples = ({
   };
 
   const [createExamples] = useMutation(createExamplesMutation);
-  const [createTags] = useMutation(CHATBOT_CREATE_TAGS,  {
-    refetchQueries: [{ query: CHATBOT_GET_TAGS, variables: { agentId : numAgentId }  }],
-    awaitRefetchQueries: true,
-  });
 
   const saveChanges = async () => {
     if (intent === '') {
@@ -132,6 +143,17 @@ const AddExamples = ({
     try {
       setLoading(true);
 
+      if (!!config) {
+        await updateAgent({
+          variables: {
+            agentId: Number(agentId),
+            config: config.toJsonObj(),
+            uname: config?.toJsonObj().uname,
+            settings: widgetSettings,
+          },
+        });
+      }
+
       await createExamples({
         variables: {
           agentId: numAgentId,
@@ -141,7 +163,7 @@ const AddExamples = ({
             tags: ex.tags.map((tag: any) => ({
               start: tag.start,
               end: tag.end,
-              tagTypeId: tag.tagType.id,
+              tagType: tag.tag,
             })),
           })),
         },
@@ -167,12 +189,7 @@ const AddExamples = ({
 
     try {
       setLoading(true);
-      await createTags({
-        variables: {
-          agentId: numAgentId ,
-          values: [newTag],
-        },
-      });
+      setConfig(config?.addTagType(newTag));
       setNewTag('');
       setAddTag(false);
     } catch (e) {
@@ -259,7 +276,7 @@ const AddExamples = ({
                     disabled={loading}
                     id="tagTypeSelector"
                     options={tagTypes}
-                    value={tagType ?? null}
+                    value={tagType}
                     onChange={updateTagType}
                     renderInput={(params) => <TextField {...params} label="Selected Tag Type" variant="outlined" />}
                   />
@@ -289,7 +306,7 @@ const AddExamples = ({
             <AddExampleItem
               loading={loading}
               example={example}
-              tagType={tagType}
+              tagType={tagType ?? ''}
               tagTypes={tagTypes}
               onExampleUpdate={onExampleUpdate(example.id)}
             />
@@ -318,6 +335,7 @@ export const AddExampleItem = ({ loading, error, tagType, tagTypes, example, onE
     setExampleText,
     annotatorState,
     setAnnotatorState,
+    colors,
   ] = useEditExampleAnnotation({ tagTypes });
 
   useEffect(() => {
@@ -376,8 +394,8 @@ export const AddExampleItem = ({ loading, error, tagType, tagTypes, example, onE
               onChange={(value: any) => setAnnotatorState({ ...annotatorState, tags: value })}
               getSpan={span => ({
                 ...span,
-                tagType,
-                color: 'rgb(132, 210, 255)',
+                tag: tagType,
+                color: colors.current[tagType],
               })}
             />
           </Box>

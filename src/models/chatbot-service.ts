@@ -24,7 +24,7 @@ export interface IAgent {
 }
 
 export interface INLUExampleTag {
-  tagType: string;
+  tag: string;
   start: number;
   end: number;
 }

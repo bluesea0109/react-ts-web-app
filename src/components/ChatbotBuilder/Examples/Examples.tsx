@@ -192,8 +192,6 @@ const Examples = () => {
           />
           {!!newExample && (
             <AddExamples
-              intents={intents}
-              tagTypes={tagTypes}
               onEditExampleClose={onExampleEditClose}
               refetchOptions={refetchOptions}
             />
