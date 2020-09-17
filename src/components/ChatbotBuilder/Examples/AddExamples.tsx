@@ -1,4 +1,5 @@
 import { useMutation } from '@apollo/client';
+import { cloneDeep } from '@apollo/client/utilities';
 import { Box, Button, CircularProgress, Divider, Grid, LinearProgress, TextField } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Dialog from '@material-ui/core/Dialog';
@@ -16,14 +17,13 @@ import { useSnackbar } from 'notistack';
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import { TextAnnotator } from 'react-text-annotate';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { CHATBOT_GET_AGENT, CHATBOT_SAVE_CONFIG_AND_SETTINGS } from '../../../common-gql-queries';
 import { INLUExample } from '../../../models/chatbot-service';
 import { Maybe } from '../../../utils/types';
+import { currentAgentConfig, currentWidgetSettings } from '../atoms';
 import { ExamplesError } from './types';
 import { useEditExampleAnnotation } from './useEditExample';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { currentAgentConfig, currentWidgetSettings } from '../atoms';
-import { cloneDeep } from '@apollo/client/utilities';
-import { CHATBOT_GET_AGENT, CHATBOT_SAVE_CONFIG_AND_SETTINGS } from '../../../common-gql-queries';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
