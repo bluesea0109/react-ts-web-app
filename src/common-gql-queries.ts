@@ -280,7 +280,7 @@ export const CHATBOT_SAVE_CONFIG_AND_SETTINGS = gql`
 
 export const CHATBOT_CREATE_TAGS = gql`
   mutation($agentId: Int!, $values: [String!]!, $upsert: Boolean) {
-    ChatbotService_createExampleTag(
+    ChatbotService_createTagTypes (
       agentId: $agentId
       values: $values
       upsert: $upsert
