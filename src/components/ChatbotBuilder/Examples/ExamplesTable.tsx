@@ -41,7 +41,7 @@ const initialColumns: Column<any>[] = [
           return {
             start: tag.start,
             end: tag.end,
-            tag: tag.tagType.value,
+            tag: tag.tagType,
           };
         }),
         tag: null,

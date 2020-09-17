@@ -121,7 +121,7 @@ const ExampleForm = ({ loading, example, tagTypes, intents, error, onExampleUpda
               onChange={(value: any) => setAnnotatorState({ ...annotatorState, value })}
               getSpan={span => ({
                 ...span,
-                tagType,
+                tag: tagType,
                 color: colors.current[tagType],
               })}
             />
