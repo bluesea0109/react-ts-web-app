@@ -34,7 +34,7 @@ const Actions = () => {
 
   const onAdd = () => {
     setIsNewAction(true);
-    setCurrentAction(new UtteranceAction('', [], ''));
+    setCurrentAction(new UtteranceAction('', ''));
   };
 
   const onEditAction = (action: BaseAgentAction) => {
