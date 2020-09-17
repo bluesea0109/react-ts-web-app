@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   IconButton,
   Menu,
   MenuItem,
@@ -20,8 +21,6 @@ import {
   AllOut,
   ArrowDownward,
   ArrowForward,
-  CallMade,
-  CallReceived,
   Delete,
   Edit,
 } from '@material-ui/icons';
@@ -86,11 +85,11 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     gradientTypeButton: {
-      height: 20,
-      width: 20,
+      height: 25,
       position: 'absolute',
       left: 5,
       top: 5,
+      fontSize: 14,
       backgroundColor: 'rgba(255,255,255,.9)',
       color: theme.palette.grey[500],
       '&:hover': {
@@ -111,12 +110,7 @@ interface IGradientPoint {
   };
 }
 
-type GradientDirection =
-  | 'to bottom'
-  | 'to right'
-  | '135deg'
-  | '45deg'
-  | 'ellipse at center';
+type GradientDirection = keyof typeof directionIconMap;
 
 interface IGradientSpec {
   direction: GradientDirection;
@@ -159,12 +153,36 @@ const DEFAULT_GRADIENT: IGradientSpec = {
   ],
 };
 
+// const hexToRgbA = (hex: string) => {
+//   let c: any;
+//   if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
+//     c = hex.substring(1).split('');
+//     if (c.length == 3) {
+//       c = [c[0], c[0], c[1], c[1], c[2], c[2]];
+//     }
+//     c = '0x' + c.join('');
+//     return (
+//       'rgba(' + [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(',') + ',1)'
+//     );
+//   }
+//   throw new Error('Bad Hex');
+// };
+
 const directionIconMap = {
   'to bottom': <ArrowDownward />,
   'to right': <ArrowForward />,
-  '45deg': <CallMade />,
-  '135deg': <CallReceived />,
+  '0deg': <span>0&deg;</span>,
+  '45deg': <span>45&deg;</span>,
+  '90deg': <span>90&deg;</span>,
+  '135deg': <span>135&deg;</span>,
+  '180deg': <span>180&deg;</span>,
+  '225deg': <span>225&deg;</span>,
+  '270deg': <span>270&deg;</span>,
+  '315deg': <span>315&deg;</span>,
   'ellipse at center': <AllOut />,
+  ellipse: <span>Ellipse</span>,
+  'circle at center': <AllOut />,
+  circle: <span>Circle</span>,
 };
 
 const GradientSlider = withStyles({
@@ -191,7 +209,10 @@ const GradientPicker = ({
 
   const gradientToCss = (gradient: IGradientSpec) => {
     let browserParam = 'linear-gradient';
-    if (gradient.direction === 'ellipse at center') {
+    if (
+      gradient.direction.indexOf('circle') >= 0 ||
+      gradient.direction.indexOf('ellipse') >= 0
+    ) {
       browserParam = 'radial-gradient';
     }
 
@@ -207,7 +228,17 @@ const GradientPicker = ({
   };
 
   const cssToGradient = (css: string) => {
-    const direction = css.split('(')[1]?.split(',')[0] as GradientDirection;
+    let direction = css.split('(')[1]?.split(',')[0] as GradientDirection;
+
+    if (
+      !!!(
+        Object.keys(directionIconMap).indexOf(direction) >= 0 ||
+        /\b(\d+\.?\d*)\s*(deg)/.test(direction)
+      )
+    ) {
+      direction = '0deg';
+    }
+
     const rgbas = css.split('rgba(');
     rgbas.shift();
 
@@ -372,51 +403,33 @@ const GradientPicker = ({
         </Tooltip>
 
         <Tooltip title="Gradient Direction">
-          <IconButton
+          <Button
             className={classes.gradientTypeButton}
             size={'small'}
             onClick={(e) => {
               showGradientTypesMenu(true);
               setAnchor(e.currentTarget);
             }}>
-            {directionIconMap[gradient.direction]}
-          </IconButton>
+            {directionIconMap[gradient.direction] || gradient.direction}
+          </Button>
         </Tooltip>
         <Menu
           anchorEl={gradientTypesAnchor}
           keepMounted={true}
           open={gradientTypesMenu}
           onClose={() => showGradientTypesMenu(false)}>
-          <MenuItem
-            key={'to bottom'}
-            selected={false}
-            onClick={() => setGradientDirection('to bottom')}>
-            Vertical
-          </MenuItem>
-          <MenuItem
-            key={'to right'}
-            selected={false}
-            onClick={() => setGradientDirection('to right')}>
-            Horizontal
-          </MenuItem>
-          <MenuItem
-            key={'45deg'}
-            selected={false}
-            onClick={() => setGradientDirection('45deg')}>
-            45 deg
-          </MenuItem>
-          <MenuItem
-            key={'135deg'}
-            selected={false}
-            onClick={() => setGradientDirection('135deg')}>
-            -45 deg
-          </MenuItem>
-          <MenuItem
-            key={'ellipse at center'}
-            selected={false}
-            onClick={() => setGradientDirection('ellipse at center')}>
-            Radial
-          </MenuItem>
+          {Object.keys(directionIconMap).map((direction) => {
+            return (
+              <MenuItem
+                key={direction}
+                selected={false}
+                onClick={() =>
+                  setGradientDirection(direction as GradientDirection)
+                }>
+                {direction}
+              </MenuItem>
+            );
+          })}
         </Menu>
       </Box>
       <Box className={classes.relativeContainer}>
