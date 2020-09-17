@@ -97,7 +97,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     sketchPicker: {},
-  }),
+  })
 );
 
 interface IGradientPoint {
@@ -153,21 +153,6 @@ const DEFAULT_GRADIENT: IGradientSpec = {
   ],
 };
 
-// const hexToRgbA = (hex: string) => {
-//   let c: any;
-//   if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
-//     c = hex.substring(1).split('');
-//     if (c.length == 3) {
-//       c = [c[0], c[0], c[1], c[1], c[2], c[2]];
-//     }
-//     c = '0x' + c.join('');
-//     return (
-//       'rgba(' + [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(',') + ',1)'
-//     );
-//   }
-//   throw new Error('Bad Hex');
-// };
-
 const directionIconMap = {
   'to bottom': <ArrowDownward />,
   'to right': <ArrowForward />,
@@ -221,7 +206,7 @@ const GradientPicker = ({
     });
 
     const css = `${browserParam}(${gradient.direction}, ${pointsStr.join(
-      ', ',
+      ', '
     )})`;
 
     return css;
@@ -278,7 +263,7 @@ const GradientPicker = ({
   };
 
   const [gradient, setGradient] = useState(
-    defaultValue ? cssToGradient(defaultValue) : DEFAULT_GRADIENT,
+    defaultValue ? cssToGradient(defaultValue) : DEFAULT_GRADIENT
   );
   const [editingPoint, setEditingPoint] = useState<number | undefined>();
   const [gradientTypesMenu, showGradientTypesMenu] = useState(false);
@@ -494,7 +479,7 @@ const GradientPicker = ({
             <SketchPicker
               className={classes.sketchPicker}
               color={rgbaFromGradientPoint(
-                gradient.points[editingPoint as number],
+                gradient.points[editingPoint as number]
               )}
               onChange={(newColor) => setColor(newColor, editingPoint)}
             />
