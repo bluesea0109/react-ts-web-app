@@ -1,10 +1,13 @@
 import randomcolor from 'randomcolor';
 import { MutableRefObject, useEffect, useRef, useState } from 'react';
-import { INLUExampleTag } from '../../../models/chatbot-service';
 
 export interface AnnotatorState {
   tagType?: string;
-  tags: INLUExampleTag[];
+  tags: {
+    start: number;
+    end: number;
+    tag: string;
+  }[];
 }
 
 export const useEditExampleAnnotation = ({

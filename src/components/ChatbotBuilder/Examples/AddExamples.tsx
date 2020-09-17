@@ -352,7 +352,7 @@ export const AddExampleItem = ({ loading, error, tagType, tagTypes, example, onE
       agentId: example?.agentId,
       intent: '',
       text: exampleText,
-      tags: annotatorState.tags ?? [],
+      tags: annotatorState.tags.map(tag => ({ ...tag, tagType: tag.tag })) ?? [],
     });
     // eslint-disable-next-line
   }, [exampleText, annotatorState.tags]);

@@ -21,7 +21,7 @@ const ExampleForm = ({ loading, example, tagTypes, intents, error, onExampleUpda
   const defaultIntent = example?.intent ?? intents?.[0];
   const [intent, setIntent] = useState<string>(defaultIntent);
 
-  const defaultTagType = example?.tags?.[0]?.tag ?? tagTypes?.[0];
+  const defaultTagType = example?.tags?.[0]?.tagType ?? tagTypes?.[0];
   const [tagType, setTagType] = useState<string>(defaultTagType);
 
   const [
