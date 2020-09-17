@@ -1,4 +1,5 @@
 import { useLazyQuery } from '@apollo/client';
+import { ImageOption, TextOption } from '@bavard/agent-config';
 import {
   BaseEdge,
   ConfirmEdge,
@@ -9,8 +10,7 @@ import {
   GraphPolicyNode,
   UtteranceEdge,
   UtteranceNode,
-} from '@bavard//agent-config/dist/graph-policy';
-import { ImageOption, TextOption } from '@bavard/agent-config';
+} from '@bavard/agent-config/dist/graph-policy';
 import {
   Button,
   FormControl,
