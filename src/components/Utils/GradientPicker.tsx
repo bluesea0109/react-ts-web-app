@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   IconButton,
   Menu,
   MenuItem,
@@ -18,10 +19,10 @@ import {
 import {
   Add,
   AllOut,
+  ArrowBack,
   ArrowDownward,
   ArrowForward,
-  CallMade,
-  CallReceived,
+  ArrowUpward,
   Delete,
   Edit,
 } from '@material-ui/icons';
@@ -56,6 +57,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       display: 'flex',
       justifyContent: 'center',
+      flexWrap: 'wrap',
     },
     paper: {
       padding: theme.spacing(2),
@@ -86,16 +88,23 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     gradientTypeButton: {
-      height: 20,
-      width: 20,
+      height: 25,
       position: 'absolute',
       left: 5,
       top: 5,
+      fontSize: 14,
       backgroundColor: 'rgba(255,255,255,.9)',
       color: theme.palette.grey[500],
       '&:hover': {
         backgroundColor: 'rgba(255,255,255,1)',
       },
+    },
+    presetBox: {
+      width: 40,
+      height: 40,
+      borderRadius: theme.spacing(1),
+      margin: 2,
+      cursor: 'pointer',
     },
     sketchPicker: {},
   }),
@@ -111,12 +120,7 @@ interface IGradientPoint {
   };
 }
 
-type GradientDirection =
-  | 'to bottom'
-  | 'to right'
-  | '135deg'
-  | '45deg'
-  | 'ellipse at center';
+type GradientDirection = keyof typeof directionIconMap;
 
 interface IGradientSpec {
   direction: GradientDirection;
@@ -159,12 +163,39 @@ const DEFAULT_GRADIENT: IGradientSpec = {
   ],
 };
 
+const hexToRgbA = (hex: string) => {
+  let c: any;
+  if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
+    c = hex.substring(1).split('');
+    if (c.length === 3) {
+      c = [c[0], c[0], c[1], c[1], c[2], c[2]];
+    }
+    c = '0x' + c.join('');
+    return (
+      /* tslint:disable-next-line */
+      'rgba(' + [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(',') + ',1)'
+    );
+  }
+  return 'rgba(0,0,0,1)';
+};
+
 const directionIconMap = {
+  'to top': <ArrowUpward />,
   'to bottom': <ArrowDownward />,
   'to right': <ArrowForward />,
-  '45deg': <CallMade />,
-  '135deg': <CallReceived />,
+  'to left': <ArrowBack />,
+  '0deg': <span>0&deg;</span>,
+  '45deg': <span>45&deg;</span>,
+  '90deg': <span>90&deg;</span>,
+  '135deg': <span>135&deg;</span>,
+  '180deg': <span>180&deg;</span>,
+  '225deg': <span>225&deg;</span>,
+  '270deg': <span>270&deg;</span>,
+  '315deg': <span>315&deg;</span>,
   'ellipse at center': <AllOut />,
+  ellipse: <span>Ellipse</span>,
+  'circle at center': <AllOut />,
+  circle: <span>Circle</span>,
 };
 
 const GradientSlider = withStyles({
@@ -182,6 +213,25 @@ export interface IGradientPickerProps {
   onChange?: (result: string) => void;
 }
 
+const presetBgs = [
+  'linear-gradient(135deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%)',
+  'linear-gradient(90deg, #00DBDE 0%, #FC00FF 100%)',
+  'linear-gradient(19deg, #21D4FD 0%, #B721FF 100%)',
+  'linear-gradient(0deg, #08AEEA 0%, #2AF598 100%)',
+  'linear-gradient(45deg, #FA8BFF 0%, #2BD2FF 52%, #2BFF88 90%)',
+  'linear-gradient(to bottom, #0ba360 0%, #3cba92 100%)',
+  'linear-gradient(to top, #0ba360 0%, #3cba92 100%)',
+  'linear-gradient(to top, #3f51b1 0%, #5a55ae 13%, #7b5fac 25%, #8f6aae 38%, #a86aa4 50%, #cc6b8e 62%, #f18271 75%, #f3a469 87%, #f7c978 100%)',
+  'linear-gradient(to top, #e14fad 0%, #f9d423 100%)',
+  'linear-gradient(62deg, #FBAB7E 0%, #F7CE68 100%)',
+  'linear-gradient(90deg, #FF9A8B 0%, #FF6A88 55%, #FF99AC 100%)',
+  'linear-gradient(to right, #ff8177 0%, #ff867a 0%, #ff8c7f 21%, #f99185 52%, #cf556c 78%, #b12a5b 100%)',
+  'linear-gradient(120deg, #f093fb 0%, #f5576c 100%)',
+  'linear-gradient(0deg, #D9AFD9 0%, #97D9E1 100%)',
+  'linear-gradient(to bottom, #a18cd1 0%, #fbc2eb 100%)',
+  'linear-gradient(to right, #eea2a2 0%, #bbc1bf 19%, #57c6e1 42%, #b49fda 79%, #7ac5d8 100%)',
+];
+
 const GradientPicker = ({
   defaultValue,
   label,
@@ -191,7 +241,10 @@ const GradientPicker = ({
 
   const gradientToCss = (gradient: IGradientSpec) => {
     let browserParam = 'linear-gradient';
-    if (gradient.direction === 'ellipse at center') {
+    if (
+      gradient.direction.indexOf('circle') >= 0 ||
+      gradient.direction.indexOf('ellipse') >= 0
+    ) {
       browserParam = 'radial-gradient';
     }
 
@@ -207,12 +260,43 @@ const GradientPicker = ({
   };
 
   const cssToGradient = (css: string) => {
-    const direction = css.split('(')[1]?.split(',')[0] as GradientDirection;
-    const rgbas = css.split('rgba(');
-    rgbas.shift();
+    let direction = css.split('(')[1]?.split(',')[0] as GradientDirection;
 
-    const points = rgbas.map((rgba: string) => {
-      const position = parseInt(rgba.split(/[ %]+/)[1]);
+    if (
+      !!!(
+        Object.keys(directionIconMap).indexOf(direction) >= 0 ||
+        /\b(\d+\.?\d*)\s*(deg)/.test(direction)
+      )
+    ) {
+      direction = '0deg';
+    }
+
+    const colors = css
+      .substring(css.indexOf(',') + 1, css.length - 1)
+      .split(/%,|% | % ,/);
+
+    const points = colors.map((c: string) => {
+      c = c.trim();
+      c = c.replace('%', '');
+
+      let positionStr = '0';
+
+      let rgba = c.split(')')[0];
+      if (c.indexOf('rgba') >= 0) {
+        positionStr = c.split(')')[1];
+      }
+
+      const indexofPound = c.indexOf('#');
+      if (indexofPound >= 0) {
+        const hex = c.substring(indexofPound, indexofPound + 7);
+        rgba = hexToRgbA(hex);
+        positionStr = c.split(' ')[1];
+      }
+
+      rgba = rgba.replace('rgba(', '');
+      positionStr = positionStr.trim();
+
+      const position = parseInt(positionStr);
       const split = rgba.split(/[,)]+/);
 
       const point: IGradientPoint = {
@@ -372,51 +456,33 @@ const GradientPicker = ({
         </Tooltip>
 
         <Tooltip title="Gradient Direction">
-          <IconButton
+          <Button
             className={classes.gradientTypeButton}
             size={'small'}
             onClick={(e) => {
               showGradientTypesMenu(true);
               setAnchor(e.currentTarget);
             }}>
-            {directionIconMap[gradient.direction]}
-          </IconButton>
+            {directionIconMap[gradient.direction] || gradient.direction}
+          </Button>
         </Tooltip>
         <Menu
           anchorEl={gradientTypesAnchor}
           keepMounted={true}
           open={gradientTypesMenu}
           onClose={() => showGradientTypesMenu(false)}>
-          <MenuItem
-            key={'to bottom'}
-            selected={false}
-            onClick={() => setGradientDirection('to bottom')}>
-            Vertical
-          </MenuItem>
-          <MenuItem
-            key={'to right'}
-            selected={false}
-            onClick={() => setGradientDirection('to right')}>
-            Horizontal
-          </MenuItem>
-          <MenuItem
-            key={'45deg'}
-            selected={false}
-            onClick={() => setGradientDirection('45deg')}>
-            45 deg
-          </MenuItem>
-          <MenuItem
-            key={'135deg'}
-            selected={false}
-            onClick={() => setGradientDirection('135deg')}>
-            -45 deg
-          </MenuItem>
-          <MenuItem
-            key={'ellipse at center'}
-            selected={false}
-            onClick={() => setGradientDirection('ellipse at center')}>
-            Radial
-          </MenuItem>
+          {Object.keys(directionIconMap).map((direction, index) => {
+            return (
+              <MenuItem
+                key={`direction_${index}`}
+                selected={false}
+                onClick={() =>
+                  setGradientDirection(direction as GradientDirection)
+                }>
+                {direction}
+              </MenuItem>
+            );
+          })}
         </Menu>
       </Box>
       <Box className={classes.relativeContainer}>
@@ -488,6 +554,24 @@ const GradientPicker = ({
           </div>
         )}
       </Box>
+
+      <Box className={classes.relativeContainer} mt={5} mb={1} mx="auto">
+        {presetBgs.map((p, index) => {
+          return (
+            <Tooltip title={`Preset : ${p}`} key={`preset_${index}`}>
+              <Box
+                className={classes.presetBox}
+                style={{ background: p }}
+                onClick={() => {
+                  updateGradient(cssToGradient(p));
+                  setEditingCss(false);
+                }}
+              />
+            </Tooltip>
+          );
+        })}
+      </Box>
+
       <Box className={classes.relativeContainer} mt={5} mb={1} mx="auto">
         <Paper className={classes.paper}>
           {!editingCss && (
