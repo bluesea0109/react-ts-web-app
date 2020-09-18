@@ -39,7 +39,6 @@ function OptionsTable({
   const columns: Column<IResponseOption>[] = [
     { title: 'Type', field: 'type', editable: 'never' },
     { title: 'Text', field: 'text', editable: 'never' },
-    { title: 'Intent', field: 'intent', editable: 'never' },
   ];
 
   return (

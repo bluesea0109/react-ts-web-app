@@ -1,7 +1,7 @@
 import {
   EResponseOptionTypes,
-  HyperlinkOption,
   IHyperlinkOption,
+  IImageOption,
   IIntent,
   IResponseOption,
 } from '@bavard/agent-config';
@@ -84,6 +84,7 @@ const EditOption = ({
 
   const isHyperLinkOption = currentOption?.type === EResponseOptionTypes.HYPERLINK;
   const isRequiringIntent = currentOption?.type !== EResponseOptionTypes.HYPERLINK;
+  const isImageOption = currentOption?.type === EResponseOptionTypes.IMAGE;
 
   return (
     <Dialog fullScreen={true} open={!!option} TransitionComponent={Transition}>
@@ -157,7 +158,7 @@ const EditOption = ({
                       setCurrentOption({
                         ...currentOption,
                         targetLink: e.target.value,
-                      } as HyperlinkOption)
+                      } as IHyperlinkOption)
                     }
                   />
                 </Box>
@@ -180,6 +181,46 @@ const EditOption = ({
                 </Box>
               </Grid>
             </Grid>
+          )}
+          {isImageOption && (
+            <>
+              <Grid container={true}>
+                <Grid item={true} xs={6}>
+                  <Box p={2}>
+                    <TextField
+                      fullWidth={true}
+                      label="Image Name"
+                      variant="outlined"
+                      value={(currentOption as IImageOption)?.imageName || ''}
+                      onChange={(e) =>
+                        setCurrentOption({
+                          ...currentOption,
+                          imageName: e.target.value,
+                        } as IImageOption)
+                      }
+                    />
+                  </Box>
+                </Grid>
+              </Grid>
+              <Grid container={true}>
+                <Grid item={true} xs={6}>
+                  <Box p={2}>
+                    <TextField
+                      fullWidth={true}
+                      label="Image Caption"
+                      variant="outlined"
+                      value={(currentOption as IImageOption)?.caption || ''}
+                      onChange={(e) =>
+                        setCurrentOption({
+                          ...currentOption,
+                          caption: e.target.value,
+                        } as IImageOption)
+                      }
+                    />
+                  </Box>
+                </Grid>
+              </Grid>
+            </>
           )}
         </Box>
       </DialogContent>
