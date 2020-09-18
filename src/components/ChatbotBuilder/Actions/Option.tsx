@@ -39,7 +39,7 @@ const Options = ({
 
   const [config] = useRecoilState<AgentConfig | undefined>(currentAgentConfig);
   const [currentOption, setCurrentOption] = useState<IResponseOption | undefined>(undefined);
-  const [isNewOption, setIsNewOption] = useState<boolean>(false);
+  const [isNewOption, setIsNewOption] = useState<boolean>(true);
 
   if (!config) {
     return <p>Agent config is empty.</p>;
@@ -47,36 +47,43 @@ const Options = ({
 
   const intents = config.getIntents();
 
-  const onAdd = () => {
+  const handleAdd = () => {
     setCurrentOption({
       type: EResponseOptionTypes.TEXT,
       text: '',
-      intent: '',
     } as IResponseOption);
   };
 
-  const onEditOption = (option: IResponseOption) => {
+  const handleAddOption = (option: IResponseOption) => {
+    if (!currentOption) { return; }
+    onAddOption(option);
+    setIsNewOption(true);
+    setCurrentOption(undefined);
+  };
+
+  const handleEditOption = (option: IResponseOption) => {
+    setIsNewOption(false);
     setCurrentOption(option);
   };
 
-  const onSaveOption = (option: IResponseOption) => {
+  const handleSaveOption = (option: IResponseOption) => {
     if (!currentOption) { return; }
     onUpdateOption(currentOption.text, option);
-    setIsNewOption(false);
+    setIsNewOption(true);
     setCurrentOption(undefined);
   };
 
-  const onEditOptionClose = () => {
+  const handleEditOptionClose = () => {
     setCurrentOption(undefined);
-    setIsNewOption(false);
+    setIsNewOption(true);
   };
 
   return (
     <div className={classes.root}>
       <OptionsTable
         options={options ?? []}
-        onAdd={onAdd}
-        onEditOption={onEditOption}
+        onAdd={handleAdd}
+        onEditOption={handleEditOption}
         onDeleteOption={onDeleteOption}
       />
       {
@@ -85,9 +92,9 @@ const Options = ({
           option={currentOption}
           isNewOption={isNewOption}
           intents={intents}
-          onAddOption={onAddOption}
-          onSaveOption={onSaveOption}
-          onEditOptionClose={onEditOptionClose}
+          onAddOption={handleAddOption}
+          onSaveOption={handleSaveOption}
+          onEditOptionClose={handleEditOptionClose}
         />
       }
     </div>

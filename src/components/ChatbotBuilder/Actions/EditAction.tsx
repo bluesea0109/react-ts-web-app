@@ -52,16 +52,21 @@ type EditActionProps = {
   onEditActionClose: () => void;
 };
 
-const EditAction = ({ action, isNewAction, onSaveAction, onEditActionClose }: EditActionProps) => {
+const EditAction = ({
+  action,
+  isNewAction,
+  onSaveAction,
+  onEditActionClose,
+}: EditActionProps) => {
   const classes = useStyles();
-  const [currentAction, setCurrentAction] = useState<Maybe<BaseAgentAction>>(action);
+  const [currentAction, setCurrentAction] = useState<Maybe<BaseAgentAction>>();
 
   useEffect(() => {
     setCurrentAction(action);
   }, [action]);
 
   const saveChanges = () => {
-    if (!currentAction) { return; }
+    if (!currentAction || !currentAction.type) { return; }
     onSaveAction(currentAction);
   };
 
@@ -91,7 +96,7 @@ const EditAction = ({ action, isNewAction, onSaveAction, onEditActionClose }: Ed
   };
 
   return (
-    <Dialog fullScreen={true} open={!!action} TransitionComponent={Transition}>
+    <Dialog fullScreen={true} open={!!currentAction} TransitionComponent={Transition}>
       <AppBar className={classes.appBar}>
         <Toolbar>
           <IconButton edge="start" color="inherit" onClick={onEditActionClose} aria-label="close">
@@ -127,32 +132,28 @@ const EditAction = ({ action, isNewAction, onSaveAction, onEditActionClose }: Ed
                   options={[EAgentActionTypes.EMAIL_ACTION, EAgentActionTypes.UTTERANCE_ACTION]}
                   getOptionLabel={(option: any) => option}
                   value={currentAction?.type ?? null}
-                  onChange={(e, actionType) => setCurrentAction({ ...currentAction, type: actionType } as BaseAgentAction)}
+                  onChange={(_, actionType) => setCurrentAction({ ...currentAction, type: actionType } as BaseAgentAction)}
                   renderInput={(params) => <TextField {...params} label="Action Type" variant="outlined" />}
                 />
               </Box>
             </Grid>
-            {!!currentAction && (
-              <>
-                {currentAction.type === EAgentActionTypes.UTTERANCE_ACTION && (
-                  <Grid item={true} xs={12}>
-                    <Box p={2}>
-                      <RichTextInput
-                        label="Action Text"
-                        value={(currentAction as UtteranceAction)?.utterance}
-                        onChange={(html: string) => setCurrentAction({ ...currentAction, utterance: html } as UtteranceAction)}
-                      />
-                    </Box>
-                  </Grid>
-                )}
-              </>
+            {currentAction?.type === EAgentActionTypes.UTTERANCE_ACTION && (
+              <Grid item={true} xs={12}>
+                <Box p={2}>
+                  <RichTextInput
+                    label="Action Text"
+                    value={(currentAction as UtteranceAction)?.utterance || ''}
+                    onChange={(html: string) => setCurrentAction({ ...currentAction, utterance: html } as UtteranceAction)}
+                  />
+                </Box>
+              </Grid>
             )}
           </Grid>
           <Grid container={true}>
             <Grid item={true} xs={12}>
               {!!currentAction && !!currentAction.options && (
                 <Option
-                  options={currentAction.options}
+                  options={currentAction?.options}
                   onAddOption={onAddOption}
                   onDeleteOption={onDeleteOption}
                   onUpdateOption={onUpdateOption}
