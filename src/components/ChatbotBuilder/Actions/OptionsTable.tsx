@@ -39,7 +39,6 @@ function OptionsTable({
   const columns: Column<IResponseOption>[] = [
     { title: 'Type', field: 'type', editable: 'never' },
     { title: 'Text', field: 'text', editable: 'never' },
-    { title: 'Intent', field: 'intent', editable: 'never' },
   ];
 
   return (
@@ -88,8 +87,8 @@ const OptionDetailsPanel = ({ option }: { option: IResponseOption }) => {
 
   return (
     <Grid container={true}>
-        {Array.from(Object.keys(optionProps)).map(key => key === 'imageUrl' ? (
-          <Grid item={true}>
+        {Array.from(Object.keys(optionProps)).map((key, index) => key === 'imageUrl' ? (
+          <Grid key={index} item={true}>
             <Box my={3} p={2} key={key}>
               <Typography variant="h6" style={{ textTransform: 'capitalize', fontWeight: 'bold' }}>Image</Typography>
               <Box>
@@ -98,7 +97,7 @@ const OptionDetailsPanel = ({ option }: { option: IResponseOption }) => {
             </Box>
           </Grid>
           ) : (
-          <Grid item={true}>
+          <Grid key={index} item={true}>
             <Box my={3} p={2} key={key}>
               <Typography variant="h6" style={{ textTransform: 'capitalize', fontWeight: 'bold' }}>{key}</Typography>
               <Typography variant="caption" style={{ textTransform: 'capitalize' }}>{optionProps[key]}</Typography>

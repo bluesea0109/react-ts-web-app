@@ -1,6 +1,7 @@
 import { AgentConfig, BaseAgentAction, UtteranceAction } from '@bavard/agent-config';
 import { Grid, Paper } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { Maybe } from 'graphql/jsutils/Maybe';
 import _ from 'lodash';
 import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
@@ -22,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Actions = () => {
   const classes = useStyles();
-  const [currentAction, setCurrentAction] = useState<BaseAgentAction | undefined>();
+  const [currentAction, setCurrentAction] = useState<Maybe<BaseAgentAction>>();
   const [isNewAction, setIsNewAction] = useState<boolean>(false);
   const [config, setConfig] = useRecoilState<AgentConfig | undefined>(currentAgentConfig);
 
@@ -44,13 +45,17 @@ const Actions = () => {
   const onSaveAction = (action: BaseAgentAction) => {
     if (!currentAction) { return; }
     const newConfig = _.cloneDeep<AgentConfig>(config);
-    newConfig
-      .deleteAction(currentAction.name)
-      .addAction(action as any);
+    newConfig.addAction(action as any);
     setConfig(newConfig);
 
     setIsNewAction(false);
     setCurrentAction(undefined);
+  };
+
+  const onUpdateAction = (action: BaseAgentAction) => {
+    const newConfig = _.cloneDeep<AgentConfig>(config);
+    newConfig.addAction(action as any);
+    setConfig(newConfig);
   };
 
   const onDeleteAction = (action: BaseAgentAction) => {
@@ -75,10 +80,11 @@ const Actions = () => {
             onAdd={onAdd}
             onEditAction={onEditAction}
             onDeleteAction={onDeleteAction}
+            onUpdateAction={onUpdateAction}
           />
         </Paper>
       </Grid>
-      {!!actions && (
+      {!!currentAction && (
         <EditAction
           action={currentAction}
           isNewAction={isNewAction}

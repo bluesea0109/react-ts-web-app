@@ -15,7 +15,11 @@ const DragHandle = SortableHandle(() => (
   </ListItemIcon>
 ));
 
-const SortableItem = SortableElement(({ text }: { text: string }) => (
+const SortableItem = SortableElement(({
+  text,
+}: {
+  text: string,
+}) => (
   <ListItem ContainerComponent="div">
     <ListItemText primary={text} />
     <ListItemSecondaryAction>
@@ -32,7 +36,13 @@ const SortableListContainer = SortableContainer(({ items }: { items: { text: str
   </List>
 ));
 
-const SortableOptions = ({ options, setOptions }: { options: IResponseOption[], setOptions: (updatedOptions: any[]) => void }) => {
+const SortableOptions = ({
+  options,
+  setOptions,
+}: {
+  options: IResponseOption[],
+  setOptions: (updatedOptions: any[]) => void,
+}) => {
   const [items, setItems] = useState<{ text: string }[]>(options.map(opt => ({ text: opt.text })));
 
   useEffect(() => {

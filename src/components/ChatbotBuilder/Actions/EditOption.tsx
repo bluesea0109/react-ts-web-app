@@ -1,5 +1,7 @@
 import {
   EResponseOptionTypes,
+  IHyperlinkOption,
+  IImageOption,
   IIntent,
   IResponseOption,
 } from '@bavard/agent-config';
@@ -80,6 +82,10 @@ const EditOption = ({
     isNewOption ? onAddOption(optionData) : onSaveOption(optionData);
   };
 
+  const isHyperLinkOption = currentOption?.type === EResponseOptionTypes.HYPERLINK;
+  const isRequiringIntent = currentOption?.type !== EResponseOptionTypes.HYPERLINK;
+  const isImageOption = currentOption?.type === EResponseOptionTypes.IMAGE;
+
   return (
     <Dialog fullScreen={true} open={!!option} TransitionComponent={Transition}>
       <AppBar className={classes.appBar}>
@@ -113,7 +119,7 @@ const EditOption = ({
                   fullWidth={true}
                   label="Option Name"
                   variant="outlined"
-                  value={currentOption?.text}
+                  value={currentOption?.text || ''}
                   onChange={(e) =>
                     setCurrentOption({
                       ...currentOption,
@@ -132,28 +138,90 @@ const EditOption = ({
                   id="optionTypeSelector"
                   options={availableOptions}
                   getOptionLabel={(option: any) => option}
-                  value={currentOption?.type ?? null}
+                  value={currentOption?.type ?? ''}
                   onChange={(e, optionType) => setCurrentOption({ ...currentOption, type: optionType as EResponseOptionTypes} as any)}
                   renderInput={(params) => <TextField {...params} label="Option Type" variant="outlined" />}
                 />
               </Box>
             </Grid>
           </Grid>
-          <Grid container={true}>
-            <Grid item={true} xs={6}>
-              <Box p={2}>
-                <Autocomplete
-                  fullWidth={true}
-                  id="optionIntentSelector"
-                  options={intents.map(intent => intent.name)}
-                  getOptionLabel={(option: any) => option}
-                  value={currentOption?.intent ?? null}
-                  onChange={(_, optionIntent) => setCurrentOption({ ...currentOption, intent: optionIntent } as any)}
-                  renderInput={(params) => <TextField {...params} label="Option Intent" variant="outlined" />}
-                />
-              </Box>
+          {isHyperLinkOption && (
+            <Grid container={true}>
+              <Grid item={true} xs={6}>
+                <Box p={2}>
+                  <TextField
+                    fullWidth={true}
+                    label="HyperLink Target"
+                    variant="outlined"
+                    value={(currentOption as IHyperlinkOption)?.targetLink || ''}
+                    onChange={(e) =>
+                      setCurrentOption({
+                        ...currentOption,
+                        targetLink: e.target.value,
+                      } as IHyperlinkOption)
+                    }
+                  />
+                </Box>
+              </Grid>
             </Grid>
-          </Grid>
+          )}
+          {isRequiringIntent && (
+            <Grid container={true}>
+              <Grid item={true} xs={6}>
+                <Box p={2}>
+                  <Autocomplete
+                    fullWidth={true}
+                    id="optionIntentSelector"
+                    options={intents.map(intent => intent.name)}
+                    getOptionLabel={(option: any) => option}
+                    value={currentOption?.intent ?? null}
+                    onChange={(_, optionIntent) => setCurrentOption({ ...currentOption, intent: optionIntent } as IResponseOption)}
+                    renderInput={(params) => <TextField {...params} label="Option Intent" variant="outlined" />}
+                  />
+                </Box>
+              </Grid>
+            </Grid>
+          )}
+          {isImageOption && (
+            <>
+              <Grid container={true}>
+                <Grid item={true} xs={6}>
+                  <Box p={2}>
+                    <TextField
+                      fullWidth={true}
+                      label="Image Name"
+                      variant="outlined"
+                      value={(currentOption as IImageOption)?.imageName || ''}
+                      onChange={(e) =>
+                        setCurrentOption({
+                          ...currentOption,
+                          imageName: e.target.value,
+                        } as IImageOption)
+                      }
+                    />
+                  </Box>
+                </Grid>
+              </Grid>
+              <Grid container={true}>
+                <Grid item={true} xs={6}>
+                  <Box p={2}>
+                    <TextField
+                      fullWidth={true}
+                      label="Image Caption"
+                      variant="outlined"
+                      value={(currentOption as IImageOption)?.caption || ''}
+                      onChange={(e) =>
+                        setCurrentOption({
+                          ...currentOption,
+                          caption: e.target.value,
+                        } as IImageOption)
+                      }
+                    />
+                  </Box>
+                </Grid>
+              </Grid>
+            </>
+          )}
         </Box>
       </DialogContent>
     </Dialog>
