@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { Typography } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { useRecoilValue } from 'recoil';
 import { CHATBOT_DELETE_EXAMPLE } from '../../../common-gql-queries';
@@ -12,8 +12,17 @@ import { currentAgentConfig } from '../atoms';
 import AddExamples from './AddExamples';
 import EditExample from './EditExample';
 import ExamplesTable from './ExamplesTable';
-import { createExampleMutation, getExamplesQuery, saveExampleMutation } from './gql';
-import { CreateExampleMutationResult, ExamplesError, ExamplesFilter, ExamplesQueryResults } from './types';
+import {
+  createExampleMutation,
+  getExamplesQuery,
+  saveExampleMutation,
+} from './gql';
+import {
+  CreateExampleMutationResult,
+  ExamplesError,
+  ExamplesFilter,
+  ExamplesQueryResults,
+} from './types';
 
 export const EXAMPLES_LIMIT = 10;
 
@@ -50,24 +59,60 @@ const Examples = () => {
     awaitRefetchQueries: true,
   };
 
-  const [deleteExample, deleteExampleMutation] = useMutation(CHATBOT_DELETE_EXAMPLE, {
+  const [deleteExample, deleteExampleMutation] = useMutation(
+    CHATBOT_DELETE_EXAMPLE,
+    {
+      ...refetchOptions,
+    }
+  );
+
+  const [updateExample, updateExampleMutation] = useMutation(
+    saveExampleMutation,
+    {
+      ...refetchOptions,
+    }
+  );
+
+  const [createExample, createExampleMutationData] = useMutation<
+    CreateExampleMutationResult
+  >(createExampleMutation, {
     ...refetchOptions,
   });
 
-  const [updateExample, updateExampleMutation] = useMutation(saveExampleMutation, {
-    ...refetchOptions,
-  });
+  const commonError =
+    examplesData.error ||
+    deleteExampleMutation.error ||
+    updateExampleMutation.error;
 
-  const [createExample, createExampleMutationData] = useMutation<CreateExampleMutationResult>(createExampleMutation, {
-    ...refetchOptions,
-  });
+  const examples = examplesData?.data?.ChatbotService_examples || [];
 
-  const commonError = examplesData.error || deleteExampleMutation.error || updateExampleMutation.error;
+  /* 
+    FixMe: tagType of example data is blank array. should contain the selected tagType
+  */
+
+  useEffect(() => {
+    let invalidIntents: Array<Text | string> = [];
+
+    if (examples.length !== 0) {
+      examples.map((example) => {
+        if (intents.includes(example.intent) == false) {
+          invalidIntents = [...invalidIntents, example.intent];
+        }
+      });
+    }
+
+    const distinctInvalidIntents = invalidIntents.filter(
+      (v, i, a) => a.indexOf(v) === i
+    );
+
+    console.log('invalid intents', distinctInvalidIntents);
+  }, [examples]);
+
   if (commonError) {
     enqueueSnackbar('An error occurred while loading NLU Examples.', {
       variant: 'error',
     });
-    return  <div/>;
+    return <div />;
   }
 
   if (!config) {
@@ -75,18 +120,18 @@ const Examples = () => {
   }
 
   if (examplesData.loading || !examplesData.data) {
-    return <ContentLoading/>;
+    return <ContentLoading />;
   }
 
   const tagTypes = Array.from(config.getTagTypes());
-  const intents = Array.from(config.getIntents().map(x => x.name));
+  const intents = Array.from(config.getIntents().map((x) => x.name));
   console.log('intents', intents);
-
-  const examples = examplesData.data.ChatbotService_examples || [];
+  console.log('tagTypes', tagTypes);
 
   const updateFilters = (newFilters: ExamplesFilter) => {
     const resetIntent = !!filters?.intent && !newFilters.intent;
-    const changeIntent = !!newFilters?.intent && filters?.intent !== newFilters?.intent;
+    const changeIntent =
+      !!newFilters?.intent && filters?.intent !== newFilters?.intent;
 
     if (resetIntent || changeIntent) {
       newFilters['offset'] = 0;
@@ -137,11 +182,16 @@ const Examples = () => {
       }
 
       if (!!createExampleMutationData.error) {
-        if (createExampleMutationData.error.message.indexOf('duplicate key') !== -1) {
+        if (
+          createExampleMutationData.error.message.indexOf('duplicate key') !==
+          -1
+        ) {
           setExampleError(ExamplesError.CREATE_ERROR_DUPLICATE_EXAMPLE);
         }
       } else if (!!updateExampleMutation.error) {
-        if (updateExampleMutation.error.message.indexOf('duplicate key') !== -1) {
+        if (
+          updateExampleMutation.error.message.indexOf('duplicate key') !== -1
+        ) {
           setExampleError(ExamplesError.CREATE_ERROR_DUPLICATE_EXAMPLE);
         }
       } else if (!!resp.errors?.[0]) {
@@ -179,13 +229,13 @@ const Examples = () => {
         onEdit={onExampleEdit}
         onAdd={startNewExample}
       />
-      {(!!intents && !!tagTypes) && (
+      {!!intents && !!tagTypes && (
         <>
           <EditExample
             loading={examplesData.loading}
             tagTypes={tagTypes}
             intents={intents}
-            example={examples?.find(ex => ex.id === currentEdit)}
+            example={examples?.find((ex) => ex.id === currentEdit)}
             onEditExampleClose={onExampleEditClose}
             onSaveExample={onExampleSave}
             error={exampleError}
