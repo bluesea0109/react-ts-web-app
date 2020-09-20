@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { Typography } from '@material-ui/core';
+import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import { useSnackbar } from 'notistack';
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
@@ -22,16 +23,23 @@ import {
   ExamplesError,
   ExamplesFilter,
   ExamplesQueryResults,
+  InvalidIntents,
 } from './types';
 
 export const EXAMPLES_LIMIT = 10;
 
+function Alert(props: AlertProps) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
 const Examples = () => {
   const { agentId } = useParams<{ agentId: string }>();
   const [filters, setFilters] = useState<ExamplesFilter>();
+  const [invalidIntents, setInvalidIntents] = useState<Array<string>>([]);
   const config = useRecoilValue(currentAgentConfig);
   const [currentEdit, setCurrentEdit] = useState<number | null>();
   const [newExample, setNewExample] = useState<INLUExample | null>(null);
+  const [invalidExist, setInvalidExist] = useState<boolean>(false);
   const [exampleError, setExampleError] = useState<Maybe<ExamplesError>>();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -91,21 +99,25 @@ const Examples = () => {
   */
 
   useEffect(() => {
-    let invalidIntents: Array<Text | string> = [];
+    let tempInvalidIntents: Array<string> = [];
 
     if (examples.length !== 0) {
       examples.map((example) => {
         if (intents.includes(example.intent) == false) {
-          invalidIntents = [...invalidIntents, example.intent];
+          tempInvalidIntents = [...tempInvalidIntents, example.intent];
         }
       });
     }
 
-    const distinctInvalidIntents = invalidIntents.filter(
+    const distinctInvalidIntents: Array<string> = tempInvalidIntents.filter(
       (v, i, a) => a.indexOf(v) === i
     );
 
     console.log('invalid intents', distinctInvalidIntents);
+    if (distinctInvalidIntents.length > 0) {
+      setInvalidExist(true);
+      setInvalidIntents(distinctInvalidIntents);
+    }
   }, [examples]);
 
   if (commonError) {
@@ -225,10 +237,15 @@ const Examples = () => {
         examples={examples}
         intents={intents}
         filters={filters}
+        invalidExist={invalidExist}
+        invalidIntents={invalidIntents}
         onDelete={onExampleDelete}
         onEdit={onExampleEdit}
         onAdd={startNewExample}
       />
+      {!!invalidExist && (
+        <Alert severity="error">This is an error message!</Alert>
+      )}
       {!!intents && !!tagTypes && (
         <>
           <EditExample

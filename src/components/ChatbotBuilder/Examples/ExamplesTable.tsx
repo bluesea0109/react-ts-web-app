@@ -10,6 +10,7 @@ import {
 } from '@material-ui/core';
 import { Edit } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
+import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import _ from 'lodash';
 import MaterialTable, { Column } from 'material-table';
 import React, { useEffect, useState } from 'react';
@@ -21,6 +22,14 @@ import { EXAMPLES_LIMIT } from './Examples';
 export interface ExamplesFilter {
   intent?: string;
   offset?: number;
+}
+
+export interface InvalidExist {
+  invalidExist?: boolean;
+}
+
+function Alert(props: AlertProps) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
 const initialColumns: Column<any>[] = [
@@ -35,7 +44,7 @@ const initialColumns: Column<any>[] = [
     field: 'text',
     editable: 'never',
     filtering: false,
-    render: data => {
+    render: (data) => {
       const state = {
         value: data.tags.map((tag: any) => {
           return {
@@ -56,7 +65,7 @@ const initialColumns: Column<any>[] = [
           content={data.text}
           value={state.value}
           onChange={console.log}
-          getSpan={span => ({
+          getSpan={(span) => ({
             ...span,
             tag: state.tag,
             color: '#ccc',
@@ -91,13 +100,20 @@ const useStyles = makeStyles((theme: Theme) =>
       background: `white`,
       padding: `0px 5px`,
     },
-  }),
+    alert: {
+      width: '100%',
+      marginTop: '2rem',
+      marginBottom: '2rem',
+    },
+  })
 );
 
 type ExamplesTableProps = {
   examples: INLUExample[];
   intents: string[];
   filters?: ExamplesFilter;
+  invalidExist: boolean;
+  invalidIntents: Array<string>;
   onDelete: (exampleId: number) => Promise<void>;
   onEdit: (exampleId: number) => void;
   onAdd: () => void;
@@ -105,11 +121,23 @@ type ExamplesTableProps = {
 };
 
 const ExamplesTable = (props: ExamplesTableProps) => {
-  const { examples, intents, onDelete, onEdit, onAdd, filters, updateFilters } = props;
+  const {
+    examples,
+    intents,
+    onDelete,
+    onEdit,
+    onAdd,
+    filters,
+    updateFilters,
+    invalidExist,
+    invalidIntents,
+  } = props;
   const classes = useStyles();
   const [columns, setColumns] = useState<Column<any>[]>(initialColumns);
   const [data, setData] = useState<any[] | null>(null);
-  const [intent, setIntent] = useState<string | undefined>(intents.find(x => x === filters?.intent));
+  const [intent, setIntent] = useState<string | undefined>(
+    intents.find((x) => x === filters?.intent)
+  );
 
   const prevIntent = usePrevious(intent);
 
@@ -119,7 +147,7 @@ const ExamplesTable = (props: ExamplesTableProps) => {
         intent,
       });
     }
-  // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [intent]);
 
   console.log('auto complete intents', intents);
@@ -138,7 +166,9 @@ const ExamplesTable = (props: ExamplesTableProps) => {
               setIntent(intent || undefined);
             }}
             style={{ maxWidth: 300 }}
-            renderInput={(params) => <TextField {...params} label="Intents" variant="outlined" />}
+            renderInput={(params) => (
+              <TextField {...params} label="Intents" variant="outlined" />
+            )}
           />
         ),
       };
@@ -155,13 +185,25 @@ const ExamplesTable = (props: ExamplesTableProps) => {
       <TableContainer component={Paper} aria-label="Examples">
         <MaterialTable
           title={
-            <Button variant="contained" color="primary" onClick={onAdd}>Add New Examples</Button>
+            <>
+              {!!invalidExist && (
+                <Alert className={classes.alert} severity="error">
+                  You have invalid intents in examples. Replace{' '}
+                  <span style={{ color: 'lightgray' }}>{invalidIntents} </span>
+                  as valid intents.
+                </Alert>
+              )}
+              <Button variant="contained" color="primary" onClick={onAdd}>
+                Add New Examples
+              </Button>
+            </>
           }
           columns={columns}
           data={data ? _.cloneDeep(data) : []}
           localization={{
             body: {
-              emptyDataSourceMessage: 'No Examples Found. Create Your First Example Now!',
+              emptyDataSourceMessage:
+                'No Examples Found. Create Your First Example Now!',
             },
           }}
           options={{
@@ -184,13 +226,15 @@ const ExamplesTable = (props: ExamplesTableProps) => {
             },
           ]}
           components={{
-            Pagination: props => (
+            Pagination: (props) => (
               <TablePagination
                 rowsPerPageOptions={[10]}
                 rowsPerPage={10}
-                count={(data?.length ?? 0) < 10 ? (data?.length ?? 0) : -1}
+                count={(data?.length ?? 0) < 10 ? data?.length ?? 0 : -1}
                 labelDisplayedRows={({ from, to, count }) => {
-                  return `${from}-${to} of ${count !== -1 ? count : `more than ${to}`}`;
+                  return `${from}-${to} of ${
+                    count !== -1 ? count : `more than ${to}`
+                  }`;
                 }}
                 page={(filters?.offset ?? 0) / EXAMPLES_LIMIT}
                 onChangePage={(e, page) =>
