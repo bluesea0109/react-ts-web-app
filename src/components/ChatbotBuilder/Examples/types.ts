@@ -18,7 +18,7 @@ export interface InvalidExist {
 }
 
 export interface InvalidIntents {
-  invalidIntents?: Array<string>;
+  invalidIntents?: string[];
 }
 
 export enum ExamplesError {

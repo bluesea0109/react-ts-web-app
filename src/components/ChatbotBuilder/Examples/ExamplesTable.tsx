@@ -105,7 +105,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: '2rem',
       marginBottom: '2rem',
     },
-  })
+  }),
 );
 
 type ExamplesTableProps = {
@@ -113,7 +113,7 @@ type ExamplesTableProps = {
   intents: string[];
   filters?: ExamplesFilter;
   invalidExist: boolean;
-  invalidIntents: Array<string>;
+  invalidIntents: string[];
   onDelete: (exampleId: number) => Promise<void>;
   onEdit: (exampleId: number) => void;
   onAdd: () => void;
@@ -136,7 +136,7 @@ const ExamplesTable = (props: ExamplesTableProps) => {
   const [columns, setColumns] = useState<Column<any>[]>(initialColumns);
   const [data, setData] = useState<any[] | null>(null);
   const [intent, setIntent] = useState<string | undefined>(
-    intents.find((x) => x === filters?.intent)
+    intents.find((x) => x === filters?.intent),
   );
 
   const prevIntent = usePrevious(intent);

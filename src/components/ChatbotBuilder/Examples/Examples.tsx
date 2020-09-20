@@ -2,7 +2,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { Typography } from '@material-ui/core';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import { useSnackbar } from 'notistack';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { useRecoilValue } from 'recoil';
 import { CHATBOT_DELETE_EXAMPLE } from '../../../common-gql-queries';
@@ -35,7 +35,7 @@ function Alert(props: AlertProps) {
 const Examples = () => {
   const { agentId } = useParams<{ agentId: string }>();
   const [filters, setFilters] = useState<ExamplesFilter>();
-  const [invalidIntents, setInvalidIntents] = useState<Array<string>>([]);
+  const [invalidIntents, setInvalidIntents] = useState<string[]>([]);
   const config = useRecoilValue(currentAgentConfig);
   const [currentEdit, setCurrentEdit] = useState<number | null>();
   const [newExample, setNewExample] = useState<INLUExample | null>(null);
@@ -71,14 +71,14 @@ const Examples = () => {
     CHATBOT_DELETE_EXAMPLE,
     {
       ...refetchOptions,
-    }
+    },
   );
 
   const [updateExample, updateExampleMutation] = useMutation(
     saveExampleMutation,
     {
       ...refetchOptions,
-    }
+    },
   );
 
   const [createExample, createExampleMutationData] = useMutation<
@@ -94,23 +94,23 @@ const Examples = () => {
 
   const examples = examplesData?.data?.ChatbotService_examples || [];
 
-  /* 
+  /*
     FixMe: tagType of example data is blank array. should contain the selected tagType
   */
 
   useEffect(() => {
-    let tempInvalidIntents: Array<string> = [];
+    let tempInvalidIntents: string[] = [];
 
     if (examples.length !== 0) {
       examples.map((example) => {
-        if (intents.includes(example.intent) == false) {
+        if (intents.includes(example.intent) === false) {
           tempInvalidIntents = [...tempInvalidIntents, example.intent];
         }
       });
     }
 
-    const distinctInvalidIntents: Array<string> = tempInvalidIntents.filter(
-      (v, i, a) => a.indexOf(v) === i
+    const distinctInvalidIntents: string[] = tempInvalidIntents.filter(
+      (v, i, a) => a.indexOf(v) === i,
     );
 
     console.log('invalid intents', distinctInvalidIntents);
