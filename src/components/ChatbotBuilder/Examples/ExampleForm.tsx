@@ -14,7 +14,7 @@ interface ExampleFormProps {
   tagTypes: string[];
   intents: string[];
   error?: Maybe<ExamplesError>;
-  onExampleUpdate: (updatedExample: any) => void;
+  onExampleUpdate: (updatedExample: INLUExample) => void;
 }
 
 const ExampleForm = ({ loading, example, tagTypes, intents, error, onExampleUpdate }: ExampleFormProps) => {
@@ -33,13 +33,18 @@ const ExampleForm = ({ loading, example, tagTypes, intents, error, onExampleUpda
   ] = useEditExampleAnnotation({ tagTypes });
 
   useEffect(() => {
+    if (!example) { return; }
     const currentIntent = intent;
     onExampleUpdate({
       id: example?.id,
       agentId: example?.agentId,
       text: exampleText,
       intent: currentIntent,
-      tags: annotatorState.tags,
+      tags: annotatorState.tags.map(tag => ({
+        tagType: tag.tag,
+        start: tag.start,
+        end: tag.end,
+      })),
     });
     // eslint-disable-next-line
   }, [exampleText, annotatorState.tags]);
@@ -83,7 +88,7 @@ const ExampleForm = ({ loading, example, tagTypes, intents, error, onExampleUpda
             fullWidth={true}
             multiline={true}
             variant="outlined"
-            rows={20}
+            rows={12}
             value={exampleText}
             onChange={e => setExampleText(e.target.value)}
             error={error === ExamplesError.CREATE_ERROR_DUPLICATE_EXAMPLE}
@@ -115,10 +120,11 @@ const ExampleForm = ({ loading, example, tagTypes, intents, error, onExampleUpda
               style={{
                 lineHeight: 1.5,
                 pointerEvents: (loading || !tagType || tagTypes?.length === 0) ? 'none' : 'auto',
+                minHeight: 232,
               }}
               content={exampleText}
               value={annotatorState.tags}
-              onChange={(value: any) => setAnnotatorState({ ...annotatorState, value })}
+              onChange={(value: any) => setAnnotatorState({ ...annotatorState, tags: value })}
               getSpan={span => ({
                 ...span,
                 tag: tagType,
