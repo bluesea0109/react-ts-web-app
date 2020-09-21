@@ -71,14 +71,14 @@ const Examples = () => {
     CHATBOT_DELETE_EXAMPLE,
     {
       ...refetchOptions,
-    },
+    }
   );
 
   const [updateExample, updateExampleMutation] = useMutation(
     saveExampleMutation,
     {
       ...refetchOptions,
-    },
+    }
   );
 
   const [createExample, createExampleMutationData] = useMutation<
@@ -110,10 +110,10 @@ const Examples = () => {
     }
 
     const distinctInvalidIntents: string[] = tempInvalidIntents.filter(
-      (v, i, a) => a.indexOf(v) === i,
+      (v, i, a) => a.indexOf(v) === i
     );
 
-    console.log('invalid intents', distinctInvalidIntents);
+    console.log('invalid intents', distinctInvalidIntents, examples);
     if (distinctInvalidIntents.length > 0) {
       setInvalidExist(true);
       setInvalidIntents(distinctInvalidIntents);

@@ -18,6 +18,7 @@ import { TextAnnotator } from 'react-text-annotate';
 import { INLUExample } from '../../../models/chatbot-service';
 import { usePrevious } from '../../../utils/hooks';
 import { EXAMPLES_LIMIT } from './Examples';
+import TextConfirmDialog from '../../Utils/TextConfirmDialog';
 
 export interface ExamplesFilter {
   intent?: string;
@@ -105,7 +106,14 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: '2rem',
       marginBottom: '2rem',
     },
-  }),
+    resolveAction: {
+      cursor: 'pointer',
+      transitionDuration: '150ms',
+      '&:hover': {
+        color: 'lightgray',
+      },
+    },
+  })
 );
 
 type ExamplesTableProps = {
@@ -132,12 +140,17 @@ const ExamplesTable = (props: ExamplesTableProps) => {
     invalidExist,
     invalidIntents,
   } = props;
+
   const classes = useStyles();
+
   const [columns, setColumns] = useState<Column<any>[]>(initialColumns);
   const [data, setData] = useState<any[] | null>(null);
   const [intent, setIntent] = useState<string | undefined>(
-    intents.find((x) => x === filters?.intent),
+    intents.find((x) => x === filters?.intent)
   );
+  const [confirmAddOpen, setConfirmAddOpen] = useState(false);
+  const [confirmReplaceOpen, setConfirmReplaceOpen] = useState(false);
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
 
   const prevIntent = usePrevious(intent);
 
@@ -179,6 +192,18 @@ const ExamplesTable = (props: ExamplesTableProps) => {
     // eslint-disable-next-line
   }, [examples, intents]);
 
+  const onConfirmAdd = () => {
+    console.log('Confimed ADD');
+  };
+
+  const onConfirmReplace = () => {
+    console.log('Confimed REPLACE');
+  };
+
+  const onConfirmDelete = () => {
+    console.log('Confimed DELETE');
+  };
+
   return (
     <Paper className={classes.paper}>
       <p className={classes.label}>NLU Examples Table</p>
@@ -194,11 +219,46 @@ const ExamplesTable = (props: ExamplesTableProps) => {
                   </span>
                   " that is missing from the config.
                   <br /> Resolve options:
-                  <br /> - Add the missing intent to the config
-                  <br /> - Replace with an existing intent. (auto-complete
-                  selection)
-                  <br /> - Delete these examples (type "DELETE" and press
-                  confirm)
+                  <br />
+                  <span
+                    className={classes.resolveAction}
+                    onClick={() => setConfirmAddOpen(true)}>
+                    {' '}
+                    - Add the missing intent to the config
+                  </span>
+                  <TextConfirmDialog
+                    title="Add missing intents?"
+                    open={confirmAddOpen}
+                    setOpen={setConfirmAddOpen}
+                    onConfirm={() => onConfirmAdd()}>
+                    Please type "ADD" and press confirm.
+                  </TextConfirmDialog>
+                  <br />
+                  <span
+                    className={classes.resolveAction}
+                    onClick={() => setConfirmReplaceOpen(true)}>
+                    - Replace with an existing intent. (auto-complete selection)
+                  </span>
+                  <TextConfirmDialog
+                    title="Replace missing intents with valid one?"
+                    open={confirmReplaceOpen}
+                    setOpen={setConfirmReplaceOpen}
+                    onConfirm={() => onConfirmReplace()}>
+                    Please type "REPLACE" and press confirm.
+                  </TextConfirmDialog>
+                  <br />
+                  <span
+                    className={classes.resolveAction}
+                    onClick={() => setConfirmDeleteOpen(true)}>
+                    - Delete these examples (type "DELETE" and press confirm)
+                  </span>
+                  <TextConfirmDialog
+                    title="Delete these examples?"
+                    open={confirmDeleteOpen}
+                    setOpen={setConfirmDeleteOpen}
+                    onConfirm={() => onConfirmDelete()}>
+                    Please type "DELETE" and press confirm.
+                  </TextConfirmDialog>
                 </Alert>
               )}
               <Button variant="contained" color="primary" onClick={onAdd}>
