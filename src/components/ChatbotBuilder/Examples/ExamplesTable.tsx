@@ -188,9 +188,17 @@ const ExamplesTable = (props: ExamplesTableProps) => {
             <>
               {!!invalidExist && (
                 <Alert className={classes.alert} severity="error">
-                  You have invalid intents in examples. Replace{' '}
-                  <span style={{ color: 'lightgray' }}>{invalidIntents} </span>
-                  as valid intents.
+                  Found examples with intent "
+                  <span style={{ color: 'lightgray' }}>
+                    {invalidIntents.toString()}{' '}
+                  </span>
+                  " that is missing from the config.
+                  <br /> Resolve options:
+                  <br /> - Add the missing intent to the config
+                  <br /> - Replace with an existing intent. (auto-complete
+                  selection)
+                  <br /> - Delete these examples (type "DELETE" and press
+                  confirm)
                 </Alert>
               )}
               <Button variant="contained" color="primary" onClick={onAdd}>
