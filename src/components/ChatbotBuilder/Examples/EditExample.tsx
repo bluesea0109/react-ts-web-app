@@ -47,7 +47,7 @@ type EditExampleProps = {
 const EditExample = (props: EditExampleProps) => {
   const { loading, example, tagTypes, intents, onEditExampleClose, onSaveExample } = props;
 
-  const [updatedExample, setUpdatedExample] = useState<any>();
+  const [updatedExample, setUpdatedExample] = useState<INLUExample>();
 
   const saveChanges = async () => {
     if (!!updatedExample) {

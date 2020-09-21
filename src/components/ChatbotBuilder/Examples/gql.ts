@@ -21,12 +21,12 @@ export const createExampleMutation = gql`
 export const saveExampleMutation = gql`
   mutation($example: ChatbotService_ExampleInput!) {
     ChatbotService_updateExample(example: $example) {
-      id,
-      text,
-      intent,
+      id
+      text
+      intent
       tags {
-        tagType,
-        start,
+        tagType
+        start
         end
       }
     }
