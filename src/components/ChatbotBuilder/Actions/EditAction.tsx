@@ -95,6 +95,13 @@ const EditAction = ({
     } as BaseAgentAction);
   };
 
+  const onSetOptions = (options: IResponseOption[]) => {
+    setCurrentAction({
+      ...currentAction,
+      options: [...options],
+    } as BaseAgentAction);
+  };
+
   return (
     <Dialog fullScreen={true} open={!!currentAction} TransitionComponent={Transition}>
       <AppBar className={classes.appBar}>
@@ -157,6 +164,7 @@ const EditAction = ({
                   onAddOption={onAddOption}
                   onDeleteOption={onDeleteOption}
                   onUpdateOption={onUpdateOption}
+                  onSetOptions={onSetOptions}
                 />
               )}
             </Grid>

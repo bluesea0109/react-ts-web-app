@@ -34,7 +34,6 @@ interface ActionsTableProps {
   onAdd: () => void;
   onEditAction: (action: BaseAgentAction) => void;
   onDeleteAction: (action: BaseAgentAction) => void;
-  onUpdateAction: (action: BaseAgentAction) => void;
 }
 
 function ActionsTable({
@@ -42,7 +41,6 @@ function ActionsTable({
   onAdd,
   onEditAction,
   onDeleteAction,
-  onUpdateAction,
 }: ActionsTableProps) {
   const classes = useStyles();
 
@@ -76,10 +74,7 @@ function ActionsTable({
             columns={state.columns}
             data={_.cloneDeep(state.data)}
             detailPanel={({ tableData, ...actionDetails }: any) => (
-              <ActionDetailPanel
-                action={actionDetails}
-                onUpdateAction={onUpdateAction}
-              />
+              <ActionDetailPanel action={actionDetails}/>
             )}
             options={{
               actionsColumnIndex: -1,

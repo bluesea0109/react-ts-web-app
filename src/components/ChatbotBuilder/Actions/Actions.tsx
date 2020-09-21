@@ -45,17 +45,13 @@ const Actions = () => {
   const onSaveAction = (action: BaseAgentAction) => {
     if (!currentAction) { return; }
     const newConfig = _.cloneDeep<AgentConfig>(config);
-    newConfig.addAction(action as any);
+    newConfig
+      .deleteAction(currentAction.name)
+      .addAction(action as any);
     setConfig(newConfig);
 
     setIsNewAction(false);
     setCurrentAction(undefined);
-  };
-
-  const onUpdateAction = (action: BaseAgentAction) => {
-    const newConfig = _.cloneDeep<AgentConfig>(config);
-    newConfig.addAction(action as any);
-    setConfig(newConfig);
   };
 
   const onDeleteAction = (action: BaseAgentAction) => {
@@ -80,7 +76,6 @@ const Actions = () => {
             onAdd={onAdd}
             onEditAction={onEditAction}
             onDeleteAction={onDeleteAction}
-            onUpdateAction={onUpdateAction}
           />
         </Paper>
       </Grid>
