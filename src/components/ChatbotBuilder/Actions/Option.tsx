@@ -8,7 +8,7 @@ import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { currentAgentConfig } from '../atoms';
 import EditOption from './EditOption';
-import OptionsTable from './OptionsTable';
+import SortableOptions from './SortableOptions';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,6 +27,7 @@ type OptionsProps = {
   onAddOption: (option: IResponseOption) => void;
   onDeleteOption: (option: IResponseOption) => void;
   onUpdateOption: (text: string, option: IResponseOption) => void;
+  onSetOptions: (options: IResponseOption[]) => void;
 };
 
 const Options = ({
@@ -34,6 +35,7 @@ const Options = ({
   onAddOption,
   onDeleteOption,
   onUpdateOption,
+  onSetOptions,
 }: OptionsProps) => {
   const classes = useStyles();
 
@@ -80,8 +82,9 @@ const Options = ({
 
   return (
     <div className={classes.root}>
-      <OptionsTable
+      <SortableOptions
         options={options ?? []}
+        setOptions={onSetOptions}
         onAdd={handleAdd}
         onEditOption={handleEditOption}
         onDeleteOption={onDeleteOption}
