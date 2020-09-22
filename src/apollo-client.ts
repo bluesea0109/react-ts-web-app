@@ -18,8 +18,6 @@ const getIdToken = async () => {
       const token = await user.getIdToken();
       const customToken = await exchangeFirebaseToken(token);
 
-      console.log('TOKEN: ', customToken);
-
       sessionStorage.setItem('token', customToken);
 
       return customToken;
@@ -31,7 +29,7 @@ const getIdToken = async () => {
   if (!isEmpty(token)) {
     const { exp, sub } = parseJwt(token);
 
-    if ((exp * 1000) - (Date.now()) <= 5 * 60 * 1000) {
+    if (exp * 1000 - Date.now() <= 5 * 60 * 1000) {
       return await fetchNewToken();
     }
 
@@ -51,7 +49,7 @@ const exchangeFirebaseToken = async (token: string): Promise<string> => {
 
   const data = await fetch(url, {
     method: 'POST',
-  }).then(resp => resp.json());
+  }).then((resp) => resp.json());
 
   return data.token;
 };
@@ -72,7 +70,10 @@ export const client = new ApolloClient({
   cache: new InMemoryCache({
     possibleTypes: {
       ChatbotService_Action: ['ChatbotService_UtteranceAction'],
-      ChatbotService_DialogueTurn: ['ChatbotService_AgentAction', 'ChatbotService_UserAction'],
+      ChatbotService_DialogueTurn: [
+        'ChatbotService_AgentAction',
+        'ChatbotService_UserAction',
+      ],
       ChatbotService_UserResponseOption: [
         'ChatbotService_ImageOption',
         'ChatbotService_TextOption',

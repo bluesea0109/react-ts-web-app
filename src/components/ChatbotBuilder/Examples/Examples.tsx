@@ -23,7 +23,6 @@ import {
   ExamplesError,
   ExamplesFilter,
   ExamplesQueryResults,
-  InvalidIntents,
 } from './types';
 
 export const EXAMPLES_LIMIT = 10;
@@ -95,10 +94,6 @@ const Examples = () => {
 
   const examples = examplesData?.data?.ChatbotService_examples || [];
 
-  /*
-    FixMe: tagType of example data is blank array. should contain the selected tagType
-  */
-
   useEffect(() => {
     let tempInvalidIntents: string[] = [];
     let tempInvalidExamples: INLUExample[] = [];
@@ -116,7 +111,6 @@ const Examples = () => {
       (v, i, a) => a.indexOf(v) === i
     );
 
-    console.log('invalid intents', distinctInvalidIntents, examples);
     if (distinctInvalidIntents.length > 0) {
       setInvalidExist(true);
       setInvalidIntents(distinctInvalidIntents);
@@ -141,8 +135,6 @@ const Examples = () => {
 
   const tagTypes = Array.from(config.getTagTypes());
   const intents = Array.from(config.getIntents().map((x) => x.name));
-  console.log('intents', intents);
-  console.log('tagTypes', tagTypes);
 
   const updateFilters = (newFilters: ExamplesFilter) => {
     const resetIntent = !!filters?.intent && !newFilters.intent;
@@ -244,6 +236,7 @@ const Examples = () => {
         invalidExist={invalidExist}
         invalidIntents={invalidIntents}
         invalidExamples={invalidExamples}
+        config={config}
         onDelete={onExampleDelete}
         onEdit={onExampleEdit}
         onAdd={startNewExample}

@@ -17,8 +17,8 @@ import React, { useEffect, useState } from 'react';
 import { TextAnnotator } from 'react-text-annotate';
 import { INLUExample } from '../../../models/chatbot-service';
 import { usePrevious } from '../../../utils/hooks';
-import { EXAMPLES_LIMIT } from './Examples';
 import TextConfirmDialog from '../../Utils/TextConfirmDialog';
+import { EXAMPLES_LIMIT } from './Examples';
 
 export interface ExamplesFilter {
   intent?: string;
@@ -123,6 +123,7 @@ type ExamplesTableProps = {
   invalidExist: boolean;
   invalidIntents: string[];
   invalidExamples: INLUExample[];
+  config: any;
   onDelete: (exampleId: number) => Promise<void>;
   onEdit: (exampleId: number) => void;
   onAdd: () => void;
@@ -141,6 +142,7 @@ const ExamplesTable = (props: ExamplesTableProps) => {
     invalidExist,
     invalidIntents,
     invalidExamples,
+    config,
   } = props;
 
   const classes = useStyles();
@@ -156,6 +158,8 @@ const ExamplesTable = (props: ExamplesTableProps) => {
 
   const prevIntent = usePrevious(intent);
 
+  const fullIntents = Array.from(config.getIntents().map((x: any) => x));
+
   useEffect(() => {
     if (intent && prevIntent !== intent) {
       updateFilters({
@@ -164,8 +168,6 @@ const ExamplesTable = (props: ExamplesTableProps) => {
     }
     // eslint-disable-next-line
   }, [intent]);
-
-  console.log('auto complete intents', intents);
 
   useEffect(() => {
     if (examples && intents) {
@@ -195,15 +197,17 @@ const ExamplesTable = (props: ExamplesTableProps) => {
   }, [examples, intents]);
 
   const onConfirmAdd = () => {
-    console.log('Confimed ADD');
+    console.log('Confimed ADD', invalidIntents, fullIntents);
+    invalidIntents.map((invalidIntent) => {
+      config.addIntent(invalidIntent, 'greeting');
+    });
   };
 
   const onConfirmReplace = () => {
-    console.log('Confimed REPLACE');
+    console.log('Confimed REPLACE', invalidIntents, fullIntents);
   };
 
   const onConfirmDelete = () => {
-    console.log('Confimed DELETE');
     invalidExamples.map((example) => onDelete(example.id));
   };
 
@@ -241,7 +245,7 @@ const ExamplesTable = (props: ExamplesTableProps) => {
                   <span
                     className={classes.resolveAction}
                     onClick={() => setConfirmReplaceOpen(true)}>
-                    - Replace with an existing intent. (auto-complete selection)
+                    - Replace with an existing intent.
                   </span>
                   <TextConfirmDialog
                     title="Replace missing intents with valid one?"
@@ -255,7 +259,7 @@ const ExamplesTable = (props: ExamplesTableProps) => {
                   <span
                     className={classes.resolveAction}
                     onClick={() => setConfirmDeleteOpen(true)}>
-                    - Delete these examples (type "DELETE" and press confirm)
+                    - Delete these examples
                   </span>
                   <TextConfirmDialog
                     title="Delete these examples?"

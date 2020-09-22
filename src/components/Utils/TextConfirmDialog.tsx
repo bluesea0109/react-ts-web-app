@@ -27,12 +27,12 @@ const TextConfirmDialog: React.FC<ITextConfirmDialogProps> = (props) => {
       <DialogContent>
         <DialogContentText>{children}</DialogContentText>
         <TextField
-          autoFocus
+          autoFocus={true}
           margin="dense"
           id="confirmText"
           label="Confirmation Text"
           type="text"
-          fullWidth
+          fullWidth={true}
           onChange={(e: any) => setText(e.target.value as string)}
         />
       </DialogContent>
