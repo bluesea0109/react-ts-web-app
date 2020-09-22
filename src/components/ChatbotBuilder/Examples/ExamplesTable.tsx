@@ -113,7 +113,7 @@ const useStyles = makeStyles((theme: Theme) =>
         color: 'lightgray',
       },
     },
-  })
+  }),
 );
 
 type ExamplesTableProps = {
@@ -152,7 +152,7 @@ const ExamplesTable = (props: ExamplesTableProps) => {
   const [columns, setColumns] = useState<Column<any>[]>(initialColumns);
   const [data, setData] = useState<any[] | null>(null);
   const [intent, setIntent] = useState<string | undefined>(
-    intents.find((x) => x === filters?.intent)
+    intents.find((x) => x === filters?.intent),
   );
   const [confirmAddOpen, setConfirmAddOpen] = useState(false);
   const [confirmReplaceOpen, setConfirmReplaceOpen] = useState(false);
