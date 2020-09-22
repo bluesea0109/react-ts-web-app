@@ -128,6 +128,7 @@ type ExamplesTableProps = {
   onEdit: (exampleId: number) => void;
   onAdd: () => void;
   updateFilters: (filters: ExamplesFilter) => void;
+  onUpdateExample: (updatedExample: INLUExample) => Promise<void>;
 };
 
 const ExamplesTable = (props: ExamplesTableProps) => {
@@ -143,6 +144,7 @@ const ExamplesTable = (props: ExamplesTableProps) => {
     invalidIntents,
     invalidExamples,
     config,
+    onUpdateExample,
   } = props;
 
   const classes = useStyles();
@@ -197,14 +199,16 @@ const ExamplesTable = (props: ExamplesTableProps) => {
   }, [examples, intents]);
 
   const onConfirmAdd = () => {
-    console.log('Confimed ADD', invalidIntents, fullIntents);
     invalidIntents.map((invalidIntent) => {
       config.addIntent(invalidIntent, 'greeting');
     });
   };
 
   const onConfirmReplace = () => {
-    console.log('Confimed REPLACE', invalidIntents, fullIntents);
+    invalidExamples.map((invalidExample) => {
+      const updatedExmaple = { ...invalidExample, intent: intents[0] };
+      onUpdateExample(updatedExmaple);
+    });
   };
 
   const onConfirmDelete = () => {

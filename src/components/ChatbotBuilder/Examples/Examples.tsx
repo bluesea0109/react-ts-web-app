@@ -240,6 +240,7 @@ const Examples = () => {
         onDelete={onExampleDelete}
         onEdit={onExampleEdit}
         onAdd={startNewExample}
+        onUpdateExample={onExampleSave}
       />
       {!!invalidExist && (
         <Alert severity="error">This is an error message!</Alert>
