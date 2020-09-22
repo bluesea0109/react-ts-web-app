@@ -5,17 +5,19 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
-import React from 'react';
+import React, { useState } from 'react';
 
 interface ITextConfirmDialogProps {
   title: string;
   children: string;
   open: boolean;
+  confirmText: string;
   setOpen: (open: boolean) => void;
   onConfirm: () => void;
 }
 const TextConfirmDialog: React.FC<ITextConfirmDialogProps> = (props) => {
-  const { title, children, open, setOpen, onConfirm } = props;
+  const { title, children, open, setOpen, onConfirm, confirmText } = props;
+  const [text, setText] = useState<string>('');
   return (
     <Dialog
       open={open}
@@ -31,6 +33,7 @@ const TextConfirmDialog: React.FC<ITextConfirmDialogProps> = (props) => {
           label="Confirmation Text"
           type="text"
           fullWidth
+          onChange={(e: any) => setText(e.target.value as string)}
         />
       </DialogContent>
       <DialogActions>
@@ -43,8 +46,10 @@ const TextConfirmDialog: React.FC<ITextConfirmDialogProps> = (props) => {
         <Button
           variant="contained"
           onClick={() => {
-            setOpen(false);
-            onConfirm();
+            if (text === confirmText) {
+              setOpen(false);
+              onConfirm();
+            }
           }}
           color="default">
           Yes

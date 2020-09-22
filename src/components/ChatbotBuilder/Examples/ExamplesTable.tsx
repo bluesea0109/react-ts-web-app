@@ -233,7 +233,8 @@ const ExamplesTable = (props: ExamplesTableProps) => {
                     title="Add missing intents?"
                     open={confirmAddOpen}
                     setOpen={setConfirmAddOpen}
-                    onConfirm={() => onConfirmAdd()}>
+                    onConfirm={() => onConfirmAdd()}
+                    confirmText="ADD">
                     Please type "ADD" and press confirm.
                   </TextConfirmDialog>
                   <br />
@@ -246,7 +247,8 @@ const ExamplesTable = (props: ExamplesTableProps) => {
                     title="Replace missing intents with valid one?"
                     open={confirmReplaceOpen}
                     setOpen={setConfirmReplaceOpen}
-                    onConfirm={() => onConfirmReplace()}>
+                    onConfirm={() => onConfirmReplace()}
+                    confirmText="REPLACE">
                     Please type "REPLACE" and press confirm.
                   </TextConfirmDialog>
                   <br />
@@ -259,7 +261,8 @@ const ExamplesTable = (props: ExamplesTableProps) => {
                     title="Delete these examples?"
                     open={confirmDeleteOpen}
                     setOpen={setConfirmDeleteOpen}
-                    onConfirm={() => onConfirmDelete()}>
+                    onConfirm={() => onConfirmDelete()}
+                    confirmText="DELETE">
                     Please type "DELETE" and press confirm.
                   </TextConfirmDialog>
                 </Alert>
