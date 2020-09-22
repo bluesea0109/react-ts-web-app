@@ -36,6 +36,7 @@ const Examples = () => {
   const { agentId } = useParams<{ agentId: string }>();
   const [filters, setFilters] = useState<ExamplesFilter>();
   const [invalidIntents, setInvalidIntents] = useState<string[]>([]);
+  const [invalidExamples, setInvalidExamples] = useState<INLUExample[]>([]);
   const config = useRecoilValue(currentAgentConfig);
   const [currentEdit, setCurrentEdit] = useState<number | null>();
   const [newExample, setNewExample] = useState<INLUExample | null>(null);
@@ -100,11 +101,13 @@ const Examples = () => {
 
   useEffect(() => {
     let tempInvalidIntents: string[] = [];
+    let tempInvalidExamples: INLUExample[] = [];
 
     if (examples.length !== 0) {
       examples.map((example) => {
         if (intents.includes(example.intent) === false) {
           tempInvalidIntents = [...tempInvalidIntents, example.intent];
+          tempInvalidExamples = [...tempInvalidExamples, example];
         }
       });
     }
@@ -117,6 +120,7 @@ const Examples = () => {
     if (distinctInvalidIntents.length > 0) {
       setInvalidExist(true);
       setInvalidIntents(distinctInvalidIntents);
+      setInvalidExamples(tempInvalidExamples);
     }
   }, [examples]);
 
@@ -239,6 +243,7 @@ const Examples = () => {
         filters={filters}
         invalidExist={invalidExist}
         invalidIntents={invalidIntents}
+        invalidExamples={invalidExamples}
         onDelete={onExampleDelete}
         onEdit={onExampleEdit}
         onAdd={startNewExample}

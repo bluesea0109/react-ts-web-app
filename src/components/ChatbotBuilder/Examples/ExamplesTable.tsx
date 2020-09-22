@@ -122,6 +122,7 @@ type ExamplesTableProps = {
   filters?: ExamplesFilter;
   invalidExist: boolean;
   invalidIntents: string[];
+  invalidExamples: INLUExample[];
   onDelete: (exampleId: number) => Promise<void>;
   onEdit: (exampleId: number) => void;
   onAdd: () => void;
@@ -139,6 +140,7 @@ const ExamplesTable = (props: ExamplesTableProps) => {
     updateFilters,
     invalidExist,
     invalidIntents,
+    invalidExamples,
   } = props;
 
   const classes = useStyles();
@@ -202,6 +204,7 @@ const ExamplesTable = (props: ExamplesTableProps) => {
 
   const onConfirmDelete = () => {
     console.log('Confimed DELETE');
+    invalidExamples.map((example) => onDelete(example.id));
   };
 
   return (
