@@ -1,7 +1,8 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { Typography } from '@material-ui/core';
+import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import { useSnackbar } from 'notistack';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { useRecoilValue } from 'recoil';
 import { CHATBOT_DELETE_EXAMPLE } from '../../../common-gql-queries';
@@ -12,17 +13,33 @@ import { currentAgentConfig } from '../atoms';
 import AddExamples from './AddExamples';
 import EditExample from './EditExample';
 import ExamplesTable from './ExamplesTable';
-import { createExampleMutation, getExamplesQuery, saveExampleMutation } from './gql';
-import { CreateExampleMutationResult, ExamplesError, ExamplesFilter, ExamplesQueryResults } from './types';
+import {
+  createExampleMutation,
+  getExamplesQuery,
+  saveExampleMutation,
+} from './gql';
+import {
+  CreateExampleMutationResult,
+  ExamplesError,
+  ExamplesFilter,
+  ExamplesQueryResults,
+} from './types';
 
 export const EXAMPLES_LIMIT = 10;
+
+function Alert(props: AlertProps) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const Examples = () => {
   const { agentId } = useParams<{ agentId: string }>();
   const [filters, setFilters] = useState<ExamplesFilter>();
+  const [invalidIntents, setInvalidIntents] = useState<string[]>([]);
+  const [invalidExamples, setInvalidExamples] = useState<INLUExample[]>([]);
   const config = useRecoilValue(currentAgentConfig);
   const [currentEdit, setCurrentEdit] = useState<number | null>();
   const [newExample, setNewExample] = useState<INLUExample | null>(null);
+  const [invalidExist, setInvalidExist] = useState<boolean>(false);
   const [exampleError, setExampleError] = useState<Maybe<ExamplesError>>();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -50,24 +67,62 @@ const Examples = () => {
     awaitRefetchQueries: true,
   };
 
-  const [deleteExample, deleteExampleMutation] = useMutation(CHATBOT_DELETE_EXAMPLE, {
+  const [deleteExample, deleteExampleMutation] = useMutation(
+    CHATBOT_DELETE_EXAMPLE,
+    {
+      ...refetchOptions,
+    },
+  );
+
+  const [updateExample, updateExampleMutation] = useMutation(
+    saveExampleMutation,
+    {
+      ...refetchOptions,
+    },
+  );
+
+  const [createExample, createExampleMutationData] = useMutation<
+    CreateExampleMutationResult
+  >(createExampleMutation, {
     ...refetchOptions,
   });
 
-  const [updateExample, updateExampleMutation] = useMutation(saveExampleMutation, {
-    ...refetchOptions,
-  });
+  const commonError =
+    examplesData.error ||
+    deleteExampleMutation.error ||
+    updateExampleMutation.error;
 
-  const [createExample, createExampleMutationData] = useMutation<CreateExampleMutationResult>(createExampleMutation, {
-    ...refetchOptions,
-  });
+  const examples = examplesData?.data?.ChatbotService_examples || [];
 
-  const commonError = examplesData.error || deleteExampleMutation.error || updateExampleMutation.error;
+  useEffect(() => {
+    let tempInvalidIntents: string[] = [];
+    let tempInvalidExamples: INLUExample[] = [];
+
+    if (examples.length !== 0) {
+      examples.map((example) => {
+        if (intents.includes(example.intent) === false) {
+          tempInvalidIntents = [...tempInvalidIntents, example.intent];
+          tempInvalidExamples = [...tempInvalidExamples, example];
+        }
+      });
+    }
+
+    const distinctInvalidIntents: string[] = tempInvalidIntents.filter(
+      (v, i, a) => a.indexOf(v) === i,
+    );
+
+    if (distinctInvalidIntents.length > 0) {
+      setInvalidExist(true);
+      setInvalidIntents(distinctInvalidIntents);
+      setInvalidExamples(tempInvalidExamples);
+    }
+  }, [examples]);
+
   if (commonError) {
     enqueueSnackbar('An error occurred while loading NLU Examples.', {
       variant: 'error',
     });
-    return  <div/>;
+    return <div />;
   }
 
   if (!config) {
@@ -75,18 +130,16 @@ const Examples = () => {
   }
 
   if (examplesData.loading || !examplesData.data) {
-    return <ContentLoading/>;
+    return <ContentLoading />;
   }
 
   const tagTypes = Array.from(config.getTagTypes());
-  const intents = Array.from(config.getIntents().map(x => x.name));
-  console.log('intents', intents);
-
-  const examples = examplesData.data.ChatbotService_examples || [];
+  const intents = Array.from(config.getIntents().map((x) => x.name));
 
   const updateFilters = (newFilters: ExamplesFilter) => {
     const resetIntent = !!filters?.intent && !newFilters.intent;
-    const changeIntent = !!newFilters?.intent && filters?.intent !== newFilters?.intent;
+    const changeIntent =
+      !!newFilters?.intent && filters?.intent !== newFilters?.intent;
 
     if (resetIntent || changeIntent) {
       newFilters['offset'] = 0;
@@ -137,11 +190,16 @@ const Examples = () => {
       }
 
       if (!!createExampleMutationData.error) {
-        if (createExampleMutationData.error.message.indexOf('duplicate key') !== -1) {
+        if (
+          createExampleMutationData.error.message.indexOf('duplicate key') !==
+          -1
+        ) {
           setExampleError(ExamplesError.CREATE_ERROR_DUPLICATE_EXAMPLE);
         }
       } else if (!!updateExampleMutation.error) {
-        if (updateExampleMutation.error.message.indexOf('duplicate key') !== -1) {
+        if (
+          updateExampleMutation.error.message.indexOf('duplicate key') !== -1
+        ) {
           setExampleError(ExamplesError.CREATE_ERROR_DUPLICATE_EXAMPLE);
         }
       } else if (!!resp.errors?.[0]) {
@@ -175,17 +233,25 @@ const Examples = () => {
         examples={examples}
         intents={intents}
         filters={filters}
+        invalidExist={invalidExist}
+        invalidIntents={invalidIntents}
+        invalidExamples={invalidExamples}
+        config={config}
         onDelete={onExampleDelete}
         onEdit={onExampleEdit}
         onAdd={startNewExample}
+        onUpdateExample={onExampleSave}
       />
-      {(!!intents && !!tagTypes) && (
+      {!!invalidExist && (
+        <Alert severity="error">This is an error message!</Alert>
+      )}
+      {!!intents && !!tagTypes && (
         <>
           <EditExample
             loading={examplesData.loading}
             tagTypes={tagTypes}
             intents={intents}
-            example={examples?.find(ex => ex.id === currentEdit)}
+            example={examples?.find((ex) => ex.id === currentEdit)}
             onEditExampleClose={onExampleEditClose}
             onSaveExample={onExampleSave}
             error={exampleError}

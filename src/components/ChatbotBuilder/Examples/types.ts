@@ -13,6 +13,14 @@ export interface ExamplesFilter {
   offset?: number;
 }
 
+export interface InvalidExist {
+  invalidExlist?: boolean;
+}
+
+export interface InvalidIntents {
+  invalidIntents?: string[];
+}
+
 export enum ExamplesError {
   CREATE_ERROR_DUPLICATE_EXAMPLE,
 }

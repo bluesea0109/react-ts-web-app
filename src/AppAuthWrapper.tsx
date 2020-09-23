@@ -19,7 +19,7 @@ function AppAuthWrapper() {
     if (state.isSignedIn !== prevSignedIn) {
       resetApolloContext();
     }
-  // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [state.isSignedIn]);
 
   useEffect(() => {
@@ -51,9 +51,7 @@ function AppAuthWrapper() {
   }
 
   if (!state.isSignedIn) {
-    return (
-      <SignInPage />
-    );
+    return <SignInPage />;
   }
 
   return <App />;
