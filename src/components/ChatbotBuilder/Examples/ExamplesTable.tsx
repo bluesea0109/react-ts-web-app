@@ -17,6 +17,7 @@ import React, { useEffect, useState } from 'react';
 import { TextAnnotator } from 'react-text-annotate';
 import { INLUExample } from '../../../models/chatbot-service';
 import { usePrevious } from '../../../utils/hooks';
+import SelectConfirmDialog from '../../Utils/SelectConfirmDialog';
 import TextConfirmDialog from '../../Utils/TextConfirmDialog';
 import { EXAMPLES_LIMIT } from './Examples';
 
@@ -204,9 +205,9 @@ const ExamplesTable = (props: ExamplesTableProps) => {
     });
   };
 
-  const onConfirmReplace = () => {
+  const onConfirmReplace = (validIntent: string) => {
     invalidExamples.map((invalidExample) => {
-      const updatedExmaple = { ...invalidExample, intent: intents[0] };
+      const updatedExmaple = { ...invalidExample, intent: validIntent };
       onUpdateExample(updatedExmaple);
     });
   };
@@ -251,14 +252,15 @@ const ExamplesTable = (props: ExamplesTableProps) => {
                     onClick={() => setConfirmReplaceOpen(true)}>
                     - Replace with an existing intent.
                   </span>
-                  <TextConfirmDialog
+                  <SelectConfirmDialog
                     title="Replace missing intents with valid one?"
                     open={confirmReplaceOpen}
                     setOpen={setConfirmReplaceOpen}
-                    onConfirm={() => onConfirmReplace()}
+                    intents={intents}
+                    onConfirm={(validIntent) => onConfirmReplace(validIntent)}
                     confirmText="REPLACE">
                     Please type "REPLACE" and press confirm.
-                  </TextConfirmDialog>
+                  </SelectConfirmDialog>
                   <br />
                   <span
                     className={classes.resolveAction}
