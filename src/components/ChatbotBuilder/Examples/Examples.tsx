@@ -93,13 +93,15 @@ const Examples = () => {
     updateExampleMutation.error;
 
   const examples = examplesData?.data?.ChatbotService_examples || [];
+  const tagTypes = Array.from(config?.getTagTypes() || []);
+  const intents = Array.from(config?.getIntents().map((x) => x.name) || []);
 
   useEffect(() => {
     let tempInvalidIntents: string[] = [];
     let tempInvalidExamples: INLUExample[] = [];
 
     if (examples.length !== 0) {
-      examples.map((example) => {
+      examples.forEach((example) => {
         if (intents.includes(example.intent) === false) {
           tempInvalidIntents = [...tempInvalidIntents, example.intent];
           tempInvalidExamples = [...tempInvalidExamples, example];
@@ -116,7 +118,7 @@ const Examples = () => {
       setInvalidIntents(distinctInvalidIntents);
       setInvalidExamples(tempInvalidExamples);
     }
-  }, [examples]);
+  }, [examples, intents]);
 
   if (commonError) {
     enqueueSnackbar('An error occurred while loading NLU Examples.', {
@@ -132,9 +134,6 @@ const Examples = () => {
   if (examplesData.loading || !examplesData.data) {
     return <ContentLoading />;
   }
-
-  const tagTypes = Array.from(config.getTagTypes());
-  const intents = Array.from(config.getIntents().map((x) => x.name));
 
   const updateFilters = (newFilters: ExamplesFilter) => {
     const resetIntent = !!filters?.intent && !newFilters.intent;

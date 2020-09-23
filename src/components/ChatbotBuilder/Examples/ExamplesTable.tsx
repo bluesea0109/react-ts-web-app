@@ -161,8 +161,6 @@ const ExamplesTable = (props: ExamplesTableProps) => {
 
   const prevIntent = usePrevious(intent);
 
-  const fullIntents = Array.from(config.getIntents().map((x: any) => x));
-
   useEffect(() => {
     if (intent && prevIntent !== intent) {
       updateFilters({
@@ -200,13 +198,13 @@ const ExamplesTable = (props: ExamplesTableProps) => {
   }, [examples, intents]);
 
   const onConfirmAdd = () => {
-    invalidIntents.map((invalidIntent) => {
+    invalidIntents.forEach((invalidIntent) => {
       config.addIntent(invalidIntent, 'greeting');
     });
   };
 
   const onConfirmReplace = (validIntent: string) => {
-    invalidExamples.map((invalidExample) => {
+    invalidExamples.forEach((invalidExample) => {
       const updatedExmaple = { ...invalidExample, intent: validIntent };
       onUpdateExample(updatedExmaple);
     });
