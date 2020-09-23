@@ -52,7 +52,7 @@ const NewAgent: React.FC<INewAgentProps> = ({ user }) => {
     refetchQueries: [{ query: CHATBOT_GET_AGENTS, variables: { projectId } }],
     awaitRefetchQueries: true,
     onError: (err) => {
-      enqueueSnackbar(JSON.stringify(err), { variant: 'error' });
+      enqueueSnackbar(err.message, { variant: 'error' });
     },
   });
 
