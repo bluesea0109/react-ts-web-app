@@ -184,7 +184,7 @@ export default function InviteDialog(props: IProps) {
 }
 
 const INVITE_ORG_MEMBER = gql`
-  mutation($orgId: String!, $recipientEmail: String!, $role: String!) {
+  mutation($orgId: String!, $recipientEmail: String!, $role: OrgMemberRole!) {
     inviteOrgMember(
       orgId: $orgId
       recipientEmail: $recipientEmail
