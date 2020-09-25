@@ -15,7 +15,6 @@ references:
     include_job_number_field: true
     include_visit_job_action: true
     fail_only: true
-    webhook: https://hooks.slack.com/services/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
 
   test: &test
     <<: *default_config
