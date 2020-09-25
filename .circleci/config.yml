@@ -1,4 +1,6 @@
 version: 2
+orbs:
+  slack: circleci/slack@3.4.2
 references:
   default_config: &default_config
     docker:
@@ -6,6 +8,14 @@ references:
         auth:
           username: _json_key  # default username when using a JSON key file to authenticate
           password: $GOOGLE_CREDENTIALS  # JSON service account you created
+
+  notifications: &notifications
+    only_for_branches: master
+    include_project_field: true
+    include_job_number_field: true
+    include_visit_job_action: true
+    fail_only: true
+    webhook: https://hooks.slack.com/services/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
 
   test: &test
     <<: *default_config
@@ -17,6 +27,8 @@ references:
             set -eo pipefail
             npm install
             npm run lint
+      - slack/status:
+          <<: *notifications
 
   deploy-dev: &deploy-dev
     <<: *default_config
@@ -30,6 +42,8 @@ references:
             gcloud config set project bavard-dev
             gcloud config set compute/zone us-west3-a
             ./scripts/deploy-dev.sh
+      - slack/status:
+          <<: *notifications
 
   deploy-prod: &deploy-prod
     <<: *default_config
@@ -43,6 +57,9 @@ references:
             gcloud config set project bavard-dev
             gcloud config set compute/zone us-west3-a
             ./scripts/deploy-prod.sh
+      - slack/status:
+          <<: *notifications
+
 jobs:
   test:
     <<: *test
