@@ -80,11 +80,12 @@ workflows:
             branches:
               only: master
       - hold:
+          context: bavard-prod
           type: approval
           requires:
            - deploy-dev
       - deploy-prod:
-          context: bavard
+          context: bavard-prod
           filters:
             branches:
               only: master

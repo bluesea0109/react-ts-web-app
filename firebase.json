@@ -16,7 +16,7 @@
       ]
     },
     {
-      "site": "bavard-ai",
+      "site": "bavard-prod",
       "public": "build",
       "ignore": [
         "firebase.json",
