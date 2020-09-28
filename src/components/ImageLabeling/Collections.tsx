@@ -13,7 +13,6 @@ import React from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { IImageCollection } from '../../models/image-labeling-service';
 import ContentLoading from '../ContentLoading';
-import InternalServerErrorPage from '../InternalServerErrorpage';
 
 const GET_COLLECTIONS = gql`
   query($projectId: String!) {
@@ -61,7 +60,7 @@ function CollectionsList(props: IProjectProps) {
 
   if (error) {
     console.error(error);
-    return <InternalServerErrorPage />;
+    return <Typography>{'Unknown error occured'}</Typography>;
   }
 
   if (loading || !data) {

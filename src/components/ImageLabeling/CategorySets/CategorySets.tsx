@@ -15,7 +15,6 @@ import React from 'react';
 import { useParams } from 'react-router';
 import { GET_CATEGORY_SETS } from '../../../common-gql-queries';
 import ContentLoading from '../../ContentLoading';
-import InternalServerErrorPage from '../../InternalServerErrorpage';
 import CreateCategorySetDialog from './CreateCategorySetDialog';
 import DeleteCategorySetDialog from './DeleteCategorySetDialog';
 
@@ -42,7 +41,7 @@ function CategorySets() {
 
   if (categorySets.error) {
     console.error(categorySets.error);
-    return <InternalServerErrorPage />;
+    return <Typography>{'Unknown error occurred'}</Typography>;
   }
 
   const catSets = categorySets.data.ImageLabelingService_categorySets;

@@ -18,6 +18,7 @@ import ProjectSettings from './components/Dashboard/ProjectSettings';
 import Drawer from './components/Drawer';
 import FAQService from './components/FAQService';
 import ImageLabeling from './components/ImageLabeling';
+import InternalServerErrorPage from './components/InternalServerErrorpage';
 import TextLabeling from './components/TextLabeling';
 import { IUser } from './models/user-service';
 
@@ -110,7 +111,7 @@ function App() {
 
   if (error || !data) {
     console.log(error);
-    return <Typography>{'Unkown error occurred'}</Typography>;
+    return <InternalServerErrorPage />;
   }
 
   assert.notEqual(data, null);
