@@ -1,6 +1,7 @@
 import {
   BaseAgentAction,
   EAgentActionTypes,
+  EmailAction,
   IResponseOption,
   UtteranceAction,
 } from '@bavard/agent-config';
@@ -21,7 +22,7 @@ import { TransitionProps } from '@material-ui/core/transitions';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import { Autocomplete } from '@material-ui/lab';
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { Maybe } from '../../../utils/types';
 import RichTextInput from '../../Utils/RichTextInput';
 import Option from './Option';
@@ -102,6 +103,58 @@ const EditAction = ({
     } as BaseAgentAction);
   };
 
+  const _renderUtteranceFields = () => (
+    <Grid item={true} xs={12}>
+      <Box p={2}>
+        <RichTextInput
+          label="Action Text"
+          value={(currentAction as UtteranceAction)?.utterance || ''}
+          onChange={(html: string) => setCurrentAction({ ...currentAction, utterance: html } as UtteranceAction)}
+        />
+      </Box>
+    </Grid>
+  );
+
+  const _renderEmailFields = () => (
+    <Fragment>
+      <Grid item={true} xs={12}>
+        <Box p={2}>
+          <TextField
+            fullWidth={true}
+            label="Email Prompt"
+            variant="outlined"
+            value={(currentAction as EmailAction)?.prompt}
+            onChange={e => setCurrentAction({ ...currentAction, prompt: e.target.value } as EmailAction)}
+          />
+        </Box>
+      </Grid>
+      <Grid item={true} xs={6}>
+        <Box p={2}>
+          <TextField
+            fullWidth={true}
+            label="Email From"
+            type="email"
+            variant="outlined"
+            value={(currentAction as EmailAction)?.from}
+            onChange={e => setCurrentAction({ ...currentAction, from: e.target.value } as EmailAction)}
+          />
+        </Box>
+      </Grid>
+      <Grid item={true} xs={6}>
+        <Box p={2}>
+          <TextField
+            fullWidth={true}
+            label="Email To"
+            type="email"
+            variant="outlined"
+            value={(currentAction as EmailAction)?.to}
+            onChange={e => setCurrentAction({ ...currentAction, to: e.target.value } as EmailAction)}
+          />
+        </Box>
+      </Grid>
+    </Fragment>
+  );
+
   return (
     <Dialog fullScreen={true} open={!!currentAction} TransitionComponent={Transition}>
       <AppBar className={classes.appBar}>
@@ -144,17 +197,8 @@ const EditAction = ({
                 />
               </Box>
             </Grid>
-            {currentAction?.type === EAgentActionTypes.UTTERANCE_ACTION && (
-              <Grid item={true} xs={12}>
-                <Box p={2}>
-                  <RichTextInput
-                    label="Action Text"
-                    value={(currentAction as UtteranceAction)?.utterance || ''}
-                    onChange={(html: string) => setCurrentAction({ ...currentAction, utterance: html } as UtteranceAction)}
-                  />
-                </Box>
-              </Grid>
-            )}
+            {currentAction?.type === EAgentActionTypes.UTTERANCE_ACTION && _renderUtteranceFields()}
+            {currentAction?.type === EAgentActionTypes.EMAIL_ACTION && _renderEmailFields()}
           </Grid>
           <Grid container={true}>
             <Grid item={true} xs={12}>
