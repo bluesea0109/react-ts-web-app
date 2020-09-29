@@ -11,7 +11,6 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
-import { queries } from '@testing-library/react';
 import * as EmailValidator from 'email-validator';
 import gql from 'graphql-tag';
 import React, { useState } from 'react';

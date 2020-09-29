@@ -16,7 +16,6 @@ import {
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import MuiAlert from '@material-ui/lab/Alert';
-import gql from 'graphql-tag';
 import React, { useState } from 'react';
 
 import { IMember, IUser } from '../../../models/user-service';
