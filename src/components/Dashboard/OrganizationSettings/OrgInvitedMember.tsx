@@ -1,5 +1,6 @@
 
 import { useMutation, useQuery} from '@apollo/client';
+import { string } from '@bavard/agent-config/dist/graph-policy/yup';
 import {
     Button,
     Paper,
@@ -14,7 +15,7 @@ import {
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import gql from 'graphql-tag';
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router';
 import {IInvitedMember} from '../../../models/user-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
@@ -45,13 +46,29 @@ interface IInvitedMemberProps {
 
 function InvitedMemberTable() {
   const classes = useStyles();
-  const { orgId } = useParams();
+  const { orgId } = useParams<{ orgId: string }>();
+  const [ item, setInvite ] = useState<{
+    orgId: string,
+    id: string,
+  }>();
   const invitedMemberData = useQuery<IInvitedMemberProps>(GET_INVITED_ORG_MEMBERS, { variables: { orgId } });
   const invitedMember: IInvitedMember[] | undefined = invitedMemberData
                         && invitedMemberData.data && invitedMemberData.data.orgMemberInvites;
 
-  const [doRevokeInvitation, revokeInvitationResp] = useMutation(REVOKE_INVITATION);
+  const [doRevokeInvitation, revokeInvitationResp] = useMutation(REVOKE_INVITATION, {
+    variables: {
+      orgId: item?.orgId,
+      inviteId: item?.id,
+    },
+    refetchQueries: [
+      {
+        query: GET_INVITED_ORG_MEMBERS,
+        variables: { orgId },
+      },
+    ],
+  });
   const revokeInvitation = (invite: IInvitedMember) => {
+    setInvite(item);
     doRevokeInvitation({
       variables: {
         orgId: invite.orgId,
@@ -118,7 +135,7 @@ function InvitedMemberTable() {
   );
 }
 
-const GET_INVITED_ORG_MEMBERS = gql`
+export const GET_INVITED_ORG_MEMBERS = gql`
     query($orgId: String!) {
         orgMemberInvites(orgId: $orgId){
             id
@@ -133,7 +150,7 @@ const GET_INVITED_ORG_MEMBERS = gql`
     }
 `;
 
-const REVOKE_INVITATION = gql`
+export const REVOKE_INVITATION = gql`
   mutation($orgId: String!, $inviteId: String!) {
     deleteOrgMemberInvite(
       orgId: $orgId

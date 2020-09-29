@@ -11,6 +11,7 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
+import { queries } from '@testing-library/react';
 import * as EmailValidator from 'email-validator';
 import gql from 'graphql-tag';
 import React, { useState } from 'react';
@@ -18,6 +19,7 @@ import { useParams } from 'react-router';
 import { IUser } from '../../../models/user-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
+import {GET_INVITED_ORG_MEMBERS} from './OrgInvitedMember';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -48,7 +50,23 @@ export default function InviteDialog(props: IProps) {
   });
   const { orgId } = useParams();
 
-  const [inviteOrgMember, inviteOrgMemberResp] = useMutation(INVITE_ORG_MEMBER);
+  const [inviteOrgMember, inviteOrgMemberResp] = useMutation(
+    INVITE_ORG_MEMBER,
+    {
+      variables: {
+        orgId,
+        recipientEmail: state.email,
+        role: state.role,
+      },
+      refetchQueries: [
+        {
+          query: GET_INVITED_ORG_MEMBERS,
+          variables: { orgId },
+        },
+      ],
+      awaitRefetchQueries: true,
+    },
+  );
 
   const validateInput = () => {
     return EmailValidator.validate(state.email);
@@ -79,11 +97,11 @@ export default function InviteDialog(props: IProps) {
         role: state.role,
       },
     });
+    state.modalOpen = false;
   };
 
   let dialogContent;
-  const role =
-    props.user.activeOrg?.currentUserMember?.role || null;
+  const role = props.user.activeOrg?.currentUserMember?.role || null;
   if (!role) {
     dialogContent = (
       <DialogContent>
