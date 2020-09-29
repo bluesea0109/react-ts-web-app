@@ -16,7 +16,6 @@ import {
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import MuiAlert from '@material-ui/lab/Alert';
-import gql from 'graphql-tag';
 import React, { useState } from 'react';
 
 import { IMember, IUser } from '../../../models/user-service';
@@ -26,6 +25,7 @@ import IconButtonEdit from '../../IconButtons/IconButtonEdit';
 import ConfirmDialog from '../../Utils/ConfirmDialog';
 import ChangeRoleDialog from './changeRoleDialog';
 import InviteDialog from './InviteDialog';
+import { REVOKE_INVITATION } from './OrgInvitedMember';
 
 interface IAlertProps {
   severity: 'error' | 'success';
@@ -83,7 +83,7 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
   const [
     removeOrgMember,
     { loading, data: removedMember },
-  ] = useMutation(REMOVE_ORG_MEMBER, {
+  ] = useMutation(REVOKE_INVITATION, {
     onCompleted() {
       props.refetchOrgs();
       setOpenSnackBar(true);
@@ -258,11 +258,3 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
     </Paper>
   );
 }
-
-const REMOVE_ORG_MEMBER = gql`
-  mutation($orgId: String!, $userId: String!) {
-    removeOrgMember(orgId: $orgId, userId: $userId) {
-      uid
-    }
-  }
-`;
