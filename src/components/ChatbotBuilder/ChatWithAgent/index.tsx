@@ -27,7 +27,6 @@ export default function ChatWithAgent() {
   const [error, setError] = useState<any>(null);
   const iframe = useRef<HTMLIFrameElement | null>(null);
   const agentData = useQuery<IGetAgent>(GET_AGENT, { variables: { agentId: Number(agentId) } });
-
   const apiKeysQuery = useQuery(getApiKeysQuery, {
     variables: {
       projectId,
@@ -57,6 +56,7 @@ export default function ChatWithAgent() {
       const parentUrl = window.location.href;
       const url = new URL(parentUrl);
       const host = url.hostname;
+
       setIsDebug([
         'localhost',
         'bavard-ai-dev.web.app',
@@ -77,12 +77,11 @@ export default function ChatWithAgent() {
   }
 
   const onIframeLoad = () => {
-    console.log(agentId, apiKey.current);
-
     iframe.current?.contentWindow?.postMessage({
       uname: agentData.data?.ChatbotService_agent.uname,
       apiKey: apiKey.current,
       isActive: true,
+      dev: process.env.REACT_APP_ENV === 'dev',
     }, '*');
   };
 
