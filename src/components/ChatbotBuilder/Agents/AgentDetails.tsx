@@ -31,6 +31,7 @@ import Intent from '../Intent/Intent';
 import PublishAgent from '../Publish';
 import Slot from '../Slot/Slot';
 import Tag from '../Tags/Tag';
+import TrainingConversations from '../TrainingConversations';
 import TrainingJobsTab from '../TrainingJobs/TrainingJobsTab';
 import UploadDataTab from '../UploadData/UploadDataTab';
 
@@ -232,6 +233,7 @@ const AgentDetails = () => {
         {agentTab === 'training-jobs' && <TrainingJobsTab />}
         {agentTab === 'chat' && <ChatWithAgent />}
         {agentTab === 'live-conversations' && <ConversationsTab />}
+        {agentTab === 'training-conversations' && <TrainingConversations />}
         {agentTab === 'settings' && <AgentSettings />}
         {agentTab === 'publish' && <PublishAgent />}
         {agentTab === 'upload-data' && <UploadDataTab />}
