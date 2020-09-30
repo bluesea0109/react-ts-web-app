@@ -169,6 +169,7 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
               setchangeConfirm(true);
               setSelectedMember(member);
             }}
+            disabled={role !== 'owner'}
           />
           <ChangeRoleDialog
             open={changeConfirm}
