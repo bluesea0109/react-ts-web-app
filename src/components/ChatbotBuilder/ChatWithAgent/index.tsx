@@ -81,7 +81,7 @@ export default function ChatWithAgent() {
       uname: agentData.data?.ChatbotService_agent.uname,
       apiKey: apiKey.current,
       isActive: true,
-      dev: process.env.REACT_APP_ENV === 'dev',
+      dev: true,
     }, '*');
   };
 
