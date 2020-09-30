@@ -25,6 +25,7 @@
     "@types/react-redux": "^7.1.9",
     "@types/react-router": "^5.1.8",
     "@types/react-router-dom": "^5.1.5",
+    "apollo-fetch": "^0.7.0",
     "apollo-upload-client": "^14.1.1",
     "axios": "^0.19.2",
     "draft-js": "^0.11.7",

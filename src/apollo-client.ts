@@ -1,5 +1,6 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
+import { createApolloFetch } from 'apollo-fetch';
 import { createUploadLink } from 'apollo-upload-client';
 import firebase from 'firebase/app';
 import { isEmpty } from 'lodash';
@@ -43,13 +44,21 @@ const getIdToken = async () => {
   }
 };
 
-const exchangeFirebaseToken = async (token: string): Promise<string> => {
-  const urlifiedToken = encodeURIComponent(`Bearer ${token}`);
-  const url = `${config.apiBaseUrl}/v1/bavard-auth-token?firebaseToken=${urlifiedToken}`;
+const exchangeFirebaseToken = async (firebaseToken: string): Promise<string> => {
+  const fetch = createApolloFetch({
+    uri: config.apiUrl,
+  });
 
-  const data = await fetch(url, {
-    method: 'POST',
-  }).then((resp) => resp.json());
+  const data = {token: 'adsfa'};
+  fetch({
+    query: `query {
+      exchangeFirebaseToken(firebaseToken: "${firebaseToken}") {
+        token
+      }
+    }`,
+  }).then((res => {
+    console.log(res.data);
+  }));
 
   return data.token;
 };
