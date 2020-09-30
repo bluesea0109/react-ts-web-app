@@ -49,18 +49,14 @@ const exchangeFirebaseToken = async (firebaseToken: string): Promise<string> => 
     uri: config.apiUrl,
   });
 
-  try {
-    const { data: { exchangeFirebaseToken: { token } } } = await fetch({
-      query: `query {
-        exchangeFirebaseToken(firebaseToken: "Bearer ${firebaseToken}") {
-          token
-        }
-      }`,
-    });
-    return token;
-  } catch (error) {
-    throw Error(error);
-  }
+  const { data: { exchangeFirebaseToken: { token } } } = await fetch({
+    query: `query {
+      exchangeFirebaseToken(firebaseToken: "Bearer ${firebaseToken}") {
+        token
+      }
+    }`,
+  });
+  return token;
 };
 
 const authLink = setContext((_, { headers }) => {
