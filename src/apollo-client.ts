@@ -49,18 +49,18 @@ const exchangeFirebaseToken = async (firebaseToken: string): Promise<string> => 
     uri: config.apiUrl,
   });
 
-  const data = {token: 'adsfa'};
-  fetch({
-    query: `query {
-      exchangeFirebaseToken(firebaseToken: "${firebaseToken}") {
-        token
-      }
-    }`,
-  }).then((res => {
-    console.log(res.data);
-  }));
-
-  return data.token;
+  try {
+    const { data: { exchangeFirebaseToken: { token } } } = await fetch({
+      query: `query {
+        exchangeFirebaseToken(firebaseToken: "Bearer ${firebaseToken}") {
+          token
+        }
+      }`,
+    });
+    return token;
+  } catch (error) {
+    throw Error(error);
+  }
 };
 
 const authLink = setContext((_, { headers }) => {
