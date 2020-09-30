@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function ChatWithAgent() {
   const { agentId, projectId } = useParams();
-  const apiKey = useRef<string | null>(null);
+  const [apiKey, setApiKey] = useState<string | null>(null);
   const classes = useStyles();
   const [isActive, setIsActive] = useState(true);
   const [isDebug, setIsDebug] = useState(false);
@@ -35,10 +35,11 @@ export default function ChatWithAgent() {
   });
 
   const loadedKey = apiKeysQuery.data?.apiKey.key ?? null;
+  console.log('when - ', apiKey);
 
   useEffect(() => {
     if (!apiKeysQuery.loading) {
-      apiKey.current = loadedKey;
+      setApiKey(loadedKey);
     }
   }, [loadedKey, apiKeysQuery.loading]);
 
@@ -84,13 +85,13 @@ export default function ChatWithAgent() {
       dev: true,
     }, '*');
   };
-
+  console.log('First render ', apiKey, agentId);
   return (
     <div
       className={classes.root}
       id="chatbot"
     >
-      {(!!(apiKey?.current) && !!agentId) && (
+      {(!!(apiKey && !!agentId) && (
         <iframe
           title="chatbot"
           src={config.chatbotUrl}
@@ -117,7 +118,7 @@ export default function ChatWithAgent() {
             touchAction: 'auto',
           }}
         />
-      )}
+      ))}
       {!!error && (
         <Typography
           variant="h6"
