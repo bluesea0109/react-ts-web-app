@@ -21,6 +21,7 @@ import firebase from 'firebase/app';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { GET_CURRENT_USER, UPDATE_ACTIVE_ORG } from '../common-gql-queries';
+import IconButtonBavard from '../components/IconButtons/IconButtonBavard';
 import { IUser } from '../models/user-service';
 
 interface CustomAppbarProps extends AppBarProps {
@@ -39,29 +40,29 @@ const useStyles = makeStyles((theme: Theme) =>
     selectInput: {
       minWidth: 90,
       background: 'primary',
-      color: 'white',
+      color: 'black',
       borderRadius: 4,
       borderColor: 'white',
     },
     selectLabel: {
-      color: 'white',
+      color: 'black',
     },
     icon: {
-      fill: 'white',
+      fill: 'black',
     },
     border: {
-      borderBottom: '1px solid white',
+      borderBottom: '1px solid black',
     },
     noProject: {
       width: 100,
       marginLeft: 10,
       '& label': {
-        color: '#ffffff',
+        color: '#000',
       },
       '& .MuiInputBase-root': {
-        color: '#ffffff',
+        color: '#000',
         '&::before': {
-          borderBottomColor: '#ffffff',
+          borderBottomColor: '#000',
         },
       },
     },
@@ -208,17 +209,8 @@ const CustomAppbar: React.FC<CustomAppbarProps> = ({
   return (
     <AppBar position={position} className={className}>
       <Toolbar>
-        <IconButton
-          edge="start"
-          className={classes.menuButton}
-          color="inherit"
-          aria-label="menu"
-          onClick={onMenuClick}
-        >
-          <MenuIcon />
-        </IconButton>
         <Typography variant="h6" className={classes.title}>
-          {'Bavard AI'}
+          {''}
         </Typography>
         <Orgs user={user} />
         <Projects user={user} />
