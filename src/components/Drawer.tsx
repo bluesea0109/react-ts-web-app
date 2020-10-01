@@ -1,6 +1,5 @@
-import { createStyles, IconButton, Theme, useTheme } from '@material-ui/core';
+import { createStyles, Theme } from '@material-ui/core';
 import Collapse from '@material-ui/core/Collapse';
-import Drawer, { DrawerProps } from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -49,7 +48,6 @@ function CustomDrawer(props: CustomDrawerProps) {
   const { user, onIconClick, status } = props;
   const classes = useStyles();
   const location = useLocation();
-  const theme = useTheme();
   const [dashOpen, setDashOpen] = useState(false);
 
   const handleClick = () => {
