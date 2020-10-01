@@ -14,6 +14,8 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     list: {
       maxWidth: 250,
+      backgroundColor: '#151630',
+      color: 'white'
     },
     fullList: {
       width: 'auto',
@@ -25,6 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
       // necessary for content to be below app bar
       ...theme.mixins.toolbar,
       justifyContent: 'flex-end',
+      backgroundColor: '#151630'
     },
     nested: {
       paddingLeft: theme.spacing(4),

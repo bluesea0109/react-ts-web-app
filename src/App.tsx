@@ -44,6 +44,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     drawerPaper: {
       width: drawerWidth,
+      backgroundColor: '#151630'
     },
     content: {
       display: 'flex',
@@ -54,7 +55,7 @@ const useStyles = makeStyles((theme: Theme) =>
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
       }),
-      marginLeft: -drawerWidth,
+      marginLeft: -drawerWidth,      
     },
     contentShift: {
       display: 'flex',
@@ -67,6 +68,8 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: 0,
     },
     appBar: {
+      backgroundColor: 'white',
+      color: 'black',
       transition: theme.transitions.create(['margin', 'width'], {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
@@ -78,7 +81,7 @@ const useStyles = makeStyles((theme: Theme) =>
       transition: theme.transitions.create(['margin', 'width'], {
         easing: theme.transitions.easing.easeOut,
         duration: theme.transitions.duration.enteringScreen,
-      }),
+      }),      
     },
     container: {
       padding: theme.spacing(2),
