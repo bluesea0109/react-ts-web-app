@@ -477,7 +477,6 @@ export const GET_TRAINING_CONVERSATIONS = gql`
       }
       agentActions {
         turn
-        actionId
         actionName
       }
     }

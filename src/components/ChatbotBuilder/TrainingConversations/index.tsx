@@ -40,12 +40,14 @@ export default function TrainingConversations() {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [editConversation, seteditConversation] = useState(0);
   const numAgentId = Number(agentId);
+
   const [deleteConversations, { loading }] = useMutation(DELETE_TRAINING_CONVERSATION);
-  const getTrainingConversations = useQuery<IGetTrainingConversation>(GET_TRAINING_CONVERSATIONS, { variables: { agentId } });
+  const getTrainingConversations = useQuery<IGetTrainingConversation>(GET_TRAINING_CONVERSATIONS, { variables: { agentId: numAgentId } });
   let conversations = getTrainingConversations.data?.ChatbotService_trainingConversations || [];
+
+  console.log('conversations ', conversations);
   const refetchConversations = getTrainingConversations.refetch;
 
-  console.log('conversations ------------- ', numAgentId);
   const data = conversations.map((item: any) => {
     item.userActions.map((a: any) => a.isUser = true);
     item.agentActions.map((a: any) => a.isAgent = true);
@@ -54,7 +56,7 @@ export default function TrainingConversations() {
   });
 
   if (getTrainingConversations.error) {
-    // return <ApolloErrorPage error={getTrainingConversations.error} />;
+    return <ApolloErrorPage error={getTrainingConversations.error} />;
   }
 
   if (getTrainingConversations.loading) {

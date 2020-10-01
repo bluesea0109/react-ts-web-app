@@ -126,7 +126,6 @@ export interface ITrainingConversations {
 
 export interface ITrainingAgentAction {
   turn: number;
-  actionId: number;
   actionName: string;
 }
 
