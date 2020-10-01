@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { Typography } from '@material-ui/core';
+import { Typography, Drawer } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import assert from 'assert';
 import clsx from 'clsx';
@@ -15,7 +15,7 @@ import Dashboard from './components/Dashboard';
 import AcceptInvite from './components/Dashboard/Invites/AcceptInvite';
 import OrganizationSettings from './components/Dashboard/OrganizationSettings';
 import ProjectSettings from './components/Dashboard/ProjectSettings';
-import Drawer from './components/Drawer';
+import CustomDrawer from './components/Drawer';
 import FAQService from './components/FAQService';
 import ImageLabeling from './components/ImageLabeling';
 import InternalServerErrorPage from './components/InternalServerErrorpage';
@@ -29,28 +29,28 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       display: 'flex',
       height: '100vh',
-      overflow: 'hidden',
+      // overflow: 'hidden',
     },
     hide: {
       display: 'none',
     },
-    drawer: {
+    drawer: {      
       width: drawerWidth,
       flexShrink: 0,
-      whiteSpace: 'nowrap'
+      whiteSpace: 'nowrap',      
     },
-    
     drawerHeader: {
       // necessary for content to be below app bar
       ...theme.mixins.toolbar,
     },
     drawerPaper: {
-      width: drawerWidth,
-      backgroundColor: '#151630'
+      width: drawerWidth,      
+      backgroundColor: '#151630',
     },
 
     drawerOpen: {
       width: drawerWidth,
+      backgroundColor: '#151630',
       transition: theme.transitions.create('width', {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.enteringScreen,
@@ -63,6 +63,7 @@ const useStyles = makeStyles((theme: Theme) =>
         duration: theme.transitions.duration.leavingScreen,
       }),
       overflowX: 'hidden',
+      backgroundColor: '#151630',
       width: theme.spacing(7) + 1,
       [theme.breakpoints.up('sm')]: {
         width: theme.spacing(9) + 1,
@@ -76,8 +77,7 @@ const useStyles = makeStyles((theme: Theme) =>
       transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
-      }),
-      marginLeft: -drawerWidth,      
+      })      
     },
     contentShift: {
       display: 'flex',
@@ -153,8 +153,8 @@ function App() {
           })}
           onMenuClick={onMenuClick}
         />
-        <Drawer
-          user={data.currentUser}
+        <Drawer  
+          style={{backgroundColor: "black"}}
           className={clsx(classes.drawer, {
             [classes.drawerOpen]: state.drawerOpen,
             [classes.drawerClose]: !state.drawerOpen,
@@ -162,14 +162,16 @@ function App() {
           variant="permanent"
           anchor="left"
           classes={{
-            paper: clsx({
+            paper: clsx({              
               [classes.drawerOpen]: state.drawerOpen,
               [classes.drawerClose]: !state.drawerOpen,
             }),
           }}
           open={state.drawerOpen}
-          onClose={onDrawerClose}
-        />
+          onClose={onDrawerClose}>
+            <CustomDrawer user={data.currentUser} onIconClick={onMenuClick} status={state.drawerOpen}/>
+          </Drawer>
+        
         <main
           className={clsx(classes.content, {
             [classes.contentShift]: state.drawerOpen,

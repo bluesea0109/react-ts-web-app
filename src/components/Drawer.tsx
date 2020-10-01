@@ -4,18 +4,22 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles } from '@material-ui/core/styles';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import React from 'react';
+import IconButtonBavard from '../components/IconButtons/IconButtonBavard';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import SubMenuIcon from '../components/IconButtons/SubMenuIcon';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { IUser } from '../models/user-service';
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
+import Collapse from '@material-ui/core/Collapse';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     list: {
       maxWidth: 250,
       backgroundColor: '#151630',
-      color: 'white'
+      color: 'white',
     },
     fullList: {
       width: 'auto',
@@ -24,30 +28,33 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       alignItems: 'center',
       padding: theme.spacing(0, 1),
+      margin: '15px 0px',
       // necessary for content to be below app bar
       ...theme.mixins.toolbar,
-      justifyContent: 'flex-end',
-      backgroundColor: '#151630'
+      backgroundColor: '#151630',
     },
     nested: {
       paddingLeft: theme.spacing(4),
     },
-  }));
+  })
+);
 
-interface CustomDrawerProps extends DrawerProps {
+interface CustomDrawerProps {
   user: IUser;
+  onIconClick: () => void;
+  status: boolean;
 }
 
 function CustomDrawer(props: CustomDrawerProps) {
-  const { user, ...drawProps } = props;
+  const { user, onIconClick, status } = props;
   const classes = useStyles();
   const location = useLocation();
   const theme = useTheme();
+  const [dashOpen, setDashOpen] = useState(false);
 
-  if (!user.activeOrg) {
-
-  }
-
+  const handleClick = () => {
+    setDashOpen(!dashOpen);
+  };
   const createPath = (pageName: string): string => {
     if (!user.activeProject) {
       return '/no-project';
@@ -68,45 +75,44 @@ function CustomDrawer(props: CustomDrawerProps) {
 
   const requiresActiveProjectListItems = (
     <>
-
-      {/* <ListItem
-        component={Link}
-        to={createPath('text-summarization')}
-        selected={location.pathname.includes('text-summarization')}
-        button={true}
-      >
-        <ListItemText primary="Text Summarization" />
-      </ListItem> */}
       <ListItem
         component={Link}
         to={createPath('chatbot-builder')}
         selected={/chatbot-builder$/.test(location.pathname)}
-        button={true}
-      >
+        button={true}>
+        <ListItemIcon style={{ color: 'white' }}>
+          <SubMenuIcon title="BotBuilder" />
+        </ListItemIcon>
         <ListItemText primary="Chatbot Builder" />
       </ListItem>
       <ListItem
         component={Link}
         to={createPath('image-labeling/collections')}
         selected={location.pathname.includes('image-labeling')}
-        button={true}
-      >
+        button={true}>
+        <ListItemIcon style={{ color: 'white' }}>
+          <SubMenuIcon title="ImageLabeling" />
+        </ListItemIcon>
         <ListItemText primary="Image Labeling" />
       </ListItem>
       <ListItem
         component={Link}
         to={createPath('qa')}
         selected={location.pathname.includes('/qa')}
-        button={true}
-      >
+        button={true}>
+        <ListItemIcon style={{ color: 'white' }}>
+          <SubMenuIcon title="FAQ" />
+        </ListItemIcon>
         <ListItemText primary="FAQ Service" />
       </ListItem>
       <ListItem
         component={Link}
         to={createPath('text-labeling')}
         selected={location.pathname.includes('text-labeling')}
-        button={true}
-      >
+        button={true}>
+        <ListItemIcon style={{ color: 'white' }}>
+          <SubMenuIcon title="TextLabeling" />
+        </ListItemIcon>
         <ListItemText primary="Text Labeling" />
       </ListItem>
     </>
@@ -115,17 +121,11 @@ function CustomDrawer(props: CustomDrawerProps) {
   const list = () => (
     <div className={classes.list} role="presentation">
       <div className={classes.drawerHeader}>
-        <IconButton
-          onClick={(ev) =>
-            props.onClose ? props.onClose(ev, 'backdropClick') : null
-          }
-        >
-          {theme.direction === 'ltr' ? (
-            <ChevronLeftIcon />
-          ) : (
-              <ChevronRightIcon />
-            )}
-        </IconButton>
+        <IconButtonBavard
+          tooltip="barvard button"
+          disabled={false}
+          onClick={onIconClick}
+        />
       </div>
       <List>
         <ListItem
@@ -133,36 +133,53 @@ function CustomDrawer(props: CustomDrawerProps) {
           to="/"
           selected={location.pathname === '/'}
           button={true}
-        >
+          onClick={handleClick}>
+          <ListItemIcon style={{ color: 'white' }}>
+            <SubMenuIcon title="Dashboard" />
+          </ListItemIcon>
           <ListItemText primary="Dashboard" />
-        </ListItem>
-        <List component="div" disablePadding={true}>
-          <ListItem className={classes.nested}
-            component={Link}
-            to={createOrgPath('settings')}
-            selected={!location.pathname.includes('projects') && location.pathname.includes('settings')}
-            button={true}
-          >
-            <ListItemText primary="Organization" />
-          </ListItem>
-          <ListItem className={classes.nested}
-            component={Link}
-            to={createPath('settings')}
-            selected={location.pathname.includes('projects') && location.pathname.includes('settings')}
-            button={true}>
-            <ListItemText primary="Project" />
-          </ListItem>
-        </List>
+          {status ? dashOpen ? <ExpandLess /> : <ExpandMore /> : ''}
+        </ListItem>        
+        <Collapse in={dashOpen} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            <List component="div" disablePadding={true}>
+              <ListItem
+                className={status ? classes.nested : ''}
+                component={Link}
+                to={createOrgPath('settings')}
+                selected={
+                  !location.pathname.includes('projects') &&
+                  location.pathname.includes('settings')
+                }
+                button={true}>
+                <ListItemIcon style={{ color: 'white' }}>
+                  <SubMenuIcon title="Organization" />
+                </ListItemIcon>
+                <ListItemText primary="Organization" />
+              </ListItem>
+              <ListItem
+                className={status ? classes.nested : ''}
+                component={Link}
+                to={createPath('settings')}
+                selected={
+                  location.pathname.includes('projects') &&
+                  location.pathname.includes('settings')
+                }
+                button={true}>
+                <ListItemIcon style={{ color: 'white' }}>
+                  <SubMenuIcon title="Project" />
+                </ListItemIcon>
+                <ListItemText primary="Project" />
+              </ListItem>
+            </List>
+          </List>
+        </Collapse>
         {requiresActiveProjectListItems}
       </List>
-    </div >
+    </div>
   );
 
-  return (
-    <Drawer anchor="left" {...drawProps}>
-      {list()}
-    </Drawer>
-  );
+  return <>{list()}</>;
 }
 
 export default CustomDrawer;
