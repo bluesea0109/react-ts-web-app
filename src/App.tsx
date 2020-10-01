@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { Typography, Drawer } from '@material-ui/core';
+import { Drawer, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import assert from 'assert';
 import clsx from 'clsx';
@@ -34,17 +34,17 @@ const useStyles = makeStyles((theme: Theme) =>
     hide: {
       display: 'none',
     },
-    drawer: {      
+    drawer: {
       width: drawerWidth,
       flexShrink: 0,
-      whiteSpace: 'nowrap',      
+      whiteSpace: 'nowrap',
     },
     drawerHeader: {
       // necessary for content to be below app bar
       ...theme.mixins.toolbar,
     },
     drawerPaper: {
-      width: drawerWidth,      
+      width: drawerWidth,
       backgroundColor: '#151630',
     },
 
@@ -77,7 +77,7 @@ const useStyles = makeStyles((theme: Theme) =>
       transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
-      })      
+      }),
     },
     contentShift: {
       display: 'flex',
@@ -103,7 +103,7 @@ const useStyles = makeStyles((theme: Theme) =>
       transition: theme.transitions.create(['margin', 'width'], {
         easing: theme.transitions.easing.easeOut,
         duration: theme.transitions.duration.enteringScreen,
-      }),      
+      }),
     },
     container: {
       padding: theme.spacing(2),
@@ -153,8 +153,8 @@ function App() {
           })}
           onMenuClick={onMenuClick}
         />
-        <Drawer  
-          style={{backgroundColor: "black"}}
+        <Drawer
+          style={{backgroundColor: 'black'}}
           className={clsx(classes.drawer, {
             [classes.drawerOpen]: state.drawerOpen,
             [classes.drawerClose]: !state.drawerOpen,
@@ -162,7 +162,7 @@ function App() {
           variant="permanent"
           anchor="left"
           classes={{
-            paper: clsx({              
+            paper: clsx({
               [classes.drawerOpen]: state.drawerOpen,
               [classes.drawerClose]: !state.drawerOpen,
             }),
@@ -171,7 +171,7 @@ function App() {
           onClose={onDrawerClose}>
             <CustomDrawer user={data.currentUser} onIconClick={onMenuClick} status={state.drawerOpen}/>
           </Drawer>
-        
+
         <main
           className={clsx(classes.content, {
             [classes.contentShift]: state.drawerOpen,

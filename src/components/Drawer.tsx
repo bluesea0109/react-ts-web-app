@@ -1,18 +1,18 @@
 import { createStyles, IconButton, Theme, useTheme } from '@material-ui/core';
+import Collapse from '@material-ui/core/Collapse';
 import Drawer, { DrawerProps } from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles } from '@material-ui/core/styles';
-import IconButtonBavard from '../components/IconButtons/IconButtonBavard';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import SubMenuIcon from '../components/IconButtons/SubMenuIcon';
-import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { IUser } from '../models/user-service';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
-import Collapse from '@material-ui/core/Collapse';
+import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import IconButtonBavard from '../components/IconButtons/IconButtonBavard';
+import SubMenuIcon from '../components/IconButtons/SubMenuIcon';
+import { IUser } from '../models/user-service';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
     nested: {
       paddingLeft: theme.spacing(4),
     },
-  })
+  }),
 );
 
 interface CustomDrawerProps {
@@ -139,9 +139,9 @@ function CustomDrawer(props: CustomDrawerProps) {
           </ListItemIcon>
           <ListItemText primary="Dashboard" />
           {status ? dashOpen ? <ExpandLess /> : <ExpandMore /> : ''}
-        </ListItem>        
-        <Collapse in={dashOpen} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
+        </ListItem>
+        <Collapse in={dashOpen} timeout="auto" unmountOnExit={true}>
+          <List component="div" disablePadding={true}>
             <List component="div" disablePadding={true}>
               <ListItem
                 className={status ? classes.nested : ''}
