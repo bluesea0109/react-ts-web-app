@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme: Theme) =>
       overflow: 'auto',
       padding: theme.spacing(2),
     },
-  }),
+  })
 );
 
 export default function ChatWithAgent() {
@@ -26,7 +26,9 @@ export default function ChatWithAgent() {
   const [isDebug, setIsDebug] = useState(false);
   const [error, setError] = useState<any>(null);
   const iframe = useRef<HTMLIFrameElement | null>(null);
-  const agentData = useQuery<IGetAgent>(GET_AGENT, { variables: { agentId: Number(agentId) } });
+  const agentData = useQuery<IGetAgent>(GET_AGENT, {
+    variables: { agentId: Number(agentId) },
+  });
   const apiKeysQuery = useQuery(getApiKeysQuery, {
     variables: {
       projectId,
@@ -44,7 +46,10 @@ export default function ChatWithAgent() {
   }, [loadedKey, apiKeysQuery.loading]);
 
   const onMessage = useCallback((e: any) => {
-    console.log('onMessage: ', e.data.hasOwnProperty('isError') && e.data?.isError);
+    console.log(
+      'onMessage: ',
+      e.data.hasOwnProperty('isError') && e.data?.isError
+    );
     if (e.data.hasOwnProperty('isWidgetActive')) {
       setIsActive(e.data.isWidgetActive);
     } else if (e.data.hasOwnProperty('isError') && e.data?.isError) {
@@ -58,11 +63,13 @@ export default function ChatWithAgent() {
       const url = new URL(parentUrl);
       const host = url.hostname;
 
-      setIsDebug([
-        'localhost',
-        'bavard-ai-dev.web.app',
-        'bavard-chatbot.web.app',
-      ].includes(host));
+      setIsDebug(
+        [
+          'localhost',
+          'bavard-ai-dev.web.app',
+          'bavard-chatbot.web.app',
+        ].includes(host)
+      );
     })();
 
     window.addEventListener('message', onMessage);
@@ -70,32 +77,32 @@ export default function ChatWithAgent() {
     return () => {
       window.removeEventListener('message', onMessage);
     };
-  // eslint-disable-next-line
+    // eslint-disable-next-line
   }, []);
 
   if (agentData.loading) {
-    return <ContentLoading/>;
+    return <ContentLoading />;
   }
 
   const onIframeLoad = () => {
-    iframe.current?.contentWindow?.postMessage({
-      uname: agentData.data?.ChatbotService_agent.uname,
-      apiKey: apiKey,
-      isActive: true,
-      dev: true,
-    }, '*');
+    iframe.current?.contentWindow?.postMessage(
+      {
+        uname: agentData.data?.ChatbotService_agent.uname,
+        apiKey: apiKey,
+        isActive: true,
+        dev: true,
+      },
+      '*'
+    );
   };
   console.log('First render ', apiKey, agentId);
   return (
-    <div
-      className={classes.root}
-      id="chatbot"
-    >
-      {(!!(apiKey && !!agentId) && (
+    <div className={classes.root} id="chatbot">
+      {!!(apiKey && !!agentId) && (
         <iframe
           title="chatbot"
           src={config.chatbotUrl}
-          ref={ref => iframe.current = ref}
+          ref={(ref) => (iframe.current = ref)}
           onLoad={onIframeLoad}
           style={{
             border: 'none',
@@ -118,13 +125,12 @@ export default function ChatWithAgent() {
             touchAction: 'auto',
           }}
         />
-      ))}
+      )}
       {!!error && (
         <Typography
           variant="h6"
           color="error"
-          style={{ fontWeight: 'bold', textAlign: 'center' }}
-        >
+          style={{ fontWeight: 'bold', textAlign: 'center' }}>
           Error {error.code}: {error.message}
         </Typography>
       )}
