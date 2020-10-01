@@ -37,7 +37,9 @@ const useStyles = makeStyles((theme: Theme) =>
     drawer: {
       width: drawerWidth,
       flexShrink: 0,
+      whiteSpace: 'nowrap'
     },
+    
     drawerHeader: {
       // necessary for content to be below app bar
       ...theme.mixins.toolbar,
@@ -45,6 +47,26 @@ const useStyles = makeStyles((theme: Theme) =>
     drawerPaper: {
       width: drawerWidth,
       backgroundColor: '#151630'
+    },
+
+    drawerOpen: {
+      width: drawerWidth,
+      transition: theme.transitions.create('width', {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.enteringScreen,
+      }),
+    },
+
+    drawerClose: {
+      transition: theme.transitions.create('width', {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen,
+      }),
+      overflowX: 'hidden',
+      width: theme.spacing(7) + 1,
+      [theme.breakpoints.up('sm')]: {
+        width: theme.spacing(9) + 1,
+      },
     },
     content: {
       display: 'flex',
@@ -133,11 +155,17 @@ function App() {
         />
         <Drawer
           user={data.currentUser}
-          className={classes.drawer}
-          variant="persistent"
+          className={clsx(classes.drawer, {
+            [classes.drawerOpen]: state.drawerOpen,
+            [classes.drawerClose]: !state.drawerOpen,
+          })}
+          variant="permanent"
           anchor="left"
           classes={{
-            paper: classes.drawerPaper,
+            paper: clsx({
+              [classes.drawerOpen]: state.drawerOpen,
+              [classes.drawerClose]: !state.drawerOpen,
+            }),
           }}
           open={state.drawerOpen}
           onClose={onDrawerClose}

@@ -16,6 +16,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import MenuIcon from '@material-ui/icons/Menu';
+import IconButtonBavard from '../components/IconButtons/IconButtonBavard'
 import clsx from 'clsx';
 import firebase from 'firebase/app';
 import React from 'react';
@@ -208,15 +209,11 @@ const CustomAppbar: React.FC<CustomAppbarProps> = ({
   return (
     <AppBar position={position} className={className}>
       <Toolbar>
-        <IconButton
-          edge="start"
-          className={classes.menuButton}
-          color="inherit"
-          aria-label="menu"
-          onClick={onMenuClick}
-        >
-          <MenuIcon />
-        </IconButton>
+        <IconButtonBavard
+          tooltip="barvard button"
+          disabled={false}
+          onClick={onMenuClick}          
+        />                  
         <Typography variant="h6" className={classes.title}>
           {'Bavard AI'}
         </Typography>
