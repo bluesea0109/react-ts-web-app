@@ -3,7 +3,6 @@ import {
   CircularProgress,
   createStyles,
   FormControl,
-  IconButton,
   InputLabel,
   TextField,
   Theme,
@@ -15,7 +14,6 @@ import Select from '@material-ui/core/Select';
 import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import MenuIcon from '@material-ui/icons/Menu';
 import clsx from 'clsx';
 import firebase from 'firebase/app';
 import React from 'react';
@@ -39,29 +37,29 @@ const useStyles = makeStyles((theme: Theme) =>
     selectInput: {
       minWidth: 90,
       background: 'primary',
-      color: 'white',
+      color: 'black',
       borderRadius: 4,
       borderColor: 'white',
     },
     selectLabel: {
-      color: 'white',
+      color: 'black',
     },
     icon: {
-      fill: 'white',
+      fill: 'black',
     },
     border: {
-      borderBottom: '1px solid white',
+      borderBottom: '1px solid black',
     },
     noProject: {
       width: 100,
       marginLeft: 10,
       '& label': {
-        color: '#ffffff',
+        color: '#000',
       },
       '& .MuiInputBase-root': {
-        color: '#ffffff',
+        color: '#000',
         '&::before': {
-          borderBottomColor: '#ffffff',
+          borderBottomColor: '#000',
         },
       },
     },
@@ -208,17 +206,8 @@ const CustomAppbar: React.FC<CustomAppbarProps> = ({
   return (
     <AppBar position={position} className={className}>
       <Toolbar>
-        <IconButton
-          edge="start"
-          className={classes.menuButton}
-          color="inherit"
-          aria-label="menu"
-          onClick={onMenuClick}
-        >
-          <MenuIcon />
-        </IconButton>
         <Typography variant="h6" className={classes.title}>
-          {'Bavard AI'}
+          {''}
         </Typography>
         <Orgs user={user} />
         <Projects user={user} />
