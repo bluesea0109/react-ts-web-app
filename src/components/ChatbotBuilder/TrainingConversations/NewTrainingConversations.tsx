@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
+import { useRecoilValue } from "recoil";
 import {
   Accordion,
   AccordionDetails,
@@ -24,8 +25,6 @@ import clsx from 'clsx';
 import React, { Fragment, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
-  CHATBOT_GET_TAGS,
-  CHATBOT_GET_UTTERANCE_ACTIONS,
   CREATE_TRAINING_CONVERSATION,
   UPDATE_TRAINING_CONVERSATION,
 } from '../../../common-gql-queries';
@@ -34,8 +33,8 @@ import {
   ITagType,
   IUtteranceAction,
 } from '../../../models/chatbot-service';
-import { getIntentsQuery } from '../Intent/gql';
 import TagTypeSelection from './TagTypeSelection';
+import { currentAgentConfig } from "../atoms";
 
 interface IGetTags {
   ChatbotService_tagTypes: ITagType[] | undefined;
@@ -66,6 +65,7 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
 }) => {
   let tempActionData: any[] = [];
   const userTurns: string[] = [];
+
   if (isUpdate && conversation && conversation.actions) {
     tempActionData = conversation.actions.map((c: any) =>
       c.isUser ? { userActions: [c] } : { agentActions: [c] },
@@ -88,29 +88,44 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
 
   const [createConversation] = useMutation(CREATE_TRAINING_CONVERSATION);
   const [updateConversation] = useMutation(UPDATE_TRAINING_CONVERSATION);
-  const intentsData = useQuery<IGetIntents>(getIntentsQuery, {
-    variables: { agentId: numAgentId },
-  });
-  const tagsData = useQuery<IGetTags>(CHATBOT_GET_TAGS, {
-    variables: { agentId: numAgentId },
-  });
-  const actionsData = useQuery<IGetUtteranceActions>(
-    CHATBOT_GET_UTTERANCE_ACTIONS,
-    { variables: { agentId: numAgentId } },
-  );
+  
+  const config = useRecoilValue(currentAgentConfig)
 
-  const intents =
-    (intentsData.data && intentsData.data.ChatbotService_intents) || [];
-  const tags = (tagsData.data && tagsData.data.ChatbotService_tagTypes) || [];
-  const intentOption = intents?.map((i) => i.value || []) || [];
-  const actions = actionsData.data?.ChatbotService_utteranceActions;
-  const actionId =
-    actions !== undefined
-      ? actions?.map((item) => ({ id: item.id, text: item.text }))
-      : [];
+  const intents = config?.getIntents()
+  let tagsData = config?.getTagTypes()
+  const actions = config?.getActions()  
+
+  const intentOption = intents?.map((intent) => intent.name) || []
+  let tags:string[] = []
+
+  tagsData?.forEach(item => tags.push(item))
+  const actionId = actions?.map((item, ind) => ({ text: item.name})) || []
+  
+  console.log('Expectecd values', intentOption, tags, actionId)
+  // const intentsData = useQuery<IGetIntents>(getIntentsQuery, {
+  //   variables: { agentId: numAgentId },
+  // });
+  // const tagsData = useQuery<IGetTags>(CHATBOT_GET_TAGS, {
+  //   variables: { agentId: numAgentId },
+  // });
+  // const actionsData = useQuery<IGetUtteranceActions>(
+  //   CHATBOT_GET_UTTERANCE_ACTIONS,
+  //   { variables: { agentId: numAgentId } },
+  // );
+
+  // const intents =
+  //   (intentsData.data && intentsData.data.ChatbotService_intents) || [];
+  // const tags = (tagsData.data && tagsData.data.ChatbotService_tagTypes) || [];
+  // const intentOption = intents?.map((i) => i.value || []) || [];
+  // const actions = actionsData.data?.ChatbotService_utteranceActions;
+  // const actionId =
+  //   actions !== undefined
+  //     ? actions?.map((item) => ({ id: item.id, text: item.text }))
+  //     : [];
 
   const handleAddFields = (turnValue: string) => {
     const values = [...actionData];
+
     if (turnValue === 'user') {
       values.push({
         userActions: [{ turn: 0, intent: '', tagValues: [], utterance: '' }],
@@ -122,12 +137,14 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
         ],
       });
     }
+
     setActionsValue(values);
     setTurns([...turn, turnValue]);
   };
 
   const handleOnChange = (index: number, event: any) => {
     const values = [...actionData];
+
     if (event.target.id === 'Utterance') {
       values[index].userActions[0].utterance = event.target.value;
     } else if (event.target.id === 'agentUtterance') {
@@ -141,37 +158,45 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
       }
       values[index].agentActions[0].actionType = event.target.value;
     }
+
     setActionsValue([...values]);
   };
 
   const onDelete = (index: number, event: any) => {
     const values = [...actionData];
     const turnValues = [...turn];
+
     turnValues.splice(index, 1);
     values.splice(index, 1);
+
     setActionsValue(values);
     setTurns(turnValues);
   };
 
   const handleOnSelect = (index: number, event: any, value: any) => {
     const values = [...actionData];
+
     if (event.target.id.startsWith('intent')) {
       values[index].userActions[0].intent = value;
     } else if (event.target.id.startsWith('actionId')) {
       values[index].agentActions[0].actionId = value.id;
       values[index].agentActions[0].utterance = value.text;
     }
+
     setActionsValue([...values]);
     setErrStatus('');
   };
 
   const onSubmit = async () => {
-    setLoding(true);
     const userActions: object[] = [];
     const agentActions: object[] = [];
+    
+    setLoding(true);
+    
     actionData.forEach((item: any, index: number) => {
       if (item.userActions && item.userActions !== undefined) {
         item.userActions[0].turn = index;
+        console.log('Item ', item)
         userActions.push(item.userActions[0]);
       } else if (item.agentActions && item.agentActions !== undefined) {
         item.agentActions[0].turn = index;
@@ -189,6 +214,7 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
     } else {
       try {
         let response;
+
         if (isUpdate) {
           agentActions.map((i: any) => i.isAgent && delete i.isAgent);
           userActions.map((i: any) => i.isUser && delete i.isUser);
@@ -220,6 +246,7 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
             onSaveCallback();
           }
         }
+
       } catch (e) {
         if (
           e?.graphQLErrors?.[0]?.extensions?.code === 'NO_MODEL' &&
@@ -244,21 +271,20 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
   };
 
   const validateAgentActions = (actions: any[]): boolean => {
+    console.log('actions ', actions)
     for (const action of actions) {
       if (!action.actionType) {
         setErrStatus('Agent action type is required.');
         return false;
-      }
-      if (!action.actionId) {
-        setErrStatus('Agent action is required.');
-        return false;
-      }
+      }    
     }
     return true;
   };
 
-  const onAddTags = (tagType: string, tagValue: string, index: number) => {
+  const handleAddTags = (tagType: string, tagValue: string, index: number) => {
     const values = [...actionData];
+    
+    // console.log('handle add tags ', tagType, tagValue)
     if (tagType && tagValue) {
       const tagValues = { tagType, value: tagValue };
       if (values[index].userActions[0].tagValues.length > 10) {
@@ -278,7 +304,7 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
     setActionsValue([...values]);
   };
 
-  return (
+  return (          
     <Paper className={classes.paper}>
       {errStatus && (
         <Alert severity="error" className={classes.progressIndicator}>
@@ -324,12 +350,14 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
             </Grid>
 
             {actionData?.map((inputField: any, index: number) => {
+
               const userAction: any = inputField.userActions
                 ? inputField.userActions[0] || {}
-                : {};
+                : {};                
               const agentAction: any = inputField.agentActions
                 ? inputField.agentActions[0] || {}
                 : {};
+
               return (
                 <Fragment key={`${inputField}~${index}`}>
                   <Grid
@@ -422,10 +450,9 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
                             className={classes.tagValuesWrapper}>
                             <TagTypeSelection
                               tags={tags}
-                              userTags={userAction.tagValues}
-                              onAddTags={(tagType, tagValue) =>
-                                onAddTags(tagType, tagValue, index)
-                              }
+                              userTags={userAction.tagValues}         
+                              index={index}                     
+                              onAddTags={handleAddTags}
                             />
                             <IconButton
                               onClick={(event) => onDelete(index, event)}>
@@ -475,21 +502,10 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
                                   options={
                                     actionType === 'UTTER' ? actionId : []
                                   }
-                                  id="actionId"
-                                  value={
-                                    actionType === 'UTTER'
-                                      ? {
-                                          id: agentAction.actionId,
-                                          text: actionId.find(
-                                            (a) => a.id === agentAction.actionId,
-                                          )?.text,
-                                        }
-                                      : {}
-                                  }
+                                  id="actionId"                                  
                                   getOptionLabel={(option) =>
                                     option?.text ?? ''
-                                  }
-                                  getOptionSelected={(a, b) => a.id === b.id}
+                                  }                                  
                                   onChange={(event: any, value: any) =>
                                     handleOnSelect(index, event, value)
                                   }

@@ -27,7 +27,7 @@ import { ITrainingConversations } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 import ConfirmDialog from '../../Utils/ConfirmDialog';
-import CreateConversation from './newTrainingConversations';
+import CreateConversation from './NewTrainingConversations';
 
 interface IGetTrainingConversation {
   ChatbotService_trainingConversations: ITrainingConversations[];
@@ -45,9 +45,8 @@ export default function TrainingConversations() {
   const getTrainingConversations = useQuery<IGetTrainingConversation>(GET_TRAINING_CONVERSATIONS, { variables: { agentId: numAgentId } });
   let conversations = getTrainingConversations.data?.ChatbotService_trainingConversations || [];
 
-  console.log('conversations ', conversations);
+  console.log('conversations ', conversations)
   const refetchConversations = getTrainingConversations.refetch;
-
   const data = conversations.map((item: any) => {
     item.userActions.map((a: any) => a.isUser = true);
     item.agentActions.map((a: any) => a.isAgent = true);
@@ -67,7 +66,7 @@ export default function TrainingConversations() {
   };
 
   const onSaveCallBack = async () => {
-    const refetchData = await refetchConversations();
+    const refetchData = await refetchConversations(); 
     conversations = refetchData.data?.ChatbotService_trainingConversations || [];
     setcreateConversation(false);
     seteditConversation(0);

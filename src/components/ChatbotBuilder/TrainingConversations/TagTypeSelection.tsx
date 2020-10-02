@@ -6,8 +6,9 @@ import { ITagType } from '../../../models/chatbot-service';
 
 interface ITagSelection {
   tags: any[];
-  onAddTags: (tagType: string, tagValue: string) => any;
+  onAddTags: (tagType: string, tagValue: string, index: number) => any;
   userTags:  any;
+  index: number;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -22,13 +23,13 @@ const useStyles = makeStyles((theme: Theme) =>
     },
 }));
 
-const TagTypeSelection: React.FC<ITagSelection> = ({tags, onAddTags, userTags}) => {
+const TagTypeSelection: React.FC<ITagSelection> = ({tags, onAddTags, userTags, index}) => {
   const classes = useStyles();
-  const [tagSelectedValue, setTagSelectedValue] = React.useState<ITagType | null>(null);
-  const [tagValue, setTagValues] = useState<any | null>(null);
+  const [tagSelectedValue, setTagSelectedValue] = useState<string | null>(tags[0]);
+  const [tagValue, setTagValues] = useState<any | null>(null);  
 
-  function _onTagAdd() {
-    onAddTags(tagSelectedValue?.value || '', tagValue);
+  function _onTagAdd() {    
+    onAddTags(tagSelectedValue || '', tagValue, index);
     setTagValues('');
     setTagSelectedValue(null);
   }
@@ -40,7 +41,7 @@ const TagTypeSelection: React.FC<ITagSelection> = ({tags, onAddTags, userTags}) 
             <Autocomplete
               options={tags.filter(o => !userTags?.find((o2: any) => o.value === o2.tagType))}
               value={tagSelectedValue}
-              getOptionLabel={(option) =>  option.value}
+              getOptionLabel={(option) =>  option}
               onChange={(event: any, newValue: any | null) => setTagSelectedValue(newValue)}
               renderInput={(params) => <TextField {...params} label="Tag Types" variant="outlined" />}
               size="small"
