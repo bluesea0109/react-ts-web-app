@@ -453,8 +453,7 @@ export const CREATE_TRAINING_CONVERSATION = gql`
         utterance
       }
       agentActions {
-        turn
-        actionId
+        turn        
         actionName
       }
     }
@@ -510,7 +509,6 @@ export const UPDATE_TRAINING_CONVERSATION = gql`
       }
       agentActions {
         turn
-        actionId
         actionName
       }
     }

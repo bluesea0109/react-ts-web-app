@@ -144,6 +144,7 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
 
   const handleOnChange = (index: number, event: any) => {
     const values = [...actionData];
+    console.log('actionData >>> ', actionData)
 
     if (event.target.id === 'Utterance') {
       values[index].userActions[0].utterance = event.target.value;
@@ -198,9 +199,12 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
         item.userActions[0].turn = index;
         console.log('Item ', item)
         userActions.push(item.userActions[0]);
-      } else if (item.agentActions && item.agentActions !== undefined) {
-        item.agentActions[0].turn = index;
-        agentActions.push(item.agentActions[0]);
+      } else if (item.agentActions && item.agentActions !== undefined) {        
+        const data = {
+          turn: index,
+          actionName: item.agentActions[0].actionType
+        }
+        agentActions.push(data);
       }
     });
 
@@ -214,7 +218,7 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
     } else {
       try {
         let response;
-
+        
         if (isUpdate) {
           agentActions.map((i: any) => i.isAgent && delete i.isAgent);
           userActions.map((i: any) => i.isUser && delete i.isUser);
@@ -228,12 +232,12 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
           });
         } else {
           response = await createConversation({
-            variables: {
+            variables: {                            
               conversation: {
                 agentId: numAgentId,
                 agentActions,
                 userActions,
-              },
+              }
             },
           });
         }
@@ -273,8 +277,8 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
   const validateAgentActions = (actions: any[]): boolean => {
     console.log('actions ', actions)
     for (const action of actions) {
-      if (!action.actionType) {
-        setErrStatus('Agent action type is required.');
+      if (!action.actionName) {
+        setErrStatus('Agent action Name is required.');
         return false;
       }    
     }
@@ -376,7 +380,8 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
                       <Grid
                         container={true}
                         item={true}
-                        className={classes.actionsWrapper}>
+                        className={classes.actionsWrapper}
+                      >
                         <span className={classes.agentTagText}>
                           User Action
                         </span>

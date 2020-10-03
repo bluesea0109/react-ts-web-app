@@ -48,9 +48,9 @@ export default function TrainingConversations() {
   console.log('conversations ', conversations)
   const refetchConversations = getTrainingConversations.refetch;
   const data = conversations.map((item: any) => {
-    item.userActions.map((a: any) => a.isUser = true);
-    item.agentActions.map((a: any) => a.isAgent = true);
-    const arr = item.userActions.concat(item.agentActions).sort((a: any, b: any) => parseFloat(a.turn) - parseFloat(b.turn));
+    const userActions = item.userActions.map((a: any) => ({ ...a, isUser: true }));  
+    const agentActions = item.agentActions.map((a: any) => ({...a, isAgent: true}));    
+    const arr = userActions.concat(agentActions).sort((a: any, b: any) => parseFloat(a.turn) - parseFloat(b.turn));
     return { actions: arr, id: item.id };
   });
 
@@ -88,7 +88,6 @@ export default function TrainingConversations() {
   };
 
   const deleteConfirm = () => setConfirmOpen(true);
-
   const onCancel = () => seteditConversation(0);
 
   return (
@@ -119,7 +118,6 @@ export default function TrainingConversations() {
               }
               return (
                 <Accordion className={classes.listItemWrapper} key={index}>
-
                   <AccordionSummary
                     expandIcon={<ExpandMore />}
                     id="conversationId"
@@ -141,7 +139,7 @@ export default function TrainingConversations() {
                         onConfirm={() => deleteConversationHandler(item.id)}
                       >
                         Are you sure you want to delete this Conversations?
-                    </ConfirmDialog>
+                      </ConfirmDialog>
                     </Grid>
                     <Grid container={true} direction={'column'} className={classes.paper}>
                       <Grid container={true} className={classes.actionWrapper}>
@@ -207,7 +205,7 @@ export default function TrainingConversations() {
                                     <Grid container={true} className={classes.actionDetailsWrapper} direction={'column'}>
                                       <Grid className={classes.contentTable}>
                                         <span className={classes.itemWrapper}>
-                                          <h6>Action Id:</h6>
+                                          <h6>Action Type:</h6>
                                           <p>{item.actionId}</p>
                                         </span>
                                         <span className={classes.itemWrapper}>
