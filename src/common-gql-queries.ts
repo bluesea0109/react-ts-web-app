@@ -453,7 +453,7 @@ export const CREATE_TRAINING_CONVERSATION = gql`
         utterance
       }
       agentActions {
-        turn        
+        turn
         actionName
       }
     }

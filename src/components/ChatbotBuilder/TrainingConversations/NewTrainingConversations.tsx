@@ -1,5 +1,4 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { useRecoilValue } from "recoil";
 import {
   Accordion,
   AccordionDetails,
@@ -24,6 +23,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import clsx from 'clsx';
 import React, { Fragment, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
 import {
   CREATE_TRAINING_CONVERSATION,
   UPDATE_TRAINING_CONVERSATION,
@@ -33,8 +33,8 @@ import {
   ITagType,
   IUtteranceAction,
 } from '../../../models/chatbot-service';
+import { currentAgentConfig } from '../atoms';
 import TagTypeSelection from './TagTypeSelection';
-import { currentAgentConfig } from "../atoms";
 
 interface IGetTags {
   ChatbotService_tagTypes: ITagType[] | undefined;
@@ -88,20 +88,20 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
 
   const [createConversation] = useMutation(CREATE_TRAINING_CONVERSATION);
   const [updateConversation] = useMutation(UPDATE_TRAINING_CONVERSATION);
-  
-  const config = useRecoilValue(currentAgentConfig)
 
-  const intents = config?.getIntents()
-  let tagsData = config?.getTagTypes()
-  const actions = config?.getActions()  
+  const config = useRecoilValue(currentAgentConfig);
 
-  const intentOption = intents?.map((intent) => intent.name) || []
-  let tags:string[] = []
+  const intents = config?.getIntents();
+  const tagsData = config?.getTagTypes();
+  const actions = config?.getActions();
 
-  tagsData?.forEach(item => tags.push(item))
-  const actionId = actions?.map((item, ind) => ({ text: item.name})) || []
-  
-  console.log('Expectecd values', intentOption, tags, actionId)
+  const intentOption = intents?.map((intent) => intent.name) || [];
+  const tags: string[] = [];
+
+  tagsData?.forEach(item => tags.push(item));
+  const actionId = actions?.map((item, ind) => ({ text: item.name})) || [];
+
+  console.log('Expectecd values', intentOption, tags, actionId);
   // const intentsData = useQuery<IGetIntents>(getIntentsQuery, {
   //   variables: { agentId: numAgentId },
   // });
@@ -144,7 +144,7 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
 
   const handleOnChange = (index: number, event: any) => {
     const values = [...actionData];
-    console.log('actionData >>> ', actionData)
+    console.log('actionData >>> ', actionData);
 
     if (event.target.id === 'Utterance') {
       values[index].userActions[0].utterance = event.target.value;
@@ -191,19 +191,19 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
   const onSubmit = async () => {
     const userActions: object[] = [];
     const agentActions: object[] = [];
-    
+
     setLoding(true);
-    
+
     actionData.forEach((item: any, index: number) => {
       if (item.userActions && item.userActions !== undefined) {
         item.userActions[0].turn = index;
-        console.log('Item ', item)
+        console.log('Item ', item);
         userActions.push(item.userActions[0]);
-      } else if (item.agentActions && item.agentActions !== undefined) {        
+      } else if (item.agentActions && item.agentActions !== undefined) {
         const data = {
           turn: index,
-          actionName: item.agentActions[0].actionType
-        }
+          actionName: item.agentActions[0].actionType,
+        };
         agentActions.push(data);
       }
     });
@@ -218,7 +218,7 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
     } else {
       try {
         let response;
-        
+
         if (isUpdate) {
           agentActions.map((i: any) => i.isAgent && delete i.isAgent);
           userActions.map((i: any) => i.isUser && delete i.isUser);
@@ -232,12 +232,12 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
           });
         } else {
           response = await createConversation({
-            variables: {                            
+            variables: {
               conversation: {
                 agentId: numAgentId,
                 agentActions,
                 userActions,
-              }
+              },
             },
           });
         }
@@ -275,19 +275,19 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
   };
 
   const validateAgentActions = (actions: any[]): boolean => {
-    console.log('actions ', actions)
+    console.log('actions ', actions);
     for (const action of actions) {
       if (!action.actionName) {
         setErrStatus('Agent action Name is required.');
         return false;
-      }    
+      }
     }
     return true;
   };
 
   const handleAddTags = (tagType: string, tagValue: string, index: number) => {
     const values = [...actionData];
-    
+
     // console.log('handle add tags ', tagType, tagValue)
     if (tagType && tagValue) {
       const tagValues = { tagType, value: tagValue };
@@ -308,7 +308,7 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
     setActionsValue([...values]);
   };
 
-  return (          
+  return (
     <Paper className={classes.paper}>
       {errStatus && (
         <Alert severity="error" className={classes.progressIndicator}>
@@ -357,7 +357,7 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
 
               const userAction: any = inputField.userActions
                 ? inputField.userActions[0] || {}
-                : {};                
+                : {};
               const agentAction: any = inputField.agentActions
                 ? inputField.agentActions[0] || {}
                 : {};
@@ -455,8 +455,8 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
                             className={classes.tagValuesWrapper}>
                             <TagTypeSelection
                               tags={tags}
-                              userTags={userAction.tagValues}         
-                              index={index}                     
+                              userTags={userAction.tagValues}
+                              index={index}
                               onAddTags={handleAddTags}
                             />
                             <IconButton
@@ -507,10 +507,10 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
                                   options={
                                     actionType === 'UTTER' ? actionId : []
                                   }
-                                  id="actionId"                                  
+                                  id="actionId"
                                   getOptionLabel={(option) =>
                                     option?.text ?? ''
-                                  }                                  
+                                  }
                                   onChange={(event: any, value: any) =>
                                     handleOnSelect(index, event, value)
                                   }

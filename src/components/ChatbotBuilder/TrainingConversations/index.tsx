@@ -45,11 +45,11 @@ export default function TrainingConversations() {
   const getTrainingConversations = useQuery<IGetTrainingConversation>(GET_TRAINING_CONVERSATIONS, { variables: { agentId: numAgentId } });
   let conversations = getTrainingConversations.data?.ChatbotService_trainingConversations || [];
 
-  console.log('conversations ', conversations)
+  console.log('conversations ', conversations);
   const refetchConversations = getTrainingConversations.refetch;
   const data = conversations.map((item: any) => {
-    const userActions = item.userActions.map((a: any) => ({ ...a, isUser: true }));  
-    const agentActions = item.agentActions.map((a: any) => ({...a, isAgent: true}));    
+    const userActions = item.userActions.map((a: any) => ({ ...a, isUser: true }));
+    const agentActions = item.agentActions.map((a: any) => ({...a, isAgent: true}));
     const arr = userActions.concat(agentActions).sort((a: any, b: any) => parseFloat(a.turn) - parseFloat(b.turn));
     return { actions: arr, id: item.id };
   });
@@ -66,7 +66,7 @@ export default function TrainingConversations() {
   };
 
   const onSaveCallBack = async () => {
-    const refetchData = await refetchConversations(); 
+    const refetchData = await refetchConversations();
     conversations = refetchData.data?.ChatbotService_trainingConversations || [];
     setcreateConversation(false);
     seteditConversation(0);

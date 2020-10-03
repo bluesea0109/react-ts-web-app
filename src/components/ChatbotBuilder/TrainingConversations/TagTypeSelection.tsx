@@ -26,9 +26,9 @@ const useStyles = makeStyles((theme: Theme) =>
 const TagTypeSelection: React.FC<ITagSelection> = ({tags, onAddTags, userTags, index}) => {
   const classes = useStyles();
   const [tagSelectedValue, setTagSelectedValue] = useState<string | null>(tags[0]);
-  const [tagValue, setTagValues] = useState<any | null>(null);  
+  const [tagValue, setTagValues] = useState<any | null>(null);
 
-  function _onTagAdd() {    
+  function _onTagAdd() {
     onAddTags(tagSelectedValue || '', tagValue, index);
     setTagValues('');
     setTagSelectedValue(null);
