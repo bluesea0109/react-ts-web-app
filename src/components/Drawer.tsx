@@ -39,13 +39,12 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface CustomDrawerProps {
-  user: IUser;
-  onIconClick: () => void;
+  user: IUser;  
   status: boolean;
 }
 
 function CustomDrawer(props: CustomDrawerProps) {
-  const { user, onIconClick, status } = props;
+  const { user, status } = props;
   const classes = useStyles();
   const location = useLocation();
   const [dashOpen, setDashOpen] = useState(false);
@@ -117,14 +116,7 @@ function CustomDrawer(props: CustomDrawerProps) {
   );
 
   const list = () => (
-    <div className={classes.list} role="presentation">
-      <div className={classes.drawerHeader}>
-        <IconButtonBavard
-          tooltip="barvard button"
-          disabled={false}
-          onClick={onIconClick}
-        />
-      </div>
+    <div className={classes.list} role="presentation">      
       <List>
         <ListItem
           component={Link}

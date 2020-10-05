@@ -123,7 +123,7 @@ function App() {
     drawerOpen: false,
   });
 
-  const onMenuClick = () => {
+  const onMenuClick = (key: number) => {
     setState({ ...state, drawerOpen: !state.drawerOpen });
   };
 
@@ -151,10 +151,9 @@ function App() {
           position="fixed"
           className={clsx(classes.appBar, {
             [classes.appBarShift]: state.drawerOpen,
-          })}
-          onMenuClick={onMenuClick}
+          })}          
         />
-        <MySidebar/>
+        <MySidebar onClick={onMenuClick}/>
         <Drawer
           style={{backgroundColor: 'black'}}
           className={clsx(classes.drawer, {
@@ -171,7 +170,7 @@ function App() {
           }}
           open={state.drawerOpen}
           onClose={onDrawerClose}>
-            <CustomDrawer user={data.currentUser} onIconClick={onMenuClick} status={state.drawerOpen}/>
+            <CustomDrawer user={data.currentUser} status={state.drawerOpen}/>
           </Drawer>
 
         <main
