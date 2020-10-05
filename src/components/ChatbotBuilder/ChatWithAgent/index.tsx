@@ -35,8 +35,6 @@ export default function ChatWithAgent() {
   });
 
   const loadedKey = apiKeysQuery.data?.apiKey.key ?? null;
-  console.log('when - ', apiKey);
-
   useEffect(() => {
     if (!apiKeysQuery.loading) {
       setApiKey(loadedKey);
@@ -44,12 +42,18 @@ export default function ChatWithAgent() {
   }, [loadedKey, apiKeysQuery.loading]);
 
   const onMessage = useCallback((e: any) => {
-    console.log('onMessage: ', e.data.hasOwnProperty('isError') && e.data?.isError);
     if (e.data.hasOwnProperty('isWidgetActive')) {
       setIsActive(e.data.isWidgetActive);
     } else if (e.data.hasOwnProperty('isError') && e.data?.isError) {
       setError(e.data);
     }
+
+    iframe.current?.contentWindow?.postMessage({
+      apiKey,
+      uname: agentData.data?.ChatbotService_agent.uname,
+      isActive: true,
+      dev: true,
+    }, '*');
   }, []);
 
   useEffect(() => {
@@ -79,13 +83,13 @@ export default function ChatWithAgent() {
 
   const onIframeLoad = () => {
     iframe.current?.contentWindow?.postMessage({
-      uname: agentData.data?.ChatbotService_agent.uname,
       apiKey,
+      uname: agentData.data?.ChatbotService_agent.uname,
       isActive: true,
       dev: true,
     }, '*');
   };
-  console.log('First render ', apiKey, agentId);
+
   return (
     <div
       className={classes.root}
@@ -100,13 +104,13 @@ export default function ChatWithAgent() {
           style={{
             border: 'none',
             display: !!error ? 'none' : 'block',
-            height: isActive ? '80%' : 76,
-            width: isActive ? (isDebug ? 900 : 450) : 76,
+            height: isActive ? '80%' : 350,
+            width: isActive ? 550 : 76,
             position: 'fixed',
             top: 'auto',
             left: 'auto',
-            bottom: '24px',
-            right: !isActive ? '24px' : 0,
+            bottom: 0,
+            right: !isActive ? '24px' : '13px',
             visibility: 'visible',
             zIndex: 2147483647,
             maxHeight: '100vh',
@@ -119,6 +123,7 @@ export default function ChatWithAgent() {
           }}
         />
       ))}
+
       {!!error && (
         <Typography
           variant="h6"
