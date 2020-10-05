@@ -17,6 +17,7 @@ import OrganizationSettings from './components/Dashboard/OrganizationSettings';
 import ProjectSettings from './components/Dashboard/ProjectSettings';
 import CustomDrawer from './components/Drawer';
 import FAQService from './components/FAQService';
+import MySidebar from './components/Sidebar';
 import ImageLabeling from './components/ImageLabeling';
 import InternalServerErrorPage from './components/InternalServerErrorpage';
 import TextLabeling from './components/TextLabeling';
@@ -153,6 +154,7 @@ function App() {
           })}
           onMenuClick={onMenuClick}
         />
+        <MySidebar/>
         <Drawer
           style={{backgroundColor: 'black'}}
           className={clsx(classes.drawer, {
