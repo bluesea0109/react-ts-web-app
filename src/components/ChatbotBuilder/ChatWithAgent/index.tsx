@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { createStyles, makeStyles, Theme, Typography } from '@material-ui/core';
+import { Button, createStyles, makeStyles, Theme } from '@material-ui/core';
 import gql from 'graphql-tag';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
@@ -22,9 +22,7 @@ export default function ChatWithAgent() {
   const { agentId, projectId } = useParams();
   const [apiKey, setApiKey] = useState<string | null>(null);
   const classes = useStyles();
-  const [isActive, setIsActive] = useState(true);
-  const [isDebug, setIsDebug] = useState(false);
-  const [error, setError] = useState<any>(null);
+  const [isActive, setIsActive] = useState(false);
   const iframe = useRef<HTMLIFrameElement | null>(null);
   const agentData = useQuery<IGetAgent>(GET_AGENT, { variables: { agentId: Number(agentId) } });
   const apiKeysQuery = useQuery(getApiKeysQuery, {
@@ -35,8 +33,6 @@ export default function ChatWithAgent() {
   });
 
   const loadedKey = apiKeysQuery.data?.apiKey.key ?? null;
-  console.log('when - ', apiKey);
-
   useEffect(() => {
     if (!apiKeysQuery.loading) {
       setApiKey(loadedKey);
@@ -44,27 +40,16 @@ export default function ChatWithAgent() {
   }, [loadedKey, apiKeysQuery.loading]);
 
   const onMessage = useCallback((e: any) => {
-    console.log('onMessage: ', e.data.hasOwnProperty('isError') && e.data?.isError);
-    if (e.data.hasOwnProperty('isWidgetActive')) {
-      setIsActive(e.data.isWidgetActive);
-    } else if (e.data.hasOwnProperty('isError') && e.data?.isError) {
-      setError(e.data);
+    if (e.data.hasOwnProperty('loaded')) {
+      setIsActive(false);
     }
   }, []);
 
+  const toggleContentWindow = () => {
+    setIsActive(!isActive);
+  };
+
   useEffect(() => {
-    (async () => {
-      const parentUrl = window.location.href;
-      const url = new URL(parentUrl);
-      const host = url.hostname;
-
-      setIsDebug([
-        'localhost',
-        'bavard-ai-dev.web.app',
-        'bavard-chatbot.web.app',
-      ].includes(host));
-    })();
-
     window.addEventListener('message', onMessage);
 
     return () => {
@@ -73,61 +58,61 @@ export default function ChatWithAgent() {
   // eslint-disable-next-line
   }, []);
 
+  useEffect(() => {
+    if (!apiKey) { return; }
+    iframe.current?.contentWindow?.postMessage({
+      apiKey,
+      uname: agentData.data?.ChatbotService_agent.uname,
+      isActive: true,
+      dev: true,
+      showSemiActive: true,
+    }, '*');
+  }, [apiKey, agentData.data]);
+
+  useEffect(() => {
+    iframe.current?.contentWindow?.postMessage({
+      isActive,
+    }, '*');
+  }, [isActive]);
+
   if (agentData.loading) {
     return <ContentLoading/>;
   }
 
-  const onIframeLoad = () => {
-    iframe.current?.contentWindow?.postMessage({
-      uname: agentData.data?.ChatbotService_agent.uname,
-      apiKey,
-      isActive: true,
-      dev: true,
-    }, '*');
-  };
-  console.log('First render ', apiKey, agentId);
   return (
     <div
       className={classes.root}
       id="chatbot"
     >
-      {(!!(apiKey && !!agentId) && (
-        <iframe
-          title="chatbot"
-          src={config.chatbotUrl}
-          ref={ref => iframe.current = ref}
-          onLoad={onIframeLoad}
-          style={{
-            border: 'none',
-            display: !!error ? 'none' : 'block',
-            height: isActive ? '80%' : 76,
-            width: isActive ? (isDebug ? 900 : 450) : 76,
-            position: 'fixed',
-            top: 'auto',
-            left: 'auto',
-            bottom: '24px',
-            right: !isActive ? '24px' : 0,
-            visibility: 'visible',
-            zIndex: 2147483647,
-            maxHeight: '100vh',
-            maxWidth: '100vw',
-            transition: 'none 0s ease 0s',
-            background: 'none transparent',
-            opacity: '1',
-            pointerEvents: 'auto',
-            touchAction: 'auto',
-          }}
-        />
-      ))}
-      {!!error && (
-        <Typography
-          variant="h6"
-          color="error"
-          style={{ fontWeight: 'bold', textAlign: 'center' }}
-        >
-          Error {error.code}: {error.message}
-        </Typography>
-      )}
+      <iframe
+        title="chatbot"
+        src={config.chatbotUrl}
+        ref={ref => iframe.current = ref}
+        style={{
+          border: 'none',
+          display: 'block',
+          height: isActive ? '80%' : 350,
+          width: 550,
+          position: 'fixed',
+          top: 'auto',
+          left: 'auto',
+          bottom: 0,
+          right: !isActive ? '24px' : '13px',
+          visibility: 'visible',
+          zIndex: 2147483647,
+          maxHeight: '100vh',
+          maxWidth: '100vw',
+          transition: 'none 0s ease 0s',
+          background: 'none transparent',
+          opacity: '1',
+          pointerEvents: 'auto',
+          touchAction: 'auto',
+        }}
+      />
+
+      <Button color="primary" variant="contained" onClick={toggleContentWindow}>
+        {isActive ? 'Hide' : 'Show'}
+      </Button>
     </div>
   );
 }
