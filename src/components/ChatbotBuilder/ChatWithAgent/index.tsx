@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { createStyles, makeStyles, Theme, Button } from '@material-ui/core';
+import { Button, createStyles, makeStyles, Theme } from '@material-ui/core';
 import gql from 'graphql-tag';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
@@ -47,7 +47,7 @@ export default function ChatWithAgent() {
 
   const toggleContentWindow = () => {
     setIsActive(!isActive);
-  }
+  };
 
   useEffect(() => {
     window.addEventListener('message', onMessage);
@@ -59,7 +59,7 @@ export default function ChatWithAgent() {
   }, []);
 
   useEffect(() => {
-    if (!apiKey) return;
+    if (!apiKey) { return; }
     iframe.current?.contentWindow?.postMessage({
       apiKey,
       uname: agentData.data?.ChatbotService_agent.uname,
