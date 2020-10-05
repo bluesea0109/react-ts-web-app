@@ -28,24 +28,27 @@ import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 import ConfirmDialog from '../../Utils/ConfirmDialog';
 import CreateConversation from './NewTrainingConversations';
+import BavardPagination from './Pagination';
 
 interface IGetTrainingConversation {
   ChatbotService_trainingConversations: ITrainingConversations[];
 }
 
 export default function TrainingConversations() {
+  const docsInPage = 5;
   const classes = useStyles();
-  const { agentId } = useParams();
+
+  const { agentId } = useParams<{agentId: string}>();
   const [createConversation, setcreateConversation] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [editConversation, seteditConversation] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
   const numAgentId = Number(agentId);
 
   const [deleteConversations, { loading }] = useMutation(DELETE_TRAINING_CONVERSATION);
   const getTrainingConversations = useQuery<IGetTrainingConversation>(GET_TRAINING_CONVERSATIONS, { variables: { agentId: numAgentId } });
   let conversations = getTrainingConversations.data?.ChatbotService_trainingConversations || [];
 
-  console.log('conversations ', conversations);
   const refetchConversations = getTrainingConversations.refetch;
   const data = conversations.map((item: any) => {
     const userActions = item.userActions.map((a: any) => ({ ...a, isUser: true }));
@@ -54,6 +57,8 @@ export default function TrainingConversations() {
     return { actions: arr, id: item.id };
   });
 
+  const totalPages = Math.ceil(data.length / docsInPage);
+  const records = data.slice( (currentPage - 1) * docsInPage, currentPage * docsInPage );
   if (getTrainingConversations.error) {
     return <ApolloErrorPage error={getTrainingConversations.error} />;
   }
@@ -61,6 +66,7 @@ export default function TrainingConversations() {
   if (getTrainingConversations.loading) {
     return <ContentLoading />;
   }
+
   const onCreateNewConversation = () => {
     setcreateConversation(true);
   };
@@ -87,10 +93,19 @@ export default function TrainingConversations() {
     }
   };
 
+  const handleClose = () => {
+    setcreateConversation(false);
+  };
+
+  const handlePageChange = (value: number) => {
+    setCurrentPage(value); // set the page
+    console.log('Current Page ========> ', currentPage);
+  };
+
   const deleteConfirm = () => setConfirmOpen(true);
-  const onCancel = () => seteditConversation(0);
 
   return (
+    <>
     <Paper className={classes.paper}>
       <Button
         className={classes.button}
@@ -101,18 +116,20 @@ export default function TrainingConversations() {
         Create New Conversation
       </Button>
       {loading && <LinearProgress />}
+      <>
       {
-        data.length > 0 && data ?
+        records.length > 0 && records ?
           (
-            data.sort((a: any, b: any) => parseInt(a.id) + parseInt(b.id)).map((item, index) => {
+            records.sort((a: any, b: any) => parseInt(a.id) + parseInt(b.id)).map((item, index) => {
               if (item.id === editConversation) {
                 return (
                   <CreateConversation
+                    key={index}
                     isUpdate={true}
                     conversation={item}
                     onSaveCallback={onSaveCallBack}
                     conversationLastindex={index + 1}
-                    onCancel={onCancel}
+                    onCloseCallback={handleClose}
                   />
                 );
               }
@@ -122,7 +139,7 @@ export default function TrainingConversations() {
                     expandIcon={<ExpandMore />}
                     id="conversationId"
                   >
-                    <Typography className={classes.heading}>Conversation {index + 1}</Typography>
+                    <Typography className={classes.heading}>Conversation {((currentPage - 1) * docsInPage) + index + 1}</Typography>
                   </AccordionSummary>
                   <AccordionDetails className={classes.listItem}>
                     <Grid className={classes.actionButtonWrapper}>
@@ -206,11 +223,7 @@ export default function TrainingConversations() {
                                       <Grid className={classes.contentTable}>
                                         <span className={classes.itemWrapper}>
                                           <h6>Action Type:</h6>
-                                          <p>{item.actionId}</p>
-                                        </span>
-                                        <span className={classes.itemWrapper}>
-                                          <h6>Action Type:</h6>
-                                          <p>{item.actionType}</p>
+                                          <p>{item.actionName}</p>
                                         </span>
                                         <span className={classes.itemWrapper}>
                                           <h6>Utterance:</h6>
@@ -237,10 +250,15 @@ export default function TrainingConversations() {
             </Typography>
           )
       }
+      <Grid className={classes.cetnerPagination}>
+      <BavardPagination total={totalPages} onChange={handlePageChange}/>
+      </Grid>
+      </>
+      </Paper>
       {
-        createConversation && <CreateConversation onSaveCallback={onSaveCallBack} conversationLastindex={conversations.length + 1} />
+        createConversation && <CreateConversation onSaveCallback={onSaveCallBack} conversationLastindex={conversations.length + 1} onCloseCallback={handleClose}/>
       }
-    </Paper>
+    </>
   );
 }
 
@@ -250,7 +268,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
     },
     button: {
-      margin: theme.spacing(1),
+      margin: '0px 50px 20px',
     },
     heading: {
       fontSize: theme.typography.pxToRem(15),
@@ -384,6 +402,10 @@ const useStyles = makeStyles((theme: Theme) =>
         color: '#333',
 
       },
+    },
+    cetnerPagination: {
+      display: 'flex',
+      justifyContent: 'center',
     },
 
   }));

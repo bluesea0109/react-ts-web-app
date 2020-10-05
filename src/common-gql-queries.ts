@@ -484,33 +484,36 @@ export const GET_TRAINING_CONVERSATIONS = gql`
 
 export const UPDATE_TRAINING_CONVERSATION = gql`
   mutation(
-    $conversationId: Int!
+    $conversationId: Int!,
     $agentId: Int!
     $agentActions: [ChatbotService_TrainingConversationAgentActionInput!]!
     $userActions: [ChatbotService_TrainingConversationUserActionInput!]!
   ) {
     ChatbotService_updateTrainingConversation(
-      conversationId: $conversationId
+      conversationId: $conversationId,      
       conversation: {
         agentId: $agentId
         agentActions: $agentActions
-        userActions: $userActions
-      }
+        userActions: $userActions      
+      }      
     ) {
-      agentId
-      userActions {
-        turn
-        intent
-        tagValues {
-          tagType
-          value
+      conversationId            
+      conversation {
+        agentId
+        userActions {
+          turn
+          intent
+          tagValues {
+            tagType
+            value
+          }
+          utterance
         }
-        utterance
-      }
-      agentActions {
-        turn
-        actionName
-      }
+        agentActions {
+          turn
+          actionName
+        }      
+      }      
     }
   }
 `;

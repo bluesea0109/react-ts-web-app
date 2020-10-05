@@ -2,7 +2,6 @@ import { Button, Grid, TextField } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import React, { Fragment, useState } from 'react';
-import { ITagType } from '../../../models/chatbot-service';
 
 interface ITagSelection {
   tags: any[];
@@ -26,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const TagTypeSelection: React.FC<ITagSelection> = ({tags, onAddTags, userTags, index}) => {
   const classes = useStyles();
   const [tagSelectedValue, setTagSelectedValue] = useState<string | null>(tags[0]);
-  const [tagValue, setTagValues] = useState<any | null>(null);
+  const [tagValue, setTagValues] = useState<any | null>('');
 
   function _onTagAdd() {
     onAddTags(tagSelectedValue || '', tagValue, index);
