@@ -4,7 +4,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import assert from 'assert';
 import clsx from 'clsx';
 import 'firebase/auth';
-import React from 'react';
+import React, { useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import './App.css';
 import { GET_CURRENT_USER } from './common-gql-queries';
@@ -17,9 +17,9 @@ import OrganizationSettings from './components/Dashboard/OrganizationSettings';
 import ProjectSettings from './components/Dashboard/ProjectSettings';
 import CustomDrawer from './components/Drawer';
 import FAQService from './components/FAQService';
-import MySidebar from './components/Sidebar';
 import ImageLabeling from './components/ImageLabeling';
 import InternalServerErrorPage from './components/InternalServerErrorpage';
+import MySidebar from './components/Sidebar';
 import TextLabeling from './components/TextLabeling';
 import { IUser } from './models/user-service';
 
@@ -114,6 +114,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function App() {
   const classes = useStyles();
+  const [navKey, setNavKey] = useState(0)
   interface IGetCurrentUser {
     currentUser: IUser;
   }
@@ -124,7 +125,8 @@ function App() {
   });
 
   const onMenuClick = (key: number) => {
-    setState({ ...state, drawerOpen: !state.drawerOpen });
+    setState({ ...state, drawerOpen: true });
+    setNavKey(key)
   };
 
   const onDrawerClose = () => {
@@ -151,9 +153,9 @@ function App() {
           position="fixed"
           className={clsx(classes.appBar, {
             [classes.appBarShift]: state.drawerOpen,
-          })}          
+          })}
         />
-        <MySidebar onClick={onMenuClick}/>
+        <MySidebar user={data.currentUser} onClick={onMenuClick} onClose={onDrawerClose}/>
         <Drawer
           style={{backgroundColor: 'black'}}
           className={clsx(classes.drawer, {
@@ -170,7 +172,7 @@ function App() {
           }}
           open={state.drawerOpen}
           onClose={onDrawerClose}>
-            <CustomDrawer user={data.currentUser} status={state.drawerOpen}/>
+            <CustomDrawer user={data.currentUser} status={state.drawerOpen} navigation={navKey}/>
           </Drawer>
 
         <main

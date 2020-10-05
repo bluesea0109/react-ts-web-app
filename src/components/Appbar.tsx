@@ -21,7 +21,7 @@ import { useHistory } from 'react-router-dom';
 import { GET_CURRENT_USER, UPDATE_ACTIVE_ORG } from '../common-gql-queries';
 import { IUser } from '../models/user-service';
 
-interface CustomAppbarProps extends AppBarProps {  
+interface CustomAppbarProps extends AppBarProps {
   user: IUser;
 }
 
@@ -193,7 +193,7 @@ const Projects: React.FC<{ user: IUser }> = ({ user }) => {
 const CustomAppbar: React.FC<CustomAppbarProps> = ({
   user,
   position,
-  className  
+  className,
 }) => {
   const classes = useStyles();
 

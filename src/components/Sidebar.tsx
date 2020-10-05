@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import NavItem from './IconButtons/NavItem';
-import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import styled from 'styled-components';
 import IconButtonBavard from './IconButtons/IconButtonBavard';
+import NavItem from './IconButtons/NavItem';
+import { IUser } from '../models/user-service';
 
 const VerticalSidebar = styled.div`
   position: fixed;
@@ -22,11 +23,13 @@ const NavIcon = styled.div`
 `;
 
 interface ISidebarProps {
-  onClick: (key: number) => void;
+	user: IUser;
+	onClick: (key: number) => void;
+	onClose: () => void;
 }
 
 const Sidebar = (props: ISidebarProps) => {
-  const { onClick } = props;
+  const { onClick, onClose } = props;
 
   const openDashboard = (key: number) => {
     setSelected(key);
@@ -37,7 +40,8 @@ const Sidebar = (props: ISidebarProps) => {
     onClick(2);
   };
   const openPage = (key: number) => {
-    setSelected(key);
+		setSelected(key);
+		onClose()
   };
 
   const items = [
@@ -91,6 +95,7 @@ const Sidebar = (props: ISidebarProps) => {
       {items.map((item) => (
         <NavItem
           active={selected === item.key}
+          key={item.key}
           keyVal={item.key}
           path={item.path}
           css={item.css}

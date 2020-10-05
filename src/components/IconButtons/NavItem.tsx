@@ -1,6 +1,6 @@
 import React, { Children, ReactElement } from 'react';
+import { BrowserRouter as Router, Link, Route } from 'react-router-dom';
 import styled from 'styled-components';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import SubMenuIcon from './SubMenuIcon';
 
 const StyledNavItem = styled.div`
@@ -16,9 +16,9 @@ const StyledNavItem = styled.div`
     :hover {
       opacity: 0.7;
       text-decoration: none; /* Gets rid of underlining of icons */
-		}		
+		}
 	border-right: 5px solid ${(props: { active: boolean }) =>
-	props.active ? '#4A90E2' : 'none'};
+  props.active ? '#4A90E2' : 'none'};
   }
 `;
 
@@ -34,10 +34,10 @@ const NavItem = (props: NavItemProps) => {
   const { active, path, onClick, keyVal } = props;
   const handleClick = () => {
     onClick(keyVal);
-  };	
-	
+  };
+
   return (
-    <StyledNavItem active={active} className={active? "active" : ""}>
+    <StyledNavItem active={active} className={active ? 'active' : ''}>
       <Link to={path} onClick={handleClick}>
         <SubMenuIcon title={props.css} />
       </Link>
