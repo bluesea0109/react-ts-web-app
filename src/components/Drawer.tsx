@@ -91,7 +91,7 @@ function CustomDrawer(props: CustomDrawerProps) {
       <List>
         <ListItem className={classes.blank}/>
         <ListItem
-          component={Link}
+          component={Link} 
           to={createOrgPath('settings')}
           selected={
             !location.pathname.includes('projects') &&
@@ -100,7 +100,7 @@ function CustomDrawer(props: CustomDrawerProps) {
           button={true}
           className={classes.listItem}>
           <ListItemIcon style={{ color: 'white' }}>
-            <SubMenuIcon title="Organization" />
+            <SubMenuIcon title="Organization" active={false}/>
           </ListItemIcon>
           <ListItemText
             primary="Organization"
@@ -122,7 +122,7 @@ function CustomDrawer(props: CustomDrawerProps) {
           button={true}
           className={classes.listItem}>
           <ListItemIcon style={{ color: 'white' }}>
-            <SubMenuIcon title="Project" />
+            <SubMenuIcon title="Project" active={false}/>
           </ListItemIcon>
           <ListItemText
             primary="Project"
@@ -145,7 +145,7 @@ function CustomDrawer(props: CustomDrawerProps) {
           button={true}
           className={classes.listItem}>
           <ListItemIcon style={{ color: 'white' }}>
-            <SubMenuIcon title="BotBuilder" />
+            <SubMenuIcon title="BotBuilder" active={false}/>
           </ListItemIcon>
           <ListItemText
             primary="Chatbot Builder"
@@ -161,7 +161,7 @@ function CustomDrawer(props: CustomDrawerProps) {
           button={true}
           className={classes.listItem}>
           <ListItemIcon style={{ color: 'white' }}>
-            <SubMenuIcon title="ImageLabeling" />
+            <SubMenuIcon title="ImageLabeling" active={false}/>
           </ListItemIcon>
           <ListItemText
             primary="Image Labeling"
@@ -177,7 +177,7 @@ function CustomDrawer(props: CustomDrawerProps) {
           button={true}
           className={classes.listItem}>
           <ListItemIcon style={{ color: 'white' }}>
-            <SubMenuIcon title="FAQ" />
+            <SubMenuIcon title="FAQ" active={false}/>
           </ListItemIcon>
           <ListItemText
             primary="FAQ Service"
@@ -191,7 +191,7 @@ function CustomDrawer(props: CustomDrawerProps) {
           button={true}
           className={classes.listItem}>
           <ListItemIcon style={{ color: 'white' }}>
-            <SubMenuIcon title="TextLabeling" />
+            <SubMenuIcon title="TextLabeling" active={false}/>
           </ListItemIcon>
           <ListItemText
             primary="Text Labeling"

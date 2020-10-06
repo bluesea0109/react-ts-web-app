@@ -46,6 +46,7 @@
     "randomcolor": "^0.6.2",
     "rc-color-picker": "^1.2.6",
     "react": "^16.13.1",
+    "react-animated-css": "^1.2.1",
     "react-color": "^2.18.1",
     "react-dom": "^16.13.1",
     "react-draft-wysiwyg": "^1.14.5",

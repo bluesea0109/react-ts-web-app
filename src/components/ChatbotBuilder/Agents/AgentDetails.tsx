@@ -94,11 +94,16 @@ interface IGetAgent {
 
 const AgentDetails = () => {
   const classes = useStyles();
-  const { orgId, projectId, agentId, agentTab } = useParams();
+  const { orgId, projectId, agentId, agentTab } = useParams<{
+    orgId: string;
+    projectId: string;
+    agentId: string;
+    agentTab: string;
+  }>();
   const history = useHistory();
   const [config, setConfig] = useRecoilState(currentAgentConfig);
   const [widgetSettings, setWidgetSettings] = useRecoilState(
-    currentWidgetSettings,
+    currentWidgetSettings
   );
 
   const { error, loading, data } = useQuery<IGetAgent>(CHATBOT_GET_AGENT, {
@@ -117,7 +122,7 @@ const AgentDetails = () => {
         { query: CHATBOT_GET_AGENT, variables: { agentId: Number(agentId) } },
       ],
       awaitRefetchQueries: true,
-    },
+    }
   );
 
   if (error) {

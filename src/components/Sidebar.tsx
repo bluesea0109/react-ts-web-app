@@ -7,7 +7,7 @@ import NavItem from './IconButtons/NavItem';
 const VerticalSidebar = styled.div`
   position: fixed;
   height: 100%;
-  width: 73px;
+  width: 75px;
   z-index: 100000;
   background-color: #040521;
   overflow-x: hidden;
@@ -24,6 +24,7 @@ interface ISidebarProps {
 const Sidebar = (props: ISidebarProps) => {
   const { onClick, onClose, user } = props;
 
+  const [open, setOpen] = useState(false)
   const createPath = (pageName: string): string => {
     if (!user.activeProject) {
       return '/no-project';
@@ -37,7 +38,8 @@ const Sidebar = (props: ISidebarProps) => {
   };
   const openBotCreation = (key: number) => {
     setSelected(key);
-    onClick(2);
+    // onClick(2);
+    setOpen(!open)
   };
   const openPage = (key: number) => {
     setSelected(key);
@@ -54,7 +56,7 @@ const Sidebar = (props: ISidebarProps) => {
       handler: openDashboard,
     },
     {
-      path: '/about',
+      path: createPath('chatbot-builder'),
       name: 'Create Bot',
       css: 'BotBuilder',
       key: 2,
@@ -63,10 +65,32 @@ const Sidebar = (props: ISidebarProps) => {
     {
       path: createPath('image-labeling/collections'),
       name: 'ImageLabeling',
+      css: 'Configuration',
+      key: 6,
+      handler: openPage,
+    },
+    {
+      path: createPath('image-labeling/collections'),
+      name: 'ImageLabeling',
+      css: 'Training',
+      key: 7,
+      handler: openPage,
+    },
+    {
+      path: createPath('image-labeling/collections'),
+      name: 'ImageLabeling',
+      css: 'Launching',
+      key: 8,
+      handler: openPage,
+    },
+    {
+      path: createPath('image-labeling/collections'),
+      name: 'ImageLabeling',
       css: 'ImageLabeling',
       key: 3,
       handler: openPage,
     },
+
     {
       path: createPath('qa'),
       name: 'FAQ',
@@ -92,12 +116,13 @@ const Sidebar = (props: ISidebarProps) => {
         tooltip="tooltip"
       />
       {items.map((item) => (
-        <NavItem
+        <NavItem          
           active={selected === item.key}
           key={item.key}
           keyVal={item.key}
           path={item.path}
           css={item.css}
+          hidden={open}
           onClick={item.handler}
         />
       ))}
