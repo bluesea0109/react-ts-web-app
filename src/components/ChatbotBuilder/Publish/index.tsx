@@ -46,7 +46,7 @@ export default function PublishAgent() {
   const [state, setState] = useState({
     loading: false,
     modalOpen: false,
-    forceRetrain: true,
+    forceRetrain: false,
   });
   const apiKeyQueryResult = useQuery(getApiKeysQuery, {
     fetchPolicy: 'cache-and-network',
