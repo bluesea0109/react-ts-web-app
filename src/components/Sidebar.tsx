@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import IconButtonBavard from './IconButtons/IconButtonBavard';
 import NavItem from './IconButtons/NavItem';
@@ -14,12 +13,6 @@ const VerticalSidebar = styled.div`
   overflow-x: hidden;
   padding-top: 20px;
   color: white;
-`;
-const NavIcon = styled.div`
-  margin-top: 10px;
-  width: 50px;
-  height: 50px;
-  background-color: white;
 `;
 
 interface ISidebarProps {

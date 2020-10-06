@@ -1,14 +1,10 @@
 import { createStyles, Theme } from '@material-ui/core';
-import Collapse from '@material-ui/core/Collapse';
-import { blue } from '@material-ui/core/colors';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles } from '@material-ui/core/styles';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import SubMenuIcon from '../components/IconButtons/SubMenuIcon';
 import { IUser } from '../models/user-service';
@@ -38,6 +34,11 @@ const useStyles = makeStyles((theme: Theme) =>
     listItem: {
       color: 'white',
     },
+
+    active: {
+      backgroundColor: 'red',
+    }, 
+
     blank: {
       height: '100px',      
     },
@@ -91,7 +92,7 @@ function CustomDrawer(props: CustomDrawerProps) {
             location.pathname.includes('settings')
           }
           button={true}
-          className={classes.listItem + (!location.pathname.includes('projects') && location.pathname.includes('settings'))}>
+          className={classes.listItem}>
           <ListItemIcon style={{ color: 'white' }}>
             <SubMenuIcon title="Organization" />
           </ListItemIcon>
