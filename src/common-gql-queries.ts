@@ -227,11 +227,7 @@ export const CHATBOT_GET_UTTERANCE_ACTIONS = gql`
 `;
 
 export const CHATBOT_CREATE_AGENT = gql`
-  mutation(
-    $projectId: String!
-    $uname: String!
-    $config: JSON
-  ) {
+  mutation($projectId: String!, $uname: String!, $config: JSON) {
     ChatbotService_createAgent(
       projectId: $projectId
       uname: $uname
@@ -280,7 +276,7 @@ export const CHATBOT_SAVE_CONFIG_AND_SETTINGS = gql`
 
 export const CHATBOT_CREATE_TAGS = gql`
   mutation($agentId: Int!, $values: [String!]!, $upsert: Boolean) {
-    ChatbotService_createTagTypes (
+    ChatbotService_createTagTypes(
       agentId: $agentId
       values: $values
       upsert: $upsert
@@ -483,37 +479,62 @@ export const GET_TRAINING_CONVERSATIONS = gql`
 `;
 
 export const UPDATE_TRAINING_CONVERSATION = gql`
+  # mutation(
+  #   $conversationId: Int!,
+  #   $agentId: Int!
+  #   $agentActions: [ChatbotService_TrainingConversationAgentActionInput!]!
+  #   $userActions: [ChatbotService_TrainingConversationUserActionInput!]!
+  # ) {
+  #   ChatbotService_updateTrainingConversation(
+  #     id: $conversationId,
+  #     conversation: {
+  #       agentId: $agentId
+  #       agentActions: $agentActions
+  #       userActions: $userActions
+  #     }
+  #   ) {
+  #     id
+  #     conversation {
+  #       agentId
+  #       userActions {
+  #         turn
+  #         intent
+  #         tagValues {
+  #           tagType
+  #           value
+  #         }
+  #         utterance
+  #       }
+  #       agentActions {
+  #         turn
+  #         actionName
+  #       }
+  #     }
+  #   }
+  # }
   mutation(
-    $conversationId: Int!,
-    $agentId: Int!
-    $agentActions: [ChatbotService_TrainingConversationAgentActionInput!]!
-    $userActions: [ChatbotService_TrainingConversationUserActionInput!]!
+    $conversationId: Int!
+    $conversation: ChatbotService_TrainingConversationInput!
   ) {
     ChatbotService_updateTrainingConversation(
-      conversationId: $conversationId,      
-      conversation: {
-        agentId: $agentId
-        agentActions: $agentActions
-        userActions: $userActions      
-      }      
+      conversationId: $conversationId
+      conversation: $conversation
     ) {
-      conversationId            
-      conversation {
-        agentId
-        userActions {
-          turn
-          intent
-          tagValues {
-            tagType
-            value
-          }
-          utterance
+      id
+      agentId
+      userActions {
+        turn
+        intent
+        tagValues {
+          tagType
+          value
         }
-        agentActions {
-          turn
-          actionName
-        }      
-      }      
+        utterance
+      }
+      agentActions {
+        turn
+        actionName
+      }
     }
   }
 `;

@@ -22,6 +22,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import { Alert } from '@material-ui/lab';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import clsx from 'clsx';
+import omitDeep from 'omit-deep-lodash';
 import React, { Fragment, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
@@ -141,7 +142,6 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
     if (event.target.id.startsWith('intent')) {
       values[index].userActions[0].intent = value;
     } else if (event.target.id.startsWith('actionId')) {
-      console.log('Auto complete ', value);
       values[index].agentActions[0].actionId = value.text;
       values[index].agentActions[0].utterance = value.text;
     }
@@ -161,11 +161,9 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
         item.userActions[0].turn = index;
         userActions.push(item.userActions[0]);
       } else if (item.agentActions && item.agentActions !== undefined) {
-        console.log('Action name provider ', item.agentActions);
         const data = {
           turn: index,
           actionName: item.agentActions[0].actionId,
-          // utterance: item.agentActions[0].utterance                 : To be added after GQL is fixed
         };
         agentActions.push(data);
       }
@@ -185,15 +183,21 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
         if (isUpdate) {
           agentActions.map((i: any) => i.isAgent && delete i.isAgent);
           userActions.map((i: any) => i.isUser && delete i.isUser);
+
+          const updatedUserActions = userActions.map(item => {
+            const result = omitDeep(item, '__typename');
+            return result;
+          });
+
           response = await updateConversation({
             variables: {
               conversationId: conversation?.id,
-              conversation: {                
+              conversation: {
                 agentId: numAgentId,
                 agentActions,
-                userActions,
+                userActions: updatedUserActions,
               },
-            }
+            },
           });
         } else {
           response = await createConversation({
@@ -239,7 +243,6 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
   };
 
   const validateAgentActions = (actions: any[]): boolean => {
-    console.log('actions ***', actions);
     for (const action of actions) {
       if (!action.actionName) {
         setErrStatus('Agent action Name is required.');
@@ -252,19 +255,18 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
   const handleAddTags = (tagType: string, tagValue: string, index: number) => {
     const values = [...actionData];
 
-    console.log('handle add tags ', tagType, tagValue)
     if (tagType && tagValue) {
       const tagValues = { tagType, value: tagValue };
       if (values[index].userActions[0].tagValues.length > 10) {
         setErrStatus('You can not add more than 10 tags');
       } else {
-        if (isUpdate) {          
+        if (isUpdate) {
           values[index].userActions[0] = {
             ...values[index].userActions[0],
-            tagValues: [...values[index].userActions[0].tagValues, tagValues]
-          }
-        } else {          
-          values[index].userActions[0].tagValues.push(tagValues);          
+            tagValues: [...values[index].userActions[0].tagValues, tagValues],
+          };
+        } else {
+          values[index].userActions[0].tagValues.push(tagValues);
         }
         setActionsValue([...values]);
       }

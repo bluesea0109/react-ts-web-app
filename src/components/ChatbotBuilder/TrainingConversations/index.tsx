@@ -4,17 +4,14 @@ import {
   AccordionDetails,
   AccordionSummary,
   Button,
-  Chip, Grid,
+  Chip,
+  Grid,
   IconButton,
   LinearProgress,
   Paper,
   Typography,
 } from '@material-ui/core';
-import {
-  createStyles,
-  makeStyles,
-  Theme,
-} from '@material-ui/core/styles';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Delete, Edit, ExpandMore } from '@material-ui/icons';
 import clsx from 'clsx';
 import React, { useState } from 'react';
@@ -38,27 +35,44 @@ export default function TrainingConversations() {
   const docsInPage = 5;
   const classes = useStyles();
 
-  const { agentId } = useParams<{agentId: string}>();
+  const { agentId } = useParams<{ agentId: string }>();
   const [createConversation, setcreateConversation] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [editConversation, seteditConversation] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const numAgentId = Number(agentId);
 
-  const [deleteConversations, { loading }] = useMutation(DELETE_TRAINING_CONVERSATION);
-  const getTrainingConversations = useQuery<IGetTrainingConversation>(GET_TRAINING_CONVERSATIONS, { variables: { agentId: numAgentId } });
-  let conversations = getTrainingConversations.data?.ChatbotService_trainingConversations || [];
+  const [deleteConversations, { loading }] = useMutation(
+    DELETE_TRAINING_CONVERSATION,
+  );
+  const getTrainingConversations = useQuery<IGetTrainingConversation>(
+    GET_TRAINING_CONVERSATIONS,
+    { variables: { agentId: numAgentId } },
+  );
+  let conversations =
+    getTrainingConversations.data?.ChatbotService_trainingConversations || [];
 
   const refetchConversations = getTrainingConversations.refetch;
   const data = conversations.map((item: any) => {
-    const userActions = item.userActions.map((a: any) => ({ ...a, isUser: true }));
-    const agentActions = item.agentActions.map((a: any) => ({...a, isAgent: true}));
-    const arr = userActions.concat(agentActions).sort((a: any, b: any) => parseFloat(a.turn) - parseFloat(b.turn));
+    const userActions = item.userActions.map((a: any) => ({
+      ...a,
+      isUser: true,
+    }));
+    const agentActions = item.agentActions.map((a: any) => ({
+      ...a,
+      isAgent: true,
+    }));
+    const arr = userActions
+      .concat(agentActions)
+      .sort((a: any, b: any) => parseFloat(a.turn) - parseFloat(b.turn));
     return { actions: arr, id: item.id };
   });
 
   const totalPages = Math.ceil(data.length / docsInPage);
-  const records = data.slice( (currentPage - 1) * docsInPage, currentPage * docsInPage );
+  const records = data.slice(
+    (currentPage - 1) * docsInPage,
+    currentPage * docsInPage,
+  );
   if (getTrainingConversations.error) {
     return <ApolloErrorPage error={getTrainingConversations.error} />;
   }
@@ -73,7 +87,8 @@ export default function TrainingConversations() {
 
   const onSaveCallBack = async () => {
     const refetchData = await refetchConversations();
-    conversations = refetchData.data?.ChatbotService_trainingConversations || [];
+    conversations =
+      refetchData.data?.ChatbotService_trainingConversations || [];
     setcreateConversation(false);
     seteditConversation(0);
   };
@@ -99,92 +114,122 @@ export default function TrainingConversations() {
 
   const handlePageChange = (value: number) => {
     setCurrentPage(value); // set the page
-    console.log('Current Page ========> ', currentPage);
   };
 
   const deleteConfirm = () => setConfirmOpen(true);
 
   return (
     <>
-    <Paper className={classes.paper}>
-      <Button
-        className={classes.button}
-        variant="contained"
-        color="primary"
-        onClick={onCreateNewConversation}
-      >
-        Create New Conversation
-      </Button>
-      {loading && <LinearProgress />}
-      <>
-      {
-        records.length > 0 && records ?
-          (
-            records.sort((a: any, b: any) => parseInt(a.id) + parseInt(b.id)).map((item, index) => {
-              if (item.id === editConversation) {
+      <Paper className={classes.paper}>
+        <Button
+          className={classes.button}
+          variant="contained"
+          color="primary"
+          onClick={onCreateNewConversation}>
+          Create New Conversation
+        </Button>
+        {loading && <LinearProgress />}
+        <>
+          {records.length > 0 && records ? (
+            records
+              .sort((a: any, b: any) => parseInt(a.id) + parseInt(b.id))
+              .map((item, index) => {
+                if (item.id === editConversation) {
+                  return (
+                    <CreateConversation
+                      key={index}
+                      isUpdate={true}
+                      conversation={item}
+                      onSaveCallback={onSaveCallBack}
+                      conversationLastindex={index + 1}
+                      onCloseCallback={handleClose}
+                    />
+                  );
+                }
                 return (
-                  <CreateConversation
-                    key={index}
-                    isUpdate={true}
-                    conversation={item}
-                    onSaveCallback={onSaveCallBack}
-                    conversationLastindex={index + 1}
-                    onCloseCallback={handleClose}
-                  />
-                );
-              }
-              return (
-                <Accordion className={classes.listItemWrapper} key={index}>
-                  <AccordionSummary
-                    expandIcon={<ExpandMore />}
-                    id="conversationId"
-                  >
-                    <Typography className={classes.heading}>Conversation {((currentPage - 1) * docsInPage) + index + 1}</Typography>
-                  </AccordionSummary>
-                  <AccordionDetails className={classes.listItem}>
-                    <Grid className={classes.actionButtonWrapper}>
-                      <IconButton onClick={() => onEditConversation(item.id)}>
-                        <Edit fontSize="large" />
-                      </IconButton>
-                      <IconButton onClick={deleteConfirm}>
-                        <Delete fontSize="large" />
-                      </IconButton>
-                      <ConfirmDialog
-                        title="Delete Conversations?"
-                        open={confirmOpen}
-                        setOpen={setConfirmOpen}
-                        onConfirm={() => deleteConversationHandler(item.id)}
-                      >
-                        Are you sure you want to delete this Conversations?
-                      </ConfirmDialog>
-                    </Grid>
-                    <Grid container={true} direction={'column'} className={classes.paper}>
-                      <Grid container={true} className={classes.actionWrapper}>
-                        <Grid container={true} item={true} className={classes.actionItemWrapper}>
-                          <Typography> Turn </Typography>
-                        </Grid>
-                        <Grid container={true} item={true} className={classes.actionDetailsWrapper}>
-                          <Typography> User Actions </Typography>
-                        </Grid>
-                        <Grid container={true} item={true} className={classes.actionDetailsWrapper}>
-                          <Typography> Agent Actions </Typography>
+                  <Accordion className={classes.listItemWrapper} key={index}>
+                    <AccordionSummary
+                      expandIcon={<ExpandMore />}
+                      id="conversationId">
+                      <Typography className={classes.heading}>
+                        Conversation{' '}
+                        {(currentPage - 1) * docsInPage + index + 1}
+                      </Typography>
+                    </AccordionSummary>
+                    <AccordionDetails className={classes.listItem}>
+                      <Grid className={classes.actionButtonWrapper}>
+                        <IconButton onClick={() => onEditConversation(item.id)}>
+                          <Edit fontSize="large" />
+                        </IconButton>
+                        <IconButton onClick={deleteConfirm}>
+                          <Delete fontSize="large" />
+                        </IconButton>
+                        <ConfirmDialog
+                          title="Delete Conversations?"
+                          open={confirmOpen}
+                          setOpen={setConfirmOpen}
+                          onConfirm={() => deleteConversationHandler(item.id)}>
+                          Are you sure you want to delete this Conversations?
+                        </ConfirmDialog>
+                      </Grid>
+                      <Grid
+                        container={true}
+                        direction={'column'}
+                        className={classes.paper}>
+                        <Grid
+                          container={true}
+                          className={classes.actionWrapper}>
+                          <Grid
+                            container={true}
+                            item={true}
+                            className={classes.actionItemWrapper}>
+                            <Typography> Turn </Typography>
+                          </Grid>
+                          <Grid
+                            container={true}
+                            item={true}
+                            className={classes.actionDetailsWrapper}>
+                            <Typography> User Actions </Typography>
+                          </Grid>
+                          <Grid
+                            container={true}
+                            item={true}
+                            className={classes.actionDetailsWrapper}>
+                            <Typography> Agent Actions </Typography>
+                          </Grid>
                         </Grid>
                       </Grid>
-                    </Grid>
-                    <Grid container={true} direction={'column'} className={classes.paper}>
-                      {
-                        item.actions.map((item: any, index: number) => {
+                      <Grid
+                        container={true}
+                        direction={'column'}
+                        className={classes.paper}>
+                        {item.actions.map((item: any, index: number) => {
                           return (
-                            <Grid container={true}
-                              className={clsx(classes.actionWrapper, item.isAgent && classes.agentActionWrapper)}
+                            <Grid
+                              container={true}
+                              className={clsx(
+                                classes.actionWrapper,
+                                item.isAgent && classes.agentActionWrapper,
+                              )}
                               key={index}>
-                              <Grid container={true} item={true} className={classes.actionItemWrapper}>
+                              <Grid
+                                container={true}
+                                item={true}
+                                className={classes.actionItemWrapper}>
                                 <Typography> {item.turn} </Typography>
                               </Grid>
                               {item.isUser ? (
-                                <Grid container={true} item={true} className={classes.actionsWrapper}>
-                                  <span className={classes.agentTagText}>User Action</span>
-                                  <Grid container={true} className={classes.actionDetailsWrapper} direction={'column'}>
+                                <Grid
+                                  container={true}
+                                  item={true}
+                                  className={classes.actionsWrapper}>
+                                  <span className={classes.agentTagText}>
+                                    User Action
+                                  </span>
+                                  <Grid
+                                    container={true}
+                                    className={classes.actionDetailsWrapper}
+                                    direction={'column'}>
                                     <Grid className={classes.contentTable}>
                                       <span className={classes.itemWrapper}>
                                         <h6>Intent:</h6>
@@ -195,12 +240,19 @@ export default function TrainingConversations() {
                                         <p>{item.utterance}</p>
                                       </span>
                                     </Grid>
-                                    <Grid container={true} className={classes.tagList}>
-                                      <span className={classes.agentTagText}>Tags</span>
-                                      <Paper component="ul" className={classes.tagListWrapper}>
-                                        {
-                                          item.tagValues?.map((item: any, i: number) => {
-                                            const label = item.tagType + ' : ' + item.value;
+                                    <Grid
+                                      container={true}
+                                      className={classes.tagList}>
+                                      <span className={classes.agentTagText}>
+                                        Tags
+                                      </span>
+                                      <Paper
+                                        component="ul"
+                                        className={classes.tagListWrapper}>
+                                        {item.tagValues?.map(
+                                          (item: any, i: number) => {
+                                            const label =
+                                              item.tagType + ' : ' + item.value;
                                             return (
                                               <li key={i}>
                                                 <Chip
@@ -209,55 +261,62 @@ export default function TrainingConversations() {
                                                 />
                                               </li>
                                             );
-                                          })
-                                        }
+                                          },
+                                        )}
                                       </Paper>
                                     </Grid>
                                   </Grid>
                                 </Grid>
-
                               ) : (
-                                  <Grid container={true} item={true} className={classes.actionsWrapper}>
-                                    <span className={classes.agentTagText}>Agent Action</span>
-                                    <Grid container={true} className={classes.actionDetailsWrapper} direction={'column'}>
-                                      <Grid className={classes.contentTable}>
-                                        <span className={classes.itemWrapper}>
-                                          <h6>Action Type:</h6>
-                                          <p>{item.actionName}</p>
-                                        </span>
-                                        <span className={classes.itemWrapper}>
-                                          <h6>Utterance:</h6>
-                                          <p>{item.utterance}</p>
-                                        </span>
-                                      </Grid>
+                                <Grid
+                                  container={true}
+                                  item={true}
+                                  className={classes.actionsWrapper}>
+                                  <span className={classes.agentTagText}>
+                                    Agent Action
+                                  </span>
+                                  <Grid
+                                    container={true}
+                                    className={classes.actionDetailsWrapper}
+                                    direction={'column'}>
+                                    <Grid className={classes.contentTable}>
+                                      <span className={classes.itemWrapper}>
+                                        <h6>Action Type:</h6>
+                                        <p>{item.actionName}</p>
+                                      </span>
+                                      <span className={classes.itemWrapper}>
+                                        <h6>Utterance:</h6>
+                                        <p>{item.utterance}</p>
+                                      </span>
                                     </Grid>
                                   </Grid>
-                                )}
+                                </Grid>
+                              )}
                             </Grid>
                           );
-                        })
-                      }
-                    </Grid>
-
-                  </AccordionDetails>
-                </Accordion>
-              );
-            })
-          )
-          : (
+                        })}
+                      </Grid>
+                    </AccordionDetails>
+                  </Accordion>
+                );
+              })
+          ) : (
             <Typography align="center" variant="h6">
               {'No Conversation found'}
             </Typography>
-          )
-      }
-      <Grid className={classes.cetnerPagination}>
-      <BavardPagination total={totalPages} onChange={handlePageChange}/>
-      </Grid>
-      </>
+          )}
+          <Grid className={classes.cetnerPagination}>
+            <BavardPagination total={totalPages} onChange={handlePageChange} />
+          </Grid>
+        </>
       </Paper>
-      {
-        createConversation && <CreateConversation onSaveCallback={onSaveCallBack} conversationLastindex={conversations.length + 1} onCloseCallback={handleClose}/>
-      }
+      {createConversation && (
+        <CreateConversation
+          onSaveCallback={onSaveCallBack}
+          conversationLastindex={conversations.length + 1}
+          onCloseCallback={handleClose}
+        />
+      )}
     </>
   );
 }
@@ -393,19 +452,17 @@ const useStyles = makeStyles((theme: Theme) =>
         fontWeight: '600',
         color: '#333',
         fontSize: '16px',
-
       },
       '& p': {
         margin: '0',
         fontSize: '16px',
         fontWeight: '400',
         color: '#333',
-
       },
     },
     cetnerPagination: {
       display: 'flex',
       justifyContent: 'center',
     },
-
-  }));
+  }),
+);
