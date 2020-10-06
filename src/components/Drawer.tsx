@@ -37,14 +37,15 @@ const useStyles = makeStyles((theme: Theme) =>
 
     active: {
       backgroundColor: 'red',
-    }, 
+    },
 
     blank: {
-      height: '100px',      
+      height: '105px',
     },
+
     selected: {
-      backgroundColor: 'red'
-    }
+      backgroundColor: 'red',
+    },
   })
 );
 
@@ -60,6 +61,11 @@ function CustomDrawer(props: CustomDrawerProps) {
   console.log('navigation =>  ', navigation);
   const classes = useStyles();
   const location = useLocation();
+  const selectedStyle = {
+    backgroundColor: '#4A90E2',
+    padding: '10px',
+    borderRadius: '5px',
+  };
 
   const createPath = (pageName: string): string => {
     if (!user.activeProject) {
@@ -96,7 +102,15 @@ function CustomDrawer(props: CustomDrawerProps) {
           <ListItemIcon style={{ color: 'white' }}>
             <SubMenuIcon title="Organization" />
           </ListItemIcon>
-          <ListItemText primary="Organization" />
+          <ListItemText
+            primary="Organization"
+            style={
+              !location.pathname.includes('projects') &&
+              location.pathname.includes('settings')
+                ? selectedStyle
+                : {}
+            }
+          />
         </ListItem>
         <ListItem
           component={Link}
@@ -110,7 +124,15 @@ function CustomDrawer(props: CustomDrawerProps) {
           <ListItemIcon style={{ color: 'white' }}>
             <SubMenuIcon title="Project" />
           </ListItemIcon>
-          <ListItemText primary="Project" />
+          <ListItemText
+            primary="Project"
+            style={
+              location.pathname.includes('projects') &&
+              location.pathname.includes('settings')
+                ? selectedStyle
+                : {}
+            }
+          />
         </ListItem>
       </List>
     ) : (
@@ -125,7 +147,12 @@ function CustomDrawer(props: CustomDrawerProps) {
           <ListItemIcon style={{ color: 'white' }}>
             <SubMenuIcon title="BotBuilder" />
           </ListItemIcon>
-          <ListItemText primary="Chatbot Builder" />
+          <ListItemText
+            primary="Chatbot Builder"
+            style={
+              /chatbot-builder$/.test(location.pathname) ? selectedStyle : {}
+            }
+          />
         </ListItem>{' '}
         <ListItem
           component={Link}
@@ -136,7 +163,12 @@ function CustomDrawer(props: CustomDrawerProps) {
           <ListItemIcon style={{ color: 'white' }}>
             <SubMenuIcon title="ImageLabeling" />
           </ListItemIcon>
-          <ListItemText primary="Image Labeling" />
+          <ListItemText
+            primary="Image Labeling"
+            style={
+              location.pathname.includes('image-labeling') ? selectedStyle : {}
+            }
+          />
         </ListItem>
         <ListItem
           component={Link}
@@ -147,7 +179,10 @@ function CustomDrawer(props: CustomDrawerProps) {
           <ListItemIcon style={{ color: 'white' }}>
             <SubMenuIcon title="FAQ" />
           </ListItemIcon>
-          <ListItemText primary="FAQ Service" />
+          <ListItemText
+            primary="FAQ Service"
+            style={location.pathname.includes('/qa') ? selectedStyle : {}}
+          />
         </ListItem>
         <ListItem
           component={Link}
@@ -158,7 +193,12 @@ function CustomDrawer(props: CustomDrawerProps) {
           <ListItemIcon style={{ color: 'white' }}>
             <SubMenuIcon title="TextLabeling" />
           </ListItemIcon>
-          <ListItemText primary="Text Labeling" />
+          <ListItemText
+            primary="Text Labeling"
+            style={
+              location.pathname.includes('text-labeling') ? selectedStyle : {}
+            }
+          />
         </ListItem>
       </List>
     );

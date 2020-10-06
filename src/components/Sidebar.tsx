@@ -7,7 +7,7 @@ import { IUser } from '../models/user-service';
 const VerticalSidebar = styled.div`
   position: fixed;
   height: 100%;
-  width: 64px;
+  width: 73px;
   z-index: 100000;
   background-color: #040521;
   overflow-x: hidden;
@@ -21,8 +21,16 @@ interface ISidebarProps {
 	onClose: () => void;
 }
 
+
 const Sidebar = (props: ISidebarProps) => {
-  const { onClick, onClose } = props;
+  const { onClick, onClose, user } = props;
+
+	const createPath = (pageName: string): string => {
+    if (!user.activeProject) {
+      return '/no-project';
+    }
+    return `/orgs/${user.activeProject.orgId}/projects/${user.activeProject.id}/${pageName}`;
+  };
 
   const openDashboard = (key: number) => {
     setSelected(key);
@@ -54,21 +62,21 @@ const Sidebar = (props: ISidebarProps) => {
       handler: openBotCreation,
     },
     {
-      path: '/NoMatch',
+      path: createPath('image-labeling/collections'),
       name: 'ImageLabeling',
       css: 'ImageLabeling',
       key: 3,
       handler: openPage,
     },
     {
-      path: '/NoMatch',
+      path: createPath('qa'),
       name: 'FAQ',
       css: 'FAQ',
       key: 4,
       handler: openPage,
     },
     {
-      path: '/NoMatch',
+      path: createPath('text-labeling'),
       name: 'TextLabeling',
       css: 'TextLabeling',
       key: 5,
@@ -76,8 +84,7 @@ const Sidebar = (props: ISidebarProps) => {
     },
   ];
 
-  const [selected, setSelected] = useState(0);
-  console.log('selected >>> ', selected);
+  const [selected, setSelected] = useState(0);  
 
   return (
     <VerticalSidebar>
