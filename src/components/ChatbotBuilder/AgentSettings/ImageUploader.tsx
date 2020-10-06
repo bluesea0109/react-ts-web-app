@@ -15,7 +15,7 @@ const ImageUploader = ({
   currentImage,
   label,
 }: any) => {
-  const { agentId } = useParams();
+  const { agentId } = useParams<{ agentId: string }>();
   const numAgentId = Number(agentId);
   const { enqueueSnackbar } = useSnackbar();
   const [isFileLoading, setIsFileLoading] = useState(false);
