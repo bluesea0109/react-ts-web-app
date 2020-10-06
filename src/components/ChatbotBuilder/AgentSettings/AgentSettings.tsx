@@ -69,7 +69,10 @@ const AgentSettings = () => {
   const widgetSettingsData = useQuery<{ ChatbotService_widgetSettings: IWidgetSettings }>(
     getBotSettingsQuery,
     {
-      variables: { uname: agentUname },
+      skip: !agentUname,
+      variables: {
+        uname: agentUname,
+      },
       onCompleted: (data) => {
         setWidgetSettings(data.ChatbotService_widgetSettings);
       },
