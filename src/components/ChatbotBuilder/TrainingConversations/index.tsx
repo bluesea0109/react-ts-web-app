@@ -141,7 +141,7 @@ export default function TrainingConversations() {
                       isUpdate={true}
                       conversation={item}
                       onSaveCallback={onSaveCallBack}
-                      conversationLastindex={index + 1}
+                      conversationLastindex={(currentPage - 1) * docsInPage + index + 1}
                       onCloseCallback={handleClose}
                     />
                   );
@@ -303,7 +303,7 @@ export default function TrainingConversations() {
           ) : (
             <Typography align="center" variant="h6">
               {'No Conversation found'}
-            </Typography>
+            </Typography> 
           )}
           <Grid className={classes.cetnerPagination}>
             <BavardPagination total={totalPages} onChange={handlePageChange} />

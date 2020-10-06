@@ -276,8 +276,10 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
   };
 
   const removeTags = (tagIndex: number, index: number) => {
-    const values = [...actionData];
-    values[index].userActions[0].tagValues.splice(tagIndex, 1);
+    let values = [...actionData];
+    
+    let rest = values[index].userActions[0].tagValues.filter((item: any, index: number) => index !== tagIndex)  
+    values[index].userActions[0].tagValues = rest
     setActionsValue([...values]);
   };
 
