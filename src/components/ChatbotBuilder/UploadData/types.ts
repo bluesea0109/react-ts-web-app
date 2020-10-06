@@ -1,9 +1,6 @@
-import { IAgentConfig } from '@bavard/agent-config';
-import { OptionType } from '@bavard/agent-config';
-import { BotSettings } from '@bavard/common';
+import { IAgentConfig, IWidgetSettings } from '@bavard/agent-config';
 import {
   IAgent,
-  IAgentGraphPolicy,
   INLUExample,
 } from '../../../models/chatbot-service';
 
@@ -17,7 +14,7 @@ export interface IAgentDataExport {
   config: IAgentConfig;
   trainingConversations: ITrainingConversation[];
   nluData: INLUTrainingData;
-  widgetSettings: BotSettings;
+  widgetSettings: IWidgetSettings;
   apiKey?: string;
 }
 
