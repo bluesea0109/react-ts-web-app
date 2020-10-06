@@ -114,7 +114,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function App() {
   const classes = useStyles();
-  const [navKey, setNavKey] = useState(0)
+  const [navKey, setNavKey] = useState(0);
   interface IGetCurrentUser {
     currentUser: IUser;
   }
@@ -126,7 +126,7 @@ function App() {
 
   const onMenuClick = (key: number) => {
     setState({ ...state, drawerOpen: true });
-    setNavKey(key)
+    setNavKey(key);
   };
 
   const onDrawerClose = () => {

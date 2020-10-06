@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme: Theme) =>
     selected: {
       backgroundColor: 'red',
     },
-  })
+  }),
 );
 
 interface CustomDrawerProps {
@@ -89,7 +89,7 @@ function CustomDrawer(props: CustomDrawerProps) {
   const list = () => {
     return navigation === 1 ? (
       <List>
-        <ListItem className={classes.blank}></ListItem>
+        <ListItem className={classes.blank}/>
         <ListItem
           component={Link}
           to={createOrgPath('settings')}
@@ -137,7 +137,7 @@ function CustomDrawer(props: CustomDrawerProps) {
       </List>
     ) : (
       <List>
-        <ListItem className={classes.blank}></ListItem>
+        <ListItem className={classes.blank}/>
         <ListItem
           component={Link}
           to={createPath('chatbot-builder')}

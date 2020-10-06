@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { IUser } from '../models/user-service';
 import IconButtonBavard from './IconButtons/IconButtonBavard';
 import NavItem from './IconButtons/NavItem';
-import { IUser } from '../models/user-service';
 
 const VerticalSidebar = styled.div`
   position: fixed;
@@ -16,16 +16,15 @@ const VerticalSidebar = styled.div`
 `;
 
 interface ISidebarProps {
-	user: IUser;
-	onClick: (key: number) => void;
-	onClose: () => void;
+  user: IUser;
+  onClick: (key: number) => void;
+  onClose: () => void;
 }
-
 
 const Sidebar = (props: ISidebarProps) => {
   const { onClick, onClose, user } = props;
 
-	const createPath = (pageName: string): string => {
+  const createPath = (pageName: string): string => {
     if (!user.activeProject) {
       return '/no-project';
     }
@@ -41,8 +40,8 @@ const Sidebar = (props: ISidebarProps) => {
     onClick(2);
   };
   const openPage = (key: number) => {
-		setSelected(key);
-		onClose()
+    setSelected(key);
+    onClose();
   };
 
   const items = [
@@ -84,7 +83,7 @@ const Sidebar = (props: ISidebarProps) => {
     },
   ];
 
-  const [selected, setSelected] = useState(0);  
+  const [selected, setSelected] = useState(0);
 
   return (
     <VerticalSidebar>
