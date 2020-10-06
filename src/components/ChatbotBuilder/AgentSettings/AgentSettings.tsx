@@ -72,9 +72,9 @@ const AgentSettings = () => {
       variables: { uname: agentUname },
       onCompleted: (data) => {
         setWidgetSettings(data.ChatbotService_widgetSettings);
-      }
-    }
-  )
+      },
+    },
+  );
 
   useEffect(() => {
     if (!!widgetSettings && !!widgetSettings.name) {
