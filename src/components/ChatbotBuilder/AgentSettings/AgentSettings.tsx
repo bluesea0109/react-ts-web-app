@@ -1,6 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { AgentConfig } from '@bavard/agent-config';
-import { AGENT_SETTINGS_DEFAULTS } from '@bavard/common';
 import {
   Box,
   Button,
@@ -24,7 +23,7 @@ import GradientPicker from '../../Utils/GradientPicker';
 import { currentAgentConfig, currentWidgetSettings } from '../atoms';
 import { updateBotSettingsMutation } from './gql';
 import ImageUploader from './ImageUploader';
-import { BotSettings } from './types';
+import { DEFAULT_WIDGET_SETTINGS, IWidgetSettings } from '@bavard/agent-config';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -47,14 +46,15 @@ const AgentSettings = () => {
   const [widgetSettings, setWidgetSettings] = useRecoilState(currentWidgetSettings);
 
   const { enqueueSnackbar } = useSnackbar();
-  const [settings, setSettings] = useState<BotSettings>({
+  const [settings, setSettings] = useState<IWidgetSettings>({
     name: '',
     title: '',
     subtitle: '',
-    icon: AGENT_SETTINGS_DEFAULTS.icon,
-    primaryColor: AGENT_SETTINGS_DEFAULTS.primaryColor,
-    primaryBg: AGENT_SETTINGS_DEFAULTS.primaryBg,
-    widgetBg: AGENT_SETTINGS_DEFAULTS.widgetBg,
+    logo: DEFAULT_WIDGET_SETTINGS.logo,
+    avatar: DEFAULT_WIDGET_SETTINGS.avatar,
+    primaryColor: DEFAULT_WIDGET_SETTINGS.primaryColor,
+    primaryBg: DEFAULT_WIDGET_SETTINGS.primaryBg,
+    widgetBg: DEFAULT_WIDGET_SETTINGS.widgetBg,
   });
   const [state, setState] = React.useState({
     mode: 'dev',
@@ -89,14 +89,14 @@ const AgentSettings = () => {
     // eslint-disable-next-line
   }, [updatedSettings]);
 
-  const updateSettings = (field: keyof BotSettings, value: any) =>
+  const updateSettings = (field: keyof IWidgetSettings, value: any) =>
     setSettings({ ...settings, [field]: value });
 
   const onUpdateSettingsClicked = async () => {
-    let { icon, logo } = settings;
+    let { avatar, logo } = settings;
 
-    if (icon && icon.indexOf('https://') !== -1) {
-      icon = icon.split('?')[0].split('/bot-icons/')[1];
+    if (avatar && avatar.indexOf('https://') !== -1) {
+      avatar = avatar.split('?')[0].split('/bot-icons/')[1];
     }
 
     if (logo && logo.indexOf('https://') !== -1) {
@@ -109,8 +109,8 @@ const AgentSettings = () => {
           uname: agentUname,
           settings: {
             ...settings,
-            icon,
             logo,
+            avatar,
           },
         },
       });
@@ -214,9 +214,9 @@ const AgentSettings = () => {
           <Grid item={true} xs={6}>
             <ImageUploader
               isLoading={loading || state.mode === 'published'}
-              currentImage={settings.icon}
+              currentImage={settings.avatar}
               label="Widget Avatar"
-              onImageUpload={(url: string) => updateSettings('icon', url)}
+              onImageUpload={(url: string) => updateSettings('avatar', url)}
             />
           </Grid>
           <Grid item={true} xs={6}>

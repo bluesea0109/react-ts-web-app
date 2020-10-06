@@ -23,6 +23,7 @@ export default function ChatWithAgent() {
   const [apiKey, setApiKey] = useState<string | null>(null);
   const classes = useStyles();
   const [isActive, setIsActive] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   const iframe = useRef<HTMLIFrameElement | null>(null);
   const agentData = useQuery<IGetAgent>(GET_AGENT, { variables: { agentId: Number(agentId) } });
   const apiKeysQuery = useQuery(getApiKeysQuery, {
@@ -41,7 +42,8 @@ export default function ChatWithAgent() {
 
   const onMessage = useCallback((e: any) => {
     if (e.data.hasOwnProperty('loaded')) {
-      setIsActive(false);
+      // This is just because in the chatbot-widget, we delayed 1000ms
+      setTimeout(() => setIsLoaded(true), 1200);
     }
   }, []);
 
@@ -65,7 +67,6 @@ export default function ChatWithAgent() {
       uname: agentData.data?.ChatbotService_agent.uname,
       isActive: true,
       dev: true,
-      showSemiActive: true,
     }, '*');
   }, [apiKey, agentData.data]);
 
@@ -90,7 +91,7 @@ export default function ChatWithAgent() {
         ref={ref => iframe.current = ref}
         style={{
           border: 'none',
-          display: 'block',
+          display: isLoaded && isActive ? 'block' : 'none',
           height: isActive ? '80%' : 350,
           width: 550,
           position: 'fixed',
@@ -110,9 +111,9 @@ export default function ChatWithAgent() {
         }}
       />
 
-      <Button color="primary" variant="contained" onClick={toggleContentWindow}>
+      {isLoaded && <Button color="primary" variant="contained" onClick={toggleContentWindow}>
         {isActive ? 'Hide' : 'Show'}
-      </Button>
+      </Button>}
     </div>
   );
 }
