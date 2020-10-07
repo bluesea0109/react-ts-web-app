@@ -35,12 +35,54 @@ export interface INLUExampleInput {
   tags: INLUExampleTag[];
 }
 
+export interface IIntent {
+  id: number;
+  agentId: number;
+  defaultAction: number;
+  value: string;
+}
+
+export enum ActionType {
+  NEW_ACTION = 'NEW_ACTION',
+  UTTERANCE_ACTION = 'UTTERANCE_ACTION',
+  EMAIL_ACTION = 'EMAIL_ACTION',
+}
+
+export interface ITagType {
+  id: number;
+  agentId: number;
+  value: string;
+}
+
 export interface INLUExample {
   id: number;
   agentId: number;
   intent: string;
   text: string;
   tags: INLUExampleTag[];
+}
+
+interface IActionBase {
+  id: number;
+  agentId: number;
+  name: string;
+  type: ActionType;
+  userResponseOptions?: IUserResponseOption[] | null;
+}
+
+export interface IUserResponseOption extends IUserResponseOptionInput {
+  id: number;
+  agentId: number;
+  actionId: number;
+}
+
+export interface IUserResponseOptionInput {
+  intentId: number;
+  text: string;
+}
+
+export interface IUtteranceAction extends IActionBase {
+  text: string;
 }
 
 export interface IDataExport {
@@ -84,7 +126,6 @@ export interface ITrainingConversations {
 
 export interface ITrainingAgentAction {
   turn: number;
-  actionId: number;
   actionName: string;
 }
 
