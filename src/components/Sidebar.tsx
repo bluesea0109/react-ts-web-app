@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { useRouteMatch } from 'react-router-dom';
 import styled from 'styled-components';
 import { IUser } from '../models/user-service';
 import IconButtonBavard from './IconButtons/IconButtonBavard';
 import NavItem from './IconButtons/NavItem';
-import { useRouteMatch } from 'react-router-dom'
-
 
 const VerticalSidebar = styled.div`
   position: fixed;
@@ -24,9 +23,9 @@ interface ISidebarProps {
 }
 
 const Sidebar = (props: ISidebarProps) => {
-  const { onClick, onClose, user } = props;  
+  const { onClick, onClose, user } = props;
   const [open, setOpen] = useState(false);
-  const [openSubItem, setOpenSubItem] = useState(false)
+  const [openSubItem, setOpenSubItem] = useState(false);
   const [selected, setSelected] = useState(0);
   const createPath = (pageName: string): string => {
     if (!user.activeProject) {
@@ -34,42 +33,42 @@ const Sidebar = (props: ISidebarProps) => {
     }
     return `/orgs/${user.activeProject.orgId}/projects/${user.activeProject.id}/${pageName}`;
   };
-  
+
   const match = useRouteMatch({
-    path: "/orgs/:orgId/projects/:projectId/chatbot-builder/agents/:agentId",
+    path: '/orgs/:orgId/projects/:projectId/chatbot-builder/agents/:agentId',
     strict: false,
-    sensitive: true
-  });  
-  
-  useEffect(() => {    
-    console.log('match case ', match, selected)
+    sensitive: true,
+  });
+
+  useEffect(() => {
+    console.log('match case ', match, selected);
     if (selected === 2 && match?.path) {
-      setOpen(true)
-      setOpenSubItem(true)
-      onClick(2)
+      setOpen(true);
+      setOpenSubItem(true);
+      onClick(2);
     } else {
-      setOpen(false)
-    }       
-  }, [match?.path])
+      setOpen(false);
+    }
+  }, [match?.path]);
 
   const openDashboard = (key: number) => {
     setSelected(key);
-    setOpenSubItem(false)
+    setOpenSubItem(false);
     onClick(1);
   };
   const openBotCreation = (key: number) => {
     setSelected(key);
-    onClose();    
+    onClose();
   };
   const openPage = (key: number) => {
     setSelected(key);
-    setOpenSubItem(false)
+    setOpenSubItem(false);
     onClose();
   };
 
   const openConfig = (key: number) => {
-    setSelected(key);    
-    setOpenSubItem(true)
+    setSelected(key);
+    setOpenSubItem(true);
     onClick(6);
   };
 
@@ -85,7 +84,7 @@ const Sidebar = (props: ISidebarProps) => {
     onClick(7);
   };
 
-  let data = [
+  const data = [
     {
       path:
         '/' /* path is used as id to check which NavItem is active basically */,

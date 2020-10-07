@@ -6,6 +6,7 @@ import clsx from 'clsx';
 import 'firebase/auth';
 import React, { useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import './App.css';
 import { GET_CURRENT_USER } from './common-gql-queries';
 import AppBar from './components/Appbar';
@@ -22,8 +23,6 @@ import InternalServerErrorPage from './components/InternalServerErrorpage';
 import MySidebar from './components/Sidebar';
 import TextLabeling from './components/TextLabeling';
 import { IUser } from './models/user-service';
-import { useLocation } from 'react-router-dom';
-
 
 const drawerWidth = 240;
 
@@ -144,7 +143,7 @@ function App() {
     return <InternalServerErrorPage />;
   }
 
-  console.log('window.location.href >>>> ', window.location.pathname)
+  console.log('window.location.href >>>> ', window.location.pathname);
 
   assert.notEqual(data, null);
 

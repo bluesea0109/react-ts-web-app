@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme: Theme) =>
     selected: {
       backgroundColor: 'red',
     },
-  })
+  }),
 );
 
 interface CustomDrawerProps {
@@ -253,7 +253,7 @@ function CustomDrawer(props: CustomDrawerProps) {
               />
             </ListItem>
           </List>
-        );        
+        );
       case 3:
         return (
           <List>
@@ -303,7 +303,7 @@ function CustomDrawer(props: CustomDrawerProps) {
               />
             </ListItem>
           </List>
-        );        
+        );
       case 4:
         return (
           <List>
@@ -353,7 +353,7 @@ function CustomDrawer(props: CustomDrawerProps) {
               />
             </ListItem>
           </List>
-        );        
+        );
       default:
         return <></>;
     }
