@@ -478,40 +478,7 @@ export const GET_TRAINING_CONVERSATIONS = gql`
   }
 `;
 
-export const UPDATE_TRAINING_CONVERSATION = gql`
-  # mutation(
-  #   $conversationId: Int!,
-  #   $agentId: Int!
-  #   $agentActions: [ChatbotService_TrainingConversationAgentActionInput!]!
-  #   $userActions: [ChatbotService_TrainingConversationUserActionInput!]!
-  # ) {
-  #   ChatbotService_updateTrainingConversation(
-  #     id: $conversationId,
-  #     conversation: {
-  #       agentId: $agentId
-  #       agentActions: $agentActions
-  #       userActions: $userActions
-  #     }
-  #   ) {
-  #     id
-  #     conversation {
-  #       agentId
-  #       userActions {
-  #         turn
-  #         intent
-  #         tagValues {
-  #           tagType
-  #           value
-  #         }
-  #         utterance
-  #       }
-  #       agentActions {
-  #         turn
-  #         actionName
-  #       }
-  #     }
-  #   }
-  # }
+export const UPDATE_TRAINING_CONVERSATION = gql`  
   mutation(
     $conversationId: Int!
     $conversation: ChatbotService_TrainingConversationInput!
