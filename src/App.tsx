@@ -22,6 +22,8 @@ import InternalServerErrorPage from './components/InternalServerErrorpage';
 import MySidebar from './components/Sidebar';
 import TextLabeling from './components/TextLabeling';
 import { IUser } from './models/user-service';
+import { useLocation } from 'react-router-dom';
+
 
 const drawerWidth = 240;
 
@@ -141,6 +143,8 @@ function App() {
     console.log(error);
     return <InternalServerErrorPage />;
   }
+
+  console.log('window.location.href >>>> ', window.location.pathname)
 
   assert.notEqual(data, null);
 

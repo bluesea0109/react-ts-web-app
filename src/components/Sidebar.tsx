@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { IUser } from '../models/user-service';
 import IconButtonBavard from './IconButtons/IconButtonBavard';
 import NavItem from './IconButtons/NavItem';
-import {matchPath} from 'react-router'
-import { useHistory, useParams } from 'react-router';
+import { useRouteMatch } from 'react-router-dom'
+
 
 const VerticalSidebar = styled.div`
   position: fixed;
@@ -26,7 +26,8 @@ interface ISidebarProps {
 const Sidebar = (props: ISidebarProps) => {
   const { onClick, onClose, user } = props;  
   const [open, setOpen] = useState(false);
-
+  const [openSubItem, setOpenSubItem] = useState(false)
+  const [selected, setSelected] = useState(0);
   const createPath = (pageName: string): string => {
     if (!user.activeProject) {
       return '/no-project';
@@ -34,51 +35,54 @@ const Sidebar = (props: ISidebarProps) => {
     return `/orgs/${user.activeProject.orgId}/projects/${user.activeProject.id}/${pageName}`;
   };
   
-  const url = new URL(window.location.href)  
-  const path = url.pathname
-  console.log('path ---------------< ', path)
-  const match = matchPath(path, {
-    path: "/orgs/:orgId/projects/:projectId/chatbot-builder/agents/:agentId/Actions",
-    exact: true,
-    strict: true
-  });
-
-  useEffect(() => {
-    console.log('match        =======>>>         ', match)
-    if (match) {
+  const match = useRouteMatch({
+    path: "/orgs/:orgId/projects/:projectId/chatbot-builder/agents/:agentId",
+    strict: false,
+    sensitive: true
+  });  
+  
+  useEffect(() => {    
+    console.log('match case ', match, selected)
+    if (selected === 2 && match?.path) {
       setOpen(true)
+      setOpenSubItem(true)
+      onClick(2)
     } else {
       setOpen(false)
-    }
-  }, [match])
+    }       
+  }, [match?.path])
 
   const openDashboard = (key: number) => {
     setSelected(key);
+    setOpenSubItem(false)
     onClick(1);
   };
   const openBotCreation = (key: number) => {
     setSelected(key);
-    onClose();
-    // setOpen((open) => !open);
+    onClose();    
   };
   const openPage = (key: number) => {
     setSelected(key);
+    setOpenSubItem(false)
     onClose();
   };
 
   const openConfig = (key: number) => {
-    setSelected(key);
-    onClick(2);
+    setSelected(key);    
+    setOpenSubItem(true)
+    onClick(6);
   };
 
   const openLaunching = (key: number) => {
     setSelected(key);
-    onClick(3);
+    setOpenSubItem(true);
+    onClick(8);
   };
 
   const openTraining = (key: number) => {
     setSelected(key);
-    onClick(4);
+    setOpenSubItem(true);
+    onClick(7);
   };
 
   let data = [
@@ -149,11 +153,7 @@ const Sidebar = (props: ISidebarProps) => {
     },
   ];
 
-  console.log('Open state ', open);
-  let items;
-  const [selected, setSelected] = useState(0);
-
-  if (open) {
+  if (openSubItem) {
     data[2].hidden = false;
     data[3].hidden = false;
     data[4].hidden = false;

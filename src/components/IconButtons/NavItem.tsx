@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { Animated } from 'react-animated-css';
@@ -42,7 +42,7 @@ interface NavItemProps {
 }
 
 const NavItem = (props: NavItemProps) => {
-  const { active, path, onClick, keyVal, hidden, css } = props;
+  const { active, path, onClick, keyVal, hidden } = props;
   const handleClick = () => {
     onClick(keyVal);
   };
@@ -83,16 +83,25 @@ const NavItem = (props: NavItemProps) => {
     default:
       break;
   }
-  console.log('Hidden property ', hidden)
+  console.log('Hidden property ', hidden);
   return (
     <div>
-      <Animated animationIn="fadeIn" animationOut="fadeOut" isVisible={hidden}  style={!hidden ? {display: "none"} : {}}>
-        <StyledNavItem active={active} className={active ? 'active' : ''} style={keyVal > 5 ? {backgroundColor: '#cccccc33'} : {}}>
-          <Link to={path} onClick={handleClick}>
-            {Icon}
-          </Link>
-        </StyledNavItem>
-      </Animated>
+      <NavLink to={path} activeStyle={{backgroundColor: 'red'}}>
+        <Animated
+          animationIn="fadeIn"
+          animationOut="fadeOut"
+          isVisible={hidden}
+          style={!hidden ? { display: 'none' } : {}}>
+          <StyledNavItem
+            active={active}
+            className={active ? 'active' : ''}
+            style={keyVal > 5 ? { backgroundColor: '#cccccc33' } : {}}>
+            <Link to={path} onClick={handleClick}>
+              {Icon}
+            </Link>
+          </StyledNavItem>
+        </Animated>
+      </NavLink>
     </div>
   );
 };
