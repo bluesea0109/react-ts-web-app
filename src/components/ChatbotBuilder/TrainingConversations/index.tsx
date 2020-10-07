@@ -303,7 +303,7 @@ export default function TrainingConversations() {
           ) : (
             <Typography align="center" variant="h6">
               {'No Conversation found'}
-            </Typography> 
+            </Typography>
           )}
           <Grid className={classes.cetnerPagination}>
             <BavardPagination total={totalPages} onChange={handlePageChange} />
