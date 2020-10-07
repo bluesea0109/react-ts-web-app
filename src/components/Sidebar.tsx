@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { IUser } from '../models/user-service';
 import IconButtonBavard from './IconButtons/IconButtonBavard';
@@ -24,14 +24,7 @@ interface ISidebarProps {
 }
 
 const Sidebar = (props: ISidebarProps) => {
-  const { onClick, onClose, user } = props;
-  const { orgId, projectId, agentId, agentTab } = useParams<{
-    orgId: string;
-    projectId: string;
-    agentId: string;
-    agentTab: string;
-  }>();
-
+  const { onClick, onClose, user } = props;  
   const [open, setOpen] = useState(false);
 
   const createPath = (pageName: string): string => {
@@ -40,14 +33,24 @@ const Sidebar = (props: ISidebarProps) => {
     }
     return `/orgs/${user.activeProject.orgId}/projects/${user.activeProject.id}/${pageName}`;
   };
+  
+  const url = new URL(window.location.href)  
+  const path = url.pathname
+  console.log('path ---------------< ', path)
+  const match = matchPath(path, {
+    path: "/orgs/:orgId/projects/:projectId/chatbot-builder/agents/:agentId/Actions",
+    exact: true,
+    strict: true
+  });
 
-  console.log(orgId, projectId, agentId, agentTab)
-  const path = window.location.href
-  const match = matchPath(path.replace(/(^\w+:|^)\/\//, ''), {
-    path: "/orgs/:orgId/projects/:projectId/chatbot-builder/agents/:agentId/:agentTab/Actions "
-  })
-
-  console.log('match status ', match)
+  useEffect(() => {
+    console.log('match        =======>>>         ', match)
+    if (match) {
+      setOpen(true)
+    } else {
+      setOpen(false)
+    }
+  }, [match])
 
   const openDashboard = (key: number) => {
     setSelected(key);

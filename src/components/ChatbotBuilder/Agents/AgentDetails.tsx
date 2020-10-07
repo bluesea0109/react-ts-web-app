@@ -103,7 +103,7 @@ const AgentDetails = () => {
   const history = useHistory();
   const [config, setConfig] = useRecoilState(currentAgentConfig);
   const [widgetSettings, setWidgetSettings] = useRecoilState(
-    currentWidgetSettings,
+    currentWidgetSettings
   );
 
   const { error, loading, data } = useQuery<IGetAgent>(CHATBOT_GET_AGENT, {
@@ -122,7 +122,7 @@ const AgentDetails = () => {
         { query: CHATBOT_GET_AGENT, variables: { agentId: Number(agentId) } },
       ],
       awaitRefetchQueries: true,
-    },
+    }
   );
 
   if (error) {
@@ -160,7 +160,7 @@ const AgentDetails = () => {
         </Button>
       </Toolbar>
       <div className={classes.tabsContainer}>
-        {/* <Tabs
+        <Tabs
           value={agentTab}
           onChange={handleChangeTab}
           indicatorColor="secondary"
@@ -231,7 +231,7 @@ const AgentDetails = () => {
           value={agentTab}
           index="nluExamples">
           <Examples />
-        </TabPanel> */}
+        </TabPanel>
         {agentTab === 'graph-policy' && <GraphPolicy />}agentTab
         {agentTab === 'exports' && <DataExportsTab />}
         {agentTab === 'training-jobs' && <TrainingJobsTab />}
