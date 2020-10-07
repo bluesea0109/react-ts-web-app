@@ -478,7 +478,7 @@ export const GET_TRAINING_CONVERSATIONS = gql`
   }
 `;
 
-export const UPDATE_TRAINING_CONVERSATION = gql`  
+export const UPDATE_TRAINING_CONVERSATION = gql`
   mutation(
     $conversationId: Int!
     $conversation: ChatbotService_TrainingConversationInput!
