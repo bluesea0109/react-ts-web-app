@@ -45,7 +45,7 @@ const Sidebar = (props: ISidebarProps) => {
     setSelected(key);
     onClose();
   };
-  let appendedData = [
+  const appendedData = [
     {
       path: createPath('image-labeling/collections'),
       name: 'ImageLabeling',
@@ -69,7 +69,7 @@ const Sidebar = (props: ISidebarProps) => {
     },
   ];
 
-  let data = [
+  const data = [
     {
       path:
         '/' /* path is used as id to check which NavItem is active basically */,
@@ -109,13 +109,13 @@ const Sidebar = (props: ISidebarProps) => {
   ];
 
   console.log('Open state ', open);
-  let items  
+  let items;
   const [selected, setSelected] = useState(0);
 
   if (!open) {
-    items = appendedData.map((el, index) => data.splice(index + 2, 0, el));    
+    items = appendedData.map((el, index) => data.splice(index + 2, 0, el));
   } else {
-    items = data.filter((el, index) => index <= 2 && index >= 4);    
+    items = data.filter((el, index) => index <= 2 && index >= 4);
   }
   return (
     <VerticalSidebar>

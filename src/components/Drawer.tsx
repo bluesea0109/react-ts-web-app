@@ -91,7 +91,7 @@ function CustomDrawer(props: CustomDrawerProps) {
       <List>
         <ListItem className={classes.blank}/>
         <ListItem
-          component={Link} 
+          component={Link}
           to={createOrgPath('settings')}
           selected={
             !location.pathname.includes('projects') &&

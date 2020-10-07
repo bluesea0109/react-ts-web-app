@@ -2,16 +2,16 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { Animated } from 'react-animated-css';
 import BotBuilder from './icons/BotBuilder';
+import Configuration from './icons/Configuration';
 import Dashboard from './icons/Dashboard';
 import FAQ from './icons/FAQ';
 import ImageLabeling from './icons/ImageLabeling';
-import TextLabeling from './icons/TextLabeling';
-import Organization from './icons/Organization';
-import Configuration from './icons/Configuration';
-import Training from './icons/Training';
 import Launching from './icons/Launching';
-import { Animated } from 'react-animated-css';
+import Organization from './icons/Organization';
+import TextLabeling from './icons/TextLabeling';
+import Training from './icons/Training';
 
 const StyledNavItem = styled.div`
   display: flex;
