@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme: Theme) =>
     selected: {
       backgroundColor: 'red',
     },
-  }),
+  })
 );
 
 interface CustomDrawerProps {
@@ -87,121 +87,276 @@ function CustomDrawer(props: CustomDrawerProps) {
   };
 
   const list = () => {
-    return navigation === 1 ? (
-      <List>
-        <ListItem className={classes.blank}/>
-        <ListItem
-          component={Link}
-          to={createOrgPath('settings')}
-          selected={
-            !location.pathname.includes('projects') &&
-            location.pathname.includes('settings')
-          }
-          button={true}
-          className={classes.listItem}>
-          <ListItemIcon style={{ color: 'white' }}>
-            <SubMenuIcon title="Organization" active={false}/>
-          </ListItemIcon>
-          <ListItemText
-            primary="Organization"
-            style={
-              !location.pathname.includes('projects') &&
-              location.pathname.includes('settings')
-                ? selectedStyle
-                : {}
-            }
-          />
-        </ListItem>
-        <ListItem
-          component={Link}
-          to={createPath('settings')}
-          selected={
-            location.pathname.includes('projects') &&
-            location.pathname.includes('settings')
-          }
-          button={true}
-          className={classes.listItem}>
-          <ListItemIcon style={{ color: 'white' }}>
-            <SubMenuIcon title="Project" active={false}/>
-          </ListItemIcon>
-          <ListItemText
-            primary="Project"
-            style={
-              location.pathname.includes('projects') &&
-              location.pathname.includes('settings')
-                ? selectedStyle
-                : {}
-            }
-          />
-        </ListItem>
-      </List>
-    ) : (
-      <List>
-        <ListItem className={classes.blank}/>
-        <ListItem
-          component={Link}
-          to={createPath('chatbot-builder')}
-          selected={/chatbot-builder$/.test(location.pathname)}
-          button={true}
-          className={classes.listItem}>
-          <ListItemIcon style={{ color: 'white' }}>
-            <SubMenuIcon title="BotBuilder" active={false}/>
-          </ListItemIcon>
-          <ListItemText
-            primary="Chatbot Builder"
-            style={
-              /chatbot-builder$/.test(location.pathname) ? selectedStyle : {}
-            }
-          />
-        </ListItem>{' '}
-        <ListItem
-          component={Link}
-          to={createPath('image-labeling/collections')}
-          selected={location.pathname.includes('image-labeling')}
-          button={true}
-          className={classes.listItem}>
-          <ListItemIcon style={{ color: 'white' }}>
-            <SubMenuIcon title="ImageLabeling" active={false}/>
-          </ListItemIcon>
-          <ListItemText
-            primary="Image Labeling"
-            style={
-              location.pathname.includes('image-labeling') ? selectedStyle : {}
-            }
-          />
-        </ListItem>
-        <ListItem
-          component={Link}
-          to={createPath('qa')}
-          selected={location.pathname.includes('/qa')}
-          button={true}
-          className={classes.listItem}>
-          <ListItemIcon style={{ color: 'white' }}>
-            <SubMenuIcon title="FAQ" active={false}/>
-          </ListItemIcon>
-          <ListItemText
-            primary="FAQ Service"
-            style={location.pathname.includes('/qa') ? selectedStyle : {}}
-          />
-        </ListItem>
-        <ListItem
-          component={Link}
-          to={createPath('text-labeling')}
-          selected={location.pathname.includes('text-labeling')}
-          button={true}
-          className={classes.listItem}>
-          <ListItemIcon style={{ color: 'white' }}>
-            <SubMenuIcon title="TextLabeling" active={false}/>
-          </ListItemIcon>
-          <ListItemText
-            primary="Text Labeling"
-            style={
-              location.pathname.includes('text-labeling') ? selectedStyle : {}
-            }
-          />
-        </ListItem>
-      </List>
-    );
+    switch (navigation) {
+      case 1:
+        return (
+          <List>
+            <ListItem className={classes.blank} />
+            <ListItem
+              component={Link}
+              to={createOrgPath('settings')}
+              selected={
+                !location.pathname.includes('projects') &&
+                location.pathname.includes('settings')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Organization" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Organization"
+                style={
+                  !location.pathname.includes('projects') &&
+                  location.pathname.includes('settings')
+                    ? selectedStyle
+                    : {}
+                }
+              />
+            </ListItem>
+            <ListItem
+              component={Link}
+              to={createPath('settings')}
+              selected={
+                location.pathname.includes('projects') &&
+                location.pathname.includes('settings')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Project" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Project"
+                style={
+                  location.pathname.includes('projects') &&
+                  location.pathname.includes('settings')
+                    ? selectedStyle
+                    : {}
+                }
+              />
+            </ListItem>
+          </List>
+        );
+      case 2:
+        return (
+          <List>
+            <ListItem className={classes.blank} />
+            <ListItem
+              component={Link}
+              to={createOrgPath('actions')}
+              selected={
+                !location.pathname.includes('projects') &&
+                location.pathname.includes('settings')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Organization" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Actions"
+                style={
+                  !location.pathname.includes('projects') &&
+                  location.pathname.includes('settings')
+                    ? selectedStyle
+                    : {}
+                }
+              />
+            </ListItem>
+            <ListItem
+              component={Link}
+              to={createPath('settings')}
+              selected={
+                location.pathname.includes('projects') &&
+                location.pathname.includes('settings')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Project" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Intents"
+                style={
+                  location.pathname.includes('projects') &&
+                  location.pathname.includes('settings')
+                    ? selectedStyle
+                    : {}
+                }
+              />
+            </ListItem>
+            <ListItem
+              component={Link}
+              to={createPath('settings')}
+              selected={
+                location.pathname.includes('projects') &&
+                location.pathname.includes('settings')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Project" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Tags"
+                style={
+                  location.pathname.includes('projects') &&
+                  location.pathname.includes('settings')
+                    ? selectedStyle
+                    : {}
+                }
+              />
+            </ListItem>
+            <ListItem
+              component={Link}
+              to={createPath('settings')}
+              selected={
+                location.pathname.includes('projects') &&
+                location.pathname.includes('settings')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Project" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Slot Values"
+                style={
+                  location.pathname.includes('projects') &&
+                  location.pathname.includes('settings')
+                    ? selectedStyle
+                    : {}
+                }
+              />
+            </ListItem>
+            <ListItem
+              component={Link}
+              to={createPath('settings')}
+              selected={
+                location.pathname.includes('projects') &&
+                location.pathname.includes('settings')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Project" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Visual Graphs"
+                style={
+                  location.pathname.includes('projects') &&
+                  location.pathname.includes('settings')
+                    ? selectedStyle
+                    : {}
+                }
+              />
+            </ListItem>
+          </List>
+        );        
+      case 3:
+        return (
+          <List>
+            <ListItem className={classes.blank} />
+            <ListItem
+              component={Link}
+              to={createOrgPath('settings')}
+              selected={
+                !location.pathname.includes('projects') &&
+                location.pathname.includes('settings')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Organization" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Organization"
+                style={
+                  !location.pathname.includes('projects') &&
+                  location.pathname.includes('settings')
+                    ? selectedStyle
+                    : {}
+                }
+              />
+            </ListItem>
+            <ListItem
+              component={Link}
+              to={createPath('settings')}
+              selected={
+                location.pathname.includes('projects') &&
+                location.pathname.includes('settings')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Project" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Project"
+                style={
+                  location.pathname.includes('projects') &&
+                  location.pathname.includes('settings')
+                    ? selectedStyle
+                    : {}
+                }
+              />
+            </ListItem>
+          </List>
+        );        
+      case 4:
+        return (
+          <List>
+            <ListItem className={classes.blank} />
+            <ListItem
+              component={Link}
+              to={createOrgPath('settings')}
+              selected={
+                !location.pathname.includes('projects') &&
+                location.pathname.includes('settings')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Organization" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Organization"
+                style={
+                  !location.pathname.includes('projects') &&
+                  location.pathname.includes('settings')
+                    ? selectedStyle
+                    : {}
+                }
+              />
+            </ListItem>
+            <ListItem
+              component={Link}
+              to={createPath('settings')}
+              selected={
+                location.pathname.includes('projects') &&
+                location.pathname.includes('settings')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Project" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Project"
+                style={
+                  location.pathname.includes('projects') &&
+                  location.pathname.includes('settings')
+                    ? selectedStyle
+                    : {}
+                }
+              />
+            </ListItem>
+          </List>
+        );        
+      default:
+        return <></>;
+    }
   };
   return <>{list()}</>;
 }

@@ -160,7 +160,7 @@ const AgentDetails = () => {
         </Button>
       </Toolbar>
       <div className={classes.tabsContainer}>
-        <Tabs
+        {/* <Tabs
           value={agentTab}
           onChange={handleChangeTab}
           indicatorColor="secondary"
@@ -231,8 +231,8 @@ const AgentDetails = () => {
           value={agentTab}
           index="nluExamples">
           <Examples />
-        </TabPanel>
-        {agentTab === 'graph-policy' && <GraphPolicy />}
+        </TabPanel> */}
+        {agentTab === 'graph-policy' && <GraphPolicy />}agentTab
         {agentTab === 'exports' && <DataExportsTab />}
         {agentTab === 'training-jobs' && <TrainingJobsTab />}
         {agentTab === 'chat' && <ChatWithAgent />}

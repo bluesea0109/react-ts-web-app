@@ -83,20 +83,16 @@ const NavItem = (props: NavItemProps) => {
     default:
       break;
   }
-
+  console.log('Hidden property ', hidden)
   return (
     <div>
-      {css === 'None' ? (
-        <></>
-      ) : (
-        <Animated animationIn="zoomIn" animationOut="zoomOut" isVisible={true}>
-          <StyledNavItem active={active} className={active ? 'active' : ''}>
-            <Link to={path} onClick={handleClick}>
-              {Icon}
-            </Link>
-          </StyledNavItem>
-        </Animated>
-      )}
+      <Animated animationIn="fadeIn" animationOut="fadeOut" isVisible={hidden}  style={!hidden ? {display: "none"} : {}}>
+        <StyledNavItem active={active} className={active ? 'active' : ''} style={keyVal > 5 ? {backgroundColor: '#cccccc33'} : {}}>
+          <Link to={path} onClick={handleClick}>
+            {Icon}
+          </Link>
+        </StyledNavItem>
+      </Animated>
     </div>
   );
 };
