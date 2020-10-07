@@ -24,7 +24,8 @@ interface ISidebarProps {
 const Sidebar = (props: ISidebarProps) => {
   const { onClick, onClose, user } = props;
 
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
+
   const createPath = (pageName: string): string => {
     if (!user.activeProject) {
       return '/no-project';
@@ -38,30 +39,13 @@ const Sidebar = (props: ISidebarProps) => {
   };
   const openBotCreation = (key: number) => {
     setSelected(key);
-    // onClick(2);
-    setOpen(!open)
+    setOpen((open) => !open);
   };
   const openPage = (key: number) => {
     setSelected(key);
     onClose();
   };
-
-  const items = [
-    {
-      path:
-        '/' /* path is used as id to check which NavItem is active basically */,
-      name: 'Dashboard',
-      css: 'Dashboard',
-      key: 1 /* Key is required, else console throws error. Does this please you Mr. Browser?! */,
-      handler: openDashboard,
-    },
-    {
-      path: createPath('chatbot-builder'),
-      name: 'Create Bot',
-      css: 'BotBuilder',
-      key: 2,
-      handler: openBotCreation,
-    },
+  let appendedData = [
     {
       path: createPath('image-labeling/collections'),
       name: 'ImageLabeling',
@@ -83,6 +67,24 @@ const Sidebar = (props: ISidebarProps) => {
       key: 8,
       handler: openPage,
     },
+  ];
+
+  let data = [
+    {
+      path:
+        '/' /* path is used as id to check which NavItem is active basically */,
+      name: 'Dashboard',
+      css: 'Dashboard',
+      key: 1 /* Key is required, else console throws error. Does this please you Mr. Browser?! */,
+      handler: openDashboard,
+    },
+    {
+      path: createPath('chatbot-builder'),
+      name: 'Create Bot',
+      css: 'BotBuilder',
+      key: 2,
+      handler: openBotCreation,
+    },
     {
       path: createPath('image-labeling/collections'),
       name: 'ImageLabeling',
@@ -90,7 +92,6 @@ const Sidebar = (props: ISidebarProps) => {
       key: 3,
       handler: openPage,
     },
-
     {
       path: createPath('qa'),
       name: 'FAQ',
@@ -107,16 +108,23 @@ const Sidebar = (props: ISidebarProps) => {
     },
   ];
 
+  console.log('Open state ', open);
+  let items  
   const [selected, setSelected] = useState(0);
 
+  if (!open) {
+    items = appendedData.map((el, index) => data.splice(index + 2, 0, el));    
+  } else {
+    items = data.filter((el, index) => index <= 2 && index >= 4);    
+  }
   return (
     <VerticalSidebar>
       <IconButtonBavard
         onClick={() => console.log('bavard_icon')}
         tooltip="tooltip"
       />
-      {items.map((item) => (
-        <NavItem          
+      {data.map((item) => (
+        <NavItem
           active={selected === item.key}
           key={item.key}
           keyVal={item.key}

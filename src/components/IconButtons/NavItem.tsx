@@ -11,9 +11,10 @@ import Organization from './icons/Organization';
 import Configuration from './icons/Configuration';
 import Training from './icons/Training';
 import Launching from './icons/Launching';
+import { Animated } from 'react-animated-css';
 
 const StyledNavItem = styled.div`
-  display: flex;  
+  display: flex;
   align-items: center;
   height: 60px;
   width: 70px; /* width must be same size as NavBar to center */
@@ -41,7 +42,7 @@ interface NavItemProps {
 }
 
 const NavItem = (props: NavItemProps) => {
-  const { active, path, onClick, keyVal, hidden } = props;
+  const { active, path, onClick, keyVal, hidden, css } = props;
   const handleClick = () => {
     onClick(keyVal);
   };
@@ -76,27 +77,27 @@ const NavItem = (props: NavItemProps) => {
     case 'Launching':
       Icon = <Launching active={active} />;
       break;
+    case 'None':
+      Icon = null;
+      break;
     default:
       break;
   }
 
   return (
-    <StyledNavItem
-      active={active}
-      className={active ? 'active' : ''}
-      style={
-        keyVal > 5
-          ? hidden
-            ? { display: 'none' }
-            : {                
-                backgroundColor: '#ffffff32',
-              }
-          : {}
-      }>
-      <Link to={path} onClick={handleClick}>
-        {Icon}
-      </Link>
-    </StyledNavItem>
+    <div>
+      {css === 'None' ? (
+        <></>
+      ) : (
+        <Animated animationIn="zoomIn" animationOut="zoomOut" isVisible={true}>
+          <StyledNavItem active={active} className={active ? 'active' : ''}>
+            <Link to={path} onClick={handleClick}>
+              {Icon}
+            </Link>
+          </StyledNavItem>
+        </Animated>
+      )}
+    </div>
   );
 };
 
