@@ -483,52 +483,55 @@ class GraphPolicyVisualEditor extends React.Component<
         <Paper
           className={classes.zoomControls}
           style={{ position: 'absolute' }}>
-          <IconButton
-            color="default"
-            size="small"
-            onClick={() => this.zoom('in')}>
-            <Add />
-          </IconButton>
-          <Divider />
-          <IconButton
-            color="default"
-            size="small"
-            onClick={() => this.zoom('out')}>
-            <Remove />
-          </IconButton>
+          <Tooltip title={`Zoom: ${this.state.zoom}%`}>
+            <div>
+              <IconButton
+                color="default"
+                size="small"
+                onClick={() => this.zoom('in')}>
+                <Add />
+              </IconButton>
+              <Divider />
+              <IconButton
+                color="default"
+                size="small"
+                onClick={() => this.zoom('out')}>
+                <Remove />
+              </IconButton>
+            </div>
+          </Tooltip>
         </Paper>
 
         <div className={classes.root} style={{ zoom: `${this.state.zoom}%` }}>
           {treeContent}
           {this.state.showEditNode && this.renderEditNodeForm()}
           {this.state.showDeleteNode && this.renderDeleteNodeForm()}
-          <div style={{ position: 'fixed', bottom: 5, left: '45%' }}>
-            <Mutation
-              mutation={CHATBOT_UPDATE_AGENT}
-              refetchQueries={[
-                {
-                  query: getOptionImagesQuery,
-                  variables: { agentId },
-                },
-              ]}>
-              {(mutateFn: MutationFunction) => {
-                this.mutateFunction = mutateFn;
-                return (
-                  <Button
-                    variant="contained"
-                    disabled={this.state.loading}
-                    color="primary"
-                    onClick={() =>
-                      this.state.policy &&
-                      this.persistChanges(this.state.policy)
-                    }>
-                    Save Changes
-                  </Button>
-                );
-              }}
-            </Mutation>
-            {this.state.loading && <ContentLoading />}
-          </div>
+        </div>
+        <div style={{ position: 'fixed', bottom: 5, left: '45%' }}>
+          <Mutation
+            mutation={CHATBOT_UPDATE_AGENT}
+            refetchQueries={[
+              {
+                query: getOptionImagesQuery,
+                variables: { agentId },
+              },
+            ]}>
+            {(mutateFn: MutationFunction) => {
+              this.mutateFunction = mutateFn;
+              return (
+                <Button
+                  variant="contained"
+                  disabled={this.state.loading}
+                  color="primary"
+                  onClick={() =>
+                    this.state.policy && this.persistChanges(this.state.policy)
+                  }>
+                  Save Changes
+                </Button>
+              );
+            }}
+          </Mutation>
+          {this.state.loading && <ContentLoading />}
         </div>
       </React.Fragment>
     );
