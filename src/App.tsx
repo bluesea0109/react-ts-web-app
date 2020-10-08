@@ -6,7 +6,6 @@ import clsx from 'clsx';
 import 'firebase/auth';
 import React, { useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
 import './App.css';
 import { GET_CURRENT_USER } from './common-gql-queries';
 import AppBar from './components/Appbar';
@@ -147,8 +146,6 @@ function App() {
     console.log(error);
     return <InternalServerErrorPage />;
   }
-
-  console.log('Agent ID -------> ', agentId);
 
   assert.notEqual(data, null);
 
