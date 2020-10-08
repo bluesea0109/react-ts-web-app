@@ -3,7 +3,7 @@ import { AgentConfig } from '@bavard/agent-config';
 import {
   Box,
   Button,
-  makeStyles,  
+  makeStyles,
   Theme,
   Toolbar,
 } from '@material-ui/core';
