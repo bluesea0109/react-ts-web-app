@@ -13,9 +13,9 @@ export const getBotSettingsQuery = gql`
 `;
 
 export const botIconUploadQuery = gql`
-  query($agentId: Int!, $basename: String!) {
-    ChatbotService_botIconUploadUrl(agentId: $agentId, basename: $basename) {
-        url
+  query($agentId: Int!, $iconType: ChatbotService_BotIconType!) {
+    ChatbotService_botIconUploadUrl(agentId: $agentId, iconType: $iconType) {
+      url
     }
   }
 `;
