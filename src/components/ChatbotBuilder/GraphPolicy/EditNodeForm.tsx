@@ -62,7 +62,7 @@ const useStyles = makeStyles((theme: Theme) =>
         opacity: 1,
       },
     },
-  }),
+  })
 );
 
 interface IGraphNodeProps {
@@ -220,13 +220,21 @@ export default function EditNodeForm({
             <Paper className={classes.nodePaper}>
               <Typography variant={'h6'}>
                 Edges
-                <IconButton
-                  onClick={() => {
-                    setEditingEdgeId(undefined);
-                    activateForm('edge');
-                  }}>
-                  <Add />
-                </IconButton>
+                <Tooltip
+                  title={
+                    node.hasAnEmptyEdge()
+                      ? 'Cannot add anymore edges because this node has an empty edge'
+                      : 'Add an Edge'
+                  }>
+                  <IconButton
+                    disabled={node.hasAnEmptyEdge()}
+                    onClick={() => {
+                      setEditingEdgeId(undefined);
+                      activateForm('edge');
+                    }}>
+                    <Add />
+                  </IconButton>
+                </Tooltip>
               </Typography>
 
               {node.toJsonObj().outEdges.map((e, index) => {

@@ -1,8 +1,19 @@
-import { BaseEdge, GraphEdgeType, GraphPolicy} from '@bavard/agent-config/dist/graph-policy';
-import { FormControl, FormControlLabel, FormLabel,
-  Paper, Radio, RadioGroup, Typography} from '@material-ui/core';
+import {
+  BaseEdge,
+  GraphEdgeType,
+  GraphPolicy,
+} from '@bavard/agent-config/dist/graph-policy';
+import {
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Paper,
+  Radio,
+  RadioGroup,
+  Typography,
+} from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import UpsertEdgeForm from './UpsertEdgeForm';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -16,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(2),
       backgroundColor: theme.palette.background.default,
     },
-  }),
+  })
 );
 
 interface IUpsertEdgeProps {
@@ -28,7 +39,14 @@ interface IUpsertEdgeProps {
   edgeId?: number;
 }
 
-export default function UpsertEdge({agentId, nodeId, policy, edgeId , onCancel, onSuccess}: IUpsertEdgeProps) {
+export default function UpsertEdge({
+  agentId,
+  nodeId,
+  policy,
+  edgeId,
+  onCancel,
+  onSuccess,
+}: IUpsertEdgeProps) {
   const classes = useStyles();
   const node = policy.getNodeById(nodeId);
   let edge: BaseEdge | undefined;
@@ -36,28 +54,57 @@ export default function UpsertEdge({agentId, nodeId, policy, edgeId , onCancel, 
     edge = node?.getEdgeById(edgeId);
   }
 
-  const [edgeType, setEdgeType] = useState<GraphEdgeType>(edge?.type || 'UTTERANCE');
-
+  const [edgeType, setEdgeType] = useState<GraphEdgeType>(
+    edge?.type || 'UTTERANCE'
+  );
+  if (!node) {
+    return <></>;
+  }
   return (
     <Paper className={classes.nodePaper}>
       <Typography variant={'h6'} className={classes.formControl}>
-        {
-          edge ?
-          `Editing ${edgeType} edge`
-          :
-          `Add a new ${edgeType} edge`
-        }
+        {edge ? `Editing ${edgeType} edge` : `Add a new ${edgeType} edge`}
       </Typography>
 
-      <FormControl component="fieldset" className={classes.formControl} required={true} disabled={!!edge}>
+      <FormControl
+        component="fieldset"
+        className={classes.formControl}
+        required={true}
+        disabled={!!edge || node.hasAnEmptyEdge()}>
         <FormLabel>Edge Type </FormLabel>
-        <RadioGroup name="responseType" defaultValue={edgeType} onChange={(event) => {setEdgeType(event.target.value as GraphEdgeType); }}>
-          <FormControlLabel value={'UTTERANCE'} control={<Radio />} label="Utterance Edge" />
-          <FormControlLabel value={'CONFIRM'} control={<Radio />} label="Confirm Edge" />
+        <RadioGroup
+          name="responseType"
+          defaultValue={edgeType}
+          onChange={(event) => {
+            setEdgeType(event.target.value as GraphEdgeType);
+          }}>
+          <FormControlLabel
+            value={'UTTERANCE'}
+            control={<Radio />}
+            label="Utterance Edge"
+          />
+          <FormControlLabel
+            value={'CONFIRM'}
+            control={<Radio />}
+            label="Confirm Edge"
+          />
+          <FormControlLabel
+            disabled={node.edges.length >= 1}
+            value={'EMPTY'}
+            control={<Radio />}
+            label="Empty Edge"
+          />
         </RadioGroup>
       </FormControl>
-      <UpsertEdgeForm agentId={agentId} edgeId={edgeId} edgeType={edgeType} nodeId={nodeId}
-        policy={policy} onSuccess={onSuccess} onCancel={onCancel} />
+      <UpsertEdgeForm
+        agentId={agentId}
+        edgeId={edgeId}
+        edgeType={edgeType}
+        nodeId={nodeId}
+        policy={policy}
+        onSuccess={onSuccess}
+        onCancel={onCancel}
+      />
     </Paper>
   );
 }
