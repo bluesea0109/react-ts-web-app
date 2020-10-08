@@ -8,7 +8,7 @@ import {
   Toolbar,
 } from '@material-ui/core';
 import React from 'react';
-import { useHistory, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import { useRecoilState } from 'recoil';
 import {
   CHATBOT_GET_AGENT,
@@ -86,13 +86,12 @@ interface IGetAgent {
 
 const AgentDetails = () => {
   const classes = useStyles();
-  const { orgId, projectId, agentId, agentTab } = useParams<{
+  const { agentId, agentTab } = useParams<{
     orgId: string;
     projectId: string;
     agentId: string;
     agentTab: string;
   }>();
-  const history = useHistory();
   const [config, setConfig] = useRecoilState(currentAgentConfig);
   const [widgetSettings, setWidgetSettings] = useRecoilState(
     currentWidgetSettings,
@@ -163,7 +162,7 @@ const AgentDetails = () => {
           index="nluExamples">
           <Examples />
         </TabPanel>
-        {agentTab === 'graph-policy' && <GraphPolicy />}agentTab
+        {agentTab === 'graph-policy' && <GraphPolicy />}
         {agentTab === 'exports' && <DataExportsTab />}
         {agentTab === 'training-jobs' && <TrainingJobsTab />}
         {agentTab === 'chats' && <ChatWithAgent />}
