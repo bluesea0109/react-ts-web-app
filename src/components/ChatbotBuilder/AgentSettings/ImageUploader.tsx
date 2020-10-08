@@ -50,7 +50,7 @@ const ImageUploader = ({
       if (!!url) {
         (async () => {
           try {
-            await axios.post(url, file, {
+            await axios.put(url, file, {
               headers: {
                 'Content-Type': file.type,
                 'Access-Control-Allow-Origin': '*',

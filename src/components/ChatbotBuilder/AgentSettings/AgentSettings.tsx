@@ -72,6 +72,7 @@ const AgentSettings = () => {
       skip: !agentUname,
       variables: {
         uname: agentUname,
+        dev: mode === 'dev',
       },
       onCompleted: (data) => {
         setWidgetSettings(data.ChatbotService_widgetSettings);
