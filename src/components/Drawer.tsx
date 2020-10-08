@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme: Theme) =>
     selected: {
       backgroundColor: 'red',
     },
-  })
+  }),
 );
 
 interface CustomDrawerProps {
@@ -101,7 +101,7 @@ function CustomDrawer(props: CustomDrawerProps) {
   console.log(
     'Location.pathname ',
     location.pathname,
-    location.pathname.includes('chat')
+    location.pathname.includes('chat'),
   );
 
   const list = () => {

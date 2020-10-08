@@ -17,9 +17,12 @@ import {
   DialogTitle,
   Grid,
   Tooltip,
+  IconButton,
+  Paper,
+  Divider,
 } from '@material-ui/core';
 import { Theme, withStyles } from '@material-ui/core/styles';
-import { Add } from '@material-ui/icons';
+import { Add, Remove } from '@material-ui/icons';
 import _ from 'lodash';
 import { withSnackbar, WithSnackbarProps } from 'notistack';
 import React from 'react';
@@ -46,6 +49,7 @@ interface IGraphPolicyVisualEditorProps extends WithSnackbarProps {
     fullWidth: string;
     nodeBox: string;
     hidden: string;
+    zoomControls: string;
   };
 }
 
@@ -60,6 +64,7 @@ interface IGraphPolicyVisualEditorState {
   loading: boolean;
   snackbarText: string;
   treeRenderCount: number;
+  zoom: number;
 }
 
 const styles = (theme: Theme) => ({
@@ -97,6 +102,13 @@ const styles = (theme: Theme) => ({
     height: 0,
     opacity: 0,
   },
+  zoomControls: {
+    zIndex: 100,
+    top: 50,
+    width: 30,
+    right: theme.spacing(2),
+    backgroundColor: theme.palette.background.default,
+  },
 });
 
 class GraphPolicyVisualEditor extends React.Component<
@@ -121,6 +133,7 @@ class GraphPolicyVisualEditor extends React.Component<
       loading: false,
       snackbarText: '',
       treeRenderCount: 0,
+      zoom: 100,
     };
   }
 
@@ -128,7 +141,7 @@ class GraphPolicyVisualEditor extends React.Component<
     this.setState({
       treeRenderCount: this.state.treeRenderCount + 1,
     });
-  }
+  };
 
   componentDidMount() {
     window.addEventListener('resize', this.updateDimensions);
@@ -138,9 +151,20 @@ class GraphPolicyVisualEditor extends React.Component<
     window.removeEventListener('resize', this.updateDimensions);
   }
 
+  zoom(direction: 'in' | 'out') {
+    let zoom = this.state.zoom;
+    if (direction === 'in') {
+      zoom += 10;
+    }
+    if (direction === 'out') {
+      zoom -= 10;
+    }
+    this.setState({ zoom });
+  }
+
   renderTree = (
     gpNode: GraphPolicyNode | UtteranceNode | EmailNode | undefined,
-    inIntent?: string,
+    inIntent?: string
   ) => {
     const { classes } = this.props;
     const gp = this.state.policy;
@@ -188,7 +212,7 @@ class GraphPolicyVisualEditor extends React.Component<
                     to={`graph_node_${e.nodeId}`}
                     toAnchor="top right"
                     {...lineProps}
-                  />,
+                  />
                 );
               } else {
                 lines.push(
@@ -199,7 +223,7 @@ class GraphPolicyVisualEditor extends React.Component<
                     to={`graph_node_${e.nodeId}`}
                     toAnchor="top"
                     {...lineProps}
-                  />,
+                  />
                 );
               }
 
@@ -214,7 +238,7 @@ class GraphPolicyVisualEditor extends React.Component<
               return <></>;
             }
           })}
-        </div>,
+        </div>
       );
     }
 
@@ -236,28 +260,28 @@ class GraphPolicyVisualEditor extends React.Component<
 
     this.renderedNodeIds.push(node.nodeId);
     return content;
-  }
+  };
 
   onDeleteNode = (nodeId: number) => {
     this.closeForms();
     this.setState({ showDeleteNode: nodeId });
-  }
+  };
 
   onEditNode = (nodeId: number) => {
     this.closeForms();
     this.setState({ showEditNode: nodeId });
-  }
+  };
 
   closeForms = () => {
     this.setState({
       showEditNode: null,
       showDeleteNode: null,
     });
-  }
+  };
 
   renderEditableNode = (
     node: GraphPolicyNode | UtteranceNode | EmailNode,
-    inIntent?: string,
+    inIntent?: string
   ) => {
     const { classes } = this.props;
     return (
@@ -285,7 +309,7 @@ class GraphPolicyVisualEditor extends React.Component<
         </div>
       </Box>
     );
-  }
+  };
 
   renderEditNodeForm = () => {
     const gp = this.state.policy;
@@ -305,7 +329,7 @@ class GraphPolicyVisualEditor extends React.Component<
         onUpdate={this.persistChanges}
       />
     );
-  }
+  };
 
   handleEditNode = (updatedPolicy: GraphPolicy) => {
     const newPolicy = this.state.policy;
@@ -319,9 +343,9 @@ class GraphPolicyVisualEditor extends React.Component<
       },
       () => {
         this.persistChanges(updatedPolicy);
-      },
+      }
     );
-  }
+  };
 
   deleteNode = (nodeId: number) => {
     const gp = this.state.policy;
@@ -334,7 +358,7 @@ class GraphPolicyVisualEditor extends React.Component<
       }),
       showDeleteNode: null,
     });
-  }
+  };
 
   renderDeleteNodeForm = () => {
     const gp = this.state.policy;
@@ -362,7 +386,7 @@ class GraphPolicyVisualEditor extends React.Component<
         </DialogActions>
       </Dialog>
     );
-  }
+  };
 
   renderStartButton() {
     if (!this.state.policy) {
@@ -421,13 +445,13 @@ class GraphPolicyVisualEditor extends React.Component<
     }
 
     this.setState({ loading: false });
-  }
+  };
 
   handleNewPolicy = (policy: GraphPolicy) => {
     this.setState({
       policy,
     });
-  }
+  };
 
   renderNewPolicy() {
     return (
@@ -455,37 +479,58 @@ class GraphPolicyVisualEditor extends React.Component<
     this.renderedLinePairs = [];
     const treeContent = this.renderTree(gp.rootNode);
     const content = (
-      <div className={classes.root}>
-        {treeContent}
-        {this.state.showEditNode && this.renderEditNodeForm()}
-        {this.state.showDeleteNode && this.renderDeleteNodeForm()}
-        <div style={{ position: 'fixed', bottom: 5, left: '45%' }}>
-          <Mutation
-            mutation={CHATBOT_UPDATE_AGENT}
-            refetchQueries={[
-              {
-                query: getOptionImagesQuery,
-                variables: { agentId },
-              },
-            ]}>
-            {(mutateFn: MutationFunction) => {
-              this.mutateFunction = mutateFn;
-              return (
-                <Button
-                  variant="contained"
-                  disabled={this.state.loading}
-                  color="primary"
-                  onClick={() =>
-                    this.state.policy && this.persistChanges(this.state.policy)
-                  }>
-                  Save Changes
-                </Button>
-              );
-            }}
-          </Mutation>
-          {this.state.loading && <ContentLoading />}
+      <React.Fragment>
+        <Paper
+          className={classes.zoomControls}
+          style={{ position: 'absolute' }}>
+          <IconButton
+            color="default"
+            size="small"
+            onClick={() => this.zoom('in')}>
+            <Add />
+          </IconButton>
+          <Divider />
+          <IconButton
+            color="default"
+            size="small"
+            onClick={() => this.zoom('out')}>
+            <Remove />
+          </IconButton>
+        </Paper>
+
+        <div className={classes.root} style={{ zoom: `${this.state.zoom}%` }}>
+          {treeContent}
+          {this.state.showEditNode && this.renderEditNodeForm()}
+          {this.state.showDeleteNode && this.renderDeleteNodeForm()}
+          <div style={{ position: 'fixed', bottom: 5, left: '45%' }}>
+            <Mutation
+              mutation={CHATBOT_UPDATE_AGENT}
+              refetchQueries={[
+                {
+                  query: getOptionImagesQuery,
+                  variables: { agentId },
+                },
+              ]}>
+              {(mutateFn: MutationFunction) => {
+                this.mutateFunction = mutateFn;
+                return (
+                  <Button
+                    variant="contained"
+                    disabled={this.state.loading}
+                    color="primary"
+                    onClick={() =>
+                      this.state.policy &&
+                      this.persistChanges(this.state.policy)
+                    }>
+                    Save Changes
+                  </Button>
+                );
+              }}
+            </Mutation>
+            {this.state.loading && <ContentLoading />}
+          </div>
         </div>
-      </div>
+      </React.Fragment>
     );
 
     return (
