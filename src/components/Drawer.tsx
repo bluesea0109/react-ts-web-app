@@ -1,22 +1,19 @@
-import { createStyles, Theme } from '@material-ui/core';
-import Collapse from '@material-ui/core/Collapse';
+import { createStyles, Hidden, Theme } from '@material-ui/core';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles } from '@material-ui/core/styles';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import IconButtonBavard from '../components/IconButtons/IconButtonBavard';
+import React, { useEffect } from 'react';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import SubMenuIcon from '../components/IconButtons/SubMenuIcon';
+import { IAgentParam } from '../models/chatbot-service';
 import { IUser } from '../models/user-service';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     list: {
-      maxWidth: 250,
+      maxWidth: 260,
       backgroundColor: '#151630',
       color: 'white',
     },
@@ -35,29 +32,58 @@ const useStyles = makeStyles((theme: Theme) =>
     nested: {
       paddingLeft: theme.spacing(4),
     },
+    listItem: {
+      color: 'white',
+    },
+
+    active: {
+      backgroundColor: 'red',
+    },
+
+    blank: {
+      height: '105px',
+    },
+
+    selected: {
+      backgroundColor: 'red',
+    },
   }),
 );
 
 interface CustomDrawerProps {
   user: IUser;
-  onIconClick: () => void;
   status: boolean;
+  navigation: number;
+  agent: IAgentParam;
 }
 
 function CustomDrawer(props: CustomDrawerProps) {
-  const { user, onIconClick, status } = props;
+  const { user, navigation, agent } = props;
+
+  console.log('navigation =>  ', navigation);
   const classes = useStyles();
   const location = useLocation();
-  const [dashOpen, setDashOpen] = useState(false);
-
-  const handleClick = () => {
-    setDashOpen(!dashOpen);
+  const selectedStyle = {
+    backgroundColor: '#4A90E2',
+    padding: '10px',
+    borderRadius: '5px',
+    wordwrap: 'normal',
   };
+
   const createPath = (pageName: string): string => {
     if (!user.activeProject) {
       return '/no-project';
     }
     return `/orgs/${user.activeProject.orgId}/projects/${user.activeProject.id}/${pageName}`;
+  };
+
+  const createAgentPath = (agentTab: string): string => {
+    if (!user.activeProject) {
+      return '/no-project';
+    }
+
+    // "/orgs/:orgId/projects/:projectId/chatbot-builder/agents/:agentId/:agentTab"
+    return `/orgs/${user.activeProject.orgId}/projects/${user.activeProject.id}/chatbot-builder/agents/${agent.agentId}/${agentTab}`;
   };
 
   const createOrgPath = (path: string = ''): string => {
@@ -68,115 +94,410 @@ function CustomDrawer(props: CustomDrawerProps) {
     if (path !== '') {
       return `/orgs/${user.activeProject.orgId}/${path}`;
     }
+
     return `/orgs/${user.activeProject.orgId}`;
   };
 
-  const requiresActiveProjectListItems = (
-    <>
-      <ListItem
-        component={Link}
-        to={createPath('chatbot-builder')}
-        selected={/chatbot-builder$/.test(location.pathname)}
-        button={true}>
-        <ListItemIcon style={{ color: 'white' }}>
-          <SubMenuIcon title="BotBuilder" />
-        </ListItemIcon>
-        <ListItemText primary="Chatbot Builder" />
-      </ListItem>
-      <ListItem
-        component={Link}
-        to={createPath('image-labeling/collections')}
-        selected={location.pathname.includes('image-labeling')}
-        button={true}>
-        <ListItemIcon style={{ color: 'white' }}>
-          <SubMenuIcon title="ImageLabeling" />
-        </ListItemIcon>
-        <ListItemText primary="Image Labeling" />
-      </ListItem>
-      <ListItem
-        component={Link}
-        to={createPath('qa')}
-        selected={location.pathname.includes('/qa')}
-        button={true}>
-        <ListItemIcon style={{ color: 'white' }}>
-          <SubMenuIcon title="FAQ" />
-        </ListItemIcon>
-        <ListItemText primary="FAQ Service" />
-      </ListItem>
-      <ListItem
-        component={Link}
-        to={createPath('text-labeling')}
-        selected={location.pathname.includes('text-labeling')}
-        button={true}>
-        <ListItemIcon style={{ color: 'white' }}>
-          <SubMenuIcon title="TextLabeling" />
-        </ListItemIcon>
-        <ListItemText primary="Text Labeling" />
-      </ListItem>
-    </>
-  );
+  console.log('Location.pathname ', location.pathname, location.pathname.includes('chat'));
 
-  const list = () => (
-    <div className={classes.list} role="presentation">
-      <div className={classes.drawerHeader}>
-        <IconButtonBavard
-          tooltip="barvard button"
-          disabled={false}
-          onClick={onIconClick}
-        />
-      </div>
-      <List>
-        <ListItem
-          component={Link}
-          to="/"
-          selected={location.pathname === '/'}
-          button={true}
-          onClick={handleClick}>
-          <ListItemIcon style={{ color: 'white' }}>
-            <SubMenuIcon title="Dashboard" />
-          </ListItemIcon>
-          <ListItemText primary="Dashboard" />
-          {status ? dashOpen ? <ExpandLess /> : <ExpandMore /> : ''}
-        </ListItem>
-        <Collapse in={dashOpen} timeout="auto" unmountOnExit={true}>
-          <List component="div" disablePadding={true}>
-            <List component="div" disablePadding={true}>
-              <ListItem
-                className={status ? classes.nested : ''}
-                component={Link}
-                to={createOrgPath('settings')}
-                selected={
+  const list = () => {
+    switch (navigation) {
+      case 1:
+        return (
+          <List>
+            <ListItem className={classes.blank} />
+            <ListItem
+              component={Link}
+              to={createOrgPath('settings')}
+              selected={
+                !location.pathname.includes('projects') &&
+                location.pathname.includes('settings')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Organization" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Organization"
+                style={
                   !location.pathname.includes('projects') &&
                   location.pathname.includes('settings')
+                    ? selectedStyle
+                    : {}
                 }
-                button={true}>
-                <ListItemIcon style={{ color: 'white' }}>
-                  <SubMenuIcon title="Organization" />
-                </ListItemIcon>
-                <ListItemText primary="Organization" />
-              </ListItem>
-              <ListItem
-                className={status ? classes.nested : ''}
-                component={Link}
-                to={createPath('settings')}
-                selected={
+              />
+            </ListItem>
+            <ListItem
+              component={Link}
+              to={createPath('settings')}
+              selected={
+                location.pathname.includes('projects') &&
+                location.pathname.includes('settings')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Project" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Project"
+                style={
                   location.pathname.includes('projects') &&
                   location.pathname.includes('settings')
+                    ? selectedStyle
+                    : {}
                 }
-                button={true}>
-                <ListItemIcon style={{ color: 'white' }}>
-                  <SubMenuIcon title="Project" />
-                </ListItemIcon>
-                <ListItemText primary="Project" />
-              </ListItem>
-            </List>
+              />
+            </ListItem>
           </List>
-        </Collapse>
-        {requiresActiveProjectListItems}
-      </List>
-    </div>
-  );
-
+        );
+      case 6:
+        return (
+          <List>
+            <ListItem className={classes.blank} />
+            <ListItem
+              component={Link}
+              to={createAgentPath('Actions')}
+              selected={
+                location.pathname.includes('projects') &&
+                location.pathname.includes('Actions')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Project" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Actions"
+                style={
+                  location.pathname.includes('Actions') ? selectedStyle : {}
+                }
+              />
+            </ListItem>
+            <ListItem
+              component={Link}
+              to={createAgentPath('Intents')}
+              selected={
+                location.pathname.includes('projects') &&
+                location.pathname.includes('Intents')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Project" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Intents"
+                style={
+                  location.pathname.includes('projects') &&
+                  location.pathname.includes('Intents')
+                    ? selectedStyle
+                    : {}
+                }
+              />
+            </ListItem>
+            <ListItem
+              component={Link}
+              to={createAgentPath('Tags')}
+              selected={
+                location.pathname.includes('projects') &&
+                location.pathname.includes('Tags')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Project" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Tags"
+                style={
+                  location.pathname.includes('projects') &&
+                  location.pathname.includes('Tags')
+                    ? selectedStyle
+                    : {}
+                }
+              />
+            </ListItem>
+            <ListItem
+              component={Link}
+              to={createAgentPath('Slots')}
+              selected={
+                location.pathname.includes('projects') &&
+                location.pathname.includes('Slots')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Project" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Slot Values"
+                style={
+                  location.pathname.includes('projects') &&
+                  location.pathname.includes('Slots')
+                    ? selectedStyle
+                    : {}
+                }
+              />
+            </ListItem>
+            <ListItem
+              component={Link}
+              to={createAgentPath('graph-policy')}
+              selected={
+                location.pathname.includes('projects') &&
+                location.pathname.includes('graph-policy')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Project" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Visual Graphs"
+                style={
+                  location.pathname.includes('projects') &&
+                  location.pathname.includes('graph-policy')
+                    ? selectedStyle
+                    : {}
+                }
+              />
+            </ListItem>
+          </List>
+        );
+      case 7:
+        return (
+          <List>
+            <ListItem className={classes.blank} />
+            <ListItem
+              component={Link}
+              to={createAgentPath('training-jobs')}
+              selected={location.pathname.includes('training-jobs')}
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Project" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Training Jobs"
+                style={
+                  location.pathname.includes('training-jobs')
+                    ? selectedStyle
+                    : {}
+                }
+              />
+            </ListItem>
+            <ListItem
+              component={Link}
+              to={createAgentPath('live-conversations')}
+              selected={
+                location.pathname.includes('projects') &&
+                location.pathname.includes('live-conversations')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Project" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Training Conversation"
+                style={
+                  location.pathname.includes('projects') &&
+                  location.pathname.includes('live-conversations')
+                    ? selectedStyle
+                    : {}
+                }
+              />
+            </ListItem>
+            <ListItem
+              component={Link}
+              to={createAgentPath('nluExamples')}
+              selected={
+                location.pathname.includes('projects') &&
+                location.pathname.includes('nluExamples')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Project" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="NLU Examples"
+                style={
+                  location.pathname.includes('projects') &&
+                  location.pathname.includes('nluExamples')
+                    ? selectedStyle
+                    : {}
+                }
+              />
+            </ListItem>
+          </List>
+        );
+      case 8:
+        return (
+          <List>
+            <ListItem className={classes.blank} />
+            <ListItem
+              component={Link}
+              to={createAgentPath('chats')}
+              selected={
+                location.pathname.includes('projects') &&
+                location.pathname.includes('chats')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Project" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Assistant Demo"
+                style={location.pathname.includes('chats') ? selectedStyle : {}}
+              />
+            </ListItem>
+            <ListItem
+              component={Link}
+              to={createAgentPath('upload-data')}
+              selected={
+                location.pathname.includes('projects') &&
+                location.pathname.includes('upload-data')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Project" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Upload Data"
+                style={
+                  location.pathname.includes('projects') &&
+                  location.pathname.includes('upload-data')
+                    ? selectedStyle
+                    : {}
+                }
+              />
+            </ListItem>
+            <ListItem
+              component={Link}
+              to={createAgentPath('exports')}
+              selected={
+                location.pathname.includes('projects') &&
+                location.pathname.includes('exports')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Project" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Data Exports"
+                style={
+                  location.pathname.includes('projects') &&
+                  location.pathname.includes('exports')
+                    ? selectedStyle
+                    : {}
+                }
+              />
+            </ListItem>
+            <ListItem
+              component={Link}
+              to={createAgentPath('settings')}
+              selected={
+                location.pathname.includes('projects') &&
+                location.pathname.includes('settings')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Project" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Design Settings"
+                style={
+                  location.pathname.includes('projects') &&
+                  location.pathname.includes('settings')
+                    ? selectedStyle
+                    : {}
+                }
+              />
+            </ListItem>
+            <ListItem
+              component={Link}
+              to={createAgentPath('publish')}
+              selected={
+                location.pathname.includes('projects') &&
+                location.pathname.includes('publish')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Project" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Publish Assistant"
+                style={
+                  location.pathname.includes('projects') &&
+                  location.pathname.includes('publish')
+                    ? selectedStyle
+                    : {}
+                }
+              />
+            </ListItem>
+          </List>
+        );
+      case 4:
+        return (
+          <List>
+            <ListItem className={classes.blank} />
+            <ListItem
+              component={Link}
+              to={createOrgPath('settings')}
+              selected={
+                !location.pathname.includes('projects') &&
+                location.pathname.includes('settings')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Organization" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Organization"
+                style={
+                  !location.pathname.includes('projects') &&
+                  location.pathname.includes('settings')
+                    ? selectedStyle
+                    : {}
+                }
+              />
+            </ListItem>
+            <ListItem
+              component={Link}
+              to={createPath('settings')}
+              selected={
+                location.pathname.includes('projects') &&
+                location.pathname.includes('settings')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Project" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Project"
+                style={
+                  location.pathname.includes('projects') &&
+                  location.pathname.includes('settings')
+                    ? selectedStyle
+                    : {}
+                }
+              />
+            </ListItem>
+          </List>
+        );
+      default:
+        return <></>;
+    }
+  };
   return <>{list()}</>;
 }
 

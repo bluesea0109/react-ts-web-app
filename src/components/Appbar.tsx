@@ -22,7 +22,6 @@ import { GET_CURRENT_USER, UPDATE_ACTIVE_ORG } from '../common-gql-queries';
 import { IUser } from '../models/user-service';
 
 interface CustomAppbarProps extends AppBarProps {
-  onMenuClick: () => void;
   user: IUser;
 }
 
@@ -195,7 +194,6 @@ const CustomAppbar: React.FC<CustomAppbarProps> = ({
   user,
   position,
   className,
-  onMenuClick,
 }) => {
   const classes = useStyles();
 
