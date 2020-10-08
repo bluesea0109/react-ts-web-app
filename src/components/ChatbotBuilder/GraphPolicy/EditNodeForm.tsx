@@ -62,7 +62,7 @@ const useStyles = makeStyles((theme: Theme) =>
         opacity: 1,
       },
     },
-  })
+  }),
 );
 
 interface IGraphNodeProps {

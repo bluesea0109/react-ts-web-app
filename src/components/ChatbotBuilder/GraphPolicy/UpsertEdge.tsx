@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(2),
       backgroundColor: theme.palette.background.default,
     },
-  })
+  }),
 );
 
 interface IUpsertEdgeProps {
@@ -55,7 +55,7 @@ export default function UpsertEdge({
   }
 
   const [edgeType, setEdgeType] = useState<GraphEdgeType>(
-    edge?.type || 'UTTERANCE'
+    edge?.type || 'UTTERANCE',
   );
   if (!node) {
     return <></>;
