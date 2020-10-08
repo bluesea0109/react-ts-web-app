@@ -6,6 +6,7 @@ import clsx from 'clsx';
 import 'firebase/auth';
 import React, { useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
+import './App.css';
 import { GET_CURRENT_USER } from './common-gql-queries';
 import AppBar from './components/Appbar';
 import ChatbotBuilder from './components/ChatbotBuilder';
@@ -21,7 +22,6 @@ import InternalServerErrorPage from './components/InternalServerErrorpage';
 import MySidebar from './components/Sidebar';
 import TextLabeling from './components/TextLabeling';
 import { IUser } from './models/user-service';
-import './App.css';
 
 const drawerWidth = 270;
 
@@ -145,7 +145,7 @@ function App() {
   if (error || !data) {
     console.log(error);
     return <InternalServerErrorPage />;
-  }  
+  }
 
   assert.notEqual(data, null);
 

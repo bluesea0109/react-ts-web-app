@@ -6,7 +6,7 @@ import IconButtonBavard from './IconButtons/IconButtonBavard';
 import NavItem from './IconButtons/NavItem';
 
 const VerticalSidebar = styled.div`
-  position: fixed;  
+  position: fixed;
   height: 100%;
   width: 75px;
   z-index: 100000;
@@ -49,8 +49,8 @@ const Sidebar = (props: ISidebarProps) => {
       setOpenSubItem(true);
       onClick(6);
       onSetAgentID(agentParams);
-    } 
-  }, [match?.path]);// eslint-disable-line react-hooks/exhaustive-deps
+    }
+  }, [match?.path]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const openDashboard = (key: number) => {
     setSelected(key);

@@ -58,7 +58,7 @@ interface CustomDrawerProps {
 }
 
 function CustomDrawer(props: CustomDrawerProps) {
-  const { user, navigation, agent } = props;  
+  const { user, navigation, agent } = props;
   const classes = useStyles();
   const location = useLocation();
 
@@ -95,7 +95,7 @@ function CustomDrawer(props: CustomDrawerProps) {
     }
 
     return `/orgs/${user.activeProject.orgId}`;
-  };  
+  };
 
   const list = () => {
     switch (navigation) {

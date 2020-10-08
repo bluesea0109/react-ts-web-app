@@ -90,7 +90,7 @@ const AgentDetails = () => {
     projectId: string;
     agentId: string;
     agentTab: string;
-  }>();  
+  }>();
   const [config, setConfig] = useRecoilState(currentAgentConfig);
   const [widgetSettings, setWidgetSettings] = useRecoilState(
     currentWidgetSettings,
