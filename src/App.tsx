@@ -115,7 +115,7 @@ const useStyles = makeStyles((theme: Theme) =>
 function App() {
   const classes = useStyles();
   const [navKey, setNavKey] = useState(0);
-  const [agentId, setAgentId] = useState({agentId: 0});
+  const [agentId, setAgentId] = useState({ agentId: 0 });
   interface IGetCurrentUser {
     currentUser: IUser;
   }
@@ -131,7 +131,7 @@ function App() {
   };
 
   const onSetAgentID = (id: any) => {
-    setAgentId({agentId: id?.agentId});
+    setAgentId({ agentId: id?.agentId });
   };
 
   const onDrawerClose = () => {
@@ -152,86 +152,94 @@ function App() {
   return !data && loading ? (
     <ContentLoading />
   ) : (
-      <div className={classes.root}>
-        <AppBar
-          user={data.currentUser}
-          position="fixed"
-          className={clsx(classes.appBar, {
-            [classes.appBarShift]: state.drawerOpen,
-          })}
-        />
-        <MySidebar user={data.currentUser} onClick={onMenuClick} onClose={onDrawerClose} onSetAgentID={onSetAgentID}/>
-        <Drawer
-          style={{backgroundColor: 'black'}}
-          className={clsx(classes.drawer, {
+    <div className={classes.root}>
+      <AppBar
+        user={data.currentUser}
+        position="fixed"
+        className={clsx(classes.appBar, {
+          [classes.appBarShift]: state.drawerOpen,
+        })}
+      />
+      <MySidebar
+        user={data.currentUser}
+        onClick={onMenuClick}
+        onClose={onDrawerClose}
+        onSetAgentID={onSetAgentID}
+      />
+      <Drawer
+        style={{ backgroundColor: 'black' }}
+        className={clsx(classes.drawer, {
+          [classes.drawerOpen]: state.drawerOpen,
+          [classes.drawerClose]: !state.drawerOpen,
+        })}
+        variant="permanent"
+        anchor="left"
+        classes={{
+          paper: clsx({
             [classes.drawerOpen]: state.drawerOpen,
             [classes.drawerClose]: !state.drawerOpen,
-          })}
-          variant="permanent"
-          anchor="left"
-          classes={{
-            paper: clsx({
-              [classes.drawerOpen]: state.drawerOpen,
-              [classes.drawerClose]: !state.drawerOpen,
-            }),
-          }}
-          open={state.drawerOpen}
-          onClose={onDrawerClose}>
-            <CustomDrawer user={data.currentUser} status={state.drawerOpen} navigation={navKey} agent={agentId}/>
-          </Drawer>
+          }),
+        }}
+        open={state.drawerOpen}
+        onClose={onDrawerClose}>
+        <CustomDrawer
+          user={data.currentUser}
+          status={state.drawerOpen}
+          navigation={navKey}
+          agent={agentId}
+        />
+      </Drawer>
 
-        <main
-          className={clsx(classes.content, {
-            [classes.contentShift]: state.drawerOpen,
-          })}>
-          <div className={classes.drawerHeader} />
-          <Switch>
-            <Route exact={true} path="/">
-              <Dashboard user={data.currentUser} />
-            </Route>
-            <Route exact={true} path="/invites/:inviteId">
-              <AcceptInvite />
-            </Route>
-            <Route exact={true} path="/orgs/:orgId/settings">
-              <OrganizationSettings user={data.currentUser} />
-            </Route>
-            <Route exact={true} path="/orgs/:orgId/projects/:projectId/settings">
-              <ProjectSettings />
-            </Route>
-            <Route path="/orgs/:orgId/projects/:projectId/qa">
-              <FAQService />
-            </Route>
-            <Route path="/orgs/:orgId/projects/:projectId/text-labeling">
-              <TextLabeling />
-            </Route>
-            {/* <Route path="/orgs/:orgId/projects/:projectId/text-summarization">
+      <main
+        className={clsx(classes.content, {
+          [classes.contentShift]: state.drawerOpen,
+        })}>
+        <div className={classes.drawerHeader} />
+        <Switch>
+          <Route exact={true} path="/">
+            <Dashboard user={data.currentUser} />
+          </Route>
+          <Route exact={true} path="/invites/:inviteId">
+            <AcceptInvite />
+          </Route>
+          <Route exact={true} path="/orgs/:orgId/settings">
+            <OrganizationSettings user={data.currentUser} />
+          </Route>
+          <Route exact={true} path="/orgs/:orgId/projects/:projectId/settings">
+            <ProjectSettings />
+          </Route>
+          <Route path="/orgs/:orgId/projects/:projectId/qa">
+            <FAQService />
+          </Route>
+          <Route path="/orgs/:orgId/projects/:projectId/text-labeling">
+            <TextLabeling />
+          </Route>
+          {/* <Route path="/orgs/:orgId/projects/:projectId/text-summarization">
             <TextSummarization />
             </Route> */}
-            <Route path="/orgs/:orgId/projects/:projectId/image-labeling">
-              <ImageLabeling />
-            </Route>
-            <Route path="/orgs/:orgId/projects/:projectId/chatbot-builder">
-              <ChatbotBuilder user={data.currentUser} />
-            </Route>
-            <Route path="/orgs/:orgId/projects/:projectId/text-labeling" />
-            <Route exact={true} path="/no-project">
-              <div className={classes.container}>
-                <Typography>
-                  {'No project is active. Please create or activate one.'}
-                </Typography>
-              </div>
-            </Route>
-            <Route exact={true} path="/no-orgs">
-              <div className={classes.container}>
-                <Typography>
-                  {'No Organization found.'}
-                </Typography>
-              </div>
-            </Route>
-          </Switch>
-        </main>
-      </div>
-    );
+          <Route path="/orgs/:orgId/projects/:projectId/image-labeling">
+            <ImageLabeling />
+          </Route>
+          <Route path="/orgs/:orgId/projects/:projectId/chatbot-builder">
+            <ChatbotBuilder user={data.currentUser} />
+          </Route>
+          <Route path="/orgs/:orgId/projects/:projectId/text-labeling" />
+          <Route exact={true} path="/no-project">
+            <div className={classes.container}>
+              <Typography>
+                {'No project is active. Please create or activate one.'}
+              </Typography>
+            </div>
+          </Route>
+          <Route exact={true} path="/no-orgs">
+            <div className={classes.container}>
+              <Typography>{'No Organization found.'}</Typography>
+            </div>
+          </Route>
+        </Switch>
+      </main>
+    </div>
+  );
 }
 
 export default App;
