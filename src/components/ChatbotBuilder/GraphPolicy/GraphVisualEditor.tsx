@@ -15,11 +15,11 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Divider,
   Grid,
-  Tooltip,
   IconButton,
   Paper,
-  Divider,
+  Tooltip,
 } from '@material-ui/core';
 import { Theme, withStyles } from '@material-ui/core/styles';
 import { Add, Remove } from '@material-ui/icons';
@@ -141,7 +141,7 @@ class GraphPolicyVisualEditor extends React.Component<
     this.setState({
       treeRenderCount: this.state.treeRenderCount + 1,
     });
-  };
+  }
 
   componentDidMount() {
     window.addEventListener('resize', this.updateDimensions);
@@ -164,7 +164,7 @@ class GraphPolicyVisualEditor extends React.Component<
 
   renderTree = (
     gpNode: GraphPolicyNode | UtteranceNode | EmailNode | undefined,
-    inIntent?: string
+    inIntent?: string,
   ) => {
     const { classes } = this.props;
     const gp = this.state.policy;
@@ -212,7 +212,7 @@ class GraphPolicyVisualEditor extends React.Component<
                     to={`graph_node_${e.nodeId}`}
                     toAnchor="top right"
                     {...lineProps}
-                  />
+                  />,
                 );
               } else {
                 lines.push(
@@ -223,7 +223,7 @@ class GraphPolicyVisualEditor extends React.Component<
                     to={`graph_node_${e.nodeId}`}
                     toAnchor="top"
                     {...lineProps}
-                  />
+                  />,
                 );
               }
 
@@ -238,7 +238,7 @@ class GraphPolicyVisualEditor extends React.Component<
               return <></>;
             }
           })}
-        </div>
+        </div>,
       );
     }
 
@@ -260,28 +260,28 @@ class GraphPolicyVisualEditor extends React.Component<
 
     this.renderedNodeIds.push(node.nodeId);
     return content;
-  };
+  }
 
   onDeleteNode = (nodeId: number) => {
     this.closeForms();
     this.setState({ showDeleteNode: nodeId });
-  };
+  }
 
   onEditNode = (nodeId: number) => {
     this.closeForms();
     this.setState({ showEditNode: nodeId });
-  };
+  }
 
   closeForms = () => {
     this.setState({
       showEditNode: null,
       showDeleteNode: null,
     });
-  };
+  }
 
   renderEditableNode = (
     node: GraphPolicyNode | UtteranceNode | EmailNode,
-    inIntent?: string
+    inIntent?: string,
   ) => {
     const { classes } = this.props;
     return (
@@ -309,7 +309,7 @@ class GraphPolicyVisualEditor extends React.Component<
         </div>
       </Box>
     );
-  };
+  }
 
   renderEditNodeForm = () => {
     const gp = this.state.policy;
@@ -329,7 +329,7 @@ class GraphPolicyVisualEditor extends React.Component<
         onUpdate={this.persistChanges}
       />
     );
-  };
+  }
 
   handleEditNode = (updatedPolicy: GraphPolicy) => {
     const newPolicy = this.state.policy;
@@ -343,9 +343,9 @@ class GraphPolicyVisualEditor extends React.Component<
       },
       () => {
         this.persistChanges(updatedPolicy);
-      }
+      },
     );
-  };
+  }
 
   deleteNode = (nodeId: number) => {
     const gp = this.state.policy;
@@ -358,7 +358,7 @@ class GraphPolicyVisualEditor extends React.Component<
       }),
       showDeleteNode: null,
     });
-  };
+  }
 
   renderDeleteNodeForm = () => {
     const gp = this.state.policy;
@@ -386,7 +386,7 @@ class GraphPolicyVisualEditor extends React.Component<
         </DialogActions>
       </Dialog>
     );
-  };
+  }
 
   renderStartButton() {
     if (!this.state.policy) {
@@ -445,13 +445,13 @@ class GraphPolicyVisualEditor extends React.Component<
     }
 
     this.setState({ loading: false });
-  };
+  }
 
   handleNewPolicy = (policy: GraphPolicy) => {
     this.setState({
       policy,
     });
-  };
+  }
 
   renderNewPolicy() {
     return (
