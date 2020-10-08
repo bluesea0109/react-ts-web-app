@@ -23,6 +23,9 @@ export interface IAgent {
   widgetSettings: IWidgetSettings;
 }
 
+export interface IAgentParam {
+  agentId: number;
+}
 export interface INLUExampleTag {
   tagType: string;
   start: number;

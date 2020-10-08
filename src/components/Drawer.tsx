@@ -1,18 +1,19 @@
-import { createStyles, Theme } from '@material-ui/core';
+import { createStyles, Hidden, Theme } from '@material-ui/core';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles } from '@material-ui/core/styles';
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import SubMenuIcon from '../components/IconButtons/SubMenuIcon';
+import { IAgentParam } from '../models/chatbot-service';
 import { IUser } from '../models/user-service';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     list: {
-      maxWidth: 250,
+      maxWidth: 260,
       backgroundColor: '#151630',
       color: 'white',
     },
@@ -53,10 +54,11 @@ interface CustomDrawerProps {
   user: IUser;
   status: boolean;
   navigation: number;
+  agent: IAgentParam;
 }
 
 function CustomDrawer(props: CustomDrawerProps) {
-  const { user, navigation } = props;
+  const { user, navigation, agent } = props;
 
   console.log('navigation =>  ', navigation);
   const classes = useStyles();
@@ -65,6 +67,7 @@ function CustomDrawer(props: CustomDrawerProps) {
     backgroundColor: '#4A90E2',
     padding: '10px',
     borderRadius: '5px',
+    wordwrap: 'normal',
   };
 
   const createPath = (pageName: string): string => {
@@ -72,6 +75,15 @@ function CustomDrawer(props: CustomDrawerProps) {
       return '/no-project';
     }
     return `/orgs/${user.activeProject.orgId}/projects/${user.activeProject.id}/${pageName}`;
+  };
+
+  const createAgentPath = (agentTab: string): string => {
+    if (!user.activeProject) {
+      return '/no-project';
+    }
+
+    // "/orgs/:orgId/projects/:projectId/chatbot-builder/agents/:agentId/:agentTab"
+    return `/orgs/${user.activeProject.orgId}/projects/${user.activeProject.id}/chatbot-builder/agents/${agent.agentId}/${agentTab}`;
   };
 
   const createOrgPath = (path: string = ''): string => {
@@ -85,6 +97,8 @@ function CustomDrawer(props: CustomDrawerProps) {
 
     return `/orgs/${user.activeProject.orgId}`;
   };
+
+  console.log('Location.pathname ', location.pathname, location.pathname.includes('chat'));
 
   const list = () => {
     switch (navigation) {
@@ -138,38 +152,35 @@ function CustomDrawer(props: CustomDrawerProps) {
             </ListItem>
           </List>
         );
-      case 2:
+      case 6:
         return (
           <List>
             <ListItem className={classes.blank} />
             <ListItem
               component={Link}
-              to={createOrgPath('actions')}
+              to={createAgentPath('Actions')}
               selected={
-                !location.pathname.includes('projects') &&
-                location.pathname.includes('settings')
+                location.pathname.includes('projects') &&
+                location.pathname.includes('Actions')
               }
               button={true}
               className={classes.listItem}>
               <ListItemIcon style={{ color: 'white' }}>
-                <SubMenuIcon title="Organization" active={false} />
+                <SubMenuIcon title="Project" active={false} />
               </ListItemIcon>
               <ListItemText
                 primary="Actions"
                 style={
-                  !location.pathname.includes('projects') &&
-                  location.pathname.includes('settings')
-                    ? selectedStyle
-                    : {}
+                  location.pathname.includes('Actions') ? selectedStyle : {}
                 }
               />
             </ListItem>
             <ListItem
               component={Link}
-              to={createPath('settings')}
+              to={createAgentPath('Intents')}
               selected={
                 location.pathname.includes('projects') &&
-                location.pathname.includes('settings')
+                location.pathname.includes('Intents')
               }
               button={true}
               className={classes.listItem}>
@@ -180,7 +191,7 @@ function CustomDrawer(props: CustomDrawerProps) {
                 primary="Intents"
                 style={
                   location.pathname.includes('projects') &&
-                  location.pathname.includes('settings')
+                  location.pathname.includes('Intents')
                     ? selectedStyle
                     : {}
                 }
@@ -188,10 +199,10 @@ function CustomDrawer(props: CustomDrawerProps) {
             </ListItem>
             <ListItem
               component={Link}
-              to={createPath('settings')}
+              to={createAgentPath('Tags')}
               selected={
                 location.pathname.includes('projects') &&
-                location.pathname.includes('settings')
+                location.pathname.includes('Tags')
               }
               button={true}
               className={classes.listItem}>
@@ -202,7 +213,7 @@ function CustomDrawer(props: CustomDrawerProps) {
                 primary="Tags"
                 style={
                   location.pathname.includes('projects') &&
-                  location.pathname.includes('settings')
+                  location.pathname.includes('Tags')
                     ? selectedStyle
                     : {}
                 }
@@ -210,10 +221,10 @@ function CustomDrawer(props: CustomDrawerProps) {
             </ListItem>
             <ListItem
               component={Link}
-              to={createPath('settings')}
+              to={createAgentPath('Slots')}
               selected={
                 location.pathname.includes('projects') &&
-                location.pathname.includes('settings')
+                location.pathname.includes('Slots')
               }
               button={true}
               className={classes.listItem}>
@@ -224,7 +235,7 @@ function CustomDrawer(props: CustomDrawerProps) {
                 primary="Slot Values"
                 style={
                   location.pathname.includes('projects') &&
-                  location.pathname.includes('settings')
+                  location.pathname.includes('Slots')
                     ? selectedStyle
                     : {}
                 }
@@ -232,10 +243,10 @@ function CustomDrawer(props: CustomDrawerProps) {
             </ListItem>
             <ListItem
               component={Link}
-              to={createPath('settings')}
+              to={createAgentPath('graph-policy')}
               selected={
                 location.pathname.includes('projects') &&
-                location.pathname.includes('settings')
+                location.pathname.includes('graph-policy')
               }
               button={true}
               className={classes.listItem}>
@@ -246,7 +257,7 @@ function CustomDrawer(props: CustomDrawerProps) {
                 primary="Visual Graphs"
                 style={
                   location.pathname.includes('projects') &&
-                  location.pathname.includes('settings')
+                  location.pathname.includes('graph-policy')
                     ? selectedStyle
                     : {}
                 }
@@ -254,27 +265,23 @@ function CustomDrawer(props: CustomDrawerProps) {
             </ListItem>
           </List>
         );
-      case 3:
+      case 7:
         return (
           <List>
             <ListItem className={classes.blank} />
             <ListItem
               component={Link}
-              to={createOrgPath('settings')}
-              selected={
-                !location.pathname.includes('projects') &&
-                location.pathname.includes('settings')
-              }
+              to={createAgentPath('training-jobs')}
+              selected={location.pathname.includes('training-jobs')}
               button={true}
               className={classes.listItem}>
               <ListItemIcon style={{ color: 'white' }}>
-                <SubMenuIcon title="Organization" active={false} />
+                <SubMenuIcon title="Project" active={false} />
               </ListItemIcon>
               <ListItemText
-                primary="Organization"
+                primary="Training Jobs"
                 style={
-                  !location.pathname.includes('projects') &&
-                  location.pathname.includes('settings')
+                  location.pathname.includes('training-jobs')
                     ? selectedStyle
                     : {}
                 }
@@ -282,7 +289,118 @@ function CustomDrawer(props: CustomDrawerProps) {
             </ListItem>
             <ListItem
               component={Link}
-              to={createPath('settings')}
+              to={createAgentPath('live-conversations')}
+              selected={
+                location.pathname.includes('projects') &&
+                location.pathname.includes('live-conversations')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Project" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Training Conversation"
+                style={
+                  location.pathname.includes('projects') &&
+                  location.pathname.includes('live-conversations')
+                    ? selectedStyle
+                    : {}
+                }
+              />
+            </ListItem>
+            <ListItem
+              component={Link}
+              to={createAgentPath('nluExamples')}
+              selected={
+                location.pathname.includes('projects') &&
+                location.pathname.includes('nluExamples')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Project" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="NLU Examples"
+                style={
+                  location.pathname.includes('projects') &&
+                  location.pathname.includes('nluExamples')
+                    ? selectedStyle
+                    : {}
+                }
+              />
+            </ListItem>
+          </List>
+        );
+      case 8:
+        return (
+          <List>
+            <ListItem className={classes.blank} />
+            <ListItem
+              component={Link}
+              to={createAgentPath('chats')}
+              selected={
+                location.pathname.includes('projects') &&
+                location.pathname.includes('chats')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Project" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Assistant Demo"
+                style={location.pathname.includes('chats') ? selectedStyle : {}}
+              />
+            </ListItem>
+            <ListItem
+              component={Link}
+              to={createAgentPath('upload-data')}
+              selected={
+                location.pathname.includes('projects') &&
+                location.pathname.includes('upload-data')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Project" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Upload Data"
+                style={
+                  location.pathname.includes('projects') &&
+                  location.pathname.includes('upload-data')
+                    ? selectedStyle
+                    : {}
+                }
+              />
+            </ListItem>
+            <ListItem
+              component={Link}
+              to={createAgentPath('exports')}
+              selected={
+                location.pathname.includes('projects') &&
+                location.pathname.includes('exports')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Project" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Data Exports"
+                style={
+                  location.pathname.includes('projects') &&
+                  location.pathname.includes('exports')
+                    ? selectedStyle
+                    : {}
+                }
+              />
+            </ListItem>
+            <ListItem
+              component={Link}
+              to={createAgentPath('settings')}
               selected={
                 location.pathname.includes('projects') &&
                 location.pathname.includes('settings')
@@ -293,10 +411,32 @@ function CustomDrawer(props: CustomDrawerProps) {
                 <SubMenuIcon title="Project" active={false} />
               </ListItemIcon>
               <ListItemText
-                primary="Project"
+                primary="Design Settings"
                 style={
                   location.pathname.includes('projects') &&
                   location.pathname.includes('settings')
+                    ? selectedStyle
+                    : {}
+                }
+              />
+            </ListItem>
+            <ListItem
+              component={Link}
+              to={createAgentPath('publish')}
+              selected={
+                location.pathname.includes('projects') &&
+                location.pathname.includes('publish')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Project" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Publish Assistant"
+                style={
+                  location.pathname.includes('projects') &&
+                  location.pathname.includes('publish')
                     ? selectedStyle
                     : {}
                 }

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouteMatch } from 'react-router-dom';
 import styled from 'styled-components';
+import { IAgentParam } from '../models/chatbot-service';
 import { IUser } from '../models/user-service';
 import IconButtonBavard from './IconButtons/IconButtonBavard';
 import NavItem from './IconButtons/NavItem';
@@ -20,10 +21,11 @@ interface ISidebarProps {
   user: IUser;
   onClick: (key: number) => void;
   onClose: () => void;
+  onSetAgentID: (id: object) => void;
 }
 
 const Sidebar = (props: ISidebarProps) => {
-  const { onClick, onClose, user } = props;
+  const { onClick, onClose, user, onSetAgentID } = props;
   const [open, setOpen] = useState(false);
   const [openSubItem, setOpenSubItem] = useState(false);
   const [selected, setSelected] = useState(0);
@@ -40,12 +42,14 @@ const Sidebar = (props: ISidebarProps) => {
     sensitive: true,
   });
 
+  const agentParams: any = match?.params;
+
   useEffect(() => {
-    console.log('match case ', match, selected);
     if (selected === 2 && match?.path) {
       setOpen(true);
       setOpenSubItem(true);
-      onClick(2);
+      onClick(6);
+      onSetAgentID(agentParams);
     } else {
       setOpen(false);
     }
@@ -58,6 +62,7 @@ const Sidebar = (props: ISidebarProps) => {
   };
   const openBotCreation = (key: number) => {
     setSelected(key);
+    setOpenSubItem(false);
     onClose();
   };
   const openPage = (key: number) => {
@@ -103,24 +108,24 @@ const Sidebar = (props: ISidebarProps) => {
       hidden: false,
     },
     {
-      path: createPath('image-labeling/collections'),
-      name: 'ImageLabeling',
+      path: createPath(''),
+      name: 'openConfig',
       css: 'Configuration',
       key: 6,
       handler: openConfig,
       hidden: true,
     },
     {
-      path: createPath('image-labeling/collections'),
-      name: 'ImageLabeling',
+      path: createPath(''),
+      name: 'openTraining',
       css: 'Training',
       key: 7,
       handler: openTraining,
       hidden: true,
     },
     {
-      path: createPath('image-labeling/collections'),
-      name: 'ImageLabeling',
+      path: createPath(''),
+      name: 'openLaunching',
       css: 'Launching',
       key: 8,
       handler: openLaunching,

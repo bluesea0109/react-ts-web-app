@@ -24,7 +24,7 @@ import MySidebar from './components/Sidebar';
 import TextLabeling from './components/TextLabeling';
 import { IUser } from './models/user-service';
 
-const drawerWidth = 240;
+const drawerWidth = 270;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -116,6 +116,7 @@ const useStyles = makeStyles((theme: Theme) =>
 function App() {
   const classes = useStyles();
   const [navKey, setNavKey] = useState(0);
+  const [agentId, setAgentId] = useState({agentId: 0});
   interface IGetCurrentUser {
     currentUser: IUser;
   }
@@ -128,6 +129,10 @@ function App() {
   const onMenuClick = (key: number) => {
     setState({ ...state, drawerOpen: true });
     setNavKey(key);
+  };
+
+  const onSetAgentID = (id: any) => {
+    setAgentId({agentId: id?.agentId});
   };
 
   const onDrawerClose = () => {
@@ -143,7 +148,7 @@ function App() {
     return <InternalServerErrorPage />;
   }
 
-  console.log('window.location.href >>>> ', window.location.pathname);
+  console.log('Agent ID -------> ', agentId);
 
   assert.notEqual(data, null);
 
@@ -158,7 +163,7 @@ function App() {
             [classes.appBarShift]: state.drawerOpen,
           })}
         />
-        <MySidebar user={data.currentUser} onClick={onMenuClick} onClose={onDrawerClose}/>
+        <MySidebar user={data.currentUser} onClick={onMenuClick} onClose={onDrawerClose} onSetAgentID={onSetAgentID}/>
         <Drawer
           style={{backgroundColor: 'black'}}
           className={clsx(classes.drawer, {
@@ -175,7 +180,7 @@ function App() {
           }}
           open={state.drawerOpen}
           onClose={onDrawerClose}>
-            <CustomDrawer user={data.currentUser} status={state.drawerOpen} navigation={navKey}/>
+            <CustomDrawer user={data.currentUser} status={state.drawerOpen} navigation={navKey} agent={agentId}/>
           </Drawer>
 
         <main

@@ -3,9 +3,7 @@ import { AgentConfig } from '@bavard/agent-config';
 import {
   Box,
   Button,
-  makeStyles,
-  Tab,
-  Tabs,
+  makeStyles,  
   Theme,
   Toolbar,
 } from '@material-ui/core';
@@ -56,13 +54,6 @@ function TabPanel(props: TabPanelProps) {
       {value === index && <Box p={3}>{children}</Box>}
     </div>
   );
-}
-
-function a11yProps(index: any) {
-  return {
-    id: `full-width-tab-${index}`,
-    'aria-controls': `full-width-tabpanel-${index}`,
-  };
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -132,13 +123,6 @@ const AgentDetails = () => {
   if (loading || updateAgentData?.loading || !data) {
     return <ContentLoading />;
   }
-
-  const handleChangeTab = (event: any, value: any) => {
-    history.push({
-      pathname: `/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${agentId}/${value}`,
-    });
-  };
-
   const saveAgent = () => {
     if (!!config) {
       updateAgent({
@@ -181,7 +165,7 @@ const AgentDetails = () => {
         {agentTab === 'graph-policy' && <GraphPolicy />}agentTab
         {agentTab === 'exports' && <DataExportsTab />}
         {agentTab === 'training-jobs' && <TrainingJobsTab />}
-        {agentTab === 'chat' && <ChatWithAgent />}
+        {agentTab === 'chats' && <ChatWithAgent />}
         {agentTab === 'live-conversations' && <ConversationsTab />}
         {agentTab === 'settings' && <AgentSettings />}
         {agentTab === 'publish' && <PublishAgent />}
