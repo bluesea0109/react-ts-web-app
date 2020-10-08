@@ -11,9 +11,9 @@ interface IconButtonBavardProps {
 
 export default function IconButtonBavard(props: IconButtonBavardProps) {
     return (
-      <IconButton onClick={props.onClick} style={{ padding: 6 }} disabled={props.disabled}>
+      <IconButton onClick={props.onClick} style={{ padding: 6, marginBottom: '20px' }} disabled={props.disabled}>
         <Tooltip title={props.tooltip} disableFocusListener={true}>
-        <img src={'/logo192.png'} alt="logo" width="50px" height="50px" style={{zIndex: 1000000}}/>
+        <img src={'/logo512.png'} alt="logo" width="60px" height="60px" style={{zIndex: 1000000}}/>
         </Tooltip>
       </IconButton>
     );

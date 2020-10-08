@@ -4,8 +4,9 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import assert from 'assert';
 import clsx from 'clsx';
 import 'firebase/auth';
-import React from 'react';
+import React, { useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import './App.css';
 import { GET_CURRENT_USER } from './common-gql-queries';
 import AppBar from './components/Appbar';
@@ -19,10 +20,11 @@ import CustomDrawer from './components/Drawer';
 import FAQService from './components/FAQService';
 import ImageLabeling from './components/ImageLabeling';
 import InternalServerErrorPage from './components/InternalServerErrorpage';
+import MySidebar from './components/Sidebar';
 import TextLabeling from './components/TextLabeling';
 import { IUser } from './models/user-service';
 
-const drawerWidth = 240;
+const drawerWidth = 270;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -113,6 +115,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function App() {
   const classes = useStyles();
+  const [navKey, setNavKey] = useState(0);
+  const [agentId, setAgentId] = useState({agentId: 0});
   interface IGetCurrentUser {
     currentUser: IUser;
   }
@@ -122,8 +126,13 @@ function App() {
     drawerOpen: false,
   });
 
-  const onMenuClick = () => {
-    setState({ ...state, drawerOpen: !state.drawerOpen });
+  const onMenuClick = (key: number) => {
+    setState({ ...state, drawerOpen: true });
+    setNavKey(key);
+  };
+
+  const onSetAgentID = (id: any) => {
+    setAgentId({agentId: id?.agentId});
   };
 
   const onDrawerClose = () => {
@@ -139,6 +148,8 @@ function App() {
     return <InternalServerErrorPage />;
   }
 
+  console.log('Agent ID -------> ', agentId);
+
   assert.notEqual(data, null);
 
   return !data && loading ? (
@@ -151,8 +162,8 @@ function App() {
           className={clsx(classes.appBar, {
             [classes.appBarShift]: state.drawerOpen,
           })}
-          onMenuClick={onMenuClick}
         />
+        <MySidebar user={data.currentUser} onClick={onMenuClick} onClose={onDrawerClose} onSetAgentID={onSetAgentID}/>
         <Drawer
           style={{backgroundColor: 'black'}}
           className={clsx(classes.drawer, {
@@ -169,7 +180,7 @@ function App() {
           }}
           open={state.drawerOpen}
           onClose={onDrawerClose}>
-            <CustomDrawer user={data.currentUser} onIconClick={onMenuClick} status={state.drawerOpen}/>
+            <CustomDrawer user={data.currentUser} status={state.drawerOpen} navigation={navKey} agent={agentId}/>
           </Drawer>
 
         <main
