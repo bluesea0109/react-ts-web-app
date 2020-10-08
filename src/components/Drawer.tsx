@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme: Theme) =>
     selected: {
       backgroundColor: 'red',
     },
-  }),
+  })
 );
 
 interface CustomDrawerProps {
@@ -59,10 +59,9 @@ interface CustomDrawerProps {
 
 function CustomDrawer(props: CustomDrawerProps) {
   const { user, navigation, agent } = props;
-
-  console.log('navigation =>  ', navigation);
   const classes = useStyles();
   const location = useLocation();
+
   const selectedStyle = {
     backgroundColor: '#4A90E2',
     padding: '10px',
@@ -97,12 +96,6 @@ function CustomDrawer(props: CustomDrawerProps) {
 
     return `/orgs/${user.activeProject.orgId}`;
   };
-
-  console.log(
-    'Location.pathname ',
-    location.pathname,
-    location.pathname.includes('chat'),
-  );
 
   const list = () => {
     switch (navigation) {

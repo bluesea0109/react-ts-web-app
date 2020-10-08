@@ -49,11 +49,8 @@ const Sidebar = (props: ISidebarProps) => {
       setOpenSubItem(true);
       onClick(6);
       onSetAgentID(agentParams);
-    } else {
-      // setOpen(false);
     }
-    // eslint-disable-next-line
-  }, [match?.path]);
+  }, [match?.path]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const openDashboard = (key: number) => {
     setSelected(key);

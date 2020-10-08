@@ -147,8 +147,6 @@ function App() {
     return <InternalServerErrorPage />;
   }
 
-  console.log('Agent ID -------> ', agentId);
-
   assert.notEqual(data, null);
 
   return !data && loading ? (
