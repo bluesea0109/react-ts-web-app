@@ -6,8 +6,6 @@ import clsx from 'clsx';
 import 'firebase/auth';
 import React, { useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
-import './App.css';
 import { GET_CURRENT_USER } from './common-gql-queries';
 import AppBar from './components/Appbar';
 import ChatbotBuilder from './components/ChatbotBuilder';
@@ -23,6 +21,7 @@ import InternalServerErrorPage from './components/InternalServerErrorpage';
 import MySidebar from './components/Sidebar';
 import TextLabeling from './components/TextLabeling';
 import { IUser } from './models/user-service';
+import './App.css';
 
 const drawerWidth = 270;
 

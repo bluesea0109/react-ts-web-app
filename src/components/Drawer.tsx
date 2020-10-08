@@ -1,11 +1,11 @@
-import { createStyles, Hidden, Theme } from '@material-ui/core';
+import { createStyles, Theme } from '@material-ui/core';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles } from '@material-ui/core/styles';
-import React, { useEffect } from 'react';
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import SubMenuIcon from '../components/IconButtons/SubMenuIcon';
 import { IAgentParam } from '../models/chatbot-service';
 import { IUser } from '../models/user-service';

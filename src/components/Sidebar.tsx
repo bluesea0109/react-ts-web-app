@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRouteMatch } from 'react-router-dom';
 import styled from 'styled-components';
-import { IAgentParam } from '../models/chatbot-service';
 import { IUser } from '../models/user-service';
 import IconButtonBavard from './IconButtons/IconButtonBavard';
 import NavItem from './IconButtons/NavItem';
@@ -25,8 +24,7 @@ interface ISidebarProps {
 }
 
 const Sidebar = (props: ISidebarProps) => {
-  const { onClick, onClose, user, onSetAgentID } = props;
-  const [open, setOpen] = useState(false);
+  const { onClick, onClose, user, onSetAgentID } = props;  
   const [openSubItem, setOpenSubItem] = useState(false);
   const [selected, setSelected] = useState(0);
   const createPath = (pageName: string): string => {
@@ -43,17 +41,15 @@ const Sidebar = (props: ISidebarProps) => {
   });
 
   const agentParams: any = match?.params;
+  const route = match?.path
 
   useEffect(() => {
-    if (selected === 2 && match?.path) {
-      setOpen(true);
+    if (selected === 2 && route) {      
       setOpenSubItem(true);
       onClick(6);
       onSetAgentID(agentParams);
-    } else {
-      setOpen(false);
-    }
-  }, [match?.path]);
+    } 
+  }, [route, setOpenSubItem, onClick, onSetAgentID, agentParams, match, selected, ]);
 
   const openDashboard = (key: number) => {
     setSelected(key);
