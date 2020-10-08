@@ -4,8 +4,6 @@ import {
   Box,
   Button,
   makeStyles,
-  Tab,
-  Tabs,
   Theme,
   Toolbar,
 } from '@material-ui/core';
@@ -59,13 +57,6 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-function a11yProps(index: any) {
-  return {
-    id: `full-width-tab-${index}`,
-    'aria-controls': `full-width-tabpanel-${index}`,
-  };
-}
-
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
     flex: 1,
@@ -95,7 +86,12 @@ interface IGetAgent {
 
 const AgentDetails = () => {
   const classes = useStyles();
-  const { orgId, projectId, agentId, agentTab } = useParams();
+  const { orgId, projectId, agentId, agentTab } = useParams<{
+    orgId: string;
+    projectId: string;
+    agentId: string;
+    agentTab: string;
+  }>();
   const history = useHistory();
   const [config, setConfig] = useRecoilState(currentAgentConfig);
   const [widgetSettings, setWidgetSettings] = useRecoilState(
@@ -128,13 +124,6 @@ const AgentDetails = () => {
   if (loading || updateAgentData?.loading || !data) {
     return <ContentLoading />;
   }
-
-  const handleChangeTab = (event: any, value: any) => {
-    history.push({
-      pathname: `/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${agentId}/${value}`,
-    });
-  };
-
   const saveAgent = () => {
     if (!!config) {
       updateAgent({
@@ -156,60 +145,6 @@ const AgentDetails = () => {
         </Button>
       </Toolbar>
       <div className={classes.tabsContainer}>
-        <Tabs
-          value={agentTab}
-          onChange={handleChangeTab}
-          indicatorColor="secondary"
-          variant="scrollable"
-          orientation="vertical"
-          textColor="primary">
-          <Tab value="Actions" label="Actions" {...a11yProps('Actions')} />
-          <Tab value="Intents" label="Intents" {...a11yProps('Intents')} />
-          <Tab value="Tags" label="Tags" {...a11yProps('Tags')} />
-          <Tab value="Slots" label="Slots" {...a11yProps('Slots')} />
-          <Tab
-            value="nluExamples"
-            label="NLU Examples"
-            {...a11yProps('NLU Examples')}
-          />
-          <Tab
-            value="graph-policy"
-            label="Graph Policy"
-            {...a11yProps('Graph Policy')}
-          />
-          <Tab
-            value="upload-data"
-            label="Upload Data"
-            {...a11yProps('Upload Data')}
-          />
-          <Tab
-            value="exports"
-            label="Data Exports"
-            {...a11yProps('Data Exports')}
-          />
-          <Tab
-            value="training-jobs"
-            label="Training Jobs"
-            {...a11yProps('Training Jobs')}
-          />
-          <Tab
-            value="chat"
-            label="Chat with Agent"
-            {...a11yProps('Chat with Agent')}
-          />
-          <Tab
-            value="training-conversations"
-            label="Training conversations"
-            {...a11yProps('Training conversations')}
-          />
-          <Tab
-            value="live-conversations"
-            label="Live conversations"
-            {...a11yProps('Live conversations')}
-          />
-          <Tab value="settings" label="settings" {...a11yProps('Settings')} />
-          <Tab value="publish" label="publish" {...a11yProps('Publish')} />
-        </Tabs>
         <TabPanel className={classes.tabPanel} value={agentTab} index="Actions">
           <Actions />
         </TabPanel>
@@ -228,10 +163,10 @@ const AgentDetails = () => {
           index="nluExamples">
           <Examples />
         </TabPanel>
-        {agentTab === 'graph-policy' && <GraphPolicy />}
+        {agentTab === 'graph-policy' && <GraphPolicy />}agentTab
         {agentTab === 'exports' && <DataExportsTab />}
         {agentTab === 'training-jobs' && <TrainingJobsTab />}
-        {agentTab === 'chat' && <ChatWithAgent />}
+        {agentTab === 'chats' && <ChatWithAgent />}
         {agentTab === 'live-conversations' && <ConversationsTab />}
         {agentTab === 'training-conversations' && <TrainingConversations />}
         {agentTab === 'settings' && <AgentSettings />}
