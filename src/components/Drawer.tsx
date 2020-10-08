@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme: Theme) =>
     selected: {
       backgroundColor: 'red',
     },
-  })
+  }),
 );
 
 interface CustomDrawerProps {
