@@ -46,7 +46,7 @@ export default function PublishAgent() {
   const [state, setState] = useState({
     loading: false,
     modalOpen: false,
-    settingsOnly: true,
+    forceRetrain: false,
   });
   const apiKeyQueryResult = useQuery(getApiKeysQuery, {
     fetchPolicy: 'cache-and-network',
@@ -64,7 +64,7 @@ export default function PublishAgent() {
 
   const [publishAgent] = useMutation(publishAgentMutation, {
     refetchQueries: [
-      { query: getPublishedAgentsQuery, variables: { agentId, settingsOnly: state.settingsOnly } },
+      { query: getPublishedAgentsQuery, variables: { agentId, forceRetrain: state.forceRetrain } },
     ],
     awaitRefetchQueries: true,
   });
@@ -86,7 +86,7 @@ export default function PublishAgent() {
     setState((prevState) => ({ ...prevState, loading: true, modalOpen: false }));
     try {
       const result = await publishAgent({
-        variables: { agentId, settingsOnly: state.settingsOnly },
+        variables: { agentId, forceRetrain: state.forceRetrain },
       });
       if (result.errors) {
         throw new Error(JSON.stringify(result.errors));
@@ -112,8 +112,8 @@ export default function PublishAgent() {
     setState((prevState) => ({ ...prevState, modalOpen: false }));
   };
 
-  const toggleSettingsOnly = () => {
-    setState((prevState) => ({ ...prevState, settingsOnly: !prevState.settingsOnly }));
+  const toggleForceRetrain = () => {
+    setState((prevState) => ({ ...prevState, forceRetrain: !prevState.forceRetrain }));
   };
   const agents = queryResult.data?.ChatbotService_getPublishedAgents;
 
@@ -155,10 +155,10 @@ export default function PublishAgent() {
         <DialogTitle id="alert-dialog-title">{'Do you want to publish?'}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Please tick the box for settings only publish
+            {'Force re-train NLP models:'}
             <Checkbox
-              checked={state.settingsOnly}
-              onChange={toggleSettingsOnly}
+              checked={state.forceRetrain}
+              onChange={toggleForceRetrain}
               inputProps={{ 'aria-label': 'primary checkbox' }}
             />
           </DialogContentText>
