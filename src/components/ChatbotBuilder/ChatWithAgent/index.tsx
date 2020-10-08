@@ -24,6 +24,7 @@ export default function ChatWithAgent() {
   const classes = useStyles();
   const [isActive, setIsActive] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [iframeFirstOpened, setIFrameFirstOpened] = useState(true);
   const iframe = useRef<HTMLIFrameElement | null>(null);
   const agentData = useQuery<IGetAgent>(GET_AGENT, { variables: { agentId: Number(agentId) } });
   const apiKeysQuery = useQuery(getApiKeysQuery, {
@@ -49,6 +50,13 @@ export default function ChatWithAgent() {
 
   const toggleContentWindow = () => {
     setIsActive(!isActive);
+
+    if (iframeFirstOpened) {
+      iframe.current?.contentWindow?.postMessage({
+        iframeFirstOpened: true,
+      }, '*');
+      setIFrameFirstOpened(false);
+    }
   };
 
   useEffect(() => {

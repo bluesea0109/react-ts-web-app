@@ -72,6 +72,7 @@ const AgentSettings = () => {
       skip: !agentUname,
       variables: {
         uname: agentUname,
+        dev: mode === 'dev',
       },
       onCompleted: (data) => {
         setWidgetSettings(data.ChatbotService_widgetSettings);
@@ -206,6 +207,7 @@ const AgentSettings = () => {
               currentImage={settings.avatarUrl}
               label="Widget Avatar"
               onImageUpload={(url: string) => updateSettings('avatar', url)}
+              iconType="AVATAR"
             />
           </Grid>
           <Grid item={true} xs={6}>
@@ -214,6 +216,7 @@ const AgentSettings = () => {
               currentImage={settings.logoUrl}
               label="Brand Logo"
               onImageUpload={(url: string) => updateSettings('logo', url)}
+              iconType="LOGO"
             />
           </Grid>
         </Grid>
