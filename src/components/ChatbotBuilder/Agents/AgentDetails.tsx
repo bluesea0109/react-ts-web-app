@@ -1,14 +1,8 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { AgentConfig } from '@bavard/agent-config';
-import {
-  Box,
-  Button,
-  makeStyles,
-  Theme,
-  Toolbar,
-} from '@material-ui/core';
+import { Box, Button, makeStyles, Theme, Toolbar } from '@material-ui/core';
 import React from 'react';
-import { useHistory, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import { useRecoilState } from 'recoil';
 import {
   CHATBOT_GET_AGENT,
@@ -86,16 +80,16 @@ interface IGetAgent {
 
 const AgentDetails = () => {
   const classes = useStyles();
-  const { orgId, projectId, agentId, agentTab } = useParams<{
+  const { agentId, agentTab } = useParams<{
     orgId: string;
     projectId: string;
     agentId: string;
     agentTab: string;
   }>();
-  const history = useHistory();
+
   const [config, setConfig] = useRecoilState(currentAgentConfig);
   const [widgetSettings, setWidgetSettings] = useRecoilState(
-    currentWidgetSettings,
+    currentWidgetSettings
   );
 
   const { error, loading, data } = useQuery<IGetAgent>(CHATBOT_GET_AGENT, {
@@ -114,7 +108,7 @@ const AgentDetails = () => {
         { query: CHATBOT_GET_AGENT, variables: { agentId: Number(agentId) } },
       ],
       awaitRefetchQueries: true,
-    },
+    }
   );
 
   if (error) {

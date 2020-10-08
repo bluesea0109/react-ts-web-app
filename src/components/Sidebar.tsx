@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRouteMatch } from 'react-router-dom';
 import styled from 'styled-components';
-import { IAgentParam } from '../models/chatbot-service';
 import { IUser } from '../models/user-service';
 import IconButtonBavard from './IconButtons/IconButtonBavard';
 import NavItem from './IconButtons/NavItem';
@@ -10,7 +9,7 @@ const VerticalSidebar = styled.div`
   position: fixed;
   height: 100%;
   width: 75px;
-  z-index: 100000;
+  z-index: 1300;
   background-color: #040521;
   overflow-x: hidden;
   padding-top: 20px;
@@ -26,7 +25,7 @@ interface ISidebarProps {
 
 const Sidebar = (props: ISidebarProps) => {
   const { onClick, onClose, user, onSetAgentID } = props;
-  const [open, setOpen] = useState(false);
+  // const [open, setOpen] = useState(false);
   const [openSubItem, setOpenSubItem] = useState(false);
   const [selected, setSelected] = useState(0);
   const createPath = (pageName: string): string => {
@@ -46,13 +45,14 @@ const Sidebar = (props: ISidebarProps) => {
 
   useEffect(() => {
     if (selected === 2 && match?.path) {
-      setOpen(true);
+      // setOpen(true);
       setOpenSubItem(true);
       onClick(6);
       onSetAgentID(agentParams);
     } else {
-      setOpen(false);
+      // setOpen(false);
     }
+    // eslint-disable-next-line
   }, [match?.path]);
 
   const openDashboard = (key: number) => {
