@@ -6,7 +6,7 @@ import IconButtonBavard from './IconButtons/IconButtonBavard';
 import NavItem from './IconButtons/NavItem';
 
 const VerticalSidebar = styled.div`
-  position: fixed;
+  position: fixed;  
   height: 100%;
   width: 75px;
   z-index: 100000;
@@ -24,7 +24,8 @@ interface ISidebarProps {
 }
 
 const Sidebar = (props: ISidebarProps) => {
-  const { onClick, onClose, user, onSetAgentID } = props;  
+  const { onClick, onClose, user, onSetAgentID } = props;
+  // const [open, setOpen] = useState(false);
   const [openSubItem, setOpenSubItem] = useState(false);
   const [selected, setSelected] = useState(0);
   const createPath = (pageName: string): string => {
@@ -41,15 +42,15 @@ const Sidebar = (props: ISidebarProps) => {
   });
 
   const agentParams: any = match?.params;
-  const route = match?.path
 
   useEffect(() => {
-    if (selected === 2 && route) {      
+    if (selected === 2 && match?.path) {
+      // setOpen(true);
       setOpenSubItem(true);
       onClick(6);
       onSetAgentID(agentParams);
     } 
-  }, [route, setOpenSubItem, onClick, onSetAgentID, agentParams, match, selected, ]);
+  }, [match?.path]);// eslint-disable-line react-hooks/exhaustive-deps
 
   const openDashboard = (key: number) => {
     setSelected(key);

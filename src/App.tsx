@@ -145,9 +145,7 @@ function App() {
   if (error || !data) {
     console.log(error);
     return <InternalServerErrorPage />;
-  }
-
-  console.log('Agent ID -------> ', agentId);
+  }  
 
   assert.notEqual(data, null);
 
