@@ -83,7 +83,7 @@ const NavItem = (props: NavItemProps) => {
     default:
       break;
   }
-  console.log('Hidden property ', hidden);
+  
   return (
     <div>
       <NavLink to={path} activeStyle={{backgroundColor: 'red'}}>
