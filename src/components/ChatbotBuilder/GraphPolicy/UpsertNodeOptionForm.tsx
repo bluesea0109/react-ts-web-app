@@ -1,4 +1,4 @@
-import { HyperlinkOption, IResponseOption } from '@bavard/agent-config';
+import { IHyperlinkOption, IResponseOption } from '@bavard/agent-config';
 import { GraphPolicy } from '@bavard/agent-config/dist/graph-policy';
 import {
   Button,
@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface IUpsertNodeOptionFormProps {
-  option?: IResponseOption;
+  option?: IResponseOption | IHyperlinkOption;
   optionIndex?: number;
   nodeId: number;
   onSuccess: (policy: GraphPolicy) => void;
@@ -56,13 +56,12 @@ export default function UpsertNodeOptionForm({
   const node = policy.getNodeById(nodeId);
 
   const [showFormErrors, setShowFormErrors] = useState(false);
-
   const [optionType, setOptionType] = useState<string>('HYPERLINK');
-  const [text, setText] = useState<string>(
-    option instanceof HyperlinkOption ? option.text : '',
-  );
+
+  const optionAsHl = option as IHyperlinkOption;
+  const [text, setText] = useState<string>(option?.text || '');
   const [targetLink, setTargetLink] = useState<string>(
-    option instanceof HyperlinkOption ? option.targetLink : '',
+    optionAsHl.targetLink || '',
   );
 
   const handleSubmit = async () => {

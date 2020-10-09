@@ -15,11 +15,14 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Divider,
   Grid,
+  IconButton,
+  Paper,
   Tooltip,
 } from '@material-ui/core';
 import { Theme, withStyles } from '@material-ui/core/styles';
-import { Add } from '@material-ui/icons';
+import { Add, Remove } from '@material-ui/icons';
 import _ from 'lodash';
 import { withSnackbar, WithSnackbarProps } from 'notistack';
 import React from 'react';
@@ -46,6 +49,7 @@ interface IGraphPolicyVisualEditorProps extends WithSnackbarProps {
     fullWidth: string;
     nodeBox: string;
     hidden: string;
+    zoomControls: string;
   };
 }
 
@@ -60,6 +64,7 @@ interface IGraphPolicyVisualEditorState {
   loading: boolean;
   snackbarText: string;
   treeRenderCount: number;
+  zoom: number;
 }
 
 const styles = (theme: Theme) => ({
@@ -97,6 +102,13 @@ const styles = (theme: Theme) => ({
     height: 0,
     opacity: 0,
   },
+  zoomControls: {
+    zIndex: 100,
+    top: 50,
+    width: 30,
+    right: theme.spacing(2),
+    backgroundColor: theme.palette.background.default,
+  },
 });
 
 class GraphPolicyVisualEditor extends React.Component<
@@ -121,6 +133,7 @@ class GraphPolicyVisualEditor extends React.Component<
       loading: false,
       snackbarText: '',
       treeRenderCount: 0,
+      zoom: 100,
     };
   }
 
@@ -136,6 +149,17 @@ class GraphPolicyVisualEditor extends React.Component<
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.updateDimensions);
+  }
+
+  zoom(direction: 'in' | 'out') {
+    let zoom = this.state.zoom;
+    if (direction === 'in') {
+      zoom += 10;
+    }
+    if (direction === 'out') {
+      zoom -= 10;
+    }
+    this.setState({ zoom });
   }
 
   renderTree = (
@@ -455,10 +479,34 @@ class GraphPolicyVisualEditor extends React.Component<
     this.renderedLinePairs = [];
     const treeContent = this.renderTree(gp.rootNode);
     const content = (
-      <div className={classes.root}>
-        {treeContent}
-        {this.state.showEditNode && this.renderEditNodeForm()}
-        {this.state.showDeleteNode && this.renderDeleteNodeForm()}
+      <React.Fragment>
+        <Paper
+          className={classes.zoomControls}
+          style={{ position: 'absolute' }}>
+          <Tooltip title={`Zoom: ${this.state.zoom}%`}>
+            <div>
+              <IconButton
+                color="default"
+                size="small"
+                onClick={() => this.zoom('in')}>
+                <Add />
+              </IconButton>
+              <Divider />
+              <IconButton
+                color="default"
+                size="small"
+                onClick={() => this.zoom('out')}>
+                <Remove />
+              </IconButton>
+            </div>
+          </Tooltip>
+        </Paper>
+
+        <div className={classes.root} style={{ zoom: `${this.state.zoom}%` }}>
+          {treeContent}
+          {this.state.showEditNode && this.renderEditNodeForm()}
+          {this.state.showDeleteNode && this.renderDeleteNodeForm()}
+        </div>
         <div style={{ position: 'fixed', bottom: 5, left: '45%' }}>
           <Mutation
             mutation={CHATBOT_UPDATE_AGENT}
@@ -485,7 +533,7 @@ class GraphPolicyVisualEditor extends React.Component<
           </Mutation>
           {this.state.loading && <ContentLoading />}
         </div>
-      </div>
+      </React.Fragment>
     );
 
     return (

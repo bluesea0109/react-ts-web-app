@@ -1,6 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { AgentConfig } from '@bavard/agent-config';
-import { AGENT_SETTINGS_DEFAULTS } from '@bavard/common';
 import {
   Box,
   Button,
@@ -17,14 +16,14 @@ import { AlphaPicker, TwitterPicker } from 'react-color';
 import { useParams } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 
+import { DEFAULT_WIDGET_SETTINGS, IWidgetSettings } from '@bavard/agent-config';
 import { CHATBOT_GET_AGENT } from '../../../common-gql-queries';
 import { IAgent } from '../../../models/chatbot-service';
 import ContentLoading from '../../ContentLoading';
 import GradientPicker from '../../Utils/GradientPicker';
 import { currentAgentConfig, currentWidgetSettings } from '../atoms';
-import { updateBotSettingsMutation } from './gql';
+import { getBotSettingsQuery, updateBotSettingsMutation } from './gql';
 import ImageUploader from './ImageUploader';
-import { BotSettings } from './types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -40,82 +39,76 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const AgentSettings = () => {
   const classes = useStyles();
-  const { agentId } = useParams();
-  const numAgentId = Number(agentId);
+  const { agentId } = useParams<{ agentId: string }>();
 
   const [config, setConfig] = useRecoilState(currentAgentConfig);
   const [widgetSettings, setWidgetSettings] = useRecoilState(currentWidgetSettings);
 
   const { enqueueSnackbar } = useSnackbar();
-  const [settings, setSettings] = useState<BotSettings>({
-    name: '',
+  const [settings, setSettings] = useState<IWidgetSettings>({
+    ...DEFAULT_WIDGET_SETTINGS,
     title: '',
     subtitle: '',
-    icon: AGENT_SETTINGS_DEFAULTS.icon,
-    primaryColor: AGENT_SETTINGS_DEFAULTS.primaryColor,
-    primaryBg: AGENT_SETTINGS_DEFAULTS.primaryBg,
-    widgetBg: AGENT_SETTINGS_DEFAULTS.widgetBg,
   });
-  const [state, setState] = React.useState({
-    mode: 'dev',
-  });
+  const [mode, setMode] = useState<string>('dev');
+
+  const agentUname = config?.toJsonObj()?.uname;
+
+  const [updateBotSettings, updateBotSettingsMutationData] = useMutation(updateBotSettingsMutation);
 
   const agentsData = useQuery<{ ChatbotService_agent: IAgent }>(
     CHATBOT_GET_AGENT,
     {
-      variables: { agentId: numAgentId },
+      variables: { agentId: Number(agentId) },
       onCompleted: (data) => {
         setConfig(AgentConfig.fromJsonObj(data.ChatbotService_agent.config));
-        setWidgetSettings(data.ChatbotService_agent.widgetSettings);
       },
     },
   );
 
-  const agentUname = config?.toJsonObj()?.uname;
-
-  const [updateBotSettings, updateBotSettingsMutationData] = useMutation(
-    updateBotSettingsMutation,
+  const widgetSettingsData = useQuery<{ ChatbotService_widgetSettings: IWidgetSettings }>(
+    getBotSettingsQuery,
+    {
+      skip: !agentUname,
+      variables: {
+        uname: agentUname,
+        dev: mode === 'dev',
+      },
+      onCompleted: (data) => {
+        setWidgetSettings(data.ChatbotService_widgetSettings);
+      },
+    },
   );
 
-  const updatedSettings = widgetSettings;
-
   useEffect(() => {
-    if (!!updatedSettings && !!updatedSettings.name) {
+    if (!!widgetSettings && !!widgetSettings.name) {
       setSettings({
-        ...updatedSettings,
+        ...widgetSettings,
       });
     }
+  }, [widgetSettings]);
 
-    // eslint-disable-next-line
-  }, [updatedSettings]);
-
-  const updateSettings = (field: keyof BotSettings, value: any) =>
+  const updateSettings = (field: keyof IWidgetSettings, value: any) =>
     setSettings({ ...settings, [field]: value });
 
   const onUpdateSettingsClicked = async () => {
-    let { icon, logo } = settings;
-
-    if (icon && icon.indexOf('https://') !== -1) {
-      icon = icon.split('?')[0].split('/bot-icons/')[1];
-    }
-
-    if (logo && logo.indexOf('https://') !== -1) {
-      logo = logo.split('?')[0].split('/bot-icons/')[1];
-    }
-
+    const { logo, logoUrl, avatar, avatarUrl } = settings;
     try {
       await updateBotSettings({
         variables: {
           uname: agentUname,
           settings: {
             ...settings,
-            icon,
             logo,
+            avatar,
+            logoUrl,
+            avatarUrl,
           },
         },
       });
-      const result = await agentsData.refetch();
-      setWidgetSettings(result?.data?.ChatbotService_agent.widgetSettings);
+      await agentsData.refetch();
+      const result = await widgetSettingsData.refetch();
+      setWidgetSettings(result?.data?.ChatbotService_widgetSettings);
     } catch (e) {
       enqueueSnackbar('An error occurred while updating settings', {
         variant: 'error',
@@ -137,14 +130,11 @@ const AgentSettings = () => {
           mt={2}
           mb={2}>
           <ToggleButtonGroup
-            value={state.mode === 'dev' ? 'left' : 'right'}
+            value={mode === 'dev' ? 'left' : 'right'}
             exclusive={true}
             size="small"
-            onChange={(event, newAlignment) => {
-              setState({
-                ...state,
-                mode: newAlignment === 'left' ? 'dev' : 'published',
-              });
+            onChange={(_, newAlignment) => {
+              setMode(newAlignment === 'left' ? 'dev' : 'published');
             }}
             aria-label="text alignment">
             <ToggleButton
@@ -162,7 +152,7 @@ const AgentSettings = () => {
               PUBLISHED
             </ToggleButton>
           </ToggleButtonGroup>
-          {state.mode === 'dev' && (
+          {mode === 'dev' && (
             <Button
               disabled={loading}
               variant="contained"
@@ -179,7 +169,7 @@ const AgentSettings = () => {
         <Box mt={2} mb={2}>
           <TextField
             label="Agent Name"
-            disabled={loading || state.mode === 'published'}
+            disabled={loading || mode === 'published'}
             fullWidth={true}
             variant="outlined"
             value={settings.name}
@@ -189,7 +179,7 @@ const AgentSettings = () => {
         <Box mb={2}>
           <TextField
             label="Greeting Title"
-            disabled={loading || state.mode === 'published'}
+            disabled={loading || mode === 'published'}
             fullWidth={true}
             variant="outlined"
             value={settings.title}
@@ -199,7 +189,7 @@ const AgentSettings = () => {
 
         <TextField
           label="Greeting Subtitle"
-          disabled={loading || state.mode === 'published'}
+          disabled={loading || mode === 'published'}
           fullWidth={true}
           multiline={true}
           variant="outlined"
@@ -213,18 +203,20 @@ const AgentSettings = () => {
         <Grid container={true} spacing={2}>
           <Grid item={true} xs={6}>
             <ImageUploader
-              isLoading={loading || state.mode === 'published'}
-              currentImage={settings.icon}
+              isLoading={loading || mode === 'published'}
+              currentImage={settings.avatarUrl}
               label="Widget Avatar"
-              onImageUpload={(url: string) => updateSettings('icon', url)}
+              onImageUpload={(url: string) => updateSettings('avatar', url)}
+              iconType="AVATAR"
             />
           </Grid>
           <Grid item={true} xs={6}>
             <ImageUploader
-              isLoading={loading || state.mode === 'published'}
-              currentImage={settings.logo}
+              isLoading={loading || mode === 'published'}
+              currentImage={settings.logoUrl}
               label="Brand Logo"
               onImageUpload={(url: string) => updateSettings('logo', url)}
+              iconType="LOGO"
             />
           </Grid>
         </Grid>
@@ -247,7 +239,7 @@ const AgentSettings = () => {
             }}
           />
           <Box mt={5} mb={1} mx="auto">
-            {state.mode === 'dev' && (
+            {mode === 'dev' && (
               <TwitterPicker
                 triangle="hide"
                 color={settings.primaryColor}
@@ -256,7 +248,7 @@ const AgentSettings = () => {
             )}
           </Box>
           <Box mt={4} mb={1} mx="auto">
-            {state.mode === 'dev' && (
+            {mode === 'dev' && (
               <AlphaPicker
                 color={settings.primaryColor}
                 onChange={(color) => updateSettings('primaryColor', color.rgb)}
@@ -283,7 +275,7 @@ const AgentSettings = () => {
             }}
           />
           <Box mt={5} mb={1} mx="auto">
-            {state.mode === 'dev' && (
+            {mode === 'dev' && (
               <TwitterPicker
                 triangle="hide"
                 color={settings.primaryBg}
@@ -292,7 +284,7 @@ const AgentSettings = () => {
             )}
           </Box>
           <Box mt={4} mb={1} mx="auto">
-            {state.mode === 'dev' && (
+            {mode === 'dev' && (
               <AlphaPicker
                 color={settings.primaryBg}
                 onChange={(color) => updateSettings('primaryBg', color.rgb)}
@@ -304,7 +296,7 @@ const AgentSettings = () => {
 
       <Grid item={true} xs={4}>
         <GradientPicker
-          defaultValue={updatedSettings?.widgetBg}
+          defaultValue={widgetSettings?.widgetBg}
           label="Widget Background Color"
           onChange={(gradient) => updateSettings('widgetBg', gradient)}
         />
@@ -313,7 +305,7 @@ const AgentSettings = () => {
       <Grid xs={12} item={true}>
         <Divider />
         <Box mt={4} mb={4} width="90%" display="flex" justifyContent="center">
-          {state.mode === 'dev' && (
+          {mode === 'dev' && (
             <Button
               disabled={loading}
               variant="contained"

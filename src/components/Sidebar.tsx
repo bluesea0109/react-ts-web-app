@@ -9,7 +9,7 @@ const VerticalSidebar = styled.div`
   position: fixed;
   height: 100%;
   width: 75px;
-  z-index: 100000;
+  z-index: 1300;
   background-color: #040521;
   overflow-x: hidden;
   padding-top: 20px;

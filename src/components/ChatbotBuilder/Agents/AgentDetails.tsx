@@ -1,12 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { AgentConfig } from '@bavard/agent-config';
-import {
-  Box,
-  Button,
-  makeStyles,
-  Theme,
-  Toolbar,
-} from '@material-ui/core';
+import { Box, Button, makeStyles, Theme, Toolbar } from '@material-ui/core';
 import React from 'react';
 import { useParams } from 'react-router';
 import { useRecoilState } from 'recoil';
@@ -29,6 +23,7 @@ import Intent from '../Intent/Intent';
 import PublishAgent from '../Publish';
 import Slot from '../Slot/Slot';
 import Tag from '../Tags/Tag';
+import TrainingConversations from '../TrainingConversations';
 import TrainingJobsTab from '../TrainingJobs/TrainingJobsTab';
 import UploadDataTab from '../UploadData/UploadDataTab';
 
@@ -166,6 +161,7 @@ const AgentDetails = () => {
         {agentTab === 'training-jobs' && <TrainingJobsTab />}
         {agentTab === 'chats' && <ChatWithAgent />}
         {agentTab === 'live-conversations' && <ConversationsTab />}
+        {agentTab === 'training-conversations' && <TrainingConversations />}
         {agentTab === 'settings' && <AgentSettings />}
         {agentTab === 'publish' && <PublishAgent />}
         {agentTab === 'upload-data' && <UploadDataTab />}

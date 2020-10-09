@@ -345,7 +345,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
         query: botIconUploadQuery,
         variables: {
           agentId: this.state.agentId,
-          basename: imgFile.name,
+          iconType: imgFile.name.toUpperCase(),
         },
       });
 
