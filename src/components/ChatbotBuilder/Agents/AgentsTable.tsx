@@ -38,6 +38,7 @@ interface AgentState {
 function AgentsTable() {
   const classes = useStyles();
   const { projectId, orgId } = useParams<{projectId: string, orgId: string}>();
+
   const agentsData = useQuery<IGetAgents>(CHATBOT_GET_AGENTS, {
     variables: { projectId },
   });
