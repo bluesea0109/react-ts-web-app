@@ -100,19 +100,19 @@ function CustomDrawer(props: CustomDrawerProps) {
       return '/no-orgs';
     }
     return `/orgs/${user.activeProject.orgId}/projects/${user.activeProject.id}/chatbot-builder`;
-  }
+  };
 
   const list = () => {
     switch (navigation) {
       case 1:
-        console.log('dashboard ::: ', location.pathname)
+        console.log('dashboard ::: ', location.pathname);
         return (
           <List>
             <ListItem className={classes.blank} />
             <ListItem
               component={Link}
               to={''}
-              selected={                
+              selected={
                 location.pathname.includes('')
               }
               button={true}
