@@ -40,15 +40,23 @@ const Sidebar = (props: ISidebarProps) => {
     strict: false,
     sensitive: true,
   });
-
   const agentParams: any = match?.params;
+  
+  const createAgentPath = (agentTab: string): string => {
+    if (!user.activeProject) {
+      return '/no-project';
+    }    
+    return `/orgs/${user.activeProject.orgId}/projects/${user.activeProject.id}/chatbot-builder/agents/${agentParams?.agentId}/${agentTab}`;
+  };
+
 
   useEffect(() => {
     if (selected === 2 && match?.path) {
       // setOpen(true);
       setOpenSubItem(true);
       onClick(6);
-      onSetAgentID(agentParams);
+      setSelected(6)
+      onSetAgentID(agentParams);      
     }
   }, [match?.path]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -60,7 +68,7 @@ const Sidebar = (props: ISidebarProps) => {
   const openBotCreation = (key: number) => {
     setSelected(key);
     setOpenSubItem(false);
-    onClose();
+    onClick(2);
   };
   const openPage = (key: number) => {
     setSelected(key);
@@ -105,7 +113,7 @@ const Sidebar = (props: ISidebarProps) => {
       hidden: false,
     },
     {
-      path: createPath(''),
+      path: createAgentPath('Actions'),
       name: 'openConfig',
       css: 'Configuration',
       key: 6,
@@ -113,7 +121,7 @@ const Sidebar = (props: ISidebarProps) => {
       hidden: true,
     },
     {
-      path: createPath(''),
+      path: createAgentPath('training-jobs'),
       name: 'openTraining',
       css: 'Training',
       key: 7,
@@ -121,7 +129,7 @@ const Sidebar = (props: ISidebarProps) => {
       hidden: true,
     },
     {
-      path: createPath(''),
+      path: createAgentPath('chats'),
       name: 'openLaunching',
       css: 'Launching',
       key: 8,
@@ -163,6 +171,8 @@ const Sidebar = (props: ISidebarProps) => {
     data[3].hidden = true;
     data[4].hidden = true;
   }
+
+  console.log('Current Icon status ??? ', selected)
   return (
     <VerticalSidebar>
       <IconButtonBavard

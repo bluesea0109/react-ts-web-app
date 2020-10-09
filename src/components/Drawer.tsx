@@ -10,6 +10,8 @@ import SubMenuIcon from '../components/IconButtons/SubMenuIcon';
 import { IAgentParam } from '../models/chatbot-service';
 import { IUser } from '../models/user-service';
 
+
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     list: {
@@ -47,7 +49,7 @@ const useStyles = makeStyles((theme: Theme) =>
     selected: {
       backgroundColor: 'red',
     },
-  }),
+  })
 );
 
 interface CustomDrawerProps {
@@ -60,7 +62,7 @@ interface CustomDrawerProps {
 function CustomDrawer(props: CustomDrawerProps) {
   const { user, navigation, agent } = props;
   const classes = useStyles();
-  const location = useLocation();
+  const location = useLocation();  
 
   const selectedStyle = {
     backgroundColor: '#4A90E2',
@@ -79,9 +81,7 @@ function CustomDrawer(props: CustomDrawerProps) {
   const createAgentPath = (agentTab: string): string => {
     if (!user.activeProject) {
       return '/no-project';
-    }
-
-    // "/orgs/:orgId/projects/:projectId/chatbot-builder/agents/:agentId/:agentTab"
+    }    
     return `/orgs/${user.activeProject.orgId}/projects/${user.activeProject.id}/chatbot-builder/agents/${agent.agentId}/${agentTab}`;
   };
 
@@ -99,7 +99,7 @@ function CustomDrawer(props: CustomDrawerProps) {
 
   const list = () => {
     switch (navigation) {
-      case 1:
+      case 1:        
         return (
           <List>
             <ListItem className={classes.blank} />
@@ -118,8 +118,8 @@ function CustomDrawer(props: CustomDrawerProps) {
               <ListItemText
                 primary="Organization"
                 style={
-                  !location.pathname.includes('projects') &&
-                  location.pathname.includes('settings')
+                  !location.pathname.includes('projects') && 
+                  (location.pathname.includes('settings') || location.pathname.includes('/'))
                     ? selectedStyle
                     : {}
                 }
@@ -149,6 +149,31 @@ function CustomDrawer(props: CustomDrawerProps) {
             </ListItem>
           </List>
         );
+      case 2:
+        return (
+          <List>
+            <ListItem className={classes.blank} />
+            <ListItem
+              component={Link}
+              to={''}
+              selected={
+                location.pathname.includes('projects') &&
+                location.pathname.includes('/')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Project" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Agents"
+                style={
+                  location.pathname.includes('chatbot-builder') ? selectedStyle : {}
+                }
+              />
+            </ListItem>
+          </List>
+        )
       case 6:
         return (
           <List>
@@ -262,7 +287,7 @@ function CustomDrawer(props: CustomDrawerProps) {
             </ListItem>
           </List>
         );
-      case 7:
+      case 7:        
         return (
           <List>
             <ListItem className={classes.blank} />
