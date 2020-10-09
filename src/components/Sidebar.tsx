@@ -41,22 +41,21 @@ const Sidebar = (props: ISidebarProps) => {
     sensitive: true,
   });
   const agentParams: any = match?.params;
-  
+
   const createAgentPath = (agentTab: string): string => {
     if (!user.activeProject) {
       return '/no-project';
-    }    
+    }
     return `/orgs/${user.activeProject.orgId}/projects/${user.activeProject.id}/chatbot-builder/agents/${agentParams?.agentId}/${agentTab}`;
   };
-
 
   useEffect(() => {
     if (selected === 2 && match?.path) {
       // setOpen(true);
       setOpenSubItem(true);
       onClick(6);
-      setSelected(6)
-      onSetAgentID(agentParams);      
+      setSelected(6);
+      onSetAgentID(agentParams);
     }
   }, [match?.path]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -172,7 +171,7 @@ const Sidebar = (props: ISidebarProps) => {
     data[4].hidden = true;
   }
 
-  console.log('Current Icon status ??? ', selected)
+  console.log('Current Icon status ??? ', selected);
   return (
     <VerticalSidebar>
       <IconButtonBavard
