@@ -14,8 +14,9 @@ const ImageUploader = ({
   isLoading,
   currentImage,
   label,
+  iconType,
 }: any) => {
-  const { agentId } = useParams();
+  const { agentId } = useParams<{ agentId: string }>();
   const numAgentId = Number(agentId);
   const { enqueueSnackbar } = useSnackbar();
   const [isFileLoading, setIsFileLoading] = useState(false);
@@ -36,8 +37,8 @@ const ImageUploader = ({
     botIconUploadQuery,
     {
       variables: {
+        iconType,
         agentId: numAgentId,
-        basename: file?.name,
       },
       skip: !file,
     },
@@ -46,13 +47,13 @@ const ImageUploader = ({
   useEffect(() => {
     if (!!file) {
       const url = imageUploadUrlQuery.data?.ChatbotService_botIconUploadUrl.url;
-
       if (!!url) {
         (async () => {
           try {
             await axios.put(url, file, {
               headers: {
                 'Content-Type': file.type,
+                'Access-Control-Allow-Origin': '*',
               },
             });
 
@@ -60,7 +61,6 @@ const ImageUploader = ({
 
             onImageUpload(path);
           } catch (e) {
-            console.log(e);
             console.log(e.response);
             enqueueSnackbar('An error occurred while uploading image', {
               variant: 'error',
