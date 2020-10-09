@@ -49,7 +49,6 @@ const NavItem = (props: NavItemProps) => {
 
   let Icon = null;
 
-  console.log('Current Icon status ??? ', keyVal);
   switch (props.css) {
     case 'Dashboard':
       Icon = <Dashboard active={active} />;
