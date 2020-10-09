@@ -83,7 +83,7 @@ const NavItem = (props: NavItemProps) => {
     default:
       break;
   }
-  
+
   return (
     <div>
       <NavLink to={path} activeStyle={{backgroundColor: 'red'}}>
