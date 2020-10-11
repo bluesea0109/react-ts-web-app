@@ -32,7 +32,7 @@ interface IGetOrgs {
 
 export default function OrganizationSettings(props: IOrgSettingsProps) {
   const classes = useStyles();
-  const { orgId } = useParams();
+  const { orgId } = useParams<{ orgId: string }>();
   const { error, loading, data, refetch } = useQuery<IGetOrgs>(GET_ORGS, { variables: { id: orgId } });
 
   if (error) {

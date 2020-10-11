@@ -11,7 +11,6 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import * as EmailValidator from 'email-validator';
 
 import { useMutation } from '@apollo/client';
-import gql from 'graphql-tag';
 
 import { IUser } from '../../../models/user-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
@@ -23,8 +22,9 @@ import {
   useStripe,
 } from '@stripe/react-stripe-js';
 import { loadStripe, StripeCardElement } from '@stripe/stripe-js';
-
 import config from '../../../config';
+
+import { ENABLE_BILLING } from './gql';
 
 const stripePromise = loadStripe(config.stripePublicKey);
 
@@ -55,7 +55,7 @@ function CheckoutForm() {
     modalOpen: false,
     email: '',
   });
-  const { orgId } = useParams();
+  const { orgId } = useParams<{ orgId: string }>();
 
   const [doEnableBilling, enableBillingResp] = useMutation(ENABLE_BILLING);
 
@@ -234,13 +234,3 @@ export default function PaymentDialog(props: IAllProps) {
     </Elements>
   );
 }
-
-const ENABLE_BILLING = gql`
-  mutation($orgId: String!, $stripeToken: String!, $billingEmail: String!) {
-    BillingService_enableBilling(
-      orgId: $orgId
-      stripeToken: $stripeToken
-      billingEmail: $billingEmail
-    )
-  }
-`;

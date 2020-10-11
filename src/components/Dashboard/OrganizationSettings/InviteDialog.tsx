@@ -12,13 +12,15 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import * as EmailValidator from 'email-validator';
-import gql from 'graphql-tag';
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
 import { IUser } from '../../../models/user-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
-import {GET_INVITED_ORG_MEMBERS} from './OrgInvitedMember';
+import {
+  GET_INVITED_ORG_MEMBERS,
+  INVITE_ORG_MEMBER,
+} from './gql';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -47,7 +49,7 @@ export default function InviteDialog(props: IProps) {
     role: 'editor',
     email: '',
   });
-  const { orgId } = useParams();
+  const { orgId } = useParams<{ orgId: string }>();
 
   const [inviteOrgMember, inviteOrgMemberResp] = useMutation(
     INVITE_ORG_MEMBER,
@@ -199,15 +201,3 @@ export default function InviteDialog(props: IProps) {
     </div>
   );
 }
-
-const INVITE_ORG_MEMBER = gql`
-  mutation($orgId: String!, $recipientEmail: String!, $role: OrgMemberRole!) {
-    inviteOrgMember(
-      orgId: $orgId
-      recipientEmail: $recipientEmail
-      role: $role
-    ) {
-      id
-    }
-  }
-`;

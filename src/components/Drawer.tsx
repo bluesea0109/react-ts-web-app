@@ -105,7 +105,6 @@ function CustomDrawer(props: CustomDrawerProps) {
   const list = () => {
     switch (navigation) {
       case 1:
-        console.log('dashboard ::: ', location.pathname);
         return (
           <List>
             <ListItem className={classes.blank} />
