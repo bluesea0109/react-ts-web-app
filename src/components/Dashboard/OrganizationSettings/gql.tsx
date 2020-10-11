@@ -3,22 +3,7 @@ import gql from 'graphql-tag';
 export const REMOVE_ORG_MEMBER = gql`
   mutation($orgId: String!, $userId: String!) {
     removeOrgMember(orgId: $orgId, userId: $userId) {
-      orgId
       uid
-      role
-      user {
-        uid
-        name
-        email
-        activeOrg {
-          id
-          name
-        }
-        activeProject {
-          id
-          name
-        }
-      }
     }
   }
 `;

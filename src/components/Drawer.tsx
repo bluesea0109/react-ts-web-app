@@ -95,12 +95,40 @@ function CustomDrawer(props: CustomDrawerProps) {
     return `/orgs/${user.activeProject.orgId}`;
   };
 
+  const createChatbotBuilder = (path: string = ''): string => {
+    if (!user.activeProject) {
+      return '/no-orgs';
+    }
+    return `/orgs/${user.activeProject.orgId}/projects/${user.activeProject.id}/chatbot-builder`;
+  };
+
   const list = () => {
     switch (navigation) {
       case 1:
         return (
           <List>
             <ListItem className={classes.blank} />
+            <ListItem
+              component={Link}
+              to={''}
+              selected={
+                location.pathname.includes('')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Organization" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Overview"
+                style={
+                  !location.pathname.includes('projects') &&
+                  (location.pathname === '/')
+                    ? selectedStyle
+                    : {}
+                }
+              />
+            </ListItem>
             <ListItem
               component={Link}
               to={createOrgPath('settings')}
@@ -117,7 +145,7 @@ function CustomDrawer(props: CustomDrawerProps) {
                 primary="Organization"
                 style={
                   !location.pathname.includes('projects') &&
-                  (location.pathname.includes('settings') || location.pathname.includes('/'))
+                  (location.pathname.includes('settings'))
                     ? selectedStyle
                     : {}
                 }
@@ -153,7 +181,7 @@ function CustomDrawer(props: CustomDrawerProps) {
             <ListItem className={classes.blank} />
             <ListItem
               component={Link}
-              to={''}
+              to={createChatbotBuilder()}
               selected={
                 location.pathname.includes('projects') &&
                 location.pathname.includes('/')
