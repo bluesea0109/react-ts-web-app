@@ -24,8 +24,8 @@ import IconButtonDelete from '../../IconButtons/IconButtonDelete';
 import IconButtonEdit from '../../IconButtons/IconButtonEdit';
 import ConfirmDialog from '../../Utils/ConfirmDialog';
 import ChangeRoleDialog from './changeRoleDialog';
+import { REMOVE_ORG_MEMBER } from './gql';
 import InviteDialog from './InviteDialog';
-import { REVOKE_INVITATION } from './OrgInvitedMember';
 
 interface IAlertProps {
   severity: 'error' | 'success';
@@ -79,11 +79,11 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
     role: '',
   });
   const [confirmOpen, setConfirmOpen] = useState(false);
-  const [changeConfirm, setchangeConfirm] = useState(false);
+  const [changeConfirm, setChangeConfirm] = useState(false);
   const [
     removeOrgMember,
     { loading, data: removedMember },
-  ] = useMutation(REVOKE_INVITATION, {
+  ] = useMutation(REMOVE_ORG_MEMBER, {
     onCompleted() {
       props.refetchOrgs();
       setOpenSnackBar(true);
@@ -121,7 +121,7 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
 
   const onUpdateCallback = () => {
     props.refetchOrgs();
-    setchangeConfirm(false);
+    setChangeConfirm(false);
   };
 
   const getTableRow = (member: IMember, i: number) => {
@@ -166,14 +166,14 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
           <IconButtonEdit
             tooltip="Change Role"
             onClick={() => {
-              setchangeConfirm(true);
+              setChangeConfirm(true);
               setSelectedMember(member);
             }}
             disabled={role !== 'owner'}
           />
           <ChangeRoleDialog
             open={changeConfirm}
-            setOpen={setchangeConfirm}
+            setOpen={setChangeConfirm}
             member={selectedMember}
             onUpdateCallback={onUpdateCallback}
           />
