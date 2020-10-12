@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouteMatch } from 'react-router-dom';
 import styled from 'styled-components';
 import { IUser } from '../models/user-service';
+import { MenuName } from '../utils/enums';
 import IconButtonBavard from './IconButtons/IconButtonBavard';
 import NavItem from './IconButtons/NavItem';
 
@@ -18,16 +19,15 @@ const VerticalSidebar = styled.div`
 
 interface ISidebarProps {
   user: IUser;
-  onClick: (key: number) => void;
+  onClick: (key: MenuName) => void;
   onClose: () => void;
   onSetAgentID: (id: object) => void;
 }
 
-const Sidebar = (props: ISidebarProps) => {
-  const { onClick, onClose, user, onSetAgentID } = props;
+const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
   // const [open, setOpen] = useState(false);
   const [openSubItem, setOpenSubItem] = useState(false);
-  const [selected, setSelected] = useState(0);
+  const [selected, setSelected] = useState(MenuName.DASHBOARD);
   const createPath = (pageName: string): string => {
     if (!user.activeProject) {
       return '/no-project';
@@ -50,112 +50,104 @@ const Sidebar = (props: ISidebarProps) => {
   };
 
   useEffect(() => {
-    if (selected === 2 && match?.path) {
+    if (selected === MenuName.CREATE_BOT && match?.path) {
       // setOpen(true);
       setOpenSubItem(true);
-      onClick(6);
-      setSelected(6);
+      onClick(MenuName.OPEN_CONFIG);
+      setSelected(MenuName.OPEN_CONFIG);
       onSetAgentID(agentParams);
     }
   }, [match?.path]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const openDashboard = (key: number) => {
+  const openDashboard = (key: MenuName) => {
     setSelected(key);
     setOpenSubItem(false);
-    onClick(1);
+    onClick(MenuName.DASHBOARD);
   };
-  const openBotCreation = (key: number) => {
+  const openBotCreation = (key: MenuName) => {
     setSelected(key);
     setOpenSubItem(false);
-    onClick(2);
+    onClick(MenuName.CREATE_BOT);
   };
-  const openPage = (key: number) => {
+  const openPage = (key: MenuName) => {
     setSelected(key);
     setOpenSubItem(false);
     onClose();
   };
 
-  const openConfig = (key: number) => {
+  const openConfig = (key: MenuName) => {
     setSelected(key);
     setOpenSubItem(true);
-    onClick(6);
+    onClick(MenuName.OPEN_CONFIG);
   };
 
-  const openLaunching = (key: number) => {
+  const openLaunching = (key: MenuName) => {
     setSelected(key);
     setOpenSubItem(true);
-    onClick(8);
+    onClick(MenuName.OPEN_LAUNCHING);
   };
 
-  const openTraining = (key: number) => {
+  const openTraining = (key: MenuName) => {
     setSelected(key);
     setOpenSubItem(true);
-    onClick(7);
+    onClick(MenuName.OPEN_TRAINING);
   };
 
   const data = [
     {
       path:
         '/' /* path is used as id to check which NavItem is active basically */,
-      name: 'Dashboard',
+      name: MenuName.DASHBOARD,
       css: 'Dashboard',
-      key: 1 /* Key is required, else console throws error. Does this please you Mr. Browser?! */,
       handler: openDashboard,
       hidden: false,
     },
     {
       path: createPath('chatbot-builder'),
-      name: 'Create Bot',
+      name: MenuName.CREATE_BOT,
       css: 'BotBuilder',
-      key: 2,
       handler: openBotCreation,
       hidden: false,
     },
     {
       path: createAgentPath('Actions'),
-      name: 'openConfig',
+      name: MenuName.OPEN_CONFIG,
       css: 'Configuration',
-      key: 6,
       handler: openConfig,
       hidden: true,
     },
     {
       path: createAgentPath('training-jobs'),
-      name: 'openTraining',
+      name: MenuName.OPEN_TRAINING,
       css: 'Training',
-      key: 7,
       handler: openTraining,
       hidden: true,
     },
     {
       path: createAgentPath('chats'),
-      name: 'openLaunching',
+      name: MenuName.OPEN_LAUNCHING,
       css: 'Launching',
-      key: 8,
       handler: openLaunching,
       hidden: true,
     },
     {
       path: createPath('image-labeling/collections'),
-      name: 'ImageLabeling',
+      name: MenuName.IMAGE_LABELING,
       css: 'ImageLabeling',
-      key: 3,
       handler: openPage,
       hidden: false,
     },
     {
       path: createPath('qa'),
-      name: 'FAQ',
+      name: MenuName.FAQ,
       css: 'FAQ',
-      key: 4,
       handler: openPage,
       hidden: false,
     },
     {
       path: createPath('text-labeling'),
-      name: 'TextLabeling',
+      name: MenuName.TEXT_LABELING,
       css: 'TextLabeling',
-      key: 5,
       handler: openPage,
       hidden: false,
     },
@@ -171,7 +163,6 @@ const Sidebar = (props: ISidebarProps) => {
     data[4].hidden = true;
   }
 
-  console.log('Current Icon status ??? ', selected);
   return (
     <VerticalSidebar>
       <IconButtonBavard
@@ -180,11 +171,10 @@ const Sidebar = (props: ISidebarProps) => {
       />
       {data.map((item) => (
         <NavItem
-          active={selected === item.key}
-          key={item.key}
-          keyVal={item.key}
+          active={selected === item.name}
+          key={item.name}
+          name={item.name}
           path={item.path}
-          css={item.css}
           hidden={!item.hidden}
           onClick={item.handler}
         />

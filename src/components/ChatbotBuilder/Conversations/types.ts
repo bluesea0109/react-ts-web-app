@@ -1,4 +1,4 @@
-import { IConversation } from '../../../models/chatbot-service';
+import { IConversation } from '@bavard/agent-config/dist/dialogue-manager/conversation';
 
 export interface GetLiveConversationsQueryResult {
   ChatbotService_liveConversations: IConversation[];

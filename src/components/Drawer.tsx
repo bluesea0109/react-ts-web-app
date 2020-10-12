@@ -9,6 +9,7 @@ import { Link, useLocation } from 'react-router-dom';
 import SubMenuIcon from '../components/IconButtons/SubMenuIcon';
 import { IAgentParam } from '../models/chatbot-service';
 import { IUser } from '../models/user-service';
+import { MenuName } from '../utils/enums';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -53,7 +54,7 @@ const useStyles = makeStyles((theme: Theme) =>
 interface CustomDrawerProps {
   user: IUser;
   status: boolean;
-  navigation: number;
+  navigation: MenuName;
   agent: IAgentParam;
 }
 
@@ -104,7 +105,7 @@ function CustomDrawer(props: CustomDrawerProps) {
 
   const list = () => {
     switch (navigation) {
-      case 1:
+      case MenuName.DASHBOARD:
         return (
           <List>
             <ListItem className={classes.blank} />
@@ -175,7 +176,7 @@ function CustomDrawer(props: CustomDrawerProps) {
             </ListItem>
           </List>
         );
-      case 2:
+      case MenuName.CREATE_BOT:
         return (
           <List>
             <ListItem className={classes.blank} />
@@ -200,7 +201,7 @@ function CustomDrawer(props: CustomDrawerProps) {
             </ListItem>
           </List>
         );
-      case 6:
+      case MenuName.OPEN_CONFIG:
         return (
           <List>
             <ListItem className={classes.blank} />
@@ -313,7 +314,7 @@ function CustomDrawer(props: CustomDrawerProps) {
             </ListItem>
           </List>
         );
-      case 7:
+      case MenuName.OPEN_TRAINING:
         return (
           <List>
             <ListItem className={classes.blank} />
@@ -330,28 +331,6 @@ function CustomDrawer(props: CustomDrawerProps) {
                 primary="Training Jobs"
                 style={
                   location.pathname.includes('training-jobs')
-                    ? selectedStyle
-                    : {}
-                }
-              />
-            </ListItem>
-            <ListItem
-              component={Link}
-              to={createAgentPath('live-conversations')}
-              selected={
-                location.pathname.includes('projects') &&
-                location.pathname.includes('live-conversations')
-              }
-              button={true}
-              className={classes.listItem}>
-              <ListItemIcon style={{ color: 'white' }}>
-                <SubMenuIcon title="Project" active={false} />
-              </ListItemIcon>
-              <ListItemText
-                primary="Training Conversation"
-                style={
-                  location.pathname.includes('projects') &&
-                  location.pathname.includes('live-conversations')
                     ? selectedStyle
                     : {}
                 }
@@ -381,7 +360,7 @@ function CustomDrawer(props: CustomDrawerProps) {
             </ListItem>
           </List>
         );
-      case 8:
+      case MenuName.OPEN_LAUNCHING:
         return (
           <List>
             <ListItem className={classes.blank} />
@@ -419,6 +398,28 @@ function CustomDrawer(props: CustomDrawerProps) {
                 style={
                   location.pathname.includes('projects') &&
                   location.pathname.includes('upload-data')
+                    ? selectedStyle
+                    : {}
+                }
+              />
+            </ListItem>
+            <ListItem
+              component={Link}
+              to={createAgentPath('live-conversations')}
+              selected={
+                location.pathname.includes('projects') &&
+                location.pathname.includes('live-conversations')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Project" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Training Conversation"
+                style={
+                  location.pathname.includes('projects') &&
+                  location.pathname.includes('live-conversations')
                     ? selectedStyle
                     : {}
                 }
@@ -492,7 +493,7 @@ function CustomDrawer(props: CustomDrawerProps) {
             </ListItem>
           </List>
         );
-      case 4:
+      case MenuName.FAQ:
         return (
           <List>
             <ListItem className={classes.blank} />
