@@ -46,7 +46,7 @@ const local = {
   apiUrl: 'http://localhost:8081/graphql',
   predictionServiceUrl: 'https://prediction-service-dot-bavard-dev.appspot.com/graphql',
   chatbotUrl: 'http://localhost:8000/public/index.html',
-  bundleUrl: 'https://localhost:8000/main.bundle.js',
+  bundleUrl: 'https://bavard-chatbot.web.app/main.bundle.js',
   stripePublicKey: 'pk_test_51HL9t1DslhlvaFGjUIoSzWldID1pYsNstl7pRQadJQ2EGohCGoXuGrrEPr8K7bj4NyZKlwU3vMv8fM2bRSrvSNHK00nQSkQKke',
   firebase: {
     apiKey: 'AIzaSyDwt9YZ88n3dsp2bHS0nV7uU2oUULQLdo0',

@@ -49,7 +49,7 @@ export default function ChatWithAgent() {
           a.onload = function () { i['bavard'](uname, apiKey, debug, dev) };
           a.async = 1; a.src = g; m.appendChild(a), a.type = "application/javascript";
         }
-      })('${agentData.data.ChatbotService_agent.uname}', '${apiKey}', false, false)
+      })('${agentData.data.ChatbotService_agent.uname}', '${apiKey}', true, true)
       (window, document, 'script', '${config.bundleUrl}')
     `;
     document.body.appendChild(script);
