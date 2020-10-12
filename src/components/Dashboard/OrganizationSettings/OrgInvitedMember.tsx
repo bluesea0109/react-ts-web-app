@@ -13,12 +13,15 @@ import {
     Typography,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import gql from 'graphql-tag';
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
 import {IInvitedMember} from '../../../models/user-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
+import {
+  GET_INVITED_ORG_MEMBERS,
+  REVOKE_INVITATION,
+} from './gql';
 
 const useStyles = makeStyles((theme: Theme) =>
 createStyles({
@@ -133,29 +136,5 @@ function InvitedMemberTable() {
     </Paper>
   );
 }
-
-export const GET_INVITED_ORG_MEMBERS = gql`
-    query($orgId: String!) {
-        orgMemberInvites(orgId: $orgId){
-            id
-            email
-            orgId
-            orgName
-            senderName
-            senderEmail
-            timestamp
-            role
-        }
-    }
-`;
-
-export const REVOKE_INVITATION = gql`
-  mutation($orgId: String!, $inviteId: String!) {
-    deleteOrgMemberInvite(
-      orgId: $orgId
-      inviteId: $inviteId
-    )
-  }
-`;
 
 export default InvitedMemberTable;

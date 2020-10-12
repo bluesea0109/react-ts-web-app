@@ -9,11 +9,12 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
 import { useMutation } from '@apollo/client';
-import gql from 'graphql-tag';
 
 import { IUser } from '../../../models/user-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
+
+import { DISABLE_BILLING } from './gql';
 
 interface IAllProps {
   user: IUser;
@@ -39,7 +40,7 @@ export default function PaymentDialog(props: IAllProps) {
     modalOpen: false,
     role: 'editor',
   });
-  const { orgId } = useParams();
+  const { orgId } = useParams<{ orgId: string }>();
 
   const [doDisableBilling, disableBillingResp] = useMutation(DISABLE_BILLING);
 
@@ -132,11 +133,3 @@ export default function PaymentDialog(props: IAllProps) {
     </div>
   );
 }
-
-const DISABLE_BILLING = gql`
-  mutation($orgId: String!) {
-    BillingService_disableBilling(
-      orgId: $orgId
-    )
-  }
-`;
