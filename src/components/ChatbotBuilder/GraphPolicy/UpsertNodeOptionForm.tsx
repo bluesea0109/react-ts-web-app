@@ -61,7 +61,7 @@ export default function UpsertNodeOptionForm({
   const optionAsHl = option as IHyperlinkOption;
   const [text, setText] = useState<string>(option?.text || '');
   const [targetLink, setTargetLink] = useState<string>(
-    optionAsHl.targetLink || '',
+    optionAsHl?.targetLink || '',
   );
 
   const handleSubmit = async () => {
