@@ -9,9 +9,10 @@ import Dashboard from './icons/Dashboard';
 import FAQ from './icons/FAQ';
 import ImageLabeling from './icons/ImageLabeling';
 import Launching from './icons/Launching';
-import Organization from './icons/Organization';
 import TextLabeling from './icons/TextLabeling';
 import Training from './icons/Training';
+
+import { MenuName } from '../../utils/enums';
 
 const StyledNavItem = styled.div`
   display: flex;
@@ -35,54 +36,49 @@ const StyledNavItem = styled.div`
 interface NavItemProps {
   active: boolean;
   path: string;
-  keyVal: number;
-  css: string;
+  name: MenuName;
   hidden: boolean;
-  onClick: (key: number) => void;
+  onClick: (key: MenuName) => void;
 }
 
-const NavItem = (props: NavItemProps) => {
-  const { active, path, onClick, keyVal, hidden } = props;
+const NavItem = ({ active, path, onClick, name, hidden}: NavItemProps) => {
   const handleClick = () => {
-    onClick(keyVal);
+    onClick(name);
   };
 
   let Icon = null;
 
-  switch (props.css) {
-    case 'Dashboard':
+  switch (name) {
+    case MenuName.DASHBOARD:
       Icon = <Dashboard active={active} />;
       break;
-    case 'Organization':
-      Icon = <Organization active={active} />;
-      break;
-    case 'FAQ':
+    case MenuName.FAQ:
       Icon = <FAQ active={active} />;
       break;
-    case 'ImageLabeling':
+    case MenuName.IMAGE_LABELING:
       Icon = <ImageLabeling active={active} />;
       break;
-    case 'TextLabeling':
+    case MenuName.TEXT_LABELING:
       Icon = <TextLabeling active={active} />;
       break;
-    case 'BotBuilder':
+    case MenuName.CREATE_BOT:
       Icon = <BotBuilder active={active} />;
       break;
-    case 'Configuration':
+    case MenuName.OPEN_CONFIG:
       Icon = <Configuration active={active} />;
       break;
-    case 'Training':
+    case MenuName.OPEN_TRAINING:
       Icon = <Training active={active} />;
       break;
-    case 'Launching':
+    case MenuName.OPEN_LAUNCHING:
       Icon = <Launching active={active} />;
       break;
-    case 'None':
+    default:
       Icon = null;
       break;
-    default:
-      break;
   }
+
+  const isOpenMenu = [MenuName.OPEN_CONFIG, MenuName.OPEN_TRAINING, MenuName.OPEN_LAUNCHING].find(menuName => name === menuName);
 
   return (
     <div>
@@ -95,7 +91,7 @@ const NavItem = (props: NavItemProps) => {
           <StyledNavItem
             active={active}
             className={active ? 'active' : ''}
-            style={keyVal > 5 ? { backgroundColor: '#cccccc33' } : {}}>
+            style={isOpenMenu ? { backgroundColor: '#cccccc33' } : {}}>
             <Link to={path} onClick={handleClick}>
               {Icon}
             </Link>

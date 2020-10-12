@@ -1,7 +1,8 @@
 import { createStyles, Grid, makeStyles, Paper, Theme, Typography } from '@material-ui/core';
 import React from 'react';
 
-import { IConversation } from '../../../models/chatbot-service';
+import { IUtteranceUserAction } from '@bavard/agent-config/dist/actions/user';
+import { IConversation, IDialogueTurn } from '@bavard/agent-config/dist/dialogue-manager/conversation';
 
 interface ConversationFullProps {
   conversation: IConversation;
@@ -27,29 +28,30 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const renderTurn = (turn: any, index: number, classes: any) => {
+const renderTurn = (turn: IDialogueTurn, index: number, classes: any) => {
   let userContent = <div/>;
   let agentContent = <div/>;
 
-  if (turn.action) {
+  if (turn.actor === 'AGENT') {
     agentContent = (
       <Paper className={classes.userMessage}>
         <Typography align="left">
-          Action: {turn.action?.name}
+          Action: {turn.agentAction?.name}
         </Typography>
         <Typography align="left">
-          Type: {turn.action?.type}
+          Type: {turn.agentAction?.type}
         </Typography>
       </Paper>
     );
-  } else if (turn.intent) {
+  } else if (turn.actor === 'USER') {
+    const userAction = turn.userAction as IUtteranceUserAction;
     userContent = (
       <Paper className={classes.agentMessage}>
         <Typography align="right">
-          Utterance: {turn.utterance}
+          Utterance: {(userAction as IUtteranceUserAction).utterance}
         </Typography>
         <Typography align="right">
-          Intent: {turn.intent}
+          Intent: {(userAction as IUtteranceUserAction).intent}
         </Typography>
       </Paper>
     );

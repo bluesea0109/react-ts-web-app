@@ -1,9 +1,9 @@
 import { useQuery } from '@apollo/client';
+import { IConversation } from '@bavard/agent-config/dist/dialogue-manager/conversation';
 import { Badge, createStyles, Divider, Grid, List, ListItem, makeStyles, Paper, Theme, Typography } from '@material-ui/core';
 import _ from 'lodash';
 import React, { useState } from 'react';
 import { useParams} from 'react-router-dom';
-import { IConversation } from '../../../models/chatbot-service';
 import ContentLoading from '../../ContentLoading';
 import ConversationFull from './ConversationFull';
 import {getLiveConversationsQuery} from './gql';
@@ -38,15 +38,13 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function ConversationsTab() {
   const classes = useStyles();
-  let { agentId } = useParams();
+  const { agentId } = useParams<{ agentId: string }>();
 
   const [selectedConversationId, selectConversation] = useState(0);
 
-  agentId = parseInt(agentId, 10);
-
   const queryResult = useQuery<GetLiveConversationsQueryResult>(getLiveConversationsQuery, {
     fetchPolicy: 'no-cache',
-    variables: { agentId },
+    variables: { agentId: parseInt(agentId, 10) },
   });
 
   const {data, loading} = queryResult;
@@ -71,7 +69,7 @@ export default function ConversationsTab() {
                   return (
                     <ListItem
                       key={c.id}
-                      onClick={() => selectConversation(c.id)}
+                      onClick={() => selectConversation(c.id || 1)}
                       selected={(selectedConversationId === c.id) || (!selectedConversationId && index === 0)}
                       className={classes.conversationListItem}
                       >
