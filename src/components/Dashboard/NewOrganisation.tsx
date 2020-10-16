@@ -7,7 +7,6 @@ import {
   makeStyles,
   TextField,
   Theme,
-  Typography,
 } from '@material-ui/core';
 import clsx from 'clsx';
 import React, { useState } from 'react';
@@ -33,7 +32,11 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-function NewOrganisation() {
+interface INewOrgProps {
+  onSuccess?: () => void;
+}
+
+function NewOrganisation({onSuccess}: INewOrgProps) {
   const classes = useStyles();
   const [state, setState] = useState({
     name: '',
@@ -78,12 +81,13 @@ function NewOrganisation() {
     }
 
     setState({ name: '' });
+    onSuccess?.();
   };
 
   return (
     <Card className={clsx(classes.root)}>
       {(loading || activateResult.loading) && <LinearProgress />}
-      <Typography variant="h4">{'New Organisation'}</Typography>
+      <h4>{'New Organisation'}</h4>
       <br />
       <TextField
         id="name"

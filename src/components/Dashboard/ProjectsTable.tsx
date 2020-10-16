@@ -1,7 +1,7 @@
 
 import { useMutation } from '@apollo/client';
-import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Toolbar, Typography } from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import {  Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,  Typography } from '@material-ui/core';
+
 import 'firebase/auth';
 import React from 'react';
 import { GET_CURRENT_USER, UPDATE_ACTIVE_ORG } from '../../common-gql-queries';
@@ -9,24 +9,13 @@ import { IOrg, IProject } from '../../models/user-service';
 import ApolloErrorPage from '../ApolloErrorPage';
 import ContentLoading from '../ContentLoading';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      margin: theme.spacing(3),
-    },
-    paper: {
-      padding: theme.spacing(2),
-    },
-  }),
-);
-
 interface IProjectsTableProps {
   activeOrg: IOrg;
   activeProject?: IProject | null;
 }
 
 function ProjectsTable(props: IProjectsTableProps) {
-  const classes = useStyles();
+
   const { activeOrg, activeProject } = props;
   const [updateActiveOrg, { loading, error }] = useMutation(UPDATE_ACTIVE_ORG,
     {
@@ -54,26 +43,33 @@ function ProjectsTable(props: IProjectsTableProps) {
   const projects = activeOrg.projects;
   const activeProjectId = activeProject?.id;
 
+  const activateProject = (projectId: string) => {
+    setActiveProject(activeOrg.id, projectId);
+  };
+
   const getButton = (projectId: string) => {
     if (activeProjectId !== projectId) {
-      return <Button variant="contained" color="primary" onClick={() => setActiveProject(activeOrg.id, projectId)}>Make Active</Button>;
+      return (
+        <Switch
+        color="primary"
+        checked={false}
+        onChange={(event) => activateProject(projectId)}
+      />
+      );
     }
-    return <Button variant="contained" color="secondary" disabled={true}>Active</Button>;
+    return <Switch color="primary" checked={true}/>;
   };
 
   return (
-    <Paper className={classes.paper}>
-      <Toolbar>
-        <Typography variant="h5">{`Projects for Organization `}<em>{activeOrg.name}</em></Typography>
-      </Toolbar>
+    <React.Fragment>
       {projects ? (
-        <TableContainer component={Paper} aria-label="Projects">
+        <TableContainer component="div" aria-label="Projects">
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>Project id</TableCell>
-                <TableCell>{'Set to Active'}</TableCell>
+                <TableCell>Project Name</TableCell>
+                <TableCell>Project ID</TableCell>
+                <TableCell>{'Activate'}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -92,7 +88,7 @@ function ProjectsTable(props: IProjectsTableProps) {
             {'No organizations found'}
           </Typography>
         )}
-    </Paper>
+    </React.Fragment>
   );
 }
 

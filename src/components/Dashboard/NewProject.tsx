@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { Button, Card, createStyles, LinearProgress, makeStyles, TextField, Theme, Typography } from '@material-ui/core';
+import { Button, Card, createStyles, LinearProgress, makeStyles, TextField, Theme } from '@material-ui/core';
 import clsx from 'clsx';
 import React, { useState } from 'react';
 import { CREATE_PROJECT, GET_CURRENT_USER } from '../../common-gql-queries';
@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface INewProjectProps {
   activeOrg: IOrg | null;
+  onSuccess?: () => void;
 }
 
 function NewProject(props: INewProjectProps) {
@@ -47,12 +48,13 @@ function NewProject(props: INewProjectProps) {
     if (!activeOrg) { return; }
     createProject({ variables: { orgId: activeOrg.id, name: state.name } });
     setState({ name: '' });
+    props.onSuccess?.();
   };
 
   return (
     <Card className={clsx(classes.root)}>
       {loading && <LinearProgress />}
-      <Typography variant="h4">{'New Project'}</Typography>
+      <h4>{'New Project'}</h4>
       <br />
       <TextField
         id="name"
