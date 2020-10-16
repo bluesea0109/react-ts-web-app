@@ -3,8 +3,8 @@ import 'firebase/auth';
 import React, { useEffect, useState } from 'react';
 import { resetApolloContext } from './apollo-client';
 import App from './App';
-import ContentLoading from './components/ContentLoading';
-import SignInPage from './components/SignInPage';
+import ContentLoading from './containers/ContentLoading';
+import SignInPage from './containers/SignInPage';
 import { usePrevious } from './utils/hooks';
 
 function AppAuthWrapper() {

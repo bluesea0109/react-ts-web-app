@@ -2,23 +2,19 @@ import { useMutation } from '@apollo/client';
 import {
   CircularProgress,
   createStyles,
-  FormControl,
-  InputLabel,
   TextField,
   Theme,
 } from '@material-ui/core';
 import AppBar, { AppBarProps } from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
 import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import clsx from 'clsx';
 import firebase from 'firebase/app';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { GET_CURRENT_USER, UPDATE_ACTIVE_ORG } from '../common-gql-queries';
+import { DropDown } from '../components';
 import { IUser } from '../models/user-service';
 
 interface CustomAppbarProps extends AppBarProps {
@@ -92,29 +88,12 @@ const Orgs: React.FC<{ user: IUser }> = ({ user }) => {
   if (loading) { return <CircularProgress color="secondary" />; }
   const orgs = user.orgs ?? [];
   return orgs?.length !== 0 ? (
-    <FormControl>
-      <InputLabel className={clsx(classes.selectLabel)} id="select-active-org">
-        Org
-      </InputLabel>
-      <Select
-        labelId="select-active-org"
-        value={user.activeOrg?.id ?? ''}
-        onChange={(e) => setActiveOrg(e.target.value as string)}
-        className={clsx([classes.selectInput, classes.menuButton])}
-        inputProps={{
-          classes: {
-            root: classes.border,
-            icon: classes.icon,
-          },
-        }}
-      >
-        {orgs?.map((org: any) => (
-          <MenuItem key={org.id} value={org.id}>
-            {org.name}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+    <DropDown
+      label="Organization"
+      current={user.activeOrg?.id}
+      menuItems={orgs}
+      onChange={(name) => setActiveOrg(name)}
+    />
   ) : (
     <TextField
       className={classes.noProject}
@@ -151,32 +130,12 @@ const Projects: React.FC<{ user: IUser }> = ({ user }) => {
   if (loading) { return <CircularProgress color="secondary" />; }
 
   return projects?.length !== 0 ? (
-    <FormControl className={clsx(classes.menuButton)}>
-      <InputLabel
-        className={clsx(classes.selectLabel)}
-        id="select-active-project"
-      >
-        {'Project'}
-      </InputLabel>
-      <Select
-        labelId="select-active-project"
-        value={projectId}
-        onChange={(e) => setActiveProject(e.target.value as string)}
-        className={clsx(classes.selectInput)}
-        inputProps={{
-          classes: {
-            root: classes.border,
-            icon: classes.icon,
-          },
-        }}
-      >
-        {projects.map((project) => (
-          <MenuItem key={project.id} value={project.id}>
-            {project.name}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+    <DropDown
+      label="Project"
+      current={projectId}
+      menuItems={projects}
+      onChange={(name) => setActiveProject(name)}
+    />
   ) : (
     <TextField
       className={classes.noProject}
