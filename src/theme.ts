@@ -67,7 +67,7 @@ const lightTheme: ThemeOptions = {
       main: '#0161FF',
     },
     secondary: {
-      main: '#04AA51',
+      main: '#4A90E1',
       // main: '#1976d2'
     },
     background: {
