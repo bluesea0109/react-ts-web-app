@@ -1,5 +1,6 @@
 import { useMutation } from '@apollo/client';
 import {
+  Box,
   CircularProgress,
   createStyles,
   TextField,
@@ -89,7 +90,7 @@ const Orgs: React.FC<{ user: IUser }> = ({ user }) => {
   const orgs = user.orgs ?? [];
   return orgs?.length !== 0 ? (
     <DropDown
-      label="Organization"
+      label="Organization:"
       current={user.activeOrg?.id}
       menuItems={orgs}
       onChange={(name) => setActiveOrg(name)}
@@ -131,7 +132,7 @@ const Projects: React.FC<{ user: IUser }> = ({ user }) => {
 
   return projects?.length !== 0 ? (
     <DropDown
-      label="Project"
+      label="Project:"
       current={projectId}
       menuItems={projects}
       onChange={(name) => setActiveProject(name)}
@@ -163,11 +164,13 @@ const CustomAppbar: React.FC<CustomAppbarProps> = ({
   return (
     <AppBar position={position} className={className}>
       <Toolbar>
-        <Typography variant="h6" className={classes.title}>
-          {''}
-        </Typography>
-        <Orgs user={user} />
-        <Projects user={user} />
+        <Typography variant="h6" className={classes.title}/>
+        <Box mr={1}>
+          <Orgs user={user} />
+        </Box>
+        <Box>
+          <Projects user={user} />
+        </Box>
         <Button onClick={onLogoutClick} color="inherit">
           Logout
         </Button>

@@ -1,4 +1,4 @@
-import { createStyles, FormControl, InputLabel, MenuItem } from '@material-ui/core';
+import { Box, createStyles, InputLabel, MenuItem } from '@material-ui/core';
 import Select from '@material-ui/core/Select';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import clsx from 'clsx';
@@ -6,21 +6,27 @@ import React from 'react';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    formControl: {
-      margin: theme.spacing(0),
-      minWidth: 155,
-    },
     selectLabel: {
       color: 'black',
+      fontSize: 12,
+      marginBottom: 4,
     },
     selectInput: {
-      background: 'primary',
+      margin: theme.spacing(0),
+      minWidth: 155,
       color: 'black',
-      borderRadius: 4,
+      borderRadius: 2,
       borderColor: 'white',
 
       '& .MuiSelect-outlined': {
         padding: '7px 8px',
+      },
+      '& fieldset': {
+        top: 0,
+
+        '& legend': {
+          display: 'none',
+        },
       },
     },
     icon: {
@@ -52,11 +58,13 @@ const DropDown: React.FC<DropDownProps> = ({
   const currentItem = current?.name || current || '';
 
   return (
-    <FormControl variant="outlined" className={clsx(classes.formControl)}>
+    <Box>
       <InputLabel className={clsx(classes.selectLabel)}>
         {label}
       </InputLabel>
+
       <Select
+        variant="outlined"
         value={currentItem}
         className={clsx(classes.selectInput)}
         onChange={(e) => onChange(e.target.value as string)}
@@ -71,7 +79,7 @@ const DropDown: React.FC<DropDownProps> = ({
           </MenuItem>
         ))}
       </Select>
-    </FormControl>
+    </Box>
   );
 };
 
