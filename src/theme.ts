@@ -55,6 +55,7 @@ const darkTheme: ThemeOptions = {
     },
     contrastThreshold: 3,
   },
+
 };
 
 const lightTheme: ThemeOptions = {
@@ -63,10 +64,10 @@ const lightTheme: ThemeOptions = {
     type: 'light',
     // divider:
     primary: {
-      main: '#24292e',
+      main: '#0161FF',
     },
     secondary: {
-      main: '#04AA51',
+      main: '#4A90E1',
       // main: '#1976d2'
     },
     background: {
@@ -79,6 +80,13 @@ const lightTheme: ThemeOptions = {
       secondary: '#000000',
     },
     contrastThreshold: 3,
+  },
+  overrides: {
+    MuiCard: {
+      root: {
+        background: '#FFFFFF',
+      },
+    },
   },
 };
 
