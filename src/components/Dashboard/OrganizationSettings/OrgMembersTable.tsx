@@ -1,7 +1,6 @@
 import { useMutation } from '@apollo/client';
 import {
   Box,
-  Paper,
   Snackbar,
   Table,
   TableBody,
@@ -11,8 +10,7 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Toolbar,
-  Typography,
+
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import MuiAlert from '@material-ui/lab/Alert';
@@ -25,7 +23,6 @@ import IconButtonEdit from '../../IconButtons/IconButtonEdit';
 import ConfirmDialog from '../../Utils/ConfirmDialog';
 import ChangeRoleDialog from './changeRoleDialog';
 import { REMOVE_ORG_MEMBER } from './gql';
-import InviteDialog from './InviteDialog';
 
 interface IAlertProps {
   severity: 'error' | 'success';
@@ -46,11 +43,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     tableContainer: {
       maxHeight: '75vh',
-    },
-    tableHeader: {
-      '& th': {
-        backgroundColor: '#f5f5f5',
-      },
     },
     iconWrapper: {
       display: 'flex',
@@ -200,19 +192,14 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
   };
 
   return (
-    <Paper>
-      <Toolbar variant="dense">
-        <Typography variant="h6">{'Org Members'}</Typography>
-        <Typography className={classes.grow} />
-        {role === 'owner' ? <InviteDialog user={props.user} /> : null}
-      </Toolbar>
+    <React.Fragment>
       {loading ? (
         <ContentLoading />
       ) : (
           <TableContainer className={classes.tableContainer}>
-            <Table stickyHeader={true} aria-label="sticky table">
+            <Table aria-label="sticky table">
               <TableHead>
-                <TableRow className={classes.tableHeader}>
+                <TableRow>
                   <TableCell align="left">Name</TableCell>
                   <TableCell align="left">Email</TableCell>
                   <TableCell align="left">Role</TableCell>
@@ -256,6 +243,6 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
             </Alert>
           )}
       </Snackbar>
-    </Paper>
+    </React.Fragment>
   );
 }
