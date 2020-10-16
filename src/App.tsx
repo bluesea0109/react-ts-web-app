@@ -22,6 +22,7 @@ import InternalServerErrorPage from './components/InternalServerErrorpage';
 import MySidebar from './components/Sidebar';
 import TextLabeling from './components/TextLabeling';
 import { IUser } from './models/user-service';
+import { MenuName } from './utils/enums';
 
 const drawerWidth = 270;
 
@@ -114,7 +115,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function App() {
   const classes = useStyles();
-  const [navKey, setNavKey] = useState(0);
+  const [navKey, setNavKey] = useState(MenuName.NONE);
   const [agentId, setAgentId] = useState({ agentId: 0 });
   interface IGetCurrentUser {
     currentUser: IUser;
@@ -125,7 +126,7 @@ function App() {
     drawerOpen: false,
   });
 
-  const onMenuClick = (key: number) => {
+  const onMenuClick = (key: MenuName) => {
     setState({ ...state, drawerOpen: true });
     setNavKey(key);
   };

@@ -13,8 +13,8 @@ import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 import Actions from '../Actions/Actions';
 import AgentSettings from '../AgentSettings/AgentSettings';
+import AssistDemo from '../AssistDemo';
 import { currentAgentConfig, currentWidgetSettings } from '../atoms';
-import ChatWithAgent from '../ChatWithAgent';
 import ConversationsTab from '../Conversations';
 import DataExportsTab from '../DataExports/DataExportsTab';
 import Examples from '../Examples/Examples';
@@ -159,7 +159,7 @@ const AgentDetails = () => {
         {agentTab === 'graph-policy' && <GraphPolicy />}
         {agentTab === 'exports' && <DataExportsTab />}
         {agentTab === 'training-jobs' && <TrainingJobsTab />}
-        {agentTab === 'chats' && <ChatWithAgent />}
+        {agentTab === 'chats' && <AssistDemo />}
         {agentTab === 'live-conversations' && <ConversationsTab />}
         {agentTab === 'training-conversations' && <TrainingConversations />}
         {agentTab === 'settings' && <AgentSettings />}

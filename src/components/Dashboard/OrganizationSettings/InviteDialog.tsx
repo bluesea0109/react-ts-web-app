@@ -36,6 +36,9 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface IProps {
   user: IUser;
+  open?: boolean;
+  onClose?: () => void;
+  onSuccess?: () => void;
 }
 
 interface IGetOrgBilling {
@@ -45,7 +48,7 @@ interface IGetOrgBilling {
 export default function InviteDialog(props: IProps) {
   const classes = useStyles();
   const [state, setState] = useState({
-    modalOpen: false,
+    modalOpen: props.open || false,
     role: 'editor',
     email: '',
   });
@@ -79,6 +82,7 @@ export default function InviteDialog(props: IProps) {
 
   const handleClose = () => {
     setState({ ...state, modalOpen: false });
+    props.onClose?.();
   };
 
   const handleChange = (name: string) => (
@@ -99,6 +103,7 @@ export default function InviteDialog(props: IProps) {
       },
     });
     state.modalOpen = false;
+    props.onSuccess?.();
   };
 
   let dialogContent;
@@ -142,7 +147,7 @@ export default function InviteDialog(props: IProps) {
             />
           </form>
           <FormControl component="fieldset" className={classes.formControl}>
-            <FormLabel component="legend">Permissions</FormLabel>
+            <FormLabel>Permissions</FormLabel>
             <RadioGroup
               name="role"
               value={state.role}

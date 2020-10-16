@@ -1,6 +1,9 @@
 import {
+  Button,
+  Card,
+  CardHeader,
+  Dialog,
   Grid,
-  Paper,
   Table,
   TableBody,
   TableCell,
@@ -9,71 +12,56 @@ import {
   TableRow,
   Typography,
 } from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import {AddCircleOutline, Folder, SupervisedUserCircleOutlined} from '@material-ui/icons';
 import firebase from 'firebase';
 import 'firebase/auth';
-import React from 'react';
+import React, {useState} from 'react';
 import { IUser } from '../../models/user-service';
 import NewOrganisation from './NewOrganisation';
 import NewProject from './NewProject';
 import ProjectsTable from './ProjectsTable';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(2),
-    },
-    paper: {
-      padding: theme.spacing(2),
-    },
-  }),
-);
 
 interface IDashboardProps {
   user: IUser;
 }
 
 function Account(props: IDashboardProps) {
-  const classes = useStyles();
   const orgId = props.user.activeOrg?.id;
   const firebaseUser = firebase.auth().currentUser;
+  const [viewAddOrg, showAddOrg] = useState(false);
+  const [viewAddProject, showAddProject] = useState(false);
+
   if (!firebaseUser) {
     // this shouldn't happen
     console.error('No user signed in');
     return <Typography>{'No user is signed in.'}</Typography>;
   }
 
-  const userName = firebaseUser.displayName;
-  const email = firebaseUser.email;
-
-  let welcomeMsg = `Welcome, back.`;
-
-  if (userName) {
-    const firstName = userName.split(' ')[0];
-    welcomeMsg = `Welcome, ${firstName}`;
-  }
-
   const orgs = props.user.orgs;
   const activeOrg = props.user.activeOrg;
 
   return (
-    <div className={classes.root}>
+    <div className={'page-container'}>
       <Grid>
-        <Grid item={true} xs={12}>
-          <Typography variant="h6">{welcomeMsg}</Typography>
-          <Typography variant="h6">{email}</Typography>
-        </Grid>
-        <Grid item={true} container={true} xs={12} spacing={2}>
-          <Grid item={true} xs={12} sm={6}>
-            <Paper className={classes.paper}>
-              <Typography variant="h5">{'Your organizations'}</Typography>
+        <Grid item={true} container={true} xs={12} spacing={4}>
+          <Grid item={true} sm={12} md={10}>
+            <Card>
+              <CardHeader avatar={<SupervisedUserCircleOutlined/>} title={<h4>Your organizations</h4>}
+                action={
+                  <Button color="primary"
+                    onClick={() => showAddOrg(true)}
+                    endIcon={<AddCircleOutline/>}
+                    disabled={(orgs?.length || 0) >= 3}>Add New Organization
+                  </Button>
+                }
+              />
               {orgs ? (
-                <TableContainer component={Paper} aria-label="Orgs">
+                <TableContainer component="div" aria-label="Orgs">
                   <Table>
                     <TableHead>
                       <TableRow>
-                        <TableCell>Name</TableCell>
-                        <TableCell>Org id</TableCell>
+                        <TableCell>Organization Name</TableCell>
+                        <TableCell>Organization ID</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -91,10 +79,19 @@ function Account(props: IDashboardProps) {
                   {'No organizations found'}
                 </Typography>
               )}
-            </Paper>
+            </Card>
           </Grid>
-          <Grid item={true} xs={12} sm={6}>
-            <Paper>
+          <Grid item={true} sm={12} md={10}>
+            <Card>
+              <CardHeader  avatar={<Folder/>} title={<h4>Projects for {activeOrg?.name}</h4>}
+              action={
+                <Button color="primary"
+                  onClick={() => showAddProject(true)}
+                  endIcon={<AddCircleOutline/>}
+                  >Add New Project
+                </Button>
+              }
+              />
               {activeOrg ? (
                 <ProjectsTable
                   activeOrg={activeOrg}
@@ -103,13 +100,24 @@ function Account(props: IDashboardProps) {
               ) : (
                 <Typography>{'No organization is active.'}</Typography>
               )}
-            </Paper>
+            </Card>
           </Grid>
+
           <Grid item={true} xs={12} sm={6}>
-            <NewOrganisation />
-          </Grid>
-          <Grid item={true} xs={12} sm={6}>
-            {orgId ? <NewProject activeOrg={activeOrg} /> : null}
+            {
+              viewAddOrg && (
+                <Dialog title="Add an Organization" open={true} onClose={() => showAddOrg(false)}>
+                  <NewOrganisation onSuccess={() => showAddOrg(false)} />
+                </Dialog>
+              )
+            }
+            {
+              viewAddProject && orgId && (
+                <Dialog title="Create a Project" open={true} onClose={() => showAddProject(false)}>
+                  <NewProject activeOrg={activeOrg} onSuccess={() => showAddProject(false)}  />
+                </Dialog>
+              )
+            }
           </Grid>
         </Grid>
       </Grid>

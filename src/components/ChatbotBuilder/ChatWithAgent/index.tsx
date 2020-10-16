@@ -42,8 +42,9 @@ export default function ChatWithAgent() {
   }, [loadedKey, apiKeysQuery.loading]);
 
   const onMessage = useCallback((e: any) => {
+    console.log('Message from iframe:', e.data);
     if (e.data.hasOwnProperty('loaded')) {
-      // This is just because in the chatbot-widget, we delayed 1000ms
+      console.log('IFrame Loaded.');
       setTimeout(() => setIsLoaded(true), 1200);
     }
   }, []);
@@ -70,10 +71,12 @@ export default function ChatWithAgent() {
 
   useEffect(() => {
     if (!apiKey) { return; }
+    console.log('Posting initial message to iframe.');
     iframe.current?.contentWindow?.postMessage({
       apiKey,
       uname: agentData.data?.ChatbotService_agent.uname,
-      isActive: true,
+      isActive: false,
+      debug: true,
       dev: true,
     }, '*');
   }, [apiKey, agentData.data]);
@@ -100,7 +103,7 @@ export default function ChatWithAgent() {
         style={{
           border: 'none',
           display: isLoaded && isActive ? 'block' : 'none',
-          height: isActive ? '80%' : 350,
+          height: isActive ? '100%' : 350,
           width: 550,
           position: 'fixed',
           top: 'auto',
@@ -119,9 +122,9 @@ export default function ChatWithAgent() {
         }}
       />
 
-      {isLoaded && <Button color="primary" variant="contained" onClick={toggleContentWindow}>
+      <Button color="primary" variant="contained" onClick={toggleContentWindow} disabled={!isLoaded}>
         {isActive ? 'Hide' : 'Show'}
-      </Button>}
+      </Button>
     </div>
   );
 }
