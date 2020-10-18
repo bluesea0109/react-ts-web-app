@@ -1,5 +1,4 @@
 import {
-  Button,
   createStyles,
   makeStyles,
   Paper,
@@ -10,15 +9,11 @@ import {
 } from '@material-ui/core';
 import { Edit } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
-import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import _ from 'lodash';
 import MaterialTable, { Column } from 'material-table';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { TextAnnotator } from 'react-text-annotate';
 import { INLUExample } from '../../../models/chatbot-service';
-import { usePrevious } from '../../../utils/hooks';
-import SelectConfirmDialog from '../../Utils/SelectConfirmDialog';
-import TextConfirmDialog from '../../Utils/TextConfirmDialog';
 import { EXAMPLES_LIMIT } from './Examples';
 
 export interface ExamplesFilter {
@@ -28,10 +23,6 @@ export interface ExamplesFilter {
 
 export interface InvalidExist {
   invalidExist?: boolean;
-}
-
-function Alert(props: AlertProps) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
 const initialColumns: Column<any>[] = [
@@ -121,9 +112,6 @@ type ExamplesTableProps = {
   examples: INLUExample[];
   intents: string[];
   filters?: ExamplesFilter;
-  invalidExist: boolean;
-  invalidIntents: string[];
-  invalidExamples: INLUExample[];
   config: any;
   onDelete: (exampleId: number) => Promise<void>;
   onEdit: (exampleId: number) => void;
@@ -138,150 +126,55 @@ const ExamplesTable = (props: ExamplesTableProps) => {
     intents,
     onDelete,
     onEdit,
-    onAdd,
     filters,
     updateFilters,
-    invalidExist,
-    invalidIntents,
-    invalidExamples,
-    config,
-    onUpdateExample,
   } = props;
 
   const classes = useStyles();
 
-  const [columns, setColumns] = useState<Column<any>[]>(initialColumns);
-  const [data, setData] = useState<any[] | null>(null);
   const [intent, setIntent] = useState<string | undefined>(
     intents.find((x) => x === filters?.intent),
   );
-  const [confirmAddOpen, setConfirmAddOpen] = useState(false);
-  const [confirmReplaceOpen, setConfirmReplaceOpen] = useState(false);
-  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
 
-  const prevIntent = usePrevious(intent);
-
-  useEffect(() => {
-    if (intent && prevIntent !== intent) {
-      updateFilters({
-        intent,
-      });
-    }
-    // eslint-disable-next-line
-  }, [intent]);
-
-  useEffect(() => {
-    if (examples && intents) {
-      const updatedColumns = [...columns];
-      updatedColumns[0] = {
-        ...updatedColumns[0],
-        filterComponent: (...args) => (
-          <Autocomplete
-            id="intentSelector"
-            options={intents}
-            value={intent}
-            onChange={(e, intent) => {
-              setIntent(intent || undefined);
-            }}
-            style={{ maxWidth: 300 }}
-            renderInput={(params) => (
-              <TextField {...params} label="Intents" variant="outlined" />
-            )}
-          />
-        ),
-      };
-
-      setColumns(updatedColumns);
-      setData(examples);
-    }
-    // eslint-disable-next-line
-  }, [examples, intents]);
-
-  const onConfirmAdd = () => {
-    invalidIntents.forEach((invalidIntent) => {
-      config.addIntent(invalidIntent, 'greeting');
+  const onIntentFilterChanged = (intent?: string) => {
+    setIntent(intent);
+    updateFilters({
+      intent,
     });
   };
 
-  const onConfirmReplace = (validIntent: string) => {
-    invalidExamples.forEach((invalidExample) => {
-      const updatedExmaple = { ...invalidExample, intent: validIntent };
-      onUpdateExample(updatedExmaple);
-    });
-  };
+  console.log('examples', examples);
+  console.log('intents', examples);
 
-  const onConfirmDelete = () => {
-    invalidExamples.map((example) => onDelete(example.id));
-  };
+  let columns = initialColumns;
+  if (examples && intents) {
+    columns = [...columns];
+    columns[0] = {
+      ...columns[0],
+      filterComponent: (...args) => (
+        <Autocomplete
+          id="intentSelector"
+          options={intents}
+          value={intent}
+          onChange={(e, intent) => {
+            onIntentFilterChanged(intent || undefined);
+          }}
+          style={{ maxWidth: 300 }}
+          renderInput={(params) => (
+            <TextField {...params} label="Intents" variant="outlined" />
+          )}
+        />
+      ),
+    };
+  }
 
   return (
     <Paper className={classes.paper}>
       <p className={classes.label}>NLU Examples Table</p>
       <TableContainer component={Paper} aria-label="Examples">
         <MaterialTable
-          title={
-            <>
-              {!!invalidExist && (
-                <Alert className={classes.alert} severity="error">
-                  Found examples with intent "
-                  <span style={{ color: 'lightgray' }}>
-                    {invalidIntents.toString()}{' '}
-                  </span>
-                  " that is missing from the config.
-                  <br /> Resolve options:
-                  <br />
-                  <span
-                    className={classes.resolveAction}
-                    onClick={() => setConfirmAddOpen(true)}>
-                    {' '}
-                    - Add the missing intent to the config
-                  </span>
-                  <TextConfirmDialog
-                    title="Add missing intents?"
-                    open={confirmAddOpen}
-                    setOpen={setConfirmAddOpen}
-                    onConfirm={() => onConfirmAdd()}
-                    confirmText="ADD">
-                    Please type "ADD" and press confirm.
-                  </TextConfirmDialog>
-                  <br />
-                  <span
-                    className={classes.resolveAction}
-                    onClick={() => setConfirmReplaceOpen(true)}>
-                    - Replace with an existing intent.
-                  </span>
-                  <SelectConfirmDialog
-                    title="Replace missing intents with valid one?"
-                    open={confirmReplaceOpen}
-                    setOpen={setConfirmReplaceOpen}
-                    intents={intents}
-                    onConfirm={(validIntent) => onConfirmReplace(validIntent)}
-                    confirmText="REPLACE">
-                    Please type "REPLACE" and press confirm.
-                  </SelectConfirmDialog>
-                  <br />
-                  <span
-                    className={classes.resolveAction}
-                    onClick={() => setConfirmDeleteOpen(true)}>
-                    - Delete these examples
-                  </span>
-                  <TextConfirmDialog
-                    title="Delete these examples?"
-                    open={confirmDeleteOpen}
-                    setOpen={setConfirmDeleteOpen}
-                    onConfirm={() => onConfirmDelete()}
-                    confirmText="DELETE">
-                    Please type "DELETE" and press confirm.
-                  </TextConfirmDialog>
-                </Alert>
-              )}
-              <Button variant="contained" color="primary" onClick={onAdd}>
-                Add New Examples
-              </Button>
-            </>
-          }
           columns={columns}
-          data={data ? _.cloneDeep(data) : []}
+          data={examples ? _.cloneDeep(examples) : []}
           localization={{
             body: {
               emptyDataSourceMessage:
@@ -312,7 +205,7 @@ const ExamplesTable = (props: ExamplesTableProps) => {
               <TablePagination
                 rowsPerPageOptions={[10]}
                 rowsPerPage={10}
-                count={(data?.length ?? 0) < 10 ? data?.length ?? 0 : -1}
+                count={examples?.length ?? 0 >= 10 ? -1 : examples?.length ?? 0}
                 labelDisplayedRows={({ from, to, count }) => {
                   return `${from}-${to} of ${
                     count !== -1 ? count : `more than ${to}`

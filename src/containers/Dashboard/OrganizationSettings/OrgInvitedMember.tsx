@@ -2,17 +2,13 @@
 import { useMutation, useQuery} from '@apollo/client';
 import {
     Button,
-    Paper,
     Table,
     TableBody,
     TableCell,
-    TableContainer,
     TableHead,
     TableRow,
-    Toolbar,
-    Typography,
 } from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
 import {IInvitedMember} from '../../../models/user-service';
@@ -23,31 +19,12 @@ import {
   REVOKE_INVITATION,
 } from './gql';
 
-const useStyles = makeStyles((theme: Theme) =>
-createStyles({
-    root: {
-      margin: theme.spacing(3),
-    },
-    paper: {
-      padding: theme.spacing(2),
-    },
-    tableContainer: {
-        maxHeight: '75vh',
-    },
-    tableHeader: {
-        '& th' : {
-        backgroundColor: '#f5f5f5',
-        },
-    },
-  }),
-);
-
 interface IInvitedMemberProps {
     orgMemberInvites: IInvitedMember[] | undefined;
 }
 
 function InvitedMemberTable() {
-  const classes = useStyles();
+
   const { orgId } = useParams<{ orgId: string }>();
   const [ item, setInvite ] = useState<{
     orgId: string,
@@ -91,49 +68,36 @@ function InvitedMemberTable() {
   }
 
   return (
-    <Paper className={classes.paper}>
-      <Toolbar>
-        <Typography variant="h5">{`Invited Organization Members`}</Typography>
-      </Toolbar>
-      {invitedMember && invitedMember.length > 0 ? (
-        <TableContainer className={classes.tableContainer}>
-          <Table stickyHeader={true} aria-label="sticky table">
-            <TableHead>
-              <TableRow className={classes.tableHeader}>
-                <TableCell>Email</TableCell>
-                <TableCell>Org Name</TableCell>
-                <TableCell>Sender Name</TableCell>
-                <TableCell>Sender Email</TableCell>
-                <TableCell>Role</TableCell>
-                <TableCell>Revoke Invitation</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-                {
-                    invitedMember.map((item) => {
-                        return (
-                            <TableRow key={item.id}>
-                                <TableCell>{item.email}</TableCell>
-                                <TableCell>{item.orgName}</TableCell>
-                                <TableCell>{item.senderName}</TableCell>
-                                <TableCell>{item.senderEmail}</TableCell>
-                                <TableCell>{item.role}</TableCell>
-                                <TableCell>
-                                  <Button variant="contained" onClick={() => revokeInvitation(item)}>Revoke</Button>
-                                </TableCell>
-                            </TableRow>
-                        );
-                    })
-                }
-            </TableBody>
-          </Table>
-        </TableContainer>
-      ) : (
-          <Typography align="center" variant="h6">
-            {'There is No invited members'}
-           </Typography>
-     )}
-    </Paper>
+    <Table stickyHeader={true}>
+      <TableHead>
+        <TableRow>
+          <TableCell>Email</TableCell>
+          <TableCell>Org Name</TableCell>
+          <TableCell>Sender Name</TableCell>
+          <TableCell>Sender Email</TableCell>
+          <TableCell>Role</TableCell>
+          <TableCell>Revoke Invitation</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+          {
+            (invitedMember || []).map((item) => {
+              return (
+                <TableRow key={item.id}>
+                  <TableCell>{item.email}</TableCell>
+                  <TableCell>{item.orgName}</TableCell>
+                  <TableCell>{item.senderName}</TableCell>
+                  <TableCell>{item.senderEmail}</TableCell>
+                  <TableCell>{item.role}</TableCell>
+                  <TableCell>
+                    <Button variant="contained" onClick={() => revokeInvitation(item)}>Revoke</Button>
+                  </TableCell>
+                </TableRow>
+              );
+            })
+          }
+      </TableBody>
+    </Table>
   );
 }
 
