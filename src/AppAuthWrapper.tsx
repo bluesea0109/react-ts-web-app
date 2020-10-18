@@ -31,8 +31,7 @@ function AppAuthWrapper() {
             loading: false,
             isSignedIn: true,
           });
-          const token = await user.getIdToken();
-          console.log(`Bearer ${token}`);
+          await user.getIdToken();
         } else {
           setState({
             loading: false,

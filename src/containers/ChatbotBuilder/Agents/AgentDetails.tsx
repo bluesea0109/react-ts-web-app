@@ -94,7 +94,6 @@ const AgentDetails = () => {
   const { error, loading, data } = useQuery<IGetAgent>(CHATBOT_GET_AGENT, {
     variables: { agentId: Number(agentId) },
     onCompleted: (data) => {
-      console.log(data);
       setConfig(AgentConfig.fromJsonObj(data.ChatbotService_agent.config));
       setWidgetSettings(data.ChatbotService_agent.widgetSettings);
     },

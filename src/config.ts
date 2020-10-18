@@ -68,9 +68,6 @@ if (process.env.REACT_APP_ENV === 'prod') {
   config = dev;
 }
 
-const env = process.env.REACT_APP_ENV;
-console.log('env', env);
-
 firebase.initializeApp(config.firebase);
 
 export default config;

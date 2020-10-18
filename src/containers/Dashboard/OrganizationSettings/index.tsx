@@ -60,7 +60,6 @@ export default function OrganizationSettings(props: IOrgSettingsProps) {
       <Typography className={classes.pageTitle} variant="h5">{'Membership'}</Typography>
       <Grid item={true} container={true} xs={12} spacing={2}>
         <Grid item={true} xs={12} sm={12}>
-          {console.log(org)}
           <Card>
             <CardHeader avatar={<Group/>} title={<h4>Organization Members</h4>} action={(
             <React.Fragment>
@@ -68,7 +67,6 @@ export default function OrganizationSettings(props: IOrgSettingsProps) {
             {org.billingEnabled === false && <EnablePaymentDialog user={props.user} />}
             </React.Fragment>
           )}/>
-
             <OrgMembersTable
               members={org.members || []}
               user={props.user}

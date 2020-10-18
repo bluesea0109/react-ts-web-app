@@ -42,9 +42,7 @@ export default function ChatWithAgent() {
   }, [loadedKey, apiKeysQuery.loading]);
 
   const onMessage = useCallback((e: any) => {
-    console.log('Message from iframe:', e.data);
     if (e.data.hasOwnProperty('loaded')) {
-      console.log('IFrame Loaded.');
       setTimeout(() => setIsLoaded(true), 1200);
     }
   }, []);
@@ -71,7 +69,6 @@ export default function ChatWithAgent() {
 
   useEffect(() => {
     if (!apiKey) { return; }
-    console.log('Posting initial message to iframe.');
     iframe.current?.contentWindow?.postMessage({
       apiKey,
       uname: agentData.data?.ChatbotService_agent.uname,
