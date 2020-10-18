@@ -4,6 +4,7 @@ import {
   BaseEdge,
   ConfirmEdge,
   EmailNode,
+  FormNode,
   EmptyEdge,
   GraphEdgeType,
   GraphPolicy,
@@ -182,7 +183,7 @@ export default function UpsertEdgeForm({
   };
 
   const handleNewNode = (
-    node: GraphPolicyNode | UtteranceNode | EmailNode | undefined,
+    node: GraphPolicyNode | UtteranceNode | EmailNode | FormNode | undefined,
   ) => {
     setNewNode(node);
   };

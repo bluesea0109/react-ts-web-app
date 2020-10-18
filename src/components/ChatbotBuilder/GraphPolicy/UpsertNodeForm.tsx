@@ -2,18 +2,24 @@ import {
   EmailNode,
   GraphPolicyNode,
   UtteranceNode,
+  FormNode,
 } from '@bavard/agent-config/dist/graph-policy';
 import {
   FormControl,
   FormControlLabel,
   Radio,
   RadioGroup,
+  IconButton,
   TextField,
+  Grid,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { useEffect, useState } from 'react';
 import { validateEmail } from '../../../utils/string';
+import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
+
 import RichTextInput from '../../Utils/RichTextInput';
+import { AddFieldForm } from '../GraphPolicy/AddActionField';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -21,15 +27,15 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       marginBottom: theme.spacing(2),
     },
-  }),
+  })
 );
 
 interface IUpsertNodeFormProps {
   onChange: (
-    node: GraphPolicyNode | UtteranceNode | EmailNode | undefined,
+    node: GraphPolicyNode | UtteranceNode | EmailNode | FormNode | undefined
   ) => void;
   nodeId: number;
-  node?: GraphPolicyNode | UtteranceNode | EmailNode;
+  node?: GraphPolicyNode | UtteranceNode | EmailNode | FormNode;
 }
 
 export default function UpsertNodeForm({
@@ -41,14 +47,20 @@ export default function UpsertNodeForm({
   const [showFormErrors, setShowFormErrors] = useState(false);
   const [utterance, setUtterance] = useState(node?.toJsonObj().utterance || '');
   const [nodeType, setNodeType] = useState<string>(
-    node?.type || 'UtteranceNode',
+    node?.type || 'UtteranceNode'
   );
   const [fromEmail, setFromEmail] = useState(
-    node instanceof EmailNode ? node.from : '',
+    node instanceof EmailNode ? node.from : ''
   );
   const [toEmail, setToEmail] = useState(
-    node instanceof EmailNode ? node.to : '',
+    node instanceof EmailNode ? node.to : ''
   );
+
+  const [formFields, setFormFields] = useState<object[]>([]);
+
+  const [url, setURL] = useState(node instanceof FormNode ? node.url : '');
+
+  console.log('Form node url ', node, 'URL : ', url);
   const [actionName, setActionName] = useState(node?.actionName || '');
 
   const handleUtteranceNode = async () => {
@@ -80,7 +92,7 @@ export default function UpsertNodeForm({
         actionName,
         toEmail,
         fromEmail,
-        utterance,
+        utterance
       );
       onChange(newNode);
     }
@@ -99,6 +111,15 @@ export default function UpsertNodeForm({
     } else if (nodeType === EmailNode.typename) {
       handleEmailNode();
     }
+  };
+
+  const addFormField = (fieldName: string, fieldType: string) => {
+    setFormFields([...formFields, { fieldName, fieldType }]);
+  };
+
+  const deleteField = (key: number) => {
+    const result = formFields.filter((item, index) => key !== index && item);
+    setFormFields(result);
   };
 
   useEffect(handleChange, [fromEmail, toEmail, actionName, utterance]);
@@ -121,6 +142,11 @@ export default function UpsertNodeForm({
             value={EmailNode.typename}
             control={<Radio />}
             label="Email Node"
+          />
+          <FormControlLabel
+            value={FormNode.typename}
+            control={<Radio />}
+            label="Form Node"
           />
         </RadioGroup>
       </FormControl>
@@ -161,14 +187,53 @@ export default function UpsertNodeForm({
           </FormControl>
         </React.Fragment>
       )}
+      {nodeType === FormNode.typename && (
+        <React.Fragment>
+          <FormControl variant="outlined" className={classes.formControl}>
+            <TextField
+              name="url"
+              error={showFormErrors && !url.length}
+              defaultValue={url}
+              required={true}
+              label="URL"
+              variant="outlined"
+              onChange={(e) => setURL(e.target.value as string)}
+            />
+          </FormControl>
 
-      <FormControl variant="outlined" className={classes.formControl}>
-        <RichTextInput
-          label="Utterance"
-          value={utterance}
-          onChange={(value: string) => setUtterance(value)}
-        />
-      </FormControl>
+          {formFields &&
+            formFields.map((item: any, key: number) => (
+              <Grid container={true} key={key}>
+                <Grid xs={11}>
+                  <FormControl
+                    variant="outlined"
+                    className={classes.formControl}>
+                    <TextField
+                      name={item.fieldName}
+                      label={`${item.fieldName} [${item.fieldType}]`}
+                      variant="outlined"
+                    />
+                  </FormControl>
+                </Grid>
+                <Grid xs={1}>
+                  <IconButton onClick={() => deleteField(key)}>
+                    <CancelOutlinedIcon />
+                  </IconButton>
+                </Grid>
+              </Grid>
+            ))}
+          <AddFieldForm handleChange={addFormField} />
+        </React.Fragment>
+      )}
+      {nodeType !== FormNode.typename && (
+        <FormControl variant="outlined" className={classes.formControl}>
+          <RichTextInput
+            label="Utterance"
+            value={utterance}
+            onChange={(value: string) => setUtterance(value)}
+          />
+        </FormControl>
+      )}
     </div>
   );
 }
