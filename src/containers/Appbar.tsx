@@ -1,7 +1,6 @@
 import { useMutation } from '@apollo/client';
 import {
   Box,
-  CircularProgress,
   createStyles,
   TextField,
   Theme,
@@ -12,7 +11,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import firebase from 'firebase/app';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { GET_CURRENT_USER, UPDATE_ACTIVE_ORG } from '../common-gql-queries';
 import { DropDown } from '../components';
@@ -20,6 +19,7 @@ import { IUser } from '../models/user-service';
 
 interface CustomAppbarProps extends AppBarProps {
   user: IUser;
+  handleChangeLoadingStatus: (loading: boolean) => void;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -62,17 +62,16 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const Orgs: React.FC<{ user: IUser }> = ({ user }) => {
-  const classes = useStyles();
-  const history = useHistory();
+interface OrgsProps {
+  user: IUser;
+  updateActiveOrg: (org: any) => void;
+}
 
-  const [updateActiveOrg, { loading }] = useMutation(UPDATE_ACTIVE_ORG, {
-    refetchQueries: [{ query: GET_CURRENT_USER }],
-    awaitRefetchQueries: true,
-    onCompleted: () => {
-      history.push('/'); // back to dashboard. TODO: keep the user on their current tab.
-    },
-  });
+const Orgs: React.FC<OrgsProps> = ({
+  user,
+  updateActiveOrg,
+}) => {
+  const classes = useStyles();
 
   const setActiveOrg = (orgId: string) => {
     const org = user.orgs?.find((org) => org.id === orgId);
@@ -86,7 +85,6 @@ const Orgs: React.FC<{ user: IUser }> = ({ user }) => {
     });
   };
 
-  if (loading) { return <CircularProgress color="secondary" />; }
   const orgs = user.orgs ?? [];
   return orgs?.length !== 0 ? (
     <DropDown
@@ -108,27 +106,23 @@ const Orgs: React.FC<{ user: IUser }> = ({ user }) => {
   );
 };
 
-const Projects: React.FC<{ user: IUser }> = ({ user }) => {
+interface ProjectsProps {
+  user: IUser;
+  updateActiveProject: (project: any) => void;
+}
+const Projects: React.FC<ProjectsProps> = ({
+  user,
+  updateActiveProject,
+}) => {
   const projects = user?.activeOrg?.projects || [];
   const projectId = user.activeProject?.id ?? '';
   const classes = useStyles();
-  const history = useHistory();
-
-  const [updateActiveProject, { loading }] = useMutation(UPDATE_ACTIVE_ORG, {
-    refetchQueries: [{ query: GET_CURRENT_USER }],
-    awaitRefetchQueries: true,
-    onCompleted: () => {
-      history.push('/');
-    },
-  });
 
   const setActiveProject = (projectId: string) => {
     updateActiveProject({
       variables: { projectId, orgId: user?.activeOrg?.id },
     });
   };
-
-  if (loading) { return <CircularProgress color="secondary" />; }
 
   return projects?.length !== 0 ? (
     <DropDown
@@ -154,22 +148,44 @@ const CustomAppbar: React.FC<CustomAppbarProps> = ({
   user,
   position,
   className,
+  handleChangeLoadingStatus,
 }) => {
   const classes = useStyles();
+  const history = useHistory();
 
   const onLogoutClick = () => {
     firebase.auth().signOut();
   };
+
+  const [updateActiveOrg, { loading: loadingOrganization }] = useMutation(UPDATE_ACTIVE_ORG, {
+    refetchQueries: [{ query: GET_CURRENT_USER }],
+    awaitRefetchQueries: true,
+    onCompleted: () => {
+      history.push('/'); // back to dashboard. TODO: keep the user on their current tab.
+    },
+  });
+
+  const [updateActiveProject, { loading: loadingProject }] = useMutation(UPDATE_ACTIVE_ORG, {
+    refetchQueries: [{ query: GET_CURRENT_USER }],
+    awaitRefetchQueries: true,
+    onCompleted: () => {
+      history.push('/');
+    },
+  });
+
+  useEffect(() => {
+    handleChangeLoadingStatus(loadingOrganization || loadingProject);
+  }, [loadingOrganization, loadingProject, handleChangeLoadingStatus]);
 
   return (
     <AppBar position={position} className={className}>
       <Toolbar>
         <Typography variant="h6" className={classes.title}/>
         <Box mr={1}>
-          <Orgs user={user} />
+          <Orgs user={user} updateActiveOrg={updateActiveOrg}/>
         </Box>
         <Box>
-          <Projects user={user} />
+          <Projects user={user} updateActiveProject={updateActiveProject}/>
         </Box>
         <Button onClick={onLogoutClick} color="inherit">
           Logout
