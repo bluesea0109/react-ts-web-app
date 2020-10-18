@@ -13,7 +13,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import {AddCircleOutline, Folder, SupervisedUserCircleOutlined} from '@material-ui/icons';
-import firebase from 'firebase';
+import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import React, {useState} from 'react';
 import { IUser } from '../../models/user-service';
