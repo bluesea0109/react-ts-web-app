@@ -1,4 +1,4 @@
-import ImageCategoricalLabel from '../../components/ImageLabeling/models/labels/ImageLabel';
+import ImageCategoricalLabel from '../../containers/ImageLabeling/models/labels/ImageLabel';
 import { ADD_LABEL, ImageLabelingActionTypes, REMOVE_LABEL, RESET_LABELS, SELECT_LABEL, UPDATE_LABEL } from './types';
 
 export function addLabel(label: ImageCategoricalLabel): ImageLabelingActionTypes {

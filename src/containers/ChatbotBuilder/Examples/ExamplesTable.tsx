@@ -57,7 +57,7 @@ const initialColumns: Column<any>[] = [
           }}
           content={data.text}
           value={state.value}
-          onChange={console.log}
+          onChange={() => {}}
           getSpan={(span) => ({
             ...span,
             tag: state.tag,
@@ -142,9 +142,6 @@ const ExamplesTable = (props: ExamplesTableProps) => {
       intent,
     });
   };
-
-  console.log('examples', examples);
-  console.log('intents', examples);
 
   let columns = initialColumns;
   if (examples && intents) {

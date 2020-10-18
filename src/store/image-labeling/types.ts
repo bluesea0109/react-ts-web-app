@@ -1,4 +1,4 @@
-import ImageCategoricalLabel from '../../components/ImageLabeling/models/labels/ImageLabel';
+import ImageCategoricalLabel from '../../containers/ImageLabeling/models/labels/ImageLabel';
 
 export const ADD_LABEL = 'ADD_LABEL';
 export const REMOVE_LABEL = 'REMOVE_LABEL';

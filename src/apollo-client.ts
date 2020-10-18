@@ -7,9 +7,6 @@ import { isEmpty } from 'lodash';
 import config from './config';
 import { parseJwt } from './utils';
 
-console.log('API URL:', config.apiUrl);
-console.log('project id:', config.projectId);
-
 const getIdToken = async () => {
   const token = sessionStorage.getItem('token') ?? '';
   const user = firebase.auth().currentUser;

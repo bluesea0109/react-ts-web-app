@@ -6,10 +6,10 @@ import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles } from '@material-ui/core/styles';
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import SubMenuIcon from '../components/IconButtons/SubMenuIcon';
 import { IAgentParam } from '../models/chatbot-service';
 import { IUser } from '../models/user-service';
 import { MenuName } from '../utils/enums';
+import SubMenuIcon from './IconButtons/SubMenuIcon';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

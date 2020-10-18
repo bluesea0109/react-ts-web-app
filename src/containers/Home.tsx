@@ -1,5 +1,5 @@
 import { createStyles, Grid, makeStyles, Theme, Typography } from '@material-ui/core';
-import firebase from 'firebase';
+import * as firebase from 'firebase/app';
 import React from 'react';
 
 const useStyles = makeStyles((theme: Theme) =>

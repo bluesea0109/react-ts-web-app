@@ -166,7 +166,7 @@ const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
   return (
     <VerticalSidebar>
       <IconButtonBavard
-        onClick={() => console.log('bavard_icon')}
+        onClick={() => {}}
         tooltip="tooltip"
       />
       {data.map((item) => (

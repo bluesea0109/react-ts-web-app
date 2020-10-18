@@ -61,7 +61,6 @@ const ImageUploader = ({
 
             onImageUpload(path);
           } catch (e) {
-            console.log(e.response);
             enqueueSnackbar('An error occurred while uploading image', {
               variant: 'error',
             });
