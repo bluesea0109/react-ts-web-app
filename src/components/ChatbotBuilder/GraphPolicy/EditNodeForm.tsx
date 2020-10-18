@@ -1,10 +1,10 @@
 import {
   EmailNode,
+  FormNode,
   GraphPolicy,
   GraphPolicyNode,
   IHyperlinkOption,
   UtteranceNode,
-  FormNode
 } from '@bavard/agent-config';
 
 import {

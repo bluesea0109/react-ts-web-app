@@ -70,7 +70,7 @@ interface IGraphPolicyVisualEditorState {
 const styles = (theme: Theme) => ({
   root: {
     width: '100%',
-    display: 'flex',    
+    display: 'flex',
     justifyContent: 'center',
   },
   graphRow: {
@@ -108,7 +108,7 @@ const styles = (theme: Theme) => ({
     width: 30,
     right: theme.spacing(2),
     backgroundColor: theme.palette.background.default,
-  }
+  },
 });
 
 class GraphPolicyVisualEditor extends React.Component<
