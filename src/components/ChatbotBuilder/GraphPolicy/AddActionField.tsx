@@ -40,12 +40,12 @@ import {
   );
 
   interface AddFormFieldProps {
-    handleChange: (name: string, type: string) => void;
+    handleChange: (name: string, type: EFormFieldTypes) => void;
   }
 
   export const AddFieldForm = ({ handleChange }: AddFormFieldProps) => {
     const classes = useStyles();
-    const [fields, setFields] = useState<{text: string, type: string}>({
+    const [fields, setFields] = useState<{text: string, type: EFormFieldTypes}>({
       text: '',
       type: EFormFieldTypes.EMAIL,
     });

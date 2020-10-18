@@ -20,6 +20,7 @@ import { validateEmail } from '../../../utils/string';
 
 import RichTextInput from '../../Utils/RichTextInput';
 import { AddFieldForm } from '../GraphPolicy/AddActionField';
+import {EFormFieldTypes, IFormField} from '@bavard/agent-config/dist'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -56,13 +57,12 @@ export default function UpsertNodeForm({
     node instanceof EmailNode ? node.to : '',
   );
 
-  const [formFields, setFormFields] = useState<object[]>([]);
+  const [formFields, setFormFields] = useState<IFormField[]>([]);
 
   const [url, setURL] = useState(node instanceof FormNode ? node.url : '');
-
-  console.log('Form node url ', node, 'URL : ', url);
   const [actionName, setActionName] = useState(node?.actionName || '');
-
+  
+  console.log('Form node url ', node, 'URL : ', url);
   const handleUtteranceNode = async () => {
     if (node) {
       node.setActionName(actionName);
@@ -70,10 +70,19 @@ export default function UpsertNodeForm({
       onChange(node);
     } else {
       const newNode = new UtteranceNode(nodeId, actionName, utterance);
-
       onChange(newNode);
     }
   };
+
+  const handleFormNode = async() => {
+    // if (node) {
+    //   node.setActionName(actionName)
+
+    // } else {
+      const newNode = new FormNode(nodeId, actionName, url, formFields);
+      onChange(newNode);
+    // }
+  }
 
   const handleEmailNode = async () => {
     if (!validateEmail(fromEmail) || !validateEmail(toEmail)) {
@@ -102,19 +111,26 @@ export default function UpsertNodeForm({
     setShowFormErrors(true);
 
     // Preliminary validation
-    if (!utterance || !actionName || !nodeId) {
+    if ( !actionName || !nodeId) {
       return;
     }
 
     if (nodeType === UtteranceNode.typename) {
+      if (!utterance) 
+        return;      
       handleUtteranceNode();
     } else if (nodeType === EmailNode.typename) {
+      if (!utterance)
+        return;
       handleEmailNode();
+    } else if (nodeType === FormNode.typename) {      
+      handleFormNode();
     }
   };
 
-  const addFormField = (fieldName: string, fieldType: string) => {
-    setFormFields([...formFields, { fieldName, fieldType }]);
+  const addFormField = (fieldName: string, fieldType: EFormFieldTypes) => {
+    console.log('field name ', fieldName, 'field type ', fieldType)
+    setFormFields([...formFields, { name: fieldName, type: fieldType }]);
   };
 
   const deleteField = (key: number) => {
@@ -122,8 +138,9 @@ export default function UpsertNodeForm({
     setFormFields(result);
   };
 
-  useEffect(handleChange, [fromEmail, toEmail, actionName, utterance]);
+  useEffect(handleChange, [fromEmail, toEmail, actionName, utterance, url, formFields]);
 
+  console.log('Form Fields *** ', formFields)
   return (
     <div>
       <FormControl className={classes.formControl} disabled={!!node}>
@@ -209,8 +226,8 @@ export default function UpsertNodeForm({
                     variant="outlined"
                     className={classes.formControl}>
                     <TextField
-                      name={item.fieldName}
-                      label={`${item.fieldName} [${item.fieldType}]`}
+                      name={item.name}
+                      label={`${item.name} [${item.type}]`}
                       variant="outlined"
                     />
                   </FormControl>
