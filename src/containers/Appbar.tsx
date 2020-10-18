@@ -6,7 +6,6 @@ import {
   Theme,
 } from '@material-ui/core';
 import AppBar, { AppBarProps } from '@material-ui/core/AppBar';
-import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -14,7 +13,7 @@ import firebase from 'firebase/app';
 import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { GET_CURRENT_USER, UPDATE_ACTIVE_ORG } from '../common-gql-queries';
-import { DropDown } from '../components';
+import { BasicButton, DropDown } from '../components';
 import { IUser } from '../models/user-service';
 
 interface CustomAppbarProps extends AppBarProps {
@@ -188,9 +187,11 @@ const CustomAppbar: React.FC<CustomAppbarProps> = ({
           <Projects user={user} updateActiveProject={updateActiveProject}/>
         </Box>
         <Box>
-          <Button variant="contained" onClick={onLogoutClick} color="primary">
-            Logout
-          </Button>
+          <BasicButton
+            title="Log out"
+            textTransform="none"
+            onClick={onLogoutClick}
+          />
         </Box>
       </Toolbar>
     </AppBar>
