@@ -13,7 +13,7 @@ import {
   import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
   import Add from '@material-ui/icons/Add';
   import React, { useState } from 'react';
-  
+
   const useStyles = makeStyles((theme: Theme) =>
     createStyles({
       niceform: {
@@ -38,30 +38,30 @@ import {
       },
     }),
   );
-  
+
   interface AddFormFieldProps {
     handleChange: (name: string, type: string) => void;
   }
-  
+
   export const AddFieldForm = ({ handleChange }: AddFormFieldProps) => {
     const classes = useStyles();
     const [fields, setFields] = useState<{text: string, type: string}>({
       text: '',
       type: EFormFieldTypes.EMAIL,
     });
-  
+
     const handleAdd = () => {
       console.log('Fields Value ', fields);
       handleChange(fields.text, fields.type);
-    };  
-  
+    };
+
     const handleFieldChange = (event: any) => {
       setFields({
         ...fields,
         [event.target.name]: event.target.value,
       });
     };
-  
+
     return (
       <div className={classes.niceform}>
         <Grid container={true} spacing={3}>
@@ -96,4 +96,3 @@ import {
       </div>
     );
   };
-  

@@ -1,22 +1,22 @@
 import {
   EmailNode,
+  FormNode,
   GraphPolicyNode,
   UtteranceNode,
-  FormNode,
 } from '@bavard/agent-config/dist/graph-policy';
 import {
   FormControl,
   FormControlLabel,
+  Grid,
+  IconButton,
   Radio,
   RadioGroup,
-  IconButton,
   TextField,
-  Grid,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 import React, { useEffect, useState } from 'react';
 import { validateEmail } from '../../../utils/string';
-import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 
 import RichTextInput from '../../Utils/RichTextInput';
 import { AddFieldForm } from '../GraphPolicy/AddActionField';
@@ -27,12 +27,12 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       marginBottom: theme.spacing(2),
     },
-  })
+  }),
 );
 
 interface IUpsertNodeFormProps {
   onChange: (
-    node: GraphPolicyNode | UtteranceNode | EmailNode | FormNode | undefined
+    node: GraphPolicyNode | UtteranceNode | EmailNode | FormNode | undefined,
   ) => void;
   nodeId: number;
   node?: GraphPolicyNode | UtteranceNode | EmailNode | FormNode;
@@ -47,13 +47,13 @@ export default function UpsertNodeForm({
   const [showFormErrors, setShowFormErrors] = useState(false);
   const [utterance, setUtterance] = useState(node?.toJsonObj().utterance || '');
   const [nodeType, setNodeType] = useState<string>(
-    node?.type || 'UtteranceNode'
+    node?.type || 'UtteranceNode',
   );
   const [fromEmail, setFromEmail] = useState(
-    node instanceof EmailNode ? node.from : ''
+    node instanceof EmailNode ? node.from : '',
   );
   const [toEmail, setToEmail] = useState(
-    node instanceof EmailNode ? node.to : ''
+    node instanceof EmailNode ? node.to : '',
   );
 
   const [formFields, setFormFields] = useState<object[]>([]);
@@ -92,7 +92,7 @@ export default function UpsertNodeForm({
         actionName,
         toEmail,
         fromEmail,
-        utterance
+        utterance,
       );
       onChange(newNode);
     }
