@@ -184,12 +184,14 @@ const CustomAppbar: React.FC<CustomAppbarProps> = ({
         <Box mr={1}>
           <Orgs user={user} updateActiveOrg={updateActiveOrg}/>
         </Box>
-        <Box>
+        <Box mr={2}>
           <Projects user={user} updateActiveProject={updateActiveProject}/>
         </Box>
-        <Button onClick={onLogoutClick} color="inherit">
-          Logout
-        </Button>
+        <Box>
+          <Button variant="contained" onClick={onLogoutClick} color="primary">
+            Logout
+          </Button>
+        </Box>
       </Toolbar>
     </AppBar>
   );
