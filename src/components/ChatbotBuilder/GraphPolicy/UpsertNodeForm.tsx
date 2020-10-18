@@ -18,9 +18,9 @@ import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 import React, { useEffect, useState } from 'react';
 import { validateEmail } from '../../../utils/string';
 
+import {EFormFieldTypes, IFormField} from '@bavard/agent-config/dist';
 import RichTextInput from '../../Utils/RichTextInput';
 import { AddFieldForm } from '../GraphPolicy/AddActionField';
-import {EFormFieldTypes, IFormField} from '@bavard/agent-config/dist'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -61,7 +61,7 @@ export default function UpsertNodeForm({
 
   const [url, setURL] = useState(node instanceof FormNode ? node.url : '');
   const [actionName, setActionName] = useState(node?.actionName || '');
-  
+
   console.log('Form node url ', node, 'URL : ', url);
   const handleUtteranceNode = async () => {
     if (node) {
@@ -82,7 +82,7 @@ export default function UpsertNodeForm({
       const newNode = new FormNode(nodeId, actionName, url, formFields);
       onChange(newNode);
     // }
-  }
+  };
 
   const handleEmailNode = async () => {
     if (!validateEmail(fromEmail) || !validateEmail(toEmail)) {
@@ -116,20 +116,22 @@ export default function UpsertNodeForm({
     }
 
     if (nodeType === UtteranceNode.typename) {
-      if (!utterance) 
-        return;      
+      if (!utterance) {
+        return;
+      }
       handleUtteranceNode();
     } else if (nodeType === EmailNode.typename) {
-      if (!utterance)
+      if (!utterance) {
         return;
+      }
       handleEmailNode();
-    } else if (nodeType === FormNode.typename) {      
+    } else if (nodeType === FormNode.typename) {
       handleFormNode();
     }
   };
 
   const addFormField = (fieldName: string, fieldType: EFormFieldTypes) => {
-    console.log('field name ', fieldName, 'field type ', fieldType)
+    console.log('field name ', fieldName, 'field type ', fieldType);
     setFormFields([...formFields, { name: fieldName, type: fieldType }]);
   };
 
@@ -140,7 +142,7 @@ export default function UpsertNodeForm({
 
   useEffect(handleChange, [fromEmail, toEmail, actionName, utterance, url, formFields]);
 
-  console.log('Form Fields *** ', formFields)
+  console.log('Form Fields *** ', formFields);
   return (
     <div>
       <FormControl className={classes.formControl} disabled={!!node}>
