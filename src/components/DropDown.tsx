@@ -67,11 +67,18 @@ const DropDown: React.FC<DropDownProps> = ({
         variant="outlined"
         value={currentItem}
         className={clsx(classes.selectInput)}
-        onChange={(e) => onChange(e.target.value as string)}
         classes={{
           icon: classes.icon,
           iconOutlined: classes.iconOutlined,
         }}
+        MenuProps={{
+          anchorOrigin: {
+            vertical: 'bottom',
+            horizontal: 'left',
+          },
+          getContentAnchorEl: null,
+        }}
+        onChange={(e) => onChange(e.target.value as string)}
       >
         {menuItems?.map((menu: any) => (
           <MenuItem key={menu.id} value={menu.id}>
