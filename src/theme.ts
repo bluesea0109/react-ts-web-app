@@ -1,4 +1,7 @@
-import { createMuiTheme, ThemeOptions } from '@material-ui/core/styles';
+import {
+  ThemeOptions,
+  unstable_createMuiStrictModeTheme as createMuiTheme,
+} from '@material-ui/core/styles';
 
 const baseTheme: ThemeOptions = {
   overrides: {
