@@ -1,6 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { Paper, TableContainer, Typography } from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { Typography, TableContainer } from '@material-ui/core';
 import 'firebase/auth';
 import _ from 'lodash';
 import MaterialTable, { Column } from 'material-table';
@@ -15,17 +14,6 @@ import { IAgent } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      margin: theme.spacing(3),
-    },
-    paper: {
-      padding: theme.spacing(2),
-    },
-  }),
-);
-
 interface IGetAgents {
   ChatbotService_agents: IAgent[] | undefined;
 }
@@ -36,8 +24,10 @@ interface AgentState {
 }
 
 function AgentsTable() {
-  const classes = useStyles();
-  const { projectId, orgId } = useParams<{projectId: string, orgId: string}>();
+  const { projectId, orgId } = useParams<{
+    projectId: string;
+    orgId: string;
+  }>();
 
   const agentsData = useQuery<IGetAgents>(CHATBOT_GET_AGENTS, {
     variables: { projectId },
@@ -51,7 +41,7 @@ function AgentsTable() {
     agentsData && agentsData.data && agentsData.data.ChatbotService_agents;
   const [state, setState] = React.useState<AgentState>({
     columns: [
-      { title: 'Agent id', field: 'id', editable: 'never' },
+      { title: 'ID', field: 'id', editable: 'never' },
       {
         title: 'Unique Name',
         field: 'uname',
@@ -99,37 +89,51 @@ function AgentsTable() {
   };
 
   return (
-    <Paper className={classes.paper}>
+    <React.Fragment>
       {state && state.data && state.data.length > 0 ? (
-        <TableContainer component={Paper} aria-label="Agents">
-          <MaterialTable
-            title="Agents Table"
-            columns={state.columns}
-            data={_.cloneDeep(state.data)}
-            options={{
-              actionsColumnIndex: -1,
-            }}
-            localization={{
-              body: {
-                editRow: {
-                  deleteText: 'Are you sure delete this Agent?',
-                },
+        <MaterialTable
+          components={{
+            Container: TableContainer,
+          }}
+          title="Assistants"
+          columns={state.columns.map((c) => {
+            return {
+              ...c,
+              cellStyle: {
+                borderColor: 'transparent',
               },
-            }}
-            editable={{
-              onRowDelete: async (oldData) => {
-                const dataId = oldData.id;
-                deleteAgentHandler(dataId);
+            };
+          })}
+          data={_.cloneDeep(state.data)}
+          options={{
+            actionsColumnIndex: -1,
+            headerStyle: {
+              backgroundColor: '#FFFFFF',
+            },
+            actionsCellStyle: {
+              borderColor: 'transparent',
+            },
+          }}
+          localization={{
+            body: {
+              editRow: {
+                deleteText: 'Are you sure you want to delete this assistant?',
               },
-            }}
-          />
-        </TableContainer>
+            },
+          }}
+          editable={{
+            onRowDelete: async (oldData) => {
+              const dataId = oldData.id;
+              deleteAgentHandler(dataId);
+            },
+          }}
+        />
       ) : (
         <Typography align="center" variant="h6">
           {'No Agents found'}
         </Typography>
       )}
-    </Paper>
+    </React.Fragment>
   );
 }
 
