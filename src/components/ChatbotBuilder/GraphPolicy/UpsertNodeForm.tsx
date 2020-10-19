@@ -57,12 +57,13 @@ export default function UpsertNodeForm({
     node instanceof EmailNode ? node.to : '',
   );
 
-  const [formFields, setFormFields] = useState<IFormField[]>([]);
+  const [formFields, setFormFields] = useState<IFormField[]>(node instanceof FormNode ? node.fields : []);
 
   const [url, setURL] = useState(node instanceof FormNode ? node.url : '');
   const [actionName, setActionName] = useState(node?.actionName || '');
 
   console.log('Form node url ', node, 'URL : ', url);
+    
   const handleUtteranceNode = async () => {
     if (node) {
       node.setActionName(actionName);
@@ -74,14 +75,9 @@ export default function UpsertNodeForm({
     }
   };
 
-  const handleFormNode = async() => {
-    // if (node) {
-    //   node.setActionName(actionName)
-
-    // } else {
-      const newNode = new FormNode(nodeId, actionName, url, formFields);
-      onChange(newNode);
-    // }
+  const handleFormNode = async() => {    
+    const newNode = new FormNode(nodeId, actionName, url, formFields);
+    onChange(newNode);    
   };
 
   const handleEmailNode = async () => {
@@ -128,10 +124,9 @@ export default function UpsertNodeForm({
     } else if (nodeType === FormNode.typename) {
       handleFormNode();
     }
-  };
+  };  
 
-  const addFormField = (fieldName: string, fieldType: EFormFieldTypes) => {
-    console.log('field name ', fieldName, 'field type ', fieldType);
+  const addFormField = (fieldName: string, fieldType: EFormFieldTypes) => {    
     setFormFields([...formFields, { name: fieldName, type: fieldType }]);
   };
 
@@ -218,7 +213,7 @@ export default function UpsertNodeForm({
               variant="outlined"
               onChange={(e) => setURL(e.target.value as string)}
             />
-          </FormControl>
+          </FormControl>          
 
           {formFields &&
             formFields.map((item: any, key: number) => (
@@ -234,11 +229,11 @@ export default function UpsertNodeForm({
                     />
                   </FormControl>
                 </Grid>
-                <Grid xs={1}>
+                {!node && <Grid xs={1}>
                   <IconButton onClick={() => deleteField(key)}>
                     <CancelOutlinedIcon />
                   </IconButton>
-                </Grid>
+                </Grid>}
               </Grid>
             ))}
           <AddFieldForm handleChange={addFormField} />
