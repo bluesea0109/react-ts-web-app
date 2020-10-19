@@ -416,7 +416,7 @@ function CustomDrawer(props: CustomDrawerProps) {
                 <SubMenuIcon title="Project" active={false} />
               </ListItemIcon>
               <ListItemText
-                primary="Live Conversation"
+                primary="Live Conversations"
                 style={
                   location.pathname.includes('projects') &&
                   location.pathname.includes('live-conversations')
@@ -438,7 +438,7 @@ function CustomDrawer(props: CustomDrawerProps) {
                 <SubMenuIcon title="Project" active={false} />
               </ListItemIcon>
               <ListItemText
-                primary="Training Conversation"
+                primary="Training Conversations"
                 style={
                   location.pathname.includes('projects') &&
                   location.pathname.includes('training-conversations')
