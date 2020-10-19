@@ -7,7 +7,6 @@ import {
   createStyles,
   LinearProgress,
   makeStyles,
-  TextField,
   Theme,
   Typography,
 } from '@material-ui/core';
@@ -19,15 +18,13 @@ import {
   CHATBOT_CREATE_AGENT,
   CHATBOT_GET_AGENTS,
 } from '../../../common-gql-queries';
+import { TextInput } from '../../../components';
 import { IUser } from '../../../models/user-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import UploadDataDialog from '../UploadData/UploadDataDialog';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    inputBox: {
-      margin: theme.spacing(1),
-    },
     button: {
       margin: theme.spacing(1),
     },
@@ -86,14 +83,12 @@ const NewAgent: React.FC<INewAgentProps> = ({ user }) => {
       />
       <CardContent>
         {loading && <LinearProgress />}
-        <TextField
+        <TextInput
           id="name"
           label="Agent Unique Name"
-          type="text"
           value={uname}
           variant="outlined"
-          onChange={(e: any) => setUname(e.target.value as string)}
-          className={clsx(classes.inputBox)}
+          onChange={(name) => setUname(name)}
         />
         <br />
       </CardContent>
