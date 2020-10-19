@@ -179,9 +179,10 @@ export default function EditNodeForm({
     if (!node) {
       return;
     }
+    
     if (
       !updatedNodeData?.actionName ||
-      !updatedNodeData?.toJsonObj().utterance
+      (updatedNodeData.type !== "FormNode" && !updatedNodeData?.toJsonObj().utterance)
     ) {
       return enqueueSnackbar('Node data is invalid');
     }

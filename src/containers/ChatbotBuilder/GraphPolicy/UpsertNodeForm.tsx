@@ -229,11 +229,11 @@ export default function UpsertNodeForm({
                     />
                   </FormControl>
                 </Grid>
-                {!node && <Grid xs={1}>
+                <Grid xs={1}>
                   <IconButton onClick={() => deleteField(key)}>
                     <CancelOutlinedIcon />
                   </IconButton>
-                </Grid>}
+                </Grid>
               </Grid>
             ))}
           <AddFieldForm handleChange={addFormField} />
