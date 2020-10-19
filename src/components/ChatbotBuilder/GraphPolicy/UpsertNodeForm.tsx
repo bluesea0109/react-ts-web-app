@@ -63,7 +63,7 @@ export default function UpsertNodeForm({
   const [actionName, setActionName] = useState(node?.actionName || '');
 
   console.log('Form node url ', node, 'URL : ', url);
-    
+
   const handleUtteranceNode = async () => {
     if (node) {
       node.setActionName(actionName);
@@ -75,9 +75,9 @@ export default function UpsertNodeForm({
     }
   };
 
-  const handleFormNode = async() => {    
+  const handleFormNode = async() => {
     const newNode = new FormNode(nodeId, actionName, url, formFields);
-    onChange(newNode);    
+    onChange(newNode);
   };
 
   const handleEmailNode = async () => {
@@ -124,9 +124,9 @@ export default function UpsertNodeForm({
     } else if (nodeType === FormNode.typename) {
       handleFormNode();
     }
-  };  
+  };
 
-  const addFormField = (fieldName: string, fieldType: EFormFieldTypes) => {    
+  const addFormField = (fieldName: string, fieldType: EFormFieldTypes) => {
     setFormFields([...formFields, { name: fieldName, type: fieldType }]);
   };
 
@@ -213,7 +213,7 @@ export default function UpsertNodeForm({
               variant="outlined"
               onChange={(e) => setURL(e.target.value as string)}
             />
-          </FormControl>          
+          </FormControl>
 
           {formFields &&
             formFields.map((item: any, key: number) => (
