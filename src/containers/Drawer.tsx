@@ -416,10 +416,32 @@ function CustomDrawer(props: CustomDrawerProps) {
                 <SubMenuIcon title="Project" active={false} />
               </ListItemIcon>
               <ListItemText
-                primary="Training Conversation"
+                primary="Live Conversation"
                 style={
                   location.pathname.includes('projects') &&
                   location.pathname.includes('live-conversations')
+                    ? selectedStyle
+                    : {}
+                }
+              />
+            </ListItem>
+            <ListItem
+              component={Link}
+              to={createAgentPath('training-conversations')}
+              selected={
+                location.pathname.includes('projects') &&
+                location.pathname.includes('training-conversations')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Project" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Training Conversation"
+                style={
+                  location.pathname.includes('projects') &&
+                  location.pathname.includes('training-conversations')
                     ? selectedStyle
                     : {}
                 }
