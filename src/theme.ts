@@ -1,21 +1,10 @@
-import { createMuiTheme, ThemeOptions } from '@material-ui/core/styles';
+import {
+  ThemeOptions,
+  unstable_createMuiStrictModeTheme as createMuiTheme,
+} from '@material-ui/core/styles';
 
 const baseTheme: ThemeOptions = {
   overrides: {
-    // Name of the component ⚛️ / style sheet
-    // MuiButton: {
-    //   // Name of the rule
-    //   text: {
-    //     // Some CSS
-    //     background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',// '#40c4ff',//'linear-gradient(45deg, #00b0ff 30%, #00c853 90%)',
-    //     background: 'linear-gradient(45deg, #00e676 30%, #00c853 90%)',// '#40c4ff',//'linear-gradient(45deg, #00b0ff 30%, #00c853 90%)',
-    //     //borderRadius: 0,
-    //     // border: 0,
-    //     color: 'black',
-    //     // padding: '0 30px',
-    //     //boxShadow: 'none',
-    //   },
-    // },
     MuiList: {
       padding: {
         paddingTop: 0,

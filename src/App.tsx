@@ -8,23 +8,27 @@ import React, { useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import './App.css';
 import { GET_CURRENT_USER } from './common-gql-queries';
-import AppBar from './components/Appbar';
-import ChatbotBuilder from './components/ChatbotBuilder';
-import ContentLoading from './components/ContentLoading';
-import Dashboard from './components/Dashboard';
-import AcceptInvite from './components/Dashboard/Invites/AcceptInvite';
-import OrganizationSettings from './components/Dashboard/OrganizationSettings';
-import ProjectSettings from './components/Dashboard/ProjectSettings';
-import CustomDrawer from './components/Drawer';
-import FAQService from './components/FAQService';
-import ImageLabeling from './components/ImageLabeling';
-import InternalServerErrorPage from './components/InternalServerErrorpage';
-import MySidebar from './components/Sidebar';
-import TextLabeling from './components/TextLabeling';
+import AppBar from './containers/Appbar';
+import ChatbotBuilder from './containers/ChatbotBuilder';
+import ContentLoading from './containers/ContentLoading';
+import Dashboard from './containers/Dashboard';
+import AcceptInvite from './containers/Dashboard/Invites/AcceptInvite';
+import OrganizationSettings from './containers/Dashboard/OrganizationSettings';
+import ProjectSettings from './containers/Dashboard/ProjectSettings';
+import CustomDrawer from './containers/Drawer';
+import FAQService from './containers/FAQService';
+import ImageLabeling from './containers/ImageLabeling';
+import InternalServerErrorPage from './containers/InternalServerErrorpage';
+import MySidebar from './containers/Sidebar';
+import TextLabeling from './containers/TextLabeling';
 import { IUser } from './models/user-service';
 import { MenuName } from './utils/enums';
 
 const drawerWidth = 270;
+
+interface IGetCurrentUser {
+  currentUser: IUser;
+}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -117,14 +121,17 @@ function App() {
   const classes = useStyles();
   const [navKey, setNavKey] = useState(MenuName.NONE);
   const [agentId, setAgentId] = useState({ agentId: 0 });
-  interface IGetCurrentUser {
-    currentUser: IUser;
-  }
-  const { loading, error, data } = useQuery<IGetCurrentUser>(GET_CURRENT_USER);
+  const [loadingAppBar, setLoadingAppBar] = useState(false);
+
+  const { loading: loadingUser, error, data } = useQuery<IGetCurrentUser>(GET_CURRENT_USER);
 
   const [state, setState] = React.useState({
     drawerOpen: false,
   });
+
+  const handleChangeLoadingStatus = (loading: boolean) => {
+    setLoadingAppBar(loading);
+  };
 
   const onMenuClick = (key: MenuName) => {
     setState({ ...state, drawerOpen: true });
@@ -139,7 +146,7 @@ function App() {
     setState({ ...state, drawerOpen: false });
   };
 
-  if (loading) {
+  if (loadingUser) {
     return <ContentLoading />;
   }
 
@@ -150,7 +157,7 @@ function App() {
 
   assert.notEqual(data, null);
 
-  return !data && loading ? (
+  return !data && loadingUser ? (
     <ContentLoading />
   ) : (
     <div className={classes.root}>
@@ -160,6 +167,7 @@ function App() {
         className={clsx(classes.appBar, {
           [classes.appBarShift]: state.drawerOpen,
         })}
+        handleChangeLoadingStatus={handleChangeLoadingStatus}
       />
       <MySidebar
         user={data.currentUser}
@@ -191,54 +199,58 @@ function App() {
         />
       </Drawer>
 
-      <main
-        className={clsx(classes.content, {
-          [classes.contentShift]: state.drawerOpen,
-        })}>
-        <div className={classes.drawerHeader} />
-        <Switch>
-          <Route exact={true} path="/">
-            <Dashboard user={data.currentUser} />
-          </Route>
-          <Route exact={true} path="/invites/:inviteId">
-            <AcceptInvite />
-          </Route>
-          <Route exact={true} path="/orgs/:orgId/settings">
-            <OrganizationSettings user={data.currentUser} />
-          </Route>
-          <Route exact={true} path="/orgs/:orgId/projects/:projectId/settings">
-            <ProjectSettings />
-          </Route>
-          <Route path="/orgs/:orgId/projects/:projectId/qa">
-            <FAQService />
-          </Route>
-          <Route path="/orgs/:orgId/projects/:projectId/text-labeling">
-            <TextLabeling />
-          </Route>
-          {/* <Route path="/orgs/:orgId/projects/:projectId/text-summarization">
-            <TextSummarization />
-            </Route> */}
-          <Route path="/orgs/:orgId/projects/:projectId/image-labeling">
-            <ImageLabeling />
-          </Route>
-          <Route path="/orgs/:orgId/projects/:projectId/chatbot-builder">
-            <ChatbotBuilder user={data.currentUser} />
-          </Route>
-          <Route path="/orgs/:orgId/projects/:projectId/text-labeling" />
-          <Route exact={true} path="/no-project">
-            <div className={classes.container}>
-              <Typography>
-                {'No project is active. Please create or activate one.'}
-              </Typography>
-            </div>
-          </Route>
-          <Route exact={true} path="/no-orgs">
-            <div className={classes.container}>
-              <Typography>{'No Organization found.'}</Typography>
-            </div>
-          </Route>
-        </Switch>
-      </main>
+      {loadingAppBar ? (
+        <ContentLoading />
+      ) : (
+        <main
+          className={clsx(classes.content, {
+            [classes.contentShift]: state.drawerOpen,
+          })}>
+          <div className={classes.drawerHeader} />
+          <Switch>
+            <Route exact={true} path="/">
+              <Dashboard user={data.currentUser} />
+            </Route>
+            <Route exact={true} path="/invites/:inviteId">
+              <AcceptInvite />
+            </Route>
+            <Route exact={true} path="/orgs/:orgId/settings">
+              <OrganizationSettings user={data.currentUser} />
+            </Route>
+            <Route exact={true} path="/orgs/:orgId/projects/:projectId/settings">
+              <ProjectSettings />
+            </Route>
+            <Route path="/orgs/:orgId/projects/:projectId/qa">
+              <FAQService />
+            </Route>
+            <Route path="/orgs/:orgId/projects/:projectId/text-labeling">
+              <TextLabeling />
+            </Route>
+            {/* <Route path="/orgs/:orgId/projects/:projectId/text-summarization">
+              <TextSummarization />
+              </Route> */}
+            <Route path="/orgs/:orgId/projects/:projectId/image-labeling">
+              <ImageLabeling />
+            </Route>
+            <Route path="/orgs/:orgId/projects/:projectId/chatbot-builder">
+              <ChatbotBuilder user={data.currentUser} />
+            </Route>
+            <Route path="/orgs/:orgId/projects/:projectId/text-labeling" />
+            <Route exact={true} path="/no-project">
+              <div className={classes.container}>
+                <Typography>
+                  {'No project is active. Please create or activate one.'}
+                </Typography>
+              </div>
+            </Route>
+            <Route exact={true} path="/no-orgs">
+              <div className={classes.container}>
+                <Typography>{'No Organization found.'}</Typography>
+              </div>
+            </Route>
+          </Switch>
+        </main>
+      )}
     </div>
   );
 }

@@ -1,28 +1,24 @@
 import { useMutation } from '@apollo/client';
 import {
-  CircularProgress,
+  Box,
   createStyles,
-  FormControl,
-  InputLabel,
   TextField,
   Theme,
 } from '@material-ui/core';
 import AppBar, { AppBarProps } from '@material-ui/core/AppBar';
-import Button from '@material-ui/core/Button';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
 import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import clsx from 'clsx';
 import firebase from 'firebase/app';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { GET_CURRENT_USER, UPDATE_ACTIVE_ORG } from '../common-gql-queries';
+import { BasicButton, DropDown } from '../components';
 import { IUser } from '../models/user-service';
 
 interface CustomAppbarProps extends AppBarProps {
   user: IUser;
+  handleChangeLoadingStatus: (loading: boolean) => void;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -65,17 +61,16 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const Orgs: React.FC<{ user: IUser }> = ({ user }) => {
-  const classes = useStyles();
-  const history = useHistory();
+interface OrgsProps {
+  user: IUser;
+  updateActiveOrg: (org: any) => void;
+}
 
-  const [updateActiveOrg, { loading }] = useMutation(UPDATE_ACTIVE_ORG, {
-    refetchQueries: [{ query: GET_CURRENT_USER }],
-    awaitRefetchQueries: true,
-    onCompleted: () => {
-      history.push('/'); // back to dashboard. TODO: keep the user on their current tab.
-    },
-  });
+const Orgs: React.FC<OrgsProps> = ({
+  user,
+  updateActiveOrg,
+}) => {
+  const classes = useStyles();
 
   const setActiveOrg = (orgId: string) => {
     const org = user.orgs?.find((org) => org.id === orgId);
@@ -89,32 +84,14 @@ const Orgs: React.FC<{ user: IUser }> = ({ user }) => {
     });
   };
 
-  if (loading) { return <CircularProgress color="secondary" />; }
   const orgs = user.orgs ?? [];
   return orgs?.length !== 0 ? (
-    <FormControl>
-      <InputLabel className={clsx(classes.selectLabel)} id="select-active-org">
-        Org
-      </InputLabel>
-      <Select
-        labelId="select-active-org"
-        value={user.activeOrg?.id ?? ''}
-        onChange={(e) => setActiveOrg(e.target.value as string)}
-        className={clsx([classes.selectInput, classes.menuButton])}
-        inputProps={{
-          classes: {
-            root: classes.border,
-            icon: classes.icon,
-          },
-        }}
-      >
-        {orgs?.map((org: any) => (
-          <MenuItem key={org.id} value={org.id}>
-            {org.name}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+    <DropDown
+      label="Organization:"
+      current={user.activeOrg?.id}
+      menuItems={orgs}
+      onChange={(name) => setActiveOrg(name)}
+    />
   ) : (
     <TextField
       className={classes.noProject}
@@ -128,19 +105,17 @@ const Orgs: React.FC<{ user: IUser }> = ({ user }) => {
   );
 };
 
-const Projects: React.FC<{ user: IUser }> = ({ user }) => {
+interface ProjectsProps {
+  user: IUser;
+  updateActiveProject: (project: any) => void;
+}
+const Projects: React.FC<ProjectsProps> = ({
+  user,
+  updateActiveProject,
+}) => {
   const projects = user?.activeOrg?.projects || [];
   const projectId = user.activeProject?.id ?? '';
   const classes = useStyles();
-  const history = useHistory();
-
-  const [updateActiveProject, { loading }] = useMutation(UPDATE_ACTIVE_ORG, {
-    refetchQueries: [{ query: GET_CURRENT_USER }],
-    awaitRefetchQueries: true,
-    onCompleted: () => {
-      history.push('/');
-    },
-  });
 
   const setActiveProject = (projectId: string) => {
     updateActiveProject({
@@ -148,35 +123,13 @@ const Projects: React.FC<{ user: IUser }> = ({ user }) => {
     });
   };
 
-  if (loading) { return <CircularProgress color="secondary" />; }
-
   return projects?.length !== 0 ? (
-    <FormControl className={clsx(classes.menuButton)}>
-      <InputLabel
-        className={clsx(classes.selectLabel)}
-        id="select-active-project"
-      >
-        {'Project'}
-      </InputLabel>
-      <Select
-        labelId="select-active-project"
-        value={projectId}
-        onChange={(e) => setActiveProject(e.target.value as string)}
-        className={clsx(classes.selectInput)}
-        inputProps={{
-          classes: {
-            root: classes.border,
-            icon: classes.icon,
-          },
-        }}
-      >
-        {projects.map((project) => (
-          <MenuItem key={project.id} value={project.id}>
-            {project.name}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+    <DropDown
+      label="Project:"
+      current={projectId}
+      menuItems={projects}
+      onChange={(name) => setActiveProject(name)}
+    />
   ) : (
     <TextField
       className={classes.noProject}
@@ -194,24 +147,52 @@ const CustomAppbar: React.FC<CustomAppbarProps> = ({
   user,
   position,
   className,
+  handleChangeLoadingStatus,
 }) => {
   const classes = useStyles();
+  const history = useHistory();
 
   const onLogoutClick = () => {
     firebase.auth().signOut();
   };
 
+  const [updateActiveOrg, { loading: loadingOrganization }] = useMutation(UPDATE_ACTIVE_ORG, {
+    refetchQueries: [{ query: GET_CURRENT_USER }],
+    awaitRefetchQueries: true,
+    onCompleted: () => {
+      history.push('/'); // back to dashboard. TODO: keep the user on their current tab.
+    },
+  });
+
+  const [updateActiveProject, { loading: loadingProject }] = useMutation(UPDATE_ACTIVE_ORG, {
+    refetchQueries: [{ query: GET_CURRENT_USER }],
+    awaitRefetchQueries: true,
+    onCompleted: () => {
+      history.push('/');
+    },
+  });
+
+  useEffect(() => {
+    handleChangeLoadingStatus(loadingOrganization || loadingProject);
+  }, [loadingOrganization, loadingProject, handleChangeLoadingStatus]);
+
   return (
     <AppBar position={position} className={className}>
       <Toolbar>
-        <Typography variant="h6" className={classes.title}>
-          {''}
-        </Typography>
-        <Orgs user={user} />
-        <Projects user={user} />
-        <Button onClick={onLogoutClick} color="inherit">
-          Logout
-        </Button>
+        <Typography variant="h6" className={classes.title}/>
+        <Box mr={1}>
+          <Orgs user={user} updateActiveOrg={updateActiveOrg}/>
+        </Box>
+        <Box mr={2}>
+          <Projects user={user} updateActiveProject={updateActiveProject}/>
+        </Box>
+        <Box>
+          <BasicButton
+            title="Log out"
+            textTransform="none"
+            onClick={onLogoutClick}
+          />
+        </Box>
       </Toolbar>
     </AppBar>
   );

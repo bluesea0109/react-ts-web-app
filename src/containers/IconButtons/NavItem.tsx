@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import React, { useMemo } from 'react';
+import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { Animated } from 'react-animated-css';
@@ -22,14 +22,12 @@ const StyledNavItem = styled.div`
   text-align: center; /* Aligns <a> inside of NavIcon div */
   margin: 0px; /* Puts space between NavItems */
   margin-right: 25px;
-  a {
-    font-size: 2.7em;
-    color: ${(props: { active: boolean }) =>
-      props.active ? 'white' : '#9FFFCB'};
-    :hover {
-      opacity: 0.7;
-      text-decoration: none; /* Gets rid of underlining of icons */
-    }
+
+  font-size: 2.7em;
+  color: ${(props: { active: boolean }) => props.active ? 'white' : '#9FFFCB'};
+  &:hover {
+    opacity: 0.7;
+    text-decoration: none; /* Gets rid of underlining of icons */
   }
 `;
 
@@ -46,43 +44,38 @@ const NavItem = ({ active, path, onClick, name, hidden}: NavItemProps) => {
     onClick(name);
   };
 
-  let Icon = null;
-
-  switch (name) {
-    case MenuName.DASHBOARD:
-      Icon = <Dashboard active={active} />;
-      break;
-    case MenuName.FAQ:
-      Icon = <FAQ active={active} />;
-      break;
-    case MenuName.IMAGE_LABELING:
-      Icon = <ImageLabeling active={active} />;
-      break;
-    case MenuName.TEXT_LABELING:
-      Icon = <TextLabeling active={active} />;
-      break;
-    case MenuName.CREATE_BOT:
-      Icon = <BotBuilder active={active} />;
-      break;
-    case MenuName.OPEN_CONFIG:
-      Icon = <Configuration active={active} />;
-      break;
-    case MenuName.OPEN_TRAINING:
-      Icon = <Training active={active} />;
-      break;
-    case MenuName.OPEN_LAUNCHING:
-      Icon = <Launching active={active} />;
-      break;
-    default:
-      Icon = null;
-      break;
-  }
+  const Icon = useMemo(() => {
+    switch (name) {
+      case MenuName.DASHBOARD:
+        return <Dashboard active={active} />;
+      case MenuName.FAQ:
+        return <FAQ active={active} />;
+      case MenuName.IMAGE_LABELING:
+        return <ImageLabeling active={active} />;
+      case MenuName.TEXT_LABELING:
+        return <TextLabeling active={active} />;
+      case MenuName.CREATE_BOT:
+        return <BotBuilder active={active} />;
+      case MenuName.OPEN_CONFIG:
+        return <Configuration active={active} />;
+      case MenuName.OPEN_TRAINING:
+        return <Training active={active} />;
+      case MenuName.OPEN_LAUNCHING:
+        return <Launching active={active} />;
+      default:
+        return null;
+    }
+  }, [name, active]);
 
   const isOpenMenu = [MenuName.OPEN_CONFIG, MenuName.OPEN_TRAINING, MenuName.OPEN_LAUNCHING].find(menuName => name === menuName);
 
   return (
     <div>
-      <NavLink to={path} activeStyle={{backgroundColor: 'red'}}>
+      <NavLink
+        to={path}
+        activeStyle={{backgroundColor: 'red'}}
+        onClick={handleClick}
+      >
         <Animated
           animationIn="fadeIn"
           animationOut="fadeOut"
@@ -91,10 +84,9 @@ const NavItem = ({ active, path, onClick, name, hidden}: NavItemProps) => {
           <StyledNavItem
             active={active}
             className={active ? 'active' : ''}
-            style={isOpenMenu ? { backgroundColor: '#cccccc33' } : {}}>
-            <Link to={path} onClick={handleClick}>
-              {Icon}
-            </Link>
+            style={isOpenMenu ? { backgroundColor: '#cccccc33' } : {}}
+          >
+            {Icon}
           </StyledNavItem>
         </Animated>
       </NavLink>

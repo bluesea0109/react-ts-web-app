@@ -31,13 +31,13 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function AgentModelTable() {
   const classes = useStyles();
-  let { agentId } = useParams();
-  agentId = parseInt(agentId, 10);
+  const { agentId } = useParams<{ agentId: string }>();
+  const numAgentId = parseInt(agentId, 10);
 
   interface IGetAgentModel {
     ChatbotService_agentModelInfo: IAgentModelInfo | null;
   }
-  const getModel = useQuery<IGetAgentModel>(GET_AGENT_MODEL_INFO, { variables: { agentId } });
+  const getModel = useQuery<IGetAgentModel>(GET_AGENT_MODEL_INFO, { variables: { agentId: numAgentId } });
 
   if (getModel.error) {
     return <ApolloErrorPage error={getModel.error} />;
@@ -62,16 +62,17 @@ export default function AgentModelTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {agentModel ? (
-              <TableRow>
+          {agentModel && (
+            <TableRow>
               <TableCell align="left">{agentModel.name}</TableCell>
               <TableCell align="left">{agentModel.status}</TableCell>
             </TableRow>
-          ) : (
-            <Typography>{'No model has been deployed yet for this agent.'}</Typography>
           )}
         </TableBody>
       </Table>
+      {!agentModel && (
+        <Typography align="center">{'No model has been deployed yet for this agent.'}</Typography>
+      )}
     </Paper>
   );
 }
