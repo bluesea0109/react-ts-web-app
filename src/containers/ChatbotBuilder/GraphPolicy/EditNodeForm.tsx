@@ -1,5 +1,6 @@
 import {
   EmailNode,
+  FormNode,
   GraphPolicy,
   GraphPolicyNode,
   IHyperlinkOption,
@@ -86,7 +87,7 @@ export default function EditNodeForm({
   const [graphPolicy, setPolicy] = useState<GraphPolicy>(policy);
   const node = graphPolicy.getNodeById(nodeId);
   const [updatedNodeData, setUpdatedNodeData] = useState<
-    GraphPolicyNode | UtteranceNode | EmailNode | undefined
+    GraphPolicyNode | UtteranceNode | EmailNode | FormNode | undefined
   >(node);
   const [upsertingEdge, setUpsertingEdge] = useState(false);
   const [upsertingNodeOption, setUpsertingNodeOption] = useState(false);
@@ -178,9 +179,10 @@ export default function EditNodeForm({
     if (!node) {
       return;
     }
+
     if (
       !updatedNodeData?.actionName ||
-      !updatedNodeData?.toJsonObj().utterance
+      (updatedNodeData.type !== 'FormNode' && !updatedNodeData?.toJsonObj().utterance)
     ) {
       return enqueueSnackbar('Node data is invalid');
     }
