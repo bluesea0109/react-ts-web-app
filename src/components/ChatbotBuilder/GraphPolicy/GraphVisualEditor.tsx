@@ -71,7 +71,7 @@ const styles = (theme: Theme) => ({
   root: {
     width: '100%',
     display: 'flex',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
   },
   graphRow: {
     display: 'flex',
@@ -456,8 +456,8 @@ class GraphPolicyVisualEditor extends React.Component<
   renderNewPolicy() {
     return (
       <Grid container={true}>
-        <Grid item={true} lg={6} sm={12}>
-          <CreatePolicyForm onSuccess={this.handleNewPolicy} />
+        <Grid item={true} lg={6} sm={12} style={{position: 'relative', margin: 'auto', top: '200px'}}>
+          <CreatePolicyForm onSuccess={this.handleNewPolicy}/>
         </Grid>
       </Grid>
     );

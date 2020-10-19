@@ -5,6 +5,7 @@ import {
   ConfirmEdge,
   EmailNode,
   EmptyEdge,
+  FormNode,
   GraphEdgeType,
   GraphPolicy,
   GraphPolicyNode,
@@ -182,8 +183,9 @@ export default function UpsertEdgeForm({
   };
 
   const handleNewNode = (
-    node: GraphPolicyNode | UtteranceNode | EmailNode | undefined,
+    node: GraphPolicyNode | UtteranceNode | EmailNode | FormNode | undefined,
   ) => {
+    console.log('On change *********** ', node);
     setNewNode(node);
   };
 
@@ -315,7 +317,7 @@ export default function UpsertEdgeForm({
 
     // Check if the edge node already exists
     let edgeNode = policy.getNodeById(selectedNodeId);
-
+    console.log('Edge Node : ', edgeNode, ', NewNode : ', newNode);
     // If not instantiate a new one
     if (!edgeNode && !nodeExists && newNode) {
       edgeNode = newNode;

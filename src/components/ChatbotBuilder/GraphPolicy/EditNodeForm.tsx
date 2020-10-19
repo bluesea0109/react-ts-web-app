@@ -1,5 +1,6 @@
 import {
   EmailNode,
+  FormNode,
   GraphPolicy,
   GraphPolicyNode,
   IHyperlinkOption,
@@ -86,7 +87,7 @@ export default function EditNodeForm({
   const [graphPolicy, setPolicy] = useState<GraphPolicy>(policy);
   const node = graphPolicy.getNodeById(nodeId);
   const [updatedNodeData, setUpdatedNodeData] = useState<
-    GraphPolicyNode | UtteranceNode | EmailNode | undefined
+    GraphPolicyNode | UtteranceNode | EmailNode | FormNode | undefined
   >(node);
   const [upsertingEdge, setUpsertingEdge] = useState(false);
   const [upsertingNodeOption, setUpsertingNodeOption] = useState(false);
