@@ -1,15 +1,38 @@
 import { BaseAgentAction, IIntent } from '@bavard/agent-config';
+import { Button, Paper, TableContainer, Typography } from '@material-ui/core';
 import {
-  Button,
-  Paper,
-  TableContainer, Typography,
-} from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+  createStyles,
+  withStyles,
+  makeStyles,
+  Theme,
+} from '@material-ui/core/styles';
 import { Edit } from '@material-ui/icons';
 import 'firebase/auth';
 import _ from 'lodash';
-import MaterialTable, { Column } from 'material-table';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import React from 'react';
+
+const StyledTableCell = withStyles((theme) => ({
+  head: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  body: {
+    fontSize: 14,
+  },
+}))(TableCell);
+
+const StyledTableRow = withStyles((theme) => ({
+  root: {
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.action.hover,
+    },
+  },
+}))(TableRow);
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -17,9 +40,13 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: theme.spacing(3),
     },
     paper: {
-      padding: theme.spacing(2),
+      padding: theme.spacing(4),
+      backgroundColor: "white"
     },
-  }),
+    table: {
+      minWidth: '700px',
+    },
+  })
 );
 
 interface IntentsTableProps {
@@ -38,30 +65,38 @@ function IntentsTable({
   onDeleteIntent,
 }: IntentsTableProps) {
   const classes = useStyles();
-  const columns: Column<IIntent>[] = [
-    {
-      title: 'Name',
-      field: 'name',
-      editable: 'never',
-    },
-    {
-      title: 'Default Action',
-      render: rowData => rowData.defaultActionName ??
-        <Typography style={{ color: '#808080' }}>N/A</Typography>,
-      editable: 'never',
-    },
-  ];
+  // const columns: Column<IIntent>[] = [
+  //   {
+  //     title: 'Name',
+  //     field: 'name',
+  //     editable: 'never',
+  //     cellStyle: {
+  //       backgroundColor: 'white',
+  //     },
+  //     headerStyle: {
+  //       backgroundColor: 'white',
+  //     }
+  //   },
+  //   {
+  //     title: 'Default Action',
+  //     render: rowData => rowData.defaultActionName ??
+  //       <Typography style={{ color: '#808080' }}>N/A</Typography>,
+  //     editable: 'never',
+  //   },
+  // ];
 
   const deleteIntentHandler = (intent: IIntent) => {
     onDeleteIntent(intent);
   };
 
+  console.log('itents :  ', intents);
+
   return (
     <Paper className={classes.paper}>
       <TableContainer component={Paper} aria-label="Agents">
-        <MaterialTable
+        {/* <MaterialTable
           title={
-            <Button variant="contained" color="primary" onClick={onAdd}>Add New Intent</Button>
+            <h5>Intents</h5>            
           }
           columns={columns}
           data={_.cloneDeep(intents)}
@@ -69,6 +104,15 @@ function IntentsTable({
             actionsColumnIndex: -1,
             paging: true,
             pageSize: 10,
+            headerStyle: {
+              backgroundColor: 'white',              
+            },
+            rowStyle: {
+              backgroundColor: 'white',              
+            },
+            searchFieldStyle: {
+              backgroundColor: 'white'
+            }
           }}
           localization={{
             body: {
@@ -90,7 +134,29 @@ function IntentsTable({
           editable={{
             onRowDelete: async (intent) => deleteIntentHandler(intent),
           }}
-        />
+        /> */}
+        <Table className={classes.table} aria-label="customized table">
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>Name</StyledTableCell>
+              <StyledTableCell align="left">Default Action</StyledTableCell>           
+              <StyledTableCell align="left">Action</StyledTableCell>   
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {_.cloneDeep(intents).map((row) => (
+              <StyledTableRow key={row.name}>
+                <StyledTableCell component="th" scope="row">
+                  {row.name}
+                </StyledTableCell>
+                <StyledTableCell align="left">{row.defaultActionName??<Typography style={{ color: '#808080' }}>N/A</Typography>}</StyledTableCell>                
+                <StyledTableCell component="th" scope="row">
+                  {row.name}
+                </StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
       </TableContainer>
     </Paper>
   );
