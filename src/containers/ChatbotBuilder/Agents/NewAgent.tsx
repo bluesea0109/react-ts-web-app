@@ -1,8 +1,8 @@
 import { useMutation } from '@apollo/client';
 import {
   Button,
-  Grid,
   createStyles,
+  Grid,
   LinearProgress,
   makeStyles,
   TextField,
@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: theme.spacing(1),
       width: '100%',
     },
-  })
+  }),
 );
 
 interface INewAgentProps {

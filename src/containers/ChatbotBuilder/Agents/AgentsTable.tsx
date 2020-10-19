@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { Typography, TableContainer } from '@material-ui/core';
+import { TableContainer, Typography } from '@material-ui/core';
 import 'firebase/auth';
 import _ from 'lodash';
 import MaterialTable, { Column } from 'material-table';

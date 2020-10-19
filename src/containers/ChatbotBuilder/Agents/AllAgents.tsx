@@ -1,4 +1,4 @@
-import { Grid, Card, Typography } from '@material-ui/core';
+import { Card, Grid, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
 import { IUser } from '../../../models/user-service';
@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme: Theme) =>
     gridRow: {
       marginBottom: theme.spacing(3),
     },
-  })
+  }),
 );
 
 interface IChatbotBuilderAgentProps {

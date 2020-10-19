@@ -126,13 +126,13 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       steps: [],
       numCompleted: 0,
     });
-  };
+  }
 
   addToErrors = (title: string, details: string) => {
     const errors = this.state.error;
     errors.push({ title, details });
     this.setState({ error: errors });
-  };
+  }
 
   uploadBatch = async (examples: INLUExampleInput[]) => {
     this.setState((s) => ({
@@ -151,16 +151,16 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     if (res?.errors?.[0]) {
       this.addToErrors(
         `Errors in uploading examples`,
-        JSON.stringify(res.errors[0].message)
+        JSON.stringify(res.errors[0].message),
       );
       return;
     }
-  };
+  }
 
   onCancel = () => {
     this.handleClose();
     this.props.onCancel?.();
-  };
+  }
 
   formatJsonData = (json: string): IAgentDataExport => {
     const removeDuplicates = (exs: INLUExample[]) => {
@@ -183,10 +183,10 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
 
     data.nluData.examples = removeDuplicates(data.nluData.examples);
     return data;
-  };
+  }
 
   uploadTrainingConversations = async (
-    trainingConversations: ITrainingConversation[]
+    trainingConversations: ITrainingConversation[],
   ) => {
     this.setStepStatus('Training Conversations', 'importing');
 
@@ -219,7 +219,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
         this.setStepStatus(
           'Training Conversations',
           'importing',
-          done / length
+          done / length,
         );
       }
       this.setStepStatus('Training Conversations', 'completed');
@@ -227,10 +227,10 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       this.setStepStatus('Training Conversations', 'error');
       this.addToErrors(
         'Error in uploading Training Conversations',
-        JSON.stringify(e)
+        JSON.stringify(e),
       );
     }
-  };
+  }
 
   uploadSettings = async (settings: any) => {
     let uname = this.props.uname;
@@ -254,7 +254,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     if (!uname) {
       return this.addToErrors(
         'Could not update settings',
-        'Agent uname was not found'
+        'Agent uname was not found',
       );
     }
 
@@ -277,12 +277,12 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       this.addToErrors('Error updating settings', JSON.stringify(e));
       this.setStepStatus('Widget Config', 'error');
     }
-  };
+  }
 
   setStepStatus = (
     name: stepName,
     status: stepStatus,
-    progress: number = 0
+    progress: number = 0,
   ) => {
     let steps = this.state.steps;
     let exists = false;
@@ -309,7 +309,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     }
     this.setState({ steps });
     this.checkCompletion(steps);
-  };
+  }
 
   checkCompletion = (steps: IStep[]) => {
     let completeCount = 0;
@@ -322,7 +322,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     this.setState({
       numCompleted: completeCount,
     });
-  };
+  }
 
   uploadImage = async (imgFile: File, type: 'uro-images' | 'bot-icons') => {
     let url: string | undefined;
@@ -356,7 +356,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     if (!url) {
       this.addToErrors(
         `Error in uploading Image: ${imgFile.name}`,
-        `Failed to get signed upload url`
+        `Failed to get signed upload url`,
       );
       return;
     }
@@ -366,10 +366,10 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     } catch (e) {
       this.addToErrors(
         `Error in uploading Image: ${imgFile.name}`,
-        JSON.stringify(e)
+        JSON.stringify(e),
       );
     }
-  };
+  }
 
   ensureAgentExists = async (data: IAgentDataExport) => {
     // Returns a promise to await the state
@@ -409,7 +409,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
             },
             () => {
               resolve();
-            }
+            },
           );
           this.setStepStatus('Create Agent', 'completed');
         } else {
@@ -421,7 +421,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
         resolve();
       }
     });
-  };
+  }
 
   updateAgentConfig = async (config: IAgentConfig) => {
     // Returns a promise to await the state
@@ -461,7 +461,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       this.addToErrors('Error Creating Agent', JSON.stringify(e));
       this.setStepStatus('Create Agent', 'error');
     }
-  };
+  }
 
   handleZipFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -485,7 +485,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
         this.setStepStatus(
           'URO Images',
           'importing',
-          Math.ceil((fileNum * 100) / zipContents.uroImages.length)
+          Math.ceil((fileNum * 100) / zipContents.uroImages.length),
         );
         fileNum++;
       }
@@ -502,7 +502,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
         this.setStepStatus(
           'Bot Icons',
           'importing',
-          Math.ceil((fileNum * 100) / zipContents.uroImages.length)
+          Math.ceil((fileNum * 100) / zipContents.uroImages.length),
         );
         fileNum++;
       }
@@ -516,7 +516,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     } else {
       this.props.onSuccess?.();
     }
-  };
+  }
 
   handleJsonFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -550,7 +550,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     } else {
       this.props.onSuccess?.();
     }
-  };
+  }
 
   processJsonData = async (data: IAgentDataExport) => {
     this.setState({
@@ -577,7 +577,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
         this.setStepStatus(
           'Examples',
           'importing',
-          Math.ceil((batchNum * 100) / exampleBatches.length)
+          Math.ceil((batchNum * 100) / exampleBatches.length),
         );
         batchNum++;
       }
@@ -587,7 +587,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       this.addToErrors(`Errors in uploading examples`, JSON.stringify(err));
       this.setStepStatus('Examples', 'error');
     }
-  };
+  }
 
   renderStep = (s: IStep) => {
     const { classes } = this.props;
@@ -629,7 +629,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
         </div>
       </Alert>
     );
-  };
+  }
 
   render() {
     const state = this.state;
