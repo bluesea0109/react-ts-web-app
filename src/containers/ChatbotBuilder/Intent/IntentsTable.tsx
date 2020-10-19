@@ -2,18 +2,18 @@ import { BaseAgentAction, IIntent } from '@bavard/agent-config';
 import { Button, Paper, TableContainer, Typography } from '@material-ui/core';
 import {
   createStyles,
-  withStyles,
   makeStyles,
   Theme,
+  withStyles,
 } from '@material-ui/core/styles';
-import { Edit } from '@material-ui/icons';
-import 'firebase/auth';
-import _ from 'lodash';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import { Edit } from '@material-ui/icons';
+import 'firebase/auth';
+import _ from 'lodash';
 import React from 'react';
 
 const StyledTableCell = withStyles((theme) => ({
@@ -41,12 +41,12 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     paper: {
       padding: theme.spacing(4),
-      backgroundColor: "white"
+      backgroundColor: 'white',
     },
     table: {
       minWidth: '700px',
     },
-  })
+  }),
 );
 
 interface IntentsTableProps {
@@ -96,7 +96,7 @@ function IntentsTable({
       <TableContainer component={Paper} aria-label="Agents">
         {/* <MaterialTable
           title={
-            <h5>Intents</h5>            
+            <h5>Intents</h5>
           }
           columns={columns}
           data={_.cloneDeep(intents)}
@@ -105,10 +105,10 @@ function IntentsTable({
             paging: true,
             pageSize: 10,
             headerStyle: {
-              backgroundColor: 'white',              
+              backgroundColor: 'white',
             },
             rowStyle: {
-              backgroundColor: 'white',              
+              backgroundColor: 'white',
             },
             searchFieldStyle: {
               backgroundColor: 'white'
@@ -139,8 +139,8 @@ function IntentsTable({
           <TableHead>
             <TableRow>
               <StyledTableCell>Name</StyledTableCell>
-              <StyledTableCell align="left">Default Action</StyledTableCell>           
-              <StyledTableCell align="left">Action</StyledTableCell>   
+              <StyledTableCell align="left">Default Action</StyledTableCell>
+              <StyledTableCell align="left">Action</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -149,7 +149,11 @@ function IntentsTable({
                 <StyledTableCell component="th" scope="row">
                   {row.name}
                 </StyledTableCell>
-                <StyledTableCell align="left">{row.defaultActionName??<Typography style={{ color: '#808080' }}>N/A</Typography>}</StyledTableCell>                
+                <StyledTableCell align="left">
+                  {row.defaultActionName ?? (
+                    <Typography style={{ color: '#808080' }}>N/A</Typography>
+                  )}
+                </StyledTableCell>
                 <StyledTableCell component="th" scope="row">
                   {row.name}
                 </StyledTableCell>
