@@ -130,7 +130,7 @@ const AgentDetails = () => {
   };
 
   return (
-    <div className={classes.container}>      
+    <div className={classes.container}>
       <div className={classes.tabsContainer}>
         <TabPanel className={classes.tabPanel} value={agentTab} index="Actions">
           <Actions />

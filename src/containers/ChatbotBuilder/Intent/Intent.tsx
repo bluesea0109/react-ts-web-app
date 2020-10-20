@@ -13,8 +13,8 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       padding: theme.spacing(2),
-      overflow: 'auto',      
-      backgroundColor: '#f4f4f4'
+      overflow: 'auto',
+      backgroundColor: '#f4f4f4',
     },
     paper: {
       padding: theme.spacing(2),
@@ -25,8 +25,8 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: '30px',
       marginBottom: '50px',
       fontSize: '30px',
-      fontWeight: 'bold'
-    }
+      fontWeight: 'bold',
+    },
   }),
 );
 

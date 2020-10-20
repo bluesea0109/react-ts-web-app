@@ -40,19 +40,19 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     appBar: {
       position: 'relative',
-      backgroundColor: '#2B2AC6'
+      backgroundColor: '#2B2AC6',
     },
     title: {
       marginLeft: theme.spacing(2),
       color: 'white',
       flex: 1,
     },
-  })
+  }),
 );
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & { children?: React.ReactElement },
-  ref: React.Ref<unknown>
+  ref: React.Ref<unknown>,
 ) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -78,7 +78,7 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
   const { enqueueSnackbar } = useSnackbar();
 
   const [_config, setConfig] = useRecoilState<AgentConfig | undefined>(
-    currentAgentConfig
+    currentAgentConfig,
   );
   const config = _.cloneDeep(_config);
   const widgetSettings = useRecoilValue(currentWidgetSettings);
@@ -147,19 +147,19 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
 
   const saveChanges = async () => {
     if (newIntent.name === '') {
-      enqueueSnackbar("Intent can't be empty", { variant: 'warning' });
+      enqueueSnackbar('Intent can\'t be empty', { variant: 'warning' });
       return;
     }
 
     const hasNoEmptyExamples = examples.reduce(
       (prev, curr) => prev && !!curr.text,
-      true
+      true,
     );
 
     if (!hasNoEmptyExamples) {
       enqueueSnackbar(
         'Please make sure no example is empty before proceeding',
-        { variant: 'error' }
+        { variant: 'error' },
       );
       return;
     }
@@ -226,7 +226,7 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
 
   const createTag = async () => {
     if (newTag === '') {
-      enqueueSnackbar("Can't create empty tag", { variant: 'error' });
+      enqueueSnackbar('Can\'t create empty tag', { variant: 'error' });
       return;
     }
 
@@ -295,7 +295,7 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
                   options={actions}
                   getOptionLabel={(option: BaseAgentAction) => option.name}
                   value={actions.find(
-                    (a) => a.name === newIntent?.defaultActionName
+                    (a) => a.name === newIntent?.defaultActionName,
                   )}
                   onChange={(e, action) =>
                     setNewIntent({

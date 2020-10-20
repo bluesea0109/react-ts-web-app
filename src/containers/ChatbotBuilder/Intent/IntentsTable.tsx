@@ -4,8 +4,8 @@ import {
   Grid,
   Paper,
   TableContainer,
-  Typography,
   TextField,
+  Typography,
 } from '@material-ui/core';
 import {
   createStyles,
@@ -18,7 +18,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import { Edit, Delete } from '@material-ui/icons';
+import { Delete, Edit } from '@material-ui/icons';
 import 'firebase/auth';
 import _ from 'lodash';
 import React, { useState } from 'react';
@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(4),
       backgroundColor: 'white',
       width: '80%',
-      marginLeft: '80px'
+      marginLeft: '80px',
     },
     table: {
       minWidth: '600px',
@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     headerName: {
       display: 'flex',
-      alignItems: 'flex-start'
+      alignItems: 'flex-start',
     },
     intro: {
       display: 'inline-block',
@@ -80,7 +80,7 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: '15px',
       marginBottom: '10px',
     },
-  })
+  }),
 );
 
 interface IntentsTableProps {
@@ -99,9 +99,8 @@ function IntentsTable({
   onDeleteIntent,
 }: IntentsTableProps) {
   const classes = useStyles();
-  
-  const [filter, setFilter] = useState<string>('')
 
+  const [filter, setFilter] = useState<string>('');
 
   const deleteIntentHandler = (intent: IIntent) => {
     onDeleteIntent(intent);
@@ -111,10 +110,10 @@ function IntentsTable({
     const data = rowData as IIntent;
     onEditIntent(data);
   };
-  console.log('Filter ', filter)
+  console.log('Filter ', filter);
   console.log('itents :  ', intents);
-  const filteredIntents = intents.filter((item) => item.name.toLowerCase().includes(filter.toLocaleLowerCase()))
-  console.log('Result ', filteredIntents)
+  const filteredIntents = intents.filter((item) => item.name.toLowerCase().includes(filter.toLocaleLowerCase()));
+  console.log('Result ', filteredIntents);
 
   return (
     <Paper className={classes.paper}>
@@ -134,7 +133,7 @@ function IntentsTable({
         </Button>
       </div>
       <Grid>
-        <Typography className={classes.headerName}></Typography>
+        <Typography className={classes.headerName}/>
       </Grid>
       <TableContainer
         component={Paper}
