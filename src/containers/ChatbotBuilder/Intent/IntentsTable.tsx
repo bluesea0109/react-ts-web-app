@@ -1,5 +1,12 @@
 import { BaseAgentAction, IIntent } from '@bavard/agent-config';
-import { Button, Paper, TableContainer, Typography } from '@material-ui/core';
+import {
+  Button,
+  Grid,
+  Paper,
+  TableContainer,
+  Typography,
+  TextField,
+} from '@material-ui/core';
 import {
   createStyles,
   makeStyles,
@@ -14,13 +21,14 @@ import TableRow from '@material-ui/core/TableRow';
 import { Edit, Delete } from '@material-ui/icons';
 import 'firebase/auth';
 import _ from 'lodash';
-import React from 'react';
+import React, { useState } from 'react';
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
-    backgroundColor: '#f4f4f4',    
+    backgroundColor: 'wihte',
   },
   body: {
+    padding: '5px',
     fontSize: 14,
   },
 }))(TableCell);
@@ -37,13 +45,40 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       margin: theme.spacing(3),
+      backgroundColor: 'white',
     },
     paper: {
       padding: theme.spacing(4),
       backgroundColor: 'white',
+      width: '80%',
+      marginLeft: '80px'
     },
     table: {
-      minWidth: '700px',
+      minWidth: '600px',
+      background: 'white',
+      width: '100%',
+      margin: 'auto',
+    },
+    headerName: {
+      display: 'flex',
+      alignItems: 'flex-start'
+    },
+    intro: {
+      display: 'inline-block',
+      width: '50%',
+    },
+    rightLayout: {
+      display: 'flex',
+      top: '0px',
+      float: 'right',
+    },
+    title: {
+      fontSize: '22px',
+      marginBottom: '5px',
+    },
+    desc: {
+      fontSize: '15px',
+      marginBottom: '10px',
     },
   })
 );
@@ -64,6 +99,9 @@ function IntentsTable({
   onDeleteIntent,
 }: IntentsTableProps) {
   const classes = useStyles();
+  
+  const [filter, setFilter] = useState<string>('')
+
 
   const deleteIntentHandler = (intent: IIntent) => {
     onDeleteIntent(intent);
@@ -73,21 +111,57 @@ function IntentsTable({
     const data = rowData as IIntent;
     onEditIntent(data);
   };
+  console.log('Filter ', filter)
   console.log('itents :  ', intents);
+  const filteredIntents = intents.filter((item) => item.name.toLowerCase().includes(filter.toLocaleLowerCase()))
+  console.log('Result ', filteredIntents)
 
   return (
     <Paper className={classes.paper}>
-      <TableContainer component={Paper} aria-label="Agents">
-        <Table className={classes.table} aria-label="customized table">
+      <div className={classes.intro}>
+        <div className={classes.title}>Intents</div>
+        <div className={classes.desc}>
+          Edit an Intent below to add examples of user queries. Add several
+          examples to ensure that your Assistant will respond accurately.
+        </div>
+      </div>
+      <div className={classes.rightLayout}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={onAdd}>
+          Add New Intent
+        </Button>
+      </div>
+      <Grid>
+        <Typography className={classes.headerName}></Typography>
+      </Grid>
+      <TableContainer
+        component={Paper}
+        aria-label="Agents"
+        className={classes.table}>
+        <Table aria-label="customized table">
           <TableHead>
             <TableRow>
-              <StyledTableCell>Name</StyledTableCell>
+              <StyledTableCell>
+                <div className={classes.headerName}>
+                  <div style={{margin: '20px'}}>Name</div>
+                  <div>
+                    <TextField
+                      id="standard-search"
+                      label="Search field"
+                      type="search"
+                      onChange={e => setFilter(e.target.value)}
+                    />
+                  </div>
+                </div>
+              </StyledTableCell>
               <StyledTableCell align="left">Default Action</StyledTableCell>
               <StyledTableCell align="right">Action</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {_.cloneDeep(intents).map((row) => (
+            {_.cloneDeep(filteredIntents).map((row) => (
               <StyledTableRow key={row.name}>
                 <StyledTableCell component="th" scope="row">
                   {row.name}
@@ -110,7 +184,7 @@ function IntentsTable({
           </TableBody>
         </Table>
       </TableContainer>
-    </Paper>    
+    </Paper>
   );
 }
 

@@ -130,12 +130,7 @@ const AgentDetails = () => {
   };
 
   return (
-    <div className={classes.container}>
-      <Toolbar className={classes.toolbar} variant="dense">
-        <Button variant="contained" onClick={saveAgent}>
-          {'Save Agent'}
-        </Button>
-      </Toolbar>
+    <div className={classes.container}>      
       <div className={classes.tabsContainer}>
         <TabPanel className={classes.tabPanel} value={agentTab} index="Actions">
           <Actions />

@@ -1,4 +1,5 @@
 import { AgentConfig, IIntent } from '@bavard/agent-config';
+import { Button } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import _ from 'lodash';
 import React, { useState } from 'react';
@@ -18,6 +19,14 @@ const useStyles = makeStyles((theme: Theme) =>
     paper: {
       padding: theme.spacing(2),
     },
+    header: {
+      display: 'block',
+      marginLeft: '80px',
+      marginTop: '30px',
+      marginBottom: '50px',
+      fontSize: '30px',
+      fontWeight: 'bold'
+    }
   }),
 );
 
@@ -66,6 +75,7 @@ const IntentSection: React.FC = () => {
 
   return (
     <div className={classes.root}>
+      <div className={classes.header}>Manage Assistant Intents</div>
       <IntentsTable
         intents={intents ?? []}
         actions={actions}
