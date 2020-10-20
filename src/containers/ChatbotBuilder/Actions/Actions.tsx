@@ -1,8 +1,7 @@
 import { AgentConfig, BaseAgentAction, UtteranceAction } from '@bavard/agent-config';
-import { Grid, Paper } from '@material-ui/core';
+import { Box, Grid } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Maybe } from 'graphql/jsutils/Maybe';
-import _ from 'lodash';
 import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { currentAgentConfig } from '../atoms';
@@ -33,7 +32,7 @@ const Actions = () => {
 
   const actions: BaseAgentAction[] = config.getActions();
 
-  const onAdd = () => {
+  const onAddAction = () => {
     setIsNewAction(true);
     setCurrentAction(new UtteranceAction('', ''));
   };
@@ -43,22 +42,23 @@ const Actions = () => {
   };
 
   const onSaveAction = (action: BaseAgentAction) => {
-    if (!currentAction) { return; }
-    const newConfig = _.cloneDeep<AgentConfig>(config);
-    newConfig
-      .deleteAction(currentAction.name)
-      .addAction(action as any);
-    setConfig(newConfig);
-
+    if (!currentAction) return;
+    setConfig(
+      config
+        .copy()
+        .deleteAction(currentAction.name)
+        .addAction(action as any)
+    );
     setIsNewAction(false);
     setCurrentAction(undefined);
   };
 
   const onDeleteAction = (action: BaseAgentAction) => {
-    const newConfig = _.cloneDeep<AgentConfig>(config);
-    newConfig.deleteAction(action.name);
-    setConfig(newConfig);
-
+    setConfig(
+      config
+        .copy()
+        .deleteAction(action.name)
+    );
     setCurrentAction(undefined);
   };
 
@@ -68,16 +68,14 @@ const Actions = () => {
   };
 
   return (
-    <div className={classes.root}>
+    <Box className={classes.root}>
       <Grid item={true} xs={12} sm={12}>
-        <Paper className={classes.paper}>
-          <ActionsTable
-            actions={actions ?? []}
-            onAdd={onAdd}
-            onEditAction={onEditAction}
-            onDeleteAction={onDeleteAction}
-          />
-        </Paper>
+        <ActionsTable
+          actions={actions ?? []}
+          onAddAction={onAddAction}
+          onEditAction={onEditAction}
+          onDeleteAction={onDeleteAction}
+        />
       </Grid>
       {!!currentAction && (
         <EditAction
@@ -87,7 +85,7 @@ const Actions = () => {
           onEditActionClose={onEditActionClose}
         />
       )}
-    </div>
+    </Box>
   );
 };
 
