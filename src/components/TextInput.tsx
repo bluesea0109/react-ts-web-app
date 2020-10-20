@@ -1,12 +1,14 @@
 import { createStyles, TextField } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import clsx from 'clsx';
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import { TextColorTypes, TextVariantTypes } from './types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    input: {},
+    input: {
+      margin: theme.spacing(1),
+    },
   }),
 );
 
@@ -18,7 +20,7 @@ interface TextInputProps {
   placeholder?: string;
   value?: string;
   variant?: TextVariantTypes;
-  onChange?: (value: string) => void;
+  onChange?: (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void;
 }
 
 const TextInput: React.FC<TextInputProps> = ({
@@ -43,7 +45,7 @@ const TextInput: React.FC<TextInputProps> = ({
       value={value}
       variant={(variant || 'outlined') as any}
       className={clsx(classes.input)}
-      onChange={onChange ? (e) => onChange(e.target.value as string) : undefined}
+      onChange={onChange}
     />
   );
 };

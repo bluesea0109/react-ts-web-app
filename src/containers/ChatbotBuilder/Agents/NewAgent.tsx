@@ -28,19 +28,17 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     formHeading: {
       marginBottom: theme.spacing(2),
+    },
     button: {
-      margin: theme.spacing(1),
+      marginBottom: theme.spacing(1),
+      width: '100%',
     },
     inputBox: {
       marginBottom: theme.spacing(1),
       width: '100%',
       backgroundColor: theme.palette.background.default,
     },
-    button: {
-      marginBottom: theme.spacing(1),
-      width: '100%',
-    },
-  }),
+  })
 );
 
 interface INewAgentProps {
@@ -96,15 +94,11 @@ const NewAgent: React.FC<INewAgentProps> = ({ user }) => {
         <TextInput
           id="name"
           label="Unique Name"
-          type="text"
           value={uname}
           variant="outlined"
-          size="small"
           onChange={(e: any) => setUname(e.target.value as string)}
-          className={clsx([classes.inputBox])}
         />
         <br />
-
         <Button
           className={clsx([classes.button])}
           variant="contained"
