@@ -1,5 +1,4 @@
 import { AgentConfig, IIntent } from '@bavard/agent-config';
-import { Button } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import _ from 'lodash';
 import React, { useState } from 'react';

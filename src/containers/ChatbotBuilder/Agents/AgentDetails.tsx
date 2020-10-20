@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { AgentConfig } from '@bavard/agent-config';
-import { Box, Button, makeStyles, Theme, Toolbar } from '@material-ui/core';
+import { Box, makeStyles, Theme } from '@material-ui/core';
 import React from 'react';
 import { useParams } from 'react-router';
 import { useRecoilState } from 'recoil';
@@ -159,6 +159,7 @@ const AgentDetails = () => {
         {agentTab === 'settings' && <AgentSettings />}
         {agentTab === 'publish' && <PublishAgent />}
         {agentTab === 'upload-data' && <UploadDataTab />}
+        <div onClick={saveAgent}></div>
       </div>
     </div>
   );

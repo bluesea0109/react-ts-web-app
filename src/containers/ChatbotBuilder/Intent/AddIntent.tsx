@@ -2,7 +2,6 @@ import { useMutation } from '@apollo/client';
 import { AgentConfig, BaseAgentAction, IIntent } from '@bavard/agent-config';
 import {
   Box,
-  CircularProgress,
   DialogContent,
   Divider,
   Grid,
@@ -418,6 +417,14 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
               onClick={onAddExample}>
               Add New Item
             </Button>
+            <Button
+              disabled={loading}
+              variant="contained"
+              color="primary"
+              onClick={saveChanges}>
+              Save
+            </Button>
+
           </Box>
         </Box>
       </DialogContent>
