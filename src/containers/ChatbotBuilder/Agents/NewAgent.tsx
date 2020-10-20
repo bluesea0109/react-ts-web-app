@@ -1,10 +1,8 @@
 import { useMutation } from '@apollo/client';
 import {
   Button,
-  Card,
-  CardContent,
-  CardHeader,
   createStyles,
+  Grid,
   LinearProgress,
   makeStyles,
   Theme,
@@ -25,12 +23,22 @@ import UploadDataDialog from '../UploadData/UploadDataDialog';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    root: {
+      padding: theme.spacing(2),
+    },
+    formHeading: {
+      marginBottom: theme.spacing(2),
     button: {
       margin: theme.spacing(1),
     },
-    formCard: {
+    inputBox: {
+      marginBottom: theme.spacing(1),
+      width: '100%',
       backgroundColor: theme.palette.background.default,
-      minHeight: 250,
+    },
+    button: {
+      marginBottom: theme.spacing(1),
+      width: '100%',
     },
   }),
 );
@@ -77,24 +85,28 @@ const NewAgent: React.FC<INewAgentProps> = ({ user }) => {
   };
 
   return (
-    <Card className={classes.formCard}>
-      <CardHeader
-        title={<Typography variant="h6">Create New Agent</Typography>}
-      />
-      <CardContent>
+    <Grid className={classes.root}>
+      <Grid xs={12} item={true}>
+        <Typography variant="subtitle1" className={classes.formHeading}>
+          Create New Assistant
+        </Typography>
+      </Grid>
+      <Grid xs={12} md={3} item={true}>
         {loading && <LinearProgress />}
         <TextInput
           id="name"
-          label="Agent Unique Name"
+          label="Unique Name"
+          type="text"
           value={uname}
           variant="outlined"
-          onChange={(name) => setUname(name)}
+          size="small"
+          onChange={(e: any) => setUname(e.target.value as string)}
+          className={clsx([classes.inputBox])}
         />
         <br />
-      </CardContent>
-      <CardContent>
+
         <Button
-          className={clsx(classes.button)}
+          className={clsx([classes.button])}
           variant="contained"
           color="primary"
           disabled={loading || !uname}
@@ -109,8 +121,8 @@ const NewAgent: React.FC<INewAgentProps> = ({ user }) => {
           onError={onUploadComplete}
           onCancel={onUploadComplete}
         />
-      </CardContent>
-    </Card>
+      </Grid>
+    </Grid>
   );
 };
 
