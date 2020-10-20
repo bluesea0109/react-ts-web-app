@@ -2,7 +2,7 @@ import Button from '@material-ui/core/Button';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import React from 'react';
-import { TextTransformTypes } from '../types';
+import { ButtonColorTypes, ButtonVariantTypes, TextTransformTypes } from '../types';
 
 interface CustomStyles {
   textTransform: TextTransformTypes;
@@ -18,8 +18,8 @@ const useStyles = ({
 
 interface BasicButtonProps {
   title: string;
-  color?: 'inherit'|'primary'|'secondary'|'default';
-  variant?: 'text'|'outlined'|'contained';
+  color?: ButtonColorTypes;
+  variant?: ButtonVariantTypes;
   textTransform?: TextTransformTypes;
   onClick: () => void;
 }

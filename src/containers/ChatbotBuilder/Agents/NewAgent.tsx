@@ -5,7 +5,6 @@ import {
   Grid,
   LinearProgress,
   makeStyles,
-  TextField,
   Theme,
   Typography,
 } from '@material-ui/core';
@@ -17,6 +16,7 @@ import {
   CHATBOT_CREATE_AGENT,
   CHATBOT_GET_AGENTS,
 } from '../../../common-gql-queries';
+import { TextInput } from '../../../components';
 import { IUser } from '../../../models/user-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import UploadDataDialog from '../UploadData/UploadDataDialog';
@@ -28,6 +28,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     formHeading: {
       marginBottom: theme.spacing(2),
+    button: {
+      margin: theme.spacing(1),
     },
     inputBox: {
       marginBottom: theme.spacing(1),
@@ -91,7 +93,7 @@ const NewAgent: React.FC<INewAgentProps> = ({ user }) => {
       </Grid>
       <Grid xs={12} md={3} item={true}>
         {loading && <LinearProgress />}
-        <TextField
+        <TextInput
           id="name"
           label="Unique Name"
           type="text"
