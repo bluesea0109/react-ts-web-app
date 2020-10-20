@@ -159,7 +159,7 @@ const AgentDetails = () => {
         {agentTab === 'settings' && <AgentSettings />}
         {agentTab === 'publish' && <PublishAgent />}
         {agentTab === 'upload-data' && <UploadDataTab />}
-        <div onClick={saveAgent}></div>
+        <div onClick={saveAgent}/>
       </div>
     </div>
   );
