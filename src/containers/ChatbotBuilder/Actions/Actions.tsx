@@ -1,5 +1,5 @@
 import { AgentConfig, BaseAgentAction, UtteranceAction } from '@bavard/agent-config';
-import { Box, Grid } from '@material-ui/core';
+import { Box, Grid, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Maybe } from 'graphql/jsutils/Maybe';
 import React, { useState } from 'react';
@@ -12,10 +12,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       padding: theme.spacing(2),
-      overflow: 'auto',
-    },
-    paper: {
-      padding: theme.spacing(2),
+      paddingTop: 0,
     },
   }),
 );
@@ -42,12 +39,12 @@ const Actions = () => {
   };
 
   const onSaveAction = (action: BaseAgentAction) => {
-    if (!currentAction) return;
+    if (!currentAction) { return; }
     setConfig(
       config
         .copy()
         .deleteAction(currentAction.name)
-        .addAction(action as any)
+        .addAction(action as any),
     );
     setIsNewAction(false);
     setCurrentAction(undefined);
@@ -57,7 +54,7 @@ const Actions = () => {
     setConfig(
       config
         .copy()
-        .deleteAction(action.name)
+        .deleteAction(action.name),
     );
     setCurrentAction(undefined);
   };
@@ -69,6 +66,7 @@ const Actions = () => {
 
   return (
     <Box className={classes.root}>
+      <Typography variant="h5">Manage Assistant Actions</Typography>
       <Grid item={true} xs={12} sm={12}>
         <ActionsTable
           actions={actions ?? []}

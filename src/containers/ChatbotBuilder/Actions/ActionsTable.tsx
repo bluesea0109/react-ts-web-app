@@ -40,7 +40,7 @@ const ActionsTable = ({
   });
 
   useEffect(() => {
-    if (!actions) return;
+    if (!actions) { return; }
 
     setState({
       columns: state.columns,
@@ -83,6 +83,6 @@ const ActionsTable = ({
       {'No Actions found'}
     </Typography>
   );
-}
+};
 
 export default ActionsTable;

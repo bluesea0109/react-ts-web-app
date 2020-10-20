@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { AgentConfig } from '@bavard/agent-config';
-import { Box, Button, makeStyles, Theme, Toolbar } from '@material-ui/core';
+import { Button, makeStyles, Theme, Toolbar } from '@material-ui/core';
 import React from 'react';
 import { useParams } from 'react-router';
 import { useRecoilState } from 'recoil';
@@ -8,6 +8,7 @@ import {
   CHATBOT_GET_AGENT,
   CHATBOT_SAVE_CONFIG_AND_SETTINGS,
 } from '../../../common-gql-queries';
+import { TabPanel } from '../../../components';
 import { IAgent } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
@@ -26,30 +27,6 @@ import Tag from '../Tags/Tag';
 import TrainingConversations from '../TrainingConversations';
 import TrainingJobsTab from '../TrainingJobs/TrainingJobsTab';
 import UploadDataTab from '../UploadData/UploadDataTab';
-
-interface TabPanelProps {
-  className?: string;
-  children?: React.ReactNode;
-  dir?: string;
-  index?: any;
-  value?: any;
-}
-
-function TabPanel(props: TabPanelProps) {
-  const { className, children, value, index, ...other } = props;
-
-  return (
-    <div
-      className={className}
-      role="tabpanel"
-      hidden={value !== index}
-      id={`full-width-tabpanel-${index}`}
-      aria-labelledby={`full-width-tab-${index}`}
-      {...other}>
-      {value === index && <Box p={3}>{children}</Box>}
-    </div>
-  );
-}
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
