@@ -1,13 +1,10 @@
 import { useMutation } from '@apollo/client';
 import {
   Button,
-  Card,
-  CardContent,
-  CardHeader,
   createStyles,
+  Grid,
   LinearProgress,
   makeStyles,
-  TextField,
   Theme,
   Typography,
 } from '@material-ui/core';
@@ -19,21 +16,27 @@ import {
   CHATBOT_CREATE_AGENT,
   CHATBOT_GET_AGENTS,
 } from '../../../common-gql-queries';
+import { TextInput } from '../../../components';
 import { IUser } from '../../../models/user-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import UploadDataDialog from '../UploadData/UploadDataDialog';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    inputBox: {
-      margin: theme.spacing(1),
+    root: {
+      padding: theme.spacing(2),
+    },
+    formHeading: {
+      marginBottom: theme.spacing(2),
     },
     button: {
-      margin: theme.spacing(1),
+      marginBottom: theme.spacing(1),
+      width: '100%',
     },
-    formCard: {
+    inputBox: {
+      marginBottom: theme.spacing(1),
+      width: '100%',
       backgroundColor: theme.palette.background.default,
-      minHeight: 250,
     },
   }),
 );
@@ -80,26 +83,24 @@ const NewAgent: React.FC<INewAgentProps> = ({ user }) => {
   };
 
   return (
-    <Card className={classes.formCard}>
-      <CardHeader
-        title={<Typography variant="h6">Create New Agent</Typography>}
-      />
-      <CardContent>
+    <Grid className={classes.root}>
+      <Grid xs={12} item={true}>
+        <Typography variant="subtitle1" className={classes.formHeading}>
+          Create New Assistant
+        </Typography>
+      </Grid>
+      <Grid xs={12} md={3} item={true}>
         {loading && <LinearProgress />}
-        <TextField
+        <TextInput
           id="name"
-          label="Agent Unique Name"
-          type="text"
+          label="Unique Name"
           value={uname}
           variant="outlined"
           onChange={(e: any) => setUname(e.target.value as string)}
-          className={clsx(classes.inputBox)}
         />
         <br />
-      </CardContent>
-      <CardContent>
         <Button
-          className={clsx(classes.button)}
+          className={clsx([classes.button])}
           variant="contained"
           color="primary"
           disabled={loading || !uname}
@@ -114,8 +115,8 @@ const NewAgent: React.FC<INewAgentProps> = ({ user }) => {
           onError={onUploadComplete}
           onCancel={onUploadComplete}
         />
-      </CardContent>
-    </Card>
+      </Grid>
+    </Grid>
   );
 };
 

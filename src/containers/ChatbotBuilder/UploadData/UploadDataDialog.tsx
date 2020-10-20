@@ -96,7 +96,8 @@ const styles = (theme: Theme) => ({
     margin: theme.spacing(1),
   },
   uploadButton: {
-    margin: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+    width: '100%',
   },
   linearProg: {
     width: 190,
