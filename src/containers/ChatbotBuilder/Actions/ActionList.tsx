@@ -12,7 +12,7 @@ type CollapsedState = { [key: string]: boolean };
 const ActionList = ({
   actions,
 }: ActionListProps) => {
-  const [isCollapsed, setIsCollapsed] = useState({} as CollapsedState);
+  const [isCollapsed, setIsCollapsed] = useState<CollapsedState>({});
 
   const onToggleActionCollapse = (action: BaseAgentAction) => {
     setIsCollapsed({
@@ -27,7 +27,7 @@ const ActionList = ({
         <CollapsibleAction
           key={action.name}
           action={action}
-          isOpen={!!isCollapsed[action.name]}
+          isOpen={isCollapsed[action.name]}
           onToggle={onToggleActionCollapse}
         />
       ))}

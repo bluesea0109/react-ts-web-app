@@ -6,13 +6,8 @@ import {
   Typography,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Edit } from '@material-ui/icons';
-import 'firebase/auth';
-import _ from 'lodash';
-import MaterialTable, { Column } from 'material-table';
 import React, { useMemo, useState } from 'react';
 import { FilterBox } from '../../../components';
-import ActionDetailPanel from './ActionDetailPanel';
 import ActionList from './ActionList';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -22,11 +17,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   }),
 );
-
-interface ActionState {
-  columns: Column<BaseAgentAction>[];
-  data: BaseAgentAction[] | undefined;
-}
 
 interface ActionsTableProps {
   actions: BaseAgentAction[];
@@ -46,17 +36,20 @@ const ActionsTable = ({
   const [typeFilter, setTypeFilter] = useState('');
 
   const filteredActions = useMemo(() => {
+    const includes = (haystack: string, needle: string) => haystack.toLowerCase().includes(needle.toLowerCase());
+
     return actions.filter(action => {
-      if (nameFilter && action.name.includes(nameFilter)) {
+      if (nameFilter && !includes(action.name, nameFilter)) {
         return false;
-      } else if (typeFilter && action.type.includes(typeFilter)) {
+      } else if (typeFilter && !includes(action.type, typeFilter)) {
         return false;
+      } else {
+        return true;
       }
-      return true;
     });
   }, [actions, nameFilter, typeFilter]);
 
-  return filteredActions.length ? (
+  return actions.length ? (
     <Paper aria-label="Agents" className={classes.root}>
       <Box
         display="flex"

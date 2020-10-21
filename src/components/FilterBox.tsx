@@ -1,6 +1,6 @@
 import {
-  Box,
   createStyles,
+  Grid,
   Typography,
 } from '@material-ui/core';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -44,7 +44,7 @@ const FilterBox = ({
   const classes = useStyles();
 
   return (
-    <Box display="flex" flexDirection="row" alignItems="center">
+    <Grid container={true} alignItems="center">
       <Typography className={clsx(classes.name)}>{name}</Typography>
       <TextInput
         className={clsx(classes.input)}
@@ -59,7 +59,7 @@ const FilterBox = ({
           ),
         }}
       />
-    </Box>
+    </Grid>
   );
 };
 
