@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { AgentConfig } from '@bavard/agent-config';
-import { Box, makeStyles, Theme } from '@material-ui/core';
+import { Box, makeStyles, Theme, Toolbar, Button } from '@material-ui/core';
 import React from 'react';
 import { useParams } from 'react-router';
 import { useRecoilState } from 'recoil';
@@ -88,7 +88,7 @@ const AgentDetails = () => {
   }>();
   const [config, setConfig] = useRecoilState(currentAgentConfig);
   const [widgetSettings, setWidgetSettings] = useRecoilState(
-    currentWidgetSettings,
+    currentWidgetSettings
   );
 
   const { error, loading, data } = useQuery<IGetAgent>(CHATBOT_GET_AGENT, {
@@ -106,7 +106,7 @@ const AgentDetails = () => {
         { query: CHATBOT_GET_AGENT, variables: { agentId: Number(agentId) } },
       ],
       awaitRefetchQueries: true,
-    },
+    }
   );
 
   if (error) {
@@ -131,6 +131,11 @@ const AgentDetails = () => {
 
   return (
     <div className={classes.container}>
+      <Toolbar className={classes.toolbar} variant="dense">
+        <Button variant="contained" onClick={saveAgent}>
+          {'Save Agent'}
+        </Button>
+      </Toolbar>
       <div className={classes.tabsContainer}>
         <TabPanel className={classes.tabPanel} value={agentTab} index="Actions">
           <Actions />
@@ -159,7 +164,7 @@ const AgentDetails = () => {
         {agentTab === 'settings' && <AgentSettings />}
         {agentTab === 'publish' && <PublishAgent />}
         {agentTab === 'upload-data' && <UploadDataTab />}
-        <div onClick={saveAgent}/>
+        <div onClick={saveAgent} />
       </div>
     </div>
   );
