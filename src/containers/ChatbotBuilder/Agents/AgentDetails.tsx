@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { AgentConfig } from '@bavard/agent-config';
-import { Box, Grid, makeStyles, Theme, Toolbar } from '@material-ui/core';
+import { Box, Grid, makeStyles, Theme } from '@material-ui/core';
 import React from 'react';
 import { useParams } from 'react-router';
 import { useRecoilState } from 'recoil';
@@ -69,25 +69,44 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   toolbar: {},
   saveAgent: {
-    position: 'absolute',
-    right: '0px',
+    position: 'absolute',    
     width: '150px',
     backgroundColor: '#151630',
     color: 'white',
     padding: '5px',
     borderTopLeftRadius: '30px',
     borderBottomLeftRadius: '30px',
-    margin: '20px 0px 20px 20px',
+    margin: '60px 0px 20px 20px',
     cursor: 'pointer',
     boxShadow: '0 0 3px #333',
     zIndex: 500000,
 
-    animation: 'slide 0.5s forwards',
-    animationDelay: '2s',
+    animation: '$hoverOut 500ms',            
+    right: '-110px',
+    '&:hover': {
+      background: 'linear-gradient(137deg, rgba(2,0,36,1) 66%, rgba(0,212,255,1) 100%, rgba(9,9,121,1) 100%)',
+      animation: '$hoverIn 500ms',            
+      right: '0px',
+    },
+    '&:active': {
+      backgroundColor: 'green'
+    } 
   },
   buttonTitle: {
     marginTop: '15px',
+    fontSize: '18px',
+    fontWeight: 'bold'
   },
+
+  '@keyframes hoverIn' : {
+    from: { right: '-110px'},
+    to: { right: '0px'}
+  }, 
+  '@keyframes hoverOut' : {
+    from: { right: '0px'},
+    to: { right: '-110px'}
+  } 
+
 }));
 
 interface IGetAgent {
@@ -104,7 +123,7 @@ const AgentDetails = () => {
   }>();
   const [config, setConfig] = useRecoilState(currentAgentConfig);
   const [widgetSettings, setWidgetSettings] = useRecoilState(
-    currentWidgetSettings,
+    currentWidgetSettings
   );
 
   const { error, loading, data } = useQuery<IGetAgent>(CHATBOT_GET_AGENT, {
@@ -122,7 +141,7 @@ const AgentDetails = () => {
         { query: CHATBOT_GET_AGENT, variables: { agentId: Number(agentId) } },
       ],
       awaitRefetchQueries: true,
-    },
+    }
   );
 
   if (error) {
@@ -149,10 +168,10 @@ const AgentDetails = () => {
     <div className={classes.container}>
       <div className={classes.saveAgent}>
         <Grid container={true} onClick={saveAgent}>
-          <Grid xs={4}>
+          <Grid item xs={4}>
             <img src={'/bot.svg'} alt="logo" width="50px" height="50px" />{' '}
           </Grid>
-          <Grid xs={8} className={classes.buttonTitle}>
+          <Grid item xs={8} className={classes.buttonTitle}>
             Save Agent
           </Grid>
         </Grid>
