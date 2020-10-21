@@ -10,9 +10,10 @@ import { Edit } from '@material-ui/icons';
 import 'firebase/auth';
 import _ from 'lodash';
 import MaterialTable, { Column } from 'material-table';
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { FilterBox } from '../../../components';
 import ActionDetailPanel from './ActionDetailPanel';
+import ActionList from './ActionList';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -44,24 +45,18 @@ const ActionsTable = ({
   const [nameFilter, setNameFilter] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
 
-  const [state, setState] = React.useState<ActionState>({
-    columns: [
-      { title: 'Action Name', field: 'name', editable: 'never' },
-      { title: 'Action Type', field: 'type', editable: 'never' },
-    ],
-    data: actions,
-  });
-
-  useEffect(() => {
-    if (!actions) { return; }
-
-    setState({
-      columns: state.columns,
-      data: [...actions],
+  const filteredActions = useMemo(() => {
+    return actions.filter(action => {
+      if (nameFilter && action.name.includes(nameFilter)) {
+        return false;
+      } else if (typeFilter && action.type.includes(typeFilter)) {
+        return false;
+      }
+      return true;
     });
-  }, [actions, state.columns]);
+  }, [actions, nameFilter, typeFilter]);
 
-  return (state && state.data && state.data.length > 0) ? (
+  return filteredActions.length ? (
     <Paper aria-label="Agents" className={classes.root}>
       <Box
         display="flex"
@@ -90,6 +85,8 @@ const ActionsTable = ({
           <FilterBox name="Action Type" filter={typeFilter} onChange={setTypeFilter} />
         </Box>
       </Box>
+
+      <ActionList actions={filteredActions}/>
     </Paper>
   ) : (
     <Typography align="center" variant="h6">
