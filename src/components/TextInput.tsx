@@ -1,23 +1,18 @@
-import { createStyles, TextField } from '@material-ui/core';
-import { makeStyles, Theme } from '@material-ui/core/styles';
-import clsx from 'clsx';
+import { TextField } from '@material-ui/core';
+import { InputProps as StandardInputProps } from '@material-ui/core';
 import React from 'react';
 import { TextColorTypes, TextVariantTypes } from './types';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    input: {},
-  }),
-);
 
 interface TextInputProps {
   id?: string;
   color?: TextColorTypes;
+  className?: string;
   label?: string;
   defaultValue?: string;
   placeholder?: string;
   value?: string;
   variant?: TextVariantTypes;
+  InputProps?: Partial<StandardInputProps>;
   onChange?: (value: string) => void;
 }
 
@@ -25,14 +20,14 @@ const TextInput: React.FC<TextInputProps> = ({
   id,
   label,
   color,
+  className,
   defaultValue,
   placeholder,
   value,
   variant,
+  InputProps,
   onChange,
 }) => {
-  const classes = useStyles();
-
   return (
     <TextField
       id={id}
@@ -42,7 +37,8 @@ const TextInput: React.FC<TextInputProps> = ({
       placeholder={placeholder}
       value={value}
       variant={(variant || 'outlined') as any}
-      className={clsx(classes.input)}
+      className={className}
+      InputProps={InputProps}
       onChange={onChange ? (e) => onChange(e.target.value as string) : undefined}
     />
   );

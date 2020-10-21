@@ -6,20 +6,21 @@ import {
   TableContainer,
   Typography,
 } from '@material-ui/core';
-import { Edit } from '@material-ui/icons';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import MaterialTable, { Column } from 'material-table';
+import { Edit } from '@material-ui/icons';
 import 'firebase/auth';
 import _ from 'lodash';
-import React, { useEffect } from 'react';
+import MaterialTable, { Column } from 'material-table';
+import React, { useEffect, useState } from 'react';
+import { FilterBox } from '../../../components';
 import ActionDetailPanel from './ActionDetailPanel';
 
-const useStyles = makeStyles((theme: Theme) => 
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       padding: theme.spacing(3),
-    }
-  })
+    },
+  }),
 );
 
 interface ActionState {
@@ -41,6 +42,8 @@ const ActionsTable = ({
   onDeleteAction,
 }: ActionsTableProps) => {
   const classes = useStyles();
+  const [nameFilter, setNameFilter] = useState('');
+  const [typeFilter, setTypeFilter] = useState('');
 
   const [state, setState] = React.useState<ActionState>({
     columns: [
@@ -81,6 +84,8 @@ const ActionsTable = ({
         </Button>
       </Box>
 
+      <FilterBox name="Action Name" filter={nameFilter} onChange={setNameFilter} />
+      <FilterBox name="Action Type" filter={typeFilter} onChange={setTypeFilter} />
       <MaterialTable
         columns={state.columns}
         data={_.cloneDeep(state.data)}
@@ -93,6 +98,7 @@ const ActionsTable = ({
           search: false,
           paging: true,
           pageSize: 10,
+          toolbar: false,
         }}
         actions={[
           {
