@@ -39,7 +39,7 @@ const Actions = () => {
       config
         .copy()
         .deleteAction(currentAction.name)
-        .addAction(action as any),
+        .addAction(action.toJsonObj()),
     );
     setIsNewAction(false);
     setCurrentAction(undefined);
