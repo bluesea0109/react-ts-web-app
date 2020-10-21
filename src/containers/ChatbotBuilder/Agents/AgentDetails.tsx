@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { AgentConfig } from '@bavard/agent-config';
-import { Box, Grid, Toolbar, Button, makeStyles, Theme } from '@material-ui/core';
+import { Box, Button, Grid, makeStyles, Theme, Toolbar } from '@material-ui/core';
 import React from 'react';
 import { useParams } from 'react-router';
 import { useRecoilState } from 'recoil';
@@ -171,12 +171,12 @@ const AgentDetails = () => {
   };
 
   return (
-    <div className={classes.container}>      
+    <div className={classes.container}>
       <Toolbar className={classes.toolbar} variant="dense">
         <Button variant="contained" onClick={saveAgent}>
           {'Save Agent'}
         </Button>
-      </Toolbar>      
+      </Toolbar>
       <div className={classes.tabsContainer}>
         <TabPanel className={classes.tabPanel} value={agentTab} index="Actions">
           <Actions />
