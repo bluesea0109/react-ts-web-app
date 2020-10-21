@@ -16,7 +16,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import { TransitionProps } from '@material-ui/core/transitions';
 import Typography from '@material-ui/core/Typography';
-import { Check, Close, Delete, AddCircleOutline } from '@material-ui/icons';
+import { AddCircleOutline, Check, Close, Delete } from '@material-ui/icons';
 import CloseIcon from '@material-ui/icons/Close';
 import { Autocomplete } from '@material-ui/lab';
 import gql from 'graphql-tag';
@@ -72,12 +72,12 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'center',
     },
-  })
+  }),
 );
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & { children?: React.ReactElement },
-  ref: React.Ref<unknown>
+  ref: React.Ref<unknown>,
 ) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -103,7 +103,7 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
   const { enqueueSnackbar } = useSnackbar();
 
   const [_config, setConfig] = useRecoilState<AgentConfig | undefined>(
-    currentAgentConfig
+    currentAgentConfig,
   );
   const config = _.cloneDeep(_config);
   const widgetSettings = useRecoilValue(currentWidgetSettings);
@@ -173,19 +173,19 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
 
   const saveChanges = async () => {
     if (newIntent.name === '') {
-      enqueueSnackbar("Intent can't be empty", { variant: 'warning' });
+      enqueueSnackbar('Intent can\'t be empty', { variant: 'warning' });
       return;
     }
 
     const hasNoEmptyExamples = examples.reduce(
       (prev, curr) => prev && !!curr.text,
-      true
+      true,
     );
 
     if (!hasNoEmptyExamples) {
       enqueueSnackbar(
         'Please make sure no example is empty before proceeding',
-        { variant: 'error' }
+        { variant: 'error' },
       );
       return;
     }
@@ -252,7 +252,7 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
 
   const createTag = async () => {
     if (newTag === '') {
-      enqueueSnackbar("Can't create empty tag", { variant: 'error' });
+      enqueueSnackbar('Can\'t create empty tag', { variant: 'error' });
       return;
     }
 
@@ -297,18 +297,18 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
         </Toolbar>
       </AppBar>
       <DialogContent>
-        <Grid container>
-          <Grid item md={4} xs={12}></Grid>
-          <Grid item md={4} xs={12}>
+        <Grid container={true}>
+          <Grid item={true} md={4} xs={12}/>
+          <Grid item={true} md={4} xs={12}>
             <Typography className={classes.instruction}>
               Add an Intent to customize your Assistant’s behavior:
             </Typography>
           </Grid>
-          <Grid item md={4} xs={12}></Grid>
+          <Grid item={true} md={4} xs={12}/>
         </Grid>
-        <Grid container className={classes.fields}>
-          <Grid item md={4} xs={12}></Grid>
-          <Grid item md={4} xs={12}>
+        <Grid container={true} className={classes.fields}>
+          <Grid item={true} md={4} xs={12}/>
+          <Grid item={true} md={4} xs={12}>
             <Typography className={classes.fieldLabel}>Intent Value</Typography>
             <TextField
               fullWidth={true}
@@ -323,30 +323,30 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
               inputProps={{ className: classes.intent }}
             />
           </Grid>
-          <Grid item xs={4} md={12}></Grid>
+          <Grid item={true} xs={4} md={12}/>
         </Grid>
-        <Grid container className={classes.fields}>
-          <Grid item md={4} xs={12}></Grid>
-          <Grid item md={4} xs={12}>
+        <Grid container={true} className={classes.fields}>
+          <Grid item={true} md={4} xs={12}/>
+          <Grid item={true} md={4} xs={12}>
             <Typography className={classes.fieldLabel}>
               Default Action
             </Typography>
             <DropDown
               label=""
               current={actions.find(
-                (a) => a.name === newIntent?.defaultActionName
+                (a) => a.name === newIntent?.defaultActionName,
               )}
               menuItems={actions}
               onChange={handleActionFieldChange}
               size="large"
             />
           </Grid>
-          <Grid item xs={4} md={12}></Grid>
+          <Grid item={true} xs={4} md={12}/>
         </Grid>
 
-        <Grid container className={classes.fields}>
-          <Grid item md={4} xs={12}></Grid>
-          <Grid item md={4} xs={12}>
+        <Grid container={true} className={classes.fields}>
+          <Grid item={true} md={4} xs={12}/>
+          <Grid item={true} md={4} xs={12}>
             <Typography className={classes.fieldLabel}>
               Select Tag Type
             </Typography>
@@ -358,11 +358,11 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
               size="large"
             />
           </Grid>
-          <Grid item xs={4} md={12}></Grid>
+          <Grid item={true} xs={4} md={12}/>
         </Grid>
-        <Grid container>
-          <Grid item md={4} xs={12}></Grid>
-          <Grid item md={4} xs={12} className={classes.addExampleBtn}>
+        <Grid container={true}>
+          <Grid item={true} md={4} xs={12}/>
+          <Grid item={true} md={4} xs={12} className={classes.addExampleBtn}>
             <Button
               color="primary"
               onClick={() => console.log('clicked')}
@@ -370,11 +370,11 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
               Add a New Example
             </Button>
           </Grid>
-          <Grid item md={4} xs={12}></Grid>
+          <Grid item={true} md={4} xs={12}/>
         </Grid>
-        <Grid container>
-          <Grid item md={4} xs={12}></Grid>
-          <Grid item md={4} xs={12} className={classes.addIntentBtn}>
+        <Grid container={true}>
+          <Grid item={true} md={4} xs={12}/>
+          <Grid item={true} md={4} xs={12} className={classes.addIntentBtn}>
             <Button
               color="primary"
               variant="contained"
@@ -382,7 +382,7 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
               Add Intent
             </Button>
           </Grid>
-          <Grid item md={4} xs={12}></Grid>
+          <Grid item={true} md={4} xs={12}/>
         </Grid>
         {/*<Box my={4}>
           <Grid container={true}>

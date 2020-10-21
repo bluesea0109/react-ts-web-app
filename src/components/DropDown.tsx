@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     selectInput: {
       margin: theme.spacing(0),
-      minWidth: (props: ComponentProps)=> props.size === "large" ? "100%" : 155,
+      minWidth: (props: ComponentProps) => props.size === 'large' ? '100%' : 155,
       color: 'black',
       borderRadius: 2,
       borderColor: 'white',
@@ -56,14 +56,14 @@ const DropDown: React.FC<DropDownProps> = ({
   current,
   menuItems,
   onChange,
-  size
+  size,
 }) => {
-  const props = {size: size}
+  const props = {size};
   const classes = useStyles(props);
 
   const currentItem = current?.name || current || '';
 
-  console.log('Menu Item ', menuItems)
+  console.log('Menu Item ', menuItems);
   return (
     <Box>
       <InputLabel className={clsx(classes.selectLabel)}>
