@@ -1,16 +1,26 @@
 import { BaseAgentAction } from '@bavard/agent-config';
 import {
+  Box,
   Button,
   Paper,
   TableContainer,
   Typography,
 } from '@material-ui/core';
 import { Edit } from '@material-ui/icons';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import MaterialTable, { Column } from 'material-table';
 import 'firebase/auth';
 import _ from 'lodash';
-import MaterialTable, { Column } from 'material-table';
 import React, { useEffect } from 'react';
 import ActionDetailPanel from './ActionDetailPanel';
+
+const useStyles = makeStyles((theme: Theme) => 
+  createStyles({
+    root: {
+      padding: theme.spacing(3),
+    }
+  })
+);
 
 interface ActionState {
   columns: Column<BaseAgentAction>[];
@@ -30,6 +40,7 @@ const ActionsTable = ({
   onEditAction,
   onDeleteAction,
 }: ActionsTableProps) => {
+  const classes = useStyles();
 
   const [state, setState] = React.useState<ActionState>({
     columns: [
@@ -49,11 +60,28 @@ const ActionsTable = ({
   }, [actions, state.columns]);
 
   return (state && state.data && state.data.length > 0) ? (
-    <TableContainer component={Paper} aria-label="Agents">
+    <TableContainer component={Paper} aria-label="Agents" className={classes.root}>
+      <Box
+        width="100%"
+        display="flex"
+        justifyContent="space-between"
+        alignItems="flex-start"
+        paddingBottom={2}
+      >
+        <Box>
+          <Typography variant="h6">
+            Actions
+          </Typography>
+          <Typography>
+            Select an Action below to change the Assistant's behavior:
+          </Typography>
+        </Box>
+        <Button variant="contained" color="primary" onClick={onAddAction}>
+          Add New Action
+        </Button>
+      </Box>
+
       <MaterialTable
-        title={
-          <Button variant="contained" color="primary" onClick={onAddAction}>Add New Action</Button>
-        }
         columns={state.columns}
         data={_.cloneDeep(state.data)}
         detailPanel={({ tableData, ...actionDetails }: any) => (

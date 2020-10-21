@@ -114,19 +114,10 @@ const AgentDetails = () => {
         </Button>
       </Toolbar>
       <Box className={classes.tabsContainer}>
-        <TabPanel
-          index="Actions"
-          value={agentTab}
-          className={classes.tabPanel}
-          tabName="Manage Assistant Actions"
-        >
+        <TabPanel index="Actions" value={agentTab} className={classes.tabPanel} tabName="Manage Assistant Actions">
           <Actions />
         </TabPanel>
-        <TabPanel
-          index="Intents"
-          value={agentTab}
-          className={classes.tabPanel}
-        >
+        <TabPanel index="Intents" value={agentTab} className={classes.tabPanel}>
           <Intent />
         </TabPanel>
         <TabPanel className={classes.tabPanel} value={agentTab} index="Tags">
@@ -135,10 +126,7 @@ const AgentDetails = () => {
         <TabPanel className={classes.tabPanel} value={agentTab} index="Slots">
           <Slot />
         </TabPanel>
-        <TabPanel
-          className={classes.tabPanel}
-          value={agentTab}
-          index="nluExamples">
+        <TabPanel className={classes.tabPanel} value={agentTab} index="nluExamples">
           <Examples />
         </TabPanel>
         {agentTab === 'graph-policy' && <GraphPolicy />}

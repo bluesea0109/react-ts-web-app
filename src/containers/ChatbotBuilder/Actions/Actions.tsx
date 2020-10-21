@@ -12,9 +12,7 @@ const Actions = () => {
   const [isNewAction, setIsNewAction] = useState<boolean>(false);
   const [config, setConfig] = useRecoilState<AgentConfig | undefined>(currentAgentConfig);
 
-  if (!config) {
-    return <p>Agent config is empty.</p>;
-  }
+  if (!config) { return null; }
 
   const actions: BaseAgentAction[] = config.getActions();
 
