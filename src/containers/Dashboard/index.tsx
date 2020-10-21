@@ -12,10 +12,14 @@ import {
   TableRow,
   Typography,
 } from '@material-ui/core';
-import {AddCircleOutline, Folder, SupervisedUserCircleOutlined} from '@material-ui/icons';
+import {
+  AddCircleOutline,
+  Folder,
+  SupervisedUserCircleOutlined,
+} from '@material-ui/icons';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { IUser } from '../../models/user-service';
 import NewOrganisation from './NewOrganisation';
 import NewProject from './NewProject';
@@ -46,12 +50,16 @@ function Account(props: IDashboardProps) {
         <Grid item={true} container={true} xs={12} spacing={4}>
           <Grid item={true} sm={12} md={10}>
             <Card>
-              <CardHeader avatar={<SupervisedUserCircleOutlined/>} title={<h4>Your organizations</h4>}
+              <CardHeader
+                avatar={<SupervisedUserCircleOutlined />}
+                title={<h4>Your organizations</h4>}
                 action={
-                  <Button color="primary"
+                  <Button
+                    color="primary"
                     onClick={() => showAddOrg(true)}
-                    endIcon={<AddCircleOutline/>}
-                    disabled={(orgs?.length || 0) >= 3}>Add New Organization
+                    endIcon={<AddCircleOutline />}
+                    disabled={(orgs?.length || 0) >= 3}>
+                    Add New Organization
                   </Button>
                 }
               />
@@ -83,14 +91,17 @@ function Account(props: IDashboardProps) {
           </Grid>
           <Grid item={true} sm={12} md={10}>
             <Card>
-              <CardHeader  avatar={<Folder/>} title={<h4>Projects for {activeOrg?.name}</h4>}
-              action={
-                <Button color="primary"
-                  onClick={() => showAddProject(true)}
-                  endIcon={<AddCircleOutline/>}
-                  >Add New Project
-                </Button>
-              }
+              <CardHeader
+                avatar={<Folder />}
+                title={<h4>Projects for {activeOrg?.name}</h4>}
+                action={
+                  <Button
+                    color="primary"
+                    onClick={() => showAddProject(true)}
+                    endIcon={<AddCircleOutline />}>
+                    Add New Project
+                  </Button>
+                }
               />
               {activeOrg ? (
                 <ProjectsTable
@@ -104,20 +115,25 @@ function Account(props: IDashboardProps) {
           </Grid>
 
           <Grid item={true} xs={12} sm={6}>
-            {
-              viewAddOrg && (
-                <Dialog title="Add an Organization" open={true} onClose={() => showAddOrg(false)}>
-                  <NewOrganisation onSuccess={() => showAddOrg(false)} />
-                </Dialog>
-              )
-            }
-            {
-              viewAddProject && orgId && (
-                <Dialog title="Create a Project" open={true} onClose={() => showAddProject(false)}>
-                  <NewProject activeOrg={activeOrg} onSuccess={() => showAddProject(false)}  />
-                </Dialog>
-              )
-            }
+            {viewAddOrg && (
+              <Dialog
+                title="Add an Organization"
+                open={true}
+                onClose={() => showAddOrg(false)}>
+                <NewOrganisation onSuccess={() => showAddOrg(false)} />
+              </Dialog>
+            )}
+            {viewAddProject && orgId && (
+              <Dialog
+                title="Create a Project"
+                open={true}
+                onClose={() => showAddProject(false)}>
+                <NewProject
+                  activeOrg={activeOrg}
+                  onSuccess={() => showAddProject(false)}
+                />
+              </Dialog>
+            )}
           </Grid>
         </Grid>
       </Grid>

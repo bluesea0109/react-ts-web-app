@@ -456,8 +456,12 @@ class GraphPolicyVisualEditor extends React.Component<
   renderNewPolicy() {
     return (
       <Grid container={true}>
-        <Grid item={true} lg={6} sm={12} style={{position: 'relative', margin: 'auto', top: '200px'}}>
-          <CreatePolicyForm onSuccess={this.handleNewPolicy}/>
+        <Grid
+          item={true}
+          lg={6}
+          sm={12}
+          style={{ position: 'relative', margin: 'auto', top: '200px' }}>
+          <CreatePolicyForm onSuccess={this.handleNewPolicy} />
         </Grid>
       </Grid>
     );
@@ -480,9 +484,7 @@ class GraphPolicyVisualEditor extends React.Component<
     const treeContent = this.renderTree(gp.rootNode);
     const content = (
       <React.Fragment>
-        <Paper
-          className={classes.zoomControls}
-          style={{ position: 'absolute' }}>
+        <Paper className={classes.zoomControls} style={{ position: 'fixed' }}>
           <Tooltip title={`Zoom: ${this.state.zoom}%`}>
             <div>
               <IconButton
@@ -503,7 +505,9 @@ class GraphPolicyVisualEditor extends React.Component<
         </Paper>
 
         <div className={classes.root} style={{ zoom: `${this.state.zoom}%` }}>
-          {treeContent}
+          <div style={{ position: 'absolute', top: 0, left: 0 }}>
+            {treeContent}
+          </div>
           {this.state.showEditNode && this.renderEditNodeForm()}
           {this.state.showDeleteNode && this.renderDeleteNodeForm()}
         </div>

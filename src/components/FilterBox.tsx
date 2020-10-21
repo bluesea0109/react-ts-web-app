@@ -50,7 +50,7 @@ const FilterBox = ({
         className={clsx(classes.input)}
         value={filter}
         variant="outlined"
-        onChange={onChange}
+        onChange={(e) => onChange(e.target.value)}
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">

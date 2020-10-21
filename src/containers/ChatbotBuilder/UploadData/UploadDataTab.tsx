@@ -36,9 +36,9 @@ export default function UploadDataTab() {
   }
 
   return (
-    <div className={classes.root}>
+    <div className="page-container">
       <Grid container={true} spacing={2}>
-        <Grid item={true} xs={12}>
+        <Grid item={true} xs={3}>
           <UploadDataDialog
             uname={config.uname}
             agentId={parseInt(agentId)}

@@ -78,6 +78,7 @@ const useStyles = makeStyles((theme: Theme) =>
     content: {
       display: 'flex',
       flexDirection: 'column',
+      backgroundColor: '#f4f4f4',
       overflow: 'hidden',
       flexGrow: 1,
       transition: theme.transitions.create('margin', {

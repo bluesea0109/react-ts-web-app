@@ -1,6 +1,6 @@
 import { TextField } from '@material-ui/core';
 import { InputProps as StandardInputProps } from '@material-ui/core';
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import { TextColorTypes, TextVariantTypes } from './types';
 
 interface TextInputProps {
@@ -13,7 +13,7 @@ interface TextInputProps {
   value?: string;
   variant?: TextVariantTypes;
   InputProps?: Partial<StandardInputProps>;
-  onChange?: (value: string) => void;
+  onChange?: (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void;
 }
 
 const TextInput: React.FC<TextInputProps> = ({
@@ -39,7 +39,7 @@ const TextInput: React.FC<TextInputProps> = ({
       variant={(variant || 'outlined') as any}
       className={className}
       InputProps={InputProps}
-      onChange={onChange ? (e) => onChange(e.target.value as string) : undefined}
+      onChange={onChange}
     />
   );
 };
