@@ -69,7 +69,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   toolbar: {},
   saveAgent: {
-    position: 'absolute',    
+    position: 'absolute',
     width: '150px',
     backgroundColor: '#151630',
     color: 'white',
@@ -81,31 +81,31 @@ const useStyles = makeStyles((theme: Theme) => ({
     boxShadow: '0 0 3px #333',
     zIndex: 500000,
 
-    animation: '$hoverOut 500ms',            
+    animation: '$hoverOut 500ms',
     right: '-110px',
     '&:hover': {
       background: 'linear-gradient(137deg, rgba(2,0,36,1) 66%, rgba(0,212,255,1) 100%, rgba(9,9,121,1) 100%)',
-      animation: '$hoverIn 500ms',            
+      animation: '$hoverIn 500ms',
       right: '0px',
     },
     '&:active': {
-      backgroundColor: 'green'
-    } 
+      backgroundColor: 'green',
+    },
   },
   buttonTitle: {
     marginTop: '15px',
     fontSize: '18px',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
 
   '@keyframes hoverIn' : {
     from: { right: '-110px'},
-    to: { right: '0px'}
-  }, 
+    to: { right: '0px'},
+  },
   '@keyframes hoverOut' : {
     from: { right: '0px'},
-    to: { right: '-110px'}
-  } 
+    to: { right: '-110px'},
+  },
 
 }));
 
@@ -123,7 +123,7 @@ const AgentDetails = () => {
   }>();
   const [config, setConfig] = useRecoilState(currentAgentConfig);
   const [widgetSettings, setWidgetSettings] = useRecoilState(
-    currentWidgetSettings
+    currentWidgetSettings,
   );
 
   const { error, loading, data } = useQuery<IGetAgent>(CHATBOT_GET_AGENT, {
@@ -141,7 +141,7 @@ const AgentDetails = () => {
         { query: CHATBOT_GET_AGENT, variables: { agentId: Number(agentId) } },
       ],
       awaitRefetchQueries: true,
-    }
+    },
   );
 
   if (error) {
@@ -168,10 +168,10 @@ const AgentDetails = () => {
     <div className={classes.container}>
       <div className={classes.saveAgent}>
         <Grid container={true} onClick={saveAgent}>
-          <Grid item xs={4}>
+          <Grid item={true} xs={4}>
             <img src={'/bot.svg'} alt="logo" width="50px" height="50px" />{' '}
           </Grid>
-          <Grid item xs={8} className={classes.buttonTitle}>
+          <Grid item={true} xs={8} className={classes.buttonTitle}>
             Save Agent
           </Grid>
         </Grid>
