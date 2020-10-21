@@ -61,7 +61,6 @@ const lightTheme: ThemeOptions = {
     },
     background: {
       // paper: '#eeeeee', // light
-      paper: '#f5f5f5',
       default: '#ffffff', // light
     },
     text: {
