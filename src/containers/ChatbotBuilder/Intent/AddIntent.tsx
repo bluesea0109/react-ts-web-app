@@ -16,7 +16,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import { TransitionProps } from '@material-ui/core/transitions';
 import Typography from '@material-ui/core/Typography';
-import { Check, Close, Delete } from '@material-ui/icons';
+import { Check, Close, Delete, AddCircleOutline } from '@material-ui/icons';
 import CloseIcon from '@material-ui/icons/Close';
 import { Autocomplete } from '@material-ui/lab';
 import gql from 'graphql-tag';
@@ -29,6 +29,7 @@ import {
   CHATBOT_GET_AGENT,
   CHATBOT_SAVE_CONFIG_AND_SETTINGS,
 } from '../../../common-gql-queries';
+import { DropDown } from '../../../components';
 import { INLUExample } from '../../../models/chatbot-service';
 import { currentAgentConfig, currentWidgetSettings } from '../atoms';
 import { AddExampleItem } from '../Examples/AddExamples';
@@ -46,12 +47,37 @@ const useStyles = makeStyles((theme: Theme) =>
       color: 'white',
       flex: 1,
     },
-  }),
+    fields: {
+      marginBottom: '40px',
+    },
+    intent: {
+      padding: '7px',
+      fontSize: '16px',
+    },
+    instruction: {
+      marginTop: '50px',
+      marginBottom: '30px',
+      fontSize: '18px',
+    },
+    fieldLabel: {
+      marginBottom: '5px',
+      fontSize: '18px',
+      fontWeight: 'bold',
+    },
+    addExampleBtn: {
+      display: 'flex',
+      justifyContent: 'flex-end',
+    },
+    addIntentBtn: {
+      display: 'flex',
+      justifyContent: 'center',
+    },
+  })
 );
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & { children?: React.ReactElement },
-  ref: React.Ref<unknown>,
+  ref: React.Ref<unknown>
 ) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -77,12 +103,13 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
   const { enqueueSnackbar } = useSnackbar();
 
   const [_config, setConfig] = useRecoilState<AgentConfig | undefined>(
-    currentAgentConfig,
+    currentAgentConfig
   );
   const config = _.cloneDeep(_config);
   const widgetSettings = useRecoilValue(currentWidgetSettings);
 
   const tagTypes = Array.from(config?.getTagTypes() ?? []);
+  console.log('TagTypes ;:: ', tagTypes);
 
   const { agentId } = useParams<{ agentId: string }>();
   const numAgentId = Number(agentId);
@@ -146,19 +173,19 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
 
   const saveChanges = async () => {
     if (newIntent.name === '') {
-      enqueueSnackbar('Intent can\'t be empty', { variant: 'warning' });
+      enqueueSnackbar("Intent can't be empty", { variant: 'warning' });
       return;
     }
 
     const hasNoEmptyExamples = examples.reduce(
       (prev, curr) => prev && !!curr.text,
-      true,
+      true
     );
 
     if (!hasNoEmptyExamples) {
       enqueueSnackbar(
         'Please make sure no example is empty before proceeding',
-        { variant: 'error' },
+        { variant: 'error' }
       );
       return;
     }
@@ -225,7 +252,7 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
 
   const createTag = async () => {
     if (newTag === '') {
-      enqueueSnackbar('Can\'t create empty tag', { variant: 'error' });
+      enqueueSnackbar("Can't create empty tag", { variant: 'error' });
       return;
     }
 
@@ -242,6 +269,17 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
     }
   };
 
+  const handleActionFieldChange = (field: string) => {
+    setNewIntent({
+      ...newIntent,
+      defaultActionName: field,
+    });
+  };
+
+  const handleTagTypeChange = (field: string) => {
+    setTagType(field);
+  };
+
   return (
     <Dialog fullScreen={true} open={true} TransitionComponent={Transition}>
       <AppBar className={classes.appBar}>
@@ -249,15 +287,6 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
           <Typography variant="h6" className={classes.title}>
             Create New Intent
           </Typography>
-          {/* <Button disabled={loading} autoFocus={true} color="inherit" onClick={saveChanges}>
-            {loading && (
-              <CircularProgress
-                color="secondary"
-                size={20}
-              />
-            )}
-            Create
-          </Button> */}
           <IconButton
             edge="start"
             color="inherit"
@@ -268,7 +297,94 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
         </Toolbar>
       </AppBar>
       <DialogContent>
-        <Box my={4}>
+        <Grid container>
+          <Grid item md={4} xs={12}></Grid>
+          <Grid item md={4} xs={12}>
+            <Typography className={classes.instruction}>
+              Add an Intent to customize your Assistant’s behavior:
+            </Typography>
+          </Grid>
+          <Grid item md={4} xs={12}></Grid>
+        </Grid>
+        <Grid container className={classes.fields}>
+          <Grid item md={4} xs={12}></Grid>
+          <Grid item md={4} xs={12}>
+            <Typography className={classes.fieldLabel}>Intent Value</Typography>
+            <TextField
+              fullWidth={true}
+              variant="outlined"
+              value={newIntent.name}
+              onChange={(e) =>
+                setNewIntent({
+                  ...newIntent,
+                  name: e.target.value.replace(/ /g, '+'),
+                })
+              }
+              inputProps={{ className: classes.intent }}
+            />
+          </Grid>
+          <Grid item xs={4} md={12}></Grid>
+        </Grid>
+        <Grid container className={classes.fields}>
+          <Grid item md={4} xs={12}></Grid>
+          <Grid item md={4} xs={12}>
+            <Typography className={classes.fieldLabel}>
+              Default Action
+            </Typography>
+            <DropDown
+              label=""
+              current={actions.find(
+                (a) => a.name === newIntent?.defaultActionName
+              )}
+              menuItems={actions}
+              onChange={handleActionFieldChange}
+              size="large"
+            />
+          </Grid>
+          <Grid item xs={4} md={12}></Grid>
+        </Grid>
+
+        <Grid container className={classes.fields}>
+          <Grid item md={4} xs={12}></Grid>
+          <Grid item md={4} xs={12}>
+            <Typography className={classes.fieldLabel}>
+              Select Tag Type
+            </Typography>
+            <DropDown
+              label=""
+              current={tagType}
+              menuItems={tagTypes}
+              onChange={handleTagTypeChange}
+              size="large"
+            />
+          </Grid>
+          <Grid item xs={4} md={12}></Grid>
+        </Grid>
+        <Grid container>
+          <Grid item md={4} xs={12}></Grid>
+          <Grid item md={4} xs={12} className={classes.addExampleBtn}>
+            <Button
+              color="primary"
+              onClick={() => console.log('clicked')}
+              endIcon={<AddCircleOutline />}>
+              Add a New Example
+            </Button>
+          </Grid>
+          <Grid item md={4} xs={12}></Grid>
+        </Grid>
+        <Grid container>
+          <Grid item md={4} xs={12}></Grid>
+          <Grid item md={4} xs={12} className={classes.addIntentBtn}>
+            <Button
+              color="primary"
+              variant="contained"
+              onClick={() => console.log('clicked')}>
+              Add Intent
+            </Button>
+          </Grid>
+          <Grid item md={4} xs={12}></Grid>
+        </Grid>
+        {/*<Box my={4}>
           <Grid container={true}>
             <Grid item={true} xs={6}>
               <Box p={2}>
@@ -424,9 +540,8 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
               onClick={saveChanges}>
               Save
             </Button>
-
           </Box>
-        </Box>
+            </Box>*/}
       </DialogContent>
     </Dialog>
   );

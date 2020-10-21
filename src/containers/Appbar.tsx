@@ -91,6 +91,7 @@ const Orgs: React.FC<OrgsProps> = ({
       current={user.activeOrg?.id}
       menuItems={orgs}
       onChange={(name) => setActiveOrg(name)}
+      size="small"
     />
   ) : (
     <TextField
@@ -129,6 +130,7 @@ const Projects: React.FC<ProjectsProps> = ({
       current={projectId}
       menuItems={projects}
       onChange={(name) => setActiveProject(name)}
+      size="small"
     />
   ) : (
     <TextField
