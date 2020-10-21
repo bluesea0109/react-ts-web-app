@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBttom: theme.spacing(2),
     },
     header: {
-      padding: theme.spacing(1),
+      padding: '4px 8px 4px 4px',
     },
   }));
 
@@ -48,12 +48,14 @@ const CollapsibleAction = ({
   return (
     <Paper variant="outlined" square={true} className={clsx(classes.paper)}>
       <Grid container={true} alignItems="center" className={clsx(classes.header)}>
-        <Grid item={true} container={true} xs={6} sm={6}>
-          {isOpen ? (
-            <KeyboardArrowDown onClick={onToggleAction}/>
-          ) : (
-            <KeyboardArrowRight onClick={onToggleAction}/>
-          )}
+        <Grid item={true} container={true} xs={6} sm={6} alignItems="center">
+          <Box mr={1}>
+            {isOpen ? (
+              <KeyboardArrowDown color="primary" fontSize="large" onClick={onToggleAction}/>
+            ) : (
+              <KeyboardArrowRight color="primary" fontSize="large" onClick={onToggleAction}/>
+            )}
+          </Box>
           <Typography style={{ textTransform: 'capitalize' }}>
             {action.name}
           </Typography>
