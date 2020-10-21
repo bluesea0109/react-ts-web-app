@@ -3,7 +3,6 @@ import {
   Box,
   Button,
   Paper,
-  TableContainer,
   Typography,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -63,9 +62,8 @@ const ActionsTable = ({
   }, [actions, state.columns]);
 
   return (state && state.data && state.data.length > 0) ? (
-    <TableContainer component={Paper} aria-label="Agents" className={classes.root}>
+    <Paper aria-label="Agents" className={classes.root}>
       <Box
-        width="100%"
         display="flex"
         justifyContent="space-between"
         alignItems="flex-start"
@@ -84,34 +82,15 @@ const ActionsTable = ({
         </Button>
       </Box>
 
-      <FilterBox name="Action Name" filter={nameFilter} onChange={setNameFilter} />
-      <FilterBox name="Action Type" filter={typeFilter} onChange={setTypeFilter} />
-      <MaterialTable
-        columns={state.columns}
-        data={_.cloneDeep(state.data)}
-        detailPanel={({ tableData, ...actionDetails }: any) => (
-          <ActionDetailPanel action={actionDetails}/>
-        )}
-        options={{
-          actionsColumnIndex: -1,
-          filtering: true,
-          search: false,
-          paging: true,
-          pageSize: 10,
-          toolbar: false,
-        }}
-        actions={[
-          {
-            icon: (_: any) => <Edit />,
-            tooltip: 'Edit Action',
-            onClick: (_, rowData) => onEditAction(rowData as BaseAgentAction),
-          },
-        ]}
-        editable={{
-          onRowDelete: async (action) => onDeleteAction(action as BaseAgentAction),
-        }}
-      />
-    </TableContainer>
+      <Box display="flex" flexDirection="row" justifyContent="space-between">
+        <Box flex={1}>
+          <FilterBox name="Action Name" filter={nameFilter} onChange={setNameFilter} />
+        </Box>
+        <Box flex={1}>
+          <FilterBox name="Action Type" filter={typeFilter} onChange={setTypeFilter} />
+        </Box>
+      </Box>
+    </Paper>
   ) : (
     <Typography align="center" variant="h6">
       {'No Actions found'}
