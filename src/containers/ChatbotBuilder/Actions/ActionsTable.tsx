@@ -1,107 +1,95 @@
 import { BaseAgentAction } from '@bavard/agent-config';
 import {
+  Box,
   Button,
   Paper,
-  TableContainer,
   Typography,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Edit } from '@material-ui/icons';
-import 'firebase/auth';
-import _ from 'lodash';
-import MaterialTable, { Column } from 'material-table';
-import React, { useEffect } from 'react';
-import ActionDetailPanel from './ActionDetailPanel';
+import React, { useMemo, useState } from 'react';
+import { FilterBox } from '../../../components';
+import ActionList from './ActionList';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      margin: theme.spacing(3),
-    },
-    paper: {
-      padding: theme.spacing(2),
+      padding: theme.spacing(3),
     },
   }),
 );
 
-interface ActionState {
-  columns: Column<BaseAgentAction>[];
-  data: BaseAgentAction[] | undefined;
-}
-
 interface ActionsTableProps {
   actions: BaseAgentAction[];
-  onAdd: () => void;
+  onAddAction: () => void;
   onEditAction: (action: BaseAgentAction) => void;
   onDeleteAction: (action: BaseAgentAction) => void;
 }
 
-function ActionsTable({
+const ActionsTable = ({
   actions,
-  onAdd,
+  onAddAction,
   onEditAction,
   onDeleteAction,
-}: ActionsTableProps) {
+}: ActionsTableProps) => {
   const classes = useStyles();
+  const [nameFilter, setNameFilter] = useState('');
+  const [typeFilter, setTypeFilter] = useState('');
 
-  const [state, setState] = React.useState<ActionState>({
-    columns: [
-      { title: 'Action Name', field: 'name', editable: 'never' },
-      { title: 'Action Type', field: 'type', editable: 'never' },
-    ],
-    data: actions,
-  });
+  const filteredActions = useMemo(() => {
+    const includes = (haystack: string, needle: string) => haystack.toLowerCase().includes(needle.toLowerCase());
 
-  useEffect(() => {
-    if (actions) {
-      setState({
-        columns: state.columns,
-        data: [...actions],
-      });
-    }
+    return actions.filter(action => {
+      if (nameFilter && !includes(action.name, nameFilter)) {
+        return false;
+      } else if (typeFilter && !includes(action.type, typeFilter)) {
+        return false;
+      } else {
+        return true;
+      }
+    });
+  }, [actions, nameFilter, typeFilter]);
 
-    return () => {};
-  }, [actions, state.columns]);
+  return actions.length ? (
+    <Paper aria-label="Agents" className={classes.root}>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="flex-start"
+        paddingBottom={2}
+      >
+        <Box>
+          <Typography variant="h6">
+            Actions
+          </Typography>
+          <Typography>
+            Select an Action below to change the Assistant's behavior:
+          </Typography>
+        </Box>
+        <Button variant="contained" color="primary" onClick={onAddAction}>
+          Add New Action
+        </Button>
+      </Box>
 
-  return (
-    <Paper className={classes.paper}>
-      {state && state.data && state.data.length > 0 ? (
-        <TableContainer component={Paper} aria-label="Agents">
-          <MaterialTable
-            title={
-              <Button variant="contained" color="primary" onClick={onAdd}>Add New Action</Button>
-            }
-            columns={state.columns}
-            data={_.cloneDeep(state.data)}
-            detailPanel={({ tableData, ...actionDetails }: any) => (
-              <ActionDetailPanel action={actionDetails}/>
-            )}
-            options={{
-              actionsColumnIndex: -1,
-              filtering: true,
-              search: false,
-              paging: true,
-              pageSize: 10,
-            }}
-            actions={[
-              {
-                icon: (_: any) => <Edit />,
-                tooltip: 'Edit Action',
-                onClick: (_, rowData) => onEditAction(rowData as BaseAgentAction),
-              },
-            ]}
-            editable={{
-              onRowDelete: async (action) => onDeleteAction(action as BaseAgentAction),
-            }}
-          />
-        </TableContainer>
-      ) : (
-        <Typography align="center" variant="h6">
-          {'No Actions found'}
-        </Typography>
-      )}
+      <Box display="flex" flexDirection="row" justifyContent="space-between">
+        <Box flex={1}>
+          <FilterBox name="Action Name" filter={nameFilter} onChange={setNameFilter} />
+        </Box>
+        <Box flex={1}>
+          <FilterBox name="Action Type" filter={typeFilter} onChange={setTypeFilter} />
+        </Box>
+      </Box>
+
+      <ActionList
+        actions={filteredActions}
+        onEditAction={onEditAction}
+        onDeleteAction={onDeleteAction}
+      />
     </Paper>
+  ) : (
+    <Typography align="center" variant="h6">
+      {'No Actions found'}
+    </Typography>
   );
-}
+};
 
 export default ActionsTable;

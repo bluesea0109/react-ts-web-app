@@ -8,6 +8,7 @@ import {
   CHATBOT_GET_AGENT,
   CHATBOT_SAVE_CONFIG_AND_SETTINGS,
 } from '../../../common-gql-queries';
+import { TabPanel } from '../../../components';
 import { IAgent } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
@@ -27,30 +28,6 @@ import TrainingConversations from '../TrainingConversations';
 import TrainingJobsTab from '../TrainingJobs/TrainingJobsTab';
 import UploadDataTab from '../UploadData/UploadDataTab';
 
-interface TabPanelProps {
-  className?: string;
-  children?: React.ReactNode;
-  dir?: string;
-  index?: any;
-  value?: any;
-}
-
-function TabPanel(props: TabPanelProps) {
-  const { className, children, value, index, ...other } = props;
-
-  return (
-    <div
-      className={className}
-      role="tabpanel"
-      hidden={value !== index}
-      id={`full-width-tabpanel-${index}`}
-      aria-labelledby={`full-width-tab-${index}`}
-      {...other}>
-      {value === index && <Box p={3}>{children}</Box>}
-    </div>
-  );
-}
-
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
     flex: 1,
@@ -66,6 +43,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   tabPanel: {
     overflow: 'auto',
     width: '100%',
+    background: '#f5f5f5',
   },
   toolbar: {
     padding: '10px',
@@ -171,17 +149,17 @@ const AgentDetails = () => {
   };
 
   return (
-    <div className={classes.container}>
+    <Box className={classes.container}>
       <Toolbar className={classes.toolbar} variant="dense">
         <Button variant="contained" onClick={saveAgent}>
           {'Save Agent'}
         </Button>
       </Toolbar>
-      <div className={classes.tabsContainer}>
-        <TabPanel className={classes.tabPanel} value={agentTab} index="Actions">
+      <Box className={classes.tabsContainer}>
+        <TabPanel index="Actions" value={agentTab} className={classes.tabPanel} tabName="Manage Assistant Actions">
           <Actions />
         </TabPanel>
-        <TabPanel className={classes.tabPanel} value={agentTab} index="Intents">
+        <TabPanel index="Intents" value={agentTab} className={classes.tabPanel}>
           <Intent />
         </TabPanel>
         <TabPanel className={classes.tabPanel} value={agentTab} index="Tags">
@@ -190,10 +168,7 @@ const AgentDetails = () => {
         <TabPanel className={classes.tabPanel} value={agentTab} index="Slots">
           <Slot />
         </TabPanel>
-        <TabPanel
-          className={classes.tabPanel}
-          value={agentTab}
-          index="nluExamples">
+        <TabPanel className={classes.tabPanel} value={agentTab} index="nluExamples">
           <Examples />
         </TabPanel>
         {agentTab === 'graph-policy' && <GraphPolicy />}
@@ -206,8 +181,8 @@ const AgentDetails = () => {
         {agentTab === 'publish' && <PublishAgent />}
         {agentTab === 'upload-data' && <UploadDataTab />}
         <div onClick={saveAgent} />
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 
