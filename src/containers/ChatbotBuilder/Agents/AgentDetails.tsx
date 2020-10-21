@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { AgentConfig } from '@bavard/agent-config';
-import { Box, Button, makeStyles, Theme, Toolbar } from '@material-ui/core';
+import { Box, Grid, makeStyles, Theme, Toolbar } from '@material-ui/core';
 import React from 'react';
 import { useParams } from 'react-router';
 import { useRecoilState } from 'recoil';
@@ -67,11 +67,27 @@ const useStyles = makeStyles((theme: Theme) => ({
     overflow: 'auto',
     width: '100%',
   },
-  toolbar: {
-    background: '#f5f5f5',
-    display: 'flex',
-    justifyContent: 'flex-end',
+  toolbar: {},
+  saveAgent: {
+    position: 'absolute',    
+    right: '0px',
+    width: '150px',
+    backgroundColor: '#151630',
+    color: 'white',
+    padding: '5px',
+    borderTopLeftRadius: '30px',
+    borderBottomLeftRadius: '30px',
+    margin: '20px 0px 20px 20px',
+    cursor: 'pointer',
+    boxShadow: '0 0 3px #333',
+    zIndex: 500000,
+    
+    animation: 'slide 0.5s forwards',
+    animationDelay: '2s'
   },
+  buttonTitle: {
+    marginTop: '15px',
+  }
 }));
 
 interface IGetAgent {
@@ -88,7 +104,7 @@ const AgentDetails = () => {
   }>();
   const [config, setConfig] = useRecoilState(currentAgentConfig);
   const [widgetSettings, setWidgetSettings] = useRecoilState(
-    currentWidgetSettings,
+    currentWidgetSettings
   );
 
   const { error, loading, data } = useQuery<IGetAgent>(CHATBOT_GET_AGENT, {
@@ -106,7 +122,7 @@ const AgentDetails = () => {
         { query: CHATBOT_GET_AGENT, variables: { agentId: Number(agentId) } },
       ],
       awaitRefetchQueries: true,
-    },
+    }
   );
 
   if (error) {
@@ -131,11 +147,16 @@ const AgentDetails = () => {
 
   return (
     <div className={classes.container}>
-      <Toolbar className={classes.toolbar} variant="dense">
-        <Button variant="contained" onClick={saveAgent}>
-          {'Save Agent'}
-        </Button>
-      </Toolbar>
+      <div className={classes.saveAgent}>
+        <Grid container onClick={saveAgent}>
+          <Grid xs={4}>
+            <img src={'/bot.svg'} alt="logo" width="50px" height="50px" />{' '}
+          </Grid>
+          <Grid xs={8} className={classes.buttonTitle}>
+            Save Agent
+          </Grid>
+        </Grid>
+      </div>
       <div className={classes.tabsContainer}>
         <TabPanel className={classes.tabPanel} value={agentTab} index="Actions">
           <Actions />
