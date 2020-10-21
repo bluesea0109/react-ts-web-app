@@ -1,10 +1,15 @@
 import { BaseAgentAction } from '@bavard/agent-config';
-import {
-  Box,
-  Grid,
-  Typography,
-} from '@material-ui/core';
+import { Box, createStyles, Grid, makeStyles, Theme, Typography } from '@material-ui/core';
+import clsx from 'clsx';
 import React from 'react';
+
+const useStyles = makeStyles((theme: Theme) =>
+createStyles({
+  container: {
+    paddingLeft: theme.spacing(6),
+    paddingRight: 4,
+  },
+}));
 
 type OtherProps = { [index: string]: any };
 
@@ -15,23 +20,22 @@ interface ActionDetailPanelProps {
 const ActionDetailPanel = ({
   action,
 }: ActionDetailPanelProps) => {
+  const classes = useStyles();
   const { type, name, ...otherProps } = action;
   const actionProps = otherProps as OtherProps;
 
   return (
-    <Grid container={true}>
-      <Grid item={true} xs={6}>
-        {Array.from(Object.keys(actionProps)).map(key => (
-          <Box my={3} key={key}>
-            <Typography variant="h6" style={{ textTransform: 'capitalize', fontWeight: 'bold' }}>{key}</Typography>
-            {key === 'text' ? (
-              <p dangerouslySetInnerHTML={{ __html: actionProps[key] }} />
-            ) : (
-              <Typography variant="caption" style={{ textTransform: 'capitalize' }}>{JSON.stringify(actionProps[key])}</Typography>
-            )}
-          </Box>
-        ))}
-      </Grid>
+    <Grid item={true} className={clsx(classes.container)}>
+      {Array.from(Object.keys(actionProps)).map(key => (
+        <Box my={1} key={key}>
+          <Typography variant="h6" style={{ textTransform: 'capitalize', fontWeight: 'bold' }}>{key}</Typography>
+          {key === 'text' ? (
+            <p dangerouslySetInnerHTML={{ __html: actionProps[key] }} />
+          ) : (
+            <Typography variant="caption" style={{ textTransform: 'capitalize' }}>{JSON.stringify(actionProps[key])}</Typography>
+          )}
+        </Box>
+      ))}
     </Grid>
   );
 };

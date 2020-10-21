@@ -43,6 +43,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   tabPanel: {
     overflow: 'auto',
     width: '100%',
+    background: '#f5f5f5',
   },
   toolbar: {
     background: '#f5f5f5',

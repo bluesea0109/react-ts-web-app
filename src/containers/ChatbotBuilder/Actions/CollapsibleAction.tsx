@@ -3,6 +3,7 @@ import { Box, createStyles, Grid, makeStyles, Paper, Theme, Typography } from '@
 import { Delete, Edit, KeyboardArrowDown, KeyboardArrowRight } from '@material-ui/icons';
 import clsx from 'clsx';
 import React, { useCallback } from 'react';
+import ActionDetailPanel from './ActionDetailPanel';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -46,35 +47,42 @@ const CollapsibleAction = ({
   }, [action, onToggle]);
 
   return (
-    <Paper variant="outlined" square={true} className={clsx(classes.paper)}>
-      <Grid container={true} alignItems="center" className={clsx(classes.header)}>
-        <Grid item={true} container={true} xs={6} sm={6} alignItems="center">
-          <Box mr={1}>
-            {isOpen ? (
-              <KeyboardArrowDown color="primary" fontSize="large" onClick={onToggleAction}/>
-            ) : (
-              <KeyboardArrowRight color="primary" fontSize="large" onClick={onToggleAction}/>
-            )}
-          </Box>
-          <Typography style={{ textTransform: 'capitalize' }}>
-            {action.name}
-          </Typography>
+    <>
+      <Paper variant="outlined" square={true} className={clsx(classes.paper)}>
+        <Grid container={true} alignItems="center" className={clsx(classes.header)}>
+          <Grid item={true} container={true} xs={6} sm={6} alignItems="center">
+            <Box mr={1}>
+              {isOpen ? (
+                <KeyboardArrowDown color="primary" fontSize="large" onClick={onToggleAction}/>
+              ) : (
+                <KeyboardArrowRight color="primary" fontSize="large" onClick={onToggleAction}/>
+              )}
+            </Box>
+            <Typography style={{ textTransform: 'capitalize' }}>
+              {action.name}
+            </Typography>
+          </Grid>
+          <Grid item={true} xs={4} sm={4}>
+            <Typography>
+              {actionType}
+            </Typography>
+          </Grid>
+          <Grid item={true} container={true} xs={2} sm={2} justify="flex-end">
+            <Box mr={1}>
+              <Edit />
+            </Box>
+            <Box ml={1}>
+              <Delete />
+            </Box>
+          </Grid>
         </Grid>
-        <Grid item={true} xs={4} sm={4}>
-          <Typography>
-            {actionType}
-          </Typography>
-        </Grid>
-        <Grid item={true} container={true} xs={2} sm={2} justify="flex-end">
-          <Box mr={1}>
-            <Edit />
-          </Box>
-          <Box ml={1}>
-            <Delete />
-          </Box>
-        </Grid>
-      </Grid>
-    </Paper>
+      </Paper>
+      {isOpen && (
+        <Paper variant="outlined" square={true}>
+          <ActionDetailPanel action={action} />
+        </Paper>
+      )}
+    </>
   );
 };
 
