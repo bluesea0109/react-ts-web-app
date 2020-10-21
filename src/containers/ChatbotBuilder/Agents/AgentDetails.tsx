@@ -69,7 +69,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   toolbar: {},
   saveAgent: {
-    position: 'absolute',    
+    position: 'absolute',
     right: '0px',
     width: '150px',
     backgroundColor: '#151630',
@@ -81,13 +81,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     cursor: 'pointer',
     boxShadow: '0 0 3px #333',
     zIndex: 500000,
-    
+
     animation: 'slide 0.5s forwards',
-    animationDelay: '2s'
+    animationDelay: '2s',
   },
   buttonTitle: {
     marginTop: '15px',
-  }
+  },
 }));
 
 interface IGetAgent {
@@ -104,7 +104,7 @@ const AgentDetails = () => {
   }>();
   const [config, setConfig] = useRecoilState(currentAgentConfig);
   const [widgetSettings, setWidgetSettings] = useRecoilState(
-    currentWidgetSettings
+    currentWidgetSettings,
   );
 
   const { error, loading, data } = useQuery<IGetAgent>(CHATBOT_GET_AGENT, {
@@ -122,7 +122,7 @@ const AgentDetails = () => {
         { query: CHATBOT_GET_AGENT, variables: { agentId: Number(agentId) } },
       ],
       awaitRefetchQueries: true,
-    }
+    },
   );
 
   if (error) {
@@ -148,7 +148,7 @@ const AgentDetails = () => {
   return (
     <div className={classes.container}>
       <div className={classes.saveAgent}>
-        <Grid container onClick={saveAgent}>
+        <Grid container={true} onClick={saveAgent}>
           <Grid xs={4}>
             <img src={'/bot.svg'} alt="logo" width="50px" height="50px" />{' '}
           </Grid>
