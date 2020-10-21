@@ -1,6 +1,5 @@
 import { AgentConfig, BaseAgentAction, UtteranceAction } from '@bavard/agent-config';
-import { Box, Grid, Typography } from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { Box, Grid } from '@material-ui/core';
 import { Maybe } from 'graphql/jsutils/Maybe';
 import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
@@ -8,17 +7,7 @@ import { currentAgentConfig } from '../atoms';
 import ActionsTable from './ActionsTable';
 import EditAction from './EditAction';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(2),
-      paddingTop: 0,
-    },
-  }),
-);
-
 const Actions = () => {
-  const classes = useStyles();
   const [currentAction, setCurrentAction] = useState<Maybe<BaseAgentAction>>();
   const [isNewAction, setIsNewAction] = useState<boolean>(false);
   const [config, setConfig] = useRecoilState<AgentConfig | undefined>(currentAgentConfig);
@@ -65,8 +54,7 @@ const Actions = () => {
   };
 
   return (
-    <Box className={classes.root}>
-      <Typography variant="h5">Manage Assistant Actions</Typography>
+    <Box>
       <Grid item={true} xs={12} sm={12}>
         <ActionsTable
           actions={actions ?? []}

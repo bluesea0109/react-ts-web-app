@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { AgentConfig } from '@bavard/agent-config';
-import { Button, makeStyles, Theme, Toolbar } from '@material-ui/core';
+import { Box, Button, makeStyles, Theme, Toolbar } from '@material-ui/core';
 import React from 'react';
 import { useParams } from 'react-router';
 import { useRecoilState } from 'recoil';
@@ -107,17 +107,26 @@ const AgentDetails = () => {
   };
 
   return (
-    <div className={classes.container}>
+    <Box className={classes.container}>
       <Toolbar className={classes.toolbar} variant="dense">
         <Button variant="contained" onClick={saveAgent}>
           {'Save Agent'}
         </Button>
       </Toolbar>
-      <div className={classes.tabsContainer}>
-        <TabPanel className={classes.tabPanel} value={agentTab} index="Actions">
+      <Box className={classes.tabsContainer}>
+        <TabPanel
+          index="Actions"
+          value={agentTab}
+          className={classes.tabPanel}
+          tabName="Manage Assistant Actions"
+        >
           <Actions />
         </TabPanel>
-        <TabPanel className={classes.tabPanel} value={agentTab} index="Intents">
+        <TabPanel
+          index="Intents"
+          value={agentTab}
+          className={classes.tabPanel}
+        >
           <Intent />
         </TabPanel>
         <TabPanel className={classes.tabPanel} value={agentTab} index="Tags">
@@ -141,8 +150,8 @@ const AgentDetails = () => {
         {agentTab === 'settings' && <AgentSettings />}
         {agentTab === 'publish' && <PublishAgent />}
         {agentTab === 'upload-data' && <UploadDataTab />}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

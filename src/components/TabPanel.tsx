@@ -1,33 +1,40 @@
-import { Box } from '@material-ui/core';
+import { Box, Typography } from '@material-ui/core';
 import React from 'react';
 
 interface TabPanelProps {
-  className?: string;
-  children?: React.ReactNode;
-  dir?: string;
   index?: any;
   value?: any;
+  tabName?: string;
+  padding?: number;
+  className?: string;
+  children?: React.ReactNode;
 }
 
 const TabPanel = ({
-  className,
-  children,
-  dir,
   index,
   value,
-  ...other,
+  children,
+  tabName,
+  className,
+  padding,
 }: TabPanelProps) => {
+  if (value !== index) { return null; }
+
+  const tabPadding = padding || 6;
   return (
-    <div
+    <Box
       className={className}
-      role="tabpanel"
-      hidden={value !== index}
-      id={`full-width-tabpanel-${index}`}
-      aria-labelledby={`full-width-tab-${index}`}
-      {...other}
+      paddingX={tabPadding}
+      paddingBottom={tabPadding}
+      paddingTop={tabName ? 0 : tabPadding}
     >
-      {value === index && <Box paddingX={2} paddingY={1}>{children}</Box>}
-    </div>
+      {tabName && (
+        <Box paddingY={2}>
+          <Typography variant="h5">{tabName}</Typography>
+        </Box>
+      )}
+      {children}
+    </Box>
   );
 };
 
