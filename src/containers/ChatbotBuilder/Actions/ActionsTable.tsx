@@ -79,7 +79,11 @@ const ActionsTable = ({
         </Box>
       </Box>
 
-      <ActionList actions={filteredActions}/>
+      <ActionList
+        actions={filteredActions}
+        onEditAction={onEditAction}
+        onDeleteAction={onDeleteAction}
+      />
     </Paper>
   ) : (
     <Typography align="center" variant="h6">

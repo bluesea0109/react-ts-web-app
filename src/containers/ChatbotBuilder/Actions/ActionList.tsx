@@ -5,12 +5,16 @@ import CollapsibleAction from './CollapsibleAction';
 
 interface ActionListProps {
   actions: BaseAgentAction[];
+  onEditAction: (action: BaseAgentAction) => void;
+  onDeleteAction: (action: BaseAgentAction) => void;
 }
 
 type CollapsedState = { [key: string]: boolean };
 
 const ActionList = ({
   actions,
+  onEditAction,
+  onDeleteAction,
 }: ActionListProps) => {
   const [isCollapsed, setIsCollapsed] = useState<CollapsedState>({});
 
@@ -29,6 +33,8 @@ const ActionList = ({
           action={action}
           isOpen={isCollapsed[action.name]}
           onToggle={onToggleActionCollapse}
+          onEdit={onEditAction}
+          onDelete={onDeleteAction}
         />
       ))}
     </Box>

@@ -20,12 +20,16 @@ interface CollapsibleActionProps {
   action: BaseAgentAction;
   isOpen: boolean;
   onToggle: (action: BaseAgentAction) => void;
+  onEdit: (action: BaseAgentAction) => void;
+  onDelete: (action: BaseAgentAction) => void;
 }
 
 const CollapsibleAction = ({
   action,
   isOpen,
   onToggle,
+  onEdit,
+  onDelete,
 }: CollapsibleActionProps) => {
   const classes = useStyles();
 
@@ -45,6 +49,12 @@ const CollapsibleAction = ({
   const onToggleAction = useCallback(() => {
     return onToggle(action);
   }, [action, onToggle]);
+  const onDeleteAction = useCallback(() => {
+    return onDelete(action);
+  }, [action, onDelete]);
+  const onEditAction = useCallback(() => {
+    return onEdit(action);
+  }, [action, onEdit]);
 
   return (
     <>
@@ -69,10 +79,10 @@ const CollapsibleAction = ({
           </Grid>
           <Grid item={true} container={true} xs={2} sm={2} justify="flex-end">
             <Box mr={1}>
-              <Edit />
+              <Edit onClick={onEditAction} />
             </Box>
             <Box ml={1}>
-              <Delete />
+              <Delete onClick={onDeleteAction} />
             </Box>
           </Grid>
         </Grid>
