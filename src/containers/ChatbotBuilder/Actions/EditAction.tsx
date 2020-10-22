@@ -106,16 +106,10 @@ const EditAction = ({
     } as BaseAgentAction);
   };
 
-  const ActionTypes = [{
-    id: 1,
-    name: EAgentActionTypes.EMAIL_ACTION,
-  }, {
-    id: 2,
-    name: EAgentActionTypes.UTTERANCE_ACTION,
-  }, {
-    id: 3,
-    name: EAgentActionTypes.FORM_ACTION,
-  }];
+  const ActionTypes = [EAgentActionTypes.EMAIL_ACTION, EAgentActionTypes.UTTERANCE_ACTION, EAgentActionTypes.FORM_ACTION].map((type) => ({
+    id: type,
+    name: type,
+  }));
 
   return (
     <Dialog fullScreen={true} open={!!currentAction} TransitionComponent={UpTransition}>
