@@ -285,6 +285,11 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
   const handleExampleChange = (id: string, field: string) => {
     console.log('Number  > ', id);
     console.log('Field  > ', field);
+
+    const index = parseInt(id, 10) - parseInt(agentId, 10)
+    let result = [...examples]
+    result[index].text = field
+    setExamples(result)    
   };
 
   const isAllSet = () => {
