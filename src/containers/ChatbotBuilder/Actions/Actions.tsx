@@ -1,25 +1,18 @@
 import { AgentConfig, BaseAgentAction, UtteranceAction } from '@bavard/agent-config';
-import { Grid, Paper } from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { Box, Grid, makeStyles, Theme } from '@material-ui/core';
+import clsx from 'clsx';
 import { Maybe } from 'graphql/jsutils/Maybe';
-import _ from 'lodash';
 import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { currentAgentConfig } from '../atoms';
 import ActionsTable from './ActionsTable';
 import EditAction from './EditAction';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(2),
-      overflow: 'auto',
-    },
-    paper: {
-      padding: theme.spacing(2),
-    },
-  }),
-);
+const useStyles = makeStyles((theme: Theme) => ({
+  root: {
+    backgroundColor: '#ffffff',
+  },
+}));
 
 const Actions = () => {
   const classes = useStyles();
@@ -27,13 +20,11 @@ const Actions = () => {
   const [isNewAction, setIsNewAction] = useState<boolean>(false);
   const [config, setConfig] = useRecoilState<AgentConfig | undefined>(currentAgentConfig);
 
-  if (!config) {
-    return <p>Agent config is empty.</p>;
-  }
+  if (!config) { return null; }
 
   const actions: BaseAgentAction[] = config.getActions();
 
-  const onAdd = () => {
+  const onAddAction = () => {
     setIsNewAction(true);
     setCurrentAction(new UtteranceAction('', ''));
   };
@@ -44,21 +35,22 @@ const Actions = () => {
 
   const onSaveAction = (action: BaseAgentAction) => {
     if (!currentAction) { return; }
-    const newConfig = _.cloneDeep<AgentConfig>(config);
-    newConfig
-      .deleteAction(currentAction.name)
-      .addAction(action as any);
-    setConfig(newConfig);
-
+    setConfig(
+      config
+        .copy()
+        .deleteAction(currentAction.name)
+        .addAction(action.toJsonObj()),
+    );
     setIsNewAction(false);
     setCurrentAction(undefined);
   };
 
   const onDeleteAction = (action: BaseAgentAction) => {
-    const newConfig = _.cloneDeep<AgentConfig>(config);
-    newConfig.deleteAction(action.name);
-    setConfig(newConfig);
-
+    setConfig(
+      config
+        .copy()
+        .deleteAction(action.name),
+    );
     setCurrentAction(undefined);
   };
 
@@ -68,16 +60,14 @@ const Actions = () => {
   };
 
   return (
-    <div className={classes.root}>
+    <Box className={clsx(classes.root)}>
       <Grid item={true} xs={12} sm={12}>
-        <Paper className={classes.paper}>
-          <ActionsTable
-            actions={actions ?? []}
-            onAdd={onAdd}
-            onEditAction={onEditAction}
-            onDeleteAction={onDeleteAction}
-          />
-        </Paper>
+        <ActionsTable
+          actions={actions ?? []}
+          onAddAction={onAddAction}
+          onEditAction={onEditAction}
+          onDeleteAction={onDeleteAction}
+        />
       </Grid>
       {!!currentAction && (
         <EditAction
@@ -87,7 +77,7 @@ const Actions = () => {
           onEditActionClose={onEditActionClose}
         />
       )}
-    </div>
+    </Box>
   );
 };
 

@@ -193,6 +193,10 @@ export default function EditNodeForm({
     if (node instanceof EmailNode && updatedNodeData instanceof EmailNode) {
       node.setFromEmail(updatedNodeData.from);
       node.setToEmail(updatedNodeData.to);
+    } else if (node instanceof FormNode && updatedNodeData instanceof FormNode) {
+      const { url, fields } = updatedNodeData;
+      node.url = url;
+      node.fields = fields;
     }
 
     onSubmit(graphPolicy);
