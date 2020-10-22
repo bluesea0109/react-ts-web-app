@@ -1,6 +1,12 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { AgentConfig } from '@bavard/agent-config';
-import { Box, Button, Grid, makeStyles, Theme, Toolbar } from '@material-ui/core';
+import {
+  Box,
+  Button,
+  makeStyles,
+  Theme,
+  Toolbar,
+} from '@material-ui/core';
 import React from 'react';
 import { useParams } from 'react-router';
 import { useRecoilState } from 'recoil';
@@ -8,14 +14,13 @@ import {
   CHATBOT_GET_AGENT,
   CHATBOT_SAVE_CONFIG_AND_SETTINGS,
 } from '../../../common-gql-queries';
-import { TabPanel } from '../../../components';
 import { IAgent } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 import Actions from '../Actions/Actions';
 import AgentSettings from '../AgentSettings/AgentSettings';
-import AssistDemo from '../AssistDemo';
 import { currentAgentConfig, currentWidgetSettings } from '../atoms';
+import ChatWithAgent from '../ChatWithAgent';
 import ConversationsTab from '../Conversations';
 import DataExportsTab from '../DataExports/DataExportsTab';
 import Examples from '../Examples/Examples';
@@ -24,9 +29,32 @@ import Intent from '../Intent/Intent';
 import PublishAgent from '../Publish';
 import Slot from '../Slot/Slot';
 import Tag from '../Tags/Tag';
-import TrainingConversations from '../TrainingConversations';
 import TrainingJobsTab from '../TrainingJobs/TrainingJobsTab';
 import UploadDataTab from '../UploadData/UploadDataTab';
+
+interface TabPanelProps {
+  className?: string;
+  children?: React.ReactNode;
+  dir?: string;
+  index?: any;
+  value?: any;
+}
+
+function TabPanel(props: TabPanelProps) {
+  const { className, children, value, index, ...other } = props;
+
+  return (
+    <div
+      className={className}
+      role="tabpanel"
+      hidden={value !== index}
+      id={`full-width-tabpanel-${index}`}
+      aria-labelledby={`full-width-tab-${index}`}
+      {...other}>
+      {value === index && <Box p={3}>{children}</Box>}
+    </div>
+  );
+}
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -43,54 +71,12 @@ const useStyles = makeStyles((theme: Theme) => ({
   tabPanel: {
     overflow: 'auto',
     width: '100%',
-    background: '#f5f5f5',
   },
   toolbar: {
-    padding: '10px',
-    background: '#ddd',
-    boxShadow: '0 2px 2px #eeeeee44',
+    background: '#f5f5f5',
     display: 'flex',
     justifyContent: 'flex-end',
   },
-  saveAgent: {
-    position: 'absolute',
-    width: '150px',
-    backgroundColor: '#151630',
-    color: 'white',
-    padding: '5px',
-    borderTopLeftRadius: '30px',
-    borderBottomLeftRadius: '30px',
-    margin: '60px 0px 20px 20px',
-    cursor: 'pointer',
-    boxShadow: '0 0 3px #333',
-    zIndex: 500000,
-
-    animation: '$hoverOut 500ms',
-    right: '-110px',
-    '&:hover': {
-      background: 'linear-gradient(137deg, rgba(2,0,36,1) 66%, rgba(0,212,255,1) 100%, rgba(9,9,121,1) 100%)',
-      animation: '$hoverIn 500ms',
-      right: '0px',
-    },
-    '&:active': {
-      backgroundColor: 'green',
-    },
-  },
-  buttonTitle: {
-    marginTop: '15px',
-    fontSize: '18px',
-    fontWeight: 'bold',
-  },
-
-  '@keyframes hoverIn' : {
-    from: { right: '-110px'},
-    to: { right: '0px'},
-  },
-  '@keyframes hoverOut' : {
-    from: { right: '0px'},
-    to: { right: '-110px'},
-  },
-
 }));
 
 interface IGetAgent {
@@ -113,6 +99,7 @@ const AgentDetails = () => {
   const { error, loading, data } = useQuery<IGetAgent>(CHATBOT_GET_AGENT, {
     variables: { agentId: Number(agentId) },
     onCompleted: (data) => {
+      console.log(data);
       setConfig(AgentConfig.fromJsonObj(data.ChatbotService_agent.config));
       setWidgetSettings(data.ChatbotService_agent.widgetSettings);
     },
@@ -149,17 +136,17 @@ const AgentDetails = () => {
   };
 
   return (
-    <Box className={classes.container}>
+    <div className={classes.container}>
       <Toolbar className={classes.toolbar} variant="dense">
         <Button variant="contained" onClick={saveAgent}>
           {'Save Agent'}
         </Button>
       </Toolbar>
-      <Box className={classes.tabsContainer}>
-        <TabPanel index="Actions" value={agentTab} className={classes.tabPanel} tabName="Manage Assistant Actions">
+      <div className={classes.tabsContainer}>
+        <TabPanel className={classes.tabPanel} value={agentTab} index="Actions">
           <Actions />
         </TabPanel>
-        <TabPanel index="Intents" value={agentTab} className={classes.tabPanel}>
+        <TabPanel className={classes.tabPanel} value={agentTab} index="Intents">
           <Intent />
         </TabPanel>
         <TabPanel className={classes.tabPanel} value={agentTab} index="Tags">
@@ -168,21 +155,22 @@ const AgentDetails = () => {
         <TabPanel className={classes.tabPanel} value={agentTab} index="Slots">
           <Slot />
         </TabPanel>
-        <TabPanel className={classes.tabPanel} value={agentTab} index="nluExamples">
+        <TabPanel
+          className={classes.tabPanel}
+          value={agentTab}
+          index="nluExamples">
           <Examples />
         </TabPanel>
         {agentTab === 'graph-policy' && <GraphPolicy />}
         {agentTab === 'exports' && <DataExportsTab />}
         {agentTab === 'training-jobs' && <TrainingJobsTab />}
-        {agentTab === 'chats' && <AssistDemo />}
+        {agentTab === 'chats' && <ChatWithAgent />}
         {agentTab === 'live-conversations' && <ConversationsTab />}
-        {agentTab === 'training-conversations' && <TrainingConversations />}
         {agentTab === 'settings' && <AgentSettings />}
         {agentTab === 'publish' && <PublishAgent />}
         {agentTab === 'upload-data' && <UploadDataTab />}
-        <div onClick={saveAgent} />
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 };
 
