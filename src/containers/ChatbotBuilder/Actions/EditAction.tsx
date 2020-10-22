@@ -1,22 +1,5 @@
-import {
-  BaseAgentAction,
-  EAgentActionTypes,
-  EmailAction,
-  IResponseOption,
-  UtteranceAction,
-} from '@bavard/agent-config';
-import {
-  AppBar,
-  Button,
-  createStyles,
-  Dialog,
-  Grid,
-  IconButton,
-  makeStyles,
-  Theme,
-  Toolbar,
-  Typography,
-} from '@material-ui/core';
+import { BaseAgentAction, EAgentActionTypes, EmailAction, IResponseOption, UtteranceAction } from '@bavard/agent-config';
+import { AppBar, Button, createStyles, Dialog, Grid, IconButton, makeStyles, Theme, Toolbar, Typography } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import React, { useEffect, useState } from 'react';
 import { DropDown, TextInput, UpTransition } from '../../../components';
@@ -168,9 +151,7 @@ const EditAction = ({
               />
             )}
           </Grid>
-        </Grid>
-        <Grid container={true}>
-          <Grid item={true} xs={12}>
+          <Grid container={true} item={true} xs={12}>
             {!!currentAction && !!currentAction.options && (
               <Option
                 options={currentAction?.options}
@@ -181,10 +162,12 @@ const EditAction = ({
               />
             )}
           </Grid>
+          <Grid container={true} item={true} xs={12}>
+            <Button autoFocus={true} color="primary" variant="contained" onClick={saveChanges}>
+              {isNewAction ? 'Add Action' : 'Update Action'}
+            </Button>
+          </Grid>
         </Grid>
-        <Button autoFocus={true} color="inherit" onClick={saveChanges}>
-          {isNewAction ? 'Create' : 'Save'}
-        </Button>
       </Grid>
     </Dialog>
   );

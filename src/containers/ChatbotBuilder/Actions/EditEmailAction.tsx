@@ -13,15 +13,6 @@ const EditEmailAction = ({
 }: EditEmailActionProps) => {
   return (
     <>
-      <Grid item={true} sm={12}>
-        <TextField
-          fullWidth={true}
-          label="Email Prompt"
-          variant="outlined"
-          value={action.prompt}
-          onChange={e => onChangeAction({ ...action, prompt: e.target.value } as EmailAction)}
-        />
-      </Grid>
       <Grid item={true} xs={6}>
         <TextField
           fullWidth={true}
