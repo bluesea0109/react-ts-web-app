@@ -13,17 +13,16 @@ import {
   Grid,
   IconButton,
   makeStyles,
-  TextField,
   Theme,
   Toolbar,
   Typography,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import React, { useEffect, useState } from 'react';
-import { DropDown, TextInput } from '../../../components';
-import { UpTransition } from '../../../components';
+import { DropDown, TextInput, UpTransition } from '../../../components';
 import { Maybe } from '../../../utils/types';
-import RichTextInput from '../../Utils/RichTextInput';
+import EditEmailAction from './EditEmailAction';
+import EditUtteranceAction from './EditUtteranceAction';
 import Option from './Option';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -107,50 +106,6 @@ const EditAction = ({
     } as BaseAgentAction);
   };
 
-  const _renderUtteranceFields = () => (
-    <Grid item={true} sm={12}>
-      <RichTextInput
-        label="Action Text"
-        value={(currentAction as UtteranceAction)?.utterance || ''}
-        onChange={(html: string) => setCurrentAction({ ...currentAction, utterance: html } as UtteranceAction)}
-      />
-    </Grid>
-  );
-
-  const _renderEmailFields = () => (
-    <>
-      <Grid item={true} sm={12}>
-        <TextField
-          fullWidth={true}
-          label="Email Prompt"
-          variant="outlined"
-          value={(currentAction as EmailAction)?.prompt}
-          onChange={e => setCurrentAction({ ...currentAction, prompt: e.target.value } as EmailAction)}
-        />
-      </Grid>
-      <Grid item={true} xs={6}>
-        <TextField
-          fullWidth={true}
-          label="Email From"
-          type="email"
-          variant="outlined"
-          value={(currentAction as EmailAction)?.from}
-          onChange={e => setCurrentAction({ ...currentAction, from: e.target.value } as EmailAction)}
-        />
-      </Grid>
-      <Grid item={true} xs={6}>
-        <TextField
-          fullWidth={true}
-          label="Email To"
-          type="email"
-          variant="outlined"
-          value={(currentAction as EmailAction)?.to}
-          onChange={e => setCurrentAction({ ...currentAction, to: e.target.value } as EmailAction)}
-        />
-      </Grid>
-    </>
-  );
-
   const ActionTypes = [{
     id: 1,
     name: EAgentActionTypes.EMAIL_ACTION,
@@ -206,8 +161,18 @@ const EditAction = ({
             />
           </Grid>
           <Grid container={true}>
-            {currentAction?.type === EAgentActionTypes.UTTERANCE_ACTION && _renderUtteranceFields()}
-            {currentAction?.type === EAgentActionTypes.EMAIL_ACTION && _renderEmailFields()}
+            {currentAction?.type === EAgentActionTypes.UTTERANCE_ACTION && (
+              <EditUtteranceAction
+                action={currentAction as UtteranceAction}
+                onChangeAction={action => setCurrentAction(action)}
+              />
+            )}
+            {currentAction?.type === EAgentActionTypes.EMAIL_ACTION && (
+              <EditEmailAction
+                action={currentAction as EmailAction}
+                onChangeAction={action => setCurrentAction(action)}
+              />
+            )}
           </Grid>
         </Grid>
         <Grid container={true}>
