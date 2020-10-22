@@ -11,7 +11,6 @@ interface TextInputProps {
   defaultValue?: string;
   fullWidth?: boolean;
   placeholder?: string;
-  padding?: string;
   value?: string;
   variant?: TextVariantTypes;
   InputProps?: Partial<StandardInputProps>;

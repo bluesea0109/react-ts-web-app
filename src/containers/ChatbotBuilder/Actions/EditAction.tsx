@@ -42,6 +42,13 @@ const useStyles = makeStyles((theme: Theme) =>
         padding: '8px 8px',
       },
     },
+    rootGrid: {
+      padding: theme.spacing(2),
+    },
+    grid: {
+      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(1),
+    },
   }),
 );
 
@@ -188,14 +195,14 @@ const EditAction = ({
           </IconButton>
         </Toolbar>
       </AppBar>
-      <Grid container={true} justify="center">
-        <Grid container={true} item={true} sm={6} xs={6}>
-          <Grid container={true} item={true} sm={12} xs={12} justify="flex-start">
+      <Grid container={true} justify="center" className={classes.rootGrid}>
+        <Grid container={true} item={true} sm={6} xs={4}>
+          <Grid container={true} item={true} sm={12} justify="flex-start" className={classes.grid}>
             <Typography variant="h6">
               Add an Action to customize your Assistant’s behavior:
             </Typography>
           </Grid>
-          <Grid container={true} item={true} sm={12} xs={12}>
+          <Grid container={true} item={true} sm={12} className={classes.grid}>
             <Typography variant="h6" style={{fontWeight: 'bold'}}>
               Action Name
             </Typography>
@@ -203,12 +210,11 @@ const EditAction = ({
               fullWidth={true}
               variant="outlined"
               value={currentAction?.name}
-              padding="8px"
               className={classes.input}
               onChange={isNewAction ? e => setCurrentAction({ ...currentAction, name: e.target.value } as BaseAgentAction) : undefined}
             />
           </Grid>
-          <Grid container={true} item={true} sm={12} xs={12}>
+          <Grid container={true} item={true} sm={12} className={classes.grid}>
             <Typography variant="h6" style={{fontWeight: 'bold'}}>
               Action Type
             </Typography>
