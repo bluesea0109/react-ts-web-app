@@ -30,9 +30,11 @@ import {
   CHATBOT_SAVE_CONFIG_AND_SETTINGS,
 } from '../../../common-gql-queries';
 import { DropDown } from '../../../components';
+import { IntentExampleForm } from '../../../components/IntentExampleForm';
 import { INLUExample } from '../../../models/chatbot-service';
 import { currentAgentConfig, currentWidgetSettings } from '../atoms';
 import { AddExampleItem } from '../Examples/AddExamples';
+import ExampleForm from '../Examples/ExampleForm';
 import { EXAMPLES_LIMIT } from '../Examples/Examples';
 import { getExamplesQuery } from '../Examples/gql';
 
@@ -109,7 +111,6 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
   const widgetSettings = useRecoilValue(currentWidgetSettings);
 
   const tagTypes = Array.from(config?.getTagTypes() ?? []);
-  console.log('TagTypes ;:: ', tagTypes);
 
   const { agentId } = useParams<{ agentId: string }>();
   const numAgentId = Number(agentId);
@@ -147,10 +148,9 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
     setExamples([...updatedExamples]);
   };
 
-  const onAddExample = () => {
-    const currentExamples = Array.from([...examples]);
+  const handleAddExample = () => {
     setExamples([
-      ...currentExamples,
+      ...examples,
       {
         id: lastID.current + 1,
         agentId: numAgentId,
@@ -162,6 +162,8 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
 
     lastID.current = lastID.current + 1;
   };
+
+  console.log('Examples >>> ', examples);
 
   const onDeleteExample = (id: number) => () => {
     const index = examples.findIndex((ex) => ex.id === id);
@@ -280,6 +282,17 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
     setTagType(field);
   };
 
+  const handleExampleChange = (id: string, field: string) => {
+    console.log('Number  > ', id);
+    console.log('Field  > ', field);
+  };
+
+  const isAllSet = () => {
+    const result = false;
+
+    return result;
+  };
+
   return (
     <Dialog fullScreen={true} open={true} TransitionComponent={Transition}>
       <AppBar className={classes.appBar}>
@@ -298,16 +311,16 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
       </AppBar>
       <DialogContent>
         <Grid container={true}>
-          <Grid item={true} md={4} xs={12}/>
+          <Grid item={true} md={4} xs={12} />
           <Grid item={true} md={4} xs={12}>
             <Typography className={classes.instruction}>
               Add an Intent to customize your Assistant’s behavior:
             </Typography>
           </Grid>
-          <Grid item={true} md={4} xs={12}/>
+          <Grid item={true} md={4} xs={12} />
         </Grid>
         <Grid container={true} className={classes.fields}>
-          <Grid item={true} md={4} xs={12}/>
+          <Grid item={true} md={4} xs={12} />
           <Grid item={true} md={4} xs={12}>
             <Typography className={classes.fieldLabel}>Intent Value</Typography>
             <TextField
@@ -323,10 +336,10 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
               inputProps={{ className: classes.intent }}
             />
           </Grid>
-          <Grid item={true} xs={4} md={12}/>
+          <Grid item={true} xs={4} md={12} />
         </Grid>
         <Grid container={true} className={classes.fields}>
-          <Grid item={true} md={4} xs={12}/>
+          <Grid item={true} md={4} xs={12} />
           <Grid item={true} md={4} xs={12}>
             <Typography className={classes.fieldLabel}>
               Default Action
@@ -341,11 +354,11 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
               size="large"
             />
           </Grid>
-          <Grid item={true} xs={4} md={12}/>
+          <Grid item={true} xs={4} md={12} />
         </Grid>
 
         <Grid container={true} className={classes.fields}>
-          <Grid item={true} md={4} xs={12}/>
+          <Grid item={true} md={4} xs={12} />
           <Grid item={true} md={4} xs={12}>
             <Typography className={classes.fieldLabel}>
               Select Tag Type
@@ -358,22 +371,36 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
               size="large"
             />
           </Grid>
-          <Grid item={true} xs={4} md={12}/>
+          <Grid item={true} xs={4} md={12} />
         </Grid>
         <Grid container={true}>
-          <Grid item={true} md={4} xs={12}/>
+          <Grid item={true} md={4} xs={12} />
           <Grid item={true} md={4} xs={12} className={classes.addExampleBtn}>
             <Button
               color="primary"
-              onClick={() => console.log('clicked')}
+              onClick={handleAddExample}
               endIcon={<AddCircleOutline />}>
               Add a New Example
             </Button>
           </Grid>
-          <Grid item={true} md={4} xs={12}/>
+          <Grid item={true} md={4} xs={12} />
         </Grid>
         <Grid container={true}>
-          <Grid item={true} md={4} xs={12}/>
+          <Grid item={true} md={4} xs={12} />
+          <Grid item={true} md={4} xs={12}>
+            {examples &&
+              examples.map((example, index) => (                
+                <IntentExampleForm
+                  key={index}
+                  label={example.agentId + index + ''}
+                  onChange={handleExampleChange}
+                  />
+              ))}
+          </Grid>
+          <Grid item={true} md={4} xs={12} />
+        </Grid>
+        <Grid container={true}>
+          <Grid item={true} md={4} xs={12} />
           <Grid item={true} md={4} xs={12} className={classes.addIntentBtn}>
             <Button
               color="primary"
@@ -382,7 +409,7 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
               Add Intent
             </Button>
           </Grid>
-          <Grid item={true} md={4} xs={12}/>
+          <Grid item={true} md={4} xs={12} />
         </Grid>
         {/*<Box my={4}>
           <Grid container={true}>
