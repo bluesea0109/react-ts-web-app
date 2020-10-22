@@ -9,7 +9,9 @@ interface TextInputProps {
   className?: string;
   label?: string;
   defaultValue?: string;
+  fullWidth?: boolean;
   placeholder?: string;
+  padding?: string;
   value?: string;
   variant?: TextVariantTypes;
   InputProps?: Partial<StandardInputProps>;
@@ -22,6 +24,7 @@ const TextInput: React.FC<TextInputProps> = ({
   color,
   className,
   defaultValue,
+  fullWidth,
   placeholder,
   value,
   variant,
@@ -34,6 +37,7 @@ const TextInput: React.FC<TextInputProps> = ({
       label={label}
       color={color || 'primary'}
       defaultValue={defaultValue}
+      fullWidth={fullWidth || false}
       placeholder={placeholder}
       value={value}
       variant={(variant || 'outlined') as any}

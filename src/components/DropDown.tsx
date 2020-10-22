@@ -1,5 +1,4 @@
-import { Box, createStyles, InputLabel, MenuItem } from '@material-ui/core';
-import Select from '@material-ui/core/Select';
+import { Box, createStyles, Grid, InputLabel, MenuItem, Select } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import React from 'react';
@@ -13,20 +12,14 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     selectInput: {
       margin: theme.spacing(0),
-      minWidth: 155,
       color: 'black',
+      width: '100%',
       borderRadius: 2,
       borderColor: 'white',
+      minWidth: 155,
 
       '& .MuiSelect-outlined': {
-        padding: '7px 8px',
-      },
-      '& fieldset': {
-        top: 0,
-
-        '& legend': {
-          display: 'none',
-        },
+        padding: '8px 8px',
       },
     },
     icon: {
@@ -41,15 +34,17 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface DropDownProps {
-  label: string;
+  label?: string;
   current: any;
   menuItems: any[];
+  fullWidth?: boolean;
   onChange: (item: string) => void;
 }
 
 const DropDown: React.FC<DropDownProps> = ({
   label,
   current,
+  fullWidth,
   menuItems,
   onChange,
 }) => {
@@ -57,11 +52,13 @@ const DropDown: React.FC<DropDownProps> = ({
 
   const currentItem = current?.name || current || '';
 
-  return (
-    <Box>
-      <InputLabel className={clsx(classes.selectLabel)}>
-        {label}
-      </InputLabel>
+  const MainContent = () => (
+    <>
+      {label && label.length && (
+        <InputLabel className={clsx(classes.selectLabel)}>
+          {label}
+        </InputLabel>
+      )}
 
       <Select
         variant="outlined"
@@ -86,6 +83,16 @@ const DropDown: React.FC<DropDownProps> = ({
           </MenuItem>
         ))}
       </Select>
+    </>
+  );
+
+  return fullWidth ? (
+    <Grid container={true} item={true} xs={12} sm={12}>
+      <MainContent />
+    </Grid>
+  ) : (
+    <Box>
+      <MainContent/>
     </Box>
   );
 };

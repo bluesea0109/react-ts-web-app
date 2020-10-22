@@ -11,7 +11,6 @@ import {
   Button,
   createStyles,
   Dialog,
-  DialogContent,
   Grid,
   IconButton,
   makeStyles,
@@ -23,8 +22,8 @@ import {
 } from '@material-ui/core';
 import { TransitionProps } from '@material-ui/core/transitions';
 import CloseIcon from '@material-ui/icons/Close';
-import { Autocomplete } from '@material-ui/lab';
 import React, { Fragment, useEffect, useState } from 'react';
+import { DropDown, TextInput } from '../../../components';
 import { Maybe } from '../../../utils/types';
 import RichTextInput from '../../Utils/RichTextInput';
 import Option from './Option';
@@ -38,8 +37,17 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: theme.spacing(2),
       flex: 1,
     },
+    input: {
+      '& .MuiOutlinedInput-input': {
+        padding: '8px 8px',
+      },
+    },
   }),
 );
+
+interface StylesInterface {
+  padding?: string;
+}
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & { children?: React.ReactElement },
@@ -157,6 +165,17 @@ const EditAction = ({
     </Fragment>
   );
 
+  const ActionTypes = [{
+    id: 1,
+    name: EAgentActionTypes.EMAIL_ACTION,
+  }, {
+    id: 2,
+    name: EAgentActionTypes.UTTERANCE_ACTION,
+  }, {
+    id: 3,
+    name: EAgentActionTypes.FORM_ACTION,
+  }];
+
   return (
     <Dialog fullScreen={true} open={!!currentAction} TransitionComponent={Transition}>
       <AppBar className={classes.appBar}>
@@ -171,34 +190,39 @@ const EditAction = ({
       </AppBar>
       <Grid container={true} justify="center">
         <Grid container={true} item={true} sm={6} xs={6}>
-          <Grid container={true}>
-            <Box p={2}>
-              <TextField
-                fullWidth={true}
-                label="Action Name"
-                variant="outlined"
-                value={currentAction?.name}
-                onChange={isNewAction ? e => setCurrentAction({ ...currentAction, name: e.target.value } as BaseAgentAction) : undefined}
-              />
-            </Box>
+          <Grid container={true} item={true} sm={12} xs={12} justify="flex-start">
+            <Typography variant="h6">
+              Add an Action to customize your Assistant’s behavior:
+            </Typography>
+          </Grid>
+          <Grid container={true} item={true} sm={12} xs={12}>
+            <Typography variant="h6" style={{fontWeight: 'bold'}}>
+              Action Name
+            </Typography>
+            <TextInput
+              fullWidth={true}
+              variant="outlined"
+              value={currentAction?.name}
+              padding="8px"
+              className={classes.input}
+              onChange={isNewAction ? e => setCurrentAction({ ...currentAction, name: e.target.value } as BaseAgentAction) : undefined}
+            />
+          </Grid>
+          <Grid container={true} item={true} sm={12} xs={12}>
+            <Typography variant="h6" style={{fontWeight: 'bold'}}>
+              Action Type
+            </Typography>
+            <DropDown
+              current={currentAction?.type}
+              menuItems={ActionTypes}
+              fullWidth={true}
+              onChange={(actionType) => setCurrentAction({ ...currentAction, type: actionType } as BaseAgentAction)}
+            />
           </Grid>
           <Grid container={true}>
-            <Box p={2}>
-              <Autocomplete
-                fullWidth={true}
-                id="actionTypeSelector"
-                options={[EAgentActionTypes.EMAIL_ACTION, EAgentActionTypes.UTTERANCE_ACTION]}
-                getOptionLabel={(option: any) => option}
-                value={currentAction?.type ?? null}
-                onChange={(_, actionType) => setCurrentAction({ ...currentAction, type: actionType } as BaseAgentAction)}
-                renderInput={(params) => <TextField {...params} label="Action Type" variant="outlined" />}
-              />
-            </Box>
+            {currentAction?.type === EAgentActionTypes.UTTERANCE_ACTION && _renderUtteranceFields()}
+            {currentAction?.type === EAgentActionTypes.EMAIL_ACTION && _renderEmailFields()}
           </Grid>
-        </Grid>
-        <Grid container={true}>
-          {currentAction?.type === EAgentActionTypes.UTTERANCE_ACTION && _renderUtteranceFields()}
-          {currentAction?.type === EAgentActionTypes.EMAIL_ACTION && _renderEmailFields()}
         </Grid>
         <Grid container={true}>
           <Grid item={true} xs={12}>
