@@ -6,20 +6,22 @@ import {
   UtteranceAction,
 } from '@bavard/agent-config';
 import {
+  AppBar,
   Box,
+  Button,
+  createStyles,
+  Dialog,
   DialogContent,
   Grid,
+  IconButton,
+  makeStyles,
+  Slide,
   TextField,
+  Theme,
+  Toolbar,
+  Typography,
 } from '@material-ui/core';
-import AppBar from '@material-ui/core/AppBar';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import IconButton from '@material-ui/core/IconButton';
-import Slide from '@material-ui/core/Slide';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import Toolbar from '@material-ui/core/Toolbar';
 import { TransitionProps } from '@material-ui/core/transitions';
-import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import { Autocomplete } from '@material-ui/lab';
 import React, { Fragment, useEffect, useState } from 'react';
@@ -159,62 +161,62 @@ const EditAction = ({
     <Dialog fullScreen={true} open={!!currentAction} TransitionComponent={Transition}>
       <AppBar className={classes.appBar}>
         <Toolbar>
+          <Typography variant="h6" className={classes.title}>
+            {isNewAction ? 'Add a New Action' : `Edit Action: ${currentAction?.name}`}
+          </Typography>
           <IconButton edge="start" color="inherit" onClick={onEditActionClose} aria-label="close">
             <CloseIcon />
           </IconButton>
-          <Typography variant="h6" className={classes.title}>
-            {isNewAction ? 'Create New Action' : `Edit Action: ${currentAction?.name}`}
-          </Typography>
-          <Button autoFocus={true} color="inherit" onClick={saveChanges}>
-            {isNewAction ? 'Create' : 'Save'}
-          </Button>
         </Toolbar>
       </AppBar>
-      <DialogContent>
-        <Box my={4}>
+      <Grid container={true} justify="center">
+        <Grid container={true} item={true} sm={6} xs={6}>
           <Grid container={true}>
-            <Grid item={true} xs={6}>
-              <Box p={2}>
-                <TextField
-                  fullWidth={true}
-                  label="Action Name"
-                  variant="outlined"
-                  value={currentAction?.name}
-                  onChange={isNewAction ? e => setCurrentAction({ ...currentAction, name: e.target.value } as BaseAgentAction) : undefined}
-                />
-              </Box>
-            </Grid>
-            <Grid item={true} xs={6}>
-              <Box p={2}>
-                <Autocomplete
-                  fullWidth={true}
-                  id="actionTypeSelector"
-                  options={[EAgentActionTypes.EMAIL_ACTION, EAgentActionTypes.UTTERANCE_ACTION]}
-                  getOptionLabel={(option: any) => option}
-                  value={currentAction?.type ?? null}
-                  onChange={(_, actionType) => setCurrentAction({ ...currentAction, type: actionType } as BaseAgentAction)}
-                  renderInput={(params) => <TextField {...params} label="Action Type" variant="outlined" />}
-                />
-              </Box>
-            </Grid>
-            {currentAction?.type === EAgentActionTypes.UTTERANCE_ACTION && _renderUtteranceFields()}
-            {currentAction?.type === EAgentActionTypes.EMAIL_ACTION && _renderEmailFields()}
+            <Box p={2}>
+              <TextField
+                fullWidth={true}
+                label="Action Name"
+                variant="outlined"
+                value={currentAction?.name}
+                onChange={isNewAction ? e => setCurrentAction({ ...currentAction, name: e.target.value } as BaseAgentAction) : undefined}
+              />
+            </Box>
           </Grid>
           <Grid container={true}>
-            <Grid item={true} xs={12}>
-              {!!currentAction && !!currentAction.options && (
-                <Option
-                  options={currentAction?.options}
-                  onAddOption={onAddOption}
-                  onDeleteOption={onDeleteOption}
-                  onUpdateOption={onUpdateOption}
-                  onSetOptions={onSetOptions}
-                />
-              )}
-            </Grid>
+            <Box p={2}>
+              <Autocomplete
+                fullWidth={true}
+                id="actionTypeSelector"
+                options={[EAgentActionTypes.EMAIL_ACTION, EAgentActionTypes.UTTERANCE_ACTION]}
+                getOptionLabel={(option: any) => option}
+                value={currentAction?.type ?? null}
+                onChange={(_, actionType) => setCurrentAction({ ...currentAction, type: actionType } as BaseAgentAction)}
+                renderInput={(params) => <TextField {...params} label="Action Type" variant="outlined" />}
+              />
+            </Box>
           </Grid>
-        </Box>
-      </DialogContent>
+        </Grid>
+        <Grid container={true}>
+          {currentAction?.type === EAgentActionTypes.UTTERANCE_ACTION && _renderUtteranceFields()}
+          {currentAction?.type === EAgentActionTypes.EMAIL_ACTION && _renderEmailFields()}
+        </Grid>
+        <Grid container={true}>
+          <Grid item={true} xs={12}>
+            {!!currentAction && !!currentAction.options && (
+              <Option
+                options={currentAction?.options}
+                onAddOption={onAddOption}
+                onDeleteOption={onDeleteOption}
+                onUpdateOption={onUpdateOption}
+                onSetOptions={onSetOptions}
+              />
+            )}
+          </Grid>
+        </Grid>
+        <Button autoFocus={true} color="inherit" onClick={saveChanges}>
+          {isNewAction ? 'Create' : 'Save'}
+        </Button>
+      </Grid>
     </Dialog>
   );
 };
