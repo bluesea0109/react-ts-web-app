@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     input: {
       '& .MuiOutlinedInput-input': {
-        padding: '8px 8px',
+        padding: '12px 12px',
       },
     },
     rootGrid: {
@@ -219,9 +219,10 @@ const EditAction = ({
               Action Type
             </Typography>
             <DropDown
-              current={currentAction?.type}
-              menuItems={ActionTypes}
               fullWidth={true}
+              menuItems={ActionTypes}
+              current={currentAction?.type}
+              padding="12px"
               onChange={(actionType) => setCurrentAction({ ...currentAction, type: actionType } as BaseAgentAction)}
             />
           </Grid>

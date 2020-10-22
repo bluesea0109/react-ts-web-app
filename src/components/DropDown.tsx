@@ -3,7 +3,13 @@ import { makeStyles, Theme } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import React from 'react';
 
-const useStyles = makeStyles((theme: Theme) =>
+interface Styles {
+  padding?: string;
+}
+
+const useStyles = ({
+  padding,
+}: Styles) => makeStyles((theme: Theme) =>
   createStyles({
     selectLabel: {
       color: 'black',
@@ -19,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) =>
       minWidth: 155,
 
       '& .MuiSelect-outlined': {
-        padding: '8px 8px',
+        padding: padding || '8px',
       },
     },
     icon: {
@@ -36,6 +42,7 @@ const useStyles = makeStyles((theme: Theme) =>
 interface DropDownProps {
   label?: string;
   current: any;
+  padding?: string;
   menuItems: any[];
   fullWidth?: boolean;
   onChange: (item: string) => void;
@@ -44,11 +51,12 @@ interface DropDownProps {
 const DropDown: React.FC<DropDownProps> = ({
   label,
   current,
+  padding,
   fullWidth,
   menuItems,
   onChange,
 }) => {
-  const classes = useStyles();
+  const classes = useStyles({ padding })();
 
   const currentItem = current?.name || current || '';
 
