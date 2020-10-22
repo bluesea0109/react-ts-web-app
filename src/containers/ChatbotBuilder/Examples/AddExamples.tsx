@@ -4,10 +4,8 @@ import { Box, Button, CircularProgress, Divider, Grid, LinearProgress, TextField
 import AppBar from '@material-ui/core/AppBar';
 import Dialog from '@material-ui/core/Dialog';
 import IconButton from '@material-ui/core/IconButton';
-import Slide from '@material-ui/core/Slide';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
-import { TransitionProps } from '@material-ui/core/transitions';
 import Typography from '@material-ui/core/Typography';
 import { Check, Close, Delete } from '@material-ui/icons';
 import CloseIcon from '@material-ui/icons/Close';
@@ -19,6 +17,7 @@ import { useParams } from 'react-router';
 import { TextAnnotator } from 'react-text-annotate';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { CHATBOT_GET_AGENT, CHATBOT_SAVE_CONFIG_AND_SETTINGS } from '../../../common-gql-queries';
+import { UpTransition } from '../../../components';
 import { INLUExample } from '../../../models/chatbot-service';
 import { Maybe } from '../../../utils/types';
 import { currentAgentConfig, currentWidgetSettings } from '../atoms';
@@ -37,22 +36,15 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & { children?: React.ReactElement },
-  ref: React.Ref<unknown>,
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
-
 const createExamplesMutation = gql`
-    mutation ($agentId: Int!, $examples: [ChatbotService_ExampleInput!]!) {
-        ChatbotService_uploadExamples(agentId: $agentId, examples: $examples)
-    }
+  mutation ($agentId: Int!, $examples: [ChatbotService_ExampleInput!]!) {
+    ChatbotService_uploadExamples(agentId: $agentId, examples: $examples)
+  }
 `;
 
 const AddExamples = ({
-   onEditExampleClose,
-   refetchOptions,
+  onEditExampleClose,
+  refetchOptions,
 }: {
   onEditExampleClose: () => void;
   refetchOptions: any;
@@ -201,7 +193,7 @@ const AddExamples = ({
   };
 
   return (
-    <Dialog fullScreen={true} open={true} TransitionComponent={Transition}>
+    <Dialog fullScreen={true} open={true} TransitionComponent={UpTransition}>
       <AppBar className={classes.appBar}>
         <Toolbar>
           <IconButton disabled={loading} edge="start" color="inherit" onClick={onEditExampleClose} aria-label="close">

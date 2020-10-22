@@ -14,16 +14,15 @@ import {
   Grid,
   IconButton,
   makeStyles,
-  Slide,
   TextField,
   Theme,
   Toolbar,
   Typography,
 } from '@material-ui/core';
-import { TransitionProps } from '@material-ui/core/transitions';
 import CloseIcon from '@material-ui/icons/Close';
 import React, { Fragment, useEffect, useState } from 'react';
 import { DropDown, TextInput } from '../../../components';
+import { UpTransition } from '../../../components';
 import { Maybe } from '../../../utils/types';
 import RichTextInput from '../../Utils/RichTextInput';
 import Option from './Option';
@@ -51,17 +50,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   }),
 );
-
-interface StylesInterface {
-  padding?: string;
-}
-
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & { children?: React.ReactElement },
-  ref: React.Ref<unknown>,
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
 
 type EditActionProps = {
   action?: BaseAgentAction;
@@ -184,7 +172,7 @@ const EditAction = ({
   }];
 
   return (
-    <Dialog fullScreen={true} open={!!currentAction} TransitionComponent={Transition}>
+    <Dialog fullScreen={true} open={!!currentAction} TransitionComponent={UpTransition}>
       <AppBar className={classes.appBar}>
         <Toolbar>
           <Typography variant="h6" className={classes.title}>
