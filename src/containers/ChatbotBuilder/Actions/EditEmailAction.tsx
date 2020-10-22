@@ -1,6 +1,21 @@
 import { EmailAction } from '@bavard/agent-config';
-import { Grid, TextField } from '@material-ui/core';
+import { createStyles, Grid, makeStyles, Theme, Typography } from '@material-ui/core';
 import React from 'react';
+import { TextInput } from '../../../components';
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    grid: {
+      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(1),
+    },
+    input: {
+      '& .MuiOutlinedInput-input': {
+        padding: '12px 12px',
+      },
+    },
+  }),
+);
 
 interface EditEmailActionProps {
   action: EmailAction;
@@ -11,25 +26,33 @@ const EditEmailAction = ({
   action,
   onChangeAction,
 }: EditEmailActionProps) => {
+  const classes = useStyles();
+
   return (
     <>
-      <Grid item={true} xs={6}>
-        <TextField
+      <Grid container={true} item={true} sm={12} className={classes.grid}>
+        <Typography variant="h6" style={{fontWeight: 'bold'}}>
+          Email From
+        </Typography>
+        <TextInput
           fullWidth={true}
-          label="Email From"
-          type="email"
-          variant="outlined"
-          value={action.from}
-          onChange={e => onChangeAction({ ...action, from: e.target.value } as EmailAction)}
-        />
-      </Grid>
-      <Grid item={true} xs={6}>
-        <TextField
-          fullWidth={true}
-          label="Email To"
           type="email"
           variant="outlined"
           value={action.to}
+          className={classes.input}
+          onChange={e => onChangeAction({ ...action, from: e.target.value } as EmailAction)}
+        />
+      </Grid>
+      <Grid container={true} item={true} sm={12} className={classes.grid}>
+        <Typography variant="h6" style={{fontWeight: 'bold'}}>
+          Email To
+        </Typography>
+        <TextInput
+          fullWidth={true}
+          type="email"
+          variant="outlined"
+          value={action.to}
+          className={classes.input}
           onChange={e => onChangeAction({ ...action, to: e.target.value } as EmailAction)}
         />
       </Grid>

@@ -17,17 +17,17 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: theme.spacing(2),
       flex: 1,
     },
-    input: {
-      '& .MuiOutlinedInput-input': {
-        padding: '12px 12px',
-      },
-    },
     rootGrid: {
       padding: theme.spacing(2),
     },
     grid: {
       marginTop: theme.spacing(1),
       marginBottom: theme.spacing(1),
+    },
+    input: {
+      '& .MuiOutlinedInput-input': {
+        padding: '12px 12px',
+      },
     },
   }),
 );
