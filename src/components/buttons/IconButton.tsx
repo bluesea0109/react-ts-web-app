@@ -1,6 +1,5 @@
-import { Button, makeStyles, SvgIconTypeMap, Theme } from '@material-ui/core';
+import { Button, makeStyles, SvgIconTypeMap, Theme, Typography } from '@material-ui/core';
 import { OverridableComponent } from '@material-ui/core/OverridableComponent';
-import clsx from 'clsx';
 import React from 'react';
 import { ButtonColorTypes, ButtonVariantTypes, TextTransformTypes } from '../types';
 
@@ -15,7 +14,14 @@ const useStyles = ({
 }: CustomStyles) => makeStyles((theme: Theme) => ({
   root: {
     textTransform,
-    float: iconPosition,
+
+    '&.MuiButton-text': {
+      padding: '8px 0px',
+    },
+  },
+  typography: {
+    marginLeft: iconPosition === 'left' ? theme.spacing(1) : 0,
+    marginRight: iconPosition === 'right' ? theme.spacing(1) : 0,
   },
 }));
 
@@ -47,11 +53,12 @@ const IconButton: React.FC<IconButtonProps> = ({
     <Button
       color={color || 'primary'}
       variant={variant || 'contained'}
-      className={clsx(classes.root)}
+      className={classes.root}
       onClick={onClick}
     >
-      {title}
-      <Icon />
+      {iconPosition !== 'right' && <Icon />}
+      <Typography className={classes.typography}>{title}</Typography>
+      {iconPosition === 'right' && <Icon />}
     </Button>
   );
 };

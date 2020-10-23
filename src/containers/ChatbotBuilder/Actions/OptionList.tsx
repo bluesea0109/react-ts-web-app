@@ -9,7 +9,6 @@ import { currentAgentConfig } from '../atoms';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      padding: theme.spacing(2),
       overflow: 'auto',
     },
   }),
@@ -36,7 +35,7 @@ const OptionList = ({
     <Grid container={true} className={classes.root}>
       <Grid container={true} item={true} justify="flex-end">
         <IconButton
-          title={options.length ? 'Add another option' : 'Add option'}
+          title={options.length ? 'Add Another Option' : 'Add an Option'}
           variant="text"
           Icon={AddCircleOutlineIcon}
           iconPosition="right"
