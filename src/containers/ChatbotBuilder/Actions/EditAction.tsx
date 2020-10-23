@@ -1,9 +1,9 @@
 import {
+  AgentUtteranceAction,
   BaseAgentAction,
   EAgentActionTypes,
   EmailAction,
   IResponseOption,
-  AgentUtteranceAction,
 } from '@bavard/agent-config';
 import {
   Box,

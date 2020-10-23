@@ -1,4 +1,4 @@
-import { AgentConfig, BaseAgentAction, AgentUtteranceAction } from '@bavard/agent-config';
+import { AgentConfig, AgentUtteranceAction, BaseAgentAction } from '@bavard/agent-config';
 import { Box, Grid, makeStyles, Theme } from '@material-ui/core';
 import clsx from 'clsx';
 import { Maybe } from 'graphql/jsutils/Maybe';
