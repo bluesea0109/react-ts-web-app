@@ -6,7 +6,7 @@ import { DropDown, TextInput, UpTransition } from '../../../components';
 import { Maybe } from '../../../utils/types';
 import EditEmailAction from './EditEmailAction';
 import EditUtteranceAction from './EditUtteranceAction';
-import OptionList from './OptionList';
+import Options from './Options';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -153,7 +153,7 @@ const EditAction = ({
           </Grid>
           <Grid container={true} item={true} xs={12}>
             {!!currentAction && !!currentAction.options && (
-              <OptionList
+              <Options
                 options={currentAction.options}
               />
             )}

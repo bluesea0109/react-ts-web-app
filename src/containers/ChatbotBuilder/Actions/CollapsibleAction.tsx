@@ -2,7 +2,7 @@ import { BaseAgentAction, EAgentActionTypes } from '@bavard/agent-config';
 import { Box, createStyles, Grid, makeStyles, Paper, Theme, Typography } from '@material-ui/core';
 import { Delete, Edit, KeyboardArrowDown, KeyboardArrowRight } from '@material-ui/icons';
 import clsx from 'clsx';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import ActionDetailPanel from './ActionDetailPanel';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -18,20 +18,17 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface CollapsibleActionProps {
   action: BaseAgentAction;
-  isOpen: boolean;
-  onToggle: (action: BaseAgentAction) => void;
   onEdit: (action: BaseAgentAction) => void;
   onDelete: (action: BaseAgentAction) => void;
 }
 
 const CollapsibleAction = ({
   action,
-  isOpen,
-  onToggle,
   onEdit,
   onDelete,
 }: CollapsibleActionProps) => {
   const classes = useStyles();
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
 
   const actionType = (() => {
     switch (action.type) {
@@ -46,9 +43,9 @@ const CollapsibleAction = ({
     }
   })();
 
-  const onToggleAction = useCallback(() => {
-    return onToggle(action);
-  }, [action, onToggle]);
+  const onToggleCollapse = () => {
+    setIsCollapsed(!isCollapsed);
+  };
   const onDeleteAction = useCallback(() => {
     return onDelete(action);
   }, [action, onDelete]);
@@ -62,10 +59,10 @@ const CollapsibleAction = ({
         <Grid container={true} alignItems="center" className={clsx(classes.header)}>
           <Grid item={true} container={true} xs={6} sm={6} alignItems="center">
             <Box mr={1}>
-              {isOpen ? (
-                <KeyboardArrowDown color="primary" fontSize="large" onClick={onToggleAction}/>
+              {isCollapsed ? (
+                <KeyboardArrowRight color="primary" fontSize="large" onClick={onToggleCollapse}/>
               ) : (
-                <KeyboardArrowRight color="primary" fontSize="large" onClick={onToggleAction}/>
+                <KeyboardArrowDown color="primary" fontSize="large" onClick={onToggleCollapse}/>
               )}
             </Box>
             <Typography style={{ textTransform: 'capitalize' }}>
@@ -87,7 +84,7 @@ const CollapsibleAction = ({
           </Grid>
         </Grid>
       </Paper>
-      {isOpen && (
+      {!isCollapsed && (
         <Paper variant="outlined" square={true}>
           <ActionDetailPanel action={action} />
         </Paper>
