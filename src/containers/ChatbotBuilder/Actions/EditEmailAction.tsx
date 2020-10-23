@@ -1,14 +1,10 @@
 import { EmailAction } from '@bavard/agent-config';
-import { createStyles, Grid, makeStyles, Theme, Typography } from '@material-ui/core';
+import { createStyles, Grid, makeStyles, Theme } from '@material-ui/core';
 import React from 'react';
 import { TextInput } from '../../../components';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    grid: {
-      marginTop: theme.spacing(1),
-      marginBottom: theme.spacing(1),
-    },
     input: {
       '& .MuiOutlinedInput-input': {
         padding: '12px 12px',
@@ -30,29 +26,23 @@ const EditEmailAction = ({
 
   return (
     <>
-      <Grid container={true} item={true} sm={12} className={classes.grid}>
-        <Typography variant="h6" style={{fontWeight: 'bold'}}>
-          Email From
-        </Typography>
+      <Grid container={true} item={true} sm={12} className={classes.input}>
         <TextInput
           fullWidth={true}
+          label="Email From"
           type="email"
           variant="outlined"
-          value={action.to}
-          className={classes.input}
+          value={action.from}
           onChange={e => onChangeAction({ ...action, from: e.target.value } as EmailAction)}
         />
       </Grid>
-      <Grid container={true} item={true} sm={12} className={classes.grid}>
-        <Typography variant="h6" style={{fontWeight: 'bold'}}>
-          Email To
-        </Typography>
+      <Grid container={true} item={true} sm={12}>
         <TextInput
           fullWidth={true}
+          label="Email To"
           type="email"
           variant="outlined"
           value={action.to}
-          className={classes.input}
           onChange={e => onChangeAction({ ...action, to: e.target.value } as EmailAction)}
         />
       </Grid>

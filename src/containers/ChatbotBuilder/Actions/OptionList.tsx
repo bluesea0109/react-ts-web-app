@@ -1,6 +1,6 @@
 import { IIntent, IResponseOption } from '@bavard/agent-config';
 import { Box } from '@material-ui/core';
-import React, { useState } from 'react';
+import React from 'react';
 import CollapsibleOption from './CollapsibleOption';
 
 interface OptionListProps {

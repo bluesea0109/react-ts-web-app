@@ -1,7 +1,7 @@
 import { AgentConfig, IResponseOption } from '@bavard/agent-config';
 import { createStyles, Grid, makeStyles, Theme, Typography } from '@material-ui/core';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import React, { useState } from 'react';
+import React from 'react';
 import { useRecoilState } from 'recoil';
 import { IconButton } from '../../../components';
 import { currentAgentConfig } from '../atoms';

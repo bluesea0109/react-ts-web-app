@@ -1,6 +1,6 @@
 import { BaseAgentAction } from '@bavard/agent-config';
 import { Box } from '@material-ui/core';
-import React, { useState } from 'react';
+import React from 'react';
 import CollapsibleAction from './CollapsibleAction';
 
 interface ActionListProps {
