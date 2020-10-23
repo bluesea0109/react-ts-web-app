@@ -3,7 +3,7 @@ import {
   EAgentActionTypes,
   EmailAction,
   IResponseOption,
-  UtteranceAction,
+  AgentUtteranceAction,
 } from '@bavard/agent-config';
 import {
   Box,
@@ -108,8 +108,8 @@ const EditAction = ({
       <Box p={2}>
         <RichTextInput
           label="Action Text"
-          value={(currentAction as UtteranceAction)?.utterance || ''}
-          onChange={(html: string) => setCurrentAction({ ...currentAction, utterance: html } as UtteranceAction)}
+          value={(currentAction as AgentUtteranceAction)?.utterance || ''}
+          onChange={(html: string) => setCurrentAction({ ...currentAction, utterance: html } as AgentUtteranceAction)}
         />
       </Box>
     </Grid>

@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { IUtteranceAction } from '@bavard/agent-config';
+import { IAgentUtteranceAction } from '@bavard/agent-config';
 import {
   LinearProgress,
   Paper,
@@ -31,12 +31,12 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface IGetUtteranceActions {
-  ChatbotService_utteranceActions: IUtteranceAction[] | undefined;
+  ChatbotService_utteranceActions: IAgentUtteranceAction[] | undefined;
 }
 
 interface ActionState {
-  columns: Column<IUtteranceAction>[];
-  data: IUtteranceAction[] | undefined;
+  columns: Column<IAgentUtteranceAction>[];
+  data: IAgentUtteranceAction[] | undefined;
 }
 
 function UtteranceActionsTable() {
@@ -75,7 +75,7 @@ function UtteranceActionsTable() {
     },
   );
 
-  const actions: IUtteranceAction[] | undefined =
+  const actions: IAgentUtteranceAction[] | undefined =
     actionsData &&
     actionsData.data &&
     actionsData.data.ChatbotService_utteranceActions;
