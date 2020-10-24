@@ -257,7 +257,7 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
       enqueueSnackbar('Can\'t create empty tag', { variant: 'error' });
       return;
     }
-
+    // tags: Array(0);
     try {
       setLoading(true);
       setConfig(config?.addTagType(newTag));
@@ -286,10 +286,10 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
     console.log('Number  > ', id);
     console.log('Field  > ', field);
 
-    const index = parseInt(id, 10) - parseInt(agentId, 10)
-    let result = [...examples]
-    result[index].text = field
-    setExamples(result)    
+    const index = parseInt(id, 10) - parseInt(agentId, 10);
+    const result = [...examples];
+    result[index].text = field;
+    setExamples(result);
   };
 
   const isAllSet = () => {
@@ -394,12 +394,15 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
           <Grid item={true} md={4} xs={12} />
           <Grid item={true} md={4} xs={12}>
             {examples &&
-              examples.map((example, index) => (                
-                <IntentExampleForm
+              examples.map((example, index) => (
+                <AddExampleItem
                   key={index}
-                  label={example.agentId + index + ''}
-                  onChange={handleExampleChange}
-                  />
+                  loading={loading}
+                  example={example}
+                  tagType={tagType ?? ''}
+                  tagTypes={tagTypes}
+                  onExampleUpdate={onExampleUpdate(example.id)}
+                />
               ))}
           </Grid>
           <Grid item={true} md={4} xs={12} />
