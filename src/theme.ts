@@ -44,7 +44,6 @@ const darkTheme: ThemeOptions = {
     },
     contrastThreshold: 3,
   },
-
 };
 
 const lightTheme: ThemeOptions = {
@@ -54,6 +53,14 @@ const lightTheme: ThemeOptions = {
     // divider:
     primary: {
       main: '#0161FF',
+      dark: '#003969',
+    },
+    success: {
+      main: '#15845A',
+    },
+    info: {
+      main: '#64B5F6',
+      light: '#EAF9FF',
     },
     secondary: {
       main: '#4A90E1',
