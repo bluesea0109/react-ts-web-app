@@ -1,5 +1,4 @@
 import {
-  Chip,
   IconButton,
   Paper,
   TableContainer,
@@ -13,6 +12,8 @@ import moment from 'moment';
 import React, { useEffect } from 'react';
 import { IPublishedAgent } from '../../../models/chatbot-service';
 import { exportJsonFileFromObj } from '../../../utils/exports';
+import { removeSpecialChars } from '../../../utils/string';
+import StatusChip from '../../Utils/StatusChip';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -22,16 +23,6 @@ const useStyles = makeStyles((theme: Theme) =>
     title: {
       width: 'fit-content',
       display: 'inline-block',
-    },
-    statusChip: {
-      backgroundColor: theme.palette.primary.dark,
-      color: theme.palette.primary.contrastText,
-      textTransform: 'capitalize',
-    },
-    statusChipReady: {
-      backgroundColor: theme.palette.success.main,
-      color: theme.palette.primary.contrastText,
-      textTransform: 'capitalize',
     },
     toolbarContainer: {
       display: 'flex',
@@ -77,13 +68,9 @@ function PublishedAgentsTable({
         field: 'status',
         editable: 'never',
         render: (agent) => (
-          <Chip
-            className={
-              agent.status === 'READY'
-                ? classes.statusChipReady
-                : classes.statusChip
-            }
-            label={agent.status.toLowerCase()}
+          <StatusChip
+            color={agent.status === 'READY' ? 'green' : 'blue'}
+            text={removeSpecialChars(agent.status.toLowerCase())}
           />
         ),
       },

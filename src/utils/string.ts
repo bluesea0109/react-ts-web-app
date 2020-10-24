@@ -14,3 +14,7 @@ export const validateUrl = (url: string): boolean => {
   ); // fragment locator
   return !!pattern.test(url);
 };
+
+export const removeSpecialChars = (text: string): string => {
+  return text.replace(/[^a-zA-Z ]/g, ' ');
+};

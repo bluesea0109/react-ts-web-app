@@ -1,4 +1,10 @@
-import { createStyles, Grid, makeStyles, Theme } from '@material-ui/core';
+import {
+  createStyles,
+  Grid,
+  makeStyles,
+  Theme,
+  Typography,
+} from '@material-ui/core';
 import React from 'react';
 import { useParams } from 'react-router';
 import AgentModelTable from './AgentModelTable';
@@ -12,6 +18,12 @@ const useStyles = makeStyles((theme: Theme) =>
       overflow: 'auto',
       padding: theme.spacing(2),
     },
+    toolbarActions: {
+      float: 'right',
+    },
+    pageTitle: {
+      marginBottom: theme.spacing(2),
+    },
   }),
 );
 export default function TrainingJobsTab() {
@@ -19,15 +31,21 @@ export default function TrainingJobsTab() {
   let { agentId } = useParams();
   agentId = Number(agentId);
   return (
-    <div className={classes.root}>
-      <Grid container={true}>
-        <Grid item={true}>
-          <CreateTrainingJobDialog agentId={agentId} />
-        </Grid>
-      </Grid>
+    <div className={'page-container'}>
+      <Typography className={classes.pageTitle} variant="h6">
+        Training Information
+      </Typography>
+
       <Grid container={true} spacing={2}>
         <Grid item={true} xs={6}>
-          <TrainingJobsTable />
+          <TrainingJobsTable
+            toolbarActions={
+              <CreateTrainingJobDialog
+                className={classes.toolbarActions}
+                agentId={agentId}
+              />
+            }
+          />
         </Grid>
         <Grid item={true} xs={6}>
           <AgentModelTable />
