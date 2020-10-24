@@ -33,16 +33,20 @@ const Options = ({
 
   return (
     <Grid container={true} className={classes.root}>
-      <Grid container={true} item={true}>
-        <Typography variant="h6">
-          Add a New User Response Option
-        </Typography>
-      </Grid>
-      <Grid container={true} item={true}>
-        <Typography variant="subtitle1">
-          Add Options to create choices your user can select:
-        </Typography>
-      </Grid>
+      {options && !!options.length && (
+        <>
+          <Grid container={true} item={true}>
+            <Typography variant="h6">
+              Add a New User Response Option
+            </Typography>
+          </Grid>
+          <Grid container={true} item={true}>
+            <Typography variant="subtitle1">
+              Add Options to create choices your user can select:
+            </Typography>
+          </Grid>
+        </>
+      )}
       <OptionList
         options={options}
         intents={intents}
