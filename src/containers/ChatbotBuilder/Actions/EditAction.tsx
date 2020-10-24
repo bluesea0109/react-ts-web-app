@@ -1,4 +1,4 @@
-import { BaseAgentAction, EAgentActionTypes, EmailAction, IResponseOption, UtteranceAction } from '@bavard/agent-config';
+import { AgentUtteranceAction, BaseAgentAction, EAgentActionTypes, EmailAction, IResponseOption } from '@bavard/agent-config';
 import { AppBar, Button, createStyles, Dialog, Grid, IconButton, makeStyles, Theme, Toolbar, Typography } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import React, { useEffect, useState } from 'react';
@@ -140,7 +140,7 @@ const EditAction = ({
           <Grid container={true}>
             {currentAction?.type === EAgentActionTypes.UTTERANCE_ACTION && (
               <EditUtteranceAction
-                action={currentAction as UtteranceAction}
+                action={currentAction as AgentUtteranceAction}
                 onChangeAction={action => setCurrentAction(action)}
               />
             )}

@@ -5,8 +5,12 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import clsx from 'clsx';
 import React, { useState } from 'react';
-import { CREATE_TRAINING_JOB, GET_TRAINING_JOBS } from '../../../common-gql-queries';
+import {
+  CREATE_TRAINING_JOB,
+  GET_TRAINING_JOBS,
+} from '../../../common-gql-queries';
 import ContentLoading from '../../ContentLoading';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -23,6 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface IProps {
   agentId: number;
+  className?: string;
 }
 
 interface IState {
@@ -35,10 +40,15 @@ export default function CreateTrainingJobDialog(props: IProps) {
     open: false,
   });
 
-  const [createTrainingJob, { error, loading }] = useMutation(CREATE_TRAINING_JOB, {
-    refetchQueries: [{ query: GET_TRAINING_JOBS, variables: { agentId: props.agentId } }],
-    awaitRefetchQueries: true,
-  });
+  const [createTrainingJob, { error, loading }] = useMutation(
+    CREATE_TRAINING_JOB,
+    {
+      refetchQueries: [
+        { query: GET_TRAINING_JOBS, variables: { agentId: props.agentId } },
+      ],
+      awaitRefetchQueries: true,
+    },
+  );
 
   const handleOpen = () => {
     setState({ ...state, open: true });
@@ -49,19 +59,18 @@ export default function CreateTrainingJobDialog(props: IProps) {
   };
   let dialogContent;
   const handleCreateTrainingJob = async () => {
-  try {
-    const responseData =  await createTrainingJob({
-      variables: {
-        agentId: props.agentId,
-      },
-    });
-    if (responseData) {
-      handleClose();
+    try {
+      const responseData = await createTrainingJob({
+        variables: {
+          agentId: props.agentId,
+        },
+      });
+      if (responseData) {
+        handleClose();
+      }
+    } catch (e) {
+      dialogContent = e.graphQLErrors[0].message;
     }
-  } catch (e) {
-    dialogContent = e.graphQLErrors[0].message;
-  }
-
   };
 
   if (error) {
@@ -80,13 +89,15 @@ export default function CreateTrainingJobDialog(props: IProps) {
     );
   }
   return (
-    <div className={classes.root} color="inherit">
+    <div className={clsx([classes.root, props.className])} color="inherit">
       <Dialog
         fullWidth={true}
         open={state.open}
         onClose={handleClose}
         aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Create Agent Training Jobs</DialogTitle>
+        <DialogTitle id="form-dialog-title">
+          Create Agent Training Jobs
+        </DialogTitle>
         {dialogContent}
         <DialogActions>
           <Button color="primary" onClick={handleClose}>
@@ -100,7 +111,11 @@ export default function CreateTrainingJobDialog(props: IProps) {
           </Button>
         </DialogActions>
       </Dialog>
-      <Button variant="contained" size="small" onClick={handleOpen}>
+      <Button
+        variant="contained"
+        color="primary"
+        size="small"
+        onClick={handleOpen}>
         {'Train Agent'}
       </Button>
     </div>

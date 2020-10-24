@@ -34,6 +34,9 @@ const useStyles = makeStyles((theme: Theme) =>
     table: {
       height: `70vh`,
     },
+    embedCodeContainer: {
+      backgroundColor: theme.palette.info.light,
+    },
   }),
 );
 
@@ -64,7 +67,10 @@ export default function PublishAgent() {
 
   const [publishAgent] = useMutation(publishAgentMutation, {
     refetchQueries: [
-      { query: getPublishedAgentsQuery, variables: { agentId, forceRetrain: state.forceRetrain } },
+      {
+        query: getPublishedAgentsQuery,
+        variables: { agentId, forceRetrain: state.forceRetrain },
+      },
     ],
     awaitRefetchQueries: true,
   });
@@ -83,7 +89,11 @@ export default function PublishAgent() {
   };
 
   const handleConfirm = async () => {
-    setState((prevState) => ({ ...prevState, loading: true, modalOpen: false }));
+    setState((prevState) => ({
+      ...prevState,
+      loading: true,
+      modalOpen: false,
+    }));
     try {
       const result = await publishAgent({
         variables: { agentId, forceRetrain: state.forceRetrain },
@@ -113,12 +123,15 @@ export default function PublishAgent() {
   };
 
   const toggleForceRetrain = () => {
-    setState((prevState) => ({ ...prevState, forceRetrain: !prevState.forceRetrain }));
+    setState((prevState) => ({
+      ...prevState,
+      forceRetrain: !prevState.forceRetrain,
+    }));
   };
   const agents = queryResult.data?.ChatbotService_getPublishedAgents;
 
   return (
-    <Grid container={true} spacing={2} className={classes.root}>
+    <Grid container={true} spacing={2} className={'page-container'}>
       <Grid item={true} xs={12}>
         <PublishedAgentsTable
           containerClassName={classes.table}
@@ -126,7 +139,7 @@ export default function PublishAgent() {
           loading={queryResult.loading || state.loading}
           toolbarChildren={
             <Button variant="contained" color="primary" onClick={handlePublish}>
-              Publish
+              Publish Assistant
             </Button>
           }
         />
@@ -135,14 +148,16 @@ export default function PublishAgent() {
       <Grid item={true} xs={12}>
         <Card>
           <CardHeader
-            title={<Typography variant="h6">Widget Embed Code</Typography>}
-            subheader="Copy-paste the following code to embed the bot on your html page"
+            title={<Typography variant="h6">Embed Code</Typography>}
+            subheader="Copy and paste this code snippet to embed the bot within your HTML"
           />
           <CardContent>
-            <AgentEmbedCode
-              agentUname={agentUname || '<your-agent-uname>'}
-              apiKey={apiKeyQueryResult.data?.apiKey?.key || '<your-api-key>'}
-            />
+            <div className={classes.embedCodeContainer}>
+              <AgentEmbedCode
+                agentUname={agentUname || '<your-agent-uname>'}
+                apiKey={apiKeyQueryResult.data?.apiKey?.key || '<your-api-key>'}
+              />
+            </div>
           </CardContent>
         </Card>
       </Grid>
@@ -150,9 +165,10 @@ export default function PublishAgent() {
         open={state.modalOpen}
         onClose={handleCloseDialogue}
         aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">{'Do you want to publish?'}</DialogTitle>
+        aria-describedby="alert-dialog-description">
+        <DialogTitle id="alert-dialog-title">
+          {'Do you want to publish?'}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             {'Force re-train NLP models:'}

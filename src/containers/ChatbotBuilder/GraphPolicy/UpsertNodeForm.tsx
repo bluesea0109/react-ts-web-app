@@ -127,7 +127,7 @@ export default function UpsertNodeForm({
   };
 
   const addFormField = (fieldName: string, fieldType: EFormFieldTypes) => {
-    setFormFields([...formFields, { name: fieldName, type: fieldType }]);
+    setFormFields([...formFields, { name: fieldName, type: fieldType, required: true }]);
   };
 
   const deleteField = (key: number) => {

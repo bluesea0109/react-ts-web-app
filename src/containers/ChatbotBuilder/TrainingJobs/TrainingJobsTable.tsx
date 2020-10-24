@@ -1,11 +1,7 @@
 import { useQuery } from '@apollo/client';
 import { Typography } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
-import {
-  createStyles,
-  makeStyles,
-  Theme,
-} from '@material-ui/core/styles';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -16,9 +12,14 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { GET_TRAINING_JOBS } from '../../../common-gql-queries';
 import { ITrainingJob } from '../../../models/chatbot-service';
+import { removeSpecialChars } from '../../../utils/string';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
+import StatusChip from '../../Utils/StatusChip';
 
+interface ITrainingJobsTableProps {
+  toolbarActions?: React.ReactNode;
+}
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     rightIcon: {
@@ -26,10 +27,20 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     paper: {
       width: '100%',
+      height: 500,
+      overflow: 'auto',
     },
-  }));
+    toolbarItems: {
+      display: 'flex',
+      width: '100%',
+      justifyContent: 'space-between',
+    },
+  }),
+);
 
-export default function TrainingJobsTable() {
+export default function TrainingJobsTable({
+  toolbarActions,
+}: ITrainingJobsTableProps) {
   const classes = useStyles();
   let { agentId } = useParams();
   agentId = parseInt(agentId, 10);
@@ -37,7 +48,9 @@ export default function TrainingJobsTable() {
   interface IGetTrainingJobs {
     ChatbotService_trainingJobs: ITrainingJob[];
   }
-  const getTrainingJobs = useQuery<IGetTrainingJobs>(GET_TRAINING_JOBS, { variables: { agentId } });
+  const getTrainingJobs = useQuery<IGetTrainingJobs>(GET_TRAINING_JOBS, {
+    variables: { agentId },
+  });
 
   if (getTrainingJobs.error) {
     return <ApolloErrorPage error={getTrainingJobs.error} />;
@@ -51,13 +64,16 @@ export default function TrainingJobsTable() {
 
   return (
     <Paper className={classes.paper}>
-      <Toolbar variant="dense">
-        <Typography variant="h5">Training Jobs</Typography>
+      <Toolbar>
+        <div className={classes.toolbarItems}>
+          <Typography variant="h6">Training Jobs</Typography>
+          {toolbarActions}
+        </div>
       </Toolbar>
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell align="left">Job Id</TableCell>
+            <TableCell align="left">Job ID</TableCell>
             <TableCell align="left">Status</TableCell>
           </TableRow>
         </TableHead>
@@ -66,7 +82,12 @@ export default function TrainingJobsTable() {
             return (
               <TableRow key={job.jobId} hover={true}>
                 <TableCell align="left">{job.jobId}</TableCell>
-                <TableCell align="left">{job.status}</TableCell>
+                <TableCell align="left">
+                  <StatusChip
+                    color={job.status === 'SUCCEEDED' ? 'green' : 'blue'}
+                    text={removeSpecialChars(job.status.toLowerCase())}
+                  />
+                </TableCell>
               </TableRow>
             );
           })}

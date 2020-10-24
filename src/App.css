@@ -39,6 +39,8 @@ body {
 
 .page-container {
   background: #eaeaea;
+  width: 100%;
+  min-height: 100vh;
   padding: 32px 64px;
   overflow-y: scroll;
 }
