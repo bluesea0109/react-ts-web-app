@@ -7,7 +7,6 @@ import {
   Divider,
   Grid,
   LinearProgress,
-  TextareaAutosize,
   TextField,
 } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
@@ -54,7 +53,7 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: '20px',
       backgroundColor: '#EAEAEA',
       marginBottom: '15px',
-      marginTop: '15px',
+      marginTop: '30px',
     },
     cols: {
       width: '100%',
@@ -114,17 +113,17 @@ const AddExamples = ({
   const updateIntent = (e: ChangeEvent<{}>, intent: string | null) =>
     setIntent(intent ?? '');
 
-  const onExampleUpdate = (id: number) => (updatedExample: INLUExample) => {
-    const index = examples.findIndex((ex) => ex.id === id);
-    const updatedExamples = Array.from([...examples]);
-    const currentIntent = intent;
-    updatedExamples.splice(index, 1, {
-      ...updatedExample,
-      intent: currentIntent ?? '',
-    });
+  // const onExampleUpdate = (id: number) => (updatedExample: INLUExample) => {
+  //   const index = examples.findIndex((ex) => ex.id === id);
+  //   const updatedExamples = Array.from([...examples]);
+  //   const currentIntent = intent;
+  //   updatedExamples.splice(index, 1, {
+  //     ...updatedExample,
+  //     intent: currentIntent ?? '',
+  //   });
 
-    setExamples([...updatedExamples]);
-  };
+  //   setExamples([...updatedExamples]);
+  // };
 
   const onAddExample = () => {
     const currentExamples = Array.from([...examples]);
@@ -357,13 +356,13 @@ const AddExamples = ({
                 </Grid>
               </Grid>
             </Box>
-            <AddExampleItem
+            {/* <AddExampleItem
               loading={loading}
               example={example}
               tagType={tagType ?? ''}
               tagTypes={tagTypes}
               onExampleUpdate={onExampleUpdate(example.id)}
-            />
+            /> */}
           </Grid>
         ))}
       </Grid>
@@ -387,6 +386,7 @@ interface AddExampleItemProps {
   tagTypes: string[];
   example: INLUExample;
   onExampleUpdate: (updatedExample: INLUExample) => void;
+  onDeleteExample: () => void;
 }
 
 export const AddExampleItem = ({
@@ -396,6 +396,7 @@ export const AddExampleItem = ({
   tagTypes,
   example,
   onExampleUpdate,
+  onDeleteExample,
 }: AddExampleItemProps) => {
   const [
     exampleText,
@@ -405,6 +406,13 @@ export const AddExampleItem = ({
     colors,
   ] = useEditExampleAnnotation({ tagTypes });
 
+  const [focused, setFocus] = useState<boolean>(false);
+
+  const handleBlur = () => {
+    if (!exampleText.length) {
+      setFocus(false);
+    }
+  };
   const classes = useStyles();
   useEffect(() => {
     setAnnotatorState({
@@ -429,10 +437,10 @@ export const AddExampleItem = ({
   return (
     <div className={classes.exampleForm}>
       <div className={classes.exampleHeader}>
-        <Typography>Example </Typography>
-        <div>
+        <Typography>Example {example.id} </Typography>
+        <IconButton onClick={onDeleteExample}>
           <Delete />
-      </div>
+        </IconButton>
       </div>
       <>
         <TextField
@@ -442,9 +450,11 @@ export const AddExampleItem = ({
           variant="outlined"
           rows={2}
           className={classes.cols}
-          value={exampleText}
+          value={example.text}
           onChange={(e) => setExampleText(e.target.value)}
           error={error === ExamplesError.CREATE_ERROR_DUPLICATE_EXAMPLE}
+          onFocus={() => setFocus(true)}
+          onBlur={handleBlur}
         />
         <Typography
           variant="h6"
@@ -455,31 +465,35 @@ export const AddExampleItem = ({
             : null}
         </Typography>
       </>
-      <Typography>Highlight text to identify it as a tag.</Typography>
-      <TextAnnotator
-        style={{
-          borderRadius: '3px',
-          border: '1px solid #ccc',
-          lineHeight: 1.5,
-          pointerEvents:
-            loading || !tagType || tagTypes?.length === 0 ? 'none' : 'auto',
-          minHeight: 40,
-          backgroundColor: 'white',
-          padding: '15px',
-          cursor: 'pointer',
-        }}
-        content={exampleText}
-        value={annotatorState.tags}
-        onChange={(value: any) =>
-          setAnnotatorState({ ...annotatorState, tags: value })
-        }
-        getSpan={(span) => ({
-          ...span,
-          tag: tagType,
-          color: colors.current[tagType],
-        })}
-        className={classes.cols}
-      />
+      {focused && (
+        <>
+          <Typography>Highlight text to identify it as a tag.</Typography>
+          <TextAnnotator
+            style={{
+              borderRadius: '3px',
+              border: '1px solid #ccc',
+              lineHeight: 1.5,
+              pointerEvents:
+                loading || !tagType || tagTypes?.length === 0 ? 'none' : 'auto',
+              minHeight: 40,
+              backgroundColor: 'white',
+              padding: '15px',
+              cursor: 'pointer',
+            }}
+            content={example.text}
+            value={annotatorState.tags}
+            onChange={(value: any) =>
+              setAnnotatorState({ ...annotatorState, tags: value })
+            }
+            getSpan={(span) => ({
+              ...span,
+              tag: tagType,
+              color: colors.current[tagType],
+            })}
+            className={classes.cols}
+          />
+        </>
+      )}
     </div>
   );
 };

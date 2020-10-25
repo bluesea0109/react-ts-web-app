@@ -1,9 +1,7 @@
 import { useMutation } from '@apollo/client';
 import { AgentConfig, BaseAgentAction, IIntent } from '@bavard/agent-config';
 import {
-  Box,
   DialogContent,
-  Divider,
   Grid,
   TextField,
 } from '@material-ui/core';
@@ -16,13 +14,13 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import { TransitionProps } from '@material-ui/core/transitions';
 import Typography from '@material-ui/core/Typography';
-import { AddCircleOutline, Check, Close, Delete } from '@material-ui/icons';
+import { AddCircleOutline } from '@material-ui/icons';
 import CloseIcon from '@material-ui/icons/Close';
-import { Autocomplete } from '@material-ui/lab';
+
 import gql from 'graphql-tag';
 import _ from 'lodash';
 import { useSnackbar } from 'notistack';
-import React, { ChangeEvent, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
@@ -30,11 +28,10 @@ import {
   CHATBOT_SAVE_CONFIG_AND_SETTINGS,
 } from '../../../common-gql-queries';
 import { DropDown } from '../../../components';
-import { IntentExampleForm } from '../../../components/IntentExampleForm';
 import { INLUExample } from '../../../models/chatbot-service';
 import { currentAgentConfig, currentWidgetSettings } from '../atoms';
 import { AddExampleItem } from '../Examples/AddExamples';
-import ExampleForm from '../Examples/ExampleForm';
+
 import { EXAMPLES_LIMIT } from '../Examples/Examples';
 import { getExamplesQuery } from '../Examples/gql';
 
@@ -115,8 +112,8 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
   const { agentId } = useParams<{ agentId: string }>();
   const numAgentId = Number(agentId);
   const [tagType, setTagType] = useState<string | undefined>();
-  const [addTag, setAddTag] = useState(false);
-  const [newTag, setNewTag] = useState('');
+  // const [addTag, setAddTag] = useState(false);
+  // const [newTag, setNewTag] = useState('');
   const [loading, setLoading] = useState(false);
   const [examples, setExamples] = useState<INLUExample[]>([]);
   const lastID = useRef(0);
@@ -130,8 +127,8 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
 
   const [createExamples] = useMutation(createExamplesMutation);
 
-  const updateTagType = (e: ChangeEvent<{}>, tagType: string | null) =>
-    setTagType(tagType ?? '');
+  // const updateTagType = (e: ChangeEvent<{}>, tagType: string | null) =>
+  //   setTagType(tagType ?? '');
 
   if (!config) {
     return <p>Agent config is empty.</p>;
@@ -162,8 +159,6 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
 
     lastID.current = lastID.current + 1;
   };
-
-  console.log('Examples >>> ', examples);
 
   const onDeleteExample = (id: number) => () => {
     const index = examples.findIndex((ex) => ex.id === id);
@@ -252,24 +247,24 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
     }
   };
 
-  const createTag = async () => {
-    if (newTag === '') {
-      enqueueSnackbar('Can\'t create empty tag', { variant: 'error' });
-      return;
-    }
-    // tags: Array(0);
-    try {
-      setLoading(true);
-      setConfig(config?.addTagType(newTag));
-      setNewTag('');
-      setAddTag(false);
-    } catch (e) {
-      enqueueSnackbar('Unable to create tag.', { variant: 'error' });
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // const createTag = async () => {
+  //   if (newTag === '') {
+  //     enqueueSnackbar('Can\'t create empty tag', { variant: 'error' });
+  //     return;
+  //   }
+  //   // tags: Array(0);
+  //   try {
+  //     setLoading(true);
+  //     setConfig(config?.addTagType(newTag));
+  //     setNewTag('');
+  //     setAddTag(false);
+  //   } catch (e) {
+  //     enqueueSnackbar('Unable to create tag.', { variant: 'error' });
+  //     console.error(e);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const handleActionFieldChange = (field: string) => {
     setNewIntent({
@@ -280,22 +275,6 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
 
   const handleTagTypeChange = (field: string) => {
     setTagType(field);
-  };
-
-  const handleExampleChange = (id: string, field: string) => {
-    console.log('Number  > ', id);
-    console.log('Field  > ', field);
-
-    const index = parseInt(id, 10) - parseInt(agentId, 10);
-    const result = [...examples];
-    result[index].text = field;
-    setExamples(result);
-  };
-
-  const isAllSet = () => {
-    const result = false;
-
-    return result;
   };
 
   return (
@@ -378,6 +357,39 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
           </Grid>
           <Grid item={true} xs={4} md={12} />
         </Grid>
+        {
+          tagType &&
+          <Grid container={true}>
+          <Grid item={true} md={4} xs={12} />
+          <Grid item={true} md={4} xs={12} className={classes.addExampleBtn}>
+            <Button
+              color="primary"
+              onClick={handleAddExample}
+              endIcon={<AddCircleOutline />}>
+              Add a New TagType
+            </Button>
+          </Grid>
+          <Grid item={true} md={4} xs={12} />
+        </Grid>
+        }
+        <Grid container={true}>
+          <Grid item={true} md={4} xs={12} />
+          <Grid item={true} md={4} xs={12}>
+            {examples &&
+              examples.map((example, index) => (
+                <AddExampleItem
+                  key={index}
+                  loading={loading}
+                  example={example}
+                  tagType={tagType ?? ''}
+                  tagTypes={tagTypes}
+                  onExampleUpdate={onExampleUpdate(example.id)}
+                  onDeleteExample={onDeleteExample(example.id)}
+                />
+              ))}
+          </Grid>
+          <Grid item={true} md={4} xs={12} />
+        </Grid>
         <Grid container={true}>
           <Grid item={true} md={4} xs={12} />
           <Grid item={true} md={4} xs={12} className={classes.addExampleBtn}>
@@ -392,28 +404,11 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
         </Grid>
         <Grid container={true}>
           <Grid item={true} md={4} xs={12} />
-          <Grid item={true} md={4} xs={12}>
-            {examples &&
-              examples.map((example, index) => (
-                <AddExampleItem
-                  key={index}
-                  loading={loading}
-                  example={example}
-                  tagType={tagType ?? ''}
-                  tagTypes={tagTypes}
-                  onExampleUpdate={onExampleUpdate(example.id)}
-                />
-              ))}
-          </Grid>
-          <Grid item={true} md={4} xs={12} />
-        </Grid>
-        <Grid container={true}>
-          <Grid item={true} md={4} xs={12} />
           <Grid item={true} md={4} xs={12} className={classes.addIntentBtn}>
             <Button
               color="primary"
               variant="contained"
-              onClick={() => console.log('clicked')}>
+              onClick={saveChanges}>
               Add Intent
             </Button>
           </Grid>
