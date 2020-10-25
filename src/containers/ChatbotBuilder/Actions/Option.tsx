@@ -7,7 +7,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { currentAgentConfig } from '../atoms';
-import EditOption from './EditOption';
+import EditOption from './EditOption2';
 import SortableOptions from './SortableOptions';
 
 const useStyles = makeStyles((theme: Theme) =>

@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
     rootGrid: {
       padding: theme.spacing(2),
     },
-    grid: {
+    formField: {
       marginTop: theme.spacing(1),
       marginBottom: theme.spacing(1),
     },
@@ -117,29 +117,26 @@ const EditAction = ({
       </AppBar>
       <Grid container={true} justify="center" className={classes.rootGrid}>
         <Grid container={true} item={true} sm={6} xs={4}>
-          <Grid container={true} item={true} sm={12} justify="flex-start" className={classes.grid}>
+          <Grid container={true} item={true} sm={12} justify="flex-start" className={classes.formField}>
             <Typography variant="h6">
               Add an Action to customize your Assistant’s behavior:
             </Typography>
           </Grid>
-          <Grid container={true} item={true} sm={12} className={classes.grid}>
-            <Typography variant="h6" style={{fontWeight: 'bold'}}>
-              Action Name
-            </Typography>
+          <Grid item={true} sm={12} className={classes.formField}>
             <TextInput
               fullWidth={true}
+              label="Action Name"
               variant="outlined"
               value={currentAction?.name}
               className={classes.input}
               onChange={isNewAction ? e => setCurrentAction({ ...currentAction, name: e.target.value } as BaseAgentAction) : undefined}
             />
           </Grid>
-          <Grid container={true} item={true} sm={12} className={classes.grid}>
-            <Typography variant="h6" style={{fontWeight: 'bold'}}>
-              Action Type
-            </Typography>
+          <Grid container={true} item={true} sm={12} className={classes.formField}>
             <DropDown
               fullWidth={true}
+              label="Action Type"
+              labelPosition="left"
               menuItems={ActionTypes}
               current={currentAction?.type}
               padding="12px"

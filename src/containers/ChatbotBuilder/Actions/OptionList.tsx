@@ -17,6 +17,7 @@ const OptionList = ({
       {options.map((option, index) => (
         <CollapsibleOption
           key={index}
+          index={index + 1}
           option={option}
           intents={intents}
         />

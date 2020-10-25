@@ -1,6 +1,5 @@
-import { Box, createStyles, Grid, InputLabel, MenuItem, Select } from '@material-ui/core';
+import { Box, createStyles, Grid, InputLabel, MenuItem, Select, Typography } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
-import clsx from 'clsx';
 import React from 'react';
 
 interface Styles {
@@ -11,7 +10,7 @@ const useStyles = ({
   padding,
 }: Styles) => makeStyles((theme: Theme) =>
   createStyles({
-    selectLabel: {
+    topLabel: {
       color: 'black',
       fontSize: 12,
       marginBottom: 4,
@@ -41,6 +40,7 @@ const useStyles = ({
 
 interface DropDownProps {
   label?: string;
+  labelPosition?: 'left'|'top';
   current: any;
   padding?: string;
   menuItems: any[];
@@ -50,6 +50,7 @@ interface DropDownProps {
 
 const DropDown: React.FC<DropDownProps> = ({
   label,
+  labelPosition,
   current,
   padding,
   fullWidth,
@@ -61,17 +62,22 @@ const DropDown: React.FC<DropDownProps> = ({
   const currentItem = current?.name || current || '';
 
   const MainContent = () => (
-    <>
-      {label && label.length && (
-        <InputLabel className={clsx(classes.selectLabel)}>
+    <Grid container={true}>
+      {labelPosition === 'top' && label && label.length && (
+        <InputLabel className={classes.topLabel}>
           {label}
         </InputLabel>
+      )}
+      {labelPosition === 'left' && label && label.length && (
+        <Typography variant="h6" style={{fontWeight: 'bold'}}>
+          {label}
+        </Typography>
       )}
 
       <Select
         variant="outlined"
         value={currentItem}
-        className={clsx(classes.selectInput)}
+        className={classes.selectInput}
         classes={{
           icon: classes.icon,
           iconOutlined: classes.iconOutlined,
@@ -91,7 +97,7 @@ const DropDown: React.FC<DropDownProps> = ({
           </MenuItem>
         ))}
       </Select>
-    </>
+    </Grid>
   );
 
   return fullWidth ? (

@@ -1,7 +1,8 @@
 import { IIntent, IResponseOption } from '@bavard/agent-config';
-import { Box, createStyles, Grid, makeStyles, Paper, Theme, Typography } from '@material-ui/core';
+import { createStyles, Grid, makeStyles, Paper, Theme, Typography } from '@material-ui/core';
 import { KeyboardArrowDown, KeyboardArrowUp } from '@material-ui/icons';
 import React, { useState } from 'react';
+import EditOption from './EditOption';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -19,11 +20,13 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface CollapsibleOptionProps {
+  index: number;
   option: IResponseOption;
   intents: IIntent[];
 }
 
 const CollapsibleOption = ({
+  index,
   option,
   intents,
 }: CollapsibleOptionProps) => {
@@ -34,16 +37,20 @@ const CollapsibleOption = ({
     setIsCollapsed(!isCollapsed);
   };
 
+  const onEditOption = (option: IResponseOption) => {
+
+  };
+
+  const optionName = option.text && option.text.length ? option.text : `Option ${index}`;
+
   return (
     <Grid container={true} className={classes.root}>
       <Paper variant="outlined" square={true} className={classes.paper}>
         <Grid container={true} alignItems="center" className={classes.header}>
           <Grid item={true} container={true} xs={6} alignItems="center">
-            <Box mr={1}>
-              <Typography style={{ textTransform: 'capitalize' }}>
-                {option.type}
-              </Typography>
-            </Box>
+            <Typography>
+              {optionName}
+            </Typography>
           </Grid>
           <Grid item={true} container={true} xs={6} justify="flex-end">
             {isCollapsed ? (
@@ -55,7 +62,12 @@ const CollapsibleOption = ({
         </Grid>
       </Paper>
       {!isCollapsed && (
-        <Paper variant="outlined" square={true}/>
+        <Paper variant="outlined" square={true} className={classes.paper}>
+          <EditOption
+            option={option}
+            onEditOption={onEditOption}
+          />
+        </Paper>
       )}
     </Grid>
   );

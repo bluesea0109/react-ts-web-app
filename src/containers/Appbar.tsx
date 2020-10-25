@@ -88,6 +88,7 @@ const Orgs: React.FC<OrgsProps> = ({
   return orgs?.length !== 0 ? (
     <DropDown
       label="Organization:"
+      labelPosition="top"
       current={user.activeOrg?.id}
       menuItems={orgs}
       onChange={(name) => setActiveOrg(name)}
@@ -126,6 +127,7 @@ const Projects: React.FC<ProjectsProps> = ({
   return projects?.length !== 0 ? (
     <DropDown
       label="Project:"
+      labelPosition="top"
       current={projectId}
       menuItems={projects}
       onChange={(name) => setActiveProject(name)}
