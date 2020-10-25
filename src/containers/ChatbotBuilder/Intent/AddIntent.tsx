@@ -1,13 +1,10 @@
 import { useMutation } from '@apollo/client';
 import { AgentConfig, BaseAgentAction, IIntent } from '@bavard/agent-config';
-import {
-  DialogContent,
-  Grid,
-  TextField,
-} from '@material-ui/core';
+import { DialogContent, DialogTitle, Grid, TextField } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
 import IconButton from '@material-ui/core/IconButton';
 import Slide from '@material-ui/core/Slide';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -71,6 +68,9 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'center',
     },
+    tagDialog: {
+      padding: '125px',
+    },
   }),
 );
 
@@ -112,8 +112,8 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
   const { agentId } = useParams<{ agentId: string }>();
   const numAgentId = Number(agentId);
   const [tagType, setTagType] = useState<string | undefined>();
-  // const [addTag, setAddTag] = useState(false);
-  // const [newTag, setNewTag] = useState('');
+  const [addTag, setAddTag] = useState(false);
+  const [newTag, setNewTag] = useState('');
   const [loading, setLoading] = useState(false);
   const [examples, setExamples] = useState<INLUExample[]>([]);
   const lastID = useRef(0);
@@ -247,24 +247,24 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
     }
   };
 
-  // const createTag = async () => {
-  //   if (newTag === '') {
-  //     enqueueSnackbar('Can\'t create empty tag', { variant: 'error' });
-  //     return;
-  //   }
-  //   // tags: Array(0);
-  //   try {
-  //     setLoading(true);
-  //     setConfig(config?.addTagType(newTag));
-  //     setNewTag('');
-  //     setAddTag(false);
-  //   } catch (e) {
-  //     enqueueSnackbar('Unable to create tag.', { variant: 'error' });
-  //     console.error(e);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+  const createTag = async () => {
+    if (newTag === '') {
+      enqueueSnackbar('Can\'t create empty tag', { variant: 'error' });
+      return;
+    }
+    // tags: Array(0);
+    try {
+      setLoading(true);
+      setConfig(config?.addTagType(newTag));
+      setNewTag('');
+      setAddTag(false);
+    } catch (e) {
+      enqueueSnackbar('Unable to create tag.', { variant: 'error' });
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleActionFieldChange = (field: string) => {
     setNewIntent({
@@ -357,21 +357,20 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
           </Grid>
           <Grid item={true} xs={4} md={12} />
         </Grid>
-        {
-          tagType &&
+        {tagType && (
           <Grid container={true}>
-          <Grid item={true} md={4} xs={12} />
-          <Grid item={true} md={4} xs={12} className={classes.addExampleBtn}>
-            <Button
-              color="primary"
-              onClick={handleAddExample}
-              endIcon={<AddCircleOutline />}>
-              Add a New TagType
-            </Button>
+            <Grid item={true} md={4} xs={12} />
+            <Grid item={true} md={4} xs={12} className={classes.addExampleBtn}>
+              <Button
+                color="primary"
+                onClick={() => setAddTag(true)}
+                endIcon={<AddCircleOutline />}>
+                Add a New TagType
+              </Button>
+            </Grid>
+            <Grid item={true} md={4} xs={12} />
           </Grid>
-          <Grid item={true} md={4} xs={12} />
-        </Grid>
-        }
+        )}
         <Grid container={true}>
           <Grid item={true} md={4} xs={12} />
           <Grid item={true} md={4} xs={12}>
@@ -405,15 +404,46 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
         <Grid container={true}>
           <Grid item={true} md={4} xs={12} />
           <Grid item={true} md={4} xs={12} className={classes.addIntentBtn}>
-            <Button
-              color="primary"
-              variant="contained"
-              onClick={saveChanges}>
+            <Button color="primary" variant="contained" onClick={saveChanges}>
               Add Intent
             </Button>
           </Grid>
           <Grid item={true} md={4} xs={12} />
         </Grid>
+        {addTag && (
+          <Dialog
+            title="Create a Project"
+            open={true}
+            onClose={() => setAddTag(false)}
+            className={classes.tagDialog}>
+            <DialogTitle>Please add tag name</DialogTitle>
+            <DialogContent>
+              <TextField
+                fullWidth={true}
+                id="name"
+                label="New Tag Name"
+                type="text"
+                value={newTag}
+                variant="outlined"
+                onChange={(e: any) =>
+                  setNewTag(e.target.value.replace(/ /g, '_') as string)
+                }
+              />
+            </DialogContent>
+            <DialogActions>
+              <Grid
+                container={true}
+                style={{ display: 'flex', justifyContent: 'center', marginBottom: '15px'}}>
+                <Button onClick={createTag} color="primary" variant="contained" style={{marginRight: '10px'}}>
+                  Save
+                </Button>
+                <Button onClick={() => setAddTag(false)} variant="contained">
+                  Cancel
+                </Button>
+              </Grid>
+            </DialogActions>
+          </Dialog>
+        )}
         {/*<Box my={4}>
           <Grid container={true}>
             <Grid item={true} xs={6}>
