@@ -1,11 +1,7 @@
 import { useQuery } from '@apollo/client';
 import { Typography } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
-import {
-  createStyles,
-  makeStyles,
-  Theme,
-} from '@material-ui/core/styles';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -16,8 +12,10 @@ import gql from 'graphql-tag';
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { IAgentModelInfo } from '../../../models/chatbot-service';
+import { removeSpecialChars } from '../../../utils/string';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
+import StatusChip from '../../Utils/StatusChip';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,7 +25,8 @@ const useStyles = makeStyles((theme: Theme) =>
     paper: {
       width: '100%',
     },
-  }));
+  }),
+);
 
 export default function AgentModelTable() {
   const classes = useStyles();
@@ -37,7 +36,9 @@ export default function AgentModelTable() {
   interface IGetAgentModel {
     ChatbotService_agentModelInfo: IAgentModelInfo | null;
   }
-  const getModel = useQuery<IGetAgentModel>(GET_AGENT_MODEL_INFO, { variables: { agentId: numAgentId } });
+  const getModel = useQuery<IGetAgentModel>(GET_AGENT_MODEL_INFO, {
+    variables: { agentId: numAgentId },
+  });
 
   if (getModel.error) {
     return <ApolloErrorPage error={getModel.error} />;
@@ -51,27 +52,34 @@ export default function AgentModelTable() {
 
   return (
     <Paper className={classes.paper}>
-      <Toolbar variant="dense">
-        <Typography variant="h5">Agent Model Info</Typography>
+      <Toolbar>
+        <Typography variant="h6">Agent Models</Typography>
       </Toolbar>
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell align="left">Name</TableCell>
             <TableCell align="left">Status</TableCell>
+            <TableCell align="left">Name</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {agentModel && (
             <TableRow>
+              <TableCell align="left">
+                <StatusChip
+                  color={agentModel.status === 'READY' ? 'green' : 'blue'}
+                  text={removeSpecialChars(agentModel.status.toLowerCase())}
+                />
+              </TableCell>
               <TableCell align="left">{agentModel.name}</TableCell>
-              <TableCell align="left">{agentModel.status}</TableCell>
             </TableRow>
           )}
         </TableBody>
       </Table>
       {!agentModel && (
-        <Typography align="center">{'No model has been deployed yet for this agent.'}</Typography>
+        <Typography align="center">
+          {'No model has been deployed yet for this agent.'}
+        </Typography>
       )}
     </Paper>
   );

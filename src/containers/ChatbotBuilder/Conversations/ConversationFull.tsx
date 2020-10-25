@@ -1,7 +1,7 @@
 import { createStyles, Grid, makeStyles, Paper, Theme, Typography } from '@material-ui/core';
 import React from 'react';
 
-import { IUtteranceUserAction } from '@bavard/agent-config/dist/actions/user';
+import { IUserUtteranceAction } from '@bavard/agent-config/dist/actions/user';
 import { IConversation, IDialogueTurn } from '@bavard/agent-config/dist/dialogue-manager/conversation';
 
 interface ConversationFullProps {
@@ -44,14 +44,14 @@ const renderTurn = (turn: IDialogueTurn, index: number, classes: any) => {
       </Paper>
     );
   } else if (turn.actor === 'USER') {
-    const userAction = turn.userAction as IUtteranceUserAction;
+    const userAction = turn.userAction as IUserUtteranceAction;
     userContent = (
       <Paper className={classes.agentMessage}>
         <Typography align="right">
-          Utterance: {(userAction as IUtteranceUserAction).utterance}
+          Utterance: {(userAction as IUserUtteranceAction).utterance}
         </Typography>
         <Typography align="right">
-          Intent: {(userAction as IUtteranceUserAction).intent}
+          Intent: {(userAction as IUserUtteranceAction).intent}
         </Typography>
       </Paper>
     );
