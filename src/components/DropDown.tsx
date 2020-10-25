@@ -3,6 +3,9 @@ import Select from '@material-ui/core/Select';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import React from 'react';
+interface ComponentProps {
+  size: string;
+}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -13,7 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     selectInput: {
       margin: theme.spacing(0),
-      minWidth: 155,
+      minWidth: (props: ComponentProps) => props.size === 'large' ? '100%' : 155,
       color: 'black',
       borderRadius: 2,
       borderColor: 'white',
@@ -45,6 +48,7 @@ interface DropDownProps {
   current: any;
   menuItems: any[];
   onChange: (item: string) => void;
+  size: string;
 }
 
 const DropDown: React.FC<DropDownProps> = ({
@@ -52,11 +56,14 @@ const DropDown: React.FC<DropDownProps> = ({
   current,
   menuItems,
   onChange,
+  size,
 }) => {
-  const classes = useStyles();
+  const props = {size};
+  const classes = useStyles(props);
 
   const currentItem = current?.name || current || '';
 
+  console.log('Menu Item ', menuItems);
   return (
     <Box>
       <InputLabel className={clsx(classes.selectLabel)}>
@@ -80,9 +87,9 @@ const DropDown: React.FC<DropDownProps> = ({
         }}
         onChange={(e) => onChange(e.target.value as string)}
       >
-        {menuItems?.map((menu: any) => (
-          <MenuItem key={menu.id} value={menu.id}>
-            {menu.name}
+        {menuItems?.map((menu: any, index) => (
+          <MenuItem key={menu.id || menu.name || index} value={menu.id || menu.name || menu}>
+            {menu.name || menu}
           </MenuItem>
         ))}
       </Select>
