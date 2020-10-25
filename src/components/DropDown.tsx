@@ -69,7 +69,7 @@ const DropDown: React.FC<DropDownProps> = ({
         </InputLabel>
       )}
       {labelPosition === 'left' && label && label.length && (
-        <Typography variant="h6" style={{fontWeight: 'bold'}}>
+        <Typography variant="subtitle1" style={{fontWeight: 'bold'}}>
           {label}
         </Typography>
       )}

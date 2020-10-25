@@ -5,6 +5,12 @@ import { TextInput } from '../../../components';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    root: {
+      paddingTop: theme.spacing(3),
+      paddingRight: theme.spacing(4),
+      paddingBottom: theme.spacing(3),
+      paddingLeft: theme.spacing(4),
+    },
     formField: {
       marginTop: theme.spacing(1),
       marginBottom: theme.spacing(1),
@@ -29,7 +35,7 @@ const EditOption = ({
   const classes = useStyles();
 
   return (
-    <Grid container={true}>
+    <Grid container={true} className={classes.root}>
       <Grid item={true} sm={12} className={classes.formField}>
         <TextInput
           fullWidth={true}

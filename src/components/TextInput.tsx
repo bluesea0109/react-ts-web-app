@@ -1,19 +1,19 @@
 import {
-  Grid,
-  createStyles, makeStyles, Theme,
-  InputProps as StandardInputProps,
+  createStyles,
+  Grid, InputProps as StandardInputProps, makeStyles,
   TextField,
+  Theme,
   Typography,
 } from '@material-ui/core';
 import React, { ChangeEvent } from 'react';
 import { TextColorTypes, TextVariantTypes } from './types';
 
-const useStyles = makeStyles((theme: Theme) => 
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     name: {
       marginRight: theme.spacing(1),
     },
-  }))
+  }));
 
 interface TextInputProps {
   id?: string;
@@ -47,9 +47,9 @@ const TextInput: React.FC<TextInputProps> = ({
   const classes = useStyles();
 
   return (
-    <Grid container={true}>
+    <Grid container={true} alignItems="center">
       {label && label.length && (
-        <Typography variant="h6" style={{fontWeight: 'bold'}} className={classes.name}>
+        <Typography variant="subtitle1" style={{fontWeight: 'bold'}} className={classes.name}>
           {label}
         </Typography>
       )}
@@ -60,7 +60,6 @@ const TextInput: React.FC<TextInputProps> = ({
         defaultValue={defaultValue}
         fullWidth={fullWidth || false}
         placeholder={placeholder}
-        label={label}
         type={type}
         value={value}
         variant={(variant || 'outlined') as any}
