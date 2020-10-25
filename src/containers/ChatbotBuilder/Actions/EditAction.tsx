@@ -1,3 +1,4 @@
+import { EResponseOptionTypes } from '@bavard/agent-config';
 import { AgentUtteranceAction, BaseAgentAction, EAgentActionTypes, EmailAction, IResponseOption } from '@bavard/agent-config';
 import { AppBar, Button, createStyles, Dialog, Grid, IconButton, makeStyles, Theme, Toolbar, Typography } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
@@ -65,10 +66,18 @@ const EditAction = ({
     } as BaseAgentAction);
   };
 
-  const onAddOption = (option: IResponseOption) => {
+  const onCreateOption = () => {
+    if (!currentAction) { return; }
     setCurrentAction({
       ...currentAction,
-      options: [...(currentAction?.options || []), option],
+      options: [
+        ...currentAction?.options,
+        {
+          name: '',
+          options: [],
+          type: EResponseOptionTypes.TEXT,
+        },
+      ],
     } as BaseAgentAction);
   };
 
@@ -155,10 +164,11 @@ const EditAction = ({
             {!!currentAction && !!currentAction.options && (
               <Options
                 options={currentAction.options}
+                onCreateOption={onCreateOption}
               />
             )}
           </Grid>
-          <Grid container={true} item={true} xs={12}>
+          <Grid container={true} item={true} xs={12} justify="center">
             <Button autoFocus={true} color="primary" variant="contained" onClick={saveChanges}>
               {isNewAction ? 'Add Action' : 'Update Action'}
             </Button>

@@ -1,15 +1,17 @@
 import { BaseAgentAction, EAgentActionTypes } from '@bavard/agent-config';
 import { Box, createStyles, Grid, makeStyles, Paper, Theme, Typography } from '@material-ui/core';
 import { Delete, Edit, KeyboardArrowDown, KeyboardArrowRight } from '@material-ui/icons';
-import clsx from 'clsx';
 import React, { useCallback, useState } from 'react';
 import ActionDetailPanel from './ActionDetailPanel';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    paper: {
+    root: {
       marginTop: theme.spacing(2),
       marginBttom: theme.spacing(2),
+    },
+    paper: {
+      width: '100%',
     },
     header: {
       padding: '4px 8px 4px 4px',
@@ -54,9 +56,9 @@ const CollapsibleAction = ({
   }, [action, onEdit]);
 
   return (
-    <>
-      <Paper variant="outlined" square={true} className={clsx(classes.paper)}>
-        <Grid container={true} alignItems="center" className={clsx(classes.header)}>
+    <Grid container={true} className={classes.root}>
+      <Paper variant="outlined" square={true} className={classes.paper}>
+        <Grid container={true} xs={12} className={classes.header} alignItems="center">
           <Grid item={true} container={true} xs={6} sm={6} alignItems="center">
             <Box mr={1}>
               {isCollapsed ? (
@@ -85,11 +87,11 @@ const CollapsibleAction = ({
         </Grid>
       </Paper>
       {!isCollapsed && (
-        <Paper variant="outlined" square={true}>
+        <Paper variant="outlined" square={true} className={classes.paper}>
           <ActionDetailPanel action={action} />
         </Paper>
       )}
-    </>
+    </Grid>
   );
 };
 

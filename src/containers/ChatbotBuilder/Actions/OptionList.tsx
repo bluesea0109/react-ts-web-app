@@ -1,5 +1,5 @@
 import { IIntent, IResponseOption } from '@bavard/agent-config';
-import { Box } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import React from 'react';
 import CollapsibleOption from './CollapsibleOption';
 
@@ -13,7 +13,7 @@ const OptionList = ({
   intents,
 }: OptionListProps) => {
   return (
-    <Box>
+    <Grid container={true}>
       {options.map((option, index) => (
         <CollapsibleOption
           key={index}
@@ -21,7 +21,7 @@ const OptionList = ({
           intents={intents}
         />
       ))}
-    </Box>
+    </Grid>
   );
 };
 

@@ -19,10 +19,12 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface OptionsProps {
   options: IResponseOption[];
+  onCreateOption: () => void;
 }
 
 const Options = ({
   options,
+  onCreateOption,
 }: OptionsProps) => {
   const classes = useStyles();
   const [config] = useRecoilState<AgentConfig | undefined>(currentAgentConfig);
@@ -47,17 +49,19 @@ const Options = ({
           </Grid>
         </>
       )}
-      <OptionList
-        options={options}
-        intents={intents}
-      />
+      <Grid container={true} item={true}>
+        <OptionList
+          options={options}
+          intents={intents}
+        />
+      </Grid>
       <Grid container={true} item={true} justify="flex-end">
         <IconButton
           title={options.length ? 'Add Another Option' : 'Add an Option'}
           variant="text"
           Icon={AddCircleOutlineIcon}
           iconPosition="right"
-          onClick={() => {}}
+          onClick={onCreateOption}
         />
       </Grid>
     </Grid>

@@ -1,6 +1,5 @@
 import { BaseAgentAction } from '@bavard/agent-config';
 import { Box, createStyles, Grid, makeStyles, Theme, Typography } from '@material-ui/core';
-import clsx from 'clsx';
 import React from 'react';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -25,7 +24,7 @@ const ActionDetailPanel = ({
   const actionProps = otherProps as OtherProps;
 
   return (
-    <Grid item={true} className={clsx(classes.container)}>
+    <Grid item={true} className={classes.container}>
       {Array.from(Object.keys(actionProps)).map(key => (
         <Box my={1} key={key}>
           <Typography variant="h6" style={{ textTransform: 'capitalize', fontWeight: 'bold' }}>{key}</Typography>

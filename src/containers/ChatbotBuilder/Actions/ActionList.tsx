@@ -1,5 +1,5 @@
 import { BaseAgentAction } from '@bavard/agent-config';
-import { Box } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import React from 'react';
 import CollapsibleAction from './CollapsibleAction';
 
@@ -15,7 +15,7 @@ const ActionList = ({
   onDeleteAction,
 }: ActionListProps) => {
   return (
-    <Box>
+    <Grid container={true}>
       {actions.map(action => (
         <CollapsibleAction
           key={action.name}
@@ -24,7 +24,7 @@ const ActionList = ({
           onDelete={onDeleteAction}
         />
       ))}
-    </Box>
+    </Grid>
   );
 };
 
