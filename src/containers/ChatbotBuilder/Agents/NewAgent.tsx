@@ -89,7 +89,7 @@ const NewAgent: React.FC<INewAgentProps> = ({ user }) => {
           Create New Assistant
         </Typography>
       </Grid>
-      <Grid xs={12} md={3} item={true}>
+      <Grid xs={12} md={4} item={true}>
         {loading && <LinearProgress />}
         <TextInput
           id="name"
