@@ -1,14 +1,12 @@
 import { Box, createStyles, Grid, InputLabel, MenuItem, Select, Typography } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
-
-interface Styles {
+interface ComponentProps {
   padding?: string;
+  size?: string;
 }
 
-const useStyles = ({
-  padding,
-}: Styles) => makeStyles((theme: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     topLabel: {
       color: 'black',
@@ -17,14 +15,14 @@ const useStyles = ({
     },
     selectInput: {
       margin: theme.spacing(0),
+      minWidth: (props: ComponentProps) => props.size === 'large' ? '100%' : 155,
       color: 'black',
       width: '100%',
       borderRadius: 2,
       borderColor: 'white',
-      minWidth: 155,
 
       '& .MuiSelect-outlined': {
-        padding: padding || '8px',
+        padding: (props: ComponentProps) => props.padding || '8px',
       },
     },
     icon: {
@@ -46,6 +44,7 @@ interface DropDownProps {
   menuItems: any[];
   fullWidth?: boolean;
   onChange: (item: string) => void;
+  size?: string;
 }
 
 const DropDown: React.FC<DropDownProps> = ({
@@ -56,8 +55,9 @@ const DropDown: React.FC<DropDownProps> = ({
   fullWidth,
   menuItems,
   onChange,
+  size,
 }) => {
-  const classes = useStyles({ padding })();
+  const classes = useStyles({ padding, size });
 
   const currentItem = current?.name || current || '';
 
@@ -91,9 +91,9 @@ const DropDown: React.FC<DropDownProps> = ({
         }}
         onChange={(e) => onChange(e.target.value as string)}
       >
-        {menuItems?.map((menu: any) => (
-          <MenuItem key={menu.id} value={menu.id}>
-            {menu.name}
+        {menuItems?.map((menu: any, index) => (
+          <MenuItem key={menu.id || menu.name || index} value={menu.id || menu.name || menu}>
+            {menu.name || menu}
           </MenuItem>
         ))}
       </Select>

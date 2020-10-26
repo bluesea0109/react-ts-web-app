@@ -1,6 +1,14 @@
 import { useMutation } from '@apollo/client';
 import { cloneDeep } from '@apollo/client/utilities';
-import { Box, Button, CircularProgress, Divider, Grid, LinearProgress, TextField } from '@material-ui/core';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Divider,
+  Grid,
+  LinearProgress,
+  TextField,
+} from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Dialog from '@material-ui/core/Dialog';
 import IconButton from '@material-ui/core/IconButton';
@@ -33,11 +41,25 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: theme.spacing(2),
       flex: 1,
     },
+    exampleHeader: {
+      display: 'flex',
+      justifyContent: 'space-between',
+    },
+    exampleForm: {
+      padding: '20px',
+      backgroundColor: '#EAEAEA',
+      marginBottom: '15px',
+      marginTop: '30px',
+    },
+    cols: {
+      width: '100%',
+      backgroundColor: 'white',
+    },
   }),
 );
 
 const createExamplesMutation = gql`
-  mutation ($agentId: Int!, $examples: [ChatbotService_ExampleInput!]!) {
+  mutation($agentId: Int!, $examples: [ChatbotService_ExampleInput!]!) {
     ChatbotService_uploadExamples(agentId: $agentId, examples: $examples)
   }
 `;
@@ -53,7 +75,7 @@ const AddExamples = ({
   const config = cloneDeep(_config);
   const widgetSettings = useRecoilValue(currentWidgetSettings);
 
-  const intents = Array.from(config?.getIntents().map(x => x.name) ?? []);
+  const intents = Array.from(config?.getIntents().map((x) => x.name) ?? []);
   const tagTypes = Array.from(config?.getTagTypes() ?? []);
 
   const classes = useStyles();
@@ -68,30 +90,29 @@ const AddExamples = ({
   const lastID = useRef(0);
   const { enqueueSnackbar } = useSnackbar();
 
-  const [updateAgent] = useMutation(
-    CHATBOT_SAVE_CONFIG_AND_SETTINGS,
-    {
-      refetchQueries: [
-        { query: CHATBOT_GET_AGENT, variables: { agentId: Number(agentId) } },
-      ],
-      awaitRefetchQueries: true,
-    },
-  );
+  const [updateAgent] = useMutation(CHATBOT_SAVE_CONFIG_AND_SETTINGS, {
+    refetchQueries: [
+      { query: CHATBOT_GET_AGENT, variables: { agentId: Number(agentId) } },
+    ],
+    awaitRefetchQueries: true,
+  });
 
-  const updateTagType = (e: ChangeEvent<{}>, tagType: string | null) => setTagType(tagType ?? '');
-  const updateIntent = (e: ChangeEvent<{}>, intent: string | null) => setIntent(intent ?? '');
+  const updateTagType = (e: ChangeEvent<{}>, tagType: string | null) =>
+    setTagType(tagType ?? '');
+  const updateIntent = (e: ChangeEvent<{}>, intent: string | null) =>
+    setIntent(intent ?? '');
 
-  const onExampleUpdate = (id: number) => (updatedExample: INLUExample) => {
-    const index = examples.findIndex(ex => ex.id === id);
-    const updatedExamples = Array.from([...examples]);
-    const currentIntent = intent;
-    updatedExamples.splice(index, 1, {
-      ...updatedExample,
-      intent: currentIntent ?? '',
-    });
+  // const onExampleUpdate = (id: number) => (updatedExample: INLUExample) => {
+  //   const index = examples.findIndex((ex) => ex.id === id);
+  //   const updatedExamples = Array.from([...examples]);
+  //   const currentIntent = intent;
+  //   updatedExamples.splice(index, 1, {
+  //     ...updatedExample,
+  //     intent: currentIntent ?? '',
+  //   });
 
-    setExamples([ ...updatedExamples ]);
-  };
+  //   setExamples([...updatedExamples]);
+  // };
 
   const onAddExample = () => {
     const currentExamples = Array.from([...examples]);
@@ -110,25 +131,33 @@ const AddExamples = ({
   };
 
   const onDeleteExample = (id: number) => () => {
-    const index = examples.findIndex(ex => ex.id === id);
+    const index = examples.findIndex((ex) => ex.id === id);
     const updatedExamples = Array.from([...examples]);
     updatedExamples.splice(index, 1);
 
-    setExamples([ ...updatedExamples ]);
+    setExamples([...updatedExamples]);
   };
 
   const [createExamples] = useMutation(createExamplesMutation);
 
   const saveChanges = async () => {
     if (intent === '') {
-      enqueueSnackbar('Make sure you\'ve selected an intent before proceeding', { variant: 'warning' });
+      enqueueSnackbar('Make sure you\'ve selected an intent before proceeding', {
+        variant: 'warning',
+      });
       return;
     }
 
-    const hasNoEmptyExamples = examples.reduce((prev, curr) => prev && !!curr.text, true);
+    const hasNoEmptyExamples = examples.reduce(
+      (prev, curr) => prev && !!curr.text,
+      true,
+    );
 
     if (!hasNoEmptyExamples) {
-      enqueueSnackbar('Please make sure no example is empty before proceeding', { variant: 'error' });
+      enqueueSnackbar(
+        'Please make sure no example is empty before proceeding',
+        { variant: 'error' },
+      );
       return;
     }
 
@@ -149,7 +178,7 @@ const AddExamples = ({
       await createExamples({
         variables: {
           agentId: numAgentId,
-          examples: examples.map(ex => ({
+          examples: examples.map((ex) => ({
             text: ex.text,
             intent,
             tags: ex.tags.map((tag: any) => ({
@@ -196,19 +225,23 @@ const AddExamples = ({
     <Dialog fullScreen={true} open={true} TransitionComponent={UpTransition}>
       <AppBar className={classes.appBar}>
         <Toolbar>
-          <IconButton disabled={loading} edge="start" color="inherit" onClick={onEditExampleClose} aria-label="close">
+          <IconButton
+            disabled={loading}
+            edge="start"
+            color="inherit"
+            onClick={onEditExampleClose}
+            aria-label="close">
             <CloseIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
             Create Examples
           </Typography>
-          <Button disabled={loading} autoFocus={true} color="inherit" onClick={saveChanges}>
-            {loading && (
-              <CircularProgress
-                color="secondary"
-                size={20}
-              />
-            )}
+          <Button
+            disabled={loading}
+            autoFocus={true}
+            color="inherit"
+            onClick={saveChanges}>
+            {loading && <CircularProgress color="secondary" size={20} />}
             Create
           </Button>
         </Toolbar>
@@ -225,7 +258,9 @@ const AddExamples = ({
               options={intents}
               value={intent}
               onChange={updateIntent}
-              renderInput={(params) => <TextField {...params} label="Intents" variant="outlined" />}
+              renderInput={(params) => (
+                <TextField {...params} label="Intents" variant="outlined" />
+              )}
             />
           </Box>
         </Grid>
@@ -241,7 +276,9 @@ const AddExamples = ({
                     type="text"
                     value={newTag}
                     variant="outlined"
-                    onChange={(e: any) => setNewTag(e.target.value.replace(/ /g, '_') as string)}
+                    onChange={(e: any) =>
+                      setNewTag(e.target.value.replace(/ /g, '_') as string)
+                    }
                   />
                 </Grid>
                 <Grid item={true}>
@@ -250,10 +287,11 @@ const AddExamples = ({
                   </IconButton>
                 </Grid>
                 <Grid item={true}>
-                  <IconButton onClick={() => {
-                    setNewTag('');
-                    setAddTag(false);
-                  }}>
+                  <IconButton
+                    onClick={() => {
+                      setNewTag('');
+                      setAddTag(false);
+                    }}>
                     <Close />
                   </IconButton>
                 </Grid>
@@ -270,17 +308,29 @@ const AddExamples = ({
                     options={tagTypes}
                     value={tagType}
                     onChange={updateTagType}
-                    renderInput={(params) => <TextField {...params} label="Selected Tag Type" variant="outlined" />}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Selected Tag Type"
+                        variant="outlined"
+                      />
+                    )}
                   />
                 </Grid>
                 <Grid item={true}>
-                  <Button variant="contained" color="secondary" style={{ height: 52 }} onClick={() => setAddTag(true)}>Add New</Button>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    style={{ height: 52 }}
+                    onClick={() => setAddTag(true)}>
+                    Add New
+                  </Button>
                 </Grid>
               </Grid>
             )}
           </Box>
         </Grid>
-        {examples.map(example => (
+        {examples.map((example) => (
           <Grid key={example.id} item={true} xs={12}>
             <Divider variant="middle" />
             <Box p={4}>
@@ -295,18 +345,24 @@ const AddExamples = ({
                 </Grid>
               </Grid>
             </Box>
-            <AddExampleItem
+            {/* <AddExampleItem
               loading={loading}
               example={example}
               tagType={tagType ?? ''}
               tagTypes={tagTypes}
               onExampleUpdate={onExampleUpdate(example.id)}
-            />
+            /> */}
           </Grid>
         ))}
       </Grid>
       <Box mt={3} display="flex" justifyContent="center" mb={4}>
-        <Button disabled={loading} variant="contained" color="primary" onClick={onAddExample}>Add New Item</Button>
+        <Button
+          disabled={loading}
+          variant="contained"
+          color="primary"
+          onClick={onAddExample}>
+          Add New Item
+        </Button>
       </Box>
     </Dialog>
   );
@@ -319,9 +375,18 @@ interface AddExampleItemProps {
   tagTypes: string[];
   example: INLUExample;
   onExampleUpdate: (updatedExample: INLUExample) => void;
+  onDeleteExample: () => void;
 }
 
-export const AddExampleItem = ({ loading, error, tagType, tagTypes, example, onExampleUpdate }: AddExampleItemProps) => {
+export const AddExampleItem = ({
+  loading,
+  error,
+  tagType,
+  tagTypes,
+  example,
+  onExampleUpdate,
+  onDeleteExample,
+}: AddExampleItemProps) => {
   const [
     exampleText,
     setExampleText,
@@ -330,6 +395,14 @@ export const AddExampleItem = ({ loading, error, tagType, tagTypes, example, onE
     colors,
   ] = useEditExampleAnnotation({ tagTypes });
 
+  const [focused, setFocus] = useState<boolean>(false);
+
+  const handleBlur = () => {
+    if (!exampleText.length) {
+      setFocus(false);
+    }
+  };
+  const classes = useStyles();
   useEffect(() => {
     setAnnotatorState({
       ...annotatorState,
@@ -344,56 +417,73 @@ export const AddExampleItem = ({ loading, error, tagType, tagTypes, example, onE
       agentId: example?.agentId,
       intent: '',
       text: exampleText,
-      tags: annotatorState.tags.map(tag => ({ ...tag, tagType: tag.tag })) ?? [],
+      tags:
+        annotatorState.tags.map((tag) => ({ ...tag, tagType: tag.tag })) ?? [],
     });
     // eslint-disable-next-line
   }, [exampleText, annotatorState.tags]);
 
   return (
-    <Grid container={true}>
-      <Grid item={true} xs={6}>
-        <Box px={2}>
-          <TextField
-            disabled={loading}
-            fullWidth={true}
-            multiline={true}
-            variant="outlined"
-            rows={3}
-            value={exampleText}
-            onChange={e => setExampleText(e.target.value)}
-            error={error === ExamplesError.CREATE_ERROR_DUPLICATE_EXAMPLE}
-          />
-          <Typography variant="h6" color="error" style={{ fontWeight: 'bold', marginTop: 16 }}>
-            {
-              error === ExamplesError.CREATE_ERROR_DUPLICATE_EXAMPLE ?
-                'Cannot create duplicate example entry. Please try again with different values.' :
-                null
+    <div className={classes.exampleForm}>
+      <div className={classes.exampleHeader}>
+        <Typography>Example {example.id} </Typography>
+        <IconButton onClick={onDeleteExample}>
+          <Delete />
+        </IconButton>
+      </div>
+      <>
+        <TextField
+          disabled={loading}
+          fullWidth={true}
+          multiline={true}
+          variant="outlined"
+          rows={2}
+          className={classes.cols}
+          value={example.text}
+          onChange={(e) => setExampleText(e.target.value)}
+          error={error === ExamplesError.CREATE_ERROR_DUPLICATE_EXAMPLE}
+          onFocus={() => setFocus(true)}
+          onBlur={handleBlur}
+        />
+        <Typography
+          variant="h6"
+          color="error"
+          style={{ fontWeight: 'bold', marginTop: 16 }}>
+          {error === ExamplesError.CREATE_ERROR_DUPLICATE_EXAMPLE
+            ? 'Cannot create duplicate example entry. Please try again with different values.'
+            : null}
+        </Typography>
+      </>
+      {focused && (
+        <>
+          <Typography>Highlight text to identify it as a tag.</Typography>
+          <TextAnnotator
+            style={{
+              borderRadius: '3px',
+              border: '1px solid #ccc',
+              lineHeight: 1.5,
+              pointerEvents:
+                loading || !tagType || tagTypes?.length === 0 ? 'none' : 'auto',
+              minHeight: 40,
+              backgroundColor: 'white',
+              padding: '15px',
+              cursor: 'pointer',
+            }}
+            content={example.text}
+            value={annotatorState.tags}
+            onChange={(value: any) =>
+              setAnnotatorState({ ...annotatorState, tags: value })
             }
-          </Typography>
-        </Box>
-      </Grid>
-      <Grid item={true} xs={6}>
-        <Box px={2}>
-          <Box p={2} border="1px solid rgba(0, 0, 0, 0.23)" borderRadius={4}>
-            <TextAnnotator
-              style={{
-                lineHeight: 1.5,
-                pointerEvents: (loading || !tagType || tagTypes?.length === 0) ? 'none' : 'auto',
-                minHeight: 60,
-              }}
-              content={exampleText}
-              value={annotatorState.tags}
-              onChange={(value: any) => setAnnotatorState({ ...annotatorState, tags: value })}
-              getSpan={span => ({
-                ...span,
-                tag: tagType,
-                color: colors.current[tagType],
-              })}
-            />
-          </Box>
-        </Box>
-      </Grid>
-    </Grid>
+            getSpan={(span) => ({
+              ...span,
+              tag: tagType,
+              color: colors.current[tagType],
+            })}
+            className={classes.cols}
+          />
+        </>
+      )}
+    </div>
   );
 };
 

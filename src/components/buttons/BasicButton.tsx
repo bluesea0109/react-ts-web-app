@@ -4,15 +4,13 @@ import clsx from 'clsx';
 import React from 'react';
 import { ButtonColorTypes, ButtonVariantTypes, TextTransformTypes } from '../types';
 
-interface CustomStyles {
+interface ComponentProps {
   textTransform: TextTransformTypes;
 }
 
-const useStyles = ({
-  textTransform,
-}: CustomStyles) => makeStyles((theme: Theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   root: {
-    textTransform,
+    textTransform: (props: ComponentProps) => props.textTransform,
   },
 }));
 
@@ -33,7 +31,7 @@ const BasicButton: React.FC<BasicButtonProps> = ({
 }) => {
   const classes = useStyles({
     textTransform: textTransform || 'none',
-  })();
+  });
 
   return (
     <Button
