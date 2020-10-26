@@ -1,4 +1,4 @@
-import { EFormFieldTypes, EResponseOptionTypes, FormAction, IAgentAction, IAgentFormAction } from '@bavard/agent-config';
+import { EFormFieldTypes, EResponseOptionTypes, FormAction, IAgentAction, IAgentFormAction, ITextOption } from '@bavard/agent-config';
 import { AgentUtteranceAction, BaseAgentAction, EAgentActionTypes, EmailAction } from '@bavard/agent-config';
 import { AppBar, Button, createStyles, Dialog, Grid, IconButton, makeStyles, Theme, Toolbar, Typography } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
@@ -114,10 +114,9 @@ const EditAction = ({
     newAction.options = [
       ...currentAction?.options,
       {
-        name: '',
-        options: [],
+        text: '',
         type: EResponseOptionTypes.TEXT,
-      } as any,
+      } as ITextOption,
     ];
     setCurrentAction(newAction);
   };
