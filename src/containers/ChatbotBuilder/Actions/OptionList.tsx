@@ -17,6 +17,9 @@ const OptionList = ({
   const setOption = (index: number, option: IResponseOption) => {
     onSetOptions([ ...options.slice(0, index), option, ...options.slice(index + 1)]);
   };
+  const deleteOption = (index: number) => {
+    onSetOptions([ ...options.slice(0, index), ...options.slice(index + 1)]);
+  };
 
   return (
     <Grid container={true}>
@@ -27,6 +30,7 @@ const OptionList = ({
           intents={intents}
           option={option}
           onEditOption={(option) => setOption(index, option)}
+          onDeleteOption={() => deleteOption(index)}
         />
       ))}
     </Grid>

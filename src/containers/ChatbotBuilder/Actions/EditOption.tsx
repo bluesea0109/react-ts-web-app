@@ -1,7 +1,8 @@
 import { EResponseOptionTypes, IHyperlinkOption, IImageOption, IIntent, IResponseOption } from '@bavard/agent-config';
 import { createStyles, Grid, makeStyles, Theme } from '@material-ui/core';
+import Delete from '@material-ui/icons/Delete';
 import React, { useMemo } from 'react';
-import { DropDown, TextInput } from '../../../components';
+import { DropDown, IconButton, TextInput } from '../../../components';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,12 +28,14 @@ interface EditOptionProps {
   intents: IIntent[];
   option: IResponseOption;
   onEditOption: (option: IResponseOption) => void;
+  onDeleteOption: () => void;
 }
 
 const EditOption = ({
   intents,
   option,
   onEditOption,
+  onDeleteOption,
 }: EditOptionProps) => {
   const classes = useStyles();
 
@@ -54,7 +57,7 @@ const EditOption = ({
 
   return (
     <Grid container={true} className={classes.root}>
-      <Grid container={true} item={true} sm={12} className={classes.formField}>
+      <Grid container={true} className={classes.formField}>
         <TextInput
           fullWidth={true}
           label="Option Name"
@@ -66,7 +69,7 @@ const EditOption = ({
           } as IResponseOption)}
         />
       </Grid>
-      <Grid container={true} item={true} sm={12} className={classes.formField}>
+      <Grid container={true} className={classes.formField}>
         <DropDown
           fullWidth={true}
           label="Option Type"
@@ -81,7 +84,7 @@ const EditOption = ({
         />
       </Grid>
       {isHyperLinkOption && (
-        <Grid container={true} item={true} className={classes.formField}>
+        <Grid container={true} className={classes.formField}>
           <TextInput
             fullWidth={true}
             label="Hyperlink Target"
@@ -97,7 +100,7 @@ const EditOption = ({
         </Grid>
       )}
       {isIntentRequired && (
-        <Grid container={true} item={true} className={classes.formField}>
+        <Grid container={true} className={classes.formField}>
           <DropDown
             fullWidth={true}
             label="Option Intent"
@@ -114,7 +117,7 @@ const EditOption = ({
       )}
       {isImageOption && (
         <>
-          <Grid container={true} item={true} className={classes.formField}>
+          <Grid container={true} className={classes.formField}>
             <TextInput
               fullWidth={true}
               label="Image Name"
@@ -126,7 +129,7 @@ const EditOption = ({
               } as IResponseOption)}
             />
           </Grid>
-          <Grid container={true} item={true} className={classes.formField}>
+          <Grid container={true} className={classes.formField}>
             <TextInput
               fullWidth={true}
               label="Image Caption"
@@ -140,6 +143,15 @@ const EditOption = ({
           </Grid>
         </>
       )}
+      <Grid container={true} justify="flex-end">
+        <IconButton
+          title="Delete"
+          iconPosition="left"
+          variant="text"
+          Icon={Delete}
+          onClick={onDeleteOption}
+        />
+      </Grid>
     </Grid>
   );
 };

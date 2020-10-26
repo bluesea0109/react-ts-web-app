@@ -24,6 +24,7 @@ interface CollapsibleOptionProps {
   intents: IIntent[];
   option: IResponseOption;
   onEditOption: (option: IResponseOption) => void;
+  onDeleteOption: () => void;
 }
 
 const CollapsibleOption = ({
@@ -31,6 +32,7 @@ const CollapsibleOption = ({
   intents,
   option,
   onEditOption,
+  onDeleteOption,
 }: CollapsibleOptionProps) => {
   const classes = useStyles();
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
@@ -65,6 +67,7 @@ const CollapsibleOption = ({
             intents={intents}
             option={option}
             onEditOption={onEditOption}
+            onDeleteOption={onDeleteOption}
           />
         </Paper>
       )}
