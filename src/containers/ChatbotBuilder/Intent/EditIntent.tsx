@@ -10,18 +10,32 @@ import Toolbar from '@material-ui/core/Toolbar';
 import { TransitionProps } from '@material-ui/core/transitions';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
-import { Autocomplete } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
+import { DropDown } from '../../../components';
 import { Maybe } from '../../../utils/types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     appBar: {
       position: 'relative',
+      backgroundColor: '#2B2AC6',
     },
     title: {
       marginLeft: theme.spacing(2),
       flex: 1,
+    },
+    intent: {
+      padding: '7px',
+      fontSize: '16px',
+    },
+    fieldLabel: {
+      marginBottom: '5px',
+      fontSize: '18px',
+      fontWeight: 'bold',
+    },
+    addIntentBtn: {
+      display: 'flex',
+      justifyContent: 'center',
     },
   }),
 );
@@ -61,50 +75,82 @@ const EditIntent = ({
     }
   };
 
+  const handleChangeAction = (action: any) => {
+    setCurrentIntent({...currentIntent, defaultActionName: action } as any);
+  };
+
+  console.log('>>> Current Intent: ', currentIntent);
+
   return (
     <Dialog fullScreen={true} open={!!intent} TransitionComponent={Transition}>
       <AppBar className={classes.appBar}>
         <Toolbar>
-          <IconButton edge="start" color="inherit" onClick={onEditIntentClose} aria-label="close">
+          <Typography variant="h6" className={classes.title}>
+            {currentIntent && `Edit Intent "${currentIntent.name}"`}
+          </Typography>
+          <IconButton
+            edge="start"
+            color="inherit"
+            onClick={onEditIntentClose}
+            aria-label="close">
             <CloseIcon />
           </IconButton>
-          <Typography variant="h6" className={classes.title}>
-            {!currentIntent ? 'Create New Intent' : `Edit Intent "${currentIntent.name}"`}
-          </Typography>
-          <Button autoFocus={true} color="inherit" onClick={saveChanges}>
-            {!currentIntent ? 'Create' : 'Save'}
-          </Button>
         </Toolbar>
       </AppBar>
       <DialogContent>
-        <Box my={4}>
-          <Grid container={true}>
-            <Grid item={true} xs={6}>
-              <Box p={2}>
-                <TextField
-                  fullWidth={true}
-                  label="Intent Value (No Spaces Allowed)"
-                  variant="outlined"
-                  value={currentIntent?.name}
-                  onChange={e => setCurrentIntent({ ...currentIntent, name: e.target.value.replace(/ /g, '+') } as any)}
-                />
-              </Box>
-            </Grid>
-            <Grid item={true} xs={6}>
-              <Box p={2}>
-                <Autocomplete
-                  fullWidth={true}
-                  id="intentDefaultActionSelector"
-                  options={actions}
-                  getOptionLabel={(option: BaseAgentAction) => option.name}
-                  value={actions.find(a => a.name === currentIntent?.defaultActionName)}
-                  onChange={(e, action) => setCurrentIntent({ ...currentIntent, defaultActionName: action?.name } as any)}
-                  renderInput={(params) => <TextField {...params} label="Default Action" variant="outlined" />}
-                />
-              </Box>
-            </Grid>
+        <Grid container={true}>
+          <Grid item={true} md={4} xs={12}/>
+          <Grid item={true} md={4} xs={12}>
+            <Box p={2}>
+              <Typography className={classes.fieldLabel}>
+                Intent Value
+              </Typography>
+              <TextField
+                fullWidth={true}
+                label=""
+                variant="outlined"
+                value={currentIntent?.name}
+                onChange={(e) =>
+                  setCurrentIntent({
+                    ...currentIntent,
+                    name: e.target.value.replace(/ /g, '+'),
+                  } as any)
+                }
+                inputProps={{ className: classes.intent }}
+              />
+            </Box>
           </Grid>
-        </Box>
+          <Grid item={true} md={4} xs={12}/>
+        </Grid>
+        <Grid container={true}>
+          <Grid item={true} md={4} xs={12}/>
+          <Grid item={true} md={4} xs={12}>
+            <Box p={2}>
+              <Typography className={classes.fieldLabel}>
+                Default Action
+              </Typography>
+              <DropDown
+                label=""
+                current={actions.find(
+                  (a) => a.name === currentIntent?.defaultActionName,
+                )}
+                menuItems={actions}
+                onChange={handleChangeAction}
+                size="large"
+              />
+            </Box>
+          </Grid>
+          <Grid item={true} md={4} xs={12}/>
+        </Grid>
+        <Grid container={true}>
+          <Grid item={true} md={4} xs={12}/>
+          <Grid item={true} md={4} xs={12} className={classes.addIntentBtn}>
+            <Button autoFocus={true} color="primary" variant="contained" onClick={saveChanges}>
+              Save
+            </Button>
+          </Grid>
+          <Grid item={true} md={4} xs={12}/>
+        </Grid>
       </DialogContent>
     </Dialog>
   );
