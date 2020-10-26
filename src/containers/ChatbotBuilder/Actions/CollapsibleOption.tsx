@@ -21,27 +21,25 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface CollapsibleOptionProps {
   index: number;
-  option: IResponseOption;
   intents: IIntent[];
+  option: IResponseOption;
+  onEditOption: (option: IResponseOption) => void;
 }
 
 const CollapsibleOption = ({
   index,
-  option,
   intents,
+  option,
+  onEditOption,
 }: CollapsibleOptionProps) => {
   const classes = useStyles();
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
 
+  const optionName = option.text && option.text.length ? option.text : `Option ${index}`;
+
   const onToggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
   };
-
-  const onEditOption = (option: IResponseOption) => {
-
-  };
-
-  const optionName = option.text && option.text.length ? option.text : `Option ${index}`;
 
   return (
     <Grid container={true} className={classes.root}>
@@ -64,6 +62,7 @@ const CollapsibleOption = ({
       {!isCollapsed && (
         <Paper variant="outlined" square={true} className={classes.paper}>
           <EditOption
+            intents={intents}
             option={option}
             onEditOption={onEditOption}
           />

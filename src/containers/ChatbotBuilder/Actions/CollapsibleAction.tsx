@@ -1,7 +1,7 @@
 import { BaseAgentAction, EAgentActionTypes } from '@bavard/agent-config';
 import { Box, createStyles, Grid, makeStyles, Paper, Theme, Typography } from '@material-ui/core';
 import { Delete, Edit, KeyboardArrowDown, KeyboardArrowRight } from '@material-ui/icons';
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import ActionDetailPanel from './ActionDetailPanel';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -45,20 +45,14 @@ const CollapsibleAction = ({
     }
   })();
 
-  const onToggleCollapse = () => {
-    setIsCollapsed(!isCollapsed);
-  };
-  const onDeleteAction = useCallback(() => {
-    return onDelete(action);
-  }, [action, onDelete]);
-  const onEditAction = useCallback(() => {
-    return onEdit(action);
-  }, [action, onEdit]);
+  const onDeleteAction = () => onDelete(action);
+  const onEditAction = () => onEdit(action);
+  const onToggleCollapse = () => setIsCollapsed(!isCollapsed);
 
   return (
     <Grid container={true} className={classes.root}>
       <Paper variant="outlined" square={true} className={classes.paper}>
-        <Grid container={true} xs={12} className={classes.header} alignItems="center">
+        <Grid container={true} className={classes.header} alignItems="center">
           <Grid item={true} container={true} xs={6} sm={6} alignItems="center">
             <Box mr={1}>
               {isCollapsed ? (

@@ -5,7 +5,7 @@ import RichTextInput from '../../Utils/RichTextInput';
 
 interface EditUtteranceActionProps {
   action: AgentUtteranceAction;
-  onChangeAction: (action: AgentUtteranceAction) => void;
+  onChangeAction: (field: string, value: string) => void;
 }
 
 const EditUtteranceAction = ({
@@ -16,8 +16,8 @@ const EditUtteranceAction = ({
     <Grid item={true} sm={12}>
       <RichTextInput
         label="Action Text"
-        value={action.utterance}
-        onChange={(html: string) => onChangeAction({ ...action, utterance: html } as AgentUtteranceAction)}
+        value={action.utterance || ''}
+        onChange={(html: string) => onChangeAction('utterance', html)}
       />
     </Grid>
   );

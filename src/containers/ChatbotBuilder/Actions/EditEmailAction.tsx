@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface EditEmailActionProps {
   action: EmailAction;
-  onChangeAction: (action: EmailAction) => void;
+  onChangeAction: (field: string, value: string) => void;
 }
 
 const EditEmailAction = ({
@@ -35,10 +35,9 @@ const EditEmailAction = ({
           fullWidth={true}
           label="Email From"
           type="email"
-          variant="outlined"
-          value={action.from}
+          value={action.from || ''}
           className={classes.input}
-          onChange={e => onChangeAction({ ...action, from: e.target.value } as EmailAction)}
+          onChange={e => onChangeAction('from', e.target.value)}
         />
       </Grid>
       <Grid container={true} item={true} sm={12} className={classes.formField}>
@@ -46,10 +45,9 @@ const EditEmailAction = ({
           fullWidth={true}
           label="Email To"
           type="email"
-          variant="outlined"
-          value={action.to}
+          value={action.to || ''}
           className={classes.input}
-          onChange={e => onChangeAction({ ...action, to: e.target.value } as EmailAction)}
+          onChange={e => onChangeAction('to', e.target.value)}
         />
       </Grid>
     </>

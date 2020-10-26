@@ -95,7 +95,6 @@ const NewAgent: React.FC<INewAgentProps> = ({ user }) => {
           id="name"
           label="Unique Name"
           value={uname}
-          variant="outlined"
           onChange={(e: any) => setUname(e.target.value as string)}
         />
         <br />

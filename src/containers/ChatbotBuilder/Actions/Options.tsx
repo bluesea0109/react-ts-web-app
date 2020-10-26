@@ -20,11 +20,13 @@ const useStyles = makeStyles((theme: Theme) =>
 interface OptionsProps {
   options: IResponseOption[];
   onCreateOption: () => void;
+  onSetOptions: (options: IResponseOption[]) => void;
 }
 
 const Options = ({
   options,
   onCreateOption,
+  onSetOptions,
 }: OptionsProps) => {
   const classes = useStyles();
   const [config] = useRecoilState<AgentConfig | undefined>(currentAgentConfig);
@@ -53,6 +55,7 @@ const Options = ({
         <OptionList
           options={options}
           intents={intents}
+          onSetOptions={onSetOptions}
         />
       </Grid>
       <Grid container={true} item={true} justify="flex-end">

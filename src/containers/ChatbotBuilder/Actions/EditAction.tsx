@@ -1,7 +1,8 @@
-import { EResponseOptionTypes } from '@bavard/agent-config';
-import { AgentUtteranceAction, BaseAgentAction, EAgentActionTypes, EmailAction, IResponseOption } from '@bavard/agent-config';
+import { EResponseOptionTypes, FormAction } from '@bavard/agent-config';
+import { AgentUtteranceAction, BaseAgentAction, EAgentActionTypes, EmailAction } from '@bavard/agent-config';
 import { AppBar, Button, createStyles, Dialog, Grid, IconButton, makeStyles, Theme, Toolbar, Typography } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
+import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { DropDown, TextInput, UpTransition } from '../../../components';
 import { Maybe } from '../../../utils/types';
@@ -58,44 +59,42 @@ const EditAction = ({
     onSaveAction(currentAction);
   };
 
-  const onDeleteOption = (option: IResponseOption) => {
-    if (!currentAction?.options) { return; }
-    setCurrentAction({
-      ...currentAction,
-      options: [...currentAction?.options.filter(opt => opt.text !== option.text)],
-    } as BaseAgentAction);
-  };
-
-  const onCreateOption = () => {
+  const handleActionUpdate = (fieldName: string, fieldValue: any) => {
     if (!currentAction) { return; }
-    setCurrentAction({
-      ...currentAction,
-      options: [
-        ...currentAction?.options,
-        {
-          name: '',
-          options: [],
-          type: EResponseOptionTypes.TEXT,
-        },
-      ],
-    } as BaseAgentAction);
+    const type = fieldName === 'type' ? fieldValue : currentAction.type;
+    const actionObj = currentAction.toJsonObj();
+    // @ts-ignore
+    actionObj[fieldName] = fieldValue;
+
+    let newAction = null;
+    switch (type) {
+      case EAgentActionTypes.EMAIL_ACTION:
+        newAction = EmailAction.fromJsonObj(actionObj as any);
+        break;
+      case EAgentActionTypes.FORM_ACTION:
+        newAction = FormAction.fromJsonObj(actionObj as any);
+        break;
+      case EAgentActionTypes.UTTERANCE_ACTION:
+      default:
+        newAction = AgentUtteranceAction.fromJsonObj(actionObj as any);
+        break;
+    }
+    setCurrentAction(newAction);
   };
 
-  const onUpdateOption = (text: string, option: IResponseOption) => {
-    setCurrentAction({
-      ...currentAction,
-      options: [
-        ...(currentAction?.options || []).filter(opt => opt.text !== text),
-        option,
-      ],
-    } as BaseAgentAction);
-  };
+  const handleOptionCreate = () => {
+    if (!currentAction) { return; }
 
-  const onSetOptions = (options: IResponseOption[]) => {
-    setCurrentAction({
-      ...currentAction,
-      options: [...options],
-    } as BaseAgentAction);
+    const newAction = _.cloneDeep(currentAction);
+    newAction.options = [
+      ...currentAction?.options,
+      {
+        name: '',
+        options: [],
+        type: EResponseOptionTypes.TEXT,
+      } as any,
+    ];
+    setCurrentAction(newAction);
   };
 
   const ActionTypes = [EAgentActionTypes.EMAIL_ACTION, EAgentActionTypes.UTTERANCE_ACTION, EAgentActionTypes.FORM_ACTION].map((type) => ({
@@ -126,10 +125,9 @@ const EditAction = ({
             <TextInput
               fullWidth={true}
               label="Action Name"
-              variant="outlined"
               value={currentAction?.name}
               className={classes.input}
-              onChange={isNewAction ? e => setCurrentAction({ ...currentAction, name: e.target.value } as BaseAgentAction) : undefined}
+              onChange={isNewAction ? e => handleActionUpdate('name', e.target.value) : undefined}
             />
           </Grid>
           <Grid container={true} item={true} sm={12} className={classes.formField}>
@@ -140,20 +138,20 @@ const EditAction = ({
               menuItems={ActionTypes}
               current={currentAction?.type}
               padding="12px"
-              onChange={(actionType) => setCurrentAction({ ...currentAction, type: actionType } as BaseAgentAction)}
+              onChange={(actionType) => handleActionUpdate('type', actionType)}
             />
           </Grid>
           <Grid container={true}>
             {currentAction?.type === EAgentActionTypes.UTTERANCE_ACTION && (
               <EditUtteranceAction
                 action={currentAction as AgentUtteranceAction}
-                onChangeAction={action => setCurrentAction(action)}
+                onChangeAction={(field, value) => handleActionUpdate(field, value)}
               />
             )}
             {currentAction?.type === EAgentActionTypes.EMAIL_ACTION && (
               <EditEmailAction
                 action={currentAction as EmailAction}
-                onChangeAction={action => setCurrentAction(action)}
+                onChangeAction={(field, value) => handleActionUpdate(field, value)}
               />
             )}
           </Grid>
@@ -161,7 +159,8 @@ const EditAction = ({
             {!!currentAction && !!currentAction.options && (
               <Options
                 options={currentAction.options}
-                onCreateOption={onCreateOption}
+                onCreateOption={handleOptionCreate}
+                onSetOptions={(options) => handleActionUpdate('options', options)}
               />
             )}
           </Grid>

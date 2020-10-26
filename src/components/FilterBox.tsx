@@ -40,7 +40,6 @@ const FilterBox = ({
       className={classes.input}
       label={name}
       value={filter}
-      variant="outlined"
       onChange={(e) => onChange(e.target.value)}
       InputProps={{
         startAdornment: (
