@@ -13,7 +13,7 @@ const EditUtteranceAction = ({
   onChangeAction,
 }: EditUtteranceActionProps) => {
   return (
-    <Grid item={true} sm={12}>
+    <Grid container={true} item={true} sm={12}>
       <RichTextInput
         label="Action Text"
         value={action.utterance || ''}

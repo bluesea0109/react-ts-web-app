@@ -1,4 +1,4 @@
-import { EResponseOptionTypes, FormAction } from '@bavard/agent-config';
+import { EFormFieldTypes, EResponseOptionTypes, FormAction, IAgentAction, IAgentFormAction } from '@bavard/agent-config';
 import { AgentUtteranceAction, BaseAgentAction, EAgentActionTypes, EmailAction } from '@bavard/agent-config';
 import { AppBar, Button, createStyles, Dialog, Grid, IconButton, makeStyles, Theme, Toolbar, Typography } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { DropDown, TextInput, UpTransition } from '../../../components';
 import { Maybe } from '../../../utils/types';
 import EditEmailAction from './EditEmailAction';
+import EditFormAction from './EditFormAction';
 import EditUtteranceAction from './EditUtteranceAction';
 import Options from './Options';
 
@@ -59,12 +60,36 @@ const EditAction = ({
     onSaveAction(currentAction);
   };
 
+  const initFormAction = (actionObj: IAgentAction) => {
+    (actionObj as IAgentFormAction).url = '';
+    (actionObj as IAgentFormAction).fields = [{
+      name: 'Your Name',
+      type: EFormFieldTypes.TEXT,
+      required: true,
+    }, {
+      name: 'Your Email',
+      type: EFormFieldTypes.EMAIL,
+      required: false,
+    }, {
+      name: 'Your Phone',
+      type: EFormFieldTypes.PHONE,
+      required: false,
+    }, {
+      name: 'Your ZIP',
+      type: EFormFieldTypes.ZIP,
+      required: false,
+    }];
+  };
+
   const handleActionUpdate = (fieldName: string, fieldValue: any) => {
     if (!currentAction) { return; }
     const type = fieldName === 'type' ? fieldValue : currentAction.type;
     const actionObj = currentAction.toJsonObj();
     // @ts-ignore
     actionObj[fieldName] = fieldValue;
+    if (fieldName === 'type' && type === EAgentActionTypes.FORM_ACTION) {
+      initFormAction(actionObj);
+    }
 
     let newAction = null;
     switch (type) {
@@ -141,20 +166,24 @@ const EditAction = ({
               onChange={(actionType) => handleActionUpdate('type', actionType)}
             />
           </Grid>
-          <Grid container={true}>
-            {currentAction?.type === EAgentActionTypes.UTTERANCE_ACTION && (
-              <EditUtteranceAction
-                action={currentAction as AgentUtteranceAction}
-                onChangeAction={(field, value) => handleActionUpdate(field, value)}
-              />
-            )}
-            {currentAction?.type === EAgentActionTypes.EMAIL_ACTION && (
-              <EditEmailAction
-                action={currentAction as EmailAction}
-                onChangeAction={(field, value) => handleActionUpdate(field, value)}
-              />
-            )}
-          </Grid>
+          {currentAction?.type === EAgentActionTypes.UTTERANCE_ACTION && (
+            <EditUtteranceAction
+              action={currentAction as AgentUtteranceAction}
+              onChangeAction={(field, value) => handleActionUpdate(field, value)}
+            />
+          )}
+          {currentAction?.type === EAgentActionTypes.EMAIL_ACTION && (
+            <EditEmailAction
+              action={currentAction as EmailAction}
+              onChangeAction={(field, value) => handleActionUpdate(field, value)}
+            />
+          )}
+          {currentAction?.type === EAgentActionTypes.FORM_ACTION && (
+            <EditFormAction
+              action={currentAction as FormAction}
+              onChangeAction={(field, value) => handleActionUpdate(field, value)}
+            />
+          )}
           <Grid container={true} item={true} xs={12}>
             {!!currentAction && !!currentAction.options && (
               <Options
