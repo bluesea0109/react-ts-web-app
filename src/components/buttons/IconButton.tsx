@@ -1,6 +1,5 @@
-import Button from '@material-ui/core/Button';
-import { makeStyles, Theme } from '@material-ui/core/styles';
-import clsx from 'clsx';
+import { Button, makeStyles, SvgIconTypeMap, Theme } from '@material-ui/core';
+import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 import React from 'react';
 import { ButtonColorTypes, ButtonVariantTypes, TextTransformTypes } from '../types';
 
@@ -14,18 +13,22 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-interface BasicButtonProps {
+interface IconButtonProps {
   title: string;
   color?: ButtonColorTypes;
   variant?: ButtonVariantTypes;
+  Icon: OverridableComponent<SvgIconTypeMap<{}, 'svg'>>;
+  iconPosition: 'left'|'right'|undefined;
   textTransform?: TextTransformTypes;
   onClick: () => void;
 }
 
-const BasicButton: React.FC<BasicButtonProps> = ({
+const IconButton: React.FC<IconButtonProps> = ({
   title,
   color,
   variant,
+  Icon,
+  iconPosition,
   textTransform,
   onClick,
 }) => {
@@ -37,12 +40,14 @@ const BasicButton: React.FC<BasicButtonProps> = ({
     <Button
       color={color || 'primary'}
       variant={variant || 'contained'}
-      className={clsx(classes.root)}
+      className={classes.root}
       onClick={onClick}
+      startIcon={iconPosition === 'left' ? <Icon /> : undefined}
+      endIcon={iconPosition === 'right' ? <Icon /> : undefined}
     >
       {title}
     </Button>
   );
 };
 
-export default BasicButton;
+export default IconButton;

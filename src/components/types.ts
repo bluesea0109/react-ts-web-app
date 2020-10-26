@@ -5,3 +5,5 @@ export type ButtonColorTypes = 'inherit'|'primary'|'secondary'|'default';
 
 export type TextVariantTypes = 'filled'|'outlined'|'standard';
 export type TextColorTypes = 'primary'|'secondary';
+
+export type DirectionType = 'right'|'left'|'up'|'down';
