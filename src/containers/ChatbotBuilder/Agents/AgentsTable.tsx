@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { TableContainer, Typography } from '@material-ui/core';
+import { Grid, TableContainer, Typography } from '@material-ui/core';
 import 'firebase/auth';
 import _ from 'lodash';
 import MaterialTable, { Column } from 'material-table';
@@ -91,43 +91,45 @@ function AgentsTable() {
   return (
     <React.Fragment>
       {state && state.data && state.data.length > 0 ? (
-        <MaterialTable
-          components={{
-            Container: TableContainer,
-          }}
-          title="Assistants"
-          columns={state.columns.map((c) => {
-            return {
-              ...c,
-              cellStyle: {
+        <Grid>
+          <MaterialTable
+            components={{
+              Container: TableContainer,
+            }}
+            title="Assistants"
+            columns={state.columns.map((c) => {
+              return {
+                ...c,
+                cellStyle: {
+                  borderColor: 'transparent',
+                },
+              };
+            })}
+            data={_.cloneDeep(state.data)}
+            options={{
+              actionsColumnIndex: -1,
+              headerStyle: {
+                backgroundColor: '#FFFFFF',
+              },
+              actionsCellStyle: {
                 borderColor: 'transparent',
               },
-            };
-          })}
-          data={_.cloneDeep(state.data)}
-          options={{
-            actionsColumnIndex: -1,
-            headerStyle: {
-              backgroundColor: '#FFFFFF',
-            },
-            actionsCellStyle: {
-              borderColor: 'transparent',
-            },
-          }}
-          localization={{
-            body: {
-              editRow: {
-                deleteText: 'Are you sure you want to delete this assistant?',
+            }}
+            localization={{
+              body: {
+                editRow: {
+                  deleteText: 'Are you sure you want to delete this assistant?',
+                },
               },
-            },
-          }}
-          editable={{
-            onRowDelete: async (oldData) => {
-              const dataId = oldData.id;
-              deleteAgentHandler(dataId);
-            },
-          }}
-        />
+            }}
+            editable={{
+              onRowDelete: async (oldData) => {
+                const dataId = oldData.id;
+                deleteAgentHandler(dataId);
+              },
+            }}
+          />
+        </Grid>
       ) : (
         <Typography align="center" variant="h6">
           {'No Agents found'}
