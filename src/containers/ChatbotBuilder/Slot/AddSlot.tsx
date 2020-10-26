@@ -11,16 +11,15 @@ import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import IconButton from '@material-ui/core/IconButton';
-import Slide from '@material-ui/core/Slide';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
-import { TransitionProps } from '@material-ui/core/transitions';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import _ from 'lodash';
 import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
+import { UpTransition } from '../../../components';
 import { currentAgentConfig } from '../atoms';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -34,13 +33,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   }),
 );
-
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & { children?: React.ReactElement },
-  ref: React.Ref<unknown>,
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
 
 type AddSlotProps = {
   onAddSlotClose: () => void;
@@ -87,7 +79,7 @@ const AddSlot = ({
   };
 
   return (
-    <Dialog fullScreen={true} open={true} TransitionComponent={Transition}>
+    <Dialog fullScreen={true} open={true} TransitionComponent={UpTransition}>
       <AppBar className={classes.appBar}>
         <Toolbar>
           <IconButton

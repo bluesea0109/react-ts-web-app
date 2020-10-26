@@ -2,6 +2,7 @@ import { BaseAgentAction } from '@bavard/agent-config';
 import {
   Box,
   Button,
+  Grid,
   Paper,
   Typography,
 } from '@material-ui/core';
@@ -70,20 +71,22 @@ const ActionsTable = ({
         </Button>
       </Box>
 
-      <Box display="flex" flexDirection="row" justifyContent="space-between">
-        <Box flex={1}>
+      <Grid container={true} item={true} justify="space-between">
+        <Grid item={true} xs={6} sm={6}>
           <FilterBox name="Action Name" filter={nameFilter} onChange={setNameFilter} />
-        </Box>
-        <Box flex={1}>
+        </Grid>
+        <Grid item={true} xs={6} sm={6}>
           <FilterBox name="Action Type" filter={typeFilter} onChange={setTypeFilter} />
-        </Box>
-      </Box>
+        </Grid>
+      </Grid>
 
-      <ActionList
-        actions={filteredActions}
-        onEditAction={onEditAction}
-        onDeleteAction={onDeleteAction}
-      />
+      <Grid container={true}>
+        <ActionList
+          actions={filteredActions}
+          onEditAction={onEditAction}
+          onDeleteAction={onDeleteAction}
+        />
+      </Grid>
     </Paper>
   ) : (
     <Typography align="center" variant="h6">

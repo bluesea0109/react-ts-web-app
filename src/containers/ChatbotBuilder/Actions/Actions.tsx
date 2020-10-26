@@ -1,6 +1,5 @@
 import { AgentConfig, AgentUtteranceAction, BaseAgentAction } from '@bavard/agent-config';
 import { Box, Grid, makeStyles, Theme } from '@material-ui/core';
-import clsx from 'clsx';
 import { Maybe } from 'graphql/jsutils/Maybe';
 import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
@@ -26,7 +25,8 @@ const Actions = () => {
 
   const onAddAction = () => {
     setIsNewAction(true);
-    setCurrentAction(new AgentUtteranceAction('', ''));
+    const utteranceAction = new AgentUtteranceAction('', '');
+    setCurrentAction(utteranceAction);
   };
 
   const onEditAction = (action: BaseAgentAction) => {
@@ -60,7 +60,7 @@ const Actions = () => {
   };
 
   return (
-    <Box className={clsx(classes.root)}>
+    <Box className={classes.root}>
       <Grid item={true} xs={12} sm={12}>
         <ActionsTable
           actions={actions ?? []}

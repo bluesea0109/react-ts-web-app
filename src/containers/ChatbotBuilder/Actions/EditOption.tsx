@@ -1,230 +1,158 @@
-import {
-  EResponseOptionTypes,
-  IHyperlinkOption,
-  IImageOption,
-  IIntent,
-  IResponseOption,
-} from '@bavard/agent-config';
-import {
-  Box,
-  DialogContent,
-  Grid,
-  TextField,
-} from '@material-ui/core';
-import AppBar from '@material-ui/core/AppBar';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import IconButton from '@material-ui/core/IconButton';
-import Slide from '@material-ui/core/Slide';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import Toolbar from '@material-ui/core/Toolbar';
-import { TransitionProps } from '@material-ui/core/transitions';
-import Typography from '@material-ui/core/Typography';
-import CloseIcon from '@material-ui/icons/Close';
-import { Autocomplete } from '@material-ui/lab';
-import React, { useEffect, useState } from 'react';
-import { Maybe } from '../../../utils/types';
+import { EResponseOptionTypes, IHyperlinkOption, IImageOption, IIntent, IResponseOption } from '@bavard/agent-config';
+import { createStyles, Grid, makeStyles, Theme } from '@material-ui/core';
+import Delete from '@material-ui/icons/Delete';
+import React, { useMemo } from 'react';
+import { DropDown, IconButton, TextInput } from '../../../components';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    appBar: {
-      position: 'relative',
+    root: {
+      paddingTop: theme.spacing(3),
+      paddingRight: theme.spacing(4),
+      paddingBottom: theme.spacing(3),
+      paddingLeft: theme.spacing(4),
     },
-    title: {
-      marginLeft: theme.spacing(2),
-      flex: 1,
+    formField: {
+      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(1),
+    },
+    input: {
+      '& .MuiOutlinedInput-input': {
+        padding: '12px 12px',
+      },
     },
   }),
 );
 
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & { children?: React.ReactElement },
-  ref: React.Ref<unknown>,
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
-
-type EditOptionProps = {
-  option?: IResponseOption;
-  isNewOption: boolean;
+interface EditOptionProps {
   intents: IIntent[];
-  onAddOption: (optionData: IResponseOption) => void;
-  onSaveOption: (optionData: IResponseOption) => void;
-  onEditOptionClose: () => void;
-};
+  option: IResponseOption;
+  onEditOption: (option: IResponseOption) => void;
+  onDeleteOption: () => void;
+}
 
 const EditOption = ({
-  option,
-  isNewOption,
   intents,
-  onAddOption,
-  onSaveOption,
-  onEditOptionClose,
+  option,
+  onEditOption,
+  onDeleteOption,
 }: EditOptionProps) => {
   const classes = useStyles();
-  const [currentOption, setCurrentOption] = useState<Maybe<IResponseOption>>(option);
-  const availableOptions = [
-    EResponseOptionTypes.TEXT,
-    EResponseOptionTypes.IMAGE,
-    EResponseOptionTypes.HYPERLINK,
-  ];
 
-  useEffect(() => {
-    setCurrentOption(option);
-  }, [option]);
+  const OptionTypes = [EResponseOptionTypes.TEXT, EResponseOptionTypes.HYPERLINK, EResponseOptionTypes.IMAGE].map(type => ({
+    id: type,
+    name: type,
+  }));
 
-  const saveChanges = () => {
-    if (!currentOption) {
-      return;
-    }
+  const isIntentRequired = option.type !== EResponseOptionTypes.HYPERLINK;
+  const isHyperLinkOption = option.type === EResponseOptionTypes.HYPERLINK;
+  const isImageOption = option.type === EResponseOptionTypes.IMAGE;
 
-    const { ...optionData } = currentOption as any;
-    isNewOption ? onAddOption(optionData) : onSaveOption(optionData);
-  };
-
-  const isHyperLinkOption = currentOption?.type === EResponseOptionTypes.HYPERLINK;
-  const isRequiringIntent = currentOption?.type !== EResponseOptionTypes.HYPERLINK;
-  const isImageOption = currentOption?.type === EResponseOptionTypes.IMAGE;
+  const allIntents = useMemo(() => {
+    return intents.map((intent) => ({
+      id: intent.name,
+      name: intent.name,
+    }));
+  }, [intents]);
 
   return (
-    <Dialog fullScreen={true} open={!!option} TransitionComponent={Transition}>
-      <AppBar className={classes.appBar}>
-        <Toolbar>
-          <IconButton
-            edge="start"
-            color="inherit"
-            onClick={onEditOptionClose}
-            aria-label="close">
-            <CloseIcon />
-          </IconButton>
-          <Typography variant="h6" className={classes.title}>
-            {isNewOption
-              ? 'Create New Option'
-              : `Edit Option "${currentOption?.text}"`}
-          </Typography>
-          <Button
-            autoFocus={true}
-            color="inherit"
-            onClick={saveChanges}>
-            {isNewOption ? 'Create' : 'Save'}
-          </Button>
-        </Toolbar>
-      </AppBar>
-      <DialogContent>
-        <Box my={4}>
-          <Grid container={true}>
-            <Grid item={true} xs={6}>
-              <Box p={2}>
-                <TextField
-                  fullWidth={true}
-                  label="Option Name"
-                  variant="outlined"
-                  value={currentOption?.text || ''}
-                  onChange={(e) =>
-                    setCurrentOption({
-                      ...currentOption,
-                      text: e.target.value,
-                    } as any)
-                  }
-                />
-              </Box>
-            </Grid>
+    <Grid container={true} className={classes.root}>
+      <Grid container={true} className={classes.formField}>
+        <TextInput
+          fullWidth={true}
+          label="Option Name"
+          value={option.text || ''}
+          className={classes.input}
+          onChange={(e) => onEditOption({
+            ...option,
+            text: e.target.value,
+          } as IResponseOption)}
+        />
+      </Grid>
+      <Grid container={true} className={classes.formField}>
+        <DropDown
+          fullWidth={true}
+          label="Option Type"
+          labelPosition="left"
+          menuItems={OptionTypes}
+          current={option.type}
+          padding="12px"
+          onChange={(type) => onEditOption({
+            ...option,
+            type,
+          } as IResponseOption)}
+        />
+      </Grid>
+      {isHyperLinkOption && (
+        <Grid container={true} className={classes.formField}>
+          <TextInput
+            fullWidth={true}
+            label="Hyperlink Target"
+            value={(option as IHyperlinkOption).targetLink || ''}
+            className={classes.input}
+            onChange={(e) =>
+              onEditOption({
+                ...option,
+                targetLink: e.target.value,
+              } as IHyperlinkOption)
+            }
+          />
+        </Grid>
+      )}
+      {isIntentRequired && (
+        <Grid container={true} className={classes.formField}>
+          <DropDown
+            fullWidth={true}
+            label="Option Intent"
+            labelPosition="left"
+            menuItems={allIntents}
+            current={option.intent}
+            padding="12px"
+            onChange={(intent) => onEditOption({
+              ...option,
+              intent,
+            } as IResponseOption)}
+          />
+        </Grid>
+      )}
+      {isImageOption && (
+        <>
+          <Grid container={true} className={classes.formField}>
+            <TextInput
+              fullWidth={true}
+              label="Image Name"
+              value={(option as IImageOption).imageName || ''}
+              className={classes.input}
+              onChange={(e) => onEditOption({
+                ...option,
+                imageName: e.target.value,
+              } as IResponseOption)}
+            />
           </Grid>
-          <Grid container={true}>
-            <Grid item={true} xs={6}>
-              <Box p={2}>
-                <Autocomplete
-                  fullWidth={true}
-                  id="optionTypeSelector"
-                  options={availableOptions}
-                  getOptionLabel={(option: any) => option}
-                  value={currentOption?.type ?? ''}
-                  onChange={(e, optionType) => setCurrentOption({ ...currentOption, type: optionType as EResponseOptionTypes} as any)}
-                  renderInput={(params) => <TextField {...params} label="Option Type" variant="outlined" />}
-                />
-              </Box>
-            </Grid>
+          <Grid container={true} className={classes.formField}>
+            <TextInput
+              fullWidth={true}
+              label="Image Caption"
+              value={(option as IImageOption).caption || ''}
+              className={classes.input}
+              onChange={(e) => onEditOption({
+                ...option,
+                caption: e.target.value,
+              } as IResponseOption)}
+            />
           </Grid>
-          {isHyperLinkOption && (
-            <Grid container={true}>
-              <Grid item={true} xs={6}>
-                <Box p={2}>
-                  <TextField
-                    fullWidth={true}
-                    label="HyperLink Target"
-                    variant="outlined"
-                    value={(currentOption as IHyperlinkOption)?.targetLink || ''}
-                    onChange={(e) =>
-                      setCurrentOption({
-                        ...currentOption,
-                        targetLink: e.target.value,
-                      } as IHyperlinkOption)
-                    }
-                  />
-                </Box>
-              </Grid>
-            </Grid>
-          )}
-          {isRequiringIntent && (
-            <Grid container={true}>
-              <Grid item={true} xs={6}>
-                <Box p={2}>
-                  <Autocomplete
-                    fullWidth={true}
-                    id="optionIntentSelector"
-                    options={intents.map(intent => intent.name)}
-                    getOptionLabel={(option: any) => option}
-                    value={currentOption?.intent ?? null}
-                    onChange={(_, optionIntent) => setCurrentOption({ ...currentOption, intent: optionIntent } as IResponseOption)}
-                    renderInput={(params) => <TextField {...params} label="Option Intent" variant="outlined" />}
-                  />
-                </Box>
-              </Grid>
-            </Grid>
-          )}
-          {isImageOption && (
-            <>
-              <Grid container={true}>
-                <Grid item={true} xs={6}>
-                  <Box p={2}>
-                    <TextField
-                      fullWidth={true}
-                      label="Image Name"
-                      variant="outlined"
-                      value={(currentOption as IImageOption)?.imageName || ''}
-                      onChange={(e) =>
-                        setCurrentOption({
-                          ...currentOption,
-                          imageName: e.target.value,
-                        } as IImageOption)
-                      }
-                    />
-                  </Box>
-                </Grid>
-              </Grid>
-              <Grid container={true}>
-                <Grid item={true} xs={6}>
-                  <Box p={2}>
-                    <TextField
-                      fullWidth={true}
-                      label="Image Caption"
-                      variant="outlined"
-                      value={(currentOption as IImageOption)?.caption || ''}
-                      onChange={(e) =>
-                        setCurrentOption({
-                          ...currentOption,
-                          caption: e.target.value,
-                        } as IImageOption)
-                      }
-                    />
-                  </Box>
-                </Grid>
-              </Grid>
-            </>
-          )}
-        </Box>
-      </DialogContent>
-    </Dialog>
+        </>
+      )}
+      <Grid container={true} justify="flex-end">
+        <IconButton
+          title="Delete"
+          iconPosition="left"
+          variant="text"
+          Icon={Delete}
+          onClick={onDeleteOption}
+        />
+      </Grid>
+    </Grid>
   );
 };
 

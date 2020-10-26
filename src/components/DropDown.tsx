@@ -1,15 +1,14 @@
-import { Box, createStyles, InputLabel, MenuItem } from '@material-ui/core';
-import Select from '@material-ui/core/Select';
+import { Box, createStyles, Grid, InputLabel, MenuItem, Select, Typography } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
-import clsx from 'clsx';
 import React from 'react';
 interface ComponentProps {
-  size: string;
+  padding?: string;
+  size?: string;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    selectLabel: {
+    topLabel: {
       color: 'black',
       fontSize: 12,
       marginBottom: 4,
@@ -18,18 +17,12 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: theme.spacing(0),
       minWidth: (props: ComponentProps) => props.size === 'large' ? '100%' : 155,
       color: 'black',
+      width: '100%',
       borderRadius: 2,
       borderColor: 'white',
 
       '& .MuiSelect-outlined': {
-        padding: '7px 8px',
-      },
-      '& fieldset': {
-        top: 0,
-
-        '& legend': {
-          display: 'none',
-        },
+        padding: (props: ComponentProps) => props.padding || '8px',
       },
     },
     icon: {
@@ -44,36 +37,47 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface DropDownProps {
-  label: string;
+  label?: string;
+  labelPosition?: 'left'|'top';
   current: any;
+  padding?: string;
   menuItems: any[];
+  fullWidth?: boolean;
   onChange: (item: string) => void;
-  size: string;
+  size?: string;
 }
 
 const DropDown: React.FC<DropDownProps> = ({
   label,
+  labelPosition,
   current,
+  padding,
+  fullWidth,
   menuItems,
   onChange,
   size,
 }) => {
-  const props = {size};
-  const classes = useStyles(props);
+  const classes = useStyles({ padding, size });
 
   const currentItem = current?.name || current || '';
 
-  console.log('Menu Item ', menuItems);
-  return (
-    <Box>
-      <InputLabel className={clsx(classes.selectLabel)}>
-        {label}
-      </InputLabel>
+  const MainContent = () => (
+    <Grid container={true}>
+      {labelPosition === 'top' && label && label.length && (
+        <InputLabel className={classes.topLabel}>
+          {label}
+        </InputLabel>
+      )}
+      {labelPosition === 'left' && label && label.length && (
+        <Typography variant="subtitle1" style={{fontWeight: 'bold'}}>
+          {label}
+        </Typography>
+      )}
 
       <Select
         variant="outlined"
         value={currentItem}
-        className={clsx(classes.selectInput)}
+        className={classes.selectInput}
         classes={{
           icon: classes.icon,
           iconOutlined: classes.iconOutlined,
@@ -93,6 +97,16 @@ const DropDown: React.FC<DropDownProps> = ({
           </MenuItem>
         ))}
       </Select>
+    </Grid>
+  );
+
+  return fullWidth ? (
+    <Grid container={true} item={true} xs={12} sm={12}>
+      <MainContent />
+    </Grid>
+  ) : (
+    <Box>
+      <MainContent/>
     </Box>
   );
 };
