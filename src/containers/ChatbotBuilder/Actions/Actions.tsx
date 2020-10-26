@@ -1,4 +1,4 @@
-import { AgentConfig, BaseAgentAction, UtteranceAction } from '@bavard/agent-config';
+import { AgentConfig, AgentUtteranceAction, BaseAgentAction } from '@bavard/agent-config';
 import { Box, Grid, makeStyles, Theme } from '@material-ui/core';
 import clsx from 'clsx';
 import { Maybe } from 'graphql/jsutils/Maybe';
@@ -26,7 +26,7 @@ const Actions = () => {
 
   const onAddAction = () => {
     setIsNewAction(true);
-    setCurrentAction(new UtteranceAction('', ''));
+    setCurrentAction(new AgentUtteranceAction('', ''));
   };
 
   const onEditAction = (action: BaseAgentAction) => {
