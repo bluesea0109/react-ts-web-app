@@ -13,6 +13,7 @@ const useStyles = makeStyles((theme: Theme) =>
     gridRow: {
       marginBottom: theme.spacing(3),
     },
+
   }),
 );
 
@@ -29,7 +30,7 @@ const AllAgents: React.FC<IChatbotBuilderAgentProps> = ({ user }) => {
       <Typography className={classes.pageTitle} variant="h5">
         Assistant Builder
       </Typography>
-      <Grid>
+      <Grid xs={10}>
         <Grid item={true} xs={12} sm={12} className={classes.gridRow}>
           <NewAgent user={user} />
         </Grid>
