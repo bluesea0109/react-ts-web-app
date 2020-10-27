@@ -1,4 +1,4 @@
-import { FormAction, IFormField } from '@bavard/agent-config';
+import { IAgentFormAction, IFormField } from '@bavard/agent-config';
 import { createStyles, Grid, makeStyles, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Theme, withStyles } from '@material-ui/core';
 import React, { useState } from 'react';
 import { TextInput } from '../../../components';
@@ -27,8 +27,8 @@ const TabelHeaderCell = withStyles((theme) => ({
 }))(TableCell);
 
 interface EditFormActionProps {
-  action: FormAction;
-  onChangeAction: (field: string, value: any) => void;
+  action: IAgentFormAction;
+  onChangeAction: (action: IAgentFormAction) => void;
 }
 
 const EditFormAction = ({
@@ -39,15 +39,17 @@ const EditFormAction = ({
   const [editingFieldIndex, setEditingFieldIndex] = useState(-1);
 
   const onUpdateField = (index: number, field: IFormField) => {
-    onChangeAction('fields', [
-      ...action.fields.slice(0, index),
-      field,
-      ...action.fields.slice(index + 1),
-    ]);
+    onChangeAction({
+      ...action,
+      fields: [ ...action.fields.slice(0, index), field, ...action.fields.slice(index + 1) ],
+    });
   };
 
   const onDeleteField = (index: number) => {
-    onChangeAction('fields', action.fields.filter((_, i) => i !== index));
+    onChangeAction({
+      ...action,
+      fields: action.fields.filter((_, i) => i !== index),
+    });
   };
 
   return (
@@ -58,7 +60,7 @@ const EditFormAction = ({
           label="Form Url"
           value={action.url || ''}
           className={classes.input}
-          onChange={e => onChangeAction('url', e.target.value)}
+          onChange={e => onChangeAction({ ...action, url: e.target.value })}
         />
       </Grid>
       <Grid container={true} className={classes.formField}>

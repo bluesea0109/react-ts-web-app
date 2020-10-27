@@ -77,7 +77,7 @@ const FormFieldRow = ({
           fullWidth={true}
           menuItems={FormFieldTypes}
           current={field.type}
-          onChange={(type) => onUpdateField({ ...field, type} as any)}
+          onChange={(type) => onUpdateField({ ...field, type} as IFormField)}
         />
       ) : (
         <Typography onClick={onClick}>
