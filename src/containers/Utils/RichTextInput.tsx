@@ -2,7 +2,7 @@ import { createStyles, makeStyles } from '@material-ui/core/styles';
 import { ContentState, convertToRaw, EditorState } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
@@ -25,16 +25,10 @@ const useStyles = makeStyles(theme =>
   }),
 );
 
-const RichTextInput = ({ value, onChange, label, ...otherProps }: RichTextInputProps) => {
+const RichTextInput = ({ value, onChange, label }: RichTextInputProps) => {
   const classes = useStyles();
 
-  const [state, setState] = useState<{
-    value: string | null;
-    editorState: EditorState;
-  }>({
-    value: null,
-    editorState: EditorState.createEmpty(),
-  });
+  const [editorState, setEditorState] = useState<EditorState>(EditorState.createEmpty());
 
   useEffect(() => {
     let editorState = EditorState.createEmpty();
@@ -49,37 +43,29 @@ const RichTextInput = ({ value, onChange, label, ...otherProps }: RichTextInputP
       editorState = EditorState.createWithContent(state);
     }
 
-    setState({
-      value: !!value ? value : null,
-      editorState,
-    });
+    setEditorState(editorState);
   }, [value]);
 
   const onEditorStateChange = (state: EditorState) => {
-    setState({
-      value: draftToHtml(convertToRaw(state.getCurrentContent())),
-      editorState: state,
-    });
+    setEditorState(state);
   };
+
+  const newValue = useMemo(() => {
+    return draftToHtml(convertToRaw(editorState.getCurrentContent()));
+  }, [editorState]);
 
   return (
     <div>
       <h3 className="heading3 text-white mb-2">{label}</h3>
       <Editor
-        editorState={state.editorState}
+        editorState={editorState}
         wrapperClassName={classes.rtiContainer}
         editorClassName={classes.rtiEditor}
         onEditorStateChange={onEditorStateChange}
-        onBlur={() => onChange(state.value)}
+        onBlur={() => onChange(newValue)}
         toolbar={{
           options: ['inline', 'blockType', 'fontSize', 'fontFamily', 'list', 'textAlign', 'colorPicker', 'link', 'emoji', 'remove', 'history'],
         }}
-      />
-      <textarea
-        disabled={true}
-        style={{ display: 'none' }}
-        value={state.value || ''}
-        {...otherProps}
       />
     </div>
   );

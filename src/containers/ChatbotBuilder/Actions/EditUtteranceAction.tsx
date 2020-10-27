@@ -1,11 +1,11 @@
-import { AgentUtteranceAction } from '@bavard/agent-config';
+import { IAgentUtteranceAction } from '@bavard/agent-config';
 import { Grid } from '@material-ui/core';
 import React from 'react';
 import RichTextInput from '../../Utils/RichTextInput';
 
 interface EditUtteranceActionProps {
-  action: AgentUtteranceAction;
-  onChangeAction: (field: string, value: string) => void;
+  action: IAgentUtteranceAction;
+  onChangeAction: (action: IAgentUtteranceAction) => void;
 }
 
 const EditUtteranceAction = ({
@@ -13,11 +13,11 @@ const EditUtteranceAction = ({
   onChangeAction,
 }: EditUtteranceActionProps) => {
   return (
-    <Grid item={true} sm={12}>
+    <Grid container={true} item={true} sm={12}>
       <RichTextInput
         label="Action Text"
         value={action.utterance || ''}
-        onChange={(html: string) => onChangeAction('utterance', html)}
+        onChange={(html: string) => onChangeAction({ ...action, utterance: html })}
       />
     </Grid>
   );

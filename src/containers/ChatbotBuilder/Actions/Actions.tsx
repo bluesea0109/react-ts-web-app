@@ -1,4 +1,4 @@
-import { AgentConfig, AgentUtteranceAction, BaseAgentAction } from '@bavard/agent-config';
+import { AgentConfig, AgentUtteranceAction, BaseAgentAction, IAgentAction } from '@bavard/agent-config';
 import { Box, Grid, makeStyles, Theme } from '@material-ui/core';
 import { Maybe } from 'graphql/jsutils/Maybe';
 import React, { useState } from 'react';
@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const Actions = () => {
   const classes = useStyles();
-  const [currentAction, setCurrentAction] = useState<Maybe<BaseAgentAction>>();
+  const [currentAction, setCurrentAction] = useState<Maybe<IAgentAction>>();
   const [isNewAction, setIsNewAction] = useState<boolean>(false);
   const [config, setConfig] = useRecoilState<AgentConfig | undefined>(currentAgentConfig);
 
@@ -25,21 +25,21 @@ const Actions = () => {
 
   const onAddAction = () => {
     setIsNewAction(true);
-    const utteranceAction = new AgentUtteranceAction('', '');
+    const utteranceAction = new AgentUtteranceAction('', '').toJsonObj();
     setCurrentAction(utteranceAction);
   };
 
   const onEditAction = (action: BaseAgentAction) => {
-    setCurrentAction(action);
+    setCurrentAction(action.toJsonObj());
   };
 
-  const onSaveAction = (action: BaseAgentAction) => {
+  const onSaveAction = (action: IAgentAction) => {
     if (!currentAction) { return; }
     setConfig(
       config
         .copy()
         .deleteAction(currentAction.name)
-        .addAction(action.toJsonObj()),
+        .addAction(action),
     );
     setIsNewAction(false);
     setCurrentAction(undefined);
