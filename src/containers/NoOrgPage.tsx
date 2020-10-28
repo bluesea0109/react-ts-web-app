@@ -91,7 +91,7 @@ const NoOrgPage = (props: NoOrgPageProps) => {
               {type === MSG_TYPES.NO_ORGS
                 ? `No organization is active. Please click `
                 : `No project is active. Please click `}
-              <Link to="/"> here </Link> {`to create a new organization.`}
+              <Link to="/"> here </Link> { type === MSG_TYPES.NO_ORGS ? `to create a new organization.` : ' to create a new project'}
             </Typography>
           </Grid>
         </Grid>
