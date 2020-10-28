@@ -1,9 +1,10 @@
 import { EResponseOptionTypes, IHyperlinkOption, IImageOption, IIntent, IResponseOption } from '@bavard/agent-config';
 import { createStyles, Grid, makeStyles, Theme } from '@material-ui/core';
 import Delete from '@material-ui/icons/Delete';
-import React, { useMemo } from 'react';
-import { DropDown, IconButton, TextInput } from '../../../components';
-import RichTextInput from '../../../components/RichTextInput';
+import React, { useContext, useMemo, useState } from 'react';
+import { DropDown, IconButton, ImageSelectorGrid, RichTextInput, TextInput } from '../../../components';
+import { OptionImagesContext } from '../../../context/OptionImages';
+import { IOptionImage } from '../../../models/chatbot-service';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -39,6 +40,13 @@ const EditOption = ({
   onDeleteOption,
 }: EditOptionProps) => {
   const classes = useStyles();
+  const [imgFile, setImgFile] = useState<File | undefined>(undefined);
+  const [imageName, setImageName] = useState((option as IImageOption).imageName || '');
+  const [existingImg, setExistingImg] = useState<string | undefined>(
+    (option as IImageOption).imageName || undefined,
+  );
+
+  const optionImages = useContext(OptionImagesContext)?.optionImages || [];
 
   const OptionTypes = [EResponseOptionTypes.TEXT, EResponseOptionTypes.HYPERLINK, EResponseOptionTypes.IMAGE].map(type => ({
     id: type,
@@ -55,6 +63,17 @@ const EditOption = ({
       name: intent.name,
     }));
   }, [intents]);
+
+  const handleNewImg = (file: File) => {
+    setImgFile(file);
+    setImageName(file.name);
+    setExistingImg(undefined);
+  };
+
+  const handleSelectImg = (img: IOptionImage) => {
+    setImageName(img.name);
+    setExistingImg(img.name);
+  };
 
   return (
     <Grid container={true} className={classes.root}>
@@ -117,7 +136,7 @@ const EditOption = ({
             <TextInput
               fullWidth={true}
               label="Image Name"
-              value={(option as IImageOption).imageName || ''}
+              value={imageName}
               className={classes.input}
               onChange={(e) => onEditOption({
                 ...option,
@@ -135,6 +154,14 @@ const EditOption = ({
                 ...option,
                 caption: e.target.value,
               } as IResponseOption)}
+            />
+          </Grid>
+          <Grid container={true} className={classes.formField}>
+            <ImageSelectorGrid
+              onNewImg={handleNewImg}
+              selectedImgName={imageName}
+              images={optionImages}
+              onSelect={handleSelectImg}
             />
           </Grid>
         </>

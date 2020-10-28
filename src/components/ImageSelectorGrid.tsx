@@ -40,7 +40,14 @@ interface ISelectorGridProps {
   selectedImgName?: string;
 }
 
-export default function ImageSelectorGrid({imgWidth, cols= 4, images, selectedImgName, onSelect, onNewImg}: ISelectorGridProps) {
+export default function ImageSelectorGrid({
+  cols= 4,
+  images,
+  imgWidth,
+  selectedImgName,
+  onSelect,
+  onNewImg,
+}: ISelectorGridProps) {
   const classes = useStyles();
   const [selectedImg, selectImg] = useState<IImage|undefined>(
     selectedImgName ?
