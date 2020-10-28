@@ -59,7 +59,7 @@ const DropDown: React.FC<DropDownProps> = ({
 }) => {
   const classes = useStyles({ padding, size });
 
-  const currentItem = current?.name || current || '';
+  const currentItem = current?.uname || current?.name || current || '';
 
   const MainContent = () => (
     <Grid container={true}>
@@ -89,11 +89,12 @@ const DropDown: React.FC<DropDownProps> = ({
           },
           getContentAnchorEl: null,
         }}
+        style={{backgroundColor: 'white'}}
         onChange={(e) => onChange(e.target.value as string)}
       >
         {menuItems?.map((menu: any, index) => (
-          <MenuItem key={menu.id || menu.name || index} value={menu.id || menu.name || menu}>
-            {menu.name || menu}
+          <MenuItem key={ menu.uname || menu.id || menu.name || index} value={menu.uname || menu.id || menu.name || menu}>
+            {menu.uname || menu.name || menu}
           </MenuItem>
         ))}
       </Select>
