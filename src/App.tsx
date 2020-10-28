@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { Drawer, Typography } from '@material-ui/core';
+import { Drawer } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import assert from 'assert';
 import clsx from 'clsx';
@@ -19,7 +19,6 @@ import CustomDrawer from './containers/Drawer';
 import FAQService from './containers/FAQService';
 import ImageLabeling from './containers/ImageLabeling';
 import InternalServerErrorPage from './containers/InternalServerErrorpage';
-import NoProjectPage from './containers/NoOrgPage';
 import NoOrgPage from './containers/NoOrgPage';
 import MySidebar from './containers/Sidebar';
 import TextLabeling from './containers/TextLabeling';
