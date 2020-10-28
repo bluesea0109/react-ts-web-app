@@ -1,13 +1,15 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { AgentConfig } from '@bavard/agent-config';
-import { Box, Button, makeStyles, Theme, Toolbar } from '@material-ui/core';
-import React from 'react';
+import { Box, makeStyles, Theme, Toolbar } from '@material-ui/core';
+import React, { useState } from 'react';
 import { useParams } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import {
   CHATBOT_GET_AGENT,
   CHATBOT_SAVE_CONFIG_AND_SETTINGS,
 } from '../../../common-gql-queries';
+import { CHATBOT_GET_AGENTS } from '../../../common-gql-queries';
 import { TabPanel } from '../../../components';
 import { IAgent } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
@@ -27,6 +29,7 @@ import Tag from '../Tags/Tag';
 import TrainingConversations from '../TrainingConversations';
 import TrainingJobsTab from '../TrainingJobs/TrainingJobsTab';
 import UploadDataTab from '../UploadData/UploadDataTab';
+import { ToolBarSetting } from './ToolbarSetting';
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -68,7 +71,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     animation: '$hoverOut 500ms',
     right: '-110px',
     '&:hover': {
-      background: 'linear-gradient(137deg, rgba(2,0,36,1) 66%, rgba(0,212,255,1) 100%, rgba(9,9,121,1) 100%)',
+      background:
+        'linear-gradient(137deg, rgba(2,0,36,1) 66%, rgba(0,212,255,1) 100%, rgba(9,9,121,1) 100%)',
       animation: '$hoverIn 500ms',
       right: '0px',
     },
@@ -82,30 +86,45 @@ const useStyles = makeStyles((theme: Theme) => ({
     fontWeight: 'bold',
   },
 
-  '@keyframes hoverIn' : {
-    from: { right: '-110px'},
-    to: { right: '0px'},
+  '@keyframes hoverIn': {
+    from: { right: '-110px' },
+    to: { right: '0px' },
   },
-  '@keyframes hoverOut' : {
-    from: { right: '0px'},
-    to: { right: '-110px'},
+  '@keyframes hoverOut': {
+    from: { right: '0px' },
+    to: { right: '-110px' },
   },
-
 }));
 
 interface IGetAgent {
   ChatbotService_agent: IAgent;
 }
 
+interface IGetAgents {
+  ChatbotService_agents: IAgent[] | undefined;
+}
+
 const AgentDetails = () => {
   const classes = useStyles();
-  const { agentId, agentTab } = useParams<{
+  const { agentId, agentTab, projectId, orgId } = useParams<{
     orgId: string;
     projectId: string;
     agentId: string;
     agentTab: string;
   }>();
+
+  const history = useHistory();
+
+  const [curAgent, setCurAgent] = useState<string>('');
+
   const [config, setConfig] = useRecoilState(currentAgentConfig);
+  const agentsData = useQuery<IGetAgents>(CHATBOT_GET_AGENTS, {
+    variables: { projectId },
+  });
+
+  const agents: IAgent[] | undefined =
+    agentsData && agentsData.data && agentsData.data.ChatbotService_agents;
+  console.log('>>> Agents : ', agents);
   const [widgetSettings, setWidgetSettings] = useRecoilState(
     currentWidgetSettings,
   );
@@ -148,15 +167,36 @@ const AgentDetails = () => {
     }
   };
 
+  const publishAgent = () => {
+    const newURL = `/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${agentId}/publish`;
+    history.push(newURL);
+  };
+
+  const handleAgentChanage = (field: string) => {
+    setCurAgent(field);
+
+    const agentId = agents?.filter((agent) => agent.uname === field)[0].id;
+    const newURL = `/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${agentId}/Actions`;
+    history.push(newURL);
+  };
+
   return (
     <Box className={classes.container}>
       <Toolbar className={classes.toolbar} variant="dense">
-        <Button variant="contained" onClick={saveAgent}>
-          {'Save Agent'}
-        </Button>
+        <ToolBarSetting
+          agents={agents}
+          currentAgent={curAgent}
+          handleChange={handleAgentChanage}
+          saveAgent={saveAgent}
+          publishAgent={publishAgent}
+        />
       </Toolbar>
       <Box className={classes.tabsContainer}>
-        <TabPanel index="Actions" value={agentTab} className={classes.tabPanel} tabName="Manage Assistant Actions">
+        <TabPanel
+          index="Actions"
+          value={agentTab}
+          className={classes.tabPanel}
+          tabName="Manage Assistant Actions">
           <Actions />
         </TabPanel>
         <TabPanel index="Intents" value={agentTab} className={classes.tabPanel}>
@@ -168,7 +208,10 @@ const AgentDetails = () => {
         <TabPanel className={classes.tabPanel} value={agentTab} index="Slots">
           <Slot />
         </TabPanel>
-        <TabPanel className={classes.tabPanel} value={agentTab} index="nluExamples">
+        <TabPanel
+          className={classes.tabPanel}
+          value={agentTab}
+          index="nluExamples">
           <Examples />
         </TabPanel>
         {agentTab === 'graph-policy' && <GraphPolicy />}
