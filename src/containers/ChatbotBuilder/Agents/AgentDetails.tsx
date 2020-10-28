@@ -1,9 +1,8 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { AgentConfig } from '@bavard/agent-config';
-import { Box, Button, makeStyles, Theme, Toolbar } from '@material-ui/core';
+import { Box, makeStyles, Theme, Toolbar } from '@material-ui/core';
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
-import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import {
@@ -11,7 +10,7 @@ import {
   CHATBOT_SAVE_CONFIG_AND_SETTINGS,
 } from '../../../common-gql-queries';
 import { CHATBOT_GET_AGENTS } from '../../../common-gql-queries';
-import { DropDown, TabPanel } from '../../../components';
+import { TabPanel } from '../../../components';
 import { IAgent } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
@@ -30,6 +29,7 @@ import Tag from '../Tags/Tag';
 import TrainingConversations from '../TrainingConversations';
 import TrainingJobsTab from '../TrainingJobs/TrainingJobsTab';
 import UploadDataTab from '../UploadData/UploadDataTab';
+import { ToolBarSetting } from './ToolbarSetting';
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -167,29 +167,29 @@ const AgentDetails = () => {
     }
   };
 
+  const publishAgent = () => {
+    const newURL = `/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${agentId}/publish`;
+    history.push(newURL);
+  };
+
   const handleAgentChanage = (field: string) => {
     setCurAgent(field);
 
-    const agentId = agents?.filter(agent => agent.uname === field)[0].id;
+    const agentId = agents?.filter((agent) => agent.uname === field)[0].id;
     const newURL = `/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${agentId}/Actions`;
     history.push(newURL);
   };
 
-  console.log('>>> Current Uname : ', curAgent);
-
   return (
     <Box className={classes.container}>
       <Toolbar className={classes.toolbar} variant="dense">
-        { agents && <DropDown
-          label=""
-          current={agents.find((agent) => agent.uname === curAgent)}
-          menuItems={agents}
-          onChange={handleAgentChanage}
-          size="small"
-        />}
-        <Button variant="contained" onClick={saveAgent}>
-          {'Save Agent'}
-        </Button>
+        <ToolBarSetting
+          agents={agents}
+          currentAgent={curAgent}
+          handleChange={handleAgentChanage}
+          saveAgent={saveAgent}
+          publishAgent={publishAgent}
+        />
       </Toolbar>
       <Box className={classes.tabsContainer}>
         <TabPanel
