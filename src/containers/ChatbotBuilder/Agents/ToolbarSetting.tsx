@@ -1,14 +1,14 @@
-import React from 'react';
-import { IAgent } from '../../../models/chatbot-service';
-import { DropDown } from '../../../components';
 import {  makeStyles, Theme, Typography } from '@material-ui/core';
+import React from 'react';
+import { DropDown } from '../../../components';
+import { IAgent } from '../../../models/chatbot-service';
 
 interface ToolBarSettingProps {
   agents: IAgent[] | undefined;
   currentAgent: string;
   handleChange: (name: string) => void;
-	saveAgent: () => void;
-	publishAgent: () => void;
+  saveAgent: () => void;
+  publishAgent: () => void;
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -23,21 +23,21 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     flexDirection: 'row',
     marginRight: '8 so 0px',
-	},
-	button: {
-		padding: '10px 5px',
-		marginLeft: '0px',
-		marginRight: '15px',
-		cursor: 'pointer'
-	}
+  },
+  button: {
+    padding: '10px 5px',
+    marginLeft: '0px',
+    marginRight: '15px',
+    cursor: 'pointer',
+  },
 }));
 
 export const ToolBarSetting = ({
   agents,
   currentAgent,
   handleChange,
-	saveAgent,
-	publishAgent
+  saveAgent,
+  publishAgent,
 }: ToolBarSettingProps) => {
   const classes = useStyles();
   return (
@@ -56,13 +56,13 @@ export const ToolBarSetting = ({
       </div>
       <div className={classes.button}>
         <div onClick={saveAgent}>
-					<img src="/save-button.svg" alt="save" width="20px" height="20px" style={{marginRight: '5px'}}/>
+          <img src="/save-button.svg" alt="save" width="20px" height="20px" style={{marginRight: '5px'}}/>
           Save Agent
         </div>
       </div>
       <div className={classes.button}>
         <div onClick={publishAgent}>
-				<img src="/rocket-icon_8.png" alt="save" width="20px" height="20px" style={{marginRight: '5px'}}/>
+        <img src="/rocket-icon_8.png" alt="save" width="20px" height="20px" style={{marginRight: '5px'}}/>
           Publish Assistant
         </div>
       </div>
