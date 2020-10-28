@@ -1,4 +1,37 @@
+import {
+  Box,
+  createStyles,
+  makeStyles,
+  Theme,
+} from '@material-ui/core';
 import React from 'react';
+
+interface PropsType {
+  active: boolean;
+}
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      display: 'flex',
+      padding: '0px',
+      flexFlow: 'column',
+    },
+    Icon: {
+      width: '45px',
+      height: '45px',
+      padding: '0px 15px',
+      borderRight: (props: PropsType) =>
+        props.active ? '5px solid rgb(74, 144, 226)' : 'none',
+    },
+    Title: {
+      display: 'flex',
+      width: '75px',
+      padding: '10px 0px',
+      justifyContent: 'center',
+      fontSize: '11px',
+    },
+  }),
+);
 
 interface SVGProps {
   active: boolean;
@@ -6,14 +39,11 @@ interface SVGProps {
 
 const Training = (props: SVGProps) => {
   const { active } = props;
+  const classes = useStyles({ active });
   return (
-    <div
-      style={
-        active
-          ? { borderRight: '4px solid #4a90e2', padding: '5px 20px' }
-          : { padding: '5px 20px' }
-      }>
-      <svg
+    <Box className={classes.root}>
+      <Box className={classes.Icon}>
+        <svg
         width="28"
         height="28"
         viewBox="0 0 20 17"
@@ -27,8 +57,11 @@ const Training = (props: SVGProps) => {
           d="M19.9967 5.9375C19.9967 5.9375 19.9967 5.93417 19.9967 5.93292C19.9748 5.71851 19.8506 5.5279 19.6633 5.42125L10.3304 0.0878808C10.1254 -0.0292936 9.87372 -0.0292936 9.66873 0.0878808L0.335757 5.42125C0.128126 5.53997 0 5.76082 0 6C0 6.23919 0.128126 6.46004 0.335757 6.57876L9.66873 11.9121C9.87372 12.0293 10.1254 12.0293 10.3304 11.9121L18.5417 7.22001C18.5676 7.2051 18.5994 7.20513 18.6252 7.2201C18.651 7.23506 18.6668 7.26268 18.6667 7.29251V13.3146C18.6667 13.6734 18.9425 13.9813 19.3013 13.9992C19.4834 14.008 19.6612 13.9418 19.7932 13.816C19.9253 13.6902 20 13.5158 20 13.3334V6C20 5.97913 19.9988 5.95827 19.9967 5.9375Z"
         />
       </svg>
-      <div style={{fontSize: '10px', marginBottom: '15px'}}>Training</div>
-    </div>
+      </Box>
+      <Box className={classes.Title}>
+        <div>Training</div>
+      </Box>
+    </Box>
   );
 };
 

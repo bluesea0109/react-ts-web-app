@@ -1,4 +1,37 @@
+import {
+  Box,
+  createStyles,
+  makeStyles,
+  Theme,
+} from '@material-ui/core';
 import React from 'react';
+
+interface PropsType {
+  active: boolean;
+}
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      display: 'flex',
+      padding: '0px',
+      flexFlow: 'column',
+    },
+    Icon: {
+      width: '45px',
+      height: '45px',
+      padding: '0px 15px',
+      borderRight: (props: PropsType) =>
+        props.active ? '5px solid rgb(74, 144, 226)' : 'none',
+    },
+    Title: {
+      display: 'flex',
+      width: '75px',
+      padding: '10px 0px',
+      justifyContent: 'center',
+      fontSize: '11px',
+    },
+  }),
+);
 
 interface SVGProps {
   active: boolean;
@@ -6,13 +39,10 @@ interface SVGProps {
 
 const Configuration = (props: SVGProps) => {
   const { active } = props;
+  const classes = useStyles({ active });
   return (
-    <div
-      style={
-        active
-          ? { borderRight: '4px solid #4a90e2', padding: '5px 20px' }
-          : { padding: '5px 20px' }
-      }>
+    <Box className={classes.root}>
+      <Box className={classes.Icon}>
       <svg
         width="28"
         height="28"
@@ -30,8 +60,11 @@ const Configuration = (props: SVGProps) => {
           d="M19.2308 8.18182H8.32933C8.00315 7.20148 7.13155 6.54616 6.15385 6.54616C5.17614 6.54616 4.30455 7.20148 3.97837 8.18182H0.769231C0.344396 8.18182 0 8.54814 0 9C0 9.45187 0.344396 9.81819 0.769231 9.81819H3.97837C4.30455 10.7985 5.17614 11.4539 6.15385 11.4539C7.13155 11.4539 8.00315 10.7985 8.32933 9.81819H19.2308C19.6556 9.81819 20 9.45187 20 9C20 8.54814 19.6556 8.18182 19.2308 8.18182Z"
         />
       </svg>
-      <div style={{fontSize: '10px', marginBottom: '15px'}}>Configure</div>
-    </div>
+      </Box>
+      <Box className={classes.Title}>
+        <div>Configure</div>
+      </Box>
+    </Box>
   );
 };
 
