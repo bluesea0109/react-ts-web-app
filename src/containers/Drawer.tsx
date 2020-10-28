@@ -35,6 +35,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     listItem: {
       color: 'white',
+      padding: '10px 15px 5px 5px',
+      marginLeft: '13px',
+      marginRight: '15px',
     },
 
     active: {
@@ -65,7 +68,7 @@ function CustomDrawer(props: CustomDrawerProps) {
 
   const selectedStyle = {
     backgroundColor: '#4A90E2',
-    padding: '10px',
+    padding: '8px',
     borderRadius: '5px',
     wordwrap: 'normal',
   };
