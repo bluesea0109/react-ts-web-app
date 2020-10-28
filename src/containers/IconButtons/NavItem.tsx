@@ -17,18 +17,13 @@ import { MenuName } from '../../utils/enums';
 const StyledNavItem = styled.div`
   display: flex;
   align-items: center;
-  height: 60px;
-  width: 70px; /* width must be same size as NavBar to center */
+  height: 75px;
+  width: 80px; /* width must be same size as NavBar to center */
   text-align: center; /* Aligns <a> inside of NavIcon div */
   margin: 0px; /* Puts space between NavItems */
   margin-right: 25px;
-
+  text-decoration: none;
   font-size: 2.7em;
-  color: ${(props: { active: boolean }) => props.active ? 'white' : '#9FFFCB'};
-  &:hover {
-    opacity: 0.7;
-    text-decoration: none; /* Gets rid of underlining of icons */
-  }
 `;
 
 interface NavItemProps {
@@ -73,8 +68,8 @@ const NavItem = ({ active, path, onClick, name, hidden}: NavItemProps) => {
     <div>
       <NavLink
         to={path}
-        activeStyle={{backgroundColor: 'red'}}
         onClick={handleClick}
+        style={{color: 'white', textDecoration: 'none'}}
       >
         <Animated
           animationIn="fadeIn"
@@ -82,7 +77,6 @@ const NavItem = ({ active, path, onClick, name, hidden}: NavItemProps) => {
           isVisible={hidden}
           style={!hidden ? { display: 'none' } : {}}>
           <StyledNavItem
-            active={active}
             className={active ? 'active' : ''}
             style={isOpenMenu ? { backgroundColor: '#cccccc33' } : {}}
           >
