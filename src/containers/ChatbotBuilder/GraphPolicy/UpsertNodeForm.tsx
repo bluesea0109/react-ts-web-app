@@ -19,7 +19,7 @@ import React, { useEffect, useState } from 'react';
 import { validateEmail } from '../../../utils/string';
 
 import {EFormFieldTypes, IFormField} from '@bavard/agent-config/dist';
-import RichTextInput from '../../Utils/RichTextInput';
+import RichTextInput from '../../../components/RichTextInput';
 import { AddFieldForm } from '../GraphPolicy/AddActionField';
 
 const useStyles = makeStyles((theme: Theme) =>

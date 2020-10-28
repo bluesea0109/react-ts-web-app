@@ -11,11 +11,11 @@ import Toolbar from '@material-ui/core/Toolbar';
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { GET_TRAINING_JOBS } from '../../../common-gql-queries';
+import StatusChip from '../../../components/StatusChip';
 import { ITrainingJob } from '../../../models/chatbot-service';
 import { removeSpecialChars } from '../../../utils/string';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
-import StatusChip from '../../Utils/StatusChip';
 
 interface ITrainingJobsTableProps {
   toolbarActions?: React.ReactNode;
