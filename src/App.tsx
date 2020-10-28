@@ -25,7 +25,7 @@ import TextLabeling from './containers/TextLabeling';
 import { IUser } from './models/user-service';
 import { MenuName } from './utils/enums';
 
-const drawerWidth = 270;
+const drawerWidth = 300;
 
 interface IGetCurrentUser {
   currentUser: IUser;

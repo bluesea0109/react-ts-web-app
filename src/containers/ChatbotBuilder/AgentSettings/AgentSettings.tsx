@@ -18,9 +18,9 @@ import { useRecoilState } from 'recoil';
 
 import { DEFAULT_WIDGET_SETTINGS, IWidgetSettings } from '@bavard/agent-config';
 import { CHATBOT_GET_AGENT } from '../../../common-gql-queries';
+import GradientPicker from '../../../components/GradientPicker';
 import { IAgent } from '../../../models/chatbot-service';
 import ContentLoading from '../../ContentLoading';
-import GradientPicker from '../../Utils/GradientPicker';
 import { currentAgentConfig, currentWidgetSettings } from '../atoms';
 import { getBotSettingsQuery, updateBotSettingsMutation } from './gql';
 import ImageUploader from './ImageUploader';

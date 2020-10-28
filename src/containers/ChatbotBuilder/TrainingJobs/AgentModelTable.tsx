@@ -11,11 +11,11 @@ import Toolbar from '@material-ui/core/Toolbar';
 import gql from 'graphql-tag';
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import StatusChip from '../../../components/StatusChip';
 import { IAgentModelInfo } from '../../../models/chatbot-service';
 import { removeSpecialChars } from '../../../utils/string';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
-import StatusChip from '../../Utils/StatusChip';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

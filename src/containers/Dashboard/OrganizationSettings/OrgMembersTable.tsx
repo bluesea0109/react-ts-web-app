@@ -16,11 +16,11 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import MuiAlert from '@material-ui/lab/Alert';
 import React, { useState } from 'react';
 
+import ConfirmDialog from '../../../components/ConfirmDialog';
 import { IMember, IUser } from '../../../models/user-service';
 import ContentLoading from '../../ContentLoading';
 import IconButtonDelete from '../../IconButtons/IconButtonDelete';
 import IconButtonEdit from '../../IconButtons/IconButtonEdit';
-import ConfirmDialog from '../../Utils/ConfirmDialog';
 import ChangeRoleDialog from './changeRoleDialog';
 import { REMOVE_ORG_MEMBER } from './gql';
 
