@@ -1,5 +1,5 @@
-import { IAgentFormAction, IFormField } from '@bavard/agent-config';
-import { createStyles, Grid, makeStyles, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Theme, withStyles } from '@material-ui/core';
+import { EFormFieldTypes, IAgentFormAction, IFormField } from '@bavard/agent-config';
+import { Button, createStyles, Grid, makeStyles, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Theme, withStyles } from '@material-ui/core';
 import React, { useState } from 'react';
 import { TextInput } from '../../../components';
 import FormFieldRow from './FormFieldRow';
@@ -38,6 +38,18 @@ const EditFormAction = ({
   const classes = useStyles();
   const [editingFieldIndex, setEditingFieldIndex] = useState(-1);
 
+  const onAddField = () => {
+    onChangeAction({
+      ...action,
+      fields: [ ...action.fields, {
+        name: '',
+        type: EFormFieldTypes.TEXT,
+        required: false,
+      } as IFormField],
+    });
+    setEditingFieldIndex(action.fields.length);
+  };
+
   const onUpdateField = (index: number, field: IFormField) => {
     onChangeAction({
       ...action,
@@ -62,6 +74,11 @@ const EditFormAction = ({
           className={classes.input}
           onChange={e => onChangeAction({ ...action, url: e.target.value })}
         />
+      </Grid>
+      <Grid container={true} item={true} sm={12} className={classes.formField} justify="flex-end">
+        <Button autoFocus={true} color="primary" variant="contained" onClick={onAddField}>
+          Add Field
+        </Button>
       </Grid>
       <Grid container={true} className={classes.formField}>
         <TableContainer>
