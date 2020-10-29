@@ -32,9 +32,8 @@ import {
   updateBotSettingsMutation,
 } from '../AgentSettings/gql';
 import { IBotIconUploadUrlQueryResult } from '../AgentSettings/types';
-import { getSignedImgUploadUrlQuery } from '../GraphPolicy/gql';
-
-import { IGetImageUploadSignedUrlQueryResult } from '../GraphPolicy/types';
+import { getSignedImgUploadUrlQuery } from '../../../models/common-queries';
+import { IGetImageUploadSignedUrlQueryResult } from '../../../models/common-service';
 
 import {
   IAgentDataExport,

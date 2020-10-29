@@ -33,9 +33,9 @@ import { CHATBOT_UPDATE_AGENT } from '../../../common-gql-queries';
 import ContentLoading from '../../ContentLoading';
 import CreatePolicyForm from './CreatePolicyForm';
 import EditNodeForm from './EditNodeForm';
-import { getOptionImagesQuery } from './gql';
+import { getOptionImagesQuery } from '../../../models/common-queries';
 import GraphNode from './GraphNode';
-import { IGetOptionImagesQueryResult } from './types';
+import { IGetOptionImagesQueryResult } from '../../../models/common-service';
 
 interface IGraphPolicyVisualEditorProps extends WithSnackbarProps {
   agentId: number;

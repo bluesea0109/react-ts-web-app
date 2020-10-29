@@ -4,6 +4,8 @@ import React, { useContext, useState } from 'react';
 import { ImageSelectorGrid } from '../../../components';
 import { OptionImagesContext } from '../../../context/OptionImages';
 import { IOptionImage } from '../../../models/chatbot-service';
+import { getSignedImgUploadUrlQuery } from '../../../models/common-queries';
+import { IGetImageUploadSignedUrlQueryResult } from '../../../models/common-service';
 
 interface OptionImageUploaderProps {
   option: IImageOption;
@@ -18,7 +20,22 @@ const OptionImageUploader = ({
     (option as IImageOption).imageName || undefined,
   );
 
+  const [getSignedImgUploadUrl, signedImgUploadResult] = useLazyQuery<
+    IGetImageUploadSignedUrlQueryResult
+  >(getSignedImgUploadUrlQuery);
+
   const optionImages = useContext(OptionImagesContext)?.optionImages || [];
+
+  const prepareSignedUploadUrl = () => {
+    if (imageName.length >= 1 && imgFile) {
+      getSignedImgUploadUrl({
+        variables: {
+          agentId,
+          basename: imageName,
+        },
+      });
+    }
+  };
 
   const handleNewImg = (file: File) => {
     setImgFile(file);

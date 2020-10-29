@@ -19,26 +19,6 @@ export const createGraphPolicyMutation = gql`
   }
 `;
 
-export const getSignedImgUploadUrlQuery = gql`
-  query($agentId: Int!, $basename: String!) {
-    ChatbotService_imageOptionUploadUrl(
-      agentId: $agentId
-      basename: $basename
-    ) {
-      url
-    }
-  }
-`;
-
-export const getOptionImagesQuery = gql`
-  query($agentId: Int!) {
-    ChatbotService_optionImages(agentId: $agentId) {
-      url
-      name
-    }
-  }
-`;
-
 export const updateGraphPolicyMutation = gql`
   mutation($id: Int!, $policy: ChatbotService_GraphPolicyInput!) {
     ChatbotService_updateGraphPolicy(id: $id, policy: $policy) {

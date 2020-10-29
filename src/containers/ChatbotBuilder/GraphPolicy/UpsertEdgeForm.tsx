@@ -33,8 +33,8 @@ import { OptionImagesContext } from '../../../context/OptionImages';
 import { IOptionImage } from '../../../models/chatbot-service';
 import { uploadFileWithFetch } from '../../../utils/xhr';
 import ContentLoading from '../../ContentLoading';
-import { getSignedImgUploadUrlQuery } from './gql';
-import { IGetImageUploadSignedUrlQueryResult } from './types';
+import { getSignedImgUploadUrlQuery } from '../../../models/common-queries';
+import { IGetImageUploadSignedUrlQueryResult } from '../../../models/common-service';
 import UpsertNodeForm from './UpsertNodeForm';
 
 const useStyles = makeStyles((theme: Theme) =>
