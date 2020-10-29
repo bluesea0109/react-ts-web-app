@@ -31,10 +31,10 @@ import React, { useContext, useEffect, useState } from 'react';
 import ImageSelectorGrid from '../../../components/ImageSelectorGrid';
 import { OptionImagesContext } from '../../../context/OptionImages';
 import { IOptionImage } from '../../../models/chatbot-service';
-import { uploadFileWithFetch } from '../../../utils/xhr';
-import ContentLoading from '../../ContentLoading';
 import { getSignedImgUploadUrlQuery } from '../../../models/common-queries';
 import { IGetImageUploadSignedUrlQueryResult } from '../../../models/common-service';
+import { uploadFileWithFetch } from '../../../utils/xhr';
+import ContentLoading from '../../ContentLoading';
 import UpsertNodeForm from './UpsertNodeForm';
 
 const useStyles = makeStyles((theme: Theme) =>

@@ -27,13 +27,13 @@ import { INLUExample, INLUExampleInput } from '../../../models/chatbot-service';
 import { readAgentZipfile } from '../../../utils/archive';
 import { uploadFileWithFetch } from '../../../utils/xhr';
 
+import { getSignedImgUploadUrlQuery } from '../../../models/common-queries';
+import { IGetImageUploadSignedUrlQueryResult } from '../../../models/common-service';
 import {
   botIconUploadQuery,
   updateBotSettingsMutation,
 } from '../AgentSettings/gql';
 import { IBotIconUploadUrlQueryResult } from '../AgentSettings/types';
-import { getSignedImgUploadUrlQuery } from '../../../models/common-queries';
-import { IGetImageUploadSignedUrlQueryResult } from '../../../models/common-service';
 
 import {
   IAgentDataExport,

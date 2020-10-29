@@ -30,12 +30,12 @@ import LineTo from 'react-lineto';
 import { OptionImagesContext } from '../../../context/OptionImages';
 
 import { CHATBOT_UPDATE_AGENT } from '../../../common-gql-queries';
+import { getOptionImagesQuery } from '../../../models/common-queries';
+import { IGetOptionImagesQueryResult } from '../../../models/common-service';
 import ContentLoading from '../../ContentLoading';
 import CreatePolicyForm from './CreatePolicyForm';
 import EditNodeForm from './EditNodeForm';
-import { getOptionImagesQuery } from '../../../models/common-queries';
 import GraphNode from './GraphNode';
-import { IGetOptionImagesQueryResult } from '../../../models/common-service';
 
 interface IGraphPolicyVisualEditorProps extends WithSnackbarProps {
   agentId: number;
