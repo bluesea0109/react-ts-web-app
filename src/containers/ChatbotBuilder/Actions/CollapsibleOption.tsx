@@ -1,5 +1,12 @@
 import { IIntent, IResponseOption } from '@bavard/agent-config';
-import { createStyles, Grid, makeStyles, Paper, Theme, Typography } from '@material-ui/core';
+import {
+  createStyles,
+  Grid,
+  makeStyles,
+  Paper,
+  Theme,
+  Typography,
+} from '@material-ui/core';
 import { KeyboardArrowDown, KeyboardArrowUp } from '@material-ui/icons';
 import React, { useState } from 'react';
 import EditOption from './EditOption';

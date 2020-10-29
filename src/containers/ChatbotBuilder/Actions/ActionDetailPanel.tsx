@@ -1,5 +1,12 @@
 import { BaseAgentAction } from '@bavard/agent-config';
-import { Box, createStyles, Grid, makeStyles, Theme, Typography } from '@material-ui/core';
+import {
+  Box,
+  createStyles,
+  Grid,
+  makeStyles,
+  Theme,
+  Typography,
+} from '@material-ui/core';
 import React from 'react';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -28,7 +35,7 @@ const ActionDetailPanel = ({
       {Array.from(Object.keys(actionProps)).map(key => (
         <Box my={1} key={key}>
           <Typography variant="h6" style={{ textTransform: 'capitalize', fontWeight: 'bold' }}>{key}</Typography>
-          {key === 'text' ? (
+          {key === 'utterance' ? (
             <p dangerouslySetInnerHTML={{ __html: actionProps[key] }} />
           ) : (
             <Typography variant="caption" style={{ textTransform: 'capitalize' }}>{JSON.stringify(actionProps[key])}</Typography>

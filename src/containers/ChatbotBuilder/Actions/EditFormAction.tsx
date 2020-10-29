@@ -1,5 +1,22 @@
-import { EFormFieldTypes, IAgentFormAction, IFormField } from '@bavard/agent-config';
-import { Button, createStyles, Grid, makeStyles, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Theme, withStyles } from '@material-ui/core';
+import {
+  EFormFieldTypes,
+  IAgentFormAction,
+  IFormField,
+} from '@bavard/agent-config';
+import {
+  Button,
+  createStyles,
+  Grid,
+  makeStyles,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Theme,
+  withStyles,
+} from '@material-ui/core';
 import React, { useState } from 'react';
 import { TextInput } from '../../../components';
 import FormFieldRow from './FormFieldRow';

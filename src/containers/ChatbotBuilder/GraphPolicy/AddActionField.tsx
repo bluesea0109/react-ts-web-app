@@ -57,7 +57,6 @@ export const AddFieldForm = ({ handleChange }: AddFormFieldProps) => {
   );
 
   const handleAdd = () => {
-    console.log('Fields Value ', fields);
     handleChange(fields.text, fields.type, fields.required);
   };
 

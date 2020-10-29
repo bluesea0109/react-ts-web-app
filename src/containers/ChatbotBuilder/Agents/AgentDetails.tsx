@@ -118,7 +118,6 @@ const AgentDetails = () => {
   });
   const agents: IAgent[] | undefined =
     agentsData && agentsData.data && agentsData.data.ChatbotService_agents;
-  console.log('>>> Agents : ', agents);
   const [widgetSettings, setWidgetSettings] = useRecoilState(
     currentWidgetSettings,
   );

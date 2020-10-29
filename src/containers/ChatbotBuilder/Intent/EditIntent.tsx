@@ -71,8 +71,6 @@ const EditIntent = ({
     setCurrentIntent({...currentIntent, defaultActionName: action } as any);
   };
 
-  console.log('>>> Current Intent: ', currentIntent);
-
   return (
     <Dialog fullScreen={true} open={!!intent} TransitionComponent={UpTransition}>
       <AppBar className={classes.appBar}>

@@ -28,13 +28,13 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import _ from 'lodash';
 import { useSnackbar } from 'notistack';
 import React, { useContext, useEffect, useState } from 'react';
+import { GET_SIGNED_IMG_UPLOAD_URL } from '../../../common-gql-queries';
 import ImageSelectorGrid from '../../../components/ImageSelectorGrid';
 import { OptionImagesContext } from '../../../context/OptionImages';
 import { IOptionImage } from '../../../models/chatbot-service';
+import { IGetImageUploadSignedUrlQueryResult } from '../../../models/common-service';
 import { uploadFileWithFetch } from '../../../utils/xhr';
 import ContentLoading from '../../ContentLoading';
-import { getSignedImgUploadUrlQuery } from './gql';
-import { IGetImageUploadSignedUrlQueryResult } from './types';
 import UpsertNodeForm from './UpsertNodeForm';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -150,7 +150,7 @@ export default function UpsertEdgeForm({
   const [imgCaption, setImgCaption] = useState(imgOption?.caption || '');
   const [getSignedImgUploadUrl, signedImgUploadResult] = useLazyQuery<
     IGetImageUploadSignedUrlQueryResult
-  >(getSignedImgUploadUrlQuery);
+  >(GET_SIGNED_IMG_UPLOAD_URL);
 
   const optionImages = useContext(OptionImagesContext)?.optionImages || [];
 
@@ -185,7 +185,6 @@ export default function UpsertEdgeForm({
   const handleNewNode = (
     node: GraphPolicyNode | UtteranceNode | EmailNode | FormNode | undefined,
   ) => {
-    console.log('On change *********** ', node);
     setNewNode(node);
   };
 
@@ -317,7 +316,6 @@ export default function UpsertEdgeForm({
 
     // Check if the edge node already exists
     let edgeNode = policy.getNodeById(selectedNodeId);
-    console.log('Edge Node : ', edgeNode, ', NewNode : ', newNode);
     // If not instantiate a new one
     if (!edgeNode && !nodeExists && newNode) {
       edgeNode = newNode;

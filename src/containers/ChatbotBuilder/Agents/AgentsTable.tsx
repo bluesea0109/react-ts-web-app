@@ -40,7 +40,6 @@ function AgentsTable() {
   const agents: IAgent[] | undefined =
     agentsData && agentsData.data && agentsData.data.ChatbotService_agents;
 
-  console.log('>>> data ', agents);
   const [state, setState] = React.useState<AgentState>({
     columns: [
       { title: 'ID', field: 'id', editable: 'never' },
