@@ -2,7 +2,7 @@ import { GridList, GridListTile} from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { CheckCircle } from '@material-ui/icons';
 import _ from 'lodash';
-import React, {useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import ImageUploadPreviewer from './ImageUploadPreviewer';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -62,6 +62,10 @@ export default function ImageSelectorGrid({
     selectImg(undefined);
     onNewImg(file);
   };
+
+  useEffect(() => {
+    selectImg(selectedImgName ? _.find(images, { name: selectedImgName }) : undefined);
+  }, [images, selectedImgName]);
 
   return (
     <GridList cellHeight={imgWidth || 100} cols={cols || 4} style={{width: '100%'}}>

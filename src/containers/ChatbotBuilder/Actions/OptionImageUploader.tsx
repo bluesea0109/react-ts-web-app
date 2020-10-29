@@ -1,14 +1,13 @@
-import { useApolloClient } from '@apollo/client';
+import { useApolloClient, useQuery } from '@apollo/client';
 import { IImageOption } from '@bavard/agent-config';
 import { Grid } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
-import React, { useContext, useEffect, useState } from 'react';
+import React from 'react';
 import { useParams } from 'react-router';
-import { GET_SIGNED_IMG_UPLOAD_URL } from '../../../common-gql-queries';
+import { GET_OPTION_IMAGES_QUERY, GET_SIGNED_IMG_UPLOAD_URL } from '../../../common-gql-queries';
 import { ImageSelectorGrid } from '../../../components';
-import { OptionImagesContext } from '../../../context/OptionImages';
 import { IOptionImage } from '../../../models/chatbot-service';
-import { IGetImageUploadSignedUrlQueryResult } from '../../../models/common-service';
+import { IGetOptionImagesQueryResult } from '../../../models/common-service';
 import { uploadFileWithFetch } from '../../../utils/xhr';
 
 interface OptionImageUploaderProps {
@@ -24,10 +23,10 @@ const OptionImageUploader = ({
   const numAgentId = Number(agentId);
   const { enqueueSnackbar } = useSnackbar();
   const client = useApolloClient();
-
-  const [existingImg, setExistingImg] = useState<string | undefined>(option.imageName);
-
-  const optionImages = useContext(OptionImagesContext)?.optionImages || [];
+  const getImagesQuery = useQuery<IGetOptionImagesQueryResult>(GET_OPTION_IMAGES_QUERY, {
+    variables: { agentId: numAgentId },
+  });
+  const optionImages = getImagesQuery.data?.ChatbotService_optionImages || [];
 
   const handleNewImg = async (file: File) => {
     // Get a signed upload url
@@ -46,8 +45,6 @@ const OptionImageUploader = ({
     }
 
     const imageUrl = data.ChatbotService_imageOptionUploadUrl?.url.replace(/"/g, '');
-    console.log(imageName, imageUrl);
-    // The upload url isn't ready. Wait for a few
     if (
       !imageUrl ||
       imageUrl.indexOf(encodeURIComponent(imageName)) === -1
@@ -59,7 +56,6 @@ const OptionImageUploader = ({
       return;
     }
 
-    // Signed upload url is ready. Upload the file
     try {
       await uploadFileWithFetch(file, imageUrl, 'PUT');
     } catch (e) {
@@ -74,15 +70,14 @@ const OptionImageUploader = ({
       imageName,
       imageUrl,
     });
-    setExistingImg('');
   };
 
   const handleSelectImg = (img: IOptionImage) => {
     onEditOption({
       ...option,
       imageName: img.name,
+      imageUrl: img.url,
     });
-    setExistingImg(img.name);
   };
 
   return (
