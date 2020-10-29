@@ -51,7 +51,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   toolbar: {
     padding: '10px',
     background: '#ddd',
-    boxShadow: '0 2px 2px #eeeeee44',
     display: 'flex',
     justifyContent: 'flex-end',
   },
