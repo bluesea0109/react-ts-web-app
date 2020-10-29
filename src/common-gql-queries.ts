@@ -511,3 +511,23 @@ export const DELETE_TRAINING_CONVERSATION = gql`
     ChatbotService_deleteTrainingConversation(conversationId: $conversationId)
   }
 `;
+
+export const GET_SIGNED_IMG_UPLOAD_URL = gql`
+  query($agentId: Int!, $basename: String!) {
+    ChatbotService_imageOptionUploadUrl(
+      agentId: $agentId
+      basename: $basename
+    ) {
+      url
+    }
+  }
+`;
+
+export const GET_OPTION_IMAGES_QUERY = gql`
+  query($agentId: Int!) {
+    ChatbotService_optionImages(agentId: $agentId) {
+      url
+      name
+    }
+  }
+`;

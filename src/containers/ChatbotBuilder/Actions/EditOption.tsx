@@ -156,6 +156,7 @@ const EditOption = ({
           <Grid container={true} className={classes.formField}>
             <OptionImageUploader
               option={option as IImageOption}
+              onEditOption={onEditOption}
             />
           </Grid>
         </>

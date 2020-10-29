@@ -28,10 +28,10 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import _ from 'lodash';
 import { useSnackbar } from 'notistack';
 import React, { useContext, useEffect, useState } from 'react';
+import { GET_SIGNED_IMG_UPLOAD_URL } from '../../../common-gql-queries';
 import ImageSelectorGrid from '../../../components/ImageSelectorGrid';
 import { OptionImagesContext } from '../../../context/OptionImages';
 import { IOptionImage } from '../../../models/chatbot-service';
-import { getSignedImgUploadUrlQuery } from '../../../models/common-queries';
 import { IGetImageUploadSignedUrlQueryResult } from '../../../models/common-service';
 import { uploadFileWithFetch } from '../../../utils/xhr';
 import ContentLoading from '../../ContentLoading';
@@ -150,7 +150,7 @@ export default function UpsertEdgeForm({
   const [imgCaption, setImgCaption] = useState(imgOption?.caption || '');
   const [getSignedImgUploadUrl, signedImgUploadResult] = useLazyQuery<
     IGetImageUploadSignedUrlQueryResult
-  >(getSignedImgUploadUrlQuery);
+  >(GET_SIGNED_IMG_UPLOAD_URL);
 
   const optionImages = useContext(OptionImagesContext)?.optionImages || [];
 

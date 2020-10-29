@@ -27,7 +27,7 @@ import { INLUExample, INLUExampleInput } from '../../../models/chatbot-service';
 import { readAgentZipfile } from '../../../utils/archive';
 import { uploadFileWithFetch } from '../../../utils/xhr';
 
-import { getSignedImgUploadUrlQuery } from '../../../models/common-queries';
+import { GET_SIGNED_IMG_UPLOAD_URL } from '../../../common-gql-queries';
 import { IGetImageUploadSignedUrlQueryResult } from '../../../models/common-service';
 import {
   botIconUploadQuery,
@@ -330,7 +330,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       const signedUrl:
         | ApolloQueryResult<IGetImageUploadSignedUrlQueryResult>
         | undefined = await this.props.client?.query({
-        query: getSignedImgUploadUrlQuery,
+        query: GET_SIGNED_IMG_UPLOAD_URL,
         variables: {
           agentId: this.state.agentId,
           basename: imgFile.name,

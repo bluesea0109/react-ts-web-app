@@ -64,7 +64,7 @@ export default function ImageSelectorGrid({
   };
 
   return (
-    <GridList cellHeight={imgWidth || 100} cols={cols || 4}>
+    <GridList cellHeight={imgWidth || 100} cols={cols || 4} style={{width: '100%'}}>
       <GridListTile className={classes.gridTile} key={'new_img'} onClick={() => {selectImg(undefined); }}>
         <ImageUploadPreviewer onChange={handleNewImg} width={imgWidth} />
         { (!selectedImg && newImg) && <CheckCircle className={classes.selectedIcon}/>}
