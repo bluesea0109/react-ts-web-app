@@ -110,10 +110,7 @@ function IntentsTable({
     const data = rowData as IIntent;
     onEditIntent(data);
   };
-  console.log('Filter ', filter);
-  console.log('itents :  ', intents);
   const filteredIntents = intents.filter((item) => item.name.toLowerCase().includes(filter.toLocaleLowerCase()));
-  console.log('Result ', filteredIntents);
 
   return (
     <Paper className={classes.paper}>

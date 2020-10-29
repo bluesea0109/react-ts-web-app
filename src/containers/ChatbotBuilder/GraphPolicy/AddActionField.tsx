@@ -51,7 +51,6 @@ import {
     });
 
     const handleAdd = () => {
-      console.log('Fields Value ', fields);
       handleChange(fields.text, fields.type);
     };
 

@@ -62,8 +62,6 @@ export default function UpsertNodeForm({
   const [url, setURL] = useState(node instanceof FormNode ? node.url : '');
   const [actionName, setActionName] = useState(node?.actionName || '');
 
-  console.log('Form node url ', node, 'URL : ', url);
-
   const handleUtteranceNode = async () => {
     if (node) {
       node.setActionName(actionName);
@@ -137,7 +135,6 @@ export default function UpsertNodeForm({
 
   useEffect(handleChange, [fromEmail, toEmail, actionName, utterance, url, formFields]);
 
-  console.log('Form Fields *** ', formFields);
   return (
     <div>
       <FormControl className={classes.formControl} disabled={!!node}>

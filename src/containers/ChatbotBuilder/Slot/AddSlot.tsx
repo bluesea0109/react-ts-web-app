@@ -71,7 +71,6 @@ const AddSlot = ({
       enqueueSnackbar('Slot created successfully', { variant: 'success' });
       onAddSlotClose();
     } catch (e) {
-      console.log(e);
       enqueueSnackbar('Unable to create slot.', { variant: 'error' });
     } finally {
       setLoading(false);
