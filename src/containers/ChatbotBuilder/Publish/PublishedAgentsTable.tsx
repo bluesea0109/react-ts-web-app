@@ -10,10 +10,10 @@ import _ from 'lodash';
 import MaterialTable, { Column, MTableToolbar } from 'material-table';
 import moment from 'moment';
 import React, { useEffect } from 'react';
+import StatusChip from '../../../components/StatusChip';
 import { IPublishedAgent } from '../../../models/chatbot-service';
 import { exportJsonFileFromObj } from '../../../utils/exports';
 import { removeSpecialChars } from '../../../utils/string';
-import StatusChip from '../../Utils/StatusChip';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

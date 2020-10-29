@@ -37,8 +37,6 @@ const CollapsibleOption = ({
   const classes = useStyles();
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
 
-  const optionName = option.text && option.text.length ? option.text : `Option ${index}`;
-
   const onToggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
   };
@@ -49,7 +47,7 @@ const CollapsibleOption = ({
         <Grid container={true} alignItems="center" className={classes.header}>
           <Grid item={true} container={true} xs={6} alignItems="center">
             <Typography>
-              {optionName}
+              {`Option ${index}`}
             </Typography>
           </Grid>
           <Grid item={true} container={true} xs={6} justify="flex-end">

@@ -20,10 +20,10 @@ import {
   DELETE_TRAINING_CONVERSATION,
   GET_TRAINING_CONVERSATIONS,
 } from '../../../common-gql-queries';
+import ConfirmDialog from '../../../components/ConfirmDialog';
 import { ITrainingConversations } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
-import ConfirmDialog from '../../Utils/ConfirmDialog';
 import CreateConversation from './NewTrainingConversations';
 import BavardPagination from './Pagination';
 

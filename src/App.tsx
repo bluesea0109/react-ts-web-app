@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { Drawer, Typography } from '@material-ui/core';
+import { Drawer } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import assert from 'assert';
 import clsx from 'clsx';
@@ -19,12 +19,13 @@ import CustomDrawer from './containers/Drawer';
 import FAQService from './containers/FAQService';
 import ImageLabeling from './containers/ImageLabeling';
 import InternalServerErrorPage from './containers/InternalServerErrorpage';
+import NoOrgPage from './containers/NoOrgPage';
 import MySidebar from './containers/Sidebar';
 import TextLabeling from './containers/TextLabeling';
 import { IUser } from './models/user-service';
 import { MenuName } from './utils/enums';
 
-const drawerWidth = 270;
+const drawerWidth = 300;
 
 interface IGetCurrentUser {
   currentUser: IUser;
@@ -124,7 +125,9 @@ function App() {
   const [agentId, setAgentId] = useState({ agentId: 0 });
   const [loadingAppBar, setLoadingAppBar] = useState(false);
 
-  const { loading: loadingUser, error, data } = useQuery<IGetCurrentUser>(GET_CURRENT_USER);
+  const { loading: loadingUser, error, data } = useQuery<IGetCurrentUser>(
+    GET_CURRENT_USER,
+  );
 
   const [state, setState] = React.useState({
     drawerOpen: false,
@@ -218,7 +221,9 @@ function App() {
             <Route exact={true} path="/orgs/:orgId/settings">
               <OrganizationSettings user={data.currentUser} />
             </Route>
-            <Route exact={true} path="/orgs/:orgId/projects/:projectId/settings">
+            <Route
+              exact={true}
+              path="/orgs/:orgId/projects/:projectId/settings">
               <ProjectSettings />
             </Route>
             <Route path="/orgs/:orgId/projects/:projectId/qa">
@@ -238,16 +243,10 @@ function App() {
             </Route>
             <Route path="/orgs/:orgId/projects/:projectId/text-labeling" />
             <Route exact={true} path="/no-project">
-              <div className={classes.container}>
-                <Typography>
-                  {'No project is active. Please create or activate one.'}
-                </Typography>
-              </div>
+              <NoOrgPage type="NO_PROJECTS"/>
             </Route>
             <Route exact={true} path="/no-orgs">
-              <div className={classes.container}>
-                <Typography>{'No Organization found.'}</Typography>
-              </div>
+              <NoOrgPage type="NO_ORGS"/>
             </Route>
           </Switch>
         </main>

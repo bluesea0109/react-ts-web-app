@@ -15,8 +15,8 @@ import { currentAgentConfig } from '../atoms';
 
 import { useParams } from 'react-router-dom';
 import { CHATBOT_UPDATE_AGENT } from '../../../common-gql-queries';
+import RichTextInput from '../../../components/RichTextInput';
 import ContentLoading from '../../ContentLoading';
-import RichTextInput from '../../Utils/RichTextInput';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
