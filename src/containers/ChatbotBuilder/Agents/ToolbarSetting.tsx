@@ -5,7 +5,7 @@ import { IAgent } from '../../../models/chatbot-service';
 
 interface ToolBarSettingProps {
   agents: IAgent[] | undefined;
-  currentAgent: string;
+  currentAgent: string | undefined;
   handleChange: (name: string) => void;
   saveAgent: () => void;
   publishAgent: () => void;

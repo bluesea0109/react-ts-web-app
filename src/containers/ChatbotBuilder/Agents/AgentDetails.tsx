@@ -51,7 +51,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   toolbar: {
     padding: '10px',
     background: '#ddd',
-    boxShadow: '0 2px 2px #eeeeee44',
     display: 'flex',
     justifyContent: 'flex-end',
   },
@@ -114,20 +113,21 @@ const AgentDetails = () => {
   }>();
 
   const history = useHistory();
-
-  const [curAgent, setCurAgent] = useState<string>('');
-
-  const [config, setConfig] = useRecoilState(currentAgentConfig);
   const agentsData = useQuery<IGetAgents>(CHATBOT_GET_AGENTS, {
     variables: { projectId },
   });
-
   const agents: IAgent[] | undefined =
     agentsData && agentsData.data && agentsData.data.ChatbotService_agents;
   console.log('>>> Agents : ', agents);
   const [widgetSettings, setWidgetSettings] = useRecoilState(
     currentWidgetSettings,
   );
+
+  const init = agents?.filter((item) => item.id === parseInt(agentId, 10))[0].uname;
+
+  const [curAgent, setCurAgent] = useState<string | undefined>(init);
+
+  const [config, setConfig] = useRecoilState(currentAgentConfig);
 
   const { error, loading, data } = useQuery<IGetAgent>(CHATBOT_GET_AGENT, {
     variables: { agentId: Number(agentId) },
