@@ -29,6 +29,10 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: '10px 0px',
       justifyContent: 'center',
       fontSize: '11px',
+      borderRight: (props: PropsType) =>
+        props.active ? '5px solid rgb(74, 144, 226)' : 'none',
+      color: (props: PropsType) =>
+        props.active ? 'rgb(74, 144, 226)' : 'white',
     },
   }),
 );

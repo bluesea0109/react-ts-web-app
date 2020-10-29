@@ -124,8 +124,8 @@ export default function UpsertNodeForm({
     }
   };
 
-  const addFormField = (fieldName: string, fieldType: EFormFieldTypes) => {
-    setFormFields([...formFields, { name: fieldName, type: fieldType, required: true }]);
+  const addFormField = (fieldName: string, fieldType: EFormFieldTypes, required: boolean) => {
+    setFormFields([...formFields, { name: fieldName, type: fieldType, required }]);
   };
 
   const deleteField = (key: number) => {
@@ -223,6 +223,7 @@ export default function UpsertNodeForm({
                       name={item.name}
                       label={`${item.name} [${item.type}]`}
                       variant="outlined"
+                      style={item.required ? {backgroundColor: '#fff8d9'} : {}}
                     />
                   </FormControl>
                 </Grid>
