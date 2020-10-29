@@ -1,8 +1,24 @@
-import { EResponseOptionTypes, IHyperlinkOption, IImageOption, IIntent, IResponseOption } from '@bavard/agent-config';
-import { createStyles, Grid, makeStyles, Theme } from '@material-ui/core';
+import {
+  EResponseOptionTypes,
+  IHyperlinkOption,
+  IImageOption,
+  IIntent,
+  IResponseOption,
+} from '@bavard/agent-config';
+import {
+  createStyles,
+  Grid,
+  makeStyles,
+  Theme,
+} from '@material-ui/core';
 import Delete from '@material-ui/icons/Delete';
 import React, { useMemo } from 'react';
-import { DropDown, IconButton, RichTextInput, TextInput } from '../../../components';
+import {
+  DropDown,
+  IconButton,
+  RichTextInput,
+  TextInput,
+} from '../../../components';
 import OptionImageUploader from './OptionImageUploader';
 
 const useStyles = makeStyles((theme: Theme) =>

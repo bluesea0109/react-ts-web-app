@@ -1,3 +1,4 @@
+import { useLazyQuery } from '@apollo/client';
 import { IImageOption } from '@bavard/agent-config';
 import React, { useContext, useState } from 'react';
 import { ImageSelectorGrid } from '../../../components';

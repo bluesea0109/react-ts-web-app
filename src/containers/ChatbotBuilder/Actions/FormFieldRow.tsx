@@ -1,5 +1,14 @@
 import { EFormFieldTypes, IFormField } from '@bavard/agent-config';
-import { Checkbox, createStyles, makeStyles, TableCell, TableRow, Theme, Typography, withStyles } from '@material-ui/core';
+import {
+  Checkbox,
+  createStyles,
+  makeStyles,
+  TableCell,
+  TableRow,
+  Theme,
+  Typography,
+  withStyles,
+} from '@material-ui/core';
 import { Delete } from '@material-ui/icons';
 import React from 'react';
 import { DropDown, TextInput } from '../../../components';
