@@ -29,7 +29,7 @@ export default function ChatWithAgent() {
     skip: !projectId,
   });
 
-  const loadedKey = apiKeysQuery.data?.apiKey.key ?? null;
+  const loadedKey = apiKeysQuery.data?.apiKey?.key ?? null;
   useEffect(() => {
     if (!apiKeysQuery.loading) {
       setApiKey(loadedKey);
