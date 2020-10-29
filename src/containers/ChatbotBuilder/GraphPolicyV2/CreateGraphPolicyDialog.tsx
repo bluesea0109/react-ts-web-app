@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
-import { Button, TextField, Grid, Theme, Typography } from '@material-ui/core';
-import ContentLoading from '../../ContentLoading';
-import { createStyles, makeStyles } from '@material-ui/styles';
-import FullScreenDialog from '../../../components/FullScreenDialog';
 import { useMutation } from '@apollo/client';
 import {
-  GraphPolicyV2,
   GraphPolicyNode,
+  GraphPolicyV2,
 } from '@bavard/agent-config/dist/graph-policy-v2';
 import AgentUtteranceNode from '@bavard/agent-config/dist/graph-policy-v2/nodes/agent/utterance-node';
+import { Button, Grid, TextField, Theme, Typography } from '@material-ui/core';
+import { createStyles, makeStyles } from '@material-ui/styles';
+import React, { useState } from 'react';
+import FullScreenDialog from '../../../components/FullScreenDialog';
+import ContentLoading from '../../ContentLoading';
 
-import { currentAgentConfig } from '../atoms';
-import { useParams } from 'react-router-dom';
-import { CHATBOT_UPDATE_AGENT } from '../../../common-gql-queries';
 import { useSnackbar } from 'notistack';
+import { useParams } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
+import { CHATBOT_UPDATE_AGENT } from '../../../common-gql-queries';
+import { currentAgentConfig } from '../atoms';
 
 import { Alert } from '@material-ui/lab';
 import { config } from 'process';
@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
     gridContainer: {
       height: '100%',
     },
-  })
+  }),
 );
 
 interface IProps {
@@ -80,7 +80,7 @@ const CreateGraphPolicyDialog = ({ open, agentId, onSuccess }: IProps) => {
     const policy = new GraphPolicyV2(
       policyName,
       startNode,
-      new Set([startNode])
+      new Set([startNode]),
     );
     console.log('POLICY: ', policy);
 
@@ -93,7 +93,7 @@ const CreateGraphPolicyDialog = ({ open, agentId, onSuccess }: IProps) => {
 
     const mutationResult = await updateAgent({
       variables: {
-        agentId: agentId,
+        agentId,
         config: agentConfig.toJsonObj(),
       },
     });
@@ -121,7 +121,7 @@ const CreateGraphPolicyDialog = ({ open, agentId, onSuccess }: IProps) => {
       open={isOpen}
       onClose={closeDialog}>
       <Grid
-        container
+        container={true}
         direction="row"
         justify="center"
         alignItems="center"

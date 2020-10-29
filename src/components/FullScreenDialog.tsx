@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
 import {
+  AppBar,
   Dialog,
   DialogContent,
-  AppBar,
-  Toolbar,
-  IconButton,
-  Typography,
-  Theme,
   DialogProps,
+  IconButton,
+  Theme,
+  Toolbar,
+  Typography,
 } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 import { createStyles, makeStyles } from '@material-ui/styles';
+import React, { useState } from 'react';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
     content: {
       marginTop: theme.spacing(10),
     },
-  })
+  }),
 );
 
 interface IProps {
@@ -50,7 +50,7 @@ const CreateGraphPolicyDialog = ({
   return (
     <Dialog
       className={classes.root}
-      fullScreen
+      fullScreen={true}
       open={isOpen}
       onClose={closeDialog}>
       <AppBar>

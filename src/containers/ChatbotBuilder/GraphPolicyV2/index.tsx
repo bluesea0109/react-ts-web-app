@@ -14,8 +14,8 @@ import {
 import { exportJsonFileFromObj } from '../../../utils/exports';
 import { createAgentPath } from '../../../utils/string';
 import { currentAgentConfig } from '../atoms';
-import CreateGraphPolicyDialog from './CreateGraphPolicyDialog';
 import UploadGraphPolicyDialog from '../GraphPolicy/UploadGraphPolicyDialog';
+import CreateGraphPolicyDialog from './CreateGraphPolicyDialog';
 import GraphPoliciesTable from './GraphPoliciesTable';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme: Theme) =>
     createButton: {
       margin: theme.spacing(1),
     },
-  })
+  }),
 );
 
 export default function GraphPolicies() {
@@ -178,7 +178,7 @@ export default function GraphPolicies() {
     }
     exportJsonFileFromObj(
       policy.toJsonObj(),
-      `graph_policy_${policy.policyName}.json`
+      `graph_policy_${policy.policyName}.json`,
     );
     setLoading(false);
   };

@@ -6,9 +6,9 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import { useParams } from 'react-router-dom';
 
+import CreateGraphPolicyDialog from './CreateGraphPolicyDialog';
 import GraphEditor from './GraphEditor';
 import GraphEditorMenu from './GraphEditorMenu';
-import CreateGraphPolicyDialog from './CreateGraphPolicyDialog';
 
 interface IParams {
   entityId: string;
@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
     editorMenuItems: {
       marginTop: theme.spacing(2),
     },
-  })
+  }),
 );
 
 const GraphEditorPage = () => {
