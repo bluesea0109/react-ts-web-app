@@ -19,7 +19,9 @@ import { currentAgentConfig, currentWidgetSettings } from '../atoms';
 import ConversationsTab from '../Conversations';
 import DataExportsTab from '../DataExports/DataExportsTab';
 import Examples from '../Examples/Examples';
-import GraphPolicy from '../GraphPolicy';
+import GraphPolicyV1 from '../GraphPolicy';
+import GraphPolicy from '../GraphPolicyV2';
+import GraphEditorPage from '../GraphPolicyV2/GraphEditorPage';
 import Intent from '../Intent/Intent';
 import PublishAgent from '../Publish';
 import Slot from '../Slot/Slot';
@@ -68,7 +70,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     animation: '$hoverOut 500ms',
     right: '-110px',
     '&:hover': {
-      background: 'linear-gradient(137deg, rgba(2,0,36,1) 66%, rgba(0,212,255,1) 100%, rgba(9,9,121,1) 100%)',
+      background:
+        'linear-gradient(137deg, rgba(2,0,36,1) 66%, rgba(0,212,255,1) 100%, rgba(9,9,121,1) 100%)',
       animation: '$hoverIn 500ms',
       right: '0px',
     },
@@ -82,15 +85,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     fontWeight: 'bold',
   },
 
-  '@keyframes hoverIn' : {
-    from: { right: '-110px'},
-    to: { right: '0px'},
+  '@keyframes hoverIn': {
+    from: { right: '-110px' },
+    to: { right: '0px' },
   },
-  '@keyframes hoverOut' : {
-    from: { right: '0px'},
-    to: { right: '-110px'},
+  '@keyframes hoverOut': {
+    from: { right: '0px' },
+    to: { right: '-110px' },
   },
-
 }));
 
 interface IGetAgent {
@@ -156,7 +158,11 @@ const AgentDetails = () => {
         </Button>
       </Toolbar>
       <Box className={classes.tabsContainer}>
-        <TabPanel index="Actions" value={agentTab} className={classes.tabPanel} tabName="Manage Assistant Actions">
+        <TabPanel
+          index="Actions"
+          value={agentTab}
+          className={classes.tabPanel}
+          tabName="Manage Assistant Actions">
           <Actions />
         </TabPanel>
         <TabPanel index="Intents" value={agentTab} className={classes.tabPanel}>
@@ -168,10 +174,15 @@ const AgentDetails = () => {
         <TabPanel className={classes.tabPanel} value={agentTab} index="Slots">
           <Slot />
         </TabPanel>
-        <TabPanel className={classes.tabPanel} value={agentTab} index="nluExamples">
+        <TabPanel
+          className={classes.tabPanel}
+          value={agentTab}
+          index="nluExamples">
           <Examples />
         </TabPanel>
-        {agentTab === 'graph-policy' && <GraphPolicy />}
+        {agentTab === 'graph-policy-v1' && <GraphPolicyV1 />}
+        {agentTab === 'graph-policies' && <GraphPolicy />}
+        {agentTab === 'graph-editor' && <GraphEditorPage />}
         {agentTab === 'exports' && <DataExportsTab />}
         {agentTab === 'training-jobs' && <TrainingJobsTab />}
         {agentTab === 'chats' && <AssistDemo />}

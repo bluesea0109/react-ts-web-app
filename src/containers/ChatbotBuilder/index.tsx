@@ -10,11 +10,14 @@ interface IChatbotBuilderProps {
 const ChatbotBuilder: React.FC<IChatbotBuilderProps> = ({ user }) => {
   return (
     <Switch>
-      <Route exact={true} path="/orgs/:orgId/projects/:projectId/chatbot-builder">
+      <Route
+        exact={true}
+        path="/orgs/:orgId/projects/:projectId/chatbot-builder">
         <AllAgents user={user} />
       </Route>
       <Route
-        exact={true} path="/orgs/:orgId/projects/:projectId/chatbot-builder/agents/:agentId/:agentTab"
+        exact={true}
+        path="/orgs/:orgId/projects/:projectId/chatbot-builder/agents/:agentId/:agentTab/:entityId?"
         component={AgentDetails}
       />
     </Switch>
