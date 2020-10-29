@@ -14,7 +14,7 @@ import {
 import { exportJsonFileFromObj } from '../../../utils/exports';
 import { createAgentPath } from '../../../utils/string';
 import { currentAgentConfig } from '../atoms';
-
+import CreateGraphPolicyDialog from './CreateGraphPolicyDialog';
 import UploadGraphPolicyDialog from '../GraphPolicy/UploadGraphPolicyDialog';
 import GraphPoliciesTable from './GraphPoliciesTable';
 
@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme: Theme) =>
     createButton: {
       margin: theme.spacing(1),
     },
-  }),
+  })
 );
 
 export default function GraphPolicies() {
@@ -178,12 +178,14 @@ export default function GraphPolicies() {
     }
     exportJsonFileFromObj(
       policy.toJsonObj(),
-      `graph_policy_${policy.policyName}.json`,
+      `graph_policy_${policy.policyName}.json`
     );
     setLoading(false);
   };
 
-  const policies = config.getGraphPolicies() || [];
+  const policies = config.getGraphPoliciesV2() || [];
+  console.log('POLICIES: ', policies);
+  console.log('CONFIG: ', config);
 
   return (
     <Grid container={true} className={'page-container'}>
@@ -215,6 +217,9 @@ export default function GraphPolicies() {
             </React.Fragment>
           }
         />
+        {upsertDialogOpen && (
+          <CreateGraphPolicyDialog open={upsertDialogOpen} agentId={agentId} />
+        )}
 
         {
           <UploadGraphPolicyDialog

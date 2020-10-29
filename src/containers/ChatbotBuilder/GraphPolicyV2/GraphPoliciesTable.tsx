@@ -1,4 +1,4 @@
-import { GraphPolicy } from '@bavard/agent-config';
+import { GraphPolicyV2 } from '@bavard/agent-config/dist/graph-policy-v2';
 import { Chip, Paper, TableContainer, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { AccountTreeRounded, Delete, GetApp, Power } from '@material-ui/icons';
@@ -12,16 +12,16 @@ const useStyles = makeStyles((theme: Theme) =>
     title: {
       width: '100%',
     },
-  }),
+  })
 );
 
 interface GraphPolicyState {
-  columns: Column<GraphPolicy>[];
-  data: GraphPolicy[] | undefined;
+  columns: Column<GraphPolicyV2>[];
+  data: GraphPolicyV2[] | undefined;
 }
 
 interface GraphPoliciesTableProps {
-  policies: GraphPolicy[] | undefined;
+  policies: GraphPolicyV2[] | undefined;
   loading?: boolean;
   activePolicyName?: string;
   onDelete: (name: string) => void;
@@ -58,7 +58,7 @@ function GraphPoliciesTable({
         render: (rowData) => {
           return (
             <div>
-              {rowData.policyName === activePolicyName ? (
+              {rowData.name === activePolicyName ? (
                 <Chip label="Active" />
               ) : (
                 <span />
@@ -104,32 +104,32 @@ function GraphPoliciesTable({
             icon: (props: any) => <AccountTreeRounded />,
             tooltip: 'View Graph',
             onClick: (event, rowData) => {
-              const data = rowData as GraphPolicy;
-              onView?.(data.policyName);
+              const data = rowData as GraphPolicyV2;
+              onView?.(data.name);
             },
           },
           {
             icon: (props: any) => <Power />,
             tooltip: 'Activate',
             onClick: (event, rowData) => {
-              const data = rowData as GraphPolicy;
-              onActivate(data.policyName);
+              const data = rowData as GraphPolicyV2;
+              onActivate(data.name);
             },
           },
           {
             icon: (props: any) => <Delete />,
             tooltip: 'Delete',
             onClick: (event, rowData) => {
-              const data = rowData as GraphPolicy;
-              onDelete(data.policyName);
+              const data = rowData as GraphPolicyV2;
+              onDelete(data.name);
             },
           },
           {
             icon: (props: any) => <GetApp />,
             tooltip: 'Export',
             onClick: (event, rowData) => {
-              const data = rowData as GraphPolicy;
-              onExport?.(data.policyName);
+              const data = rowData as GraphPolicyV2;
+              onExport?.(data.name);
             },
           },
         ]}
