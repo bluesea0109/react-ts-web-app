@@ -29,7 +29,7 @@ export default function ChatWithAgent() {
     skip: !projectId,
   });
 
-  const loadedKey = apiKeysQuery.data?.apiKey.key ?? null;
+  const loadedKey = apiKeysQuery.data?.apiKey?.key ?? null;
   useEffect(() => {
     if (!apiKeysQuery.loading) {
       setApiKey(loadedKey);
@@ -37,27 +37,30 @@ export default function ChatWithAgent() {
   }, [loadedKey, apiKeysQuery.loading]);
 
   useEffect(() => {
-    if (!apiKey || !agentData || !agentData.data) { return; }
-
-    const script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.async = true;
-    script.innerHTML = `
-      (function (uname, apiKey, debug, dev) {
-        return function (i, s, o, g, r, a, m) {
-          a = s.createElement(o), m = s.querySelector("body");
-          a.onload = function () { i['bavard'](uname, apiKey, debug, dev) };
-          a.async = 1; a.src = g; m.appendChild(a), a.type = "application/javascript";
-        }
-      })('${agentData.data.ChatbotService_agent.uname}', '${apiKey}', true, true)
-      (window, document, 'script', '${config.bundleUrl}')
-    `;
-    document.body.appendChild(script);
+    let script: HTMLScriptElement|null = null;
+    if (apiKey && agentData && agentData.data) {
+      script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.async = true;
+      script.innerHTML = `
+        (function (uname, apiKey, debug, dev) {
+          return function (i, s, o, g, r, a, m) {
+            a = s.createElement(o), m = s.querySelector("body");
+            a.onload = function () { i['loadBavard'](uname, apiKey, debug, dev) };
+            a.async = 1; a.src = g; m.appendChild(a), a.type = "application/javascript";
+          }
+        })('${agentData.data.ChatbotService_agent.uname}', '${apiKey}', true, true)
+        (window, document, 'script', '${config.bundleUrl}')
+      `;
+      document.body.appendChild(script);
+    }
 
     return () => {
       document.getElementById('bavard-chatbox')?.remove();
       document.getElementById('bavard-chatbot-trigger')?.remove();
-      document.body.removeChild(script);
+      if (script) {
+        document.body.removeChild(script);
+      }
     };
   }, [apiKey, agentData]);
 

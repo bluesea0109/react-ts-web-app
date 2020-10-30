@@ -1,8 +1,11 @@
 import { EFormFieldTypes } from '@bavard/agent-config/dist/';
 import {
+  Checkbox,
   FormControl,
+  FormControlLabel,
   Grid,
   IconButton,
+  InputLabel,
   MenuItem,
   Select,
   TextField,
@@ -33,24 +36,34 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: theme.spacing(1),
       minWidth: 120,
     },
-  }),
+    baseLine: {
+      alignItems: 'first baseline',
+    },
+  })
 );
 
 interface AddFormFieldProps {
-  handleChange: (name: string, type: EFormFieldTypes) => void;
+  handleChange: (
+    name: string,
+    type: EFormFieldTypes,
+    required: boolean
+  ) => void;
 }
 
 export const AddFieldForm = ({ handleChange }: AddFormFieldProps) => {
   const classes = useStyles();
-  const [fields, setFields] = useState<{ text: string; type: EFormFieldTypes }>(
-    {
-      text: '',
-      type: EFormFieldTypes.EMAIL,
-    },
-  );
+  const [fields, setFields] = useState<{
+    text: string;
+    type: EFormFieldTypes;
+    required: boolean;
+  }>({
+    text: '',
+    type: EFormFieldTypes.EMAIL,
+    required: false,
+  });
 
   const handleAdd = () => {
-    handleChange(fields.text, fields.type);
+    handleChange(fields.text, fields.type, fields.required);
   };
 
   const handleFieldChange = (event: any) => {
@@ -60,28 +73,35 @@ export const AddFieldForm = ({ handleChange }: AddFormFieldProps) => {
     });
   };
 
+  const handleCheckboxChange = (event: any) => {
+    setFields({
+      ...fields,
+      required: event.target.checked,
+    });
+  };
+
   return (
     <div className={classes.niceform}>
-      <Grid container={true} spacing={3}>
-        <Grid item={true} xs={true}>
+      <Grid container={true} spacing={2} className={classes.baseLine}>
+        <Grid item={true} xs={true} md={12}>
           <TextField
             id="standard-basic"
-            variant="outlined"
             name="text"
             label="Field Name"
-            size="small"
-            className={classes.formControl}
+            style={{ width: '100%' }}
             onChange={handleFieldChange}
           />
         </Grid>
-        <Grid item={true} xs={true}>
-          <FormControl className={classes.formControl} size="small">
+        <Grid item={true} xs={true} md={12}>
+          <FormControl
+            className={classes.formControl}
+            style={{ width: '100%' }}>
+            <InputLabel id="demo-simple-select-label">Field Type</InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               value={fields.type}
               name="type"
-              variant="outlined"
               onChange={handleFieldChange}>
               {Object.keys(EFormFieldTypes).map((item, index) => (
                 <MenuItem value={item} key={index}>
@@ -90,6 +110,20 @@ export const AddFieldForm = ({ handleChange }: AddFormFieldProps) => {
               ))}
             </Select>
           </FormControl>
+        </Grid>
+        <Grid item={true} md={12}>
+          <FormControlLabel
+            value="end"
+            control={
+              <Checkbox
+                color="primary"
+                checked={fields.required}
+                onChange={handleCheckboxChange}
+              />
+            }
+            label="Required *"
+            labelPlacement="end"
+          />
         </Grid>
       </Grid>
       <Grid container={true} spacing={3}>

@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { Drawer, Typography } from '@material-ui/core';
+import { Drawer } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import assert from 'assert';
 import clsx from 'clsx';
@@ -21,12 +21,13 @@ import CustomDrawer from './containers/Drawer';
 import FAQService from './containers/FAQService';
 import ImageLabeling from './containers/ImageLabeling';
 import InternalServerErrorPage from './containers/InternalServerErrorpage';
+import NoOrgPage from './containers/NoOrgPage';
 import MySidebar from './containers/Sidebar';
 import TextLabeling from './containers/TextLabeling';
 import { IUser } from './models/user-service';
 import { MenuName } from './utils/enums';
 
-const drawerWidth = 270;
+const drawerWidth = 300;
 
 interface IGetCurrentUser {
   currentUser: IUser;
@@ -117,7 +118,7 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {
       padding: theme.spacing(2),
     },
-  }),
+  })
 );
 
 function App() {
@@ -133,7 +134,7 @@ function App() {
       onCompleted: (data) => {
         setCurrentUser(data.currentUser);
       },
-    },
+    }
   );
 
   const [state, setState] = React.useState({
@@ -250,16 +251,10 @@ function App() {
             </Route>
             <Route path="/orgs/:orgId/projects/:projectId/text-labeling" />
             <Route exact={true} path="/no-project">
-              <div className={classes.container}>
-                <Typography>
-                  {'No project is active. Please create or activate one.'}
-                </Typography>
-              </div>
+              <NoOrgPage type="NO_PROJECTS" />
             </Route>
             <Route exact={true} path="/no-orgs">
-              <div className={classes.container}>
-                <Typography>{'No Organization found.'}</Typography>
-              </div>
+              <NoOrgPage type="NO_ORGS" />
             </Route>
           </Switch>
         </main>

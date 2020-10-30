@@ -1,5 +1,12 @@
 import { IIntent, IResponseOption } from '@bavard/agent-config';
-import { createStyles, Grid, makeStyles, Paper, Theme, Typography } from '@material-ui/core';
+import {
+  createStyles,
+  Grid,
+  makeStyles,
+  Paper,
+  Theme,
+  Typography,
+} from '@material-ui/core';
 import { KeyboardArrowDown, KeyboardArrowUp } from '@material-ui/icons';
 import React, { useState } from 'react';
 import EditOption from './EditOption';
@@ -37,8 +44,6 @@ const CollapsibleOption = ({
   const classes = useStyles();
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
 
-  const optionName = option.text && option.text.length ? option.text : `Option ${index}`;
-
   const onToggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
   };
@@ -49,7 +54,7 @@ const CollapsibleOption = ({
         <Grid container={true} alignItems="center" className={classes.header}>
           <Grid item={true} container={true} xs={6} alignItems="center">
             <Typography>
-              {optionName}
+              {`Option ${index}`}
             </Typography>
           </Grid>
           <Grid item={true} container={true} xs={6} justify="flex-end">

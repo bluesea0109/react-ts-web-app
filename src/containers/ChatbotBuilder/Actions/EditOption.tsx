@@ -1,8 +1,25 @@
-import { EResponseOptionTypes, IHyperlinkOption, IImageOption, IIntent, IResponseOption } from '@bavard/agent-config';
-import { createStyles, Grid, makeStyles, Theme } from '@material-ui/core';
+import {
+  EResponseOptionTypes,
+  IHyperlinkOption,
+  IImageOption,
+  IIntent,
+  IResponseOption,
+} from '@bavard/agent-config';
+import {
+  createStyles,
+  Grid,
+  makeStyles,
+  Theme,
+} from '@material-ui/core';
 import Delete from '@material-ui/icons/Delete';
 import React, { useMemo } from 'react';
-import { DropDown, IconButton, TextInput } from '../../../components';
+import {
+  DropDown,
+  IconButton,
+  RichTextInput,
+  TextInput,
+} from '../../../components';
+import OptionImageUploader from './OptionImageUploader';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -58,18 +75,6 @@ const EditOption = ({
   return (
     <Grid container={true} className={classes.root}>
       <Grid container={true} className={classes.formField}>
-        <TextInput
-          fullWidth={true}
-          label="Option Name"
-          value={option.text || ''}
-          className={classes.input}
-          onChange={(e) => onEditOption({
-            ...option,
-            text: e.target.value,
-          } as IResponseOption)}
-        />
-      </Grid>
-      <Grid container={true} className={classes.formField}>
         <DropDown
           fullWidth={true}
           label="Option Type"
@@ -81,6 +86,13 @@ const EditOption = ({
             ...option,
             type,
           } as IResponseOption)}
+        />
+      </Grid>
+      <Grid container={true} className={classes.formField}>
+        <RichTextInput
+          label="Option Text"
+          value={option.text || ''}
+          onChange={(html: string) => onEditOption({ ...option, text: html })}
         />
       </Grid>
       {isHyperLinkOption && (
@@ -139,6 +151,12 @@ const EditOption = ({
                 ...option,
                 caption: e.target.value,
               } as IResponseOption)}
+            />
+          </Grid>
+          <Grid container={true} className={classes.formField}>
+            <OptionImageUploader
+              option={option as IImageOption}
+              onEditOption={onEditOption}
             />
           </Grid>
         </>

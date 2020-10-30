@@ -7,9 +7,11 @@ import IconButtonBavard from './IconButtons/IconButtonBavard';
 import NavItem from './IconButtons/NavItem';
 
 const VerticalSidebar = styled.div`
+  display: flex;
+  flex-direction: column;
   position: fixed;
   height: 100%;
-  width: 75px;
+  width: 80px;
   z-index: 1300;
   background-color: #040521;
   overflow-x: hidden;

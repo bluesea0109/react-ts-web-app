@@ -1,5 +1,10 @@
-import { EmailAction } from '@bavard/agent-config';
-import { createStyles, Grid, makeStyles, Theme } from '@material-ui/core';
+import { IAgentEmailAction } from '@bavard/agent-config';
+import {
+  createStyles,
+  Grid,
+  makeStyles,
+  Theme,
+} from '@material-ui/core';
 import React from 'react';
 import { TextInput } from '../../../components';
 
@@ -18,8 +23,8 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface EditEmailActionProps {
-  action: EmailAction;
-  onChangeAction: (field: string, value: string) => void;
+  action: IAgentEmailAction;
+  onChangeAction: (action: IAgentEmailAction) => void;
 }
 
 const EditEmailAction = ({
@@ -37,7 +42,7 @@ const EditEmailAction = ({
           type="email"
           value={action.from || ''}
           className={classes.input}
-          onChange={e => onChangeAction('from', e.target.value)}
+          onChange={e => onChangeAction({ ...action, from: e.target.value})}
         />
       </Grid>
       <Grid container={true} item={true} sm={12} className={classes.formField}>
@@ -47,7 +52,7 @@ const EditEmailAction = ({
           type="email"
           value={action.to || ''}
           className={classes.input}
-          onChange={e => onChangeAction('to', e.target.value)}
+          onChange={e => onChangeAction({ ...action, to: e.target.value})}
         />
       </Grid>
     </>

@@ -19,7 +19,7 @@ import React, { useEffect, useState } from 'react';
 import { validateEmail } from '../../../utils/string';
 
 import {EFormFieldTypes, IFormField} from '@bavard/agent-config/dist';
-import RichTextInput from '../../Utils/RichTextInput';
+import RichTextInput from '../../../components/RichTextInput';
 import { AddFieldForm } from '../GraphPolicy/AddActionField';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -61,8 +61,6 @@ export default function UpsertNodeForm({
 
   const [url, setURL] = useState(node instanceof FormNode ? node.url : '');
   const [actionName, setActionName] = useState(node?.actionName || '');
-
-  console.log('Form node url ', node, 'URL : ', url);
 
   const handleUtteranceNode = async () => {
     if (node) {
@@ -126,8 +124,8 @@ export default function UpsertNodeForm({
     }
   };
 
-  const addFormField = (fieldName: string, fieldType: EFormFieldTypes) => {
-    setFormFields([...formFields, { name: fieldName, type: fieldType, required: true }]);
+  const addFormField = (fieldName: string, fieldType: EFormFieldTypes, required: boolean) => {
+    setFormFields([...formFields, { name: fieldName, type: fieldType, required }]);
   };
 
   const deleteField = (key: number) => {
@@ -137,7 +135,6 @@ export default function UpsertNodeForm({
 
   useEffect(handleChange, [fromEmail, toEmail, actionName, utterance, url, formFields]);
 
-  console.log('Form Fields *** ', formFields);
   return (
     <div>
       <FormControl className={classes.formControl} disabled={!!node}>
@@ -226,6 +223,7 @@ export default function UpsertNodeForm({
                       name={item.name}
                       label={`${item.name} [${item.type}]`}
                       variant="outlined"
+                      style={item.required ? {backgroundColor: '#fff8d9'} : {}}
                     />
                   </FormControl>
                 </Grid>

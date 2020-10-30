@@ -1,13 +1,15 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { AgentConfig } from '@bavard/agent-config';
-import { Box, Button, makeStyles, Theme, Toolbar } from '@material-ui/core';
-import React from 'react';
+import { Box, makeStyles, Theme, Toolbar } from '@material-ui/core';
+import React, { useState } from 'react';
 import { useParams } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import {
   CHATBOT_GET_AGENT,
   CHATBOT_SAVE_CONFIG_AND_SETTINGS,
 } from '../../../common-gql-queries';
+import { CHATBOT_GET_AGENTS } from '../../../common-gql-queries';
 import { TabPanel } from '../../../components';
 import { IAgent } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
@@ -29,6 +31,7 @@ import Tag from '../Tags/Tag';
 import TrainingConversations from '../TrainingConversations';
 import TrainingJobsTab from '../TrainingJobs/TrainingJobsTab';
 import UploadDataTab from '../UploadData/UploadDataTab';
+import { ToolBarSetting } from './ToolbarSetting';
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -50,7 +53,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   toolbar: {
     padding: '10px',
     background: '#ddd',
-    boxShadow: '0 2px 2px #eeeeee44',
     display: 'flex',
     justifyContent: 'flex-end',
   },
@@ -99,18 +101,34 @@ interface IGetAgent {
   ChatbotService_agent: IAgent;
 }
 
+interface IGetAgents {
+  ChatbotService_agents: IAgent[] | undefined;
+}
+
 const AgentDetails = () => {
   const classes = useStyles();
-  const { agentId, agentTab } = useParams<{
+  const { agentId, agentTab, projectId, orgId } = useParams<{
     orgId: string;
     projectId: string;
     agentId: string;
     agentTab: string;
   }>();
-  const [config, setConfig] = useRecoilState(currentAgentConfig);
+
+  const history = useHistory();
+  const agentsData = useQuery<IGetAgents>(CHATBOT_GET_AGENTS, {
+    variables: { projectId },
+  });
+  const agents: IAgent[] | undefined =
+    agentsData && agentsData.data && agentsData.data.ChatbotService_agents;
   const [widgetSettings, setWidgetSettings] = useRecoilState(
     currentWidgetSettings,
   );
+
+  const init = agents?.filter((item) => item.id === parseInt(agentId, 10))[0].uname;
+
+  const [curAgent, setCurAgent] = useState<string | undefined>(init);
+
+  const [config, setConfig] = useRecoilState(currentAgentConfig);
 
   const { error, loading, data } = useQuery<IGetAgent>(CHATBOT_GET_AGENT, {
     variables: { agentId: Number(agentId) },
@@ -150,12 +168,29 @@ const AgentDetails = () => {
     }
   };
 
+  const publishAgent = () => {
+    const newURL = `/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${agentId}/publish`;
+    history.push(newURL);
+  };
+
+  const handleAgentChanage = (field: string) => {
+    setCurAgent(field);
+
+    const agentId = agents?.filter((agent) => agent.uname === field)[0].id;
+    const newURL = `/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${agentId}/Actions`;
+    history.push(newURL);
+  };
+
   return (
     <Box className={classes.container}>
       <Toolbar className={classes.toolbar} variant="dense">
-        <Button variant="contained" onClick={saveAgent}>
-          {'Save Agent'}
-        </Button>
+        <ToolBarSetting
+          agents={agents}
+          currentAgent={curAgent}
+          handleChange={handleAgentChanage}
+          saveAgent={saveAgent}
+          publishAgent={publishAgent}
+        />
       </Toolbar>
       <Box className={classes.tabsContainer}>
         <TabPanel

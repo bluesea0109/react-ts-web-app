@@ -15,9 +15,9 @@ import { Add } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 
+import KeyValueArrayInput from '../../../components/KeyValueArrayInput';
 import { IAPIKey } from '../../../models/user-service';
 import { useQueryAsArray } from '../../../utils/hooks';
-import KeyValueArrayInput from '../../Utils/KeyValueArrayInput';
 import { deleteApiKeyMutation, getApiKeysQuery, updateDomainsMutation } from './gql';
 import NewApiKeyDialog from './NewApiKeyDialog';
 
