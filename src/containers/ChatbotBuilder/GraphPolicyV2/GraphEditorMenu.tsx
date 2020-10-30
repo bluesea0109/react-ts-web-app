@@ -1,7 +1,7 @@
 import {
   EAgentNodeTypes,
   EUserNodeTypes,
-} from '@bavard/agent-config/dist/graph-policy-v2/nodes/';
+} from '@bavard/agent-config/dist/graph-policy-v2/nodes';
 import { Card, Theme, Typography } from '@material-ui/core';
 import { createStyles, makeStyles } from '@material-ui/styles';
 

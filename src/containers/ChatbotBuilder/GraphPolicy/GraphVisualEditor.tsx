@@ -35,6 +35,7 @@ import CreatePolicyForm from './CreatePolicyForm';
 import EditNodeForm from './EditNodeForm';
 import { getOptionImagesQuery } from './gql';
 import GraphNode from './GraphNode';
+
 import { IGetOptionImagesQueryResult } from './types';
 
 interface IGraphPolicyVisualEditorProps extends WithSnackbarProps {

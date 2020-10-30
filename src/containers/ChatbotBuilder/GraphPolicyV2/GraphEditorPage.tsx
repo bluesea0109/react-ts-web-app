@@ -1,12 +1,16 @@
 import { Card, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
-import React, { useEffect, useState } from 'react';
-import 'react-grid-layout/css/styles.css';
-import 'react-resizable/css/styles.css';
+import { useQuery } from '@apollo/client';
+import React from 'react';
 import { useParams } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
 
+import { agentOptionImages } from '../atoms';
 import CreateGraphPolicyDialog from './CreateGraphPolicyDialog';
+import { getOptionImagesQuery } from './gql';
+import { IGetOptionImagesQueryResult } from './types';
+
 import GraphEditor from './GraphEditor';
 import GraphEditorMenu from './GraphEditorMenu';
 
@@ -38,6 +42,18 @@ const useStyles = makeStyles((theme: Theme) =>
 const GraphEditorPage = () => {
   const classes = useStyles();
   const { entityId, agentId }: IParams = useParams();
+  const [, setOptionImages] = useRecoilState(agentOptionImages);
+
+  const imgQuery = useQuery<IGetOptionImagesQueryResult>(getOptionImagesQuery, {
+    variables: { agentId: parseInt(agentId) },
+    onCompleted: (data) => {
+      console.log('IMG DATA: ', data);
+      setOptionImages({
+        images: data.ChatbotService_optionImages || [],
+        refetch: imgQuery.refetch,
+      });
+    },
+  });
 
   return (
     <div className="page-container">
@@ -49,7 +65,7 @@ const GraphEditorPage = () => {
           <GraphEditorMenu className={classes.editorMenuItems} />
         </div>
         <Card className={classes.graphEditorContainer}>
-          <GraphEditor />
+          <GraphEditor agentId={parseInt(agentId)} />
         </Card>
       </div>
       {!entityId && (

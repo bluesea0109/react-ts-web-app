@@ -2,7 +2,6 @@ import {
   AppBar,
   Dialog,
   DialogContent,
-  DialogProps,
   IconButton,
   Theme,
   Toolbar,
