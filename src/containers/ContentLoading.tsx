@@ -1,4 +1,4 @@
-import { CircularProgress, Grid } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import React from 'react';
 
 interface ContentLoadingProps {
