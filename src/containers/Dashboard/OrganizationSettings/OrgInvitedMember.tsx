@@ -57,7 +57,7 @@ function InvitedMemberTable() {
   };
 
   if (invitedMemberData.loading || revokeInvitationResp.loading) {
-    return <ContentLoading />;
+    return <ContentLoading shrinked={true}/>;
   }
 
   if (invitedMemberData.error) {

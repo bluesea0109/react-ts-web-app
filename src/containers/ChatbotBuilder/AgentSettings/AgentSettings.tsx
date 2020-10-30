@@ -122,7 +122,7 @@ const AgentSettings = () => {
     <Grid container={true} spacing={2} className={classes.root}>
       <Grid item={true} xs={12}>
         <Typography variant="h6">Agent Settings</Typography>
-        {loading && <ContentLoading />}
+        {loading && <ContentLoading shrinked={true}/>}
         <Box
           display="flex"
           justifyContent="space-between"

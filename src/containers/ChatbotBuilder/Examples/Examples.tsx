@@ -100,7 +100,7 @@ const Examples = () => {
   }
 
   if (examplesData.loading || !examplesData.data) {
-    return <ContentLoading />;
+    return <ContentLoading shrinked={true}/>;
   }
 
   const updateFilters = (newFilters: ExamplesFilter) => {

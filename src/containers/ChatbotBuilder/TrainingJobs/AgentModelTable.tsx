@@ -44,9 +44,9 @@ export default function AgentModelTable() {
     return <ApolloErrorPage error={getModel.error} />;
   }
 
-  if (getModel.loading) {
-    return <ContentLoading />;
-  }
+  // if (getModel.loading) {
+  //   return <ContentLoading />;
+  // }
 
   const agentModel = getModel.data?.ChatbotService_agentModelInfo || null;
 

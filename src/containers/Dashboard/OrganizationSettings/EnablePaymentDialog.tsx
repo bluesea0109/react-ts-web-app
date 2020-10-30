@@ -148,7 +148,7 @@ function CheckoutForm() {
     dialogContent = (
       <React.Fragment>
         <DialogContent>
-          <ContentLoading />
+          <ContentLoading shrinked={true}/>
         </DialogContent>
       </React.Fragment>
     );

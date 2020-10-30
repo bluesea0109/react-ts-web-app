@@ -152,7 +152,7 @@ const AgentDetails = () => {
   }
 
   if (loading || updateAgentData?.loading || !data) {
-    return <ContentLoading />;
+    return <ContentLoading shrinked={true}/>;
   }
   const saveAgent = () => {
     if (!!config) {

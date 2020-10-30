@@ -57,7 +57,7 @@ export default function TrainingJobsTable({
   }
 
   if (getTrainingJobs.loading) {
-    return <ContentLoading />;
+    return <ContentLoading shrinked={true}/>;
   }
 
   const jobs = getTrainingJobs.data?.ChatbotService_trainingJobs || [];
