@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useRouteMatch } from 'react-router-dom';
+import {useHistory} from 'react-router-dom';
 import styled from 'styled-components';
 import { IUser } from '../models/user-service';
 import { MenuName } from '../utils/enums';
 import IconButtonBavard from './IconButtons/IconButtonBavard';
 import NavItem from './IconButtons/NavItem';
-import {useHistory} from 'react-router-dom';
 
 const VerticalSidebar = styled.div`
   display: flex;
@@ -32,7 +32,7 @@ const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
   const [openSubItem, setOpenSubItem] = useState(false);
   const [selected, setSelected] = useState(MenuName.DASHBOARD);
 
-  const history = useHistory()
+  const history = useHistory();
   const currentLocation = history.location.pathname;
   const createPath = (pageName: string): string => {
     if (!user.activeProject) {
@@ -45,7 +45,7 @@ const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
     path: '/orgs/:orgId/projects/:projectId/chatbot-builder/agents/:agentId',
     strict: false,
     sensitive: true,
-  });  
+  });
   const agentParams: any = match?.params;
 
   const createAgentPath = (agentTab: string): string => {
@@ -61,13 +61,13 @@ const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
       setOpenSubItem(true);
       onClick(MenuName.OPEN_CONFIG);
       setSelected(MenuName.OPEN_CONFIG);
-      onSetAgentID(agentParams);        
+      onSetAgentID(agentParams);
     }
   }, [match?.path]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    console.log('changing ... ', currentLocation)
-  }, [currentLocation])
+    console.log('changing ... ', currentLocation);
+  }, [currentLocation]);
 
   const openDashboard = (key: MenuName) => {
     setSelected(key);
