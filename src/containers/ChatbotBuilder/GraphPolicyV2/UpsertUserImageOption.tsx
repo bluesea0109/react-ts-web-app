@@ -13,11 +13,11 @@ import { Button, FormControl, TextField } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Alert } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
+import ImageSelectorGrid from '../../../components/ImageSelectorGrid';
 import { IOptionImage } from '../../../models/chatbot-service';
 import { validateUrl } from '../../../utils/string';
 import { uploadFileWithFetch } from '../../../utils/xhr';
 import ContentLoading from '../../ContentLoading';
-import ImageSelectorGrid from '../../../components/ImageSelectorGrid';
 import { getOptionImagesQuery } from './gql';
 import { getSignedImgUploadUrlQuery } from './gql';
 import { IGetImageUploadSignedUrlQueryResult } from './types';
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       marginBottom: theme.spacing(2),
     },
-  })
+  }),
 );
 
 interface IUpsertNodeFormProps {
@@ -61,7 +61,7 @@ export default function UpsertNodeForm({
   const [imgFile, setImgFile] = useState<File | undefined>(undefined);
 
   const [existingImg, setExistingImg] = useState<string | undefined>(
-    node?.imageName || undefined
+    node?.imageName || undefined,
   );
 
   const { agentId }: IParams = useParams();
@@ -109,7 +109,7 @@ export default function UpsertNodeForm({
     if (!existingImg && imgFile) {
       const uploadUrl = signedImgUploadResult.data?.ChatbotService_imageOptionUploadUrl?.url.replace(
         /"/g,
-        ''
+        '',
       );
       // The upload url isn't ready. Wait for a few
       if (
@@ -118,7 +118,7 @@ export default function UpsertNodeForm({
       ) {
         enqueueSnackbar(
           'Image upload not ready. Please try in 10 seconds, or try a new image',
-          { variant: 'error' }
+          { variant: 'error' },
         );
         prepareSignedUploadUrl();
         return;
@@ -135,7 +135,7 @@ export default function UpsertNodeForm({
       } catch (e) {
         enqueueSnackbar(
           `Error with uploading the image to GCS - ${JSON.stringify(e)}`,
-          { variant: 'error' }
+          { variant: 'error' },
         );
       }
     }
@@ -146,7 +146,7 @@ export default function UpsertNodeForm({
       text,
       caption,
       targetLink,
-      intent
+      intent,
     );
 
     console.log(newNode);

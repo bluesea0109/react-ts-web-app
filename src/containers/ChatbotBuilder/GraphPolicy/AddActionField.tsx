@@ -39,14 +39,14 @@ const useStyles = makeStyles((theme: Theme) =>
     baseLine: {
       alignItems: 'first baseline',
     },
-  })
+  }),
 );
 
 interface AddFormFieldProps {
   handleChange: (
     name: string,
     type: EFormFieldTypes,
-    required: boolean
+    required: boolean,
   ) => void;
 }
 
