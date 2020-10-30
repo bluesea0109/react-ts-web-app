@@ -269,8 +269,6 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
     setTagType(field);
   };
 
-  console.log('>>> Inspectioin actions : ', actions);
-
   return (
     <Dialog fullScreen={true} open={true} TransitionComponent={UpTransition}>
       <AppBar className={classes.appBar}>

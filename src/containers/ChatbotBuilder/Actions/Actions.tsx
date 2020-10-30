@@ -1,4 +1,9 @@
-import { AgentConfig, AgentUtteranceAction, BaseAgentAction, IAgentAction } from '@bavard/agent-config';
+import {
+  AgentConfig,
+  AgentUtteranceAction,
+  BaseAgentAction,
+  IAgentAction,
+} from '@bavard/agent-config';
 import { Box, Grid, makeStyles, Theme } from '@material-ui/core';
 import { Maybe } from 'graphql/jsutils/Maybe';
 import React, { useState } from 'react';

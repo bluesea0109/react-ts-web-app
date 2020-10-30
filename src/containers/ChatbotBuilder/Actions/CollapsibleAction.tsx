@@ -1,6 +1,22 @@
-import { BaseAgentAction, EAgentActionTypes } from '@bavard/agent-config';
-import { Box, createStyles, Grid, makeStyles, Paper, Theme, Typography } from '@material-ui/core';
-import { Delete, Edit, KeyboardArrowDown, KeyboardArrowRight } from '@material-ui/icons';
+import {
+  BaseAgentAction,
+  EAgentActionTypes,
+} from '@bavard/agent-config';
+import {
+  Box,
+  createStyles,
+  Grid,
+  makeStyles,
+  Paper,
+  Theme,
+  Typography,
+} from '@material-ui/core';
+import {
+  Delete,
+  Edit,
+  KeyboardArrowDown,
+  KeyboardArrowRight,
+} from '@material-ui/icons';
 import React, { useState } from 'react';
 import ActionDetailPanel from './ActionDetailPanel';
 

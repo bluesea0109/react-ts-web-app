@@ -29,13 +29,12 @@ import React from 'react';
 import LineTo from 'react-lineto';
 import { OptionImagesContext } from '../../../context/OptionImages';
 
-import { CHATBOT_UPDATE_AGENT } from '../../../common-gql-queries';
+import { CHATBOT_UPDATE_AGENT, GET_OPTION_IMAGES_QUERY } from '../../../common-gql-queries';
+import { IGetOptionImagesQueryResult } from '../../../models/common-service';
 import ContentLoading from '../../ContentLoading';
 import CreatePolicyForm from './CreatePolicyForm';
 import EditNodeForm from './EditNodeForm';
-import { getOptionImagesQuery } from './gql';
 import GraphNode from './GraphNode';
-import { IGetOptionImagesQueryResult } from './types';
 
 interface IGraphPolicyVisualEditorProps extends WithSnackbarProps {
   agentId: number;
@@ -516,7 +515,7 @@ class GraphPolicyVisualEditor extends React.Component<
             mutation={CHATBOT_UPDATE_AGENT}
             refetchQueries={[
               {
-                query: getOptionImagesQuery,
+                query: GET_OPTION_IMAGES_QUERY,
                 variables: { agentId },
               },
             ]}>
@@ -542,7 +541,7 @@ class GraphPolicyVisualEditor extends React.Component<
 
     return (
       <Query<IGetOptionImagesQueryResult>
-        query={getOptionImagesQuery}
+        query={GET_OPTION_IMAGES_QUERY}
         variables={{ agentId }}>
         {({ loading, data }) => {
           if (loading) {

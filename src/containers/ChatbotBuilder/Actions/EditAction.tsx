@@ -1,6 +1,26 @@
-import { EFormFieldTypes, EResponseOptionTypes, FormAction, IAgentAction, IAgentFormAction, ITextOption } from '@bavard/agent-config';
-import { AgentUtteranceAction, EAgentActionTypes, EmailAction } from '@bavard/agent-config';
-import { AppBar, Button, createStyles, Dialog, Grid, IconButton, makeStyles, Theme, Toolbar, Typography } from '@material-ui/core';
+import {
+  AgentUtteranceAction,
+  EAgentActionTypes,
+  EFormFieldTypes,
+  EmailAction,
+  EResponseOptionTypes,
+  FormAction,
+  IAgentAction,
+  IAgentFormAction,
+  ITextOption,
+} from '@bavard/agent-config';
+import {
+  AppBar,
+  Button,
+  createStyles,
+  Dialog,
+  Grid,
+  IconButton,
+  makeStyles,
+  Theme,
+  Toolbar,
+  Typography,
+} from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import React, { useEffect, useState } from 'react';
 import { DropDown, TextInput, UpTransition } from '../../../components';

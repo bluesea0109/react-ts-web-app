@@ -2,7 +2,7 @@ import { GridList, GridListTile} from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { CheckCircle } from '@material-ui/icons';
 import _ from 'lodash';
-import React, {useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import ImageUploadPreviewer from './ImageUploadPreviewer';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -40,7 +40,14 @@ interface ISelectorGridProps {
   selectedImgName?: string;
 }
 
-export default function ImageSelectorGrid({imgWidth, cols= 4, images, selectedImgName, onSelect, onNewImg}: ISelectorGridProps) {
+export default function ImageSelectorGrid({
+  cols= 4,
+  images,
+  imgWidth,
+  selectedImgName,
+  onSelect,
+  onNewImg,
+}: ISelectorGridProps) {
   const classes = useStyles();
   const [selectedImg, selectImg] = useState<IImage|undefined>(
     selectedImgName ?
@@ -56,8 +63,12 @@ export default function ImageSelectorGrid({imgWidth, cols= 4, images, selectedIm
     onNewImg(file);
   };
 
+  useEffect(() => {
+    selectImg(selectedImgName ? _.find(images, { name: selectedImgName }) : undefined);
+  }, [images, selectedImgName]);
+
   return (
-    <GridList cellHeight={imgWidth || 100} cols={cols || 4}>
+    <GridList cellHeight={imgWidth || 100} cols={cols || 4} style={{width: '100%'}}>
       <GridListTile className={classes.gridTile} key={'new_img'} onClick={() => {selectImg(undefined); }}>
         <ImageUploadPreviewer onChange={handleNewImg} width={imgWidth} />
         { (!selectedImg && newImg) && <CheckCircle className={classes.selectedIcon}/>}

@@ -95,7 +95,6 @@ function CheckoutForm() {
     // each type of element.
     const cardElement = elements.getElement(CardElement) as StripeCardElement;
     if (!cardElement) {
-      console.log('[handlePayClick] no card element');
       return;
     }
 
@@ -107,7 +106,6 @@ function CheckoutForm() {
       return;
     }
 
-    console.log('[handlePayClick]', token);
     const stripeToken: string = token ? token.id : '';
     // enable billing
     doEnableBilling({

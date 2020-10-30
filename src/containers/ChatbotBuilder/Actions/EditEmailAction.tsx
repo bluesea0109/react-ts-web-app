@@ -1,5 +1,10 @@
 import { IAgentEmailAction } from '@bavard/agent-config';
-import { createStyles, Grid, makeStyles, Theme } from '@material-ui/core';
+import {
+  createStyles,
+  Grid,
+  makeStyles,
+  Theme,
+} from '@material-ui/core';
 import React from 'react';
 import { TextInput } from '../../../components';
 

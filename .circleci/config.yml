@@ -36,6 +36,7 @@ references:
       - checkout
       - run:
           name: deploy
+          no_output_timeout: 20m
           command: |
             echo $GOOGLE_CREDENTIALS | gcloud auth activate-service-account --key-file=-
             gcloud config set project bavard-dev
@@ -51,6 +52,7 @@ references:
       - checkout
       - run:
           name: deploy
+          no_output_timeout: 20m
           command: |
             echo $GOOGLE_CREDENTIALS | gcloud auth activate-service-account --key-file=-
             gcloud config set project bavard-dev

@@ -211,7 +211,7 @@ export default function EditNodeForm({
       <DialogTitle>Edit Node</DialogTitle>
       <DialogContent>
         <Grid container={true} className={classes.fullWidth} spacing={2}>
-          <Grid item={true} lg={3} md={12}>
+          <Grid item={true} lg={4} md={12}>
             <Paper className={classes.nodePaper}>
               <UpsertNodeForm
                 nodeId={node.nodeId}
@@ -347,7 +347,7 @@ export default function EditNodeForm({
               })}
             </Paper>
           </Grid>
-          <Grid item={true} lg={5} md={12}>
+          <Grid item={true} lg={4} md={12}>
             {upsertingEdge ? (
               <UpsertEdge
                 agentId={agentId}
