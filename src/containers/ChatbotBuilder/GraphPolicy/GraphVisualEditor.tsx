@@ -534,7 +534,7 @@ class GraphPolicyVisualEditor extends React.Component<
               );
             }}
           </Mutation>
-          {this.state.loading && <ContentLoading />}
+          {this.state.loading && <ContentLoading shrinked={true}/>}
         </div>
       </React.Fragment>
     );
@@ -545,7 +545,7 @@ class GraphPolicyVisualEditor extends React.Component<
         variables={{ agentId }}>
         {({ loading, data }) => {
           if (loading) {
-            return <ContentLoading />;
+            return <ContentLoading/>;
           }
           return (
             <OptionImagesContext.Provider

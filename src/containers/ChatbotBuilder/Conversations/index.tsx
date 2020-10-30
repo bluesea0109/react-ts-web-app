@@ -61,7 +61,7 @@ export default function ConversationsTab() {
             {
               loading
               ?
-              <ContentLoading/>
+              <ContentLoading shrinked={true}/>
               :
               <List>
               {

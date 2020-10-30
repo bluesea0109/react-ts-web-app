@@ -78,7 +78,7 @@ export default function TrainingConversations() {
   }
 
   if (getTrainingConversations.loading) {
-    return <ContentLoading />;
+    return <ContentLoading shrinked={true}/>;
   }
 
   const onCreateNewConversation = () => {

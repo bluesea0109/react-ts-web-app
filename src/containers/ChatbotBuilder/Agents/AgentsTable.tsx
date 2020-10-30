@@ -73,7 +73,7 @@ function AgentsTable() {
   const commonError = agentsData.error ? agentsData.error : error;
 
   if (agentsData.loading || loading) {
-    return <ContentLoading />;
+    return <ContentLoading shrinked={true}/>;
   }
 
   if (commonError) {

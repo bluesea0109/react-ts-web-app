@@ -120,7 +120,7 @@ function DataExportsTable() {
     createExportResult.loading ||
     deleteExportResult.loading
   ) {
-    return <ContentLoading />;
+    return <ContentLoading shrinked={true}/>;
   }
 
   const exports = getExports.data?.ChatbotService_dataExports ?? [];

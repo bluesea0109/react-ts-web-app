@@ -194,7 +194,7 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
   return (
     <React.Fragment>
       {loading ? (
-        <ContentLoading />
+        <ContentLoading shrinked={true}/>
       ) : (
           <TableContainer className={classes.tableContainer}>
             <Table aria-label="sticky table">
