@@ -33,8 +33,8 @@ const useStyles = makeStyles((theme: Theme) =>
       color: 'white',
     },
     formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120,
+      marginBottom: theme.spacing(1),
+      width: '100%',
     },
     baseLine: {
       alignItems: 'first baseline',
@@ -85,6 +85,7 @@ export const AddFieldForm = ({ handleChange }: AddFormFieldProps) => {
       <Grid container={true} spacing={2} className={classes.baseLine}>
         <Grid item={true} xs={true} md={12}>
           <TextField
+            className={classes.formControl}
             id="standard-basic"
             name="text"
             label="Field Name"
@@ -93,9 +94,7 @@ export const AddFieldForm = ({ handleChange }: AddFormFieldProps) => {
           />
         </Grid>
         <Grid item={true} xs={true} md={12}>
-          <FormControl
-            className={classes.formControl}
-            style={{ width: '100%' }}>
+          <FormControl className={classes.formControl}>
             <InputLabel id="demo-simple-select-label">Field Type</InputLabel>
             <Select
               labelId="demo-simple-select-label"

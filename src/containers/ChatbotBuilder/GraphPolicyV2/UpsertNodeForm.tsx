@@ -23,7 +23,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Alert } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 import { validateEmail, validateUrl } from '../../../utils/string';
-import RichTextInput from '../../Utils/RichTextInput';
+import RichTextInput from '../../../components/RichTextInput';
 import UpsertAgentFormNode from './UpsertAgentFormNode';
 import UpsertUserImageOption from './UpsertUserImageOption';
 
@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       marginBottom: theme.spacing(2),
     },
-  }),
+  })
 );
 
 interface IUpsertNodeFormProps {
@@ -75,7 +75,7 @@ export default function UpsertNodeForm({
 
     const newNode = new AgentUtteranceNode(
       nodeId,
-      formData.utterance as string,
+      formData.utterance as string
     );
 
     onSubmit?.(newNode);

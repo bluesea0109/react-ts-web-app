@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       marginBottom: theme.spacing(2),
     },
-  }),
+  })
 );
 
 interface IUpsertAgentFormNodeProps {
@@ -45,16 +45,20 @@ export default function UpsertAgentFormNode({
   const [error, setError] = useState<string>();
 
   const [formFields, setFormFields] = useState<IFormField[]>(
-    node?.fields || [],
+    node?.fields || []
   );
 
   const [url, setUrl] = useState(node?.url);
 
-  const addFormField = (fieldName: string, fieldType: EFormFieldTypes) => {
-    console.log('ADDING FORM FIELD: ', fieldName, fieldType);
+  const addFormField = (
+    fieldName: string,
+    fieldType: EFormFieldTypes,
+    required: boolean = true
+  ) => {
+    console.log('ADDING FORM FIELD: ', fieldName, fieldType, required);
     setFormFields([
       ...formFields,
-      { name: fieldName, type: fieldType, required: true },
+      { name: fieldName, type: fieldType, required: required },
     ]);
   };
 

@@ -118,7 +118,7 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {
       padding: theme.spacing(2),
     },
-  })
+  }),
 );
 
 function App() {
@@ -134,7 +134,7 @@ function App() {
       onCompleted: (data) => {
         setCurrentUser(data.currentUser);
       },
-    }
+    },
   );
 
   const [state, setState] = React.useState({
