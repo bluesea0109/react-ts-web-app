@@ -15,7 +15,6 @@ import StatusChip from '../../../components/StatusChip';
 import { IAgentModelInfo } from '../../../models/chatbot-service';
 import { removeSpecialChars } from '../../../utils/string';
 import ApolloErrorPage from '../../ApolloErrorPage';
-import ContentLoading from '../../ContentLoading';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -44,9 +43,9 @@ export default function AgentModelTable() {
     return <ApolloErrorPage error={getModel.error} />;
   }
 
-  if (getModel.loading) {
-    return <ContentLoading />;
-  }
+  // if (getModel.loading) {
+  //   return <ContentLoading />;
+  // }
 
   const agentModel = getModel.data?.ChatbotService_agentModelInfo || null;
 
