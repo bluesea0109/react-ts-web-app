@@ -122,7 +122,7 @@ const AgentDetails = () => {
     currentWidgetSettings,
   );
 
-  const init = agents?.filter((item) => item.id === parseInt(agentId, 10))[0].uname;
+  const init = agents?.filter((item) => item.id === parseInt(agentId, 10))[0]?.uname;
 
   const [curAgent, setCurAgent] = useState<string | undefined>(init);
 
