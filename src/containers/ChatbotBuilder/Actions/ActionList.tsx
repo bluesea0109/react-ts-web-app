@@ -1,31 +1,123 @@
-import { BaseAgentAction } from '@bavard/agent-config';
-import { Grid } from '@material-ui/core';
+import { BaseAgentAction, EAgentActionTypes } from '@bavard/agent-config';
+import {
+  Box,
+  createStyles,
+  Grid,
+  makeStyles,
+  Theme,
+  Typography,
+} from '@material-ui/core';
+import {
+  Delete,
+  Edit,
+  KeyboardArrowDown,
+  KeyboardArrowRight,
+} from '@material-ui/icons';
 import React from 'react';
-import CollapsibleAction from './CollapsibleAction';
+import { CollapsibleTable } from '../../../components';
+import ActionDetailPanel from './ActionDetailPanel';
 
-interface ActionListProps {
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    paper: {
+      width: '100%',
+    },
+    header: {
+      padding: '4px 8px 4px 4px',
+    },
+  }),
+);
+
+interface ItemRowProps {
+  item: BaseAgentAction;
+  isCollapsed: boolean;
+  onEditRow: (item: BaseAgentAction) => void;
+  onDeleteRow: (item: BaseAgentAction) => void;
+  onToggleCollapse: () => void;
+}
+
+interface ItemDetailProps {
+  item: BaseAgentAction;
+}
+
+interface NewActionTableProps {
   actions: BaseAgentAction[];
+  onAddAction?: () => void;
   onEditAction: (action: BaseAgentAction) => void;
   onDeleteAction: (action: BaseAgentAction) => void;
 }
 
-const ActionList = ({
+const NewActionTable = ({
   actions,
   onEditAction,
   onDeleteAction,
-}: ActionListProps) => {
+}: NewActionTableProps) => {
+  const classes = useStyles();
+
+  const getActionType = (action: BaseAgentAction) => {
+    switch (action.type) {
+      case EAgentActionTypes.UTTERANCE_ACTION:
+        return 'Utterance';
+      case EAgentActionTypes.EMAIL_ACTION:
+        return 'Email';
+      case EAgentActionTypes.FORM_ACTION:
+        return 'Form';
+      default:
+        return 'Utterance';
+    }
+  };
+
   return (
-    <Grid container={true}>
-      {actions.map(action => (
-        <CollapsibleAction
-          key={action.name}
-          action={action}
-          onEdit={onEditAction}
-          onDelete={onDeleteAction}
-        />
-      ))}
-    </Grid>
+    <CollapsibleTable
+      items={actions}
+      onEditItem={onEditAction}
+      onDeleteItem={onDeleteAction}
+      ItemRow={({
+        item,
+        isCollapsed,
+        onEditRow,
+        onDeleteRow,
+        onToggleCollapse,
+      }: ItemRowProps) => (
+        <Grid container={true} className={classes.header} alignItems="center">
+          <Grid item={true} container={true} xs={6} sm={6} alignItems="center">
+            <Box mr={1}>
+              {isCollapsed ? (
+                <KeyboardArrowRight
+                  color="primary"
+                  fontSize="large"
+                  onClick={onToggleCollapse}
+                />
+              ) : (
+                <KeyboardArrowDown
+                  color="primary"
+                  fontSize="large"
+                  onClick={onToggleCollapse}
+                />
+              )}
+            </Box>
+            <Typography style={{ textTransform: 'capitalize' }}>
+              {item.name}
+            </Typography>
+          </Grid>
+          <Grid item={true} xs={4} sm={4}>
+            <Typography>{getActionType(item)}</Typography>
+          </Grid>
+          <Grid item={true} container={true} xs={2} sm={2} justify="flex-end">
+            <Box mr={1}>
+              <Edit onClick={() => onEditRow(item)} />
+            </Box>
+            <Box ml={1}>
+              <Delete onClick={() => onDeleteRow(item)} />
+            </Box>
+          </Grid>
+        </Grid>
+      )}
+      ItemDetail={({ item }: ItemDetailProps) => (
+        <ActionDetailPanel action={item} />
+      )}
+    />
   );
 };
 
-export default ActionList;
+export default NewActionTable;

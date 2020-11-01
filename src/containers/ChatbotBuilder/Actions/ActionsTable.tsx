@@ -9,8 +9,6 @@ import {
   Theme,
   Typography,
 } from '@material-ui/core';
-import {
-} from '@material-ui/core/styles';
 import React, { useMemo, useState } from 'react';
 import { FilterBox } from '../../../components';
 import ActionList from './ActionList';
@@ -41,9 +39,10 @@ const ActionsTable = ({
   const [typeFilter, setTypeFilter] = useState('');
 
   const filteredActions = useMemo(() => {
-    const includes = (haystack: string, needle: string) => haystack.toLowerCase().includes(needle.toLowerCase());
+    const includes = (haystack: string, needle: string) =>
+      haystack.toLowerCase().includes(needle.toLowerCase());
 
-    return actions.filter(action => {
+    return actions.filter((action) => {
       if (nameFilter && !includes(action.name, nameFilter)) {
         return false;
       } else if (typeFilter && !includes(action.type, typeFilter)) {
@@ -60,12 +59,9 @@ const ActionsTable = ({
         display="flex"
         justifyContent="space-between"
         alignItems="flex-start"
-        paddingBottom={2}
-      >
+        paddingBottom={2}>
         <Box>
-          <Typography variant="h6">
-            Actions
-          </Typography>
+          <Typography variant="h6">Actions</Typography>
           <Typography>
             Select an Action below to change the Assistant's behavior:
           </Typography>
@@ -77,10 +73,18 @@ const ActionsTable = ({
 
       <Grid container={true} item={true} justify="space-between">
         <Grid item={true} xs={6} sm={6}>
-          <FilterBox name="Action Name" filter={nameFilter} onChange={setNameFilter} />
+          <FilterBox
+            name="Action Name"
+            filter={nameFilter}
+            onChange={setNameFilter}
+          />
         </Grid>
         <Grid item={true} xs={6} sm={6}>
-          <FilterBox name="Action Type" filter={typeFilter} onChange={setTypeFilter} />
+          <FilterBox
+            name="Action Type"
+            filter={typeFilter}
+            onChange={setTypeFilter}
+          />
         </Grid>
       </Grid>
 

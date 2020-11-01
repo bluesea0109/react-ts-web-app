@@ -24,7 +24,9 @@ export interface CommonTableBodyProps {
   Row?: React.ComponentType<any>;
 }
 
-export interface CommonTableProps extends CommonTableHeadProps, CommonTableBodyProps {
+export interface CommonTableProps
+  extends CommonTableHeadProps,
+    CommonTableBodyProps {
   nonRecordError?: string;
   data: DataInterface;
 }

@@ -48,9 +48,10 @@ const CollapsibleItem = ({
       <Paper variant="outlined" square={true} className={classes.paper}>
         <ItemRow
           item={item}
+          isCollapsed={isCollapsed}
           onEditRow={onEdit}
           onDeleteRow={onDelete}
-          onToggle={onToggleCollapse}
+          onToggleCollapse={onToggleCollapse}
         />
       </Paper>
       {!isCollapsed && (

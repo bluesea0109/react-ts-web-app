@@ -9,6 +9,7 @@ const CommonTableBody = ({
   Row,
 }: CommonTableBodyProps) => {
   const bodyAlignments = alignments || [];
+
   return (
     <TableBody>
       {rows.length ? (
@@ -25,7 +26,7 @@ const CommonTableBody = ({
                 </TableCell>
               ))}
             </TableRow>
-          )
+          ),
         )
       ) : (
         <Typography align="center">

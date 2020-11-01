@@ -1,7 +1,11 @@
 import { Button, makeStyles, SvgIconTypeMap, Theme } from '@material-ui/core';
 import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 import React from 'react';
-import { ButtonColorTypes, ButtonVariantTypes, TextTransformTypes } from '../types';
+import {
+  ButtonColorTypes,
+  ButtonVariantTypes,
+  TextTransformTypes,
+} from '../types';
 
 interface ComponentProps {
   textTransform: TextTransformTypes;
@@ -18,7 +22,7 @@ interface IconButtonProps {
   color?: ButtonColorTypes;
   variant?: ButtonVariantTypes;
   Icon: OverridableComponent<SvgIconTypeMap<{}, 'svg'>>;
-  iconPosition: 'left'|'right'|undefined;
+  iconPosition: 'left' | 'right' | undefined;
   textTransform?: TextTransformTypes;
   onClick: () => void;
 }
@@ -43,8 +47,7 @@ const IconButton: React.FC<IconButtonProps> = ({
       className={classes.root}
       onClick={onClick}
       startIcon={iconPosition === 'left' ? <Icon /> : undefined}
-      endIcon={iconPosition === 'right' ? <Icon /> : undefined}
-    >
+      endIcon={iconPosition === 'right' ? <Icon /> : undefined}>
       {title}
     </Button>
   );
