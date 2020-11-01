@@ -28,7 +28,8 @@ interface CollapsibleItemProps<ItemInterface> {
   index?: number;
   defaultCollapsed?: boolean;
   onEdit?: (item: ItemInterface) => void;
-  onDelete?: (item: ItemInterface) => void;
+  onUpdate?: (index: number, item: ItemInterface) => void;
+  onDelete?: (index: number) => void;
   onBulkUpdate?: (items: ItemInterface[]) => void;
   ItemRow: React.ComponentType<any>;
   ItemDetail: React.ComponentType<any>;
@@ -39,6 +40,7 @@ const CollapsibleItem = ({
   index,
   defaultCollapsed,
   onEdit,
+  onUpdate,
   onDelete,
   onBulkUpdate,
   ItemRow,
@@ -67,6 +69,7 @@ const CollapsibleItem = ({
             item={item}
             index={index}
             onEditRow={onEdit}
+            onUpdateRow={onUpdate}
             onDeleteRow={onDelete}
             onToggle={onToggleCollapse}
             onBulkUpdate={onBulkUpdate}

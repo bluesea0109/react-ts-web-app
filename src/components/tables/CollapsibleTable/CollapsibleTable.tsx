@@ -7,6 +7,7 @@ interface CollapsibleTableProps<ItemInterface> {
   items: ItemInterface[];
   defaultCollapsed?: boolean;
   onEditItem?: (item: ItemInterface) => void;
+  onUpdateItem?: (index: number, item: ItemInterface) => void;
   onDeleteItem?: (item: ItemInterface) => void;
   onBulkUpdate?: (items: ItemInterface[]) => void;
   ItemRow: React.ComponentType<any>;
@@ -17,6 +18,7 @@ const CollapsibleTable = ({
   items,
   defaultCollapsed,
   onEditItem,
+  onUpdateItem,
   onDeleteItem,
   onBulkUpdate,
   ItemRow,
@@ -31,6 +33,7 @@ const CollapsibleTable = ({
           item={item}
           defaultCollapsed={defaultCollapsed}
           onEdit={onEditItem}
+          onUpdate={onUpdateItem}
           onDelete={onDeleteItem}
           onBulkUpdate={onBulkUpdate}
           ItemRow={ItemRow}

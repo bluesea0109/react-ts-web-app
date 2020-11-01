@@ -28,7 +28,8 @@ interface ItemDetailProps {
   index: number;
   intents: IIntent[];
   option: IResponseOption;
-  onBulkUpdate: (options: IResponseOption[]) => void;
+  onUpdateRow: (index: number, item: IResponseOption) => void;
+  onDeleteRow: (index: number) => void;
 }
 
 interface OptionListProps {
@@ -40,10 +41,21 @@ interface OptionListProps {
 const OptionList = ({ intents, options, onBulkUpdate }: OptionListProps) => {
   const classes = useStyles();
 
+  const onUpdateOption = (index: number, option: IResponseOption) =>
+    onBulkUpdate([
+      ...options.slice(0, index),
+      option,
+      ...options.slice(index + 1),
+    ]);
+
+  const onDeleteOption = (index: number) =>
+    onBulkUpdate([...options.filter((_, id) => id !== index)]);
+
   return (
     <CollapsibleTable
       items={options}
-      onBulkUpdate={onBulkUpdate}
+      onUpdateItem={onUpdateOption}
+      onDeleteItem={onDeleteOption}
       defaultCollapsed={false}
       ItemRow={({ index, isCollapsed, onToggleCollapse }: ItemRowProps) => (
         <Grid container={true} alignItems="center" className={classes.header}>
@@ -67,23 +79,18 @@ const OptionList = ({ intents, options, onBulkUpdate }: OptionListProps) => {
           </Grid>
         </Grid>
       )}
-      ItemDetail={({ item, index, onBulkUpdate }: ItemDetailProps) => (
+      ItemDetail={({
+        item,
+        index,
+        intents,
+        onUpdateRow,
+        onDeleteRow,
+      }: ItemDetailProps) => (
         <EditOption
           option={item}
           intents={intents}
-          onEditOption={(option: IResponseOption) =>
-            onBulkUpdate([
-              ...options.slice(0, index),
-              option,
-              ...options.slice(index + 1),
-            ])
-          }
-          onDeleteOption={() =>
-            onBulkUpdate([
-              ...options.slice(0, index),
-              ...options.slice(index + 1),
-            ])
-          }
+          onUpdateOption={(option) => onUpdateRow(index, option)}
+          onDeleteOption={() => onDeleteRow(index)}
         />
       )}
     />
