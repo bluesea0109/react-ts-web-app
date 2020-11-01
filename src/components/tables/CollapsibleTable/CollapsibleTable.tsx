@@ -12,6 +12,7 @@ interface CollapsibleTableProps<ItemInterface> {
   onBulkUpdate?: (items: ItemInterface[]) => void;
   ItemRow: React.ComponentType<any>;
   ItemDetail: React.ComponentType<any>;
+  otherProps?: object;
 }
 
 const CollapsibleTable = ({
@@ -23,6 +24,7 @@ const CollapsibleTable = ({
   onBulkUpdate,
   ItemRow,
   ItemDetail,
+  otherProps,
 }: CollapsibleTableProps<ItemInterface>) => {
   return (
     <Grid container={true}>
@@ -38,6 +40,7 @@ const CollapsibleTable = ({
           onBulkUpdate={onBulkUpdate}
           ItemRow={ItemRow}
           ItemDetail={ItemDetail}
+          otherProps={otherProps}
         />
       ))}
     </Grid>

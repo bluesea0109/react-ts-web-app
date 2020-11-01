@@ -23,6 +23,8 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
+type OtherProps = { [index: string]: any };
+
 interface CollapsibleItemProps<ItemInterface> {
   item: ItemInterface;
   index?: number;
@@ -33,6 +35,7 @@ interface CollapsibleItemProps<ItemInterface> {
   onBulkUpdate?: (items: ItemInterface[]) => void;
   ItemRow: React.ComponentType<any>;
   ItemDetail: React.ComponentType<any>;
+  otherProps?: object;
 }
 
 const CollapsibleItem = ({
@@ -42,9 +45,9 @@ const CollapsibleItem = ({
   onEdit,
   onUpdate,
   onDelete,
-  onBulkUpdate,
   ItemRow,
   ItemDetail,
+  otherProps,
 }: CollapsibleItemProps<ItemInterface>) => {
   const classes = useStyles();
   const [isCollapsed, setIsCollapsed] = useState<boolean>(!!defaultCollapsed);
@@ -72,7 +75,7 @@ const CollapsibleItem = ({
             onUpdateRow={onUpdate}
             onDeleteRow={onDelete}
             onToggle={onToggleCollapse}
-            onBulkUpdate={onBulkUpdate}
+            otherProps={otherProps}
           />
         </Paper>
       )}

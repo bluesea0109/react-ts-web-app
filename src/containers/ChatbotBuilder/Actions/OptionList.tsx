@@ -26,10 +26,10 @@ interface ItemRowProps {
 interface ItemDetailProps {
   item: IResponseOption;
   index: number;
-  intents: IIntent[];
   option: IResponseOption;
   onUpdateRow: (index: number, item: IResponseOption) => void;
   onDeleteRow: (index: number) => void;
+  otherProps: { intents: IIntent[] };
 }
 
 interface OptionListProps {
@@ -38,9 +38,49 @@ interface OptionListProps {
   onBulkUpdate: (options: IResponseOption[]) => void;
 }
 
-const OptionList = ({ intents, options, onBulkUpdate }: OptionListProps) => {
+const OptionRow = ({ index, isCollapsed, onToggleCollapse }: ItemRowProps) => {
   const classes = useStyles();
 
+  return (
+    <Grid container={true} alignItems="center" className={classes.header}>
+      <Grid item={true} container={true} xs={6} alignItems="center">
+        <Typography>{`Option ${index + 1}`}</Typography>
+      </Grid>
+      <Grid item={true} container={true} xs={6} justify="flex-end">
+        {isCollapsed ? (
+          <KeyboardArrowUp
+            color="primary"
+            fontSize="large"
+            onClick={onToggleCollapse}
+          />
+        ) : (
+          <KeyboardArrowDown
+            color="primary"
+            fontSize="large"
+            onClick={onToggleCollapse}
+          />
+        )}
+      </Grid>
+    </Grid>
+  );
+};
+
+const OptionDetail = ({
+  item,
+  index,
+  onUpdateRow,
+  onDeleteRow,
+  otherProps,
+}: ItemDetailProps) => (
+  <EditOption
+    option={item}
+    onUpdateOption={(option) => onUpdateRow(index, option)}
+    onDeleteOption={() => onDeleteRow(index)}
+    intents={otherProps.intents}
+  />
+);
+
+const OptionList = ({ intents, options, onBulkUpdate }: OptionListProps) => {
   const onUpdateOption = (index: number, option: IResponseOption) =>
     onBulkUpdate([
       ...options.slice(0, index),
@@ -57,42 +97,9 @@ const OptionList = ({ intents, options, onBulkUpdate }: OptionListProps) => {
       onUpdateItem={onUpdateOption}
       onDeleteItem={onDeleteOption}
       defaultCollapsed={false}
-      ItemRow={({ index, isCollapsed, onToggleCollapse }: ItemRowProps) => (
-        <Grid container={true} alignItems="center" className={classes.header}>
-          <Grid item={true} container={true} xs={6} alignItems="center">
-            <Typography>{`Option ${index + 1}`}</Typography>
-          </Grid>
-          <Grid item={true} container={true} xs={6} justify="flex-end">
-            {isCollapsed ? (
-              <KeyboardArrowUp
-                color="primary"
-                fontSize="large"
-                onClick={onToggleCollapse}
-              />
-            ) : (
-              <KeyboardArrowDown
-                color="primary"
-                fontSize="large"
-                onClick={onToggleCollapse}
-              />
-            )}
-          </Grid>
-        </Grid>
-      )}
-      ItemDetail={({
-        item,
-        index,
-        intents,
-        onUpdateRow,
-        onDeleteRow,
-      }: ItemDetailProps) => (
-        <EditOption
-          option={item}
-          intents={intents}
-          onUpdateOption={(option) => onUpdateRow(index, option)}
-          onDeleteOption={() => onDeleteRow(index)}
-        />
-      )}
+      otherProps={{ intents }}
+      ItemRow={OptionRow}
+      ItemDetail={OptionDetail}
     />
   );
 };

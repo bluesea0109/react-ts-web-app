@@ -47,11 +47,13 @@ interface NewActionTableProps {
   onDeleteAction: (action: BaseAgentAction) => void;
 }
 
-const NewActionTable = ({
-  actions,
-  onEditAction,
-  onDeleteAction,
-}: NewActionTableProps) => {
+const ActionRow = ({
+  item,
+  isCollapsed,
+  onEditRow,
+  onDeleteRow,
+  onToggleCollapse,
+}: ItemRowProps) => {
   const classes = useStyles();
 
   const getActionType = (action: BaseAgentAction) => {
@@ -68,55 +70,59 @@ const NewActionTable = ({
   };
 
   return (
+    <Grid container={true} className={classes.header} alignItems="center">
+      <Grid item={true} container={true} xs={6} sm={6} alignItems="center">
+        <Box mr={1}>
+          {isCollapsed ? (
+            <KeyboardArrowRight
+              color="primary"
+              fontSize="large"
+              onClick={onToggleCollapse}
+            />
+          ) : (
+            <KeyboardArrowDown
+              color="primary"
+              fontSize="large"
+              onClick={onToggleCollapse}
+            />
+          )}
+        </Box>
+        <Typography style={{ textTransform: 'capitalize' }}>
+          {item.name}
+        </Typography>
+      </Grid>
+      <Grid item={true} xs={4} sm={4}>
+        <Typography>{getActionType(item)}</Typography>
+      </Grid>
+      <Grid item={true} container={true} xs={2} sm={2} justify="flex-end">
+        <Box mr={1}>
+          <Edit onClick={() => onEditRow(item)} />
+        </Box>
+        <Box ml={1}>
+          <Delete onClick={() => onDeleteRow(item)} />
+        </Box>
+      </Grid>
+    </Grid>
+  );
+};
+
+const ActionDetail = ({ item }: ItemDetailProps) => (
+  <ActionDetailPanel action={item} />
+);
+
+const NewActionTable = ({
+  actions,
+  onEditAction,
+  onDeleteAction,
+}: NewActionTableProps) => {
+  return (
     <CollapsibleTable
       items={actions}
       defaultCollapsed={true}
       onEditItem={onEditAction}
       onDeleteItem={onDeleteAction}
-      ItemRow={({
-        item,
-        isCollapsed,
-        onEditRow,
-        onDeleteRow,
-        onToggleCollapse,
-      }: ItemRowProps) => (
-        <Grid container={true} className={classes.header} alignItems="center">
-          <Grid item={true} container={true} xs={6} sm={6} alignItems="center">
-            <Box mr={1}>
-              {isCollapsed ? (
-                <KeyboardArrowRight
-                  color="primary"
-                  fontSize="large"
-                  onClick={onToggleCollapse}
-                />
-              ) : (
-                <KeyboardArrowDown
-                  color="primary"
-                  fontSize="large"
-                  onClick={onToggleCollapse}
-                />
-              )}
-            </Box>
-            <Typography style={{ textTransform: 'capitalize' }}>
-              {item.name}
-            </Typography>
-          </Grid>
-          <Grid item={true} xs={4} sm={4}>
-            <Typography>{getActionType(item)}</Typography>
-          </Grid>
-          <Grid item={true} container={true} xs={2} sm={2} justify="flex-end">
-            <Box mr={1}>
-              <Edit onClick={() => onEditRow(item)} />
-            </Box>
-            <Box ml={1}>
-              <Delete onClick={() => onDeleteRow(item)} />
-            </Box>
-          </Grid>
-        </Grid>
-      )}
-      ItemDetail={({ item }: ItemDetailProps) => (
-        <ActionDetailPanel action={item} />
-      )}
+      ItemRow={ActionRow}
+      ItemDetail={ActionDetail}
     />
   );
 };
