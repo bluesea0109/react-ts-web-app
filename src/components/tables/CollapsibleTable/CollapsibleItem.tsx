@@ -25,21 +25,27 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface CollapsibleItemProps<ItemInterface> {
   item: ItemInterface;
+  index?: number;
+  defaultCollapsed?: boolean;
   onEdit?: (item: ItemInterface) => void;
   onDelete?: (item: ItemInterface) => void;
+  onBulkUpdate?: (items: ItemInterface[]) => void;
   ItemRow: React.ComponentType<any>;
   ItemDetail: React.ComponentType<any>;
 }
 
 const CollapsibleItem = ({
   item,
+  index,
+  defaultCollapsed,
   onEdit,
   onDelete,
+  onBulkUpdate,
   ItemRow,
   ItemDetail,
 }: CollapsibleItemProps<ItemInterface>) => {
   const classes = useStyles();
-  const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(!!defaultCollapsed);
 
   const onToggleCollapse = () => setIsCollapsed(!isCollapsed);
 
@@ -48,6 +54,7 @@ const CollapsibleItem = ({
       <Paper variant="outlined" square={true} className={classes.paper}>
         <ItemRow
           item={item}
+          index={index}
           isCollapsed={isCollapsed}
           onEditRow={onEdit}
           onDeleteRow={onDelete}
@@ -56,7 +63,14 @@ const CollapsibleItem = ({
       </Paper>
       {!isCollapsed && (
         <Paper variant="outlined" square={true} className={classes.paper}>
-          <ItemDetail item={item} onToggle={onToggleCollapse} />
+          <ItemDetail
+            item={item}
+            index={index}
+            onEditRow={onEdit}
+            onDeleteRow={onDelete}
+            onToggle={onToggleCollapse}
+            onBulkUpdate={onBulkUpdate}
+          />
         </Paper>
       )}
     </Grid>

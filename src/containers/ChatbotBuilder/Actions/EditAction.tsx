@@ -184,7 +184,7 @@ const EditAction = ({
               <Options
                 options={currentAction.options}
                 onCreateOption={handleOptionCreate}
-                onSetOptions={(options) => setCurrentAction({ ...currentAction, options })}
+                onBulkUpdate={(options) => setCurrentAction({ ...currentAction, options })}
               />
             )}
           </Grid>

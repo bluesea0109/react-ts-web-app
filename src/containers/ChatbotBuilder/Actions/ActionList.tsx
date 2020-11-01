@@ -70,6 +70,7 @@ const NewActionTable = ({
   return (
     <CollapsibleTable
       items={actions}
+      defaultCollapsed={true}
       onEditItem={onEditAction}
       onDeleteItem={onDeleteAction}
       ItemRow={({
