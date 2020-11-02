@@ -31,6 +31,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginLeft: '0px',
     marginRight: '15px',
     cursor: 'pointer',
+    color: '#0161FF',
   },
 }));
 
@@ -58,13 +59,13 @@ export const ToolBarSetting = ({
       </div>
       <div className={classes.button}>
         <div onClick={saveAgent}>
-          <img src="/save-button.svg" alt="save" width="20px" height="20px" style={{marginRight: '5px'}}/>
+          <img src="/save-button.png" alt="save" width="20px" height="20px" style={{marginRight: '5px'}}/>
           Save Agent
         </div>
       </div>
       <div className={classes.button}>
         <div onClick={publishAgent}>
-        <img src="/rocket-icon_8.png" alt="save" width="20px" height="20px" style={{marginRight: '5px'}}/>
+        <img src="/rocket-icon.png" alt="save" width="20px" height="20px" style={{marginRight: '5px'}}/>
           Publish Assistant
         </div>
       </div>
