@@ -36,7 +36,6 @@ const useStyles = makeStyles((theme: Theme) =>
     listItem: {
       color: 'white',
       padding: '10px 5px 5px 15px',
-      marginLeft: '0px',
       marginRight: '15px',
     },
 
