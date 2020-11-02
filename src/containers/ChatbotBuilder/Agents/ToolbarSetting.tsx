@@ -22,7 +22,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   dropdown: {
     display: 'flex',
     flexDirection: 'row',
-    marginRight: '80px',
+    marginRight: '10px',
+    paddingRight: '20px',
+    borderRight: '1px solid gray',
   },
   button: {
     padding: '10px 5px',
