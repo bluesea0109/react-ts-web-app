@@ -1,3 +1,4 @@
+import React from 'react';
 import { AlignmentType } from '../../types';
 
 export type HeadersType = (string | null)[];
@@ -5,6 +6,17 @@ export type HeadersType = (string | null)[];
 export type ItemType = any[];
 
 export type RowsType = ItemType[];
+
+export interface PaginationType {
+  rowsPerPage: number;
+  page: number;
+  rowCount: number;
+  colSpan?: number;
+  handleChangePage: (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    page: number,
+  ) => void;
+}
 
 export interface DataInterface {
   headers: HeadersType;
@@ -18,15 +30,21 @@ export interface CommonTableHeadProps {
 }
 
 export interface CommonTableBodyProps {
-  rows: RowsType;
+  rows?: ItemType[];
   alignments?: AlignmentType[];
   nonRecordError?: string;
   Row?: React.ComponentType<any>;
 }
 
-export interface CommonTableProps
-  extends CommonTableHeadProps,
-    CommonTableBodyProps {
-  nonRecordError?: string;
+export interface CommonTableFooterProps {
+  isPaginated?: boolean;
+  pagination?: PaginationType;
+}
+
+// prettier-ignore
+export interface CommonTableProps {
   data: DataInterface;
+  alignments?: AlignmentType[];
+  nonRecordError?: string;
+  Row?: React.ComponentType<any>;
 }

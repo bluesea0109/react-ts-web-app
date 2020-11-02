@@ -10,12 +10,12 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import MuiAlert from '@material-ui/lab/Alert';
 import React, { useState } from 'react';
 
+import { CommonTable } from '../../../components';
 import ConfirmDialog from '../../../components/ConfirmDialog';
 import { IMember, IUser } from '../../../models/user-service';
 import ContentLoading from '../../ContentLoading';
@@ -72,15 +72,15 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
   });
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [changeConfirm, setChangeConfirm] = useState(false);
-  const [
-    removeOrgMember,
-    { loading, data: removedMember },
-  ] = useMutation(REMOVE_ORG_MEMBER, {
-    onCompleted() {
-      props.refetchOrgs();
-      setOpenSnackBar(true);
+  const [removeOrgMember, { loading, data: removedMember }] = useMutation(
+    REMOVE_ORG_MEMBER,
+    {
+      onCompleted() {
+        props.refetchOrgs();
+        setOpenSnackBar(true);
+      },
     },
-  });
+  );
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -107,8 +107,7 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
     setOpenSnackBar(false);
   };
 
-  const role =
-    props.user.activeOrg?.currentUserMember?.role || null;
+  const role = props.user.activeOrg?.currentUserMember?.role || null;
   const pageItems = getPage(props.members);
 
   const onUpdateCallback = () => {
@@ -116,7 +115,7 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
     setChangeConfirm(false);
   };
 
-  const getTableRow = (member: IMember, i: number) => {
+  const MemberRow = (member: IMember, i: number) => {
     if (member.uid === props.user.uid) {
       return (
         <TableRow key={i}>
@@ -154,7 +153,8 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
       <TableRow key={i}>
         <TableCell align="left">{member.user?.name || 'unknown'}</TableCell>
         <TableCell align="left">{member.user?.email || 'unknown'}</TableCell>
-        <TableCell align="left">{member.role}
+        <TableCell align="left">
+          {member.role}
           <IconButtonEdit
             tooltip="Change Role"
             onClick={() => {
@@ -194,41 +194,41 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
   return (
     <React.Fragment>
       {loading ? (
-        <ContentLoading shrinked={true}/>
+        <ContentLoading shrinked={true} />
       ) : (
-          <TableContainer className={classes.tableContainer}>
-            <Table aria-label="sticky table">
-              <TableHead>
-                <TableRow>
-                  <TableCell align="left">Name</TableCell>
-                  <TableCell align="left">Email</TableCell>
-                  <TableCell align="left">Role</TableCell>
-                  <TableCell align="left">Options</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {pageItems.map((member, i) => {
-                  return getTableRow(member, i);
-                })}
-              </TableBody>
-              <TableFooter>
-                <TableRow>
-                  <TablePagination
-                    rowsPerPageOptions={[5]}
-                    colSpan={3}
-                    count={props.members?.length || 0}
-                    rowsPerPage={state.rowsPerPage}
-                    page={state.page}
-                    SelectProps={{
-                      native: true,
-                    }}
-                    onChangePage={handleChangePage}
-                  />
-                </TableRow>
-              </TableFooter>
-            </Table>
-          </TableContainer>
-        )}
+        <TableContainer className={classes.tableContainer}>
+          <Table aria-label="sticky table">
+            <TableHead>
+              <TableRow>
+                <TableCell align="left">Name</TableCell>
+                <TableCell align="left">Email</TableCell>
+                <TableCell align="left">Role</TableCell>
+                <TableCell align="left">Options</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {pageItems.map((member, i) => {
+                return MemberRow(member, i);
+              })}
+            </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TablePagination
+                  rowsPerPageOptions={[5]}
+                  colSpan={3}
+                  count={props.members?.length || 0}
+                  rowsPerPage={state.rowsPerPage}
+                  page={state.page}
+                  SelectProps={{
+                    native: true,
+                  }}
+                  onChangePage={handleChangePage}
+                />
+              </TableRow>
+            </TableFooter>
+          </Table>
+        </TableContainer>
+      )}
       <Snackbar
         open={openSnackBar}
         autoHideDuration={6000}
@@ -238,10 +238,10 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
             {'A Member is removed successfully!'}
           </Alert>
         ) : (
-            <Alert onClose={handleCloseSnackBar} severity="error">
-              {'Sorry, we couldn\'t remove the member.'}
-            </Alert>
-          )}
+          <Alert onClose={handleCloseSnackBar} severity="error">
+            {'Sorry, we couldn\'t remove the member.'}
+          </Alert>
+        )}
       </Snackbar>
     </React.Fragment>
   );

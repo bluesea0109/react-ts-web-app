@@ -12,7 +12,7 @@ const CommonTableBody = ({
 
   return (
     <TableBody>
-      {rows.length ? (
+      {rows?.length ? (
         rows.map((row, rowIndex) =>
           Row ? (
             <Row key={rowIndex} />
@@ -26,7 +26,7 @@ const CommonTableBody = ({
                 </TableCell>
               ))}
             </TableRow>
-          )
+          ),
         )
       ) : (
         <Typography align="center">
