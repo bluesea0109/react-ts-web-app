@@ -5,12 +5,7 @@ import {
   IIntent,
   IResponseOption,
 } from '@bavard/agent-config';
-import {
-  createStyles,
-  Grid,
-  makeStyles,
-  Theme,
-} from '@material-ui/core';
+import { createStyles, Grid, makeStyles, Theme } from '@material-ui/core';
 import Delete from '@material-ui/icons/Delete';
 import React, { useMemo } from 'react';
 import {
@@ -44,19 +39,23 @@ const useStyles = makeStyles((theme: Theme) =>
 interface EditOptionProps {
   intents: IIntent[];
   option: IResponseOption;
-  onEditOption: (option: IResponseOption) => void;
+  onUpdateOption: (option: IResponseOption) => void;
   onDeleteOption: () => void;
 }
 
 const EditOption = ({
   intents,
   option,
-  onEditOption,
+  onUpdateOption,
   onDeleteOption,
 }: EditOptionProps) => {
   const classes = useStyles();
 
-  const OptionTypes = [EResponseOptionTypes.TEXT, EResponseOptionTypes.HYPERLINK, EResponseOptionTypes.IMAGE].map(type => ({
+  const OptionTypes = [
+    EResponseOptionTypes.TEXT,
+    EResponseOptionTypes.HYPERLINK,
+    EResponseOptionTypes.IMAGE,
+  ].map((type) => ({
     id: type,
     name: type,
   }));
@@ -82,17 +81,19 @@ const EditOption = ({
           menuItems={OptionTypes}
           current={option.type}
           padding="12px"
-          onChange={(type) => onEditOption({
-            ...option,
-            type,
-          } as IResponseOption)}
+          onChange={(type) =>
+            onUpdateOption({
+              ...option,
+              type,
+            } as IResponseOption)
+          }
         />
       </Grid>
       <Grid container={true} className={classes.formField}>
         <RichTextInput
           label="Option Text"
           value={option.text || ''}
-          onChange={(html: string) => onEditOption({ ...option, text: html })}
+          onChange={(html: string) => onUpdateOption({ ...option, text: html })}
         />
       </Grid>
       {isHyperLinkOption && (
@@ -103,7 +104,7 @@ const EditOption = ({
             value={(option as IHyperlinkOption).targetLink || ''}
             className={classes.input}
             onChange={(e) =>
-              onEditOption({
+              onUpdateOption({
                 ...option,
                 targetLink: e.target.value,
               } as IHyperlinkOption)
@@ -120,10 +121,12 @@ const EditOption = ({
             menuItems={allIntents}
             current={option.intent}
             padding="12px"
-            onChange={(intent) => onEditOption({
-              ...option,
-              intent,
-            } as IResponseOption)}
+            onChange={(intent) =>
+              onUpdateOption({
+                ...option,
+                intent,
+              } as IResponseOption)
+            }
           />
         </Grid>
       )}
@@ -135,10 +138,12 @@ const EditOption = ({
               label="Image Name"
               value={(option as IImageOption).imageName || ''}
               className={classes.input}
-              onChange={(e) => onEditOption({
-                ...option,
-                imageName: e.target.value,
-              } as IResponseOption)}
+              onChange={(e) =>
+                onUpdateOption({
+                  ...option,
+                  imageName: e.target.value,
+                } as IResponseOption)
+              }
             />
           </Grid>
           <Grid container={true} className={classes.formField}>
@@ -147,16 +152,18 @@ const EditOption = ({
               label="Image Caption"
               value={(option as IImageOption).caption || ''}
               className={classes.input}
-              onChange={(e) => onEditOption({
-                ...option,
-                caption: e.target.value,
-              } as IResponseOption)}
+              onChange={(e) =>
+                onUpdateOption({
+                  ...option,
+                  caption: e.target.value,
+                } as IResponseOption)
+              }
             />
           </Grid>
           <Grid container={true} className={classes.formField}>
             <OptionImageUploader
               option={option as IImageOption}
-              onEditOption={onEditOption}
+              onUpdateOption={onUpdateOption}
             />
           </Grid>
         </>
