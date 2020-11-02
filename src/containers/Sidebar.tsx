@@ -66,7 +66,6 @@ const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
   }, [match?.path]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    console.log('Current url  :', currentLocation);
     const homeRegx = RegExp('^/$', 'g');
     const createBotRegx = RegExp(
       '^/orgs/[A-Z,a-z,0-9-]+/projects/[A-Z,a-z,0-9-]+/chatbot-builder$',
