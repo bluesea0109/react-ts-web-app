@@ -51,7 +51,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     background: '#f5f5f5',
   },
   toolbar: {
-    padding: '10px',
     background: '#ddd',
     display: 'flex',
     justifyContent: 'flex-end',
@@ -124,7 +123,7 @@ const AgentDetails = () => {
     currentWidgetSettings,
   );
 
-  const init = agents?.filter((item) => item.id === parseInt(agentId, 10))[0].uname;
+  const init = agents?.filter((item) => item.id === parseInt(agentId, 10))[0]?.uname;
 
   const [curAgent, setCurAgent] = useState<string | undefined>(init);
 
