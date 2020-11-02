@@ -1,39 +1,106 @@
 import { IIntent, IResponseOption } from '@bavard/agent-config';
-import { Grid } from '@material-ui/core';
+import { createStyles, Grid, makeStyles, Typography } from '@material-ui/core';
+import { KeyboardArrowDown, KeyboardArrowUp } from '@material-ui/icons';
 import React from 'react';
-import CollapsibleOption from './CollapsibleOption';
+import { CollapsibleTable } from '../../../components';
+import EditOption from './EditOption';
+
+const useStyles = makeStyles((_) =>
+  createStyles({
+    paper: {
+      width: '100%',
+    },
+    header: {
+      padding: '4px 8px 4px 4px',
+    },
+  }),
+);
+
+interface ItemRowProps {
+  item: IResponseOption;
+  index: number;
+  isCollapsed: boolean;
+  onToggleCollapse: () => void;
+}
+
+interface ItemDetailProps {
+  item: IResponseOption;
+  index: number;
+  option: IResponseOption;
+  onUpdateRow: (index: number, item: IResponseOption) => void;
+  onDeleteRow: (index: number) => void;
+  otherProps: { intents: IIntent[] };
+}
 
 interface OptionListProps {
   intents: IIntent[];
   options: IResponseOption[];
-  onSetOptions: (options: IResponseOption[]) => void;
+  onBulkUpdate: (options: IResponseOption[]) => void;
 }
 
-const OptionList = ({
-  intents,
-  options,
-  onSetOptions,
-}: OptionListProps) => {
-  const setOption = (index: number, option: IResponseOption) => {
-    onSetOptions([ ...options.slice(0, index), option, ...options.slice(index + 1)]);
-  };
-  const deleteOption = (index: number) => {
-    onSetOptions([ ...options.slice(0, index), ...options.slice(index + 1)]);
-  };
+const OptionRow = ({ index, isCollapsed, onToggleCollapse }: ItemRowProps) => {
+  const classes = useStyles();
 
   return (
-    <Grid container={true}>
-      {options.map((option, index) => (
-        <CollapsibleOption
-          key={index}
-          index={index + 1}
-          intents={intents}
-          option={option}
-          onEditOption={(option) => setOption(index, option)}
-          onDeleteOption={() => deleteOption(index)}
-        />
-      ))}
+    <Grid container={true} alignItems="center" className={classes.header}>
+      <Grid item={true} container={true} xs={6} alignItems="center">
+        <Typography>{`Option ${index + 1}`}</Typography>
+      </Grid>
+      <Grid item={true} container={true} xs={6} justify="flex-end">
+        {isCollapsed ? (
+          <KeyboardArrowUp
+            color="primary"
+            fontSize="large"
+            onClick={onToggleCollapse}
+          />
+        ) : (
+          <KeyboardArrowDown
+            color="primary"
+            fontSize="large"
+            onClick={onToggleCollapse}
+          />
+        )}
+      </Grid>
     </Grid>
+  );
+};
+
+const OptionDetail = ({
+  item,
+  index,
+  onUpdateRow,
+  onDeleteRow,
+  otherProps,
+}: ItemDetailProps) => (
+  <EditOption
+    option={item}
+    onUpdateOption={(option) => onUpdateRow(index, option)}
+    onDeleteOption={() => onDeleteRow(index)}
+    intents={otherProps.intents}
+  />
+);
+
+const OptionList = ({ intents, options, onBulkUpdate }: OptionListProps) => {
+  const onUpdateOption = (index: number, option: IResponseOption) =>
+    onBulkUpdate([
+      ...options.slice(0, index),
+      option,
+      ...options.slice(index + 1),
+    ]);
+
+  const onDeleteOption = (index: number) =>
+    onBulkUpdate([...options.filter((_, id) => id !== index)]);
+
+  return (
+    <CollapsibleTable
+      items={options}
+      onUpdateItem={onUpdateOption}
+      onDeleteItem={onDeleteOption}
+      defaultCollapsed={false}
+      otherProps={{ intents }}
+      ItemRow={OptionRow}
+      ItemDetail={OptionDetail}
+    />
   );
 };
 

@@ -73,7 +73,7 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: '#151630',
       width: theme.spacing(7) + 1,
       [theme.breakpoints.up('sm')]: {
-        width: theme.spacing(9) + 1,
+        width: theme.spacing(9) + 7,
       },
     },
     content: {
@@ -243,10 +243,10 @@ function App() {
             </Route>
             <Route path="/orgs/:orgId/projects/:projectId/text-labeling" />
             <Route exact={true} path="/no-project">
-              <NoOrgPage type="NO_PROJECTS"/>
+              <NoOrgPage type="NO_PROJECTS" />
             </Route>
             <Route exact={true} path="/no-orgs">
-              <NoOrgPage type="NO_ORGS"/>
+              <NoOrgPage type="NO_ORGS" />
             </Route>
           </Switch>
         </main>

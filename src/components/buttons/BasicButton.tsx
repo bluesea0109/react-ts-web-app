@@ -2,7 +2,11 @@ import Button from '@material-ui/core/Button';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import React from 'react';
-import { ButtonColorTypes, ButtonVariantTypes, TextTransformTypes } from '../types';
+import {
+  ButtonColorTypes,
+  ButtonVariantTypes,
+  TextTransformTypes,
+} from '../types';
 
 interface ComponentProps {
   textTransform: TextTransformTypes;
@@ -38,8 +42,7 @@ const BasicButton: React.FC<BasicButtonProps> = ({
       color={color || 'primary'}
       variant={variant || 'contained'}
       className={clsx(classes.root)}
-      onClick={onClick}
-    >
+      onClick={onClick}>
       {title}
     </Button>
   );
