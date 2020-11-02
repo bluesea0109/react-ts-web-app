@@ -1,4 +1,4 @@
-import {  makeStyles, Theme, Typography } from '@material-ui/core';
+import {  makeStyles, Theme, Toolbar, Typography } from '@material-ui/core';
 import React from 'react';
 import { DropDown } from '../../../components';
 import { IAgent } from '../../../models/chatbot-service';
@@ -44,7 +44,7 @@ export const ToolBarSetting = ({
 }: ToolBarSettingProps) => {
   const classes = useStyles();
   return (
-    <div className={classes.root}>
+    <Toolbar className={classes.root} variant="dense">
       <div className={classes.dropdown}>
         <Typography className={classes.label}>Current Assistant : </Typography>
         {agents && (
@@ -69,6 +69,6 @@ export const ToolBarSetting = ({
           Publish Assistant
         </div>
       </div>
-    </div>
+    </Toolbar>
   );
 };
