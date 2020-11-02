@@ -3,16 +3,15 @@ import React, { useState } from 'react';
 import CommonTableBody from './CommonTableBody';
 import CommonTableFooter from './CommonTableFooter';
 import CommonTableHead from './CommonTableHead';
-import { CommonTableProps } from './types';
+import { CommonTableProps, RowData } from './types';
 
 const CommonTable = ({
-  alignments,
   data,
+  alignments,
   nonRecordError,
-  Row,
   pagination,
-}: CommonTableProps) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  Row,
+}: CommonTableProps<RowData>) => {
   const [page, setPage] = useState(0);
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -23,16 +22,21 @@ const CommonTable = ({
 
   return (
     <Table>
-      <CommonTableHead alignments={alignments} headers={data.headers} />
+      <CommonTableHead alignments={alignments} columns={data.columns} />
       <CommonTableBody
+        data={data}
         alignments={alignments}
-        rows={data.rows}
-        Row={Row}
         nonRecordError={nonRecordError}
+        Row={Row}
       />
       <CommonTableFooter
         isPaginated={!!pagination}
-        pagination={{ ...pagination, handleChangePage }}
+        pagination={{
+          ...pagination,
+          page,
+          rowCount: data.rowsData.length,
+          handleChangePage,
+        }}
       />
     </Table>
   );

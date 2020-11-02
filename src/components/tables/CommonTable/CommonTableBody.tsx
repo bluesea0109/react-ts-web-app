@@ -1,24 +1,24 @@
 import { TableBody, TableCell, TableRow, Typography } from '@material-ui/core';
 import React from 'react';
-import { CommonTableBodyProps } from './types';
+import { CommonTableBodyProps, RowData } from './types';
 
 const CommonTableBody = ({
-  rows,
+  data,
   alignments,
   nonRecordError,
   Row,
-}: CommonTableBodyProps) => {
+}: CommonTableBodyProps<RowData>) => {
   const bodyAlignments = alignments || [];
 
   return (
     <TableBody>
-      {rows?.length ? (
-        rows.map((row, rowIndex) =>
+      {data?.rowsData.length ? (
+        data.rowsData.map((rowData, rowIndex) =>
           Row ? (
-            <Row key={rowIndex} />
+            <Row key={rowIndex} rowData={rowData} />
           ) : (
-            <TableRow key={rowIndex} hover={true}>
-              {row.map((col, colIndex) => (
+            <TableRow hover={true}>
+              {Object.values(rowData).map((col, colIndex) => (
                 <TableCell
                   key={colIndex}
                   align={bodyAlignments[colIndex] || 'left'}>

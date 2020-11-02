@@ -13,9 +13,10 @@ import {
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import MuiAlert from '@material-ui/lab/Alert';
+import _ from 'lodash';
 import React, { useState } from 'react';
 
-import ConfirmDialog from '../../../components/ConfirmDialog';
+import { CommonTable, ConfirmDialog } from '../../../components';
 import { IMember, IUser } from '../../../models/user-service';
 import ContentLoading from '../../ContentLoading';
 import IconButtonDelete from '../../IconButtons/IconButtonDelete';
@@ -190,12 +191,25 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
     );
   };
 
+  const columns = [
+    { title: 'Name', field: 'name' },
+    { title: 'Email', field: 'email' },
+    { title: 'Role', field: 'Role' },
+    { title: 'Options', field: 'option' },
+  ];
+
   return (
     <React.Fragment>
       {loading ? (
         <ContentLoading shrinked={true} />
       ) : (
         <TableContainer className={classes.tableContainer}>
+          <CommonTable
+            data={{
+              columns,
+              rowsData: _.cloneDeep(props.members),
+            }}
+          />
           <Table aria-label="sticky table">
             <TableHead>
               <TableRow>

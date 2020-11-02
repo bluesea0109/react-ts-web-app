@@ -4,7 +4,7 @@ import { CommonTableHeadProps } from './types';
 
 const CommonTableHead = ({
   alignments,
-  headers,
+  columns,
   HeaderRow,
 }: CommonTableHeadProps) => {
   const headerAlignments = alignments || [];
@@ -14,11 +14,11 @@ const CommonTableHead = ({
       {HeaderRow ? (
         <HeaderRow />
       ) : (
-        headers && (
+        columns && (
           <TableRow>
-            {headers.map((header, index) => (
+            {columns.map((header, index) => (
               <TableCell
-                key={header || index}
+                key={header.title || header.field || index}
                 align={headerAlignments[index] || 'left'}
               />
             ))}
