@@ -360,6 +360,28 @@ function CustomDrawer(props: CustomDrawerProps) {
                 }
               />
             </ListItem>
+            <ListItem
+              component={Link}
+              to={createAgentPath('training-conversations')}
+              selected={
+                location.pathname.includes('projects') &&
+                location.pathname.includes('training-conversations')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Project" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Training Conversations"
+                style={
+                  location.pathname.includes('projects') &&
+                  location.pathname.includes('training-conversations')
+                    ? selectedStyle
+                    : {}
+                }
+              />
+            </ListItem>
           </List>
         );
       case MenuName.OPEN_LAUNCHING:
@@ -427,7 +449,7 @@ function CustomDrawer(props: CustomDrawerProps) {
                 }
               />
             </ListItem>
-            <ListItem
+            {/* <ListItem
               component={Link}
               to={createAgentPath('training-conversations')}
               selected={
@@ -448,7 +470,7 @@ function CustomDrawer(props: CustomDrawerProps) {
                     : {}
                 }
               />
-            </ListItem>
+            </ListItem> */}
             <ListItem
               component={Link}
               to={createAgentPath('exports')}
