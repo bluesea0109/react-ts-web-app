@@ -85,7 +85,7 @@ export default function ChatWithAgent() {
   }, [isActive]);
 
   if (agentData.loading) {
-    return <ContentLoading/>;
+    return <ContentLoading shrinked={true}/>;
   }
 
   return (

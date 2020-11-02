@@ -47,7 +47,7 @@ export default function OrganizationSettings(props: IOrgSettingsProps) {
   }
 
   if (loading || !data) {
-    return <ContentLoading />;
+    return <ContentLoading shrinked={true}/>;
   }
 
   if (data.orgs.length === 0) {

@@ -138,7 +138,7 @@ export default function CreatePolicyForm({
         onClick={handleSubmit}>
         Save
       </Button>
-      {loading && <ContentLoading />}
+      {loading && <ContentLoading/>}
     </Paper>
   );
 }

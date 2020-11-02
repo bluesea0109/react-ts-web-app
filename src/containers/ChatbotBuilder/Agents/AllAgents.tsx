@@ -7,13 +7,16 @@ import NewAgent from './NewAgent';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    root: {
+      padding: theme.spacing(3),
+      overflow: 'auto',
+    },
     pageTitle: {
-      marginBottom: theme.spacing(3),
+      marginBottom: theme.spacing(2),
     },
     gridRow: {
-      marginBottom: theme.spacing(3),
+      marginBottom: theme.spacing(2),
     },
-
   }),
 );
 
@@ -26,11 +29,13 @@ const AllAgents: React.FC<IChatbotBuilderAgentProps> = ({ user }) => {
   const activeProj = user.activeProject;
 
   return (
-    <div className="page-container">
-      <Typography className={classes.pageTitle} variant="h5">
-        Assistant Builder
-      </Typography>
-      <Grid>
+    <Grid container={true} className={classes.root}>
+      <Grid item={true} container={true}>
+        <Typography className={classes.pageTitle} variant="h5">
+          Assistant Builder
+        </Typography>
+      </Grid>
+      <Grid item={true} container={true}>
         <Grid item={true} xs={12} sm={12} className={classes.gridRow}>
           <NewAgent user={user} />
         </Grid>
@@ -38,7 +43,7 @@ const AllAgents: React.FC<IChatbotBuilderAgentProps> = ({ user }) => {
           <Card>{activeProj && <AgentsTable />}</Card>
         </Grid>
       </Grid>
-    </div>
+    </Grid>
   );
 };
 

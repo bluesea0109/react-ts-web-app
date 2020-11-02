@@ -181,7 +181,7 @@ const CustomAppbar: React.FC<CustomAppbarProps> = ({
   }, [loadingOrganization, loadingProject, handleChangeLoadingStatus]);
 
   return (
-    <AppBar position={position} className={className}>
+    <AppBar position={position} className={className} style={{boxShadow: 'none'}}>
       <Toolbar>
         <Typography variant="h6" className={classes.title}/>
         <Box mr={1}>
