@@ -1,4 +1,4 @@
-import {  makeStyles, Theme, Toolbar, Typography } from '@material-ui/core';
+import { makeStyles, Theme, Toolbar, Typography } from '@material-ui/core';
 import React from 'react';
 import { DropDown } from '../../../components';
 import { IAgent } from '../../../models/chatbot-service';
@@ -33,6 +33,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     cursor: 'pointer',
     color: '#0161FF',
   },
+  buttonContent: {
+    display: 'flex',
+    flexFlow: 'flex-start',
+    alignItems: 'center',
+    padding: '5px',
+  },
 }));
 
 export const ToolBarSetting = ({
@@ -58,15 +64,27 @@ export const ToolBarSetting = ({
         )}
       </div>
       <div className={classes.button}>
-        <div onClick={saveAgent}>
-          <img src="/save-button.png" alt="save" width="20px" height="20px" style={{marginRight: '5px'}}/>
-          Save Agent
+        <div onClick={saveAgent} className={classes.buttonContent}>
+          <img
+            src="/save.svg"
+            alt="save"
+            width="25px"
+            height="25px"
+            style={{ marginRight: '5px' }}
+          />
+          <div>Save Agent</div>
         </div>
       </div>
       <div className={classes.button}>
-        <div onClick={publishAgent}>
-        <img src="/rocket-icon.png" alt="save" width="20px" height="20px" style={{marginRight: '5px'}}/>
-          Publish Assistant
+        <div onClick={publishAgent}  className={classes.buttonContent}>
+          <img
+            src="/rocket.svg"
+            alt="save"
+            width="25px"
+            height="25px"
+            style={{ marginRight: '5px' }}
+          />
+          <div>Publish Assistant</div>
         </div>
       </div>
     </Toolbar>
