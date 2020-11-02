@@ -15,7 +15,6 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import MuiAlert from '@material-ui/lab/Alert';
 import React, { useState } from 'react';
 
-import { CommonTable } from '../../../components';
 import ConfirmDialog from '../../../components/ConfirmDialog';
 import { IMember, IUser } from '../../../models/user-service';
 import ContentLoading from '../../ContentLoading';

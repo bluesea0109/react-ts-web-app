@@ -12,6 +12,7 @@ const CommonTable = ({
   Row,
   pagination,
 }: CommonTableProps) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [page, setPage] = useState(0);
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,

@@ -1,6 +1,6 @@
-export * from './Buttons';
+export * from './buttons';
 export * from './Transitions';
-export * from './Tables';
+export * from './tables';
 export { default as DropDown } from './DropDown';
 export { default as TextInput } from './TextInput';
 export { default as TabPanel } from './TabPanel';
