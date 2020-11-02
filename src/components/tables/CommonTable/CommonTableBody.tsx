@@ -26,7 +26,7 @@ const CommonTableBody = ({
                 </TableCell>
               ))}
             </TableRow>
-          ),
+          )
         )
       ) : (
         <Typography align="center">
