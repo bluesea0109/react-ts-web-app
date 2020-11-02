@@ -35,8 +35,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     listItem: {
       color: 'white',
-      padding: '10px 15px 5px 5px',
-      marginLeft: '13px',
+      padding: '10px 5px 5px 15px',
+      marginLeft: '0px',
       marginRight: '15px',
     },
 
@@ -115,9 +115,7 @@ function CustomDrawer(props: CustomDrawerProps) {
             <ListItem
               component={Link}
               to={''}
-              selected={
-                location.pathname.includes('')
-              }
+              selected={location.pathname.includes('')}
               button={true}
               className={classes.listItem}>
               <ListItemIcon style={{ color: 'white' }}>
@@ -127,7 +125,7 @@ function CustomDrawer(props: CustomDrawerProps) {
                 primary="Overview"
                 style={
                   !location.pathname.includes('projects') &&
-                  (location.pathname === '/')
+                  location.pathname === '/'
                     ? selectedStyle
                     : {}
                 }
@@ -149,7 +147,7 @@ function CustomDrawer(props: CustomDrawerProps) {
                 primary="Organization"
                 style={
                   !location.pathname.includes('projects') &&
-                  (location.pathname.includes('settings'))
+                  location.pathname.includes('settings')
                     ? selectedStyle
                     : {}
                 }
@@ -198,7 +196,9 @@ function CustomDrawer(props: CustomDrawerProps) {
               <ListItemText
                 primary="Agents"
                 style={
-                  location.pathname.includes('chatbot-builder') ? selectedStyle : {}
+                  location.pathname.includes('chatbot-builder')
+                    ? selectedStyle
+                    : {}
                 }
               />
             </ListItem>
