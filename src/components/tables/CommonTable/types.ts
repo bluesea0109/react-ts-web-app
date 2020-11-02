@@ -7,11 +7,14 @@ export type ItemType = any[];
 
 export type RowsType = ItemType[];
 
-export interface PaginationType {
-  rowsPerPage: number;
-  page: number;
-  rowCount: number;
+export interface PaginationAttribute {
+  rowsPerPage?: number;
   colSpan?: number;
+}
+
+export interface PaginationType extends PaginationAttribute {
+  page?: number;
+  rowCount?: number;
   handleChangePage: (
     event: React.MouseEvent<HTMLButtonElement> | null,
     page: number,
@@ -47,4 +50,5 @@ export interface CommonTableProps {
   alignments?: AlignmentType[];
   nonRecordError?: string;
   Row?: React.ComponentType<any>;
+  pagination?: PaginationAttribute;
 }

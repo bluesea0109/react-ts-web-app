@@ -8,8 +8,8 @@ const CommonTableFooter = ({
 }: CommonTableFooterProps) => {
   return (
     <TableFooter>
-      <TableRow>
-        {isPaginated && pagination && (
+      {isPaginated && pagination && (
+        <TableRow>
           <TablePagination
             rowsPerPageOptions={[pagination.rowsPerPage || 10]}
             colSpan={pagination.colSpan || 2}
@@ -21,8 +21,8 @@ const CommonTableFooter = ({
             }}
             onChangePage={pagination.handleChangePage}
           />
-        )}
-      </TableRow>
+        </TableRow>
+      )}
     </TableFooter>
   );
 };

@@ -1,5 +1,5 @@
 import { Table } from '@material-ui/core';
-import React from 'react';
+import React, { useState } from 'react';
 import CommonTableBody from './CommonTableBody';
 import CommonTableFooter from './CommonTableFooter';
 import CommonTableHead from './CommonTableHead';
@@ -10,7 +10,16 @@ const CommonTable = ({
   data,
   nonRecordError,
   Row,
+  pagination,
 }: CommonTableProps) => {
+  const [page, setPage] = useState(0);
+  const handleChangePage = (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    page: number,
+  ) => {
+    setPage(page);
+  };
+
   return (
     <Table>
       <CommonTableHead alignments={alignments} headers={data.headers} />
@@ -20,7 +29,10 @@ const CommonTable = ({
         Row={Row}
         nonRecordError={nonRecordError}
       />
-      <CommonTableFooter />
+      <CommonTableFooter
+        isPaginated={!!pagination}
+        pagination={{ ...pagination, handleChangePage }}
+      />
     </Table>
   );
 };
