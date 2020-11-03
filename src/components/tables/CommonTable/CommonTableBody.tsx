@@ -3,7 +3,8 @@ import React from 'react';
 import { CommonTableBodyProps, RowData } from './types';
 
 const CommonTableBody = ({
-  data,
+  columns,
+  rowsData,
   alignments,
   nonRecordError,
   Row,
@@ -12,13 +13,13 @@ const CommonTableBody = ({
 
   return (
     <TableBody>
-      {data?.rowsData.length ? (
-        data.rowsData.map((rowData, rowIndex) => (
+      {rowsData.length ? (
+        rowsData.map((rowData, rowIndex) => (
           Row ? (
             <Row key={rowIndex} rowData={rowData} />
           ) : (
             <TableRow key={rowIndex} hover={true}>
-              {data.columns.map((column, colIndex) => (
+              {columns.map((column, colIndex) => (
                 <TableCell
                   key={column.field}
                   align={bodyAlignments[colIndex] || 'left'}

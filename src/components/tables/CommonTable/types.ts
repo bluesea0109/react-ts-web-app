@@ -34,12 +34,13 @@ export interface DataInterface<RowData extends object> {
 
 export interface CommonTableHeadProps<RowData extends object> {
   columns?: HeadersType<RowData>;
-  HeaderRow?: React.ComponentType<any>;
   alignments?: AlignmentType[];
+  HeaderRow?: React.ComponentType<any>;
 }
 
 export interface CommonTableBodyProps<RowData extends object> {
-  data: DataInterface<RowData>;
+  rowsData: RowData[];
+  columns: HeadersType<RowData>;
   alignments?: AlignmentType[];
   nonRecordError?: string;
   Row?: React.ComponentType<any>;
@@ -54,7 +55,8 @@ export interface CommonTableFooterProps {
 export interface CommonTableProps<RowData extends object> {
   data: DataInterface<RowData>;
   alignments?: AlignmentType[];
+  pagination?: PaginationAttribute;
   nonRecordError?: string;
   Row?: React.ComponentType<any>;
-  pagination?: PaginationAttribute;
+  HeaderRow?: React.ComponentType<any>;
 }

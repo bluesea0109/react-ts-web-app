@@ -12,7 +12,7 @@ const CommonTableHead = ({
   return (
     <TableHead>
       {HeaderRow ? (
-        <HeaderRow />
+        <HeaderRow columns={columns}/>
       ) : (
         columns && (
           <TableRow>

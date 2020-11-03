@@ -2,13 +2,8 @@ import { useMutation } from '@apollo/client';
 import {
   Box,
   Snackbar,
-  Table,
-  TableBody,
   TableCell,
   TableContainer,
-  TableFooter,
-  TableHead,
-  TablePagination,
   TableRow,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -58,12 +53,6 @@ interface IOrgMembersTableProps {
 }
 export default function OrgMembersTable(props: IOrgMembersTableProps) {
   const classes = useStyles();
-  const [state, setState] = useState({
-    loading: false,
-    page: 0,
-    rowsPerPage: 20,
-    offset: 0,
-  });
   const [openSnackBar, setOpenSnackBar] = useState(false);
   const [selectedMember, setSelectedMember] = useState({
     orgId: '',
@@ -82,18 +71,6 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
     },
   );
 
-  const handleChangePage = (
-    event: React.MouseEvent<HTMLButtonElement> | null,
-    page: number,
-  ) => {
-    setState({ ...state, page });
-  };
-
-  const getPage = (members: IMember[]) => {
-    const { page, rowsPerPage } = state;
-    return members.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-  };
-
   const onRemoveMember = () => {
     removeOrgMember({
       variables: {
@@ -108,7 +85,6 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
   };
 
   const role = props.user.activeOrg?.currentUserMember?.role || null;
-  const pageItems = getPage(props.members);
 
   const onUpdateCallback = () => {
     props.refetchOrgs();
@@ -209,37 +185,12 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
               columns,
               rowsData: _.cloneDeep(props.members),
             }}
+            pagination={{
+              colSpan: 3,
+              rowsPerPage: 5,
+            }}
+            Row={MemberRow}
           />
-          <Table aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                <TableCell align="left">Name</TableCell>
-                <TableCell align="left">Email</TableCell>
-                <TableCell align="left">Role</TableCell>
-                <TableCell align="left">Options</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {pageItems.map((member, i) => {
-                return MemberRow(member, i);
-              })}
-            </TableBody>
-            <TableFooter>
-              <TableRow>
-                <TablePagination
-                  rowsPerPageOptions={[5]}
-                  colSpan={3}
-                  count={props.members?.length || 0}
-                  rowsPerPage={state.rowsPerPage}
-                  page={state.page}
-                  SelectProps={{
-                    native: true,
-                  }}
-                  onChangePage={handleChangePage}
-                />
-              </TableRow>
-            </TableFooter>
-          </Table>
         </TableContainer>
       )}
       <Snackbar
