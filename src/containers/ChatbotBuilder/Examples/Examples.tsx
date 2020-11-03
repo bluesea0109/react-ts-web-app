@@ -1,5 +1,6 @@
+import classes from '*.module.css';
 import { useMutation, useQuery } from '@apollo/client';
-import { Typography } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
@@ -100,7 +101,7 @@ const Examples = () => {
   }
 
   if (examplesData.loading || !examplesData.data) {
-    return <ContentLoading shrinked={true}/>;
+    return <ContentLoading shrinked={true} />;
   }
 
   const updateFilters = (newFilters: ExamplesFilter) => {
@@ -195,6 +196,15 @@ const Examples = () => {
 
   return (
     <>
+      <Grid>
+        <div style={{ fontSize: '20px', fontWeight: 'bold' }}>
+          Natural Language Understanding Examples
+        </div>
+        <div style={{ margin: '20px 0px', fontSize: '16px', width: '30%', flexWrap: 'wrap' }}>
+          Add or delete examples of natural language below to improve your
+          Assistant’s detection of the user’s intent.
+        </div>
+      </Grid>
       <ExamplesTable
         updateFilters={updateFilters}
         examples={examples}
