@@ -1,4 +1,3 @@
-import classes from '*.module.css';
 import { useMutation, useQuery } from '@apollo/client';
 import { Grid, Typography } from '@material-ui/core';
 import { useSnackbar } from 'notistack';

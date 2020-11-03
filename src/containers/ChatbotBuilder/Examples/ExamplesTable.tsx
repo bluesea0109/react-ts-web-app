@@ -142,13 +142,10 @@ const StyledTableRow = withStyles((theme) => ({
 }))(TableRow);
 
 const ExamplesTable = (props: ExamplesTableProps) => {
-  const { examples, intents, onDelete, onEdit, filters, updateFilters } = props;
+  const { examples, intents } = props;
 
   const classes = useStyles();
 
-  const [intent, setIntent] = useState<string | undefined>(
-    intents.find((x) => x === filters?.intent),
-  );
   const [filter, setFilter] = useState('');
   const filteredExamples = examples.filter((item) =>
     item.intent.toLowerCase().includes(filter),
