@@ -535,7 +535,7 @@ export default function UpsertEdgeForm({
         onClick={handleSubmit}>
         {edge ? 'Update Edge' : 'Add edge'}
       </Button>
-      {(loading || signedImgUploadResult.loading) && <ContentLoading />}
+      {(loading || signedImgUploadResult.loading) && <ContentLoading shrinked={true}/>}
     </div>
   );
 }

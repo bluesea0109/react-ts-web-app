@@ -33,7 +33,7 @@ function ProjectsTable(props: IProjectsTableProps) {
   };
 
   if (loading) {
-    return <ContentLoading />;
+    return <ContentLoading shrinked={true}/>;
   }
 
   if (error) {

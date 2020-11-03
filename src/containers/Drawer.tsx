@@ -36,8 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     listItem: {
       color: 'white',
-      padding: '10px 15px 5px 5px',
-      marginLeft: '13px',
+      padding: '10px 5px 5px 15px',
       marginRight: '15px',
     },
 
@@ -532,56 +531,6 @@ function CustomDrawer(props: CustomDrawerProps) {
                 style={
                   location.pathname.includes('projects') &&
                   location.pathname.includes('publish')
-                    ? selectedStyle
-                    : {}
-                }
-              />
-            </ListItem>
-          </List>
-        );
-      case MenuName.FAQ:
-        return (
-          <List>
-            <ListItem className={classes.blank} />
-            <ListItem
-              component={Link}
-              to={createOrgPath('settings')}
-              selected={
-                !location.pathname.includes('projects') &&
-                location.pathname.includes('settings')
-              }
-              button={true}
-              className={classes.listItem}>
-              <ListItemIcon style={{ color: 'white' }}>
-                <SubMenuIcon title="Organization" active={false} />
-              </ListItemIcon>
-              <ListItemText
-                primary="Organization"
-                style={
-                  !location.pathname.includes('projects') &&
-                  location.pathname.includes('settings')
-                    ? selectedStyle
-                    : {}
-                }
-              />
-            </ListItem>
-            <ListItem
-              component={Link}
-              to={createPath('settings')}
-              selected={
-                location.pathname.includes('projects') &&
-                location.pathname.includes('settings')
-              }
-              button={true}
-              className={classes.listItem}>
-              <ListItemIcon style={{ color: 'white' }}>
-                <SubMenuIcon title="Project" active={false} />
-              </ListItemIcon>
-              <ListItemText
-                primary="Project"
-                style={
-                  location.pathname.includes('projects') &&
-                  location.pathname.includes('settings')
                     ? selectedStyle
                     : {}
                 }

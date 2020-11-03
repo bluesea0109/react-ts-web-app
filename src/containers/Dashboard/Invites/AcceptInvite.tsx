@@ -51,7 +51,7 @@ export default function AcceptInvite() {
   }
 
   if (loading || updateActiveOrgResult.loading) {
-    return <ContentLoading />;
+    return <ContentLoading shrinked={true}/>;
   }
 
   return (
