@@ -194,7 +194,7 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
   const columns = [
     { title: 'Name', field: 'name' },
     { title: 'Email', field: 'email' },
-    { title: 'Role', field: 'Role' },
+    { title: 'Role', field: 'role' },
     { title: 'Options', field: 'option' },
   ];
 

@@ -13,21 +13,22 @@ const CommonTableBody = ({
   return (
     <TableBody>
       {data?.rowsData.length ? (
-        data.rowsData.map((rowData, rowIndex) =>
+        data.rowsData.map((rowData, rowIndex) => (
           Row ? (
             <Row key={rowIndex} rowData={rowData} />
           ) : (
-            <TableRow hover={true}>
+            <TableRow key={rowIndex} hover={true}>
               {data.columns.map((column, colIndex) => (
                 <TableCell
                   key={column.field}
-                  align={bodyAlignments[colIndex] || 'left'}>
+                  align={bodyAlignments[colIndex] || 'left'}
+                >
                   {rowData[column.field]}
                 </TableCell>
               ))}
             </TableRow>
-          ),
-        )
+          )
+        ))
       ) : (
         <Typography align="center">
           {nonRecordError ?? 'No record can be found.'}

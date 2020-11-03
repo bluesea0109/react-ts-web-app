@@ -1,11 +1,11 @@
 import React from 'react';
 import { AlignmentType } from '../../types';
 
-export type RowData = {[index: string]: string|number};
+export type RowData = object &  {[index: string]: any};
 
 export interface HeaderType<RowData extends object> {
   title: string;
-  field: string;
+  field: keyof RowData | string;
   render?: (rowData: RowData) => any;
 }
 
