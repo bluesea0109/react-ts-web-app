@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme: Theme) =>
     selected: {
       backgroundColor: 'red',
     },
-  }),
+  })
 );
 
 interface CustomDrawerProps {
@@ -383,7 +383,7 @@ function CustomDrawer(props: CustomDrawerProps) {
             </ListItem>
             <ListItem
               component={Link}
-              to={createAgentPath('training-conversations')}
+              to={getAgentPath('training-conversations')}
               selected={
                 location.pathname.includes('projects') &&
                 location.pathname.includes('training-conversations')
@@ -472,7 +472,7 @@ function CustomDrawer(props: CustomDrawerProps) {
             </ListItem>
             <ListItem
               component={Link}
-              to={createAgentPath('exports')}
+              to={getAgentPath('exports')}
               selected={
                 location.pathname.includes('projects') &&
                 location.pathname.includes('exports')
