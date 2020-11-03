@@ -18,11 +18,11 @@ const CommonTableBody = ({
             <Row key={rowIndex} rowData={rowData} />
           ) : (
             <TableRow hover={true}>
-              {Object.values(rowData).map((col, colIndex) => (
+              {data.columns.map((column, colIndex) => (
                 <TableCell
-                  key={colIndex}
+                  key={column.field}
                   align={bodyAlignments[colIndex] || 'left'}>
-                  {col}
+                  {rowData[column.field]}
                 </TableCell>
               ))}
             </TableRow>

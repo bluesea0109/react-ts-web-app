@@ -1,17 +1,17 @@
 import React from 'react';
 import { AlignmentType } from '../../types';
 
-export type HeaderType = {
+export type RowData = {[index: string]: string|number};
+
+export interface HeaderType<RowData extends object> {
   title: string;
   field: string;
   render?: (rowData: RowData) => any;
-};
-
-export type RowData = object;
+}
 
 export type RowsType<RowData> = RowData[];
 
-export type HeadersType = HeaderType[];
+export type HeadersType<RowData extends object> = HeaderType<RowData>[];
 
 export interface PaginationAttribute {
   rowsPerPage?: number;
@@ -27,13 +27,13 @@ export interface PaginationType extends PaginationAttribute {
   ) => void;
 }
 
-export interface DataInterface<RowData> {
-  columns: HeadersType;
+export interface DataInterface<RowData extends object> {
+  columns: HeadersType<RowData>;
   rowsData: RowsType<RowData>;
 }
 
-export interface CommonTableHeadProps {
-  columns?: HeadersType;
+export interface CommonTableHeadProps<RowData extends object> {
+  columns?: HeadersType<RowData>;
   HeaderRow?: React.ComponentType<any>;
   alignments?: AlignmentType[];
 }

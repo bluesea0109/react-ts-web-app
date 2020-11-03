@@ -1,12 +1,12 @@
 import { TableCell, TableHead, TableRow } from '@material-ui/core';
 import React from 'react';
-import { CommonTableHeadProps } from './types';
+import { CommonTableHeadProps, RowData } from './types';
 
 const CommonTableHead = ({
   alignments,
   columns,
   HeaderRow,
-}: CommonTableHeadProps) => {
+}: CommonTableHeadProps<RowData>) => {
   const headerAlignments = alignments || [];
 
   return (
