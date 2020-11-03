@@ -1,33 +1,35 @@
 import { TableBody, TableCell, TableRow, Typography } from '@material-ui/core';
 import React from 'react';
-import { CommonTableBodyProps } from './types';
+import { CommonTableBodyProps, RowData } from './types';
 
 const CommonTableBody = ({
-  rows,
+  columns,
+  rowsData,
   alignments,
   nonRecordError,
   Row,
-}: CommonTableBodyProps) => {
+}: CommonTableBodyProps<RowData>) => {
   const bodyAlignments = alignments || [];
 
   return (
     <TableBody>
-      {rows?.length ? (
-        rows.map((row, rowIndex) =>
+      {rowsData.length ? (
+        rowsData.map((rowData, rowIndex) => (
           Row ? (
-            <Row key={rowIndex} />
+            <Row key={rowIndex} rowData={rowData} index={rowIndex}/>
           ) : (
             <TableRow key={rowIndex} hover={true}>
-              {row.map((col, colIndex) => (
+              {columns.map((column, colIndex) => (
                 <TableCell
-                  key={colIndex}
-                  align={bodyAlignments[colIndex] || 'left'}>
-                  {col}
+                  key={column.field}
+                  align={bodyAlignments[colIndex] || 'left'}
+                >
+                  {rowData[column.field]}
                 </TableCell>
               ))}
             </TableRow>
-          ),
-        )
+          )
+        ))
       ) : (
         <Typography align="center">
           {nonRecordError ?? 'No record can be found.'}

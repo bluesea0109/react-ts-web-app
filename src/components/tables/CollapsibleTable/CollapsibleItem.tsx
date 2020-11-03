@@ -23,8 +23,6 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-type OtherProps = { [index: string]: any };
-
 interface CollapsibleItemProps<ItemInterface> {
   item: ItemInterface;
   index?: number;

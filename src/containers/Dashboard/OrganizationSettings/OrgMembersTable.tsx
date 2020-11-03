@@ -2,20 +2,16 @@ import { useMutation } from '@apollo/client';
 import {
   Box,
   Snackbar,
-  Table,
-  TableBody,
   TableCell,
   TableContainer,
-  TableFooter,
-  TableHead,
-  TablePagination,
   TableRow,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import MuiAlert from '@material-ui/lab/Alert';
+import _ from 'lodash';
 import React, { useState } from 'react';
 
-import ConfirmDialog from '../../../components/ConfirmDialog';
+import { CommonTable, ConfirmDialog } from '../../../components';
 import { IMember, IUser } from '../../../models/user-service';
 import ContentLoading from '../../ContentLoading';
 import IconButtonDelete from '../../IconButtons/IconButtonDelete';
@@ -57,12 +53,6 @@ interface IOrgMembersTableProps {
 }
 export default function OrgMembersTable(props: IOrgMembersTableProps) {
   const classes = useStyles();
-  const [state, setState] = useState({
-    loading: false,
-    page: 0,
-    rowsPerPage: 20,
-    offset: 0,
-  });
   const [openSnackBar, setOpenSnackBar] = useState(false);
   const [selectedMember, setSelectedMember] = useState({
     orgId: '',
@@ -81,18 +71,6 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
     },
   );
 
-  const handleChangePage = (
-    event: React.MouseEvent<HTMLButtonElement> | null,
-    page: number,
-  ) => {
-    setState({ ...state, page });
-  };
-
-  const getPage = (members: IMember[]) => {
-    const { page, rowsPerPage } = state;
-    return members.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-  };
-
   const onRemoveMember = () => {
     removeOrgMember({
       variables: {
@@ -107,17 +85,16 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
   };
 
   const role = props.user.activeOrg?.currentUserMember?.role || null;
-  const pageItems = getPage(props.members);
 
   const onUpdateCallback = () => {
     props.refetchOrgs();
     setChangeConfirm(false);
   };
 
-  const MemberRow = (member: IMember, i: number) => {
+  const MemberRow = ({ rowData: member }: { rowData: IMember }) => {
     if (member.uid === props.user.uid) {
       return (
-        <TableRow key={i}>
+        <TableRow>
           <TableCell align="left">
             <Box fontWeight="fontWeightBold">
               {member.user?.name || 'unknown'}
@@ -149,7 +126,7 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
       );
     }
     return (
-      <TableRow key={i}>
+      <TableRow>
         <TableCell align="left">{member.user?.name || 'unknown'}</TableCell>
         <TableCell align="left">{member.user?.email || 'unknown'}</TableCell>
         <TableCell align="left">
@@ -182,7 +159,7 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
             title="Are you sure?"
             open={confirmOpen}
             setOpen={setConfirmOpen}
-            onConfirm={() => onRemoveMember()}>
+            onConfirm={onRemoveMember}>
             Are you sure you want to delete this member?
           </ConfirmDialog>
         </TableCell>
@@ -190,42 +167,30 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
     );
   };
 
+  const columns = [
+    { title: 'Name', field: 'name' },
+    { title: 'Email', field: 'email' },
+    { title: 'Role', field: 'role' },
+    { title: 'Options', field: 'option' },
+  ];
+
   return (
     <React.Fragment>
       {loading ? (
         <ContentLoading shrinked={true} />
       ) : (
         <TableContainer className={classes.tableContainer}>
-          <Table aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                <TableCell align="left">Name</TableCell>
-                <TableCell align="left">Email</TableCell>
-                <TableCell align="left">Role</TableCell>
-                <TableCell align="left">Options</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {pageItems.map((member, i) => {
-                return MemberRow(member, i);
-              })}
-            </TableBody>
-            <TableFooter>
-              <TableRow>
-                <TablePagination
-                  rowsPerPageOptions={[5]}
-                  colSpan={3}
-                  count={props.members?.length || 0}
-                  rowsPerPage={state.rowsPerPage}
-                  page={state.page}
-                  SelectProps={{
-                    native: true,
-                  }}
-                  onChangePage={handleChangePage}
-                />
-              </TableRow>
-            </TableFooter>
-          </Table>
+          <CommonTable
+            data={{
+              columns,
+              rowsData: _.cloneDeep(props.members),
+            }}
+            pagination={{
+              colSpan: 3,
+              rowsPerPage: 5,
+            }}
+            Row={MemberRow}
+          />
         </TableContainer>
       )}
       <Snackbar
