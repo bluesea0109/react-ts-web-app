@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   createStyles,
   Grid,
@@ -7,17 +8,10 @@ import {
   TableContainer,
   Theme,
 } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
 import { Delete, Edit } from '@material-ui/icons';
-import _ from 'lodash';
 import React, { useState } from 'react';
 import { TextAnnotator } from 'react-text-annotate';
-import { DropDown } from '../../../components';
+import { CommonTable, DropDown } from '../../../components';
 import { INLUExample } from '../../../models/chatbot-service';
 
 export interface ExamplesFilter {
@@ -28,36 +22,6 @@ export interface ExamplesFilter {
 export interface InvalidExist {
   invalidExist?: boolean;
 }
-
-const renderText = (data: INLUExample) => {
-  const state = {
-    value: data.tags.map((tag: any) => {
-      return {
-        start: tag.start,
-        end: tag.end,
-        tag: tag.tagType,
-      };
-    }),
-    tag: null,
-  };
-
-  return (
-    <TextAnnotator
-      style={{
-        maxWidth: 500,
-        lineHeight: 1.5,
-      }}
-      content={data.text}
-      value={state.value}
-      onChange={() => {}}
-      getSpan={(span) => ({
-        ...span,
-        tag: state.tag,
-        color: '#ccc',
-      })}
-    />
-  );
-};
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -123,24 +87,6 @@ type ExamplesTableProps = {
   onUpdateExample: (updatedExample: INLUExample) => Promise<void>;
 };
 
-const StyledTableCell = withStyles((theme) => ({
-  head: {
-    backgroundColor: 'wihte',
-  },
-  body: {
-    padding: '5px',
-    fontSize: 14,
-  },
-}))(TableCell);
-
-const StyledTableRow = withStyles((theme) => ({
-  root: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
-  },
-}))(TableRow);
-
 const ExamplesTable = (props: ExamplesTableProps) => {
   const { examples, intents } = props;
 
@@ -150,25 +96,82 @@ const ExamplesTable = (props: ExamplesTableProps) => {
   const filteredExamples = examples.filter((item) =>
     item.intent.toLowerCase().includes(filter),
   );
-  console.log('Fitlered examples ', filteredExamples);
-  console.log('fitler ', filter);
 
   const handleEdit = (row: INLUExample) => {
-    console.log(row);
   };
 
   const deleteExampleHandler = (row: INLUExample) => {
-    console.log(row);
   };
 
   const handleChange = (field: string) => {
-    console.log('EHS');
     setFilter(field);
   };
 
   const onAdd = () => {
-    console.log('Adding ');
   };
+
+  const renderIntentHeader = () => (
+    <Box>
+      Intent
+      <DropDown
+        label=""
+        current={intents.find((intent) => intent === filter)}
+        menuItems={intents}
+        onChange={handleChange}
+        size="small"
+      />
+    </Box>
+  );
+
+  const renderText = (data: INLUExample) => (
+    <TextAnnotator
+      style={{
+        maxWidth: 500,
+        lineHeight: 1.5,
+      }}
+      content={data.text}
+      value={data.tags.map((tag: any) => ({
+        start: tag.start,
+        end: tag.end,
+        tag: tag.tagType,
+      }))}
+      onChange={() => {}}
+      getSpan={(span) => ({
+        ...span,
+        tag: null,
+        color: '#ccc',
+      })}
+    />
+  );
+
+  const renderActions = (row: INLUExample) => (
+    <>
+      <Button onClick={() => handleEdit(row)}>
+        <Edit />
+      </Button>
+      <Button onClick={() => deleteExampleHandler(row)}>
+        <Delete />
+      </Button>
+    </>
+  );
+
+  const columns = [
+    {
+      title: 'Intent',
+      field: 'intent',
+      renderHeader: renderIntentHeader,
+    },
+    {
+      title: 'Text',
+      field: 'text',
+      renderRow: renderText,
+    },
+    {
+      title: '',
+      field: '',
+      renderRow: renderActions,
+    },
+  ];
 
   return (
     <Paper className={classes.paper}>
@@ -182,55 +185,18 @@ const ExamplesTable = (props: ExamplesTableProps) => {
           <TableContainer
             component={Paper}
             aria-label="Agents"
-            className={classes.table}>
-            <Table aria-label="customized table">
-              <TableHead>
-                <TableRow>
-                  <StyledTableCell>
-                    <div className={classes.headerName}>
-                      <div style={{ marginRight: '20px', fontWeight: 'bold' }}>
-                        Intent
-                      </div>
-                      <div>
-                        <DropDown
-                          label=""
-                          current={intents.find((intent) => intent === filter)}
-                          menuItems={intents}
-                          onChange={handleChange}
-                          size="small"
-                        />
-                      </div>
-                    </div>
-                  </StyledTableCell>
-                  <StyledTableCell align="left" style={{ fontWeight: 'bold' }}>
-                    Text
-                  </StyledTableCell>
-                  <StyledTableCell align="right" style={{ fontWeight: 'bold' }}>
-                    Action
-                  </StyledTableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {_.cloneDeep(filteredExamples).map((row) => (
-                  <StyledTableRow key={row.id}>
-                    <StyledTableCell component="th" scope="row">
-                      {row.intent}
-                    </StyledTableCell>
-                    <StyledTableCell align="left">
-                      {renderText(row)}
-                    </StyledTableCell>
-                    <StyledTableCell component="th" scope="row" align="right">
-                      <Button onClick={() => handleEdit(row)}>
-                        <Edit />
-                      </Button>
-                      <Button onClick={() => deleteExampleHandler(row)}>
-                        <Delete />
-                      </Button>
-                    </StyledTableCell>
-                  </StyledTableRow>
-                ))}
-              </TableBody>
-            </Table>
+            className={classes.table}
+          >
+            <CommonTable
+              data={{
+                columns,
+                rowsData: filteredExamples,
+              }}
+              pagination={{
+                colSpan: 1,
+                rowsPerPage: 10,
+              }}
+            />
           </TableContainer>
         </Grid>
       </Grid>

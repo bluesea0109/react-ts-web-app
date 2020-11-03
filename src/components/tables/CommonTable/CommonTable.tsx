@@ -3,7 +3,7 @@ import React, { useMemo, useState } from 'react';
 import CommonTableBody from './CommonTableBody';
 import CommonTableFooter from './CommonTableFooter';
 import CommonTableHead from './CommonTableHead';
-import { CommonTableProps, RowData } from './types';
+import { CommonTableProps } from './types';
 
 const CommonTable = ({
   data,
@@ -12,7 +12,7 @@ const CommonTable = ({
   pagination,
   Row,
   HeaderRow,
-}: CommonTableProps<RowData>) => {
+}: CommonTableProps<object>) => {
   const [page, setPage] = useState(0);
 
   const pageItems = useMemo(() => {

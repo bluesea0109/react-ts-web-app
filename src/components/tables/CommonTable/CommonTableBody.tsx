@@ -1,7 +1,7 @@
 import { TableBody, TableCell, TableRow, Typography } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import React from 'react';
-import { CommonTableBodyProps, RowData } from './types';
+import { CommonTableBodyProps } from './types';
 
 const StyledTableRow = withStyles((theme) => ({
   root: {
@@ -11,13 +11,23 @@ const StyledTableRow = withStyles((theme) => ({
   },
 }))(TableRow);
 
+const StyledTableCell = withStyles((theme) => ({
+  head: {
+    backgroundColor: 'wihte',
+  },
+  body: {
+    padding: '5px',
+    fontSize: 14,
+  },
+}))(TableCell);
+
 const CommonTableBody = ({
   columns,
   rowsData,
   alignments,
   nonRecordError,
   Row,
-}: CommonTableBodyProps<RowData>) => {
+}: CommonTableBodyProps<object & {[index: string]: any}>) => {
   const bodyAlignments = alignments || [];
 
   return (
@@ -29,12 +39,12 @@ const CommonTableBody = ({
           ) : (
             <StyledTableRow key={rowIndex} hover={true}>
               {columns.map((column, colIndex) => (
-                <TableCell
+                <StyledTableCell
                   key={column.field}
                   align={bodyAlignments[colIndex] || 'left'}
                 >
-                  {rowData[column.field]}
-                </TableCell>
+                  {column.renderRow ? column.renderRow(rowData) : rowData[column.field]}
+                </StyledTableCell>
               ))}
             </StyledTableRow>
           )
