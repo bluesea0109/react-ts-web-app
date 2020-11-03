@@ -20,7 +20,9 @@ const CommonTableHead = ({
               <TableCell
                 key={header.title || header.field || index}
                 align={headerAlignments[index] || 'left'}
-              />
+              >
+                {header.title}
+              </TableCell>
             ))}
           </TableRow>
         )
