@@ -381,6 +381,28 @@ function CustomDrawer(props: CustomDrawerProps) {
                 }
               />
             </ListItem>
+            <ListItem
+              component={Link}
+              to={createAgentPath('training-conversations')}
+              selected={
+                location.pathname.includes('projects') &&
+                location.pathname.includes('training-conversations')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Project" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Training Conversations"
+                style={
+                  location.pathname.includes('projects') &&
+                  location.pathname.includes('training-conversations')
+                    ? selectedStyle
+                    : {}
+                }
+              />
+            </ListItem>
           </List>
         );
       case MenuName.OPEN_LAUNCHING:
@@ -450,29 +472,7 @@ function CustomDrawer(props: CustomDrawerProps) {
             </ListItem>
             <ListItem
               component={Link}
-              to={getAgentPath('training-conversations')}
-              selected={
-                location.pathname.includes('projects') &&
-                location.pathname.includes('training-conversations')
-              }
-              button={true}
-              className={classes.listItem}>
-              <ListItemIcon style={{ color: 'white' }}>
-                <SubMenuIcon title="Project" active={false} />
-              </ListItemIcon>
-              <ListItemText
-                primary="Training Conversations"
-                style={
-                  location.pathname.includes('projects') &&
-                  location.pathname.includes('training-conversations')
-                    ? selectedStyle
-                    : {}
-                }
-              />
-            </ListItem>
-            <ListItem
-              component={Link}
-              to={getAgentPath('exports')}
+              to={createAgentPath('exports')}
               selected={
                 location.pathname.includes('projects') &&
                 location.pathname.includes('exports')

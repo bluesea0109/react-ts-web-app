@@ -1,26 +1,28 @@
 import { TableCell, TableHead, TableRow } from '@material-ui/core';
 import React from 'react';
-import { CommonTableHeadProps } from './types';
+import { CommonTableHeadProps, RowData } from './types';
 
 const CommonTableHead = ({
   alignments,
-  headers,
+  columns,
   HeaderRow,
-}: CommonTableHeadProps) => {
+}: CommonTableHeadProps<RowData>) => {
   const headerAlignments = alignments || [];
 
   return (
     <TableHead>
       {HeaderRow ? (
-        <HeaderRow />
+        <HeaderRow columns={columns}/>
       ) : (
-        headers && (
+        columns && (
           <TableRow>
-            {headers.map((header, index) => (
+            {columns.map((header, index) => (
               <TableCell
-                key={header || index}
+                key={header.title || header.field || index}
                 align={headerAlignments[index] || 'left'}
-              />
+              >
+                {header.title}
+              </TableCell>
             ))}
           </TableRow>
         )

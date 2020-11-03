@@ -159,7 +159,8 @@ const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
       setSelected(MenuName.OPEN_CONFIG);
     } else if (
       createBot_training.test(currentLocation) ||
-      createBot_examples.test(currentLocation)
+      createBot_examples.test(currentLocation) ||
+      createBot_Training_Conversations.test(currentLocation)
     ) {
       setOpenSubItem(true);
       onClick(MenuName.OPEN_TRAINING);
@@ -168,8 +169,6 @@ const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
       createBot_Launch.test(currentLocation) ||
       createBot_Upload.test(currentLocation) ||
       createBot_Live_Conversations.test(currentLocation) ||
-      createBot_Training_Conversations.test(currentLocation) ||
-      createBot_Training_Conversations.test(currentLocation) ||
       createBot_Training_Exports.test(currentLocation) ||
       createBot_Training_Settings.test(currentLocation) ||
       createBot_Training_Agents.test(currentLocation)

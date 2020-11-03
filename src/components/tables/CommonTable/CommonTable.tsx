@@ -1,19 +1,27 @@
 import { Table } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import CommonTableBody from './CommonTableBody';
 import CommonTableFooter from './CommonTableFooter';
 import CommonTableHead from './CommonTableHead';
-import { CommonTableProps } from './types';
+import { CommonTableProps, RowData } from './types';
 
 const CommonTable = ({
-  alignments,
   data,
+  alignments,
   nonRecordError,
-  Row,
   pagination,
-}: CommonTableProps) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  Row,
+  HeaderRow,
+}: CommonTableProps<RowData>) => {
   const [page, setPage] = useState(0);
+
+  const pageItems = useMemo(() => {
+    if (!pagination) { return data.rowsData; }
+    const rowsPerPage = pagination.rowsPerPage || 20;
+
+    return data.rowsData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  }, [page, pagination, data.rowsData]);
+
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
     page: number,
@@ -23,16 +31,26 @@ const CommonTable = ({
 
   return (
     <Table>
-      <CommonTableHead alignments={alignments} headers={data.headers} />
-      <CommonTableBody
+      <CommonTableHead
         alignments={alignments}
-        rows={data.rows}
-        Row={Row}
+        columns={data.columns}
+        HeaderRow={HeaderRow}
+      />
+      <CommonTableBody
+        rowsData={pageItems}
+        columns={data.columns}
+        alignments={alignments}
         nonRecordError={nonRecordError}
+        Row={Row}
       />
       <CommonTableFooter
         isPaginated={!!pagination}
-        pagination={{ ...pagination, handleChangePage }}
+        pagination={{
+          ...pagination,
+          page,
+          rowCount: data.rowsData.length,
+          handleChangePage,
+        }}
       />
     </Table>
   );

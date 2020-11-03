@@ -1,4 +1,12 @@
-import { Box, createStyles, Grid, InputLabel, MenuItem, Select, Typography } from '@material-ui/core';
+import {
+  Box,
+  createStyles,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography,
+} from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
 interface ComponentProps {
@@ -15,7 +23,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     selectInput: {
       margin: theme.spacing(0),
-      minWidth: (props: ComponentProps) => props.size === 'large' ? '100%' : 155,
+      minWidth: (props: ComponentProps) =>
+        props.size === 'large' ? '100%' : 155,
       color: 'black',
       width: '100%',
       borderRadius: 2,
@@ -38,7 +47,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface DropDownProps {
   label?: string;
-  labelPosition?: 'left'|'top';
+  labelPosition?: 'left' | 'top';
   current: any;
   padding?: string;
   menuItems: any[];
@@ -64,12 +73,10 @@ const DropDown: React.FC<DropDownProps> = ({
   const MainContent = () => (
     <Grid container={true}>
       {labelPosition === 'top' && label && label.length && (
-        <InputLabel className={classes.topLabel}>
-          {label}
-        </InputLabel>
+        <InputLabel className={classes.topLabel}>{label}</InputLabel>
       )}
       {labelPosition === 'left' && label && label.length && (
-        <Typography variant="subtitle1" style={{fontWeight: 'bold'}}>
+        <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
           {label}
         </Typography>
       )}
@@ -89,12 +96,13 @@ const DropDown: React.FC<DropDownProps> = ({
           },
           getContentAnchorEl: null,
         }}
-        style={{backgroundColor: 'white'}}
-        onChange={(e) => onChange(e.target.value as string)}
-      >
+        style={{ backgroundColor: 'white' }}
+        onChange={(e) => onChange(e.target.value as string)}>
         {menuItems?.map((menu: any, index) => (
-          <MenuItem key={ menu.uname || menu.id || menu.name || index} value={menu.uname || menu.id || menu.name || menu}>
-            {menu.uname || menu.name || menu}
+          <MenuItem
+            key={menu.intent || menu.id || menu.uname || menu.name || index}
+            value={menu.uname || menu.intent || menu.id || menu.name || menu}>
+            {menu.intent || menu.uname || menu.name || menu}
           </MenuItem>
         ))}
       </Select>
@@ -107,7 +115,7 @@ const DropDown: React.FC<DropDownProps> = ({
     </Grid>
   ) : (
     <Box>
-      <MainContent/>
+      <MainContent />
     </Box>
   );
 };

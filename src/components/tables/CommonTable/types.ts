@@ -1,11 +1,17 @@
 import React from 'react';
 import { AlignmentType } from '../../types';
 
-export type HeadersType = (string | null)[];
+export type RowData = object &  {[index: string]: any};
 
-export type ItemType = any[];
+export interface HeaderType<RowData extends object> {
+  title: string;
+  field: keyof RowData | string;
+  render?: (rowData: RowData) => any;
+}
 
-export type RowsType = ItemType[];
+export type RowsType<RowData> = RowData[];
+
+export type HeadersType<RowData extends object> = HeaderType<RowData>[];
 
 export interface PaginationAttribute {
   rowsPerPage?: number;
@@ -21,19 +27,20 @@ export interface PaginationType extends PaginationAttribute {
   ) => void;
 }
 
-export interface DataInterface {
-  headers: HeadersType;
-  rows: ItemType[];
+export interface DataInterface<RowData extends object> {
+  columns: HeadersType<RowData>;
+  rowsData: RowsType<RowData>;
 }
 
-export interface CommonTableHeadProps {
-  headers?: HeadersType;
-  HeaderRow?: React.ComponentType<any>;
+export interface CommonTableHeadProps<RowData extends object> {
+  columns?: HeadersType<RowData>;
   alignments?: AlignmentType[];
+  HeaderRow?: React.ComponentType<any>;
 }
 
-export interface CommonTableBodyProps {
-  rows?: ItemType[];
+export interface CommonTableBodyProps<RowData extends object> {
+  rowsData: RowData[];
+  columns: HeadersType<RowData>;
   alignments?: AlignmentType[];
   nonRecordError?: string;
   Row?: React.ComponentType<any>;
@@ -45,10 +52,11 @@ export interface CommonTableFooterProps {
 }
 
 // prettier-ignore
-export interface CommonTableProps {
-  data: DataInterface;
+export interface CommonTableProps<RowData extends object> {
+  data: DataInterface<RowData>;
   alignments?: AlignmentType[];
+  pagination?: PaginationAttribute;
   nonRecordError?: string;
   Row?: React.ComponentType<any>;
-  pagination?: PaginationAttribute;
+  HeaderRow?: React.ComponentType<any>;
 }
