@@ -5,10 +5,7 @@ import {
   makeStyles,
   Paper,
   TableContainer,
-  TablePagination,
-  TextField,
   Theme,
-  Typography,
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -22,7 +19,6 @@ import React, { useState } from 'react';
 import { TextAnnotator } from 'react-text-annotate';
 import { DropDown } from '../../../components';
 import { INLUExample } from '../../../models/chatbot-service';
-import { EXAMPLES_LIMIT } from './Examples';
 
 export interface ExamplesFilter {
   intent?: string;
@@ -33,49 +29,35 @@ export interface InvalidExist {
   invalidExist?: boolean;
 }
 
-// const initialColumns: Column<any>[] = [
-//   {
-//     title: 'Intent',
-//     field: 'intent',
-//     editable: 'never',
-//     filtering: true,
-//   },
-//   {
-//     title: 'Text',
-//     field: 'text',
-//     editable: 'never',
-//     filtering: false,
-//     render: (data) => {
-//       const state = {
-//         value: data.tags.map((tag: any) => {
-//           return {
-//             start: tag.start,
-//             end: tag.end,
-//             tag: tag.tagType,
-//           };
-//         }),
-//         tag: null,
-//       };
+const renderText = (data: INLUExample) => {
+  const state = {
+    value: data.tags.map((tag: any) => {
+      return {
+        start: tag.start,
+        end: tag.end,
+        tag: tag.tagType,
+      };
+    }),
+    tag: null,
+  };
 
-//       return (
-//         <TextAnnotator
-//           style={{
-//             maxWidth: 500,
-//             lineHeight: 1.5,
-//           }}
-//           content={data.text}
-//           value={state.value}
-//           onChange={() => {}}
-//           getSpan={(span) => ({
-//             ...span,
-//             tag: state.tag,
-//             color: '#ccc',
-//           })}
-//         />
-//       );
-//     },
-//   },
-// ];
+  return (
+    <TextAnnotator
+      style={{
+        maxWidth: 500,
+        lineHeight: 1.5,
+      }}
+      content={data.text}
+      value={state.value}
+      onChange={() => {}}
+      getSpan={(span) => ({
+        ...span,
+        tag: state.tag,
+        color: '#ccc',
+      })}
+    />
+  );
+};
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -181,34 +163,6 @@ const ExamplesTable = (props: ExamplesTableProps) => {
   const deleteExampleHandler = (row: INLUExample) => {
     console.log(row);
   };
-  // const onIntentFilterChanged = (intent?: string) => {
-  //   setIntent(intent);
-  //   updateFilters({
-  //     intent,
-  //   });
-  // };
-
-  // let columns = initialColumns;
-  // if (examples && intents) {
-  //   columns = [...columns];
-  //   columns[0] = {
-  //     ...columns[0],
-  //     filterComponent: (...args) => (
-  //       <Autocomplete
-  //         id="intentSelector"
-  //         options={intents}
-  //         value={intent}
-  //         onChange={(e, intent) => {
-  //           onIntentFilterChanged(intent || undefined);
-  //         }}
-  //         style={{ maxWidth: 300 }}
-  //         renderInput={(params) => (
-  //           <TextField {...params} label="Intents" variant="outlined" />
-  //         )}
-  //       />
-  //     ),
-  //   };
-  // }
 
   const handleChange = (field: string) => {
     console.log('EHS');
@@ -243,9 +197,7 @@ const ExamplesTable = (props: ExamplesTableProps) => {
                       <div>
                         <DropDown
                           label=""
-                          current={intents.find(
-                            (intent) => intent === filter,
-                          )}
+                          current={intents.find((intent) => intent === filter)}
                           menuItems={intents}
                           onChange={handleChange}
                           size="small"
@@ -267,7 +219,9 @@ const ExamplesTable = (props: ExamplesTableProps) => {
                     <StyledTableCell component="th" scope="row">
                       {row.intent}
                     </StyledTableCell>
-                    <StyledTableCell align="left">{row.text}</StyledTableCell>
+                    <StyledTableCell align="left">
+                      {renderText(row)}
+                    </StyledTableCell>
                     <StyledTableCell component="th" scope="row" align="right">
                       <Button onClick={() => handleEdit(row)}>
                         <Edit />
@@ -283,58 +237,6 @@ const ExamplesTable = (props: ExamplesTableProps) => {
           </TableContainer>
         </Grid>
       </Grid>
-      {/* <TableContainer component={Paper} aria-label="Examples">
-        <MaterialTable
-          columns={columns}
-          data={examples ? _.cloneDeep(examples) : []}
-          localization={{
-            body: {
-              emptyDataSourceMessage:
-                'No Examples Found. Create Your First Example Now!',
-            },
-          }}
-          options={{
-            actionsColumnIndex: -1,
-            filtering: true,
-            search: false,
-            paging: true,
-            pageSize: 10,
-          }}
-          editable={{
-            onRowDelete: async (oldData) => await onDelete(oldData.id),
-          }}
-          actions={[
-            {
-              icon: (props: any) => <Edit />,
-              tooltip: 'Edit Example',
-              onClick: (event, rowData) => {
-                onEdit(rowData.id);
-              },
-            },
-          ]}
-          components={{
-            Pagination: (props) => (
-              <TablePagination
-                rowsPerPageOptions={[10]}
-                rowsPerPage={10}
-                count={examples?.length ?? 0 >= 10 ? -1 : examples?.length ?? 0}
-                labelDisplayedRows={({ from, to, count }) => {
-                  return `${from}-${to} of ${
-                    count !== -1 ? count : `more than ${to}`
-                  }`;
-                }}
-                page={(filters?.offset ?? 0) / EXAMPLES_LIMIT}
-                onChangePage={(e, page) =>
-                  updateFilters({
-                    intent: intent || undefined,
-                    offset: page * EXAMPLES_LIMIT,
-                  })
-                }
-              />
-            ),
-          }}
-        />
-      </TableContainer> */}
     </Paper>
   );
 };
