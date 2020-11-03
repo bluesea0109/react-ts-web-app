@@ -39,28 +39,22 @@ const GraphEditorMenu = ({ className }: IProps) => {
 
       <div className={classes.categoryItems}>
         <GraphEditorMenuNode
-          nodeData={{
-            actor: ENodeActor.AGENT,
-            type: EAgentNodeTypes.AGENT_UTTERANCE,
-          }}
+          actor={ENodeActor.AGENT}
+          type={EAgentNodeTypes.AGENT_UTTERANCE}
           draggable={true}
           text="Utterance"
           className={classes.menuNode}
         />
         <GraphEditorMenuNode
-          nodeData={{
-            actor: ENodeActor.AGENT,
-            type: EAgentNodeTypes.AGENT_FORM,
-          }}
+          actor={ENodeActor.AGENT}
+          type={EAgentNodeTypes.AGENT_FORM}
           draggable={true}
           text="Form"
           className={classes.menuNode}
         />
         <GraphEditorMenuNode
-          nodeData={{
-            actor: ENodeActor.AGENT,
-            type: EAgentNodeTypes.AGENT_EMAIL,
-          }}
+          actor={ENodeActor.AGENT}
+          type={EAgentNodeTypes.AGENT_EMAIL}
           draggable={true}
           text="Email"
           className={classes.menuNode}
@@ -73,28 +67,22 @@ const GraphEditorMenu = ({ className }: IProps) => {
       </div>
       <div className={classes.categoryItems}>
         <GraphEditorMenuNode
-          nodeData={{
-            actor: ENodeActor.USER,
-            type: EUserNodeTypes.USER_TEXT_OPTION,
-          }}
+          actor={ENodeActor.USER}
+          type={EUserNodeTypes.USER_TEXT_OPTION}
           draggable={true}
           text="Text Option"
           className={classes.menuNode}
         />
         <GraphEditorMenuNode
-          nodeData={{
-            actor: ENodeActor.USER,
-            type: EUserNodeTypes.USER_IMAGE_OPTION,
-          }}
+          actor={ENodeActor.USER}
+          type={EUserNodeTypes.USER_IMAGE_OPTION}
           draggable={true}
           text="Image Option"
           className={classes.menuNode}
         />
         <GraphEditorMenuNode
-          nodeData={{
-            actor: ENodeActor.USER,
-            type: EUserNodeTypes.USER_SUBMIT,
-          }}
+          actor={ENodeActor.USER}
+          type={EUserNodeTypes.USER_SUBMIT}
           draggable={true}
           text="Submit"
           className={classes.menuNode}

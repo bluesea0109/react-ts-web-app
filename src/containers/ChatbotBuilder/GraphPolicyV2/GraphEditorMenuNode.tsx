@@ -1,6 +1,10 @@
+import {
+  EAgentNodeTypes,
+  EUserNodeTypes,
+} from '@bavard/agent-config/dist/graph-policy-v2/nodes';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
-import { ENodeActor, IGraphEditorNode } from './types';
+import { ENodeActor } from './types';
 
 import clsx from 'clsx';
 
@@ -27,18 +31,17 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface IProps {
-  nodeData: IGraphEditorNode;
+  actor: ENodeActor;
+  type: EUserNodeTypes | EAgentNodeTypes;
   text: string;
   className?: string;
   draggable?: boolean;
 }
-const GraphNode = ({ nodeData, text, className, draggable }: IProps) => {
+const GraphNode = ({ actor, type, text, className, draggable }: IProps) => {
   const classes = useStyles();
 
   const nodeClass =
-    nodeData.actor === ENodeActor.USER
-      ? classes['userNode']
-      : classes['agentNode'];
+    actor === ENodeActor.USER ? classes['userNode'] : classes['agentNode'];
 
   return (
     <div
@@ -48,7 +51,7 @@ const GraphNode = ({ nodeData, text, className, draggable }: IProps) => {
         console.log('SETTING NODE DATA ');
         event.dataTransfer.setData(
           'NODE_DATA',
-          JSON.stringify({ ...nodeData, isNew: true }),
+          JSON.stringify({ actor, type, isNew: true }),
         );
       }}>
       {text}

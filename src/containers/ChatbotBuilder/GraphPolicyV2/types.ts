@@ -1,4 +1,4 @@
-import { IGraphPolicyNode } from '@bavard/agent-config/dist/graph-policy-v2';
+import { GraphPolicyNode } from '@bavard/agent-config/dist/graph-policy-v2';
 import {
   EAgentNodeTypes,
   EUserNodeTypes,
@@ -11,14 +11,17 @@ export enum ENodeActor {
   USER = 'USER',
 }
 
-export interface IGraphEditorNode {
-  isNew?: boolean;
-  type: EAgentNodeTypes | EUserNodeTypes;
+export interface IGraphEditorDraftNode {
   actor: ENodeActor;
-  node?: IGraphPolicyNode;
-  itemId?: number;
-  x?: number;
-  y?: number;
+  type: EAgentNodeTypes | EUserNodeTypes;
+  isNew?: boolean;
+}
+
+export interface IGraphEditorNode extends IGraphEditorDraftNode {
+  node?: GraphPolicyNode;
+  nodeId: number;
+  x: number;
+  y: number;
 }
 
 export interface IGetOptionImagesQueryResult {
@@ -29,4 +32,15 @@ export interface IGetImageUploadSignedUrlQueryResult {
   ChatbotService_imageOptionUploadUrl: {
     url: string;
   };
+}
+
+export interface IItemPosition {
+  x: number;
+  y: number;
+}
+
+export interface INodeCoordinates {
+  nodeId: number;
+  x: number;
+  y: number;
 }

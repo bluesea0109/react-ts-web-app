@@ -4,6 +4,7 @@ import {
   EAgentNodeTypes,
   EUserNodeTypes,
 } from '@bavard/agent-config/dist/graph-policy-v2/nodes';
+
 import { IconButton } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Edit, OpenWith } from '@material-ui/icons';
@@ -17,17 +18,18 @@ import {
   IUserTextOptionNode,
 } from '@bavard/agent-config/dist/graph-policy-v2';
 
+const TERMINAL_SIZE = 16;
+const TERMINAL_RADIUS = Math.round(TERMINAL_SIZE / 2);
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     node: {
       width: 150,
       height: 75,
-      borderRadius: theme.spacing(1),
       textTransform: 'capitalize',
       background: 'transparent',
       position: 'relative',
       display: 'flex',
-      boxShadow: theme.shadows[5],
     },
     userNode: {
       background: theme.palette.success.dark,
@@ -40,9 +42,16 @@ const useStyles = makeStyles((theme: Theme) =>
     withoutData: {
       background: theme.palette.grey[300],
       color: theme.palette.grey[800],
+      '& $actionIcon': {
+        color: theme.palette.grey[800],
+      },
+    },
+    nodeHovered: {
+      border: `dashed 2px #FFFFFF`,
     },
     dragging: {
       boxShadow: theme.shadows[20],
+      border: `dashed 2px #FFFFFF`,
     },
     nodeActions: {
       width: 30,
@@ -73,6 +82,50 @@ const useStyles = makeStyles((theme: Theme) =>
       width: 20,
       height: 20,
     },
+    terminal: {
+      backgroundColor: '#FFFFFF',
+      minWidth: Math.round(TERMINAL_SIZE * 0.8),
+      minHeight: Math.round(TERMINAL_SIZE * 0.8),
+      width: Math.round(TERMINAL_SIZE * 0.8),
+      height: Math.round(TERMINAL_SIZE * 0.8),
+      border: `solid ${Math.round(TERMINAL_SIZE * 0.2)}px #FFFFFF`,
+      borderColor: theme.palette.info.main,
+      position: 'absolute',
+      borderRadius: '50%',
+      cursor: 'crosshair',
+      overflow: 'hidden',
+      '&:hover': {
+        boxShadow: theme.shadows[10],
+        backgroundColor: theme.palette.secondary.main,
+      },
+    },
+    terminalHovered: {
+      boxShadow: theme.shadows[20],
+      backgroundColor: theme.palette.secondary.main,
+    },
+    terminalTop: {
+      top: -TERMINAL_RADIUS,
+      left: `calc(50% - ${TERMINAL_RADIUS}px)`,
+      cursor: 'pointer',
+    },
+    terminalLeft: {
+      left: -TERMINAL_RADIUS,
+      top: `calc(50% - ${TERMINAL_RADIUS}px)`,
+    },
+    terminalRight: {
+      right: -TERMINAL_RADIUS,
+      top: `calc(50% - ${TERMINAL_RADIUS}px)`,
+    },
+    terminalBottom: {
+      bottom: -TERMINAL_RADIUS,
+      left: `calc(50% - ${TERMINAL_RADIUS}px)`,
+    },
+    terminalAgent: {
+      backgroundColor: '#FFFFFF',
+    },
+    terminalUser: {
+      backgroundColor: '#FFFFFF',
+    },
   }),
 );
 
@@ -82,20 +135,38 @@ interface IProps {
   children?: React.ReactNode;
   draggable?: boolean;
   onEdit?: () => void;
+  onTerminalDragStart?: (
+    event: React.DragEvent<HTMLDivElement>,
+    nodeData: IGraphEditorNode,
+  ) => void;
+  onEdgeDrop?: (
+    event: React.DragEvent<HTMLDivElement>,
+    nodeData: IGraphEditorNode,
+  ) => void;
 }
 const GraphEditorNode = ({
   nodeData,
   className,
   draggable,
   onEdit,
+  onTerminalDragStart,
+  onEdgeDrop,
 }: IProps) => {
   const classes = useStyles();
   const [canDrag, setCanDrag] = useState(false);
+  const [showTerminals, setShowTerminals] = useState(false);
+
+  const [draggingOver, setDraggingOver] = useState(false);
 
   let nodeClass =
     nodeData.actor === ENodeActor.USER
       ? classes['userNode']
       : classes['agentNode'];
+
+  const terminalClass =
+    nodeData.actor === ENodeActor.USER
+      ? classes.terminalUser
+      : classes.terminalAgent;
 
   if (!nodeData.node) {
     nodeClass = classes.withoutData;
@@ -107,13 +178,13 @@ const GraphEditorNode = ({
   switch (nodeData.type) {
     case EAgentNodeTypes.AGENT_UTTERANCE: {
       nodeTitle = 'Utterance';
-      const n = nodeData.node as IAgentUtteranceNode;
+      const n = nodeData.node?.toJsonObj() as IAgentUtteranceNode;
       nodeText = n?.utterance;
       break;
     }
     case EAgentNodeTypes.AGENT_EMAIL: {
       nodeTitle = 'Email';
-      const n = nodeData.node as IAgentEmailNode;
+      const n = nodeData.node?.toJsonObj() as IAgentEmailNode;
 
       nodeText = n?.prompt;
       break;
@@ -124,13 +195,13 @@ const GraphEditorNode = ({
     }
     case EUserNodeTypes.USER_IMAGE_OPTION: {
       nodeTitle = 'Image Option';
-      const n = nodeData.node as IUserImageOptionNode;
+      const n = nodeData.node?.toJsonObj() as IUserImageOptionNode;
       nodeText = n?.text || '';
       break;
     }
     case EUserNodeTypes.USER_TEXT_OPTION: {
       nodeTitle = 'Text';
-      const n = nodeData.node as IUserTextOptionNode;
+      const n = nodeData.node?.toJsonObj() as IUserTextOptionNode;
       nodeText = n?.text;
       break;
     }
@@ -142,36 +213,49 @@ const GraphEditorNode = ({
 
   return (
     <div
+      onMouseEnter={() => setShowTerminals(true)}
+      onMouseLeave={() => setShowTerminals(false)}
+      onDrop={(event) => {
+        onEdgeDrop?.(event, nodeData);
+        setDraggingOver(false);
+      }}
+      onDragOver={() => {
+        setDraggingOver(true);
+      }}
       className={clsx([
         classes.node,
         nodeClass,
         className,
         canDrag ? classes.dragging : '',
+        draggingOver ? classes.nodeHovered : '',
       ])}
       draggable={draggable && canDrag}
       onDragStart={(event) => {
-        console.log('SETTING NODE DATA ');
+        if (!canDrag) {
+          return;
+        }
         event.dataTransfer.setData('NODE_DATA', JSON.stringify(nodeData));
+        setDraggingOver(false);
       }}
       onDragEnd={() => {
         setCanDrag(false);
+        setDraggingOver(false);
       }}>
       <div className={classes.nodeContent}>
         <div>{nodeTitle}</div>
         <div
           className={classes.nodeText}
-          dangerouslySetInnerHTML={{ __html: nodeText }}/>
+          dangerouslySetInnerHTML={{ __html: nodeText }}
+        />
       </div>
       <div className={classes.nodeActions}>
         <IconButton
           className={classes.dragHandle}
           size="small"
           onMouseDown={() => {
-            console.log('MOUSE DOWN CAN DRAG ', canDrag);
             setCanDrag(true);
           }}
           onMouseUp={() => {
-            console.log('MOUSE UP CAN DRAG ', canDrag);
             setCanDrag(false);
           }}>
           <OpenWith className={classes.actionIcon} />
@@ -180,6 +264,42 @@ const GraphEditorNode = ({
           <Edit className={classes.actionIcon} />
         </IconButton>
       </div>
+      {showTerminals && nodeData.node && (
+        <React.Fragment>
+          <div
+            className={clsx([
+              classes.terminal,
+              classes.terminalBottom,
+              terminalClass,
+            ])}
+            onDragStart={(event) => onTerminalDragStart?.(event, nodeData)}
+            draggable={true}/>
+          <div
+            className={clsx([
+              classes.terminal,
+              classes.terminalTop,
+              terminalClass,
+            ])}
+            onDragStart={(event) => onTerminalDragStart?.(event, nodeData)}
+            draggable={true}/>
+          <div
+            className={clsx([
+              classes.terminal,
+              classes.terminalRight,
+              terminalClass,
+            ])}
+            onDragStart={(event) => onTerminalDragStart?.(event, nodeData)}
+            draggable={true}/>
+          <div
+            className={clsx([
+              classes.terminal,
+              classes.terminalLeft,
+              terminalClass,
+            ])}
+            onDragStart={(event) => onTerminalDragStart?.(event, nodeData)}
+            draggable={true}/>
+        </React.Fragment>
+      )}
     </div>
   );
 };

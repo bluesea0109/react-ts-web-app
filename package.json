@@ -68,7 +68,8 @@
     "styled-components": "^5.2.0",
     "ts-json-object": "^0.2.9",
     "typescript": "^3.9.7",
-    "utility-types": "^3.10.0"
+    "utility-types": "^3.10.0",
+    "uuid": "^8.3.1"
   },
   "scripts": {
     "start": "REACT_APP_ENV=dev react-scripts start",

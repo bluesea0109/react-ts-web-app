@@ -41,6 +41,8 @@ interface IUpsertNodeFormProps {
   onSubmit?: (node: GraphPolicyNode) => void;
   nodeId: number;
   node?: IGraphPolicyNode;
+  x: number;
+  y: number;
   type: EUserNodeTypes | EAgentNodeTypes;
   actor: ENodeActor;
 }
@@ -49,6 +51,8 @@ export default function UpsertNodeForm({
   nodeId,
   node,
   type,
+  x,
+  y,
   onSubmit,
   onChange,
 }: IUpsertNodeFormProps) {

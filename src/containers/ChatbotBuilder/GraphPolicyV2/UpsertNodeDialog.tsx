@@ -65,7 +65,9 @@ const UpsertNodeDialog = ({
             actor={editorNode.actor}
             type={editorNode.type}
             nodeId={nodeId}
-            node={editorNode.node}
+            x={editorNode.x}
+            y={editorNode.y}
+            node={editorNode.node?.toJsonObj()}
             onChange={() => handleNodeChange}
             onSubmit={onSuccess}
           />
