@@ -91,10 +91,10 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
     setChangeConfirm(false);
   };
 
-  const MemberRow = (member: IMember, i: number) => {
+  const MemberRow = ({ rowData: member }: { rowData: IMember }) => {
     if (member.uid === props.user.uid) {
       return (
-        <TableRow key={i}>
+        <TableRow>
           <TableCell align="left">
             <Box fontWeight="fontWeightBold">
               {member.user?.name || 'unknown'}
@@ -126,7 +126,7 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
       );
     }
     return (
-      <TableRow key={i}>
+      <TableRow>
         <TableCell align="left">{member.user?.name || 'unknown'}</TableCell>
         <TableCell align="left">{member.user?.email || 'unknown'}</TableCell>
         <TableCell align="left">
@@ -159,7 +159,7 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
             title="Are you sure?"
             open={confirmOpen}
             setOpen={setConfirmOpen}
-            onConfirm={() => onRemoveMember()}>
+            onConfirm={onRemoveMember}>
             Are you sure you want to delete this member?
           </ConfirmDialog>
         </TableCell>

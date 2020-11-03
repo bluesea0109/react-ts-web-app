@@ -16,7 +16,7 @@ const CommonTableBody = ({
       {rowsData.length ? (
         rowsData.map((rowData, rowIndex) => (
           Row ? (
-            <Row key={rowIndex} rowData={rowData} />
+            <Row key={rowIndex} rowData={rowData} index={rowIndex}/>
           ) : (
             <TableRow key={rowIndex} hover={true}>
               {columns.map((column, colIndex) => (
