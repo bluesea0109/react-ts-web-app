@@ -10,7 +10,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import { Delete, Edit } from '@material-ui/icons';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { TextAnnotator } from 'react-text-annotate';
 import { CommonTable, DropDown } from '../../../components';
 import { AlignmentType } from '../../../components/types';
@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-type ExamplesTableProps = {
+interface ExamplesTableProps {
   examples: INLUExample[];
   intents: string[];
   filters?: ExamplesFilter;
@@ -51,29 +51,24 @@ type ExamplesTableProps = {
   onAdd: () => void;
   updateFilters: (filters: ExamplesFilter) => void;
   onUpdateExample: (updatedExample: INLUExample) => Promise<void>;
-};
+}
 
-const ExamplesTable = (props: ExamplesTableProps) => {
-  const { examples, intents } = props;
-
+const ExamplesTable = ({
+  examples,
+  intents,
+  onAdd,
+  onEdit,
+  onDelete,
+}: ExamplesTableProps) => {
   const classes = useStyles();
 
-  const [filter, setFilter] = useState('');
-  const filteredExamples = examples.filter((item) =>
-    item.intent.toLowerCase().includes(filter),
-  );
+  const [intent, setIntent] = useState('');
+  const filteredExamples = useMemo(() => {
+    return examples.filter((item) => item.intent.toLowerCase().includes(intent));
+  }, [intent, examples]);
 
-  const handleEdit = (row: INLUExample) => {
-  };
-
-  const deleteExampleHandler = (row: INLUExample) => {
-  };
-
-  const handleChange = (field: string) => {
-    setFilter(field);
-  };
-
-  const onAdd = () => {
+  const handleIntentChange = (intent: string) => {
+    setIntent(intent);
   };
 
   const renderIntentHeader = () => (
@@ -91,9 +86,9 @@ const ExamplesTable = (props: ExamplesTableProps) => {
       <DropDown
         label=""
         width={200}
-        current={intents.find((intent) => intent === filter)}
+        current={intents.find((each) => each === intent)}
         menuItems={intents}
-        onChange={handleChange}
+        onChange={handleIntentChange}
       />
     </Box>
   );
@@ -119,12 +114,12 @@ const ExamplesTable = (props: ExamplesTableProps) => {
     />
   );
 
-  const renderActions = (row: INLUExample) => (
+  const renderActions = (example: INLUExample) => (
     <>
-      <Button onClick={() => handleEdit(row)}>
+      <Button onClick={() => onEdit(example.id)}>
         <Edit />
       </Button>
-      <Button onClick={() => deleteExampleHandler(row)}>
+      <Button onClick={() => onDelete(example.id)}>
         <Delete />
       </Button>
     </>
