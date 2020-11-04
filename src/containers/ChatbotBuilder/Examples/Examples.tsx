@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { Grid, Typography } from '@material-ui/core';
+import { Box, Grid, Typography } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
@@ -194,47 +194,55 @@ const Examples = () => {
   };
 
   return (
-    <>
-      <Grid>
-        <div style={{ fontSize: '20px', fontWeight: 'bold' }}>
-          Natural Language Understanding Examples
-        </div>
-        <div style={{ margin: '20px 0px', fontSize: '16px', width: '30%', flexWrap: 'wrap' }}>
-          Add or delete examples of natural language below to improve your
-          Assistant’s detection of the user’s intent.
-        </div>
+    <Grid container={true}>
+      <Grid container={true}>
+        <Grid item={true} container={true}>
+          <Box fontWeight="bold" fontSize={24}>
+            Natural Language Understanding Examples
+          </Box>
+        </Grid>
+        <Grid item={true} container={true} sm={6}>
+          <Box fontSize={16} my={2} lineHeight={1.5}>
+            Add or delete examples of natural language below to improve your
+            Assistant’s detection of the user’s intent.
+          </Box>
+        </Grid>
       </Grid>
-      <ExamplesTable
-        updateFilters={updateFilters}
-        examples={examples}
-        intents={intents}
-        filters={filters}
-        config={config}
-        onDelete={onExampleDelete}
-        onEdit={onExampleEdit}
-        onAdd={startNewExample}
-        onUpdateExample={onExampleSave}
-      />
-      {!!intents && !!tagTypes && (
-        <>
-          <EditExample
-            loading={examplesData.loading}
-            tagTypes={tagTypes}
+      <Grid container={true}>
+        <Grid container={true} item={true} xs={12}>
+          <ExamplesTable
+            updateFilters={updateFilters}
+            examples={examples}
             intents={intents}
-            example={examples?.find((ex) => ex.id === currentEdit)}
-            onEditExampleClose={onExampleEditClose}
-            onSaveExample={onExampleSave}
-            error={exampleError}
+            filters={filters}
+            config={config}
+            onDelete={onExampleDelete}
+            onEdit={onExampleEdit}
+            onAdd={startNewExample}
+            onUpdateExample={onExampleSave}
           />
-          {!!newExample && (
-            <AddExamples
+        </Grid>
+        {!!intents && !!tagTypes && (
+          <Grid container={true} item={true} xs={12}>
+            <EditExample
+              loading={examplesData.loading}
+              tagTypes={tagTypes}
+              intents={intents}
+              example={examples?.find((ex) => ex.id === currentEdit)}
               onEditExampleClose={onExampleEditClose}
-              refetchOptions={refetchOptions}
+              onSaveExample={onExampleSave}
+              error={exampleError}
             />
-          )}
-        </>
-      )}
-    </>
+            {!!newExample && (
+              <AddExamples
+                onEditExampleClose={onExampleEditClose}
+                refetchOptions={refetchOptions}
+              />
+            )}
+          </Grid>
+        )}
+      </Grid>
+    </Grid>
   );
 };
 

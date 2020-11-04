@@ -6,12 +6,13 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import React from 'react';
 
 interface IConfirmDialogProps {
-    title: string;
-    children: string;
-    open: boolean;
-    setOpen: (open: boolean) => void;
-    onConfirm: () => void;
-  }
+  title: string;
+  children: string;
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  onConfirm: () => void;
+}
+
 const ConfirmDialog: React.FC<IConfirmDialogProps> = (props) => {
   const { title, children, open, setOpen, onConfirm } = props;
   return (

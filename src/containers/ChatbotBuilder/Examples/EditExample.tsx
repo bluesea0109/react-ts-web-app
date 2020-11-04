@@ -1,45 +1,31 @@
-import { CircularProgress, LinearProgress } from '@material-ui/core';
-import AppBar from '@material-ui/core/AppBar';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import IconButton from '@material-ui/core/IconButton';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import CloseIcon from '@material-ui/icons/Close';
+import { Button, Grid } from '@material-ui/core';
 import React, { useState } from 'react';
-import { UpTransition } from '../../../components';
+import FullDialog from '../../../components/dialogs/FullDialog';
 import { INLUExample } from '../../../models/chatbot-service';
 import { Maybe } from '../../../utils/types';
 import ExampleForm from './ExampleForm';
 import { ExamplesError } from './types';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    appBar: {
-      position: 'relative',
-    },
-    title: {
-      marginLeft: theme.spacing(2),
-      flex: 1,
-    },
-  }),
-);
 
 type EditExampleProps = {
   loading: boolean;
   example?: INLUExample;
   tagTypes: string[];
   intents: string[];
-  onEditExampleClose: () => void;
-  onSaveExample: (updatedExample: INLUExample) => Promise<void>;
   error: Maybe<ExamplesError>;
+  onSaveExample: (updatedExample: INLUExample) => Promise<void>;
+  onEditExampleClose: () => void;
 };
 
-const EditExample = (props: EditExampleProps) => {
-  const { loading, example, tagTypes, intents, onEditExampleClose, onSaveExample } = props;
-
+const EditExample = ({
+  loading,
+  example,
+  tagTypes,
+  intents,
+  onSaveExample,
+  onEditExampleClose,
+}: EditExampleProps) => {
   const [updatedExample, setUpdatedExample] = useState<INLUExample>();
+  const isNew = example?.id === -1;
 
   const saveChanges = async () => {
     if (!!updatedExample) {
@@ -47,30 +33,12 @@ const EditExample = (props: EditExampleProps) => {
     }
   };
 
-  const classes = useStyles();
-
   return (
-    <Dialog fullScreen={true} open={!!example} TransitionComponent={UpTransition}>
-      <AppBar className={classes.appBar}>
-        <Toolbar>
-          <IconButton disabled={loading} edge="start" color="inherit" onClick={onEditExampleClose} aria-label="close">
-            <CloseIcon />
-          </IconButton>
-          <Typography variant="h6" className={classes.title}>
-            {example?.id === -1 ? 'Create New Example' : `Edit Example #${example?.id}`}
-          </Typography>
-          <Button disabled={loading} autoFocus={true} color="inherit" onClick={saveChanges}>
-            {loading && (
-              <CircularProgress
-                color="secondary"
-                size={20}
-              />
-            )}
-            {!loading && (example?.id === -1 ? 'Create' : 'Save')}
-          </Button>
-        </Toolbar>
-        {loading && <LinearProgress color="secondary" />}
-      </AppBar>
+    <FullDialog
+      isOpen={!!example}
+      title={isNew ? 'Create NLU Example' : `Edit NLU Example #${example?.id}`}
+      onEditClose={onEditExampleClose}
+    >
       <ExampleForm
         loading={loading}
         example={example}
@@ -78,7 +46,13 @@ const EditExample = (props: EditExampleProps) => {
         intents={intents}
         onExampleUpdate={setUpdatedExample}
       />
-    </Dialog>
+
+      <Grid container={true} item={true} xs={12} justify="center">
+        <Button autoFocus={true} color="primary" variant="contained" onClick={saveChanges}>
+          {isNew ? 'Add Example' : 'Update Example'}
+        </Button>
+      </Grid>
+    </FullDialog>
   );
 };
 
