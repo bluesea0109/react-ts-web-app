@@ -57,7 +57,7 @@ const EditExample = (props: EditExampleProps) => {
             <CloseIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
-            {example?.id === -1 ? 'Create New Example' : `Edit Example #${example?.id}`}
+            {example?.id === -1 ? 'Create NLU Example' : `Edit NLU Example #${example?.id}`}
           </Typography>
           <Button disabled={loading} autoFocus={true} color="inherit" onClick={saveChanges}>
             {loading && (
