@@ -10,20 +10,15 @@ import {
   ITextOption,
 } from '@bavard/agent-config';
 import {
-  AppBar,
   Button,
   createStyles,
-  Dialog,
   Grid,
-  IconButton,
   makeStyles,
   Theme,
-  Toolbar,
   Typography,
 } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
 import React, { useEffect, useState } from 'react';
-import { DropDown, TextInput, UpTransition } from '../../../components';
+import { DropDown, FullDialog, TextInput } from '../../../components';
 import EditEmailAction from './EditEmailAction';
 import EditFormAction from './EditFormAction';
 import EditUtteranceAction from './EditUtteranceAction';
@@ -123,17 +118,11 @@ const EditAction = ({
   }));
 
   return (
-    <Dialog fullScreen={true} open={!!currentAction} TransitionComponent={UpTransition}>
-      <AppBar className={classes.appBar}>
-        <Toolbar>
-          <Typography variant="h6" className={classes.title}>
-            {isNewAction ? 'Add a New Action' : `Edit Action: ${currentAction?.name}`}
-          </Typography>
-          <IconButton edge="start" color="inherit" onClick={onEditActionClose} aria-label="close">
-            <CloseIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
+    <FullDialog
+      isOpen={!!currentAction}
+      title={isNewAction ? 'Add a New Action' : `Edit Action: ${currentAction?.name}`}
+      onEditClose={onEditActionClose}
+    >
       <Grid container={true} justify="center" className={classes.rootGrid}>
         <Grid container={true} item={true} sm={6} xs={4}>
           <Grid container={true} item={true} sm={12} justify="flex-start" className={classes.formField}>
@@ -195,7 +184,7 @@ const EditAction = ({
           </Grid>
         </Grid>
       </Grid>
-    </Dialog>
+    </FullDialog>
   );
 };
 
