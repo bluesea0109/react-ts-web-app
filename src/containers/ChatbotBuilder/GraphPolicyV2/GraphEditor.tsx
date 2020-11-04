@@ -7,23 +7,23 @@ import {
   UserNode,
 } from '@bavard/agent-config/dist/graph-policy-v2';
 
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { IconButton, Tooltip } from '@material-ui/core';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Delete } from '@material-ui/icons';
+import clsx from 'clsx';
 import _ from 'lodash';
 import { useSnackbar } from 'notistack';
 import React, { useEffect, useRef, useState } from 'react';
+import EdgeArrow from './EdgeArrow';
 import GraphEditorNode from './GraphEditorNode';
 import SvgArrow from './SvgArrow';
-import EdgeArrow from './EdgeArrow';
 import { IGraphEditorNode, IItemPosition } from './types';
-import clsx from 'clsx';
 import UpsertNodeDialog from './UpsertNodeDialog';
 import {
+  getAllIntents,
   getArrowCoords,
   getNodeActor,
   snapItemPosition,
-  getAllIntents,
 } from './utils';
 
 const NODE_WIDTH = 150;
@@ -83,7 +83,7 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.error.main,
       position: 'absolute',
     },
-  })
+  }),
 );
 
 interface IProps {
@@ -107,7 +107,7 @@ const GraphEditor = ({ agentId }: IProps) => {
   const policy = new GraphPolicyV2(
     'Test Policy',
     rootNode,
-    new Set([rootNode])
+    new Set([rootNode]),
   );
   const [gp, setGp] = useState<GraphPolicyV2>(policy);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -181,7 +181,7 @@ const GraphEditor = ({ agentId }: IProps) => {
     setDrawingArrowStart(undefined);
 
     const data: IGraphEditorNode = JSON.parse(
-      event.dataTransfer.getData('NODE_DATA') || '{}'
+      event.dataTransfer.getData('NODE_DATA') || '{}',
     );
 
     if (_.isEmpty(data)) {
@@ -193,7 +193,7 @@ const GraphEditor = ({ agentId }: IProps) => {
 
     const pos = snapItemPosition(
       event.clientX - rect.x - 150,
-      event.clientY - rect.y - 10
+      event.clientY - rect.y - 10,
     );
 
     data.x = pos.x;
@@ -253,7 +253,7 @@ const GraphEditor = ({ agentId }: IProps) => {
 
   const handleTerminalDragStart = (
     event: React.DragEvent<HTMLDivElement>,
-    nodeData: IGraphEditorNode
+    nodeData: IGraphEditorNode,
   ) => {
     const rect = containerRef.current?.getBoundingClientRect();
 
@@ -266,7 +266,7 @@ const GraphEditor = ({ agentId }: IProps) => {
 
     event.dataTransfer.setData(
       'DRAGGING_OUT_TERMINAL',
-      JSON.stringify(nodeData || '{}')
+      JSON.stringify(nodeData || '{}'),
     );
   };
 
@@ -276,10 +276,10 @@ const GraphEditor = ({ agentId }: IProps) => {
 
   const handleEdgeDrop = (
     event: React.DragEvent<HTMLDivElement>,
-    targetNode: IGraphEditorNode
+    targetNode: IGraphEditorNode,
   ) => {
     const sourceNode: IGraphEditorNode = JSON.parse(
-      event.dataTransfer.getData('DRAGGING_OUT_TERMINAL') || '{}'
+      event.dataTransfer.getData('DRAGGING_OUT_TERMINAL') || '{}',
     );
 
     if (sourceNode.node && targetNode.node) {
@@ -346,12 +346,12 @@ const GraphEditor = ({ agentId }: IProps) => {
         y: event.clientY - rect.y,
       });
     },
-    300
+    300,
   );
 
   const handleDeleteZoneDrop = (event: React.DragEvent<HTMLDivElement>) => {
     const data: IGraphEditorNode = JSON.parse(
-      event.dataTransfer.getData('NODE_DATA') || '{}'
+      event.dataTransfer.getData('NODE_DATA') || '{}',
     );
 
     if (_.isEmpty(data)) {
@@ -373,7 +373,7 @@ const GraphEditor = ({ agentId }: IProps) => {
   const showEdgeActions = (
     shouldShow: boolean,
     startNode: GraphPolicyNode,
-    endNode: GraphPolicyNode
+    endNode: GraphPolicyNode,
   ) => {
     if (!shouldShow) {
       setShowEdgeActions(undefined);
@@ -405,7 +405,7 @@ const GraphEditor = ({ agentId }: IProps) => {
             y1={coords.y1}
             x2={coords.x2}
             y2={coords.y2}
-          />
+          />,
         );
       }
       if (getNodeActor(node) === 'AGENT') {
@@ -425,7 +425,7 @@ const GraphEditor = ({ agentId }: IProps) => {
               y1={coords.y1}
               x2={coords.x2}
               y2={coords.y2}
-            />
+            />,
           );
         });
       }

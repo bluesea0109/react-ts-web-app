@@ -1,6 +1,6 @@
+import { Theme } from '@material-ui/core';
 import React from 'react';
 import SvgArrow, { ISvgArrowProps } from './SvgArrow';
-import { Theme } from '@material-ui/core';
 
 import { createStyles, makeStyles } from '@material-ui/styles';
 
@@ -8,13 +8,13 @@ interface IEdgeArrowProps extends ISvgArrowProps {
   startNodeId: number;
   endNodeId: number;
   onLineClick?: (
-    event: React.MouseEvent<SVGPolylineElement, MouseEvent>
+    event: React.MouseEvent<SVGPolylineElement, MouseEvent>,
   ) => void;
   onMouseOver?: (
-    event: React.MouseEvent<SVGPolylineElement, MouseEvent>
+    event: React.MouseEvent<SVGPolylineElement, MouseEvent>,
   ) => void;
   onMouseOut?: (
-    event: React.MouseEvent<SVGPolylineElement, MouseEvent>
+    event: React.MouseEvent<SVGPolylineElement, MouseEvent>,
   ) => void;
 }
 
@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
     deleteIcon: {
       color: theme.palette.error.main,
     },
-  })
+  }),
 );
 
 const EdgeArrow = (props: IEdgeArrowProps) => {

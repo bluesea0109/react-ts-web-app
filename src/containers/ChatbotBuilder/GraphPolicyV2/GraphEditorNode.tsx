@@ -132,7 +132,7 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '100%',
       background: 'transparent',
     },
-  })
+  }),
 );
 
 interface IProps {
@@ -144,11 +144,11 @@ interface IProps {
   onEdit?: () => void;
   onTerminalDragStart?: (
     event: React.DragEvent<HTMLDivElement>,
-    nodeData: IGraphEditorNode
+    nodeData: IGraphEditorNode,
   ) => void;
   onEdgeDrop?: (
     event: React.DragEvent<HTMLDivElement>,
-    nodeData: IGraphEditorNode
+    nodeData: IGraphEditorNode,
   ) => void;
 }
 const GraphEditorNode = ({

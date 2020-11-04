@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       marginBottom: theme.spacing(2),
     },
-  })
+  }),
 );
 
 interface IUpsertNodeFormProps {
@@ -63,7 +63,7 @@ export default function UpsertNodeForm({
   const [imgFile, setImgFile] = useState<File | undefined>(undefined);
 
   const [existingImg, setExistingImg] = useState<string | undefined>(
-    node?.imageName || undefined
+    node?.imageName || undefined,
   );
 
   const { agentId }: IParams = useParams();
@@ -111,7 +111,7 @@ export default function UpsertNodeForm({
     if (!existingImg && imgFile) {
       const uploadUrl = signedImgUploadResult.data?.ChatbotService_imageOptionUploadUrl?.url.replace(
         /"/g,
-        ''
+        '',
       );
       // The upload url isn't ready. Wait for a few
       if (
@@ -120,7 +120,7 @@ export default function UpsertNodeForm({
       ) {
         enqueueSnackbar(
           'Image upload not ready. Please try in 10 seconds, or try a new image',
-          { variant: 'error' }
+          { variant: 'error' },
         );
         prepareSignedUploadUrl();
         return;
@@ -137,7 +137,7 @@ export default function UpsertNodeForm({
       } catch (e) {
         enqueueSnackbar(
           `Error with uploading the image to GCS - ${JSON.stringify(e)}`,
-          { variant: 'error' }
+          { variant: 'error' },
         );
       }
     }
@@ -148,7 +148,7 @@ export default function UpsertNodeForm({
       text,
       caption,
       targetLink,
-      intent
+      intent,
     );
 
     console.log(newNode);
@@ -235,7 +235,7 @@ export default function UpsertNodeForm({
         className={classes.formControl}
         size="small"
         defaultValue={intent}
-        freeSolo
+        freeSolo={true}
         options={(intents || []).map((option) => option)}
         renderInput={(params) => (
           <TextField

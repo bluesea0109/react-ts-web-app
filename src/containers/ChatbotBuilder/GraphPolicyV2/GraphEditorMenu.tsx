@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: theme.spacing(1),
       opacity: 0.999,
     },
-  })
+  }),
 );
 
 interface IProps {

@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme: Theme) =>
     gridContainer: {
       height: '100%',
     },
-  })
+  }),
 );
 
 interface IProps {
