@@ -27,49 +27,12 @@ export interface InvalidExist {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      margin: theme.spacing(3),
-    },
     paper: {
       padding: theme.spacing(2),
       marginBottom: theme.spacing(2),
       borderRadius: `4px`,
       position: `relative`,
       width: '100%',
-    },
-    selectionText: {
-      border: 'none',
-      outline: 'none',
-      backgroundColor: '#f5f5f5',
-    },
-    label: {
-      position: `absolute`,
-      top: `-26px`,
-      left: `20px`,
-      background: `white`,
-      padding: `0px 5px`,
-    },
-    alert: {
-      width: '100%',
-      marginTop: '2rem',
-      marginBottom: '2rem',
-    },
-    resolveAction: {
-      cursor: 'pointer',
-      transitionDuration: '150ms',
-      '&:hover': {
-        color: 'lightgray',
-      },
-    },
-    table: {
-      minWidth: '600px',
-      background: 'white',
-      width: '100%',
-      margin: 'auto',
-    },
-    headerName: {
-      display: 'flex',
-      alignItems: 'flex-start',
     },
     panel: {
       display: 'flex',
@@ -198,7 +161,6 @@ const ExamplesTable = (props: ExamplesTableProps) => {
           <TableContainer
             component={Paper}
             aria-label="Agents"
-            className={classes.table}
           >
             <CommonTable
               data={{
