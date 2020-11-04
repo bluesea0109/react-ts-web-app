@@ -5,7 +5,7 @@ import {
   EUserNodeTypes,
 } from '@bavard/agent-config/dist/graph-policy-v2/nodes';
 
-import { IconButton } from '@material-ui/core';
+import { IconButton, Tooltip } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Edit, OpenWith } from '@material-ui/icons';
 import clsx from 'clsx';
@@ -84,11 +84,11 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     terminal: {
       backgroundColor: '#FFFFFF',
-      minWidth: Math.round(TERMINAL_SIZE * 0.8),
-      minHeight: Math.round(TERMINAL_SIZE * 0.8),
-      width: Math.round(TERMINAL_SIZE * 0.8),
-      height: Math.round(TERMINAL_SIZE * 0.8),
-      border: `solid ${Math.round(TERMINAL_SIZE * 0.2)}px #FFFFFF`,
+      minWidth: Math.round(TERMINAL_SIZE * 0.9),
+      minHeight: Math.round(TERMINAL_SIZE * 0.9),
+      width: Math.round(TERMINAL_SIZE * 0.9),
+      height: Math.round(TERMINAL_SIZE * 0.9),
+      border: `solid ${Math.round(TERMINAL_SIZE * 0.1)}px #FFFFFF`,
       borderColor: theme.palette.info.main,
       position: 'absolute',
       borderRadius: '50%',
@@ -106,7 +106,6 @@ const useStyles = makeStyles((theme: Theme) =>
     terminalTop: {
       top: -TERMINAL_RADIUS,
       left: `calc(50% - ${TERMINAL_RADIUS}px)`,
-      cursor: 'pointer',
     },
     terminalLeft: {
       left: -TERMINAL_RADIUS,
@@ -126,7 +125,14 @@ const useStyles = makeStyles((theme: Theme) =>
     terminalUser: {
       backgroundColor: '#FFFFFF',
     },
-  }),
+    terminalDragHandle: {
+      position: 'relative',
+      opacity: 0.999,
+      width: '100%',
+      height: '100%',
+      background: 'transparent',
+    },
+  })
 );
 
 interface IProps {
@@ -134,14 +140,15 @@ interface IProps {
   className?: string;
   children?: React.ReactNode;
   draggable?: boolean;
+  onNodeDragStart?: () => void;
   onEdit?: () => void;
   onTerminalDragStart?: (
     event: React.DragEvent<HTMLDivElement>,
-    nodeData: IGraphEditorNode,
+    nodeData: IGraphEditorNode
   ) => void;
   onEdgeDrop?: (
     event: React.DragEvent<HTMLDivElement>,
-    nodeData: IGraphEditorNode,
+    nodeData: IGraphEditorNode
   ) => void;
 }
 const GraphEditorNode = ({
@@ -150,6 +157,7 @@ const GraphEditorNode = ({
   draggable,
   onEdit,
   onTerminalDragStart,
+  onNodeDragStart,
   onEdgeDrop,
 }: IProps) => {
   const classes = useStyles();
@@ -211,6 +219,16 @@ const GraphEditorNode = ({
     }
   }
 
+  const terminalDragHandle = (
+    <Tooltip title="Drag to another node to add it as an edge">
+      <div
+        className={classes.terminalDragHandle}
+        onDragStart={(event) => onTerminalDragStart?.(event, nodeData)}
+        draggable={true}
+      />
+    </Tooltip>
+  );
+
   return (
     <div
       onMouseEnter={() => setShowTerminals(true)}
@@ -236,6 +254,7 @@ const GraphEditorNode = ({
         }
         event.dataTransfer.setData('NODE_DATA', JSON.stringify(nodeData));
         setDraggingOver(false);
+        onNodeDragStart?.();
       }}
       onDragEnd={() => {
         setCanDrag(false);
@@ -271,33 +290,33 @@ const GraphEditorNode = ({
               classes.terminal,
               classes.terminalBottom,
               terminalClass,
-            ])}
-            onDragStart={(event) => onTerminalDragStart?.(event, nodeData)}
-            draggable={true}/>
+            ])}>
+            {terminalDragHandle}
+          </div>
           <div
             className={clsx([
               classes.terminal,
               classes.terminalTop,
               terminalClass,
-            ])}
-            onDragStart={(event) => onTerminalDragStart?.(event, nodeData)}
-            draggable={true}/>
+            ])}>
+            {terminalDragHandle}
+          </div>
           <div
             className={clsx([
               classes.terminal,
               classes.terminalRight,
               terminalClass,
-            ])}
-            onDragStart={(event) => onTerminalDragStart?.(event, nodeData)}
-            draggable={true}/>
+            ])}>
+            {terminalDragHandle}
+          </div>
           <div
             className={clsx([
               classes.terminal,
               classes.terminalLeft,
               terminalClass,
-            ])}
-            onDragStart={(event) => onTerminalDragStart?.(event, nodeData)}
-            draggable={true}/>
+            ])}>
+            {terminalDragHandle}
+          </div>
         </React.Fragment>
       )}
     </div>

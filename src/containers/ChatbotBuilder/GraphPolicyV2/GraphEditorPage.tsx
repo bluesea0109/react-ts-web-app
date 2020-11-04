@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
     editorMenuItems: {
       marginTop: theme.spacing(2),
     },
-  }),
+  })
 );
 
 const GraphEditorPage = () => {
@@ -47,7 +47,6 @@ const GraphEditorPage = () => {
   const imgQuery = useQuery<IGetOptionImagesQueryResult>(getOptionImagesQuery, {
     variables: { agentId: parseInt(agentId) },
     onCompleted: (data) => {
-      console.log('IMG DATA: ', data);
       setOptionImages({
         images: data.ChatbotService_optionImages || [],
         refetch: imgQuery.refetch,

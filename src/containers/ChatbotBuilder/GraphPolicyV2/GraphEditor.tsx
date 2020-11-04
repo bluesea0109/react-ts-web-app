@@ -8,14 +8,23 @@ import {
 } from '@bavard/agent-config/dist/graph-policy-v2';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { IconButton, Tooltip } from '@material-ui/core';
+import { Delete } from '@material-ui/icons';
 import _ from 'lodash';
 import { useSnackbar } from 'notistack';
 import React, { useEffect, useRef, useState } from 'react';
 import GraphEditorNode from './GraphEditorNode';
 import SvgArrow from './SvgArrow';
+import EdgeArrow from './EdgeArrow';
 import { IGraphEditorNode, IItemPosition } from './types';
+import clsx from 'clsx';
 import UpsertNodeDialog from './UpsertNodeDialog';
-import { getArrowCoords, getNodeActor, snapItemPosition } from './utils';
+import {
+  getArrowCoords,
+  getNodeActor,
+  snapItemPosition,
+  getAllIntents,
+} from './utils';
 
 const NODE_WIDTH = 150;
 const NODE_HEIGHT = 75;
@@ -27,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       height: '100%',
       overflow: 'auto',
-      padding: theme.spacing(4),
+      padding: theme.spacing(2),
     },
     editorCanvas: {
       position: 'relative',
@@ -37,17 +46,53 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
       backgroundColor: theme.palette.background.default,
     },
+    node: {
+      zIndex: 2,
+    },
     item: {
       position: 'absolute',
     },
     textArea: {
       width: '100%',
     },
-  }),
+    deleteZone: {
+      width: 100,
+      height: 100,
+      background: theme.palette.grey[100],
+      padding: 20,
+      textAlign: 'center',
+      position: 'absolute',
+      bottom: 30,
+      right: 30,
+      borderRadius: '50%',
+      zIndex: 1,
+      color: theme.palette.error.main,
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    deleteZoneHovered: {
+      background: theme.palette.grey[300],
+      border: `dashed 1px ${theme.palette.error.main}`,
+    },
+    floatingIconButton: {
+      position: 'absolute',
+    },
+    deleteEdgeButton: {
+      color: theme.palette.error.main,
+      position: 'absolute',
+    },
+  })
 );
 
 interface IProps {
   agentId: number;
+}
+
+interface INodePair {
+  start: GraphPolicyNode;
+  end: GraphPolicyNode;
 }
 
 const GraphEditor = ({ agentId }: IProps) => {
@@ -55,21 +100,24 @@ const GraphEditor = ({ agentId }: IProps) => {
   const classes = useStyles();
   const rootNode = new AgentUtteranceNode(1, 'Hello');
   rootNode.position = {
-    x: 20,
-    y: 20,
+    x: 0,
+    y: 0,
   };
 
   const policy = new GraphPolicyV2(
     'Test Policy',
     rootNode,
-    new Set([rootNode]),
+    new Set([rootNode])
   );
   const [gp, setGp] = useState<GraphPolicyV2>(policy);
   const containerRef = useRef<HTMLDivElement>(null);
   const [changes, setChanges] = useState(0);
   const [editingNodeId, setEditingNodeId] = useState<number>();
+  const [draggingNodeId, setDraggingNodeId] = useState<number>();
+  const [draggingOverDelete, setDraggingOverDelete] = useState(false);
   const [editingNode, setEditingNode] = useState<IGraphEditorNode>();
   const [draftNodes, setDraftNodes] = useState<IGraphEditorNode[]>([]);
+  const [showingEdgeActions, setShowEdgeActions] = useState<INodePair>();
 
   const nodeToGraphEditorNode = (node: GraphPolicyNode) => {
     return {
@@ -128,11 +176,12 @@ const GraphEditor = ({ agentId }: IProps) => {
   };
 
   const handleNodeDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    setDraggingNodeId(undefined);
     setDrawingArrowEnd(undefined);
     setDrawingArrowStart(undefined);
 
     const data: IGraphEditorNode = JSON.parse(
-      event.dataTransfer.getData('NODE_DATA') || '{}',
+      event.dataTransfer.getData('NODE_DATA') || '{}'
     );
 
     if (_.isEmpty(data)) {
@@ -144,7 +193,7 @@ const GraphEditor = ({ agentId }: IProps) => {
 
     const pos = snapItemPosition(
       event.clientX - rect.x - 150,
-      event.clientY - rect.y - 10,
+      event.clientY - rect.y - 10
     );
 
     data.x = pos.x;
@@ -204,7 +253,7 @@ const GraphEditor = ({ agentId }: IProps) => {
 
   const handleTerminalDragStart = (
     event: React.DragEvent<HTMLDivElement>,
-    nodeData: IGraphEditorNode,
+    nodeData: IGraphEditorNode
   ) => {
     const rect = containerRef.current?.getBoundingClientRect();
 
@@ -217,19 +266,20 @@ const GraphEditor = ({ agentId }: IProps) => {
 
     event.dataTransfer.setData(
       'DRAGGING_OUT_TERMINAL',
-      JSON.stringify(nodeData || '{}'),
+      JSON.stringify(nodeData || '{}')
     );
+  };
+
+  const handleNodeDragStart = (nodeId: number) => {
+    setDraggingNodeId(nodeId);
   };
 
   const handleEdgeDrop = (
     event: React.DragEvent<HTMLDivElement>,
-    targetNode: IGraphEditorNode,
+    targetNode: IGraphEditorNode
   ) => {
-    console.log('DROPPED TERMINAL', event);
-    console.log('NODE DATA: ', targetNode);
-
     const sourceNode: IGraphEditorNode = JSON.parse(
-      event.dataTransfer.getData('DRAGGING_OUT_TERMINAL') || '{}',
+      event.dataTransfer.getData('DRAGGING_OUT_TERMINAL') || '{}'
     );
 
     if (sourceNode.node && targetNode.node) {
@@ -296,8 +346,45 @@ const GraphEditor = ({ agentId }: IProps) => {
         y: event.clientY - rect.y,
       });
     },
-    500,
+    300
   );
+
+  const handleDeleteZoneDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    const data: IGraphEditorNode = JSON.parse(
+      event.dataTransfer.getData('NODE_DATA') || '{}'
+    );
+
+    if (_.isEmpty(data)) {
+      return;
+    }
+
+    gp.deleteNodeById(data.nodeId);
+    deleteDraftNode(data.nodeId);
+    setDraggingNodeId(undefined);
+    setDraggingOverDelete(false);
+    enqueueSnackbar('Node Deleted', { variant: 'success' });
+  };
+
+  const handleDeleteZoneDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setDraggingOverDelete(true);
+  };
+
+  const showEdgeActions = (
+    shouldShow: boolean,
+    startNode: GraphPolicyNode,
+    endNode: GraphPolicyNode
+  ) => {
+    if (!shouldShow) {
+      setShowEdgeActions(undefined);
+      return;
+    }
+
+    setShowEdgeActions({
+      start: startNode,
+      end: endNode,
+    });
+  };
 
   const renderArrows = () => {
     const arrows: React.ReactNode[] = [];
@@ -307,15 +394,18 @@ const GraphEditor = ({ agentId }: IProps) => {
         const caNode = node.childAgentNode;
         const coords = getArrowCoords(node, caNode, NODE_HEIGHT, NODE_WIDTH);
         arrows.push(
-          <SvgArrow
+          <EdgeArrow
             key={`arrow_${node.nodeId}_${caNode.nodeId}`}
             startElementId={node.nodeId}
             endElementId={caNode.nodeId}
+            startNodeId={node.nodeId}
+            endNodeId={caNode.nodeId}
+            onLineClick={(event) => showEdgeActions(true, node, caNode)}
             x1={coords.x1}
             y1={coords.y1}
             x2={coords.x2}
             y2={coords.y2}
-          />,
+          />
         );
       }
       if (getNodeActor(node) === 'AGENT') {
@@ -324,21 +414,69 @@ const GraphEditor = ({ agentId }: IProps) => {
         node.childUserNodes.forEach((cuNode) => {
           const coords = getArrowCoords(node, cuNode, NODE_HEIGHT, NODE_WIDTH);
           arrows.push(
-            <SvgArrow
+            <EdgeArrow
               key={`arrow_${node.nodeId}_${cuNode.nodeId}`}
               startElementId={node.nodeId}
               endElementId={cuNode.nodeId}
+              startNodeId={node.nodeId}
+              endNodeId={cuNode.nodeId}
+              onLineClick={(event) => showEdgeActions(true, node, cuNode)}
               x1={coords.x1}
               y1={coords.y1}
               x2={coords.x2}
               y2={coords.y2}
-            />,
+            />
           );
         });
       }
     });
 
     return arrows;
+  };
+
+  const handleDeleteEdge = (start: GraphPolicyNode, end: GraphPolicyNode) => {
+    const sActor = getNodeActor(start);
+
+    if (sActor === 'AGENT') {
+      start = start as AgentNode;
+      start.removeChild(end);
+    }
+    if (sActor === 'USER') {
+      start = start as UserNode;
+      start.removeChildAgentNode();
+    }
+
+    setGp(gp);
+    enqueueSnackbar('Edge deleted', { variant: 'success' });
+    setShowEdgeActions(undefined);
+  };
+
+  const renderEdgeActions = () => {
+    if (!showingEdgeActions) {
+      return <></>;
+    }
+
+    const { start, end } = showingEdgeActions;
+
+    const coords = getArrowCoords(start, end, NODE_HEIGHT, NODE_WIDTH);
+
+    const x = (coords.x1 + coords.x2) / 2;
+    const y = (coords.y1 + coords.y2) / 2;
+
+    return (
+      <Tooltip title="Delete this edge">
+        <IconButton
+          size="small"
+          className={classes.deleteEdgeButton}
+          onClick={() => handleDeleteEdge(start, end)}
+          style={{
+            top: y - 10,
+            left: x - 10,
+          }}>
+          <Delete />
+        </IconButton>
+      </Tooltip>
+    );
   };
 
   return (
@@ -353,17 +491,20 @@ const GraphEditor = ({ agentId }: IProps) => {
             <React.Fragment key={index}>
               <div className={classes.item} style={{ left: n.x, top: n.y }}>
                 <GraphEditorNode
+                  className={classes.node}
                   nodeData={n}
                   draggable={true}
                   onEdit={() => setEditingNodeId(n.nodeId)}
                   onTerminalDragStart={handleTerminalDragStart}
                   onEdgeDrop={handleEdgeDrop}
+                  onNodeDragStart={() => {
+                    handleNodeDragStart(n.nodeId);
+                  }}
                 />
               </div>
             </React.Fragment>
           );
         })}
-
         {draftNodes.map((n, index) => {
           return (
             <div
@@ -371,10 +512,14 @@ const GraphEditor = ({ agentId }: IProps) => {
               className={classes.item}
               style={{ left: n.x, top: n.y }}>
               <GraphEditorNode
+                className={classes.node}
                 nodeData={n}
                 draggable={true}
                 onEdit={() => setEditingNodeId(n.nodeId)}
                 onTerminalDragStart={handleTerminalDragStart}
+                onNodeDragStart={() => {
+                  handleNodeDragStart(n.nodeId);
+                }}
                 onEdgeDrop={handleEdgeDrop}
               />
             </div>
@@ -394,7 +539,7 @@ const GraphEditor = ({ agentId }: IProps) => {
             />
           )}
         </svg>
-
+        {renderEdgeActions()}
         {editingNodeId && editingNode && (
           <UpsertNodeDialog
             onClose={() => setEditingNodeId(undefined)}
@@ -403,9 +548,25 @@ const GraphEditor = ({ agentId }: IProps) => {
             agentId={agentId}
             editorNode={editingNode}
             onSuccess={handleNodeUpdate}
+            intents={getAllIntents(gp)}
           />
         )}
       </div>
+
+      {draggingNodeId && (
+        <div
+          onDrop={handleDeleteZoneDrop}
+          onDragOver={handleDeleteZoneDragOver}
+          onDragExit={() => setDraggingOverDelete(false)}
+          className={clsx([
+            classes.deleteZone,
+            draggingOverDelete ? classes.deleteZoneHovered : '',
+          ])}>
+          <Delete fontSize={'large'} />
+
+          <div>Drop here to delete</div>
+        </div>
+      )}
     </div>
   );
 };

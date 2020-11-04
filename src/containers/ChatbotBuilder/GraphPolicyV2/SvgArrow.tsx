@@ -8,10 +8,10 @@ const useStyles = makeStyles((theme: Theme) =>
     arrow: {
       cursor: 'pointer',
     },
-  }),
+  })
 );
 
-interface IProps {
+export interface ISvgArrowProps {
   x1: number;
   y1: number;
   x2: number;
@@ -37,7 +37,7 @@ const SvgArrow = ({
   color,
   strokeWidth,
   arrowheadSize,
-}: IProps) => {
+}: ISvgArrowProps) => {
   const arrowColor = color || `#808080`;
   const headSize = arrowheadSize || 10;
   const classes = useStyles();

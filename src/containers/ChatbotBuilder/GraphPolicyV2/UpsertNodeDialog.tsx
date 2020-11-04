@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme: Theme) =>
     gridContainer: {
       height: '100%',
     },
-  }),
+  })
 );
 
 interface IProps {
@@ -27,7 +27,9 @@ interface IProps {
   editorNode: IGraphEditorNode;
   open?: boolean;
   onSuccess?: (node: GraphPolicyNode) => void;
+  onDelete?: () => void;
   onClose?: () => void;
+  intents?: string[];
 }
 
 const UpsertNodeDialog = ({
@@ -35,7 +37,9 @@ const UpsertNodeDialog = ({
   nodeId,
   editorNode,
   onSuccess,
+  onDelete,
   onClose,
+  intents,
 }: IProps) => {
   const [isOpen, setOpen] = useState(open || false);
   const classes = useStyles();
@@ -43,10 +47,6 @@ const UpsertNodeDialog = ({
   const closeDialog = () => {
     setOpen(false);
     onClose?.();
-  };
-
-  const handleNodeChange = (node: IGraphEditorNode) => {
-    console.log('NODE: ', node);
   };
 
   return (
@@ -65,11 +65,10 @@ const UpsertNodeDialog = ({
             actor={editorNode.actor}
             type={editorNode.type}
             nodeId={nodeId}
-            x={editorNode.x}
-            y={editorNode.y}
             node={editorNode.node?.toJsonObj()}
-            onChange={() => handleNodeChange}
+            onDelete={onDelete}
             onSubmit={onSuccess}
+            intents={intents}
           />
         </Grid>
       </Grid>

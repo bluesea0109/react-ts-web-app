@@ -11,7 +11,7 @@ import { useParams } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import { Button, FormControl, TextField } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Alert } from '@material-ui/lab';
+import { Alert, Autocomplete } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 import ImageSelectorGrid from '../../../components/ImageSelectorGrid';
 import { IOptionImage } from '../../../models/chatbot-service';
@@ -31,13 +31,14 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       marginBottom: theme.spacing(2),
     },
-  }),
+  })
 );
 
 interface IUpsertNodeFormProps {
   onSubmit?: (node: GraphPolicyNode) => void;
   nodeId: number;
   node?: IUserImageOptionNode;
+  intents?: string[];
 }
 interface IParams {
   agentId: string;
@@ -45,6 +46,7 @@ interface IParams {
 export default function UpsertNodeForm({
   nodeId,
   node,
+  intents,
   onSubmit,
 }: IUpsertNodeFormProps) {
   const classes = useStyles();
@@ -61,7 +63,7 @@ export default function UpsertNodeForm({
   const [imgFile, setImgFile] = useState<File | undefined>(undefined);
 
   const [existingImg, setExistingImg] = useState<string | undefined>(
-    node?.imageName || undefined,
+    node?.imageName || undefined
   );
 
   const { agentId }: IParams = useParams();
@@ -109,7 +111,7 @@ export default function UpsertNodeForm({
     if (!existingImg && imgFile) {
       const uploadUrl = signedImgUploadResult.data?.ChatbotService_imageOptionUploadUrl?.url.replace(
         /"/g,
-        '',
+        ''
       );
       // The upload url isn't ready. Wait for a few
       if (
@@ -118,7 +120,7 @@ export default function UpsertNodeForm({
       ) {
         enqueueSnackbar(
           'Image upload not ready. Please try in 10 seconds, or try a new image',
-          { variant: 'error' },
+          { variant: 'error' }
         );
         prepareSignedUploadUrl();
         return;
@@ -135,7 +137,7 @@ export default function UpsertNodeForm({
       } catch (e) {
         enqueueSnackbar(
           `Error with uploading the image to GCS - ${JSON.stringify(e)}`,
-          { variant: 'error' },
+          { variant: 'error' }
         );
       }
     }
@@ -146,7 +148,7 @@ export default function UpsertNodeForm({
       text,
       caption,
       targetLink,
-      intent,
+      intent
     );
 
     console.log(newNode);
@@ -228,7 +230,25 @@ export default function UpsertNodeForm({
         variant="outlined"
         onChange={(e) => setTargetLink(e.target.value as string)}
       />
-      <TextField
+
+      <Autocomplete
+        className={classes.formControl}
+        size="small"
+        defaultValue={intent}
+        freeSolo
+        options={(intents || []).map((option) => option)}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Intent"
+            margin="normal"
+            variant="outlined"
+            onChange={(e) => setIntent(e.target.value as string)}
+          />
+        )}
+      />
+
+      {/* <TextField
         className={classes.formControl}
         name="intent"
         defaultValue={intent}
@@ -236,7 +256,7 @@ export default function UpsertNodeForm({
         label="Intent"
         variant="outlined"
         onChange={(e) => setIntent(e.target.value as string)}
-      />
+      /> */}
       {renderSubmitButton(submitUserImage)}
       {(loading || signedImgUploadResult.loading) && <ContentLoading />}
     </React.Fragment>

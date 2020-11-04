@@ -15,12 +15,12 @@ import {
   UserSubmitNode,
   UserTextOptionNode,
 } from '@bavard/agent-config/dist/graph-policy-v2';
-
+import clsx from 'clsx';
 import { ENodeActor } from './types';
 
 import { Button, FormControl, TextField, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Alert } from '@material-ui/lab';
+import { Alert, Autocomplete } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 import RichTextInput from '../../../components/RichTextInput';
 import { validateEmail, validateUrl } from '../../../utils/string';
@@ -33,28 +33,32 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       marginBottom: theme.spacing(2),
     },
-  }),
+    submitButton: {
+      float: 'right',
+    },
+    deleteButton: {
+      float: 'left',
+    },
+  })
 );
 
 interface IUpsertNodeFormProps {
-  onChange: (node: GraphPolicyNode) => void;
   onSubmit?: (node: GraphPolicyNode) => void;
+  onDelete?: () => void;
   nodeId: number;
   node?: IGraphPolicyNode;
-  x: number;
-  y: number;
   type: EUserNodeTypes | EAgentNodeTypes;
   actor: ENodeActor;
+  intents?: string[];
 }
 
 export default function UpsertNodeForm({
   nodeId,
   node,
   type,
-  x,
-  y,
   onSubmit,
-  onChange,
+  onDelete,
+  intents,
 }: IUpsertNodeFormProps) {
   const classes = useStyles();
 
@@ -79,7 +83,7 @@ export default function UpsertNodeForm({
 
     const newNode = new AgentUtteranceNode(
       nodeId,
-      formData.utterance as string,
+      formData.utterance as string
     );
 
     onSubmit?.(newNode);
@@ -136,8 +140,19 @@ export default function UpsertNodeForm({
           {error}
         </Alert>
       )}
+
+      {onDelete && (
+        <Button
+          className={clsx([classes.formControl, classes.deleteButton])}
+          variant="outlined"
+          color="secondary"
+          onClick={() => onDelete?.()}>
+          Delete
+        </Button>
+      )}
+
       <Button
-        className={classes.formControl}
+        className={clsx([classes.formControl, classes.submitButton])}
         onClick={submitFunc}
         variant="contained"
         color="primary">
@@ -228,6 +243,7 @@ export default function UpsertNodeForm({
           nodeId={nodeId}
           node={node as IUserImageOptionNode}
           onSubmit={onSubmit}
+          intents={intents}
         />
       );
 
@@ -255,23 +271,32 @@ export default function UpsertNodeForm({
             size="small"
             name="targetLink"
             defaultValue={editingNode?.targetLink}
-            required={true}
             label="Target Link"
             variant="outlined"
             onChange={(e) =>
               setFormField('targetLink', e.target.value as string)
             }
           />
-          <TextField
+
+          <Autocomplete
             className={classes.formControl}
-            name="intent"
             size="small"
             defaultValue={editingNode?.intent}
-            required={true}
-            label="Intent"
-            variant="outlined"
-            onChange={(e) => setFormField('intent', e.target.value as string)}
+            freeSolo
+            options={(intents || []).map((option) => option)}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Intent"
+                margin="normal"
+                variant="outlined"
+                onChange={(e) =>
+                  setFormField('intent', e.target.value as string)
+                }
+              />
+            )}
           />
+
           {renderSubmitButton(submitUserText)}
         </React.Fragment>
       );
@@ -290,11 +315,7 @@ export default function UpsertNodeForm({
     }
   }
 
-  console.log('INITIAL FORM DATA: ', initialFormData);
-
   const [formData, setFormData] = useState<any>(initialFormData);
-
-  console.log('NODE: ', node);
 
   return <div>{formContent}</div>;
 }
