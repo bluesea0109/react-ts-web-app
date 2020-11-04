@@ -4,8 +4,10 @@ import { AlignmentType } from '../../types';
 export interface HeaderType<RowData extends object> {
   title: string;
   field: keyof RowData | string;
-  renderHeader?: () => any;
+  alignRow?: AlignmentType;
+  alignHeader?: AlignmentType;
   renderRow?: (rowData: RowData|any) => any;
+  renderHeader?: () => any;
 }
 
 export type RowsType<RowData extends object> = RowData[];
@@ -38,7 +40,6 @@ export interface CommonTableHeadProps<RowData extends object> {
 export interface CommonTableBodyProps<RowData extends object> {
   rowsData: RowData[];
   columns: HeaderType<RowData>[];
-  alignments?: AlignmentType[];
   nonRecordError?: string;
   Row?: React.ComponentType<any>;
 }
@@ -51,7 +52,6 @@ export interface CommonTableFooterProps {
 // prettier-ignore
 export interface CommonTableProps<RowData extends object> {
   data: DataInterface<RowData>;
-  alignments?: AlignmentType[];
   pagination?: PaginationAttribute;
   nonRecordError?: string;
   Row?: React.ComponentType<any>;

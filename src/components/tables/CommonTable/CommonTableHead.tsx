@@ -1,4 +1,4 @@
-import { TableCell, TableHead, TableRow } from '@material-ui/core';
+import { TableCell, TableHead, TableRow, Typography } from '@material-ui/core';
 import React from 'react';
 import { CommonTableHeadProps } from './types';
 
@@ -21,7 +21,11 @@ const CommonTableHead = ({
                 key={header.title || header.field || index}
                 align={headerAlignments[index] || 'left'}
               >
-                {header.renderHeader ? header.renderHeader() : header.title}
+                {header.renderHeader ? header.renderHeader() : (
+                  <Typography variant="subtitle1" style={{fontWeight: 'bold'}}>
+                    {header.title}
+                  </Typography>
+                )}
               </TableCell>
             ))}
           </TableRow>

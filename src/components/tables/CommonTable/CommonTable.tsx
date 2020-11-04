@@ -7,7 +7,6 @@ import { CommonTableProps } from './types';
 
 const CommonTable = ({
   data,
-  alignments,
   nonRecordError,
   pagination,
   Row,
@@ -32,14 +31,12 @@ const CommonTable = ({
   return (
     <Table>
       <CommonTableHead
-        alignments={alignments}
         columns={data.columns}
         HeaderRow={HeaderRow}
       />
       <CommonTableBody
         rowsData={pageItems}
         columns={data.columns}
-        alignments={alignments}
         nonRecordError={nonRecordError}
         Row={Row}
       />

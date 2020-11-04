@@ -16,20 +16,18 @@ const StyledTableCell = withStyles((theme) => ({
     backgroundColor: 'wihte',
   },
   body: {
-    padding: '5px',
     fontSize: 14,
+    paddingTop: 5,
+    paddingBottom: 5,
   },
 }))(TableCell);
 
 const CommonTableBody = ({
   columns,
   rowsData,
-  alignments,
   nonRecordError,
   Row,
 }: CommonTableBodyProps<object & {[index: string]: any}>) => {
-  const bodyAlignments = alignments || [];
-
   return (
     <TableBody>
       {rowsData.length ? (
@@ -38,10 +36,10 @@ const CommonTableBody = ({
             <Row key={rowIndex} rowData={rowData} index={rowIndex}/>
           ) : (
             <StyledTableRow key={rowIndex} hover={true}>
-              {columns.map((column, colIndex) => (
+              {columns.map(column => (
                 <StyledTableCell
                   key={column.field}
-                  align={bodyAlignments[colIndex] || 'left'}
+                  align={column.alignRow || 'left'}
                 >
                   {column.renderRow ? column.renderRow(rowData) : rowData[column.field]}
                 </StyledTableCell>
