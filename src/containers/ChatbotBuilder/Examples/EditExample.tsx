@@ -1,10 +1,27 @@
-import { Button, Grid } from '@material-ui/core';
+import {  createStyles, Grid, makeStyles, Theme, Typography } from '@material-ui/core';
 import React, { useState } from 'react';
 import FullDialog from '../../../components/dialogs/FullDialog';
 import { INLUExample } from '../../../models/chatbot-service';
 import { Maybe } from '../../../utils/types';
 import ExampleForm from './ExampleForm';
 import { ExamplesError } from './types';
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    rootGrid: {
+      padding: theme.spacing(2),
+    },
+    formField: {
+      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(1),
+    },
+    input: {
+      '& .MuiOutlinedInput-input': {
+        padding: '12px 12px',
+      },
+    },
+  }),
+);
 
 type EditExampleProps = {
   loading: boolean;
@@ -24,10 +41,11 @@ const EditExample = ({
   onSaveExample,
   onEditExampleClose,
 }: EditExampleProps) => {
+  const classes = useStyles();
   const [updatedExample, setUpdatedExample] = useState<INLUExample>();
   const isNew = example?.id === -1;
 
-  const saveChanges = async () => {
+  const handleSaveChanges = async () => {
     if (!!updatedExample) {
       await onSaveExample(updatedExample);
     }
@@ -39,18 +57,25 @@ const EditExample = ({
       title={isNew ? 'Create NLU Example' : `Edit NLU Example #${example?.id}`}
       onEditClose={onEditExampleClose}
     >
-      <ExampleForm
-        loading={loading}
-        example={example}
-        tagTypes={tagTypes}
-        intents={intents}
-        onExampleUpdate={setUpdatedExample}
-      />
+      <Grid container={true} justify="center" className={classes.rootGrid}>
+        <Grid container={true} item={true} sm={4} xs={6}>
+          <Grid container={true} item={true} xs={12} justify="center">
+            <Typography variant="h6">
+              Add an example in natural language below to improve your
+              Assistant's detection of user's intent.
+            </Typography>
+          </Grid>
 
-      <Grid container={true} item={true} xs={12} justify="center">
-        <Button autoFocus={true} color="primary" variant="contained" onClick={saveChanges}>
-          {isNew ? 'Add Example' : 'Update Example'}
-        </Button>
+          <ExampleForm
+            isNew={isNew}
+            loading={loading}
+            example={example}
+            tagTypes={tagTypes}
+            intents={intents}
+            onSaveChanges={handleSaveChanges}
+            onExampleUpdate={setUpdatedExample}
+          />
+        </Grid>
       </Grid>
     </FullDialog>
   );
