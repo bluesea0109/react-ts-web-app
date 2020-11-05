@@ -143,9 +143,13 @@ const ExampleForm = ({
           <Grid container={true} item={true} xs={12}>
             <TextAnnotator
               style={{
+                width: '100%',
+                minHeight: 120,
                 lineHeight: 1.5,
+                padding: 12,
+                backgroundColor: 'white',
+                border: '1px solid #ccc',
                 pointerEvents: (loading || !tagType || tagTypes?.length === 0) ? 'none' : 'auto',
-                minHeight: 232,
               }}
               content={exampleText}
               value={annotatorState.tags}
