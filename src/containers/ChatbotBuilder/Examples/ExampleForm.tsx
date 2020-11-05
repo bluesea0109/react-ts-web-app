@@ -1,23 +1,54 @@
-import { Box, Grid, TextField } from '@material-ui/core';
-import Typography from '@material-ui/core/Typography';
-import { Autocomplete } from '@material-ui/lab';
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import { Button, createStyles, Grid, makeStyles, Paper, Theme, Typography } from '@material-ui/core';
+import React, { useEffect, useState } from 'react';
 import { TextAnnotator } from 'react-text-annotate';
+import { DropDown, TextInput } from '../../../components';
 import { INLUExample } from '../../../models/chatbot-service';
-import { Maybe } from '../../../utils/types';
-import { ExamplesError } from './types';
 import { useEditExampleAnnotation } from './useEditExample';
 
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    paper: {
+      width: '100%',
+      padding: theme.spacing(2),
+      backgroundColor: '#EAEAEA',
+    },
+    intentField: {
+      marginTop: theme.spacing(3),
+      marginBottom: theme.spacing(3),
+    },
+    formField: {
+      marginTop: theme.spacing(2),
+      marginBottom: theme.spacing(2),
+    },
+    input: {
+      '& .MuiOutlinedInput-input': {
+        padding: '12px 12px',
+        backgroundColor: 'white',
+      },
+    },
+  }),
+);
+
 interface ExampleFormProps {
+  isNew: boolean;
   loading: boolean;
   example?: INLUExample;
   tagTypes: string[];
   intents: string[];
-  error?: Maybe<ExamplesError>;
+  onSaveChanges: () => void;
   onExampleUpdate: (updatedExample: INLUExample) => void;
 }
 
-const ExampleForm = ({ loading, example, tagTypes, intents, error, onExampleUpdate }: ExampleFormProps) => {
+const ExampleForm = ({
+  isNew,
+  loading,
+  example,
+  tagTypes,
+  intents,
+  onSaveChanges,
+  onExampleUpdate,
+}: ExampleFormProps) => {
+  const classes = useStyles();
   const defaultIntent = example?.intent ?? intents?.[0];
   const [intent, setIntent] = useState<string>(defaultIntent);
 
@@ -58,7 +89,7 @@ const ExampleForm = ({ loading, example, tagTypes, intents, error, onExampleUpda
     // eslint-disable-next-line
   }, []);
 
-  const updateTagType = (e: ChangeEvent<{}>, tagType: string | null) => {
+  const updateTagType = (tagType: string | null) => {
     setTagType(tagType || '');
     setAnnotatorState({
       ...annotatorState,
@@ -66,61 +97,59 @@ const ExampleForm = ({ loading, example, tagTypes, intents, error, onExampleUpda
     });
   };
 
-  const updateIntent = (e: ChangeEvent<{}>, intent: string | null) => setIntent(intent ?? '');
-
   return (
     <Grid container={true}>
-      <Grid item={true} xs={6}>
-        <Box px={2} py={4}>
-          <Box mb={5}>
-            <Autocomplete
-              disabled={loading}
-              id="intentSelector"
-              options={intents}
-              value={intent}
-              onChange={updateIntent}
-              style={{ width: 300 }}
-              renderInput={(params) => <TextField {...params} label="Intents" variant="outlined" />}
-            />
-          </Box>
-          <TextField
-            disabled={loading}
-            fullWidth={true}
-            multiline={true}
-            variant="outlined"
-            rows={12}
-            value={exampleText}
-            onChange={e => setExampleText(e.target.value)}
-            error={error === ExamplesError.CREATE_ERROR_DUPLICATE_EXAMPLE}
-          />
-          <Typography variant="h6" color="error" style={{ fontWeight: 'bold', marginTop: 16 }}>
-            {
-              error === ExamplesError.CREATE_ERROR_DUPLICATE_EXAMPLE ?
-                'Cannot create duplicate example entry. Please try again with different values.' :
-                null
-            }
-          </Typography>
-        </Box>
+      <Grid container={true} item={true} sm={12} className={classes.intentField}>
+        <DropDown
+          fullWidth={true}
+          label="Intent"
+          labelPosition="left"
+          menuItems={intents}
+          current={intent}
+          padding="12px"
+          onChange={setIntent}
+        />
       </Grid>
-      <Grid item={true} xs={6}>
-        <Box px={2} py={4}>
-          <Box mb={5}>
-            <Autocomplete
-              disabled={loading}
-              id="tagSelector"
-              options={tagTypes}
-              defaultValue={tagTypes?.[0]}
-              onChange={updateTagType}
-              style={{ width: 300 }}
-              renderInput={(params) => <TextField {...params} label="Tags" variant="outlined" />}
-            />
-          </Box>
-          <Box p={2} border="1px solid rgba(0, 0, 0, 0.23)" borderRadius={4}>
+      <Paper className={classes.paper}>
+        <Grid container={true} className={classes.formField}>
+          <TextInput
+            fullWidth={true}
+            label="NLU Example 1"
+            rows={4}
+            value={exampleText}
+            className={classes.input}
+            onChange={e => setExampleText(e.target.value)}
+          />
+        </Grid>
+
+        <Grid container={true} className={classes.formField}>
+          <DropDown
+            fullWidth={true}
+            label="Selected Tag Type"
+            labelPosition="left"
+            menuItems={tagTypes}
+            current={tagTypes?.[0]}
+            padding="12px"
+            onChange={updateTagType}
+          />
+        </Grid>
+
+        <Grid container={true} className={classes.formField}>
+          <Grid container={true} item={true} xs={12}>
+            <Typography variant="subtitle1" style={{fontWeight: 'bold'}}>
+              Highlight text to identify it as a tag.
+            </Typography>
+          </Grid>
+          <Grid container={true} item={true} xs={12}>
             <TextAnnotator
               style={{
+                width: '100%',
+                minHeight: 120,
                 lineHeight: 1.5,
+                padding: 12,
+                backgroundColor: 'white',
+                border: '1px solid #ccc',
                 pointerEvents: (loading || !tagType || tagTypes?.length === 0) ? 'none' : 'auto',
-                minHeight: 232,
               }}
               content={exampleText}
               value={annotatorState.tags}
@@ -131,9 +160,15 @@ const ExampleForm = ({ loading, example, tagTypes, intents, error, onExampleUpda
                 color: colors.current[tagType],
               })}
             />
-          </Box>
-        </Box>
-      </Grid>
+          </Grid>
+        </Grid>
+
+        <Grid container={true} item={true} xs={12} justify="center">
+          <Button autoFocus={true} color="primary" variant="contained" onClick={onSaveChanges}>
+            {isNew ? 'Add Example' : 'Update Example'}
+          </Button>
+        </Grid>
+      </Paper>
     </Grid>
   );
 };
