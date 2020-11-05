@@ -9,7 +9,6 @@ import { INLUExample } from '../../../models/chatbot-service';
 import { Maybe } from '../../../utils/types';
 import ContentLoading from '../../ContentLoading';
 import { currentAgentConfig } from '../atoms';
-import AddExamples from './AddExamples';
 import EditExample from './EditExample';
 import ExamplesTable from './ExamplesTable';
 import {
@@ -30,8 +29,7 @@ const Examples = () => {
   const { agentId } = useParams<{ agentId: string }>();
   const [filters, setFilters] = useState<ExamplesFilter>();
   const config = useRecoilValue(currentAgentConfig);
-  const [currentEdit, setCurrentEdit] = useState<number | null>();
-  const [newExample, setNewExample] = useState<INLUExample | null>(null);
+  const [currentEdit, setCurrentEdit] = useState<INLUExample | null>();
   const [exampleError, setExampleError] = useState<Maybe<ExamplesError>>();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -115,21 +113,20 @@ const Examples = () => {
     setFilters({ ...filters, ...newFilters });
   };
 
-  const onExampleEdit = (exampleID: number) => {
-    setCurrentEdit(exampleID);
+  const onExampleEdit = (example: INLUExample) => {
+    setCurrentEdit(example);
   };
 
-  const onExampleDelete = async (exampleId: number) => {
+  const onExampleDelete = async (example: INLUExample) => {
     await deleteExample({
       variables: {
-        exampleId,
+        exampleId: example.id,
       },
     });
   };
 
   const onExampleEditClose = () => {
     setCurrentEdit(null);
-    setNewExample(null);
   };
 
   const onExampleSave = async (updatedExample: INLUExample) => {
@@ -183,8 +180,8 @@ const Examples = () => {
     }
   };
 
-  const startNewExample = () => {
-    setNewExample({
+  const onNewExample = () => {
+    setCurrentEdit({
       id: -1,
       agentId: Number(agentId),
       intent: '',
@@ -218,27 +215,21 @@ const Examples = () => {
             config={config}
             onDelete={onExampleDelete}
             onEdit={onExampleEdit}
-            onAdd={startNewExample}
+            onAdd={onNewExample}
             onUpdateExample={onExampleSave}
           />
         </Grid>
-        {!!intents && !!tagTypes && (
+        {!!intents && !!tagTypes && !!currentEdit && (
           <Grid container={true} item={true} xs={12}>
             <EditExample
               loading={examplesData.loading}
               tagTypes={tagTypes}
               intents={intents}
-              example={examples?.find((ex) => ex.id === currentEdit)}
+              example={currentEdit}
               onEditExampleClose={onExampleEditClose}
               onSaveExample={onExampleSave}
               error={exampleError}
             />
-            {!!newExample && (
-              <AddExamples
-                onEditExampleClose={onExampleEditClose}
-                refetchOptions={refetchOptions}
-              />
-            )}
           </Grid>
         )}
       </Grid>

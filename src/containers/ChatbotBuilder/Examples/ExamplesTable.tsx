@@ -46,8 +46,8 @@ interface ExamplesTableProps {
   intents: string[];
   filters?: ExamplesFilter;
   config: any;
-  onDelete: (exampleId: number) => Promise<void>;
-  onEdit: (exampleId: number) => void;
+  onDelete: (example: INLUExample) => Promise<void>;
+  onEdit: (example: INLUExample) => void;
   onAdd: () => void;
   updateFilters: (filters: ExamplesFilter) => void;
   onUpdateExample: (updatedExample: INLUExample) => Promise<void>;
@@ -116,10 +116,10 @@ const ExamplesTable = ({
 
   const renderActions = (example: INLUExample) => (
     <>
-      <Button onClick={() => onEdit(example.id)}>
+      <Button onClick={() => onEdit(example)}>
         <Edit />
       </Button>
-      <Button onClick={() => onDelete(example.id)}>
+      <Button onClick={() => onDelete(example)}>
         <Delete />
       </Button>
     </>

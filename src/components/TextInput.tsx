@@ -22,6 +22,7 @@ interface TextInputProps {
   fullWidth?: boolean;
   label?: string;
   placeholder?: string;
+  rows?: number;
   type?: string;
   value?: string;
   variant?: TextVariantTypes;
@@ -37,6 +38,7 @@ const TextInput: React.FC<TextInputProps> = ({
   defaultValue,
   fullWidth,
   placeholder,
+  rows,
   type,
   value,
   variant,
@@ -60,6 +62,7 @@ const TextInput: React.FC<TextInputProps> = ({
         defaultValue={defaultValue}
         fullWidth={fullWidth || false}
         placeholder={placeholder}
+        rows={rows || 1}
         type={type}
         value={value}
         variant={(variant || 'outlined') as any}
