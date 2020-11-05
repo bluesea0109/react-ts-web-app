@@ -9,8 +9,10 @@ import _uniq from 'lodash/uniq';
 import { ENodeActor } from './types';
 
 export const snapItemPosition = (x: number, y: number) => {
-  let snappedX = Math.ceil((x + 1) / 10) * 10;
-  let snappedY = Math.ceil((y + 1) / 10) * 10;
+  // let snappedX = Math.ceil((x + 1) / 10) * 10;
+  // let snappedY = Math.ceil((y + 1) / 10) * 10;
+  let snappedX = x;
+  let snappedY = y;
 
   if (snappedX < 10) {
     snappedX = 10;
@@ -26,7 +28,7 @@ export const snapItemPosition = (x: number, y: number) => {
 };
 
 export const getNodeActor = (
-  node: GraphPolicyNode | IGraphPolicyNode,
+  node: GraphPolicyNode | IGraphPolicyNode
 ): ENodeActor => {
   if (node.nodeType in EAgentNodeTypes) {
     return ENodeActor.AGENT;
@@ -39,7 +41,7 @@ export const getArrowCoords = (
   startNode: GraphPolicyNode,
   endNode: GraphPolicyNode,
   nodeHeight: number,
-  nodeWidth: number,
+  nodeWidth: number
 ) => {
   let x1 = startNode.position.x;
   let y1 = startNode.position.y;
@@ -122,4 +124,15 @@ export const getAllIntents = (gp: GraphPolicyV2): string[] => {
     }
   });
   return _uniq(intents);
+};
+
+export const getZoomedCoord = (
+  coordinate: number,
+  boundingRectCoordinate: number,
+  zoomPercentage: number
+) => {
+  return (
+    (coordinate * (100 + 100 - zoomPercentage)) / 100 -
+    (boundingRectCoordinate * zoomPercentage) / 100
+  );
 };

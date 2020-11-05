@@ -8,7 +8,7 @@ const useStyles = makeStyles((theme: Theme) =>
     arrow: {
       cursor: 'pointer',
     },
-  }),
+  })
 );
 
 export interface ISvgArrowProps {
