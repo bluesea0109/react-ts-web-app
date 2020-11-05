@@ -46,8 +46,6 @@ const useStyles = makeStyles((theme: Theme) =>
     editorCanvas: {
       position: 'relative',
       display: 'flex',
-      height: 5000,
-      minWidth: 10000,
       flexGrow: 1,
       backgroundColor: theme.palette.background.default,
     },
@@ -130,6 +128,10 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
   const [zoom, setzoom] = useState(100);
   const [drawingArrowStart, setDrawingArrowStart] = useState<IItemPosition>();
   const [drawingArrowEnd, setDrawingArrowEnd] = useState<IItemPosition>();
+  const [canvasDimensions, setCanvasDimensions] = useState({
+    width: 500,
+    height: 500,
+  });
 
   const nodeToGraphEditorNode = (node: GraphPolicyNode) => {
     return {
@@ -158,7 +160,24 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
     }
   }, [editingNodeId, draftNodes, gp]);
 
-  useEffect(() => {}, [changes, zoom]);
+  useEffect(() => {
+    let maxX = 500;
+    let maxY = 500;
+
+    gp.getAllNodes().forEach((n) => {
+      if (n.position.x >= maxX) {
+        maxX = n.position.x;
+      }
+      if (n.position.y >= maxY) {
+        maxY = n.position.y;
+      }
+    });
+
+    setCanvasDimensions({
+      width: maxX + 500,
+      height: maxY + 500,
+    });
+  }, [changes, zoom]);
 
   const gpNodes = gp.getAllNodes();
 
@@ -536,6 +555,12 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
       <div className={classes.canvasContainer} style={{ zoom: `${zoom}%` }}>
         <div
           className={classes.editorCanvas}
+          style={{
+            width: canvasDimensions.width,
+            minWidth: canvasDimensions.width,
+            height: canvasDimensions.height,
+            minHeight: canvasDimensions.height,
+          }}
           ref={containerRef}
           onDragOver={handleArrowDragOver}
           onDrop={handleNodeDrop}>
