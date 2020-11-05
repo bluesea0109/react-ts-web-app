@@ -2,10 +2,10 @@ import { Card, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
 import { useQuery } from '@apollo/client';
+import { GraphPolicyV2 } from '@bavard/agent-config/dist/graph-policy-v2';
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
-import { GraphPolicyV2 } from '@bavard/agent-config/dist/graph-policy-v2';
 import { agentOptionImages, currentAgentConfig } from '../atoms';
 import CreateGraphPolicyDialog from './CreateGraphPolicyDialog';
 import { getOptionImagesQuery } from './gql';
@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
     editorMenuItems: {
       marginTop: theme.spacing(2),
     },
-  })
+  }),
 );
 
 const GraphEditorPage = () => {

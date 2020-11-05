@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme: Theme) =>
     title: {
       width: '100%',
     },
-  })
+  }),
 );
 
 interface GraphPolicyState {
