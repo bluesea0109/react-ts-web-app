@@ -1,12 +1,12 @@
-import { TableCell, TableHead, TableRow } from '@material-ui/core';
+import { TableCell, TableHead, TableRow, Typography } from '@material-ui/core';
 import React from 'react';
-import { CommonTableHeadProps, RowData } from './types';
+import { CommonTableHeadProps } from './types';
 
 const CommonTableHead = ({
   alignments,
   columns,
   HeaderRow,
-}: CommonTableHeadProps<RowData>) => {
+}: CommonTableHeadProps<object>) => {
   const headerAlignments = alignments || [];
 
   return (
@@ -21,7 +21,11 @@ const CommonTableHead = ({
                 key={header.title || header.field || index}
                 align={headerAlignments[index] || 'left'}
               >
-                {header.title}
+                {header.renderHeader ? header.renderHeader() : (
+                  <Typography variant="subtitle1" style={{fontWeight: 'bold'}}>
+                    {header.title}
+                  </Typography>
+                )}
               </TableCell>
             ))}
           </TableRow>

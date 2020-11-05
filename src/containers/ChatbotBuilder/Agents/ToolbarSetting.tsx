@@ -59,7 +59,6 @@ export const ToolBarSetting = ({
             current={agents.find((agent) => agent.uname === currentAgent)}
             menuItems={agents}
             onChange={handleChange}
-            size="small"
           />
         )}
       </div>

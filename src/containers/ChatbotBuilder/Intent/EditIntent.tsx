@@ -121,12 +121,12 @@ const EditIntent = ({
               </Typography>
               <DropDown
                 label=""
+                fullWidth={true}
                 current={actions.find(
                   (a) => a.name === currentIntent?.defaultActionName,
                 )}
                 menuItems={actions}
                 onChange={handleChangeAction}
-                size="large"
               />
             </Box>
           </Grid>

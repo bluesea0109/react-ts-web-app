@@ -1,16 +1,33 @@
 import { TableBody, TableCell, TableRow, Typography } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
 import React from 'react';
-import { CommonTableBodyProps, RowData } from './types';
+import { CommonTableBodyProps } from './types';
+
+const StyledTableRow = withStyles((theme) => ({
+  root: {
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.action.hover,
+    },
+  },
+}))(TableRow);
+
+const StyledTableCell = withStyles((theme) => ({
+  head: {
+    backgroundColor: 'wihte',
+  },
+  body: {
+    fontSize: 14,
+    paddingTop: 5,
+    paddingBottom: 5,
+  },
+}))(TableCell);
 
 const CommonTableBody = ({
   columns,
   rowsData,
-  alignments,
   nonRecordError,
   Row,
-}: CommonTableBodyProps<RowData>) => {
-  const bodyAlignments = alignments || [];
-
+}: CommonTableBodyProps<object & {[index: string]: any}>) => {
   return (
     <TableBody>
       {rowsData.length ? (
@@ -18,16 +35,16 @@ const CommonTableBody = ({
           Row ? (
             <Row key={rowIndex} rowData={rowData} index={rowIndex}/>
           ) : (
-            <TableRow key={rowIndex} hover={true}>
-              {columns.map((column, colIndex) => (
-                <TableCell
+            <StyledTableRow key={rowIndex} hover={true}>
+              {columns.map(column => (
+                <StyledTableCell
                   key={column.field}
-                  align={bodyAlignments[colIndex] || 'left'}
+                  align={column.alignRow || 'left'}
                 >
-                  {rowData[column.field]}
-                </TableCell>
+                  {column.renderRow ? column.renderRow(rowData) : rowData[column.field]}
+                </StyledTableCell>
               ))}
-            </TableRow>
+            </StyledTableRow>
           )
         ))
       ) : (
