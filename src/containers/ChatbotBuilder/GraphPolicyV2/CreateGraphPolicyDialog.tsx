@@ -3,17 +3,17 @@ import { GraphPolicyV2 } from '@bavard/agent-config/dist/graph-policy-v2';
 import { AgentUtteranceNode } from '@bavard/agent-config/dist/graph-policy-v2';
 import {
   Button,
+  FormControl,
   Grid,
   TextField,
   Theme,
   Typography,
-  FormControl,
 } from '@material-ui/core';
 import { createStyles, makeStyles } from '@material-ui/styles';
 import React, { useState } from 'react';
 import FullScreenDialog from '../../../components/FullScreenDialog';
-import ContentLoading from '../../ContentLoading';
 import RichTextInput from '../../../components/RichTextInput';
+import ContentLoading from '../../ContentLoading';
 
 import { useSnackbar } from 'notistack';
 import { useRecoilState } from 'recoil';
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
     gridContainer: {
       height: '100%',
     },
-  })
+  }),
 );
 
 interface IProps {
@@ -83,7 +83,7 @@ const CreateGraphPolicyDialog = ({ open, agentId, onSuccess }: IProps) => {
     const policy = new GraphPolicyV2(
       policyName,
       startNode,
-      new Set([startNode])
+      new Set([startNode]),
     );
     console.log('POLICY: ', policy);
 
