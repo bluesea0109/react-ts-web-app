@@ -2,14 +2,13 @@ import { GraphPolicyV2 } from '@bavard/agent-config/dist/graph-policy-v2';
 
 import {
   AgentNode,
-  AgentUtteranceNode,
   GraphPolicyNode,
   UserNode,
 } from '@bavard/agent-config/dist/graph-policy-v2';
 
-import { IconButton, Button, Tooltip } from '@material-ui/core';
+import { Button, IconButton, Tooltip } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Delete, Add, Remove } from '@material-ui/icons';
+import { Add, Delete, Remove } from '@material-ui/icons';
 import clsx from 'clsx';
 import _ from 'lodash';
 import { useSnackbar } from 'notistack';
@@ -19,12 +18,13 @@ import GraphEditorNode from './GraphEditorNode';
 import SvgArrow from './SvgArrow';
 import { IGraphEditorNode, IItemPosition } from './types';
 import UpsertNodeDialog from './UpsertNodeDialog';
+
 import {
   getAllIntents,
   getArrowCoords,
   getNodeActor,
-  snapItemPosition,
   getZoomedCoord,
+  snapItemPosition,
 } from './utils';
 
 const NODE_WIDTH = 150;
@@ -107,6 +107,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface IProps {
   agentId: number;
+  policy: GraphPolicyV2;
 }
 
 interface INodePair {
@@ -114,28 +115,9 @@ interface INodePair {
   end: GraphPolicyNode;
 }
 
-const GraphEditor = ({ agentId }: IProps) => {
+const GraphEditor = ({ agentId, policy }: IProps) => {
   const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
-  const rootNode = new AgentUtteranceNode(1, 'Hello');
-  rootNode.position = {
-    x: 100,
-    y: 100,
-  };
-
-  const nodetwo = new AgentUtteranceNode(2, 'Buy or sell');
-  nodetwo.position = {
-    x: 300,
-    y: 300,
-  };
-
-  rootNode.addChild(nodetwo);
-
-  const policy = new GraphPolicyV2(
-    'Test Policy',
-    rootNode,
-    new Set([rootNode, nodetwo])
-  );
   const [gp, setGp] = useState<GraphPolicyV2>(policy);
   const containerRef = useRef<HTMLDivElement>(null);
   const [changes, setChanges] = useState(0);

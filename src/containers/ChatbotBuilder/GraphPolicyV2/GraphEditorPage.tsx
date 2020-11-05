@@ -5,8 +5,8 @@ import { useQuery } from '@apollo/client';
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
-
-import { agentOptionImages } from '../atoms';
+import { GraphPolicyV2 } from '@bavard/agent-config/dist/graph-policy-v2';
+import { agentOptionImages, currentAgentConfig } from '../atoms';
 import CreateGraphPolicyDialog from './CreateGraphPolicyDialog';
 import { getOptionImagesQuery } from './gql';
 import { IGetOptionImagesQueryResult } from './types';
@@ -36,13 +36,14 @@ const useStyles = makeStyles((theme: Theme) =>
     editorMenuItems: {
       marginTop: theme.spacing(2),
     },
-  }),
+  })
 );
 
 const GraphEditorPage = () => {
   const classes = useStyles();
   const { entityId, agentId }: IParams = useParams();
   const [, setOptionImages] = useRecoilState(agentOptionImages);
+  const [agentConfig] = useRecoilState(currentAgentConfig);
 
   const imgQuery = useQuery<IGetOptionImagesQueryResult>(getOptionImagesQuery, {
     variables: { agentId: parseInt(agentId) },
@@ -54,6 +55,11 @@ const GraphEditorPage = () => {
     },
   });
 
+  let gp: GraphPolicyV2 | undefined;
+  if (entityId) {
+    gp = agentConfig?.getGraphPolicyV2(entityId);
+  }
+
   return (
     <div className="page-container">
       <div className={classes.editorContent}>
@@ -64,10 +70,10 @@ const GraphEditorPage = () => {
           <GraphEditorMenu className={classes.editorMenuItems} />
         </div>
         <Card className={classes.graphEditorContainer}>
-          <GraphEditor agentId={parseInt(agentId)} />
+          {gp && <GraphEditor policy={gp} agentId={parseInt(agentId)} />}
         </Card>
       </div>
-      {!entityId && (
+      {!gp && (
         <CreateGraphPolicyDialog agentId={parseInt(agentId)} open={true} />
       )}
     </div>

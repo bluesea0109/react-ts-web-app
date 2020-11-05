@@ -28,7 +28,7 @@ export const snapItemPosition = (x: number, y: number) => {
 };
 
 export const getNodeActor = (
-  node: GraphPolicyNode | IGraphPolicyNode
+  node: GraphPolicyNode | IGraphPolicyNode,
 ): ENodeActor => {
   if (node.nodeType in EAgentNodeTypes) {
     return ENodeActor.AGENT;
@@ -41,7 +41,7 @@ export const getArrowCoords = (
   startNode: GraphPolicyNode,
   endNode: GraphPolicyNode,
   nodeHeight: number,
-  nodeWidth: number
+  nodeWidth: number,
 ) => {
   let x1 = startNode.position.x;
   let y1 = startNode.position.y;
@@ -129,7 +129,7 @@ export const getAllIntents = (gp: GraphPolicyV2): string[] => {
 export const getZoomedCoord = (
   coordinate: number,
   boundingRectCoordinate: number,
-  zoomPercentage: number
+  zoomPercentage: number,
 ) => {
   return (
     (coordinate * (100 + 100 - zoomPercentage)) / 100 -

@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { GraphPolicy } from '@bavard/agent-config';
+import { GraphPolicyV2 } from '@bavard/agent-config/dist/graph-policy-v2';
 import { Button, Grid } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { useSnackbar } from 'notistack';
@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme: Theme) =>
     createButton: {
       margin: theme.spacing(1),
     },
-  }),
+  })
 );
 
 export default function GraphPolicies() {
@@ -74,7 +74,7 @@ export default function GraphPolicies() {
   const [user] = useRecoilState(currentUser);
   const history = useHistory();
 
-  const [selectedPolicy, selectPolicy] = useState<GraphPolicy | undefined>();
+  const [selectedPolicy, selectPolicy] = useState<GraphPolicyV2 | undefined>();
   const [updateAgent] = useMutation(CHATBOT_UPDATE_AGENT);
 
   console.log(selectedPolicy, upsertDialogOpen);
@@ -124,7 +124,7 @@ export default function GraphPolicies() {
   const handleDeletePolicy = async (name: string) => {
     setLoading(true);
     try {
-      config.deleteGraphPolicy(name);
+      config.deleteGraphPolicyV2(name);
 
       setConfig(config);
       const mutationResult = await updateAgent({
@@ -151,13 +151,13 @@ export default function GraphPolicies() {
   };
 
   const notFoundError = () => {
-    return enqueueSnackbar(`Could not export, policy not found`, {
+    return enqueueSnackbar(`Policy not found`, {
       variant: 'error',
     });
   };
 
   const handleViewPolicy = async (policyName: string) => {
-    const policy = config.getGraphPolicy(policyName);
+    const policy = config.getGraphPolicyV2(policyName);
 
     if (!policy) {
       return notFoundError();
@@ -178,11 +178,12 @@ export default function GraphPolicies() {
     }
     exportJsonFileFromObj(
       policy.toJsonObj(),
-      `graph_policy_${policy.policyName}.json`,
+      `graph_policy_${policy.policyName}.json`
     );
     setLoading(false);
   };
 
+  console.log('CONFIG: ', config);
   const policies = config.getGraphPoliciesV2() || [];
   console.log('POLICIES: ', policies);
   console.log('CONFIG: ', config);

@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme: Theme) =>
     title: {
       width: '100%',
     },
-  }),
+  })
 );
 
 interface GraphPolicyState {
@@ -48,7 +48,7 @@ function GraphPoliciesTable({
     columns: [
       {
         title: 'Name',
-        field: 'policyName',
+        field: 'name',
         editable: 'never',
       },
       {
