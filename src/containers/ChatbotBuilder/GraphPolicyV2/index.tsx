@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme: Theme) =>
     createButton: {
       margin: theme.spacing(1),
     },
-  }),
+  })
 );
 
 export default function GraphPolicies() {
@@ -178,7 +178,7 @@ export default function GraphPolicies() {
     }
     exportJsonFileFromObj(
       policy.toJsonObj(),
-      `graph_policy_${policy.policyName}.json`,
+      `graph_policy_${policy.policyName}.json`
     );
     setLoading(false);
   };
@@ -219,7 +219,13 @@ export default function GraphPolicies() {
           }
         />
         {upsertDialogOpen && (
-          <CreateGraphPolicyDialog open={upsertDialogOpen} agentId={agentId} />
+          <CreateGraphPolicyDialog
+            open={upsertDialogOpen}
+            onSuccess={() => {
+              setUpsertDialogOpen(false);
+            }}
+            agentId={agentId}
+          />
         )}
 
         {

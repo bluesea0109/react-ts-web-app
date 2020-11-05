@@ -177,7 +177,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
       width: maxX + 500,
       height: maxY + 500,
     });
-  }, [changes, zoom]);
+  }, [changes, zoom, gp]);
 
   const gpNodes = gp.getAllNodes();
 
