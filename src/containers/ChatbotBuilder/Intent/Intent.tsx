@@ -1,5 +1,5 @@
 import { AgentConfig, IIntent } from '@bavard/agent-config';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { Box, createStyles, Grid, makeStyles, Theme } from '@material-ui/core';
 import _ from 'lodash';
 import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
@@ -11,20 +11,7 @@ import IntentsTable from './IntentsTable';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      padding: theme.spacing(2),
-      overflow: 'auto',
       backgroundColor: '#f4f4f4',
-    },
-    paper: {
-      padding: theme.spacing(2),
-    },
-    header: {
-      display: 'block',
-      marginLeft: '80px',
-      marginTop: '30px',
-      marginBottom: '50px',
-      fontSize: '30px',
-      fontWeight: 'bold',
     },
   }),
 );
@@ -73,15 +60,16 @@ const IntentSection: React.FC = () => {
   };
 
   return (
-    <div className={classes.root}>
-      <div className={classes.header}>Manage Assistant Intents</div>
-      <IntentsTable
-        intents={intents ?? []}
-        actions={actions}
-        onAdd={() => setNewIntent(true)}
-        onEditIntent={onEditIntent}
-        onDeleteIntent={onDeleteIntent}
-      />
+    <Box className={classes.root}>
+      <Grid item={true} xs={12} sm={12}>
+        <IntentsTable
+          intents={intents ?? []}
+          actions={actions}
+          onAdd={() => setNewIntent(true)}
+          onEditIntent={onEditIntent}
+          onDeleteIntent={onDeleteIntent}
+        />
+      </Grid>
       {!!intents && (
         <>
           <EditIntent
@@ -99,7 +87,7 @@ const IntentSection: React.FC = () => {
           )}
         </>
       )}
-    </div>
+    </Box>
   );
 };
 

@@ -155,7 +155,7 @@ const ExamplesTable = ({
         <Grid>
           <TableContainer
             component={Paper}
-            aria-label="Agents"
+            aria-label="Examples"
           >
             <CommonTable
               data={{
