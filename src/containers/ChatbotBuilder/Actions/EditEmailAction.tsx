@@ -38,16 +38,6 @@ const EditEmailAction = ({
       <Grid container={true} item={true} sm={12} className={classes.formField}>
         <TextInput
           fullWidth={true}
-          label="Email From"
-          type="email"
-          value={action.from || ''}
-          className={classes.input}
-          onChange={e => onChangeAction({ ...action, from: e.target.value})}
-        />
-      </Grid>
-      <Grid container={true} item={true} sm={12} className={classes.formField}>
-        <TextInput
-          fullWidth={true}
           label="Email To"
           type="email"
           value={action.to || ''}

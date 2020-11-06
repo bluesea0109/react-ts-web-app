@@ -90,20 +90,16 @@ export default function UpsertNodeForm({
   };
 
   const submitAgentEmail = () => {
-    const { prompt, to, from } = formData;
-    if (!from || !to || !prompt) {
-      return setError('Prompt, from, and to are all required fields');
-    }
-
-    if (!validateEmail(from)) {
-      return setError('From email is invalid');
+    const { prompt, to } = formData;
+    if (!to || !prompt) {
+      return setError('Prompt and to are all required fields');
     }
 
     if (!validateEmail(to)) {
       return setError('To email is invalid');
     }
 
-    const newNode = new AgentEmailNode(nodeId, prompt, to, from);
+    const newNode = new AgentEmailNode(nodeId, prompt, to);
 
     console.log(newNode);
 
@@ -189,7 +185,6 @@ export default function UpsertNodeForm({
       initialFormData = {
         prompt: editingNode?.prompt,
         to: editingNode?.to,
-        from: editingNode?.from,
       };
 
       formContent = (
@@ -210,16 +205,6 @@ export default function UpsertNodeForm({
             label="To"
             variant="outlined"
             onChange={(e) => setFormField('to', e.target.value as string)}
-          />
-          <TextField
-            className={classes.formControl}
-            name="from"
-            size="small"
-            defaultValue={editingNode?.from}
-            required={true}
-            label="From"
-            variant="outlined"
-            onChange={(e) => setFormField('from', e.target.value as string)}
           />
           {renderSubmitButton(submitAgentEmail)}
         </React.Fragment>
