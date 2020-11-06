@@ -187,7 +187,7 @@ const AgentSettings = () => {
               disabled={loading}
               variant="contained"
               color="primary"
-              style={{marginTop: '25px'}}
+              style={{marginTop: '25px', marginBottom: '80px'}}
               onClick={onUpdateSettingsClicked}>
               Update Settings
             </Button>
