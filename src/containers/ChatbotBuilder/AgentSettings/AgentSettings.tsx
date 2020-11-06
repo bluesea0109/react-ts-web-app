@@ -25,6 +25,10 @@ import { currentAgentConfig, currentWidgetSettings } from '../atoms';
 import { getBotSettingsQuery, updateBotSettingsMutation } from './gql';
 import ImageUploader from './ImageUploader';
 
+import { Avatars } from './Avatars';
+import { Description } from './Description';
+import { ColorPalett } from './Palets';
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -34,6 +38,18 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.background.default,
       padding: theme.spacing(2),
     },
+    spanOfPanel: {
+      width: '70%',
+      marginLeft: '100px',
+    },
+    panel: {
+      backgroundColor: 'white',
+      padding: '30px',
+    },
+    submitBtn: {
+      display: 'flex',
+      justifyContent: 'center',
+    },
   }),
 );
 
@@ -42,7 +58,9 @@ const AgentSettings = () => {
   const { agentId } = useParams<{ agentId: string }>();
 
   const [config, setConfig] = useRecoilState(currentAgentConfig);
-  const [widgetSettings, setWidgetSettings] = useRecoilState(currentWidgetSettings);
+  const [widgetSettings, setWidgetSettings] = useRecoilState(
+    currentWidgetSettings,
+  );
 
   const { enqueueSnackbar } = useSnackbar();
   const [settings, setSettings] = useState<IWidgetSettings>({
@@ -54,7 +72,9 @@ const AgentSettings = () => {
 
   const agentUname = config?.toJsonObj()?.uname;
 
-  const [updateBotSettings, updateBotSettingsMutationData] = useMutation(updateBotSettingsMutation);
+  const [updateBotSettings, updateBotSettingsMutationData] = useMutation(
+    updateBotSettingsMutation,
+  );
 
   const agentsData = useQuery<{ ChatbotService_agent: IAgent }>(
     CHATBOT_GET_AGENT,
@@ -66,19 +86,18 @@ const AgentSettings = () => {
     },
   );
 
-  const widgetSettingsData = useQuery<{ ChatbotService_widgetSettings: IWidgetSettings }>(
-    getBotSettingsQuery,
-    {
-      skip: !agentUname,
-      variables: {
-        uname: agentUname,
-        dev: mode === 'dev',
-      },
-      onCompleted: (data) => {
-        setWidgetSettings(data.ChatbotService_widgetSettings);
-      },
+  const widgetSettingsData = useQuery<{
+    ChatbotService_widgetSettings: IWidgetSettings;
+  }>(getBotSettingsQuery, {
+    skip: !agentUname,
+    variables: {
+      uname: agentUname,
+      dev: mode === 'dev',
     },
-  );
+    onCompleted: (data) => {
+      setWidgetSettings(data.ChatbotService_widgetSettings);
+    },
+  });
 
   useEffect(() => {
     if (!!widgetSettings && !!widgetSettings.name) {
@@ -93,6 +112,8 @@ const AgentSettings = () => {
 
   const onUpdateSettingsClicked = async () => {
     const { logo, logoUrl, avatar, avatarUrl } = settings;
+
+    console.log('');
     try {
       await updateBotSettings({
         variables: {
@@ -119,7 +140,72 @@ const AgentSettings = () => {
   const loading = agentsData.loading || updateBotSettingsMutationData.loading;
 
   return (
-    <Grid container={true} spacing={2} className={classes.root}>
+    <Grid className={classes.spanOfPanel}>
+      <Grid style={{ marginBottom: '20px', marginTop: '30px' }}>
+        Assistant Design Settings
+      </Grid>
+      <Grid style={{ marginBottom: '20px' }}>
+        <ToggleButtonGroup
+          value={mode === 'dev' ? 'left' : 'right'}
+          exclusive={true}
+          size="small"
+          onChange={(_, newAlignment) => {
+            setMode(newAlignment === 'left' ? 'dev' : 'published');
+          }}
+          aria-label="text alignment">
+          <ToggleButton
+            disabled={loading}
+            size="small"
+            value="left"
+            aria-label="left aligned">
+            DEV
+          </ToggleButton>
+          <ToggleButton
+            disabled={loading}
+            size="small"
+            value="right"
+            aria-label="right aligned">
+            PUBLISHED
+          </ToggleButton>
+        </ToggleButtonGroup>
+      </Grid>
+
+      <Grid className={classes.panel}>
+        <Grid>
+          <Avatars
+            mode={mode}
+            loading={loading}
+            settings={settings}
+            updateSettings={updateSettings}
+          />
+          <Description
+            mode={mode}
+            loading={loading}
+            settings={settings}
+            updateSettings={updateSettings}
+          />
+          <ColorPalett
+            mode={mode}
+            loading={loading}
+            settings={settings}
+            updateSettings={updateSettings}
+          />
+        </Grid>
+        <Grid className={classes.submitBtn}>
+          {mode === 'dev' && (
+            <Button
+              disabled={loading}
+              variant="contained"
+              color="primary"
+              onClick={onUpdateSettingsClicked}>
+              Update Settings
+            </Button>
+          )}
+        </Grid>
+      </Grid>
+    </Grid>
+  );
+  /*<Grid container={true} spacing={2} className={classes.root}>
       <Grid item={true} xs={12}>
         <Typography variant="h6">Agent Settings</Typography>
         {loading && <ContentLoading shrinked={true}/>}
@@ -134,8 +220,8 @@ const AgentSettings = () => {
             exclusive={true}
             size="small"
             onChange={(_, newAlignment) => {
-              setMode(newAlignment === 'left' ? 'dev' : 'published');
-            }}
+              setMode(newAlignment === 'left' ? 'deUpdateSetting
+
             aria-label="text alignment">
             <ToggleButton
               disabled={loading}
@@ -235,7 +321,9 @@ const AgentSettings = () => {
             width="90%"
             height={100}
             style={{
-              backgroundColor: `rgba(${settings.primaryColor.r}, ${settings.primaryColor.g}, ${settings.primaryColor.b}, ${settings.primaryColor.a})`,
+              backgroundColor: `rgba(${settings.primaryColor.r},
+                ${settings.primaryColor.g}, ${settings.primaryColor.b},
+                ${settings.primaryColor.a})`,
             }}
           />
           <Box mt={5} mb={1} mx="auto">
@@ -316,8 +404,7 @@ const AgentSettings = () => {
           )}
         </Box>
       </Grid>
-    </Grid>
-  );
+    </Grid>*/
 };
 
 export default AgentSettings;

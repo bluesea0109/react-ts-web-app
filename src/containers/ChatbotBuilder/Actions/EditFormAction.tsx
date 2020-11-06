@@ -30,6 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
     input: {
       '& .MuiOutlinedInput-input': {
         padding: '12px 12px',
+
       },
     },
   }),
