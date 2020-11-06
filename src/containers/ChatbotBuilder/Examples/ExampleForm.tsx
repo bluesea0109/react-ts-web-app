@@ -65,20 +65,18 @@ const ExampleForm = ({
 
   useEffect(() => {
     if (!example) { return; }
-    const currentIntent = intent;
     onExampleUpdate({
       id: example?.id,
       agentId: example?.agentId,
       text: exampleText,
-      intent: currentIntent,
+      intent,
       tags: annotatorState.tags.map(tag => ({
         tagType: tag.tag,
         start: tag.start,
         end: tag.end,
       })),
     });
-    // eslint-disable-next-line
-  }, [exampleText, annotatorState.tags]);
+  }, [intent, example, onExampleUpdate, exampleText, annotatorState.tags]);
 
   useEffect(() => {
     setExampleText(example?.text ?? '');
