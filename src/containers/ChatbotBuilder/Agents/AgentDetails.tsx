@@ -197,7 +197,12 @@ const AgentDetails = () => {
           tabName="Manage Assistant Actions">
           <Actions />
         </TabPanel>
-        <TabPanel index="Intents" value={agentTab} className={classes.tabPanel}>
+        <TabPanel
+          index="Intents"
+          value={agentTab}
+          className={classes.tabPanel}
+          tabName="Manage Assistant Intents"
+        >
           <Intent />
         </TabPanel>
         <TabPanel className={classes.tabPanel} value={agentTab} index="Tags">
