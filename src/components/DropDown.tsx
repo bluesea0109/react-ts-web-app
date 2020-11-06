@@ -11,7 +11,7 @@ import { makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
 interface ComponentProps {
   padding?: string;
-  size?: string;
+  width?: number;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -23,8 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     selectInput: {
       margin: theme.spacing(0),
-      minWidth: (props: ComponentProps) =>
-        props.size === 'large' ? '100%' : 155,
+      minWidth: (props: ComponentProps) => props.width || 155,
       color: 'black',
       width: '100%',
       borderRadius: 2,
@@ -53,7 +52,7 @@ interface DropDownProps {
   menuItems: any[];
   fullWidth?: boolean;
   onChange: (item: string) => void;
-  size?: string;
+  width?: number;
 }
 
 const DropDown: React.FC<DropDownProps> = ({
@@ -64,9 +63,9 @@ const DropDown: React.FC<DropDownProps> = ({
   fullWidth,
   menuItems,
   onChange,
-  size,
+  width,
 }) => {
-  const classes = useStyles({ padding, size });
+  const classes = useStyles({ padding, width });
 
   const currentItem = current?.uname || current?.name || current || '';
 

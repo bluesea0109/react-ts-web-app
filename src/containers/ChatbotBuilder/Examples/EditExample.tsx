@@ -1,14 +1,6 @@
-import { CircularProgress, LinearProgress } from '@material-ui/core';
-import AppBar from '@material-ui/core/AppBar';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import IconButton from '@material-ui/core/IconButton';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import CloseIcon from '@material-ui/icons/Close';
+import {  createStyles, Grid, makeStyles, Theme, Typography } from '@material-ui/core';
 import React, { useState } from 'react';
-import { UpTransition } from '../../../components';
+import FullDialog from '../../../components/dialogs/FullDialog';
 import { INLUExample } from '../../../models/chatbot-service';
 import { Maybe } from '../../../utils/types';
 import ExampleForm from './ExampleForm';
@@ -16,12 +8,17 @@ import { ExamplesError } from './types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    appBar: {
-      position: 'relative',
+    rootGrid: {
+      padding: theme.spacing(2),
     },
-    title: {
-      marginLeft: theme.spacing(2),
-      flex: 1,
+    formField: {
+      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(1),
+    },
+    input: {
+      '& .MuiOutlinedInput-input': {
+        padding: '12px 12px',
+      },
     },
   }),
 );
@@ -31,54 +28,56 @@ type EditExampleProps = {
   example?: INLUExample;
   tagTypes: string[];
   intents: string[];
-  onEditExampleClose: () => void;
-  onSaveExample: (updatedExample: INLUExample) => Promise<void>;
   error: Maybe<ExamplesError>;
+  onSaveExample: (updatedExample: INLUExample) => Promise<void>;
+  onEditExampleClose: () => void;
 };
 
-const EditExample = (props: EditExampleProps) => {
-  const { loading, example, tagTypes, intents, onEditExampleClose, onSaveExample } = props;
-
+const EditExample = ({
+  loading,
+  example,
+  tagTypes,
+  intents,
+  onSaveExample,
+  onEditExampleClose,
+}: EditExampleProps) => {
+  const classes = useStyles();
   const [updatedExample, setUpdatedExample] = useState<INLUExample>();
+  const isNew = example?.id === -1;
 
-  const saveChanges = async () => {
+  const handleSaveChanges = async () => {
     if (!!updatedExample) {
       await onSaveExample(updatedExample);
     }
   };
 
-  const classes = useStyles();
-
   return (
-    <Dialog fullScreen={true} open={!!example} TransitionComponent={UpTransition}>
-      <AppBar className={classes.appBar}>
-        <Toolbar>
-          <IconButton disabled={loading} edge="start" color="inherit" onClick={onEditExampleClose} aria-label="close">
-            <CloseIcon />
-          </IconButton>
-          <Typography variant="h6" className={classes.title}>
-            {example?.id === -1 ? 'Create New Example' : `Edit Example #${example?.id}`}
-          </Typography>
-          <Button disabled={loading} autoFocus={true} color="inherit" onClick={saveChanges}>
-            {loading && (
-              <CircularProgress
-                color="secondary"
-                size={20}
-              />
-            )}
-            {!loading && (example?.id === -1 ? 'Create' : 'Save')}
-          </Button>
-        </Toolbar>
-        {loading && <LinearProgress color="secondary" />}
-      </AppBar>
-      <ExampleForm
-        loading={loading}
-        example={example}
-        tagTypes={tagTypes}
-        intents={intents}
-        onExampleUpdate={setUpdatedExample}
-      />
-    </Dialog>
+    <FullDialog
+      isOpen={!!example}
+      title={isNew ? 'Create NLU Example' : `Edit NLU Example #${example?.id}`}
+      onEditClose={onEditExampleClose}
+    >
+      <Grid container={true} justify="center" className={classes.rootGrid}>
+        <Grid container={true} item={true} sm={4} xs={6}>
+          <Grid container={true} item={true} xs={12} justify="center">
+            <Typography variant="h6">
+              Add an example in natural language below to improve your
+              Assistant's detection of user's intent.
+            </Typography>
+          </Grid>
+
+          <ExampleForm
+            isNew={isNew}
+            loading={loading}
+            example={example}
+            tagTypes={tagTypes}
+            intents={intents}
+            onSaveChanges={handleSaveChanges}
+            onExampleUpdate={setUpdatedExample}
+          />
+        </Grid>
+      </Grid>
+    </FullDialog>
   );
 };
 

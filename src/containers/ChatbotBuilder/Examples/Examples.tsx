@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { Grid, Typography } from '@material-ui/core';
+import { Box, Grid, Typography } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
@@ -9,7 +9,6 @@ import { INLUExample } from '../../../models/chatbot-service';
 import { Maybe } from '../../../utils/types';
 import ContentLoading from '../../ContentLoading';
 import { currentAgentConfig } from '../atoms';
-import AddExamples from './AddExamples';
 import EditExample from './EditExample';
 import ExamplesTable from './ExamplesTable';
 import {
@@ -30,8 +29,7 @@ const Examples = () => {
   const { agentId } = useParams<{ agentId: string }>();
   const [filters, setFilters] = useState<ExamplesFilter>();
   const config = useRecoilValue(currentAgentConfig);
-  const [currentEdit, setCurrentEdit] = useState<number | null>();
-  const [newExample, setNewExample] = useState<INLUExample | null>(null);
+  const [currentEdit, setCurrentEdit] = useState<INLUExample | null>();
   const [exampleError, setExampleError] = useState<Maybe<ExamplesError>>();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -115,21 +113,20 @@ const Examples = () => {
     setFilters({ ...filters, ...newFilters });
   };
 
-  const onExampleEdit = (exampleID: number) => {
-    setCurrentEdit(exampleID);
+  const onExampleEdit = (example: INLUExample) => {
+    setCurrentEdit(example);
   };
 
-  const onExampleDelete = async (exampleId: number) => {
+  const onExampleDelete = async (example: INLUExample) => {
     await deleteExample({
       variables: {
-        exampleId,
+        exampleId: example.id,
       },
     });
   };
 
   const onExampleEditClose = () => {
     setCurrentEdit(null);
-    setNewExample(null);
   };
 
   const onExampleSave = async (updatedExample: INLUExample) => {
@@ -183,8 +180,8 @@ const Examples = () => {
     }
   };
 
-  const startNewExample = () => {
-    setNewExample({
+  const onNewExample = () => {
+    setCurrentEdit({
       id: -1,
       agentId: Number(agentId),
       intent: '',
@@ -194,47 +191,49 @@ const Examples = () => {
   };
 
   return (
-    <>
-      <Grid>
-        <div style={{ fontSize: '20px', fontWeight: 'bold' }}>
-          Natural Language Understanding Examples
-        </div>
-        <div style={{ margin: '20px 0px', fontSize: '16px', width: '30%', flexWrap: 'wrap' }}>
-          Add or delete examples of natural language below to improve your
-          Assistant’s detection of the user’s intent.
-        </div>
+    <Grid container={true}>
+      <Grid container={true}>
+        <Grid item={true} container={true}>
+          <Box fontWeight="bold" fontSize={24}>
+            Natural Language Understanding Examples
+          </Box>
+        </Grid>
+        <Grid item={true} container={true} sm={6}>
+          <Box fontSize={16} my={2} lineHeight={1.5}>
+            Add or delete examples of natural language below to improve your
+            Assistant’s detection of the user’s intent.
+          </Box>
+        </Grid>
       </Grid>
-      <ExamplesTable
-        updateFilters={updateFilters}
-        examples={examples}
-        intents={intents}
-        filters={filters}
-        config={config}
-        onDelete={onExampleDelete}
-        onEdit={onExampleEdit}
-        onAdd={startNewExample}
-        onUpdateExample={onExampleSave}
-      />
-      {!!intents && !!tagTypes && (
-        <>
-          <EditExample
-            loading={examplesData.loading}
-            tagTypes={tagTypes}
+      <Grid container={true}>
+        <Grid container={true} item={true} xs={12}>
+          <ExamplesTable
+            updateFilters={updateFilters}
+            examples={examples}
             intents={intents}
-            example={examples?.find((ex) => ex.id === currentEdit)}
-            onEditExampleClose={onExampleEditClose}
-            onSaveExample={onExampleSave}
-            error={exampleError}
+            filters={filters}
+            config={config}
+            onDelete={onExampleDelete}
+            onEdit={onExampleEdit}
+            onAdd={onNewExample}
+            onUpdateExample={onExampleSave}
           />
-          {!!newExample && (
-            <AddExamples
+        </Grid>
+        {!!intents && !!tagTypes && !!currentEdit && (
+          <Grid container={true} item={true} xs={12}>
+            <EditExample
+              loading={examplesData.loading}
+              tagTypes={tagTypes}
+              intents={intents}
+              example={currentEdit}
               onEditExampleClose={onExampleEditClose}
-              refetchOptions={refetchOptions}
+              onSaveExample={onExampleSave}
+              error={exampleError}
             />
-          )}
-        </>
-      )}
-    </>
+          </Grid>
+        )}
+      </Grid>
+    </Grid>
   );
 };
 

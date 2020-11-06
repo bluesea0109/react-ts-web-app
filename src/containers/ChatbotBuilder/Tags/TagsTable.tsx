@@ -7,7 +7,7 @@ import 'firebase/auth';
 import _ from 'lodash';
 import React, {useState} from 'react';
 import { useRecoilState } from 'recoil';
-import ConfirmDialog from '../../../components/ConfirmDialog';
+import { ConfirmDialog } from '../../../components';
 import { currentAgentConfig } from '../atoms';
 
 const useStyles = makeStyles((theme: Theme) =>

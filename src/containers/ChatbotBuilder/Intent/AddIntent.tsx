@@ -26,7 +26,7 @@ import { UpTransition } from '../../../components';
 import { DropDown } from '../../../components';
 import { INLUExample } from '../../../models/chatbot-service';
 import { currentAgentConfig, currentWidgetSettings } from '../atoms';
-import { AddExampleItem } from '../Examples/AddExamples';
+import AddExampleItem from '../Examples/AddExamples';
 
 import { EXAMPLES_LIMIT } from '../Examples/Examples';
 import { getExamplesQuery } from '../Examples/gql';
@@ -322,12 +322,12 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
             </Typography>
             <DropDown
               label=""
+              fullWidth={true}
               current={actions.find(
                 (a) => a.name === newIntent?.defaultActionName,
               )}
               menuItems={actions}
               onChange={handleActionFieldChange}
-              size="large"
             />
           </Grid>
           <Grid item={true} xs={4} md={12} />
@@ -340,11 +340,11 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
               Select Tag Type
             </Typography>
             <DropDown
+              fullWidth={true}
               label=""
               current={tagType}
               menuItems={tagTypes}
               onChange={handleTagTypeChange}
-              size="large"
             />
           </Grid>
           <Grid item={true} xs={4} md={12} />

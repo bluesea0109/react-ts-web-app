@@ -20,7 +20,7 @@ import {
   DELETE_TRAINING_CONVERSATION,
   GET_TRAINING_CONVERSATIONS,
 } from '../../../common-gql-queries';
-import ConfirmDialog from '../../../components/ConfirmDialog';
+import { ConfirmDialog } from '../../../components';
 import { ITrainingConversations } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
