@@ -9,6 +9,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { IAgentParam } from '../models/chatbot-service';
 import { IUser } from '../models/user-service';
 import { MenuName } from '../utils/enums';
+import { createAgentPath } from '../utils/string';
 import SubMenuIcon from './IconButtons/SubMenuIcon';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -79,11 +80,8 @@ function CustomDrawer(props: CustomDrawerProps) {
     return `/orgs/${user.activeProject.orgId}/projects/${user.activeProject.id}/${pageName}`;
   };
 
-  const createAgentPath = (agentTab: string): string => {
-    if (!user.activeProject) {
-      return '/no-project';
-    }
-    return `/orgs/${user.activeProject.orgId}/projects/${user.activeProject.id}/chatbot-builder/agents/${agent.agentId}/${agentTab}`;
+  const getAgentPath = (agentTab: string, entityId?: string | number) => {
+    return createAgentPath(user, agent.agentId, agentTab, entityId);
   };
 
   const createOrgPath = (path: string = ''): string => {
@@ -209,7 +207,7 @@ function CustomDrawer(props: CustomDrawerProps) {
             <ListItem className={classes.blank} />
             <ListItem
               component={Link}
-              to={createAgentPath('Actions')}
+              to={getAgentPath('Actions')}
               selected={
                 location.pathname.includes('projects') &&
                 location.pathname.includes('Actions')
@@ -228,7 +226,7 @@ function CustomDrawer(props: CustomDrawerProps) {
             </ListItem>
             <ListItem
               component={Link}
-              to={createAgentPath('Intents')}
+              to={getAgentPath('Intents')}
               selected={
                 location.pathname.includes('projects') &&
                 location.pathname.includes('Intents')
@@ -250,7 +248,7 @@ function CustomDrawer(props: CustomDrawerProps) {
             </ListItem>
             <ListItem
               component={Link}
-              to={createAgentPath('Tags')}
+              to={getAgentPath('Tags')}
               selected={
                 location.pathname.includes('projects') &&
                 location.pathname.includes('Tags')
@@ -272,7 +270,7 @@ function CustomDrawer(props: CustomDrawerProps) {
             </ListItem>
             <ListItem
               component={Link}
-              to={createAgentPath('Slots')}
+              to={getAgentPath('Slots')}
               selected={
                 location.pathname.includes('projects') &&
                 location.pathname.includes('Slots')
@@ -294,10 +292,10 @@ function CustomDrawer(props: CustomDrawerProps) {
             </ListItem>
             <ListItem
               component={Link}
-              to={createAgentPath('graph-policy')}
+              to={getAgentPath('graph-policy-v1')}
               selected={
                 location.pathname.includes('projects') &&
-                location.pathname.includes('graph-policy')
+                location.pathname.includes('graph-policy-v1')
               }
               button={true}
               className={classes.listItem}>
@@ -305,10 +303,33 @@ function CustomDrawer(props: CustomDrawerProps) {
                 <SubMenuIcon title="Project" active={false} />
               </ListItemIcon>
               <ListItemText
-                primary="Visual Graphs"
+                primary="Visual Graphs V1.0"
                 style={
                   location.pathname.includes('projects') &&
-                  location.pathname.includes('graph-policy')
+                  location.pathname.includes('graph-policy-v1')
+                    ? selectedStyle
+                    : {}
+                }
+              />
+            </ListItem>
+            <ListItem
+              component={Link}
+              to={getAgentPath('graph-policies')}
+              selected={
+                location.pathname.includes('projects') &&
+                location.pathname.includes('graph-policies')
+              }
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Project" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Visual Graphs V2.0"
+                style={
+                  location.pathname.includes('projects') &&
+                  (location.pathname.includes('graph-policies') ||
+                    location.pathname.includes('graph-editor'))
                     ? selectedStyle
                     : {}
                 }
@@ -322,7 +343,7 @@ function CustomDrawer(props: CustomDrawerProps) {
             <ListItem className={classes.blank} />
             <ListItem
               component={Link}
-              to={createAgentPath('training-jobs')}
+              to={getAgentPath('training-jobs')}
               selected={location.pathname.includes('training-jobs')}
               button={true}
               className={classes.listItem}>
@@ -340,7 +361,7 @@ function CustomDrawer(props: CustomDrawerProps) {
             </ListItem>
             <ListItem
               component={Link}
-              to={createAgentPath('nluExamples')}
+              to={getAgentPath('nluExamples')}
               selected={
                 location.pathname.includes('projects') &&
                 location.pathname.includes('nluExamples')
@@ -362,7 +383,7 @@ function CustomDrawer(props: CustomDrawerProps) {
             </ListItem>
             <ListItem
               component={Link}
-              to={createAgentPath('training-conversations')}
+              to={getAgentPath('training-conversations')}
               selected={
                 location.pathname.includes('projects') &&
                 location.pathname.includes('training-conversations')
@@ -390,7 +411,7 @@ function CustomDrawer(props: CustomDrawerProps) {
             <ListItem className={classes.blank} />
             <ListItem
               component={Link}
-              to={createAgentPath('chats')}
+              to={getAgentPath('chats')}
               selected={
                 location.pathname.includes('projects') &&
                 location.pathname.includes('chats')
@@ -407,7 +428,7 @@ function CustomDrawer(props: CustomDrawerProps) {
             </ListItem>
             <ListItem
               component={Link}
-              to={createAgentPath('upload-data')}
+              to={getAgentPath('upload-data')}
               selected={
                 location.pathname.includes('projects') &&
                 location.pathname.includes('upload-data')
@@ -429,7 +450,7 @@ function CustomDrawer(props: CustomDrawerProps) {
             </ListItem>
             <ListItem
               component={Link}
-              to={createAgentPath('live-conversations')}
+              to={getAgentPath('live-conversations')}
               selected={
                 location.pathname.includes('projects') &&
                 location.pathname.includes('live-conversations')
@@ -451,7 +472,7 @@ function CustomDrawer(props: CustomDrawerProps) {
             </ListItem>
             <ListItem
               component={Link}
-              to={createAgentPath('exports')}
+              to={getAgentPath('exports')}
               selected={
                 location.pathname.includes('projects') &&
                 location.pathname.includes('exports')
@@ -473,7 +494,7 @@ function CustomDrawer(props: CustomDrawerProps) {
             </ListItem>
             <ListItem
               component={Link}
-              to={createAgentPath('settings')}
+              to={getAgentPath('settings')}
               selected={
                 location.pathname.includes('projects') &&
                 location.pathname.includes('settings')
@@ -495,7 +516,7 @@ function CustomDrawer(props: CustomDrawerProps) {
             </ListItem>
             <ListItem
               component={Link}
-              to={createAgentPath('publish')}
+              to={getAgentPath('publish')}
               selected={
                 location.pathname.includes('projects') &&
                 location.pathname.includes('publish')

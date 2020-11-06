@@ -29,7 +29,10 @@ import React from 'react';
 import LineTo from 'react-lineto';
 import { OptionImagesContext } from '../../../context/OptionImages';
 
-import { CHATBOT_UPDATE_AGENT, GET_OPTION_IMAGES_QUERY } from '../../../common-gql-queries';
+import {
+  CHATBOT_UPDATE_AGENT,
+  GET_OPTION_IMAGES_QUERY,
+} from '../../../common-gql-queries';
 import { IGetOptionImagesQueryResult } from '../../../models/common-service';
 import ContentLoading from '../../ContentLoading';
 import CreatePolicyForm from './CreatePolicyForm';
