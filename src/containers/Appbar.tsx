@@ -161,16 +161,16 @@ const CustomAppbar: React.FC<CustomAppbarProps> = ({
   const [updateActiveOrg, { loading: loadingOrganization }] = useMutation(UPDATE_ACTIVE_ORG, {
     refetchQueries: [{ query: GET_CURRENT_USER }],
     awaitRefetchQueries: true,
-    onCompleted: () => {
-      history.push('/'); // back to dashboard. TODO: keep the user on their current tab.
+    onCompleted: ({updateUserActiveOrg}) => {
+      history.push(`/orgs/${updateUserActiveOrg.activeOrg.id}/settings`);
     },
   });
 
   const [updateActiveProject, { loading: loadingProject }] = useMutation(UPDATE_ACTIVE_ORG, {
     refetchQueries: [{ query: GET_CURRENT_USER }],
     awaitRefetchQueries: true,
-    onCompleted: () => {
-      history.push('/');
+    onCompleted: ({updateUserActiveOrg}) => {
+      history.push(`/orgs/${updateUserActiveOrg.activeOrg.id}/projects/${updateUserActiveOrg.activeProject.id}/settings`);
     },
   });
 
