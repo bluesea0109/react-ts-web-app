@@ -21,7 +21,9 @@ import { currentAgentConfig, currentWidgetSettings } from '../atoms';
 import ConversationsTab from '../Conversations';
 import DataExportsTab from '../DataExports/DataExportsTab';
 import Examples from '../Examples/Examples';
-import GraphPolicy from '../GraphPolicy';
+import GraphPolicyV1 from '../GraphPolicy';
+import GraphPolicy from '../GraphPolicyV2';
+import GraphEditorPage from '../GraphPolicyV2/GraphEditorPage';
 import Intent from '../Intent/Intent';
 import PublishAgent from '../Publish';
 import Slot from '../Slot/Slot';
@@ -217,7 +219,9 @@ const AgentDetails = () => {
           index="nluExamples">
           <Examples />
         </TabPanel>
-        {agentTab === 'graph-policy' && <GraphPolicy />}
+        {agentTab === 'graph-policy-v1' && <GraphPolicyV1 />}
+        {agentTab === 'graph-policies' && <GraphPolicy />}
+        {agentTab === 'graph-editor' && <GraphEditorPage />}
         {agentTab === 'exports' && <DataExportsTab />}
         {agentTab === 'training-jobs' && <TrainingJobsTab />}
         {agentTab === 'chats' && <AssistDemo />}

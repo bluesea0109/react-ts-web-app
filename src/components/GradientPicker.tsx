@@ -4,9 +4,7 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Paper,
   Slider,
-  TextField,
   Tooltip,
   Typography,
 } from '@material-ui/core';
@@ -24,7 +22,6 @@ import {
   ArrowForward,
   ArrowUpward,
   Delete,
-  Edit,
 } from '@material-ui/icons';
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
@@ -34,8 +31,8 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
+      width: '100%',
+      justifyContent: 'space-between',
     },
     card: {
       backgroundColor: theme.palette.background.default,
@@ -107,6 +104,13 @@ const useStyles = makeStyles((theme: Theme) =>
       cursor: 'pointer',
     },
     sketchPicker: {},
+    colorPicker: {
+      width: '50%',
+    },
+    colorArray: {
+      marginLeft: '50px',
+      width: '40%',
+    },
   }),
 );
 
@@ -337,7 +341,7 @@ const GradientPicker = ({
   const [gradientTypesMenu, showGradientTypesMenu] = useState(false);
   const [gradientTypesAnchor, setAnchor] = useState<null | HTMLElement>(null);
 
-  const [editingCss, setEditingCss] = useState(false);
+  // const [editingCss, setEditingCss] = useState(false);
 
   useEffect(() => {
     if (defaultValue) {
@@ -436,175 +440,148 @@ const GradientPicker = ({
   };
 
   return (
-    <div className={classes.root}>
+    <>
       <Typography variant="subtitle1">{label}</Typography>
-      <Box
-        mt={2}
-        width="100%"
-        height={100}
-        className={classes.relativeContainer}
-        style={{
-          background: gradientToCss(gradient),
-        }}>
-        <Tooltip title="Add a color stop">
-          <IconButton
-            className={classes.addButton}
-            size="small"
-            onClick={addNewPoint}>
-            <Add />
-          </IconButton>
-        </Tooltip>
-
-        <Tooltip title="Gradient Direction">
-          <Button
-            className={classes.gradientTypeButton}
-            size={'small'}
-            onClick={(e) => {
-              showGradientTypesMenu(true);
-              setAnchor(e.currentTarget);
+      <div className={classes.root}>
+        <div className={classes.colorPicker}>
+          <Box
+            mt={2}
+            width="100%"
+            height={100}
+            className={classes.relativeContainer}
+            style={{
+              background: gradientToCss(gradient),
             }}>
-            {directionIconMap[gradient.direction] || gradient.direction}
-          </Button>
-        </Tooltip>
-        <Menu
-          anchorEl={gradientTypesAnchor}
-          keepMounted={true}
-          open={gradientTypesMenu}
-          onClose={() => showGradientTypesMenu(false)}>
-          {Object.keys(directionIconMap).map((direction, index) => {
-            return (
-              <MenuItem
-                key={`direction_${index}`}
-                selected={false}
-                onClick={() =>
-                  setGradientDirection(direction as GradientDirection)
-                }>
-                {direction}
-              </MenuItem>
-            );
-          })}
-        </Menu>
-      </Box>
-      <Box className={classes.relativeContainer}>
-        <GradientSlider
-          track={false}
-          ThumbComponent={(props: any) => {
-            const index = props['data-index'];
-            const point = gradient.points[index];
-
-            return (
-              <div
-                {...props}
-                onMouseDown={() => {
-                  setEditingPoint(index as number);
-                }}
-                onMouseUp={() => {
-                  setEditingPoint(index as number);
-                }}
-                className={classes.point}
-                style={{
-                  ...props.style,
-                  backgroundColor: rgbaFromGradientPoint(point),
-                  border:
-                    index === editingPoint ? 'inset 1px #666' : 'transparent',
-                }}
-              />
-            );
-          }}
-          step={5}
-          onChangeCommitted={handleSliderChange}
-          defaultValue={_.map(DEFAULT_GRADIENT.points, 'position') || []}
-          value={_.map(gradient.points, 'position') || []}
-        />
-      </Box>
-
-      <Box className={classes.relativeContainer}>
-        {gradient.points.map((p, index) => {
-          return (
-            <div key={index}>
-              {editingPoint === index && gradient.points.length >= 3 && (
-                <Tooltip title="Delete color stop">
-                  <IconButton
-                    size="small"
-                    style={{
-                      top: 0,
-                      left: `calc(${p.position}% - 9px)`,
-                    }}
-                    className={classes.thumbIcon}
-                    onClick={() => deletePoint(index)}>
-                    <Delete />
-                  </IconButton>
-                </Tooltip>
-              )}
-            </div>
-          );
-        })}
-      </Box>
-
-      <Box className={classes.relativeContainer} mt={5} mb={1} mx="auto">
-        {(editingPoint as number) >= 0 && (
-          <div>
-            <SketchPicker
-              className={classes.sketchPicker}
-              color={rgbaFromGradientPoint(
-                gradient.points[editingPoint as number],
-              )}
-              onChange={(newColor) => setColor(newColor, editingPoint)}
-            />
-          </div>
-        )}
-      </Box>
-
-      <Box className={classes.relativeContainer} mt={5} mb={1} mx="auto">
-        {presetBgs.map((p, index) => {
-          return (
-            <Tooltip title={`Preset : ${p}`} key={`preset_${index}`}>
-              <Box
-                className={classes.presetBox}
-                style={{ background: p }}
-                onClick={() => {
-                  updateGradient(cssToGradient(p));
-                  setEditingCss(false);
-                }}
-              />
-            </Tooltip>
-          );
-        })}
-      </Box>
-
-      <Box className={classes.relativeContainer} mt={5} mb={1} mx="auto">
-        <Paper className={classes.paper}>
-          {!editingCss && (
-            <div>
-              {gradientToCss(gradient)}
+            <Tooltip title="Add a color stop">
               <IconButton
-                className={classes.editCssIcon}
+                className={classes.addButton}
                 size="small"
-                onClick={() => setEditingCss(true)}>
-                <Edit />
+                onClick={addNewPoint}>
+                <Add />
               </IconButton>
-            </div>
-          )}
+            </Tooltip>
 
-          {editingCss && (
-            <div>
-              <TextField
-                className={classes.textField}
-                label="css: background-color"
-                multiline={true}
-                rows={4}
-                defaultValue={gradientToCss(gradient)}
-                onBlur={(event) => {
-                  updateGradient(cssToGradient(event.target.value));
-                  setEditingCss(false);
-                }}
-                variant="outlined"
-              />
-            </div>
-          )}
-        </Paper>
-      </Box>
-    </div>
+            <Tooltip title="Gradient Direction">
+              <Button
+                className={classes.gradientTypeButton}
+                size={'small'}
+                onClick={(e) => {
+                  showGradientTypesMenu(true);
+                  setAnchor(e.currentTarget);
+                }}>
+                {directionIconMap[gradient.direction] || gradient.direction}
+              </Button>
+            </Tooltip>
+            <Menu
+              anchorEl={gradientTypesAnchor}
+              keepMounted={true}
+              open={gradientTypesMenu}
+              onClose={() => showGradientTypesMenu(false)}>
+              {Object.keys(directionIconMap).map((direction, index) => {
+                return (
+                  <MenuItem
+                    key={`direction_${index}`}
+                    selected={false}
+                    onClick={() =>
+                      setGradientDirection(direction as GradientDirection)
+                    }>
+                    {direction}
+                  </MenuItem>
+                );
+              })}
+            </Menu>
+          </Box>
+          <Box className={classes.relativeContainer}>
+            <GradientSlider
+              track={false}
+              ThumbComponent={(props: any) => {
+                const index = props['data-index'];
+                const point = gradient.points[index];
+
+                return (
+                  <div
+                    {...props}
+                    onMouseDown={() => {
+                      setEditingPoint(index as number);
+                    }}
+                    onMouseUp={() => {
+                      setEditingPoint(index as number);
+                    }}
+                    className={classes.point}
+                    style={{
+                      ...props.style,
+                      backgroundColor: rgbaFromGradientPoint(point),
+                      border:
+                        index === editingPoint
+                          ? 'inset 1px #666'
+                          : 'transparent',
+                    }}
+                  />
+                );
+              }}
+              step={5}
+              onChangeCommitted={handleSliderChange}
+              defaultValue={_.map(DEFAULT_GRADIENT.points, 'position') || []}
+              value={_.map(gradient.points, 'position') || []}
+            />
+          </Box>
+
+          <Box className={classes.relativeContainer}>
+            {gradient.points.map((p, index) => {
+              return (
+                <div key={index}>
+                  {editingPoint === index && gradient.points.length >= 3 && (
+                    <Tooltip title="Delete color stop">
+                      <IconButton
+                        size="small"
+                        style={{
+                          top: 0,
+                          left: `calc(${p.position}% - 9px)`,
+                        }}
+                        className={classes.thumbIcon}
+                        onClick={() => deletePoint(index)}>
+                        <Delete />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </div>
+              );
+            })}
+          </Box>
+
+          <Box className={classes.relativeContainer} mt={5} mb={1} mx="auto">
+            {(editingPoint as number) >= 0 && (
+              <div>
+                <SketchPicker
+                  className={classes.sketchPicker}
+                  color={rgbaFromGradientPoint(
+                    gradient.points[editingPoint as number],
+                  )}
+                  onChange={(newColor) => setColor(newColor, editingPoint)}
+                />
+              </div>
+            )}
+          </Box>
+        </div>
+        <div className={classes.colorArray}>
+          <Box className={classes.relativeContainer} mt={5} mb={1} mx="auto">
+            {presetBgs.map((p, index) => {
+              return (
+                <Tooltip title={`Preset : ${p}`} key={`preset_${index}`}>
+                  <Box
+                    className={classes.presetBox}
+                    style={{ background: p }}
+                    onClick={() => {
+                      updateGradient(cssToGradient(p));
+                    }}
+                  />
+                </Tooltip>
+              );
+            })}
+          </Box>
+        </div>
+      </div>
+    </>
   );
 };
 

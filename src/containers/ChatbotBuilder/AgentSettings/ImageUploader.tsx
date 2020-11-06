@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client';
-import { Box, Typography } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
+import { Box} from '@material-ui/core';
+import { Link } from '@material-ui/core';
 import axios from 'axios';
 import { useSnackbar } from 'notistack';
 import React, { ChangeEvent, useEffect, useState } from 'react';
@@ -78,43 +78,44 @@ const ImageUploader = ({
   return (
     <Box>
       <Box p={2}>
-        <Box mb={2}>
-          <Typography variant="subtitle1">{label}</Typography>
-        </Box>
-        <Button disabled={loading} variant="contained" component="label">
-          {!file && !currentImage && 'Add Image'}
-          {(!!file || (!!currentImage && currentImage !== '')) &&
-            'Replace Image'}
-          <input
-            disabled={loading}
-            name="image"
-            id="image"
-            accept="image/*"
-            type="file"
-            style={{ display: 'none' }}
-            multiple={false}
-            onChange={handleImageUpload}
-          />
-        </Button>
+        {!!file && (
+          <Box p={2}>
+            <img
+              src={URL.createObjectURL(file)}
+              alt=""
+              style={{ width: 100, height: 100, objectFit: 'cover' }}
+            />
+          </Box>
+        )}
+        {!file && !!currentImage && currentImage !== '' && (
+          <Box p={2}>
+            <img
+              src={currentImage}
+              alt=""
+              style={{ width: 100, height: 100, objectFit: 'cover' }}
+            />
+          </Box>
+        )}
       </Box>
-      {!!file && (
-        <Box p={2}>
-          <img
-            src={URL.createObjectURL(file)}
-            alt=""
-            style={{ width: 100, height: 100, objectFit: 'cover' }}
-          />
-        </Box>
-      )}
-      {!file && !!currentImage && currentImage !== '' && (
-        <Box p={2}>
-          <img
-            src={currentImage}
-            alt=""
-            style={{ width: 100, height: 100, objectFit: 'cover' }}
-          />
-        </Box>
-      )}
+
+      {/* <Box mb={2}>
+          <Typography variant="subtitle1">{label}</Typography>
+        </Box> */}
+      <Link component="label">
+        <input
+          disabled={loading}
+          name="image"
+          id="image"
+          accept="image/*"
+          type="file"
+          style={{ display: 'none' }}
+          multiple={false}
+          onChange={handleImageUpload}
+        />
+        {!file && !currentImage && 'Add Image'}
+        {(!!file || (!!currentImage && currentImage !== '')) &&
+          'Upload a Different Image'}
+      </Link>
     </Box>
   );
 };

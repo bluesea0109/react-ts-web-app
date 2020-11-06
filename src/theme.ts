@@ -53,10 +53,11 @@ const lightTheme: ThemeOptions = {
     // divider:
     primary: {
       main: '#0161FF',
-      dark: '#003969',
+      dark: '#0102E6',
     },
     success: {
       main: '#15845A',
+      dark: '#0E7D63',
     },
     info: {
       main: '#64B5F6',

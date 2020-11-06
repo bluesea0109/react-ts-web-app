@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme: Theme) =>
     niceform: {
       flexGrow: 1,
       alignItems: 'center',
-      border: '3px solid gray',
+      border: '1px solid gray',
       borderRadius: '5px',
       borderStyle: 'dashed',
       padding: '30px',
@@ -33,8 +33,8 @@ const useStyles = makeStyles((theme: Theme) =>
       color: 'white',
     },
     formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120,
+      marginBottom: theme.spacing(1),
+      width: '100%',
     },
     baseLine: {
       alignItems: 'first baseline',
@@ -43,18 +43,24 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface AddFormFieldProps {
-  handleChange: (name: string, type: EFormFieldTypes, required: boolean) => void;
+  handleChange: (
+    name: string,
+    type: EFormFieldTypes,
+    required: boolean,
+  ) => void;
 }
 
 export const AddFieldForm = ({ handleChange }: AddFormFieldProps) => {
   const classes = useStyles();
-  const [fields, setFields] = useState<{ text: string; type: EFormFieldTypes; required: boolean }>(
-    {
-      text: '',
-      type: EFormFieldTypes.EMAIL,
-      required: false,
-    },
-  );
+  const [fields, setFields] = useState<{
+    text: string;
+    type: EFormFieldTypes;
+    required: boolean;
+  }>({
+    text: '',
+    type: EFormFieldTypes.EMAIL,
+    required: false,
+  });
 
   const handleAdd = () => {
     handleChange(fields.text, fields.type, fields.required);
@@ -79,22 +85,22 @@ export const AddFieldForm = ({ handleChange }: AddFormFieldProps) => {
       <Grid container={true} spacing={2} className={classes.baseLine}>
         <Grid item={true} xs={true} md={12}>
           <TextField
+            className={classes.formControl}
             id="standard-basic"
             name="text"
             label="Field Name"
-            style={{width: '100%'}}
+            style={{ width: '100%' }}
             onChange={handleFieldChange}
           />
         </Grid>
         <Grid item={true} xs={true} md={12}>
-          <FormControl className={classes.formControl}  style={{width: '100%'}}>
+          <FormControl className={classes.formControl}>
             <InputLabel id="demo-simple-select-label">Field Type</InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               value={fields.type}
               name="type"
-
               onChange={handleFieldChange}>
               {Object.keys(EFormFieldTypes).map((item, index) => (
                 <MenuItem value={item} key={index}>
@@ -107,7 +113,13 @@ export const AddFieldForm = ({ handleChange }: AddFormFieldProps) => {
         <Grid item={true} md={12}>
           <FormControlLabel
             value="end"
-            control={<Checkbox color="primary" checked={fields.required} onChange={handleCheckboxChange}/>}
+            control={
+              <Checkbox
+                color="primary"
+                checked={fields.required}
+                onChange={handleCheckboxChange}
+              />
+            }
             label="Required *"
             labelPlacement="end"
           />

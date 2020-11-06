@@ -1,3 +1,5 @@
+import { IUser } from '../models/user-service';
+
 export const validateEmail = (email: string): boolean => {
   return /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email);
 };
@@ -17,4 +19,18 @@ export const validateUrl = (url: string): boolean => {
 
 export const removeSpecialChars = (text: string): string => {
   return text.replace(/[^a-zA-Z ]/g, ' ');
+};
+
+export const createAgentPath = (
+  user: IUser,
+  agentId: number,
+  agentTab: string,
+  entityId?: string | number,
+): string => {
+  if (!user.activeProject) {
+    return '/no-project';
+  }
+  return `/orgs/${user.activeProject.orgId}/projects/${
+    user.activeProject.id
+  }/chatbot-builder/agents/${agentId}/${agentTab}/${entityId || ''}`;
 };

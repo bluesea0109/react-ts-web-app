@@ -6,7 +6,9 @@ import clsx from 'clsx';
 import 'firebase/auth';
 import React, { useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
 import './App.css';
+import { currentUser } from './atoms';
 import { GET_CURRENT_USER } from './common-gql-queries';
 import AppBar from './containers/Appbar';
 import ChatbotBuilder from './containers/ChatbotBuilder';
@@ -124,9 +126,15 @@ function App() {
   const [navKey, setNavKey] = useState(MenuName.NONE);
   const [agentId, setAgentId] = useState({ agentId: 0 });
   const [loadingAppBar, setLoadingAppBar] = useState(false);
+  const [, setCurrentUser] = useRecoilState(currentUser);
 
   const { loading: loadingUser, error, data } = useQuery<IGetCurrentUser>(
     GET_CURRENT_USER,
+    {
+      onCompleted: (data) => {
+        setCurrentUser(data.currentUser);
+      },
+    },
   );
 
   const [state, setState] = React.useState({
