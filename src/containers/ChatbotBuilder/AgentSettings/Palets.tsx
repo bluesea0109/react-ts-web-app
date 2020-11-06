@@ -1,6 +1,5 @@
 import { IWidgetSettings } from '@bavard/agent-config';
 import { Box, Grid, Typography } from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
 import { AlphaPicker, TwitterPicker } from 'react-color';
 import GradientPicker from '../../../components/GradientPicker';

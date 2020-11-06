@@ -4,9 +4,9 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Paper,
+  
   Slider,
-  TextField,
+  
   Tooltip,
   Typography,
 } from '@material-ui/core';
@@ -24,7 +24,7 @@ import {
   ArrowForward,
   ArrowUpward,
   Delete,
-  Edit,
+  
 } from '@material-ui/icons';
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
@@ -35,9 +35,8 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       display: 'flex',
       width: '100%',
-      // flexDirection: 'column',
       justifyContent: 'space-between',
-      // alignItems: 'center',
+      
     },
     card: {
       backgroundColor: theme.palette.background.default,
@@ -116,8 +115,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: '50px',
       width: '60%',
     },
-
-  }),
+  })
 );
 
 interface IGradientPoint {
@@ -263,7 +261,7 @@ const GradientPicker = ({
     });
 
     const css = `${browserParam}(${gradient.direction}, ${pointsStr.join(
-      ', ',
+      ', '
     )})`;
 
     return css;
@@ -341,13 +339,13 @@ const GradientPicker = ({
   };
 
   const [gradient, setGradient] = useState(
-    defaultValue ? cssToGradient(defaultValue) : DEFAULT_GRADIENT,
+    defaultValue ? cssToGradient(defaultValue) : DEFAULT_GRADIENT
   );
   const [editingPoint, setEditingPoint] = useState<number | undefined>();
   const [gradientTypesMenu, showGradientTypesMenu] = useState(false);
   const [gradientTypesAnchor, setAnchor] = useState<null | HTMLElement>(null);
 
-  const [editingCss, setEditingCss] = useState(false);
+  // const [editingCss, setEditingCss] = useState(false);
 
   useEffect(() => {
     if (defaultValue) {
@@ -558,7 +556,7 @@ const GradientPicker = ({
               <SketchPicker
                 className={classes.sketchPicker}
                 color={rgbaFromGradientPoint(
-                  gradient.points[editingPoint as number],
+                  gradient.points[editingPoint as number]
                 )}
                 onChange={(newColor) => setColor(newColor, editingPoint)}
               />
@@ -576,7 +574,7 @@ const GradientPicker = ({
                   style={{ background: p }}
                   onClick={() => {
                     updateGradient(cssToGradient(p));
-                    setEditingCss(false);
+                    // setEditingCss(false);
                   }}
                 />
               </Tooltip>
@@ -584,39 +582,6 @@ const GradientPicker = ({
           })}
         </Box>
       </div>
-
-      {/* <Box className={classes.relativeContainer} mt={5} mb={1} mx="auto">
-        <Paper className={classes.paper}>
-          {!editingCss && (
-            <div>
-              {gradientToCss(gradient)}
-              <IconButton
-                className={classes.editCssIcon}
-                size="small"
-                onClick={() => setEditingCss(true)}>
-                <Edit />
-              </IconButton>
-            </div>
-          )}
-
-          {editingCss && (
-            <div>
-              <TextField
-                className={classes.textField}
-                label="css: background-color"
-                multiline={true}
-                rows={4}
-                defaultValue={gradientToCss(gradient)}
-                onBlur={(event) => {
-                  updateGradient(cssToGradient(event.target.value));
-                  setEditingCss(false);
-                }}
-                variant="outlined"
-              />
-            </div>
-          )}
-        </Paper>
-      </Box> */}
     </div>
   );
 };

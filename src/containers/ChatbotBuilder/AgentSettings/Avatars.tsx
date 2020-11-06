@@ -14,7 +14,11 @@ const useStyles = makeStyles((theme: Theme) =>
       textAlign: 'center',
       color: theme.palette.text.secondary,
     },
-  }),
+    avatarPos: {
+      display: 'flex',
+      alignItems: 'center',
+    },
+  })
 );
 
 // (e) => updateSettings('name', e.target.value)}
@@ -25,16 +29,33 @@ interface AvatarsProps {
   updateSettings: (field: keyof IWidgetSettings, value: any) => void;
 }
 
-export const Avatars = ({mode, loading, settings, updateSettings}: AvatarsProps) => {
+export const Avatars = ({
+  mode,
+  loading,
+  settings,
+  updateSettings,
+}: AvatarsProps) => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
       <Grid container={true}>
         <Grid item={true} xs={12} sm={6}>
-          <Avatar  mode={mode} loading={loading} settings={settings} updateSettings={updateSettings }/>
+          <Avatar
+            title="Widget Avatar"
+            mode={mode}
+            loading={loading}
+            settings={settings}
+            updateSettings={updateSettings}
+          />
         </Grid>
         <Grid item={true} xs={12} sm={6}>
-          <Avatar  mode={mode} loading={loading} settings={settings} updateSettings={updateSettings }/>
+          <Avatar
+            title="Brand Logo"
+            mode={mode}
+            loading={loading}
+            settings={settings}
+            updateSettings={updateSettings}
+          />
         </Grid>
       </Grid>
     </div>
