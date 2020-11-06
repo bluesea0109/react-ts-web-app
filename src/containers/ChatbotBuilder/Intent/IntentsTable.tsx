@@ -1,57 +1,27 @@
 import { BaseAgentAction, IIntent } from '@bavard/agent-config';
 import {
+  Box,
   Button,
   Grid,
   Paper,
   TableContainer,
-  TextField,
   Typography,
 } from '@material-ui/core';
 import {
   createStyles,
   makeStyles,
   Theme,
-  withStyles,
 } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
 import { Delete, Edit } from '@material-ui/icons';
 import 'firebase/auth';
-import _ from 'lodash';
 import React, { useState } from 'react';
-
-const StyledTableCell = withStyles((theme) => ({
-  head: {
-    backgroundColor: 'wihte',
-  },
-  body: {
-    padding: '5px',
-    fontSize: 14,
-  },
-}))(TableCell);
-
-const StyledTableRow = withStyles((theme) => ({
-  root: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
-  },
-}))(TableRow);
+import { CommonTable, FilterBox } from '../../../components';
+import { AlignmentType } from '../../../components/types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      margin: theme.spacing(3),
-      backgroundColor: 'white',
-    },
-    paper: {
-      padding: theme.spacing(4),
-      backgroundColor: 'white',
-      width: '80%',
-      marginLeft: '80px',
+      padding: theme.spacing(3),
     },
     table: {
       minWidth: '600px',
@@ -102,84 +72,107 @@ function IntentsTable({
 
   const [filter, setFilter] = useState<string>('');
 
-  const deleteIntentHandler = (intent: IIntent) => {
+  const onDelete = (intent: IIntent) => {
     onDeleteIntent(intent);
   };
 
-  const handleEdit = (rowData: IIntent) => {
+  const onEdit = (rowData: IIntent) => {
     const data = rowData as IIntent;
     onEditIntent(data);
   };
   const filteredIntents = intents.filter((item) => item.name.toLowerCase().includes(filter.toLocaleLowerCase()));
 
+  const renderIntentName = () => (
+    <Box
+      style={{
+        padding: 0,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'stretch',
+      }}
+    >
+      <FilterBox
+        name="Intent Name"
+        filter={filter}
+        onChange={setFilter}
+      />
+    </Box>
+  );
+
+  const renderActions = (intent: IIntent) => (
+    <>
+      <Button onClick={() => onEdit(intent)}>
+        <Edit />
+      </Button>
+      <Button onClick={() => onDelete(intent)}>
+        <Delete />
+      </Button>
+    </>
+  );
+
+  const columns = [
+    {
+      title: 'Name',
+      field: 'name',
+      renderHeader: renderIntentName,
+    },
+    {
+      title: 'Default Action',
+      field: 'defaultActionName',
+      renderRow: (intent: IIntent) => intent.defaultActionName ?? (
+        <Typography style={{ color: '#808080' }}>N/A</Typography>
+      ),
+    },
+    {
+      title: '',
+      field: '',
+      alignRow: 'right' as AlignmentType,
+      renderRow: renderActions,
+    },
+  ];
+
   return (
-    <Paper className={classes.paper}>
-      <div className={classes.intro}>
-        <div className={classes.title}>Intents</div>
-        <div className={classes.desc}>
-          Edit an Intent below to add examples of user queries. Add several
-          examples to ensure that your Assistant will respond accurately.
-        </div>
-      </div>
-      <div className={classes.rightLayout}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={onAdd}>
+    <Paper className={classes.root}>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="flex-start"
+        paddingBottom={2}
+      >
+        <Box>
+          <Typography variant="h6">
+            Intents
+          </Typography>
+          <Typography>
+            Edit an Intent below to add examples of user queries.
+            Add several examples to ensure that your Assistant will respond accurately.
+          </Typography>
+        </Box>
+        <Button variant="contained" color="primary" onClick={onAdd}>
           Add New Intent
         </Button>
-      </div>
+      </Box>
+
       <Grid>
         <Typography className={classes.headerName}/>
       </Grid>
-      <TableContainer
-        component={Paper}
-        aria-label="Agents"
-        className={classes.table}>
-        <Table aria-label="customized table">
-          <TableHead>
-            <TableRow>
-              <StyledTableCell>
-                <div className={classes.headerName}>
-                  <div style={{margin: '20px'}}>Name</div>
-                  <div>
-                    <TextField
-                      id="standard-search"
-                      label="Search field"
-                      type="search"
-                      onChange={e => setFilter(e.target.value)}
-                    />
-                  </div>
-                </div>
-              </StyledTableCell>
-              <StyledTableCell align="left">Default Action</StyledTableCell>
-              <StyledTableCell align="right">Action</StyledTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {_.cloneDeep(filteredIntents).map((row) => (
-              <StyledTableRow key={row.name}>
-                <StyledTableCell component="th" scope="row">
-                  {row.name}
-                </StyledTableCell>
-                <StyledTableCell align="left">
-                  {row.defaultActionName ?? (
-                    <Typography style={{ color: '#808080' }}>N/A</Typography>
-                  )}
-                </StyledTableCell>
-                <StyledTableCell component="th" scope="row" align="right">
-                  <Button onClick={() => handleEdit(row)}>
-                    <Edit />
-                  </Button>
-                  <Button onClick={() => deleteIntentHandler(row)}>
-                    <Delete />
-                  </Button>
-                </StyledTableCell>
-              </StyledTableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <Grid>
+        <TableContainer
+          component={Paper}
+          aria-label="Intents"
+        >
+          <CommonTable
+            data={{
+              columns,
+              rowsData: filteredIntents,
+            }}
+            pagination={{
+              colSpan: 1,
+              rowsPerPage: 10,
+            }}
+          />
+        </TableContainer>
+      </Grid>
     </Paper>
   );
 }
