@@ -1,29 +1,25 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { AgentConfig } from '@bavard/agent-config';
 import {
-  Box,
   Button,
-  Divider,
   Grid,
-  TextField,
-  Typography,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab/';
 import { useSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
-import { AlphaPicker, TwitterPicker } from 'react-color';
 import { useParams } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 
 import { DEFAULT_WIDGET_SETTINGS, IWidgetSettings } from '@bavard/agent-config';
 import { CHATBOT_GET_AGENT } from '../../../common-gql-queries';
-import GradientPicker from '../../../components/GradientPicker';
 import { IAgent } from '../../../models/chatbot-service';
-import ContentLoading from '../../ContentLoading';
 import { currentAgentConfig, currentWidgetSettings } from '../atoms';
 import { getBotSettingsQuery, updateBotSettingsMutation } from './gql';
-import ImageUploader from './ImageUploader';
+
+import { Avatars } from './Avatars';
+import { Description } from './Description';
+import { ColorPalett } from './Palets';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -34,6 +30,18 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.background.default,
       padding: theme.spacing(2),
     },
+    spanOfPanel: {
+      width: '80%',
+      marginLeft: '10%',
+    },
+    panel: {
+      backgroundColor: 'white',
+      padding: '60px',
+    },
+    submitBtn: {
+      display: 'flex',
+      justifyContent: 'center',
+    },
   }),
 );
 
@@ -42,7 +50,9 @@ const AgentSettings = () => {
   const { agentId } = useParams<{ agentId: string }>();
 
   const [config, setConfig] = useRecoilState(currentAgentConfig);
-  const [widgetSettings, setWidgetSettings] = useRecoilState(currentWidgetSettings);
+  const [widgetSettings, setWidgetSettings] = useRecoilState(
+    currentWidgetSettings,
+  );
 
   const { enqueueSnackbar } = useSnackbar();
   const [settings, setSettings] = useState<IWidgetSettings>({
@@ -54,7 +64,9 @@ const AgentSettings = () => {
 
   const agentUname = config?.toJsonObj()?.uname;
 
-  const [updateBotSettings, updateBotSettingsMutationData] = useMutation(updateBotSettingsMutation);
+  const [updateBotSettings, updateBotSettingsMutationData] = useMutation(
+    updateBotSettingsMutation,
+  );
 
   const agentsData = useQuery<{ ChatbotService_agent: IAgent }>(
     CHATBOT_GET_AGENT,
@@ -66,19 +78,18 @@ const AgentSettings = () => {
     },
   );
 
-  const widgetSettingsData = useQuery<{ ChatbotService_widgetSettings: IWidgetSettings }>(
-    getBotSettingsQuery,
-    {
-      skip: !agentUname,
-      variables: {
-        uname: agentUname,
-        dev: mode === 'dev',
-      },
-      onCompleted: (data) => {
-        setWidgetSettings(data.ChatbotService_widgetSettings);
-      },
+  const widgetSettingsData = useQuery<{
+    ChatbotService_widgetSettings: IWidgetSettings;
+  }>(getBotSettingsQuery, {
+    skip: !agentUname,
+    variables: {
+      uname: agentUname,
+      dev: mode === 'dev',
     },
-  );
+    onCompleted: (data) => {
+      setWidgetSettings(data.ChatbotService_widgetSettings);
+    },
+  });
 
   useEffect(() => {
     if (!!widgetSettings && !!widgetSettings.name) {
@@ -119,202 +130,69 @@ const AgentSettings = () => {
   const loading = agentsData.loading || updateBotSettingsMutationData.loading;
 
   return (
-    <Grid container={true} spacing={2} className={classes.root}>
-      <Grid item={true} xs={12}>
-        <Typography variant="h6">Agent Settings</Typography>
-        {loading && <ContentLoading shrinked={true}/>}
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          width="100%"
-          mt={2}
-          mb={2}>
-          <ToggleButtonGroup
-            value={mode === 'dev' ? 'left' : 'right'}
-            exclusive={true}
+    <Grid className={classes.spanOfPanel}>
+      <Grid style={{ marginBottom: '20px', marginTop: '30px', fontWeight: 'bold' }}>
+        Assistant Design Settings
+      </Grid>
+      <Grid style={{ marginBottom: '20px' }}>
+        <ToggleButtonGroup
+          value={mode === 'dev' ? 'left' : 'right'}
+          exclusive={true}
+          size="small"
+          onChange={(_, newAlignment) => {
+            setMode(newAlignment === 'left' ? 'dev' : 'published');
+          }}
+          aria-label="text alignment">
+          <ToggleButton
+            disabled={loading}
             size="small"
-            onChange={(_, newAlignment) => {
-              setMode(newAlignment === 'left' ? 'dev' : 'published');
-            }}
-            aria-label="text alignment">
-            <ToggleButton
-              disabled={loading}
-              size="small"
-              value="left"
-              aria-label="left aligned">
-              DEV
-            </ToggleButton>
-            <ToggleButton
-              disabled={loading}
-              size="small"
-              value="right"
-              aria-label="right aligned">
-              PUBLISHED
-            </ToggleButton>
-          </ToggleButtonGroup>
-          {mode === 'dev' && (
-            <Button
-              disabled={loading}
-              variant="contained"
-              color="primary"
-              onClick={onUpdateSettingsClicked}>
-              Update Settings
-            </Button>
-          )}
-        </Box>
-        <Divider />
+            value="left"
+            aria-label="left aligned">
+            DEV
+          </ToggleButton>
+          <ToggleButton
+            disabled={loading}
+            size="small"
+            value="right"
+            aria-label="right aligned">
+            PUBLISHED
+          </ToggleButton>
+        </ToggleButtonGroup>
       </Grid>
 
-      <Grid item={true} xs={6}>
-        <Box mt={2} mb={2}>
-          <TextField
-            label="Agent Name"
-            disabled={loading || mode === 'published'}
-            fullWidth={true}
-            variant="outlined"
-            value={settings.name}
-            onChange={(e) => updateSettings('name', e.target.value)}
+      <Grid className={classes.panel}>
+        <Grid>
+          <Avatars
+            mode={mode}
+            loading={loading}
+            settings={settings}
+            updateSettings={updateSettings}
           />
-        </Box>
-        <Box mb={2}>
-          <TextField
-            label="Greeting Title"
-            disabled={loading || mode === 'published'}
-            fullWidth={true}
-            variant="outlined"
-            value={settings.title}
-            onChange={(e) => updateSettings('title', e.target.value)}
+          <Description
+            mode={mode}
+            loading={loading}
+            settings={settings}
+            updateSettings={updateSettings}
           />
-        </Box>
-
-        <TextField
-          label="Greeting Subtitle"
-          disabled={loading || mode === 'published'}
-          fullWidth={true}
-          multiline={true}
-          variant="outlined"
-          rows={4}
-          value={settings.subtitle}
-          onChange={(e) => updateSettings('subtitle', e.target.value)}
-        />
-      </Grid>
-
-      <Grid item={true} xs={6}>
-        <Grid container={true} spacing={2}>
-          <Grid item={true} xs={6}>
-            <ImageUploader
-              isLoading={loading || mode === 'published'}
-              currentImage={settings.avatarUrl}
-              label="Widget Avatar"
-              onImageUpload={(url: string) => updateSettings('avatar', url)}
-              iconType="AVATAR"
-            />
-          </Grid>
-          <Grid item={true} xs={6}>
-            <ImageUploader
-              isLoading={loading || mode === 'published'}
-              currentImage={settings.logoUrl}
-              label="Brand Logo"
-              onImageUpload={(url: string) => updateSettings('logo', url)}
-              iconType="LOGO"
-            />
-          </Grid>
+          <ColorPalett
+            mode={mode}
+            loading={loading}
+            settings={settings}
+            updateSettings={updateSettings}
+          />
         </Grid>
-      </Grid>
-
-      <Grid item={true} xs={4}>
-        <Box
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}>
-          <Typography variant="subtitle1">Widget Primary Color</Typography>
-          <Box
-            mt={2}
-            width="90%"
-            height={100}
-            style={{
-              backgroundColor: `rgba(${settings.primaryColor.r}, ${settings.primaryColor.g}, ${settings.primaryColor.b}, ${settings.primaryColor.a})`,
-            }}
-          />
-          <Box mt={5} mb={1} mx="auto">
-            {mode === 'dev' && (
-              <TwitterPicker
-                triangle="hide"
-                color={settings.primaryColor}
-                onChange={(color) => updateSettings('primaryColor', color.rgb)}
-              />
-            )}
-          </Box>
-          <Box mt={4} mb={1} mx="auto">
-            {mode === 'dev' && (
-              <AlphaPicker
-                color={settings.primaryColor}
-                onChange={(color) => updateSettings('primaryColor', color.rgb)}
-              />
-            )}
-          </Box>
-        </Box>
-      </Grid>
-
-      <Grid item={true} xs={4}>
-        <Box
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}>
-          <Typography variant="subtitle1">Widget Primary Background</Typography>
-          <Box
-            mt={2}
-            width="90%"
-            height={100}
-            style={{
-              backgroundColor: `rgba(${settings.primaryBg.r}, ${settings.primaryBg.g}, ${settings.primaryBg.b}, ${settings.primaryBg.a})`,
-            }}
-          />
-          <Box mt={5} mb={1} mx="auto">
-            {mode === 'dev' && (
-              <TwitterPicker
-                triangle="hide"
-                color={settings.primaryBg}
-                onChange={(color) => updateSettings('primaryBg', color.rgb)}
-              />
-            )}
-          </Box>
-          <Box mt={4} mb={1} mx="auto">
-            {mode === 'dev' && (
-              <AlphaPicker
-                color={settings.primaryBg}
-                onChange={(color) => updateSettings('primaryBg', color.rgb)}
-              />
-            )}
-          </Box>
-        </Box>
-      </Grid>
-
-      <Grid item={true} xs={4}>
-        <GradientPicker
-          defaultValue={widgetSettings?.widgetBg}
-          label="Widget Background Color"
-          onChange={(gradient) => updateSettings('widgetBg', gradient)}
-        />
-      </Grid>
-
-      <Grid xs={12} item={true}>
-        <Divider />
-        <Box mt={4} mb={4} width="90%" display="flex" justifyContent="center">
+        <Grid className={classes.submitBtn}>
           {mode === 'dev' && (
             <Button
               disabled={loading}
               variant="contained"
               color="primary"
+              style={{marginTop: '25px', marginBottom: '80px'}}
               onClick={onUpdateSettingsClicked}>
               Update Settings
             </Button>
           )}
-        </Box>
+        </Grid>
       </Grid>
     </Grid>
   );
