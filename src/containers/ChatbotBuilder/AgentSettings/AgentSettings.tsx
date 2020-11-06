@@ -31,12 +31,12 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(2),
     },
     spanOfPanel: {
-      width: '70%',
-      marginLeft: '100px',
+      width: '80%',
+      marginLeft: '10%',
     },
     panel: {
       backgroundColor: 'white',
-      padding: '30px',
+      padding: '60px',
     },
     submitBtn: {
       display: 'flex',
@@ -131,7 +131,7 @@ const AgentSettings = () => {
 
   return (
     <Grid className={classes.spanOfPanel}>
-      <Grid style={{ marginBottom: '20px', marginTop: '30px' }}>
+      <Grid style={{ marginBottom: '20px', marginTop: '30px', fontWeight: 'bold' }}>
         Assistant Design Settings
       </Grid>
       <Grid style={{ marginBottom: '20px' }}>

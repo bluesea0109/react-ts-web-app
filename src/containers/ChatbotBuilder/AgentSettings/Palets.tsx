@@ -24,7 +24,7 @@ export const ColorPalett = ({
         <Grid
           container={true}
           style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Grid item={true} sm={7}>
+          <Grid item={true} sm={6}>
             <Box
               style={{
                 height: '100px',
