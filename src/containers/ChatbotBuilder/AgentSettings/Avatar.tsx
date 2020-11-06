@@ -16,8 +16,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     avatarPos:  {
       display: 'flex',
-      justifyContent: 'center'
-    }
+      justifyContent: 'center',
+    },
   }),
 );
 

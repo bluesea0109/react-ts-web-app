@@ -17,7 +17,6 @@ import { IAgent } from '../../../models/chatbot-service';
 import { currentAgentConfig, currentWidgetSettings } from '../atoms';
 import { getBotSettingsQuery, updateBotSettingsMutation } from './gql';
 
-
 import { Avatars } from './Avatars';
 import { Description } from './Description';
 import { ColorPalett } from './Palets';
@@ -120,7 +119,7 @@ const AgentSettings = () => {
       });
       await agentsData.refetch();
       const result = await widgetSettingsData.refetch();
-      setWidgetSettings(result?.data?.ChatbotService_widgetSettings);      
+      setWidgetSettings(result?.data?.ChatbotService_widgetSettings);
     } catch (e) {
       enqueueSnackbar('An error occurred while updating settings', {
         variant: 'error',
@@ -167,7 +166,7 @@ const AgentSettings = () => {
             mode={mode}
             loading={loading}
             settings={settings}
-            updateSettings={updateSettings}            
+            updateSettings={updateSettings}
           />
           <Description
             mode={mode}

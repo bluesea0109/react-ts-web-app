@@ -41,7 +41,7 @@ const ImageUploader = ({
         agentId: numAgentId,
       },
       skip: !file,
-    }
+    },
   );
 
   useEffect(() => {

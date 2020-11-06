@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       alignItems: 'center',
     },
-  })
+  }),
 );
 
 // (e) => updateSettings('name', e.target.value)}

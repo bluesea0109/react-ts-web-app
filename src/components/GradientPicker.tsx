@@ -4,9 +4,9 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  
+
   Slider,
-  
+
   Tooltip,
   Typography,
 } from '@material-ui/core';
@@ -24,7 +24,7 @@ import {
   ArrowForward,
   ArrowUpward,
   Delete,
-  
+
 } from '@material-ui/icons';
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       width: '100%',
       justifyContent: 'space-between',
-      
+
     },
     card: {
       backgroundColor: theme.palette.background.default,
@@ -115,7 +115,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: '50px',
       width: '60%',
     },
-  })
+  }),
 );
 
 interface IGradientPoint {
@@ -261,7 +261,7 @@ const GradientPicker = ({
     });
 
     const css = `${browserParam}(${gradient.direction}, ${pointsStr.join(
-      ', '
+      ', ',
     )})`;
 
     return css;
@@ -339,7 +339,7 @@ const GradientPicker = ({
   };
 
   const [gradient, setGradient] = useState(
-    defaultValue ? cssToGradient(defaultValue) : DEFAULT_GRADIENT
+    defaultValue ? cssToGradient(defaultValue) : DEFAULT_GRADIENT,
   );
   const [editingPoint, setEditingPoint] = useState<number | undefined>();
   const [gradientTypesMenu, showGradientTypesMenu] = useState(false);
@@ -556,7 +556,7 @@ const GradientPicker = ({
               <SketchPicker
                 className={classes.sketchPicker}
                 color={rgbaFromGradientPoint(
-                  gradient.points[editingPoint as number]
+                  gradient.points[editingPoint as number],
                 )}
                 onChange={(newColor) => setColor(newColor, editingPoint)}
               />
