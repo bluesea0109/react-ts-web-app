@@ -56,13 +56,17 @@ export default function ChatWithAgent() {
     }
 
     return () => {
-      document.getElementById('bavard-chatbox')?.remove();
-      document.getElementById('bavard-chatbot-trigger')?.remove();
-      if (script) {
-        document.body.removeChild(script);
-      }
+      if (!script) { return; }
+      document.body.removeChild(script);
     };
   }, [apiKey, agentData]);
+
+  useEffect(() => {
+    return () => {
+      document.getElementById('bavard-chatbox')?.remove();
+      document.getElementById('bavard-chatbot-trigger')?.remove();
+    };
+  }, []);
 
   return (
     <div
