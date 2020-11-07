@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme: Theme) =>
     deleteButton: {
       float: 'left',
     },
-  })
+  }),
 );
 
 interface IUpsertNodeFormProps {
@@ -85,7 +85,7 @@ export default function UpsertNodeForm({
 
     const newNode = new AgentUtteranceNode(
       nodeId,
-      formData.utterance as string
+      formData.utterance as string,
     );
 
     onSubmit?.(newNode);
