@@ -99,7 +99,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'block',
       marginBottom: theme.spacing(1),
     },
-  }),
+  })
 );
 
 interface IProps {
@@ -116,6 +116,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
   const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const [gp, setGp] = useState<GraphPolicyV2>(policy);
+  const canvasRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const drawingArrowRef = useRef<SVGPolylineElement>(null);
   const [changes, setChanges] = useState(0);
@@ -207,7 +208,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
     clearDrawingArrow();
 
     const data: IGraphEditorNode = JSON.parse(
-      event.dataTransfer.getData('NODE_DATA') || '{}',
+      event.dataTransfer.getData('NODE_DATA') || '{}'
     );
 
     if (_.isEmpty(data)) {
@@ -219,7 +220,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
 
     const pos = snapItemPosition(
       getZoomedCoord(event.clientX, rect.x, zoom) - 140,
-      getZoomedCoord(event.clientY, rect.y, zoom) - 10,
+      getZoomedCoord(event.clientY, rect.y, zoom) - 10
     );
 
     data.x = pos.x;
@@ -283,7 +284,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
 
   const handleDeleteZoneDrop = (event: React.DragEvent<HTMLDivElement>) => {
     const data: IGraphEditorNode = JSON.parse(
-      event.dataTransfer.getData('NODE_DATA') || '{}',
+      event.dataTransfer.getData('NODE_DATA') || '{}'
     );
 
     if (_.isEmpty(data)) {
@@ -305,7 +306,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
   const showEdgeActions = (
     shouldShow: boolean,
     startNode: GraphPolicyNode,
-    endNode: GraphPolicyNode,
+    endNode: GraphPolicyNode
   ) => {
     if (!shouldShow) {
       setShowEdgeActions(undefined);
@@ -321,10 +322,11 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
   const renderArrows = () => {
     const arrows: React.ReactNode[] = [];
     const nodes = gp.getAllNodes();
-    nodes.forEach((node) => {
+    nodes.forEach((node, index) => {
       if (node.childAgentNode) {
         const caNode = node.childAgentNode;
         const coords = getArrowCoords(node, caNode, NODE_HEIGHT, NODE_WIDTH);
+
         arrows.push(
           <EdgeArrow
             key={`arrow_${node.nodeId}_${caNode.nodeId}`}
@@ -337,7 +339,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
             y1={coords.y1}
             x2={coords.x2}
             y2={coords.y2}
-          />,
+          />
         );
       }
       if (getNodeActor(node) === 'AGENT') {
@@ -357,7 +359,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
               y1={coords.y1}
               x2={coords.x2}
               y2={coords.y2}
-            />,
+            />
           );
         });
       }
@@ -392,8 +394,8 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
 
     const coords = getArrowCoords(start, end, NODE_HEIGHT, NODE_WIDTH);
 
-    const x = (coords.x1 + coords.x2) / 2;
-    const y = (coords.y1 + coords.y2) / 2;
+    const x = ((coords.x1 + coords.x2) * zoom) / 100 / 2;
+    const y = ((coords.y1 + coords.y2) * zoom) / 100 / 2;
 
     return (
       <Tooltip title="Delete this edge">
@@ -423,33 +425,33 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
 
   const handleTerminalDragStart = (
     event: React.DragEvent<HTMLDivElement>,
-    nodeData: IGraphEditorNode,
+    nodeData: IGraphEditorNode
   ) => {
-    const rect = containerRef.current?.getBoundingClientRect();
+    const rect = canvasRef.current?.getBoundingClientRect();
 
     const rectX = rect?.x || 0;
     const rectY = rect?.y || 0;
 
     const start = {
-      x: (event.clientX * (200 - zoom)) / 100 - (rectX * zoom) / 100,
-      y: (event.clientY * (200 - zoom)) / 100 - (rectY * zoom) / 100,
+      x: (event.clientX * 100) / zoom - rectX,
+      y: (event.clientY * 100) / zoom - rectY,
     };
 
     setDrawingArrowStart(start);
 
     event.dataTransfer.setData(
       'DRAGGING_OUT_TERMINAL',
-      JSON.stringify(nodeData || '{}'),
+      JSON.stringify(nodeData || '{}')
     );
   };
 
   const handleEdgeDrop = (
     event: React.DragEvent<HTMLDivElement>,
-    targetNode: IGraphEditorNode,
+    targetNode: IGraphEditorNode
   ) => {
     clearDrawingArrow();
     const sourceNode: IGraphEditorNode = JSON.parse(
-      event.dataTransfer.getData('DRAGGING_OUT_TERMINAL') || '{}',
+      event.dataTransfer.getData('DRAGGING_OUT_TERMINAL') || '{}'
     );
 
     if (sourceNode.node && targetNode.node) {
@@ -472,8 +474,12 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
             }
           }
 
-          // Add the child node - either agent or user node
-          gpSource.addChild(gpTarget);
+          try {
+            // Add the child node - either agent or user node
+            gpSource.addChild(gpTarget);
+          } catch (e) {
+            enqueueSnackbar(e.toString(), { variant: 'error' });
+          }
         }
 
         if (sActor === 'USER') {
@@ -511,10 +517,13 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
   const handleArrowDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
 
-    const rect = event.currentTarget.getBoundingClientRect();
+    const rect = canvasRef.current?.getBoundingClientRect();
+    const rectX = rect?.x || 0;
+    const rectY = rect?.y || 0;
+
     const arrowEnd = {
-      x: event.clientX - (rect.x * zoom) / 100,
-      y: event.clientY - (rect.y * zoom) / 100,
+      x: (event.clientX * 100) / zoom - rectX,
+      y: (event.clientY * 100) / zoom - rectY,
     };
 
     const drawingArrow = drawingArrowRef.current;
@@ -522,12 +531,10 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
     if (drawingArrowStart) {
       drawingArrow?.setAttribute(
         'points',
-        `${drawingArrowStart?.x},${drawingArrowStart?.y}  ${arrowEnd.x},${arrowEnd.y}`,
+        `${drawingArrowStart?.x},${drawingArrowStart?.y}  ${arrowEnd.x},${arrowEnd.y}`
       );
     }
   };
-
-  console.log('GP: ', gp);
 
   const drawingArrow = (
     <React.Fragment>
@@ -556,7 +563,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
   );
 
   return (
-    <div className={classes.root}>
+    <div className={classes.root} ref={containerRef}>
       <div className={classes.canvasControls}>
         <Tooltip title={`Zoom: ${zoom}%`}>
           <div>
@@ -589,7 +596,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
             height: canvasDimensions.height,
             minHeight: canvasDimensions.height,
           }}
-          ref={containerRef}
+          ref={canvasRef}
           onDragOver={handleArrowDragOver}
           onDrop={handleNodeDrop}>
           {editorNodes.map((n, index) => {
@@ -638,6 +645,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
             );
           })}
           <svg
+            zoomAndPan={zoom.toString()}
             xmlns="http://www.w3.org/2000/svg"
             width={'100%'}
             height={'100%'}>
