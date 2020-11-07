@@ -15,7 +15,6 @@ import { useSnackbar } from 'notistack';
 import React, { useEffect, useRef, useState } from 'react';
 import EdgeArrow from './EdgeArrow';
 import GraphEditorNode from './GraphEditorNode';
-import SvgArrow from './SvgArrow';
 import { IGraphEditorNode, IItemPosition } from './types';
 import UpsertNodeDialog from './UpsertNodeDialog';
 
@@ -117,7 +116,9 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
   const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const [gp, setGp] = useState<GraphPolicyV2>(policy);
+  const canvasRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const drawingArrowRef = useRef<SVGPolylineElement>(null);
   const [changes, setChanges] = useState(0);
   const [editingNodeId, setEditingNodeId] = useState<number>();
   const [draggingNodeId, setDraggingNodeId] = useState<number>();
@@ -127,7 +128,6 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
   const [showingEdgeActions, setShowEdgeActions] = useState<INodePair>();
   const [zoom, setzoom] = useState(100);
   const [drawingArrowStart, setDrawingArrowStart] = useState<IItemPosition>();
-  const [drawingArrowEnd, setDrawingArrowEnd] = useState<IItemPosition>();
   const [canvasDimensions, setCanvasDimensions] = useState({
     width: 500,
     height: 500,
@@ -205,8 +205,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
 
   const handleNodeDrop = (event: React.DragEvent<HTMLDivElement>) => {
     setDraggingNodeId(undefined);
-    setDrawingArrowEnd(undefined);
-    setDrawingArrowStart(undefined);
+    clearDrawingArrow();
 
     const data: IGraphEditorNode = JSON.parse(
       event.dataTransfer.getData('NODE_DATA') || '{}',
@@ -272,8 +271,8 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
 
     // Delete old and add new
     deleteDraftNode(node.nodeId);
-    gp.deleteNodeById(node.nodeId);
-    gp.addNode(node);
+
+    gp.upsertNode(node);
 
     setGp(gp);
     setEditingNodeId(undefined);
@@ -323,10 +322,11 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
   const renderArrows = () => {
     const arrows: React.ReactNode[] = [];
     const nodes = gp.getAllNodes();
-    nodes.forEach((node) => {
+    nodes.forEach((node, index) => {
       if (node.childAgentNode) {
         const caNode = node.childAgentNode;
         const coords = getArrowCoords(node, caNode, NODE_HEIGHT, NODE_WIDTH);
+
         arrows.push(
           <EdgeArrow
             key={`arrow_${node.nodeId}_${caNode.nodeId}`}
@@ -394,8 +394,8 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
 
     const coords = getArrowCoords(start, end, NODE_HEIGHT, NODE_WIDTH);
 
-    const x = (coords.x1 + coords.x2) / 2;
-    const y = (coords.y1 + coords.y2) / 2;
+    const x = ((coords.x1 + coords.x2) * zoom) / 100 / 2;
+    const y = ((coords.y1 + coords.y2) * zoom) / 100 / 2;
 
     return (
       <Tooltip title="Delete this edge">
@@ -427,22 +427,15 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
     event: React.DragEvent<HTMLDivElement>,
     nodeData: IGraphEditorNode,
   ) => {
-    const rect = containerRef.current?.getBoundingClientRect();
+    const rect = canvasRef.current?.getBoundingClientRect();
 
     const rectX = rect?.x || 0;
     const rectY = rect?.y || 0;
 
     const start = {
-      x: (event.clientX * (200 - zoom)) / 100 - (rectX * zoom) / 100,
-      y: (event.clientY * (200 - zoom)) / 100 - (rectY * zoom) / 100,
+      x: (event.clientX * 100) / zoom - rectX,
+      y: (event.clientY * 100) / zoom - rectY,
     };
-
-    // const start = {
-    //   x: getZoomedCoord(event.clientX, rectX, zoom),
-    //   y: getZoomedCoord(event.clientY, rectY, zoom),
-    // };
-
-    console.log('ZOOMED COORDS: ', start);
 
     setDrawingArrowStart(start);
 
@@ -456,6 +449,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
     event: React.DragEvent<HTMLDivElement>,
     targetNode: IGraphEditorNode,
   ) => {
+    clearDrawingArrow();
     const sourceNode: IGraphEditorNode = JSON.parse(
       event.dataTransfer.getData('DRAGGING_OUT_TERMINAL') || '{}',
     );
@@ -480,8 +474,12 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
             }
           }
 
-          // Add the child node - either agent or user node
-          gpSource.addChild(gpTarget);
+          try {
+            // Add the child node - either agent or user node
+            gpSource.addChild(gpTarget);
+          } catch (e) {
+            enqueueSnackbar(e.toString(), { variant: 'error' });
+          }
         }
 
         if (sActor === 'USER') {
@@ -508,27 +506,64 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
         setChanges(changes + 1);
       }
     }
-
-    setDrawingArrowStart(undefined);
-    setDrawingArrowEnd(undefined);
   };
 
-  const handleArrowDragOver = _.throttle(
-    (event: React.DragEvent<HTMLDivElement>) => {
-      event.preventDefault();
+  const clearDrawingArrow = () => {
+    setDrawingArrowStart(undefined);
+    const drawingArrow = drawingArrowRef.current;
+    drawingArrow?.setAttribute('points', ``);
+  };
 
-      const rect = event.currentTarget.getBoundingClientRect();
+  const handleArrowDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
 
-      setDrawingArrowEnd({
-        x: event.clientX - (rect.x * zoom) / 100,
-        y: event.clientY - (rect.y * zoom) / 100,
-      });
-    },
-    300,
+    const rect = canvasRef.current?.getBoundingClientRect();
+    const rectX = rect?.x || 0;
+    const rectY = rect?.y || 0;
+
+    const arrowEnd = {
+      x: (event.clientX * 100) / zoom - rectX,
+      y: (event.clientY * 100) / zoom - rectY,
+    };
+
+    const drawingArrow = drawingArrowRef.current;
+
+    if (drawingArrowStart) {
+      drawingArrow?.setAttribute(
+        'points',
+        `${drawingArrowStart?.x},${drawingArrowStart?.y}  ${arrowEnd.x},${arrowEnd.y}`,
+      );
+    }
+  };
+
+  const drawingArrow = (
+    <React.Fragment>
+      <defs>
+        <marker
+          id={`drawing_arrow_head`}
+          viewBox="0 0 10 10"
+          refX="5"
+          refY="5"
+          markerWidth={10}
+          markerHeight={10}
+          orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill={'#808080'} />
+        </marker>
+      </defs>
+
+      <polyline
+        ref={drawingArrowRef}
+        points={``}
+        fill="none"
+        stroke={'#808080'}
+        strokeWidth={1}
+        markerEnd={`url(#drawing_arrow_head)`}
+      />
+    </React.Fragment>
   );
 
   return (
-    <div className={classes.root}>
+    <div className={classes.root} ref={containerRef}>
       <div className={classes.canvasControls}>
         <Tooltip title={`Zoom: ${zoom}%`}>
           <div>
@@ -561,7 +596,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
             height: canvasDimensions.height,
             minHeight: canvasDimensions.height,
           }}
-          ref={containerRef}
+          ref={canvasRef}
           onDragOver={handleArrowDragOver}
           onDrop={handleNodeDrop}>
           {editorNodes.map((n, index) => {
@@ -574,6 +609,9 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
                     draggable={true}
                     onEdit={() => setEditingNodeId(n.nodeId)}
                     onTerminalDragStart={handleTerminalDragStart}
+                    onTerminalDragEnd={() => {
+                      clearDrawingArrow();
+                    }}
                     onEdgeDrop={handleEdgeDrop}
                     onNodeDragStart={() => {
                       handleNodeDragStart(n.nodeId);
@@ -595,6 +633,9 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
                   draggable={true}
                   onEdit={() => setEditingNodeId(n.nodeId)}
                   onTerminalDragStart={handleTerminalDragStart}
+                  onTerminalDragEnd={() => {
+                    clearDrawingArrow();
+                  }}
                   onNodeDragStart={() => {
                     handleNodeDragStart(n.nodeId);
                   }}
@@ -604,21 +645,13 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
             );
           })}
           <svg
+            zoomAndPan={zoom.toString()}
             xmlns="http://www.w3.org/2000/svg"
             width={'100%'}
             height={'100%'}>
             {renderArrows()}
 
-            {drawingArrowStart && drawingArrowEnd && (
-              <SvgArrow
-                startElementId={drawingArrowStart.x}
-                endElementId={drawingArrowEnd.y}
-                x1={drawingArrowStart.x}
-                x2={drawingArrowEnd.x}
-                y1={drawingArrowStart.y}
-                y2={drawingArrowEnd.y}
-              />
-            )}
+            {drawingArrow}
           </svg>
           {editingNodeId && editingNode && (
             <UpsertNodeDialog

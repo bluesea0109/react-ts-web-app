@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Ref } from 'react';
 
 import { Theme } from '@material-ui/core';
 import { createStyles, makeStyles } from '@material-ui/styles';
@@ -12,6 +12,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export interface ISvgArrowProps {
+  ref?: Ref<SVGPolylineElement>;
   x1: number;
   y1: number;
   x2: number;
@@ -37,6 +38,7 @@ const SvgArrow = ({
   color,
   strokeWidth,
   arrowheadSize,
+  ref,
 }: ISvgArrowProps) => {
   const arrowColor = color || `#808080`;
   const headSize = arrowheadSize || 10;
@@ -60,6 +62,7 @@ const SvgArrow = ({
       </defs>
 
       <polyline
+        ref={ref}
         points={`${x1},${y1} ${
           xBend && yBend ? `${xBend},${yBend}` : ''
         } ${x2},${y2}`}
