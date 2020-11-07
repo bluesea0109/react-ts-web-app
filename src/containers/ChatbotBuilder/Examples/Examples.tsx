@@ -137,6 +137,11 @@ const Examples = () => {
       tags: updatedExample.tags,
     };
 
+    const isDuplicated = examples.some(each => each.intent === updatedExample.intent && each.id !== updatedExample.id);
+    if (isDuplicated) {
+      return;
+    }
+
     const mutationOpts = {
       variables: {
         example,

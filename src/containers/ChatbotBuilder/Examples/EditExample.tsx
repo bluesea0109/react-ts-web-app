@@ -47,7 +47,6 @@ const EditExample = ({
 
   const handleSaveChanges = async () => {
     if (!updatedExample) { return; }
-    console.log(updatedExample);
     if (!updatedExample.intent.length || !updatedExample.text.length) {
       return;
     }
