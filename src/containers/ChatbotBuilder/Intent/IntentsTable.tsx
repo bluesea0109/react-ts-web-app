@@ -83,20 +83,11 @@ function IntentsTable({
   const filteredIntents = intents.filter((item) => item.name.toLowerCase().includes(filter.toLocaleLowerCase()));
 
   const renderIntentName = () => (
-    <Box
-      style={{
-        padding: 0,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'stretch',
-      }}
-    >
-      <FilterBox
-        name="Intent Name"
-        filter={filter}
-        onChange={setFilter}
-      />
-    </Box>
+    <FilterBox
+      name="Intent Name"
+      filter={filter}
+      onChange={setFilter}
+    />
   );
 
   const renderActions = (intent: IIntent) => (
