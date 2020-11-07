@@ -1,4 +1,5 @@
 import {  createStyles, Grid, makeStyles, Theme, Typography } from '@material-ui/core';
+import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
 import FullDialog from '../../../components/dialogs/FullDialog';
 import { INLUExample } from '../../../models/chatbot-service';
@@ -43,10 +44,12 @@ const EditExample = ({
 }: EditExampleProps) => {
   const classes = useStyles();
   const [updatedExample, setUpdatedExample] = useState<INLUExample>();
+  const { enqueueSnackbar } = useSnackbar();
   const isNew = example?.id === -1;
 
   const handleSaveChanges = async () => {
     if (!updatedExample || !updatedExample.intent.length || !updatedExample.text.length) {
+      enqueueSnackbar(`The required field(s) is missing for the example.`, { variant: 'error' });
       return;
     }
     await onSaveExample(updatedExample);

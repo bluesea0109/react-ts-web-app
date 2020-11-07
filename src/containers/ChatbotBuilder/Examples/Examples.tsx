@@ -139,6 +139,7 @@ const Examples = () => {
 
     const isDuplicated = examples.some(each => each.text === updatedExample.text && each.id !== updatedExample.id);
     if (isDuplicated) {
+      enqueueSnackbar(`The example is duplicated.`, { variant: 'error' });
       return;
     }
 
