@@ -93,7 +93,6 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'absolute',
       borderRadius: '50%',
       cursor: 'crosshair',
-      overflow: 'hidden',
       '&:hover': {
         boxShadow: theme.shadows[10],
         backgroundColor: theme.palette.secondary.main,
@@ -128,11 +127,12 @@ const useStyles = makeStyles((theme: Theme) =>
     terminalDragHandle: {
       position: 'relative',
       opacity: 0.999,
-      width: '100%',
-      height: '100%',
+      width: '200%',
+      height: '200%',
       background: 'transparent',
+      margin: '-50%',
     },
-  }),
+  })
 );
 
 interface IProps {
@@ -144,11 +144,15 @@ interface IProps {
   onEdit?: () => void;
   onTerminalDragStart?: (
     event: React.DragEvent<HTMLDivElement>,
-    nodeData: IGraphEditorNode,
+    nodeData: IGraphEditorNode
+  ) => void;
+  onTerminalDragEnd?: (
+    event: React.DragEvent<HTMLDivElement>,
+    nodeData: IGraphEditorNode
   ) => void;
   onEdgeDrop?: (
     event: React.DragEvent<HTMLDivElement>,
-    nodeData: IGraphEditorNode,
+    nodeData: IGraphEditorNode
   ) => void;
 }
 const GraphEditorNode = ({
@@ -157,6 +161,7 @@ const GraphEditorNode = ({
   draggable,
   onEdit,
   onTerminalDragStart,
+  onTerminalDragEnd,
   onNodeDragStart,
   onEdgeDrop,
 }: IProps) => {
@@ -224,6 +229,7 @@ const GraphEditorNode = ({
       <div
         className={classes.terminalDragHandle}
         onDragStart={(event) => onTerminalDragStart?.(event, nodeData)}
+        onDragEnd={(event) => onTerminalDragEnd?.(event, nodeData)}
         draggable={true}
       />
     </Tooltip>

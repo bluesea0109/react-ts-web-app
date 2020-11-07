@@ -15,7 +15,6 @@ import { useSnackbar } from 'notistack';
 import React, { useEffect, useRef, useState } from 'react';
 import EdgeArrow from './EdgeArrow';
 import GraphEditorNode from './GraphEditorNode';
-import SvgArrow from './SvgArrow';
 import { IGraphEditorNode, IItemPosition } from './types';
 import UpsertNodeDialog from './UpsertNodeDialog';
 
@@ -100,7 +99,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'block',
       marginBottom: theme.spacing(1),
     },
-  }),
+  })
 );
 
 interface IProps {
@@ -118,6 +117,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
   const classes = useStyles();
   const [gp, setGp] = useState<GraphPolicyV2>(policy);
   const containerRef = useRef<HTMLDivElement>(null);
+  const drawingArrowRef = useRef<SVGPolylineElement>(null);
   const [changes, setChanges] = useState(0);
   const [editingNodeId, setEditingNodeId] = useState<number>();
   const [draggingNodeId, setDraggingNodeId] = useState<number>();
@@ -127,7 +127,6 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
   const [showingEdgeActions, setShowEdgeActions] = useState<INodePair>();
   const [zoom, setzoom] = useState(100);
   const [drawingArrowStart, setDrawingArrowStart] = useState<IItemPosition>();
-  const [drawingArrowEnd, setDrawingArrowEnd] = useState<IItemPosition>();
   const [canvasDimensions, setCanvasDimensions] = useState({
     width: 500,
     height: 500,
@@ -205,11 +204,10 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
 
   const handleNodeDrop = (event: React.DragEvent<HTMLDivElement>) => {
     setDraggingNodeId(undefined);
-    setDrawingArrowEnd(undefined);
-    setDrawingArrowStart(undefined);
+    clearDrawingArrow();
 
     const data: IGraphEditorNode = JSON.parse(
-      event.dataTransfer.getData('NODE_DATA') || '{}',
+      event.dataTransfer.getData('NODE_DATA') || '{}'
     );
 
     if (_.isEmpty(data)) {
@@ -221,7 +219,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
 
     const pos = snapItemPosition(
       getZoomedCoord(event.clientX, rect.x, zoom) - 140,
-      getZoomedCoord(event.clientY, rect.y, zoom) - 10,
+      getZoomedCoord(event.clientY, rect.y, zoom) - 10
     );
 
     data.x = pos.x;
@@ -272,8 +270,8 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
 
     // Delete old and add new
     deleteDraftNode(node.nodeId);
-    gp.deleteNodeById(node.nodeId);
-    gp.addNode(node);
+
+    gp.upsertNode(node);
 
     setGp(gp);
     setEditingNodeId(undefined);
@@ -285,7 +283,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
 
   const handleDeleteZoneDrop = (event: React.DragEvent<HTMLDivElement>) => {
     const data: IGraphEditorNode = JSON.parse(
-      event.dataTransfer.getData('NODE_DATA') || '{}',
+      event.dataTransfer.getData('NODE_DATA') || '{}'
     );
 
     if (_.isEmpty(data)) {
@@ -307,7 +305,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
   const showEdgeActions = (
     shouldShow: boolean,
     startNode: GraphPolicyNode,
-    endNode: GraphPolicyNode,
+    endNode: GraphPolicyNode
   ) => {
     if (!shouldShow) {
       setShowEdgeActions(undefined);
@@ -339,7 +337,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
             y1={coords.y1}
             x2={coords.x2}
             y2={coords.y2}
-          />,
+          />
         );
       }
       if (getNodeActor(node) === 'AGENT') {
@@ -359,7 +357,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
               y1={coords.y1}
               x2={coords.x2}
               y2={coords.y2}
-            />,
+            />
           );
         });
       }
@@ -425,7 +423,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
 
   const handleTerminalDragStart = (
     event: React.DragEvent<HTMLDivElement>,
-    nodeData: IGraphEditorNode,
+    nodeData: IGraphEditorNode
   ) => {
     const rect = containerRef.current?.getBoundingClientRect();
 
@@ -437,27 +435,21 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
       y: (event.clientY * (200 - zoom)) / 100 - (rectY * zoom) / 100,
     };
 
-    // const start = {
-    //   x: getZoomedCoord(event.clientX, rectX, zoom),
-    //   y: getZoomedCoord(event.clientY, rectY, zoom),
-    // };
-
-    console.log('ZOOMED COORDS: ', start);
-
     setDrawingArrowStart(start);
 
     event.dataTransfer.setData(
       'DRAGGING_OUT_TERMINAL',
-      JSON.stringify(nodeData || '{}'),
+      JSON.stringify(nodeData || '{}')
     );
   };
 
   const handleEdgeDrop = (
     event: React.DragEvent<HTMLDivElement>,
-    targetNode: IGraphEditorNode,
+    targetNode: IGraphEditorNode
   ) => {
+    clearDrawingArrow();
     const sourceNode: IGraphEditorNode = JSON.parse(
-      event.dataTransfer.getData('DRAGGING_OUT_TERMINAL') || '{}',
+      event.dataTransfer.getData('DRAGGING_OUT_TERMINAL') || '{}'
     );
 
     if (sourceNode.node && targetNode.node) {
@@ -508,23 +500,59 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
         setChanges(changes + 1);
       }
     }
-
-    setDrawingArrowStart(undefined);
-    setDrawingArrowEnd(undefined);
   };
 
-  const handleArrowDragOver = _.throttle(
-    (event: React.DragEvent<HTMLDivElement>) => {
-      event.preventDefault();
+  const clearDrawingArrow = () => {
+    setDrawingArrowStart(undefined);
+    const drawingArrow = drawingArrowRef.current;
+    drawingArrow?.setAttribute('points', ``);
+  };
 
-      const rect = event.currentTarget.getBoundingClientRect();
+  const handleArrowDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
 
-      setDrawingArrowEnd({
-        x: event.clientX - (rect.x * zoom) / 100,
-        y: event.clientY - (rect.y * zoom) / 100,
-      });
-    },
-    300,
+    const rect = event.currentTarget.getBoundingClientRect();
+    const arrowEnd = {
+      x: event.clientX - (rect.x * zoom) / 100,
+      y: event.clientY - (rect.y * zoom) / 100,
+    };
+
+    const drawingArrow = drawingArrowRef.current;
+
+    if (drawingArrowStart) {
+      drawingArrow?.setAttribute(
+        'points',
+        `${drawingArrowStart?.x},${drawingArrowStart?.y}  ${arrowEnd.x},${arrowEnd.y}`
+      );
+    }
+  };
+
+  console.log('GP: ', gp);
+
+  const drawingArrow = (
+    <React.Fragment>
+      <defs>
+        <marker
+          id={`drawing_arrow_head`}
+          viewBox="0 0 10 10"
+          refX="5"
+          refY="5"
+          markerWidth={10}
+          markerHeight={10}
+          orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill={'#808080'} />
+        </marker>
+      </defs>
+
+      <polyline
+        ref={drawingArrowRef}
+        points={``}
+        fill="none"
+        stroke={'#808080'}
+        strokeWidth={1}
+        markerEnd={`url(#drawing_arrow_head)`}
+      />
+    </React.Fragment>
   );
 
   return (
@@ -574,6 +602,9 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
                     draggable={true}
                     onEdit={() => setEditingNodeId(n.nodeId)}
                     onTerminalDragStart={handleTerminalDragStart}
+                    onTerminalDragEnd={() => {
+                      clearDrawingArrow();
+                    }}
                     onEdgeDrop={handleEdgeDrop}
                     onNodeDragStart={() => {
                       handleNodeDragStart(n.nodeId);
@@ -595,6 +626,9 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
                   draggable={true}
                   onEdit={() => setEditingNodeId(n.nodeId)}
                   onTerminalDragStart={handleTerminalDragStart}
+                  onTerminalDragEnd={() => {
+                    clearDrawingArrow();
+                  }}
                   onNodeDragStart={() => {
                     handleNodeDragStart(n.nodeId);
                   }}
@@ -609,16 +643,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
             height={'100%'}>
             {renderArrows()}
 
-            {drawingArrowStart && drawingArrowEnd && (
-              <SvgArrow
-                startElementId={drawingArrowStart.x}
-                endElementId={drawingArrowEnd.y}
-                x1={drawingArrowStart.x}
-                x2={drawingArrowEnd.x}
-                y1={drawingArrowStart.y}
-                y2={drawingArrowEnd.y}
-              />
-            )}
+            {drawingArrow}
           </svg>
           {editingNodeId && editingNode && (
             <UpsertNodeDialog
