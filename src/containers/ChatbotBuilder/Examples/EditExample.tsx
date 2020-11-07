@@ -46,8 +46,7 @@ const EditExample = ({
   const isNew = example?.id === -1;
 
   const handleSaveChanges = async () => {
-    if (!updatedExample) { return; }
-    if (!updatedExample.intent.length || !updatedExample.text.length) {
+    if (!updatedExample || !updatedExample.intent.length || !updatedExample.text.length) {
       return;
     }
     await onSaveExample(updatedExample);
