@@ -7,11 +7,7 @@ import {
   TableContainer,
   Typography,
 } from '@material-ui/core';
-import {
-  createStyles,
-  makeStyles,
-  Theme,
-} from '@material-ui/core/styles';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Delete, Edit } from '@material-ui/icons';
 import 'firebase/auth';
 import React, { useState } from 'react';
@@ -80,7 +76,9 @@ function IntentsTable({
     const data = rowData as IIntent;
     onEditIntent(data);
   };
-  const filteredIntents = intents.filter((item) => item.name.toLowerCase().includes(filter.toLocaleLowerCase()));
+  const filteredIntents = intents.filter((item) =>
+    item.name.toLowerCase().includes(filter.toLocaleLowerCase()),
+  );
 
   const renderIntentName = () => (
     <Box
@@ -89,13 +87,8 @@ function IntentsTable({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'stretch',
-      }}
-    >
-      <FilterBox
-        name="Intent Name"
-        filter={filter}
-        onChange={setFilter}
-      />
+      }}>
+      <FilterBox name="Intent Name" filter={filter} onChange={setFilter} />
     </Box>
   );
 
@@ -119,9 +112,10 @@ function IntentsTable({
     {
       title: 'Default Action',
       field: 'defaultActionName',
-      renderRow: (intent: IIntent) => intent.defaultActionName ?? (
-        <Typography style={{ color: '#808080' }}>N/A</Typography>
-      ),
+      renderRow: (intent: IIntent) =>
+        intent.defaultActionName || (
+          <Typography style={{ color: '#808080' }}>N/A</Typography>
+        ),
     },
     {
       title: '',
@@ -137,15 +131,12 @@ function IntentsTable({
         display="flex"
         justifyContent="space-between"
         alignItems="flex-start"
-        paddingBottom={2}
-      >
+        paddingBottom={2}>
         <Box>
-          <Typography variant="h6">
-            Intents
-          </Typography>
+          <Typography variant="h6">Intents</Typography>
           <Typography>
-            Edit an Intent below to add examples of user queries.
-            Add several examples to ensure that your Assistant will respond accurately.
+            Edit an Intent below to add examples of user queries. Add several
+            examples to ensure that your Assistant will respond accurately.
           </Typography>
         </Box>
         <Button variant="contained" color="primary" onClick={onAdd}>
@@ -154,13 +145,10 @@ function IntentsTable({
       </Box>
 
       <Grid>
-        <Typography className={classes.headerName}/>
+        <Typography className={classes.headerName} />
       </Grid>
       <Grid>
-        <TableContainer
-          component={Paper}
-          aria-label="Intents"
-        >
+        <TableContainer component={Paper} aria-label="Intents">
           <CommonTable
             data={{
               columns,
