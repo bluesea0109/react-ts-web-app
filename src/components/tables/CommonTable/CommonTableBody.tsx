@@ -24,6 +24,7 @@ const StyledTableCell = withStyles((theme) => ({
     backgroundColor: 'wihte',
   },
   body: {
+    height: 40,
     fontSize: 14,
     paddingTop: 5,
     paddingBottom: 5,
@@ -75,9 +76,13 @@ const CommonTableBody = ({
           ),
         )
       ) : (
-        <Typography align="center">
-          {nonRecordError ?? 'No record can be found.'}
-        </Typography>
+        <TableRow>
+          <StyledTableCell colSpan={4}>
+            <Typography align="center">
+              {nonRecordError ?? 'No record can be found.'}
+            </Typography>
+          </StyledTableCell>
+        </TableRow>
       )}
     </TableBody>
   );
