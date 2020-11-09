@@ -54,6 +54,10 @@ export interface DataInterface<RowData extends object> {
   rowsData?: RowsType<RowData>;
 }
 
+export type ActionsInterface<RowData extends object> = ActionInterface<
+  RowData
+>[];
+
 export interface CommonTableHeadProps<RowData extends object> {
   columns?: HeaderType<RowData>[];
   actions?: ActionsInterface<RowData>;
@@ -63,14 +67,19 @@ export interface CommonTableHeadProps<RowData extends object> {
   HeaderRow?: React.ComponentType<any>;
 }
 
-export type ActionsInterface<RowData extends object> = ActionInterface<
-  RowData
->[];
-
 export interface CommonTableBodyProps<RowData extends object> {
   actions?: ActionsInterface<RowData>;
   columns: HeaderType<RowData>[];
   rowsData?: RowData[];
+  localization?: LocalizationInterface;
+  editable?: EditableInterface<RowData>;
+  Row?: React.ComponentType<any>;
+}
+
+export interface CommonTableRowProps<RowData extends object> {
+  actions?: ActionsInterface<RowData>;
+  columns: HeaderType<RowData>[];
+  rowData: RowData;
   localization?: LocalizationInterface;
   editable?: EditableInterface<RowData>;
   Row?: React.ComponentType<any>;
