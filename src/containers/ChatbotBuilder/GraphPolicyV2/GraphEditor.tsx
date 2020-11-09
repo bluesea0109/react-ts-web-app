@@ -26,8 +26,8 @@ import {
   snapItemPosition,
 } from './utils';
 
-const NODE_WIDTH = 150;
-const NODE_HEIGHT = 75;
+const NODE_WIDTH = 230;
+const NODE_HEIGHT = 115;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -219,9 +219,14 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
     const rect = event.currentTarget.getBoundingClientRect();
 
     const pos = snapItemPosition(
-      getZoomedCoord(event.clientX, rect.x, zoom) - 140,
+      getZoomedCoord(event.clientX, rect.x, zoom) - NODE_WIDTH + 10,
       getZoomedCoord(event.clientY, rect.y, zoom) - 10,
     );
+
+    // const pos = snapItemPosition(
+    //   (event.clientX * 100) / zoom - rect.x - NODE_WIDTH + 10,
+    //   (event.clientY * 100) / zoom - rect.y - 10
+    // );
 
     data.x = pos.x;
     data.y = pos.y;
@@ -604,6 +609,8 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
               <React.Fragment key={index}>
                 <div className={classes.item} style={{ left: n.x, top: n.y }}>
                   <GraphEditorNode
+                    width={NODE_WIDTH}
+                    height={NODE_HEIGHT}
                     className={classes.node}
                     nodeData={n}
                     draggable={true}
@@ -629,6 +636,8 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
                 style={{ left: n.x, top: n.y }}>
                 <GraphEditorNode
                   className={classes.node}
+                  width={NODE_WIDTH}
+                  height={NODE_HEIGHT}
                   nodeData={n}
                   draggable={true}
                   onEdit={() => setEditingNodeId(n.nodeId)}
