@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
     editorMenuItems: {
       marginTop: theme.spacing(2),
     },
-  }),
+  })
 );
 
 const GraphEditorPage = () => {
