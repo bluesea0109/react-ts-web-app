@@ -45,6 +45,7 @@ export interface EditableInterface<RowData extends object> {
 }
 
 export interface LocalizationInterface {
+  actionsText?: string;
   nonRecordError?: string;
 }
 
@@ -58,6 +59,7 @@ export interface CommonTableHeadProps<RowData extends object> {
   actions?: ActionsInterface<RowData>;
   editable?: EditableInterface<RowData>;
   alignments?: AlignmentType[];
+  localization?: LocalizationInterface;
   HeaderRow?: React.ComponentType<any>;
 }
 

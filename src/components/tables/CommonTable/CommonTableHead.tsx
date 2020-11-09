@@ -1,12 +1,20 @@
 import { TableCell, TableHead, TableRow, Typography } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
 import React from 'react';
 import { CommonTableHeadProps } from './types';
+
+const StyledTableCell = withStyles((theme) => ({
+  root: {
+    border: 'none',
+  },
+}))(TableCell);
 
 const CommonTableHead = ({
   columns,
   actions,
   editable,
   alignments,
+  localization,
   HeaderRow,
 }: CommonTableHeadProps<object>) => {
   const headerAlignments = alignments || [];
@@ -19,7 +27,7 @@ const CommonTableHead = ({
         columns && (
           <TableRow>
             {columns.map((header, index) => (
-              <TableCell
+              <StyledTableCell
                 key={header.title || header.field || index}
                 align={headerAlignments[index] || 'left'}>
                 {header.renderHeader ? (
@@ -31,12 +39,14 @@ const CommonTableHead = ({
                     {header.title}
                   </Typography>
                 )}
-              </TableCell>
+              </StyledTableCell>
             ))}
             {(editable || actions) && (
               <TableCell align="right">
                 <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
-                  {'Actions'}
+                  {localization?.actionsText === ''
+                    ? ''
+                    : localization?.actionsText || 'Actions'}
                 </Typography>
               </TableCell>
             )}

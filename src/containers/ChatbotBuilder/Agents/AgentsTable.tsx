@@ -58,7 +58,6 @@ function AgentsTable() {
     {
       title: 'Name',
       field: 'uname',
-      editable: 'never',
       renderRow: (agent: IAgent) => (
         <Link
           to={`/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${agent.id}/Actions`}>
