@@ -42,13 +42,13 @@ const CommonTableHead = ({
               </StyledTableCell>
             ))}
             {(editable || actions) && (
-              <TableCell align="right">
+              <StyledTableCell align="right">
                 <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
                   {localization?.actionsText === ''
                     ? ''
                     : localization?.actionsText || 'Actions'}
                 </Typography>
-              </TableCell>
+              </StyledTableCell>
             )}
           </TableRow>
         )

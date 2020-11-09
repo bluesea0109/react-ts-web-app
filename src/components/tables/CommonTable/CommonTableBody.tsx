@@ -27,6 +27,7 @@ const CommonTableBody = ({
               columns={columns}
               rowData={rowData}
               editable={editable}
+              columnCount={columnCount}
               localization={localization}
             />
           ),

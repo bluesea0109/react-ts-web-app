@@ -71,8 +71,8 @@ export interface CommonTableBodyProps<RowData extends object> {
   actions?: ActionsInterface<RowData>;
   columns: HeaderType<RowData>[];
   rowsData?: RowData[];
-  localization?: LocalizationInterface;
   editable?: EditableInterface<RowData>;
+  localization?: LocalizationInterface;
   Row?: React.ComponentType<any>;
 }
 
@@ -80,8 +80,9 @@ export interface CommonTableRowProps<RowData extends object> {
   actions?: ActionsInterface<RowData>;
   columns: HeaderType<RowData>[];
   rowData: RowData;
-  localization?: LocalizationInterface;
   editable?: EditableInterface<RowData>;
+  columnCount: number;
+  localization?: LocalizationInterface;
   Row?: React.ComponentType<any>;
 }
 

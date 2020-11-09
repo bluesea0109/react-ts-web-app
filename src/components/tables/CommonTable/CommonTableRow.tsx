@@ -1,14 +1,20 @@
-import { Button, TableCell, TableRow } from '@material-ui/core';
+import {
+  Box,
+  Button,
+  TableCell,
+  TableRow,
+  Typography,
+} from '@material-ui/core';
 import { createStyles, makeStyles, withStyles } from '@material-ui/core/styles';
-import { Delete, Edit } from '@material-ui/icons';
+import { Check, Close, Delete, Edit } from '@material-ui/icons';
 import _ from 'lodash';
-import React from 'react';
+import React, { Fragment, useState } from 'react';
 import { CommonTableRowProps } from './types';
 
 const StyledTableRow = withStyles((theme) => ({
   root: {
     '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
+      backgroundColor: theme.palette.action.selected,
     },
   },
 }))(TableRow);
@@ -34,6 +40,11 @@ const useStyles = makeStyles((theme) =>
       padding: 0,
       minWidth: 48,
     },
+    boxContainer: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
   }),
 );
 
@@ -42,49 +53,76 @@ const CommonTableRow = ({
   columns,
   rowData,
   editable,
+  columnCount,
   localization,
 }: CommonTableRowProps<object>) => {
   const classes = useStyles();
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  const onConfirmDelete = () => {
+    editable?.onRowDelete?.(rowData);
+    setConfirmDelete(false);
+  };
 
   return (
     <StyledTableRow hover={true}>
-      {columns.map((column) => (
-        <StyledTableCell key={column.field} align={column.alignRow || 'left'}>
-          {column.renderRow
-            ? column.renderRow(rowData)
-            : _.get(rowData, column.field)}
-        </StyledTableCell>
-      ))}
-
-      {editable && !actions && (
-        <StyledTableCell align="right">
-          {editable.isEditable && editable.onRowUpdate && (
-            <Button
-              className={classes.button}
-              // @ts-ignore
-              onClick={() => editable.onRowUpdate(rowData)}>
-              <Edit />
-            </Button>
-          )}
-          {editable.isDeleteable && editable.onRowDelete && (
-            <Button
-              className={classes.button}
-              // @ts-ignore
-              onClick={() => editable.onRowDelete(rowData)}>
-              <Delete />
-            </Button>
-          )}
-        </StyledTableCell>
-      )}
-
-      {!editable && actions && (
-        <StyledTableCell align="right">
-          {actions.map((action, index) => (
-            <Button key={index} onClick={(e) => action.onClick(e, rowData)}>
-              {action.icon && <action.icon />}
-            </Button>
+      {confirmDelete ? (
+        <Fragment>
+          <StyledTableCell colSpan={columnCount}>
+            <Box className={classes.boxContainer}>
+              <Typography>Are you sure to delete this record?</Typography>
+              <Box>
+                <Button onClick={onConfirmDelete}>
+                  <Check />
+                </Button>
+                <Button onClick={() => setConfirmDelete(false)}>
+                  <Close />
+                </Button>
+              </Box>
+            </Box>
+          </StyledTableCell>
+        </Fragment>
+      ) : (
+        <Fragment>
+          {columns.map((column) => (
+            <StyledTableCell
+              key={column.field}
+              align={column.alignRow || 'left'}>
+              {column.renderRow
+                ? column.renderRow(rowData)
+                : _.get(rowData, column.field)}
+            </StyledTableCell>
           ))}
-        </StyledTableCell>
+
+          {editable && !actions && (
+            <StyledTableCell align="right">
+              {editable.isEditable && (
+                <Button
+                  className={classes.button}
+                  onClick={() => editable.onRowUpdate?.(rowData)}>
+                  <Edit />
+                </Button>
+              )}
+              {editable.isDeleteable && editable.onRowDelete && (
+                <Button
+                  className={classes.button}
+                  onClick={() => setConfirmDelete(true)}>
+                  <Delete />
+                </Button>
+              )}
+            </StyledTableCell>
+          )}
+
+          {!editable && actions && (
+            <StyledTableCell align="right">
+              {actions.map((action, index) => (
+                <Button key={index} onClick={(e) => action.onClick(e, rowData)}>
+                  {action.icon && <action.icon />}
+                </Button>
+              ))}
+            </StyledTableCell>
+          )}
+        </Fragment>
       )}
     </StyledTableRow>
   );
