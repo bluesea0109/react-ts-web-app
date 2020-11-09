@@ -140,6 +140,8 @@ interface IProps {
   className?: string;
   children?: React.ReactNode;
   draggable?: boolean;
+  width?: number;
+  height?: number;
   onNodeDragStart?: () => void;
   onEdit?: () => void;
   onTerminalDragStart?: (
@@ -164,12 +166,15 @@ const GraphEditorNode = ({
   onTerminalDragEnd,
   onNodeDragStart,
   onEdgeDrop,
+  width,
+  height,
 }: IProps) => {
   const classes = useStyles();
   const [canDrag, setCanDrag] = useState(false);
   const [showTerminals, setShowTerminals] = useState(false);
-
   const [draggingOver, setDraggingOver] = useState(false);
+  const nodeWidth = width || 150;
+  const nodeHeight = height || 75;
 
   let nodeClass =
     nodeData.actor === ENodeActor.USER
@@ -253,6 +258,10 @@ const GraphEditorNode = ({
         canDrag ? classes.dragging : '',
         draggingOver ? classes.nodeHovered : '',
       ])}
+      style={{
+        width: nodeWidth,
+        height: nodeHeight,
+      }}
       draggable={draggable && canDrag}
       onDragStart={(event) => {
         if (!canDrag) {
@@ -271,6 +280,7 @@ const GraphEditorNode = ({
         <div
           className={classes.nodeText}
           dangerouslySetInnerHTML={{ __html: nodeText }}
+          style={{ width: nodeWidth - 50 }}
         />
       </div>
       <div className={classes.nodeActions}>
