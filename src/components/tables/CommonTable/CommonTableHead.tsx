@@ -4,6 +4,7 @@ import { CommonTableHeadProps } from './types';
 
 const CommonTableHead = ({
   columns,
+  actions,
   editable,
   alignments,
   HeaderRow,
@@ -32,7 +33,7 @@ const CommonTableHead = ({
                 )}
               </TableCell>
             ))}
-            {editable && (
+            {(editable || actions) && (
               <TableCell align="right">
                 <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
                   {'Actions'}

@@ -39,6 +39,9 @@ const CommonTableBody = ({
   localization,
   Row,
 }: CommonTableBodyProps<object & { [index: string]: any }>) => {
+  // prettier-ignore
+  const columnCount = columns.length + ((editable !== undefined || actions !== undefined) ? 1 : 0);
+
   return (
     <TableBody>
       {rowsData && rowsData.length ? (
@@ -74,21 +77,23 @@ const CommonTableBody = ({
                 </StyledTableCell>
               )}
 
-              {!editable &&
-                actions &&
-                actions.map((action, index) => (
-                  <Button
-                    key={index}
-                    onClick={(e) => action.onClick(e, rowData)}>
-                    {action.icon && <action.icon />}
-                  </Button>
-                ))}
+              {!editable && actions && (
+                <StyledTableCell align="right">
+                  {actions.map((action, index) => (
+                    <Button
+                      key={index}
+                      onClick={(e) => action.onClick(e, rowData)}>
+                      {action.icon && <action.icon />}
+                    </Button>
+                  ))}
+                </StyledTableCell>
+              )}
             </StyledTableRow>
           ),
         )
       ) : (
         <TableRow>
-          <StyledTableCell colSpan={4}>
+          <StyledTableCell colSpan={columnCount}>
             <Typography align="center">
               {localization?.nonRecordError || 'No record can be found.'}
             </Typography>

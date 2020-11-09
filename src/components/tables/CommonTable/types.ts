@@ -55,6 +55,7 @@ export interface DataInterface<RowData extends object> {
 
 export interface CommonTableHeadProps<RowData extends object> {
   columns?: HeaderType<RowData>[];
+  actions?: ActionsInterface<RowData>;
   editable?: EditableInterface<RowData>;
   alignments?: AlignmentType[];
   HeaderRow?: React.ComponentType<any>;
