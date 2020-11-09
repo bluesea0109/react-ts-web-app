@@ -1,29 +1,22 @@
 import { useMutation, useQuery } from '@apollo/client';
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
   Button,
-  Chip,
   Grid,
-  IconButton,
   LinearProgress,
   Paper,
   Typography,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Delete, Edit, ExpandMore } from '@material-ui/icons';
-import clsx from 'clsx';
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   DELETE_TRAINING_CONVERSATION,
   GET_TRAINING_CONVERSATIONS,
 } from '../../../common-gql-queries';
-import { ConfirmDialog } from '../../../components';
 import { ITrainingConversations } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
+import { ConversationBoard } from './ConversationBoard';
 import CreateConversation from './NewTrainingConversations';
 import BavardPagination from './Pagination';
 
@@ -78,7 +71,7 @@ export default function TrainingConversations() {
   }
 
   if (getTrainingConversations.loading) {
-    return <ContentLoading shrinked={true}/>;
+    return <ContentLoading shrinked={true} />;
   }
 
   const onCreateNewConversation = () => {
@@ -141,16 +134,29 @@ export default function TrainingConversations() {
                       isUpdate={true}
                       conversation={item}
                       onSaveCallback={onSaveCallBack}
-                      conversationLastindex={(currentPage - 1) * docsInPage + index + 1}
+                      conversationLastindex={
+                        (currentPage - 1) * docsInPage + index + 1
+                      }
                       onCloseCallback={handleClose}
                     />
                   );
                 }
                 return (
-                  <Accordion className={classes.listItemWrapper} key={index}>
+                  <ConversationBoard
+                    currentPage={currentPage}
+                    docsInPage={docsInPage}
+                    index={index}
+                    item={item}
+                    confirmOpen={confirmOpen}
+                    onEditConversation={onEditConversation}
+                    deleteConfirm={deleteConfirm}
+                    setConfirmOpen={setConfirmOpen}
+                    deleteConversationHandler={deleteConversationHandler}
+                  />
+                  /*<Accordion className={classes.listItemWrapper} key={index} square>
                     <AccordionSummary
-                      expandIcon={<ExpandMore />}
                       id="conversationId">
+
                       <Typography className={classes.heading}>
                         Conversation{' '}
                         {(currentPage - 1) * docsInPage + index + 1}
@@ -172,11 +178,11 @@ export default function TrainingConversations() {
                           Are you sure you want to delete this Conversations?
                         </ConfirmDialog>
                       </Grid>
-                      <Grid
+                      <Grid //conversation panel
                         container={true}
                         direction={'column'}
                         className={classes.paper}>
-                        <Grid
+                        <Grid //header info in conversation
                           container={true}
                           className={classes.actionWrapper}>
                           <Grid
@@ -297,7 +303,7 @@ export default function TrainingConversations() {
                         })}
                       </Grid>
                     </AccordionDetails>
-                  </Accordion>
+                  </Accordion> */
                 );
               })
           ) : (
@@ -324,7 +330,10 @@ export default function TrainingConversations() {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     paper: {
-      width: '100%',
+      width: '90%',
+      marginLeft: '5%',
+      marginRight: '5%',
+      padding: '20px',
     },
     button: {
       margin: '0px 50px 20px',
@@ -402,7 +411,7 @@ const useStyles = makeStyles((theme: Theme) =>
     actionsWrapper: {
       border: '1px solid #000',
       borderRadius: '3px',
-      width: 'calc(50% - 50px)',
+      width: 'calc(50% + 150px)',
       position: 'relative',
     },
     actionDetailsWrapper: {
@@ -419,9 +428,16 @@ const useStyles = makeStyles((theme: Theme) =>
       minWidth: '130px',
     },
     listItemWrapper: {
-      margin: '0px 50px 20px !important',
-      backgroundColor: '#fff',
-      borderRadius: '5px',
+      border: '1px solid rgba(0,0,0,0.2)',
+      boxShadow: 'none',
+
+      '&:before': {
+        display: 'none',
+      },
+      '&$expanded': {
+        margin: 'auto',
+      },
+      marginBottom: '30px',
     },
     chip: {
       margin: theme.spacing(0.5),
