@@ -33,6 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       position: 'relative',
+      height: '100%',
     },
     canvasContainer: {
       display: 'flex',
@@ -96,6 +97,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: 30,
       height: 30,
       padding: 2,
+      background: theme.palette.background.default,
       display: 'block',
       marginBottom: theme.spacing(1),
     },
@@ -223,11 +225,6 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
       getZoomedCoord(event.clientY, rect.y, zoom) - 10,
     );
 
-    // const pos = snapItemPosition(
-    //   (event.clientX * 100) / zoom - rect.x - NODE_WIDTH + 10,
-    //   (event.clientY * 100) / zoom - rect.y - 10
-    // );
-
     data.x = pos.x;
     data.y = pos.y;
 
@@ -244,6 +241,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
         x: data.x,
         y: data.y,
       });
+      gp.sortAllChildNodes();
       setGp(gp);
     }
 
@@ -297,6 +295,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
     }
 
     gp.deleteNodeById(data.nodeId);
+    gp.sortAllChildNodes();
     deleteDraftNode(data.nodeId);
     setDraggingNodeId(undefined);
     setDraggingOverDelete(false);
@@ -385,6 +384,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
       start.removeChildAgentNode();
     }
 
+    gp.sortAllChildNodes();
     setGp(gp);
     enqueueSnackbar('Edge deleted', { variant: 'success' });
     setShowEdgeActions(undefined);
@@ -399,8 +399,8 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
 
     const coords = getArrowCoords(start, end, NODE_HEIGHT, NODE_WIDTH);
 
-    const x = ((coords.x1 + coords.x2) * zoom) / 100 / 2;
-    const y = ((coords.y1 + coords.y2) * zoom) / 100 / 2;
+    const x = (coords.x1 + coords.x2) / 2;
+    const y = (coords.y1 + coords.y2) / 2;
 
     return (
       <Tooltip title="Delete this edge">
@@ -409,8 +409,8 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
           className={classes.deleteEdgeButton}
           onClick={() => handleDeleteEdge(start, end)}
           style={{
-            top: y - 10,
-            left: x - 10,
+            top: y,
+            left: x,
           }}>
           <Delete />
         </IconButton>
@@ -438,8 +438,8 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
     const rectY = rect?.y || 0;
 
     const start = {
-      x: (event.clientX * 100) / zoom - rectX,
-      y: (event.clientY * 100) / zoom - rectY,
+      x: getZoomedCoord(event.clientX, rectX, zoom),
+      y: getZoomedCoord(event.clientY, rectY, zoom),
     };
 
     setDrawingArrowStart(start);
@@ -674,6 +674,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
             />
           )}
         </div>
+        {renderEdgeActions()}
       </div>
       {draggingNodeId && (
         <div
@@ -689,7 +690,6 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
           <div>Drop here to delete</div>
         </div>
       )}
-      {renderEdgeActions()}
     </div>
   );
 };
