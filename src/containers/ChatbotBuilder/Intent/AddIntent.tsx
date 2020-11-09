@@ -162,7 +162,7 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
 
   const saveChanges = async () => {
     if (newIntent.name === '') {
-      enqueueSnackbar("Intent can't be empty", { variant: 'warning' });
+      enqueueSnackbar('Intent can\'t be empty', { variant: 'warning' });
       return;
     }
 
@@ -241,7 +241,7 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
 
   const createTag = async () => {
     if (newTag === '') {
-      enqueueSnackbar("Can't create empty tag", { variant: 'error' });
+      enqueueSnackbar('Can\'t create empty tag', { variant: 'error' });
       return;
     }
     // tags: Array(0);
