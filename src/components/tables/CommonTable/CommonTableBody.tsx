@@ -1,5 +1,13 @@
-import { TableBody, TableCell, TableRow, Typography } from '@material-ui/core';
+import {
+  Button,
+  TableBody,
+  TableCell,
+  TableRow,
+  Typography,
+} from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
+import { Delete, Edit } from '@material-ui/icons';
+import _ from 'lodash';
 import React from 'react';
 import { CommonTableBodyProps } from './types';
 
@@ -16,6 +24,7 @@ const StyledTableCell = withStyles((theme) => ({
     backgroundColor: 'wihte',
   },
   body: {
+    height: 40,
     fontSize: 14,
     paddingTop: 5,
     paddingBottom: 5,
@@ -23,34 +32,68 @@ const StyledTableCell = withStyles((theme) => ({
 }))(TableCell);
 
 const CommonTableBody = ({
+  actions,
   columns,
   rowsData,
-  nonRecordError,
+  editable,
+  localization,
   Row,
-}: CommonTableBodyProps<object & {[index: string]: any}>) => {
+}: CommonTableBodyProps<object & { [index: string]: any }>) => {
   return (
     <TableBody>
-      {rowsData.length ? (
-        rowsData.map((rowData, rowIndex) => (
+      {rowsData && rowsData.length ? (
+        rowsData.map((rowData, rowIndex) =>
           Row ? (
-            <Row key={rowIndex} rowData={rowData} index={rowIndex}/>
+            <Row key={rowIndex} rowData={rowData} index={rowIndex} />
           ) : (
             <StyledTableRow key={rowIndex} hover={true}>
-              {columns.map(column => (
+              {columns.map((column) => (
                 <StyledTableCell
                   key={column.field}
-                  align={column.alignRow || 'left'}
-                >
-                  {column.renderRow ? column.renderRow(rowData) : rowData[column.field]}
+                  align={column.alignRow || 'left'}>
+                  {column.renderRow
+                    ? column.renderRow(rowData)
+                    : _.get(rowData, column.field)}
                 </StyledTableCell>
               ))}
+
+              {editable && !actions && (
+                <StyledTableCell align="right">
+                  {editable.isEditable && editable.onRowUpdate && (
+                    // @ts-ignore
+                    <Button onClick={() => editable.onRowUpdate(rowData)}>
+                      <Edit />
+                    </Button>
+                  )}
+                  {editable.isDeleteable && editable.onRowDelete && (
+                    // @ts-ignore
+                    <Button onClick={() => editable.onRowDelete(rowData)}>
+                      <Delete />
+                    </Button>
+                  )}
+                </StyledTableCell>
+              )}
+
+              {!editable &&
+                actions &&
+                actions.map((action, index) => (
+                  <Button
+                    key={index}
+                    onClick={(e) => action.onClick(e, rowData)}>
+                    {action.icon && <action.icon />}
+                  </Button>
+                ))}
             </StyledTableRow>
-          )
-        ))
+          ),
+        )
       ) : (
-        <Typography align="center">
-          {nonRecordError ?? 'No record can be found.'}
-        </Typography>
+        <TableRow>
+          <StyledTableCell colSpan={4}>
+            <Typography align="center">
+              {localization?.nonRecordError || 'No record can be found.'}
+            </Typography>
+          </StyledTableCell>
+        </TableRow>
       )}
     </TableBody>
   );
