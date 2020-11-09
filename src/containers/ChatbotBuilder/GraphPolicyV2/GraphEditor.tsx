@@ -26,8 +26,8 @@ import {
   snapItemPosition,
 } from './utils';
 
-const NODE_WIDTH = 150;
-const NODE_HEIGHT = 75;
+const NODE_WIDTH = 230;
+const NODE_HEIGHT = 115;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -99,7 +99,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'block',
       marginBottom: theme.spacing(1),
     },
-  }),
+  })
 );
 
 interface IProps {
@@ -208,7 +208,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
     clearDrawingArrow();
 
     const data: IGraphEditorNode = JSON.parse(
-      event.dataTransfer.getData('NODE_DATA') || '{}',
+      event.dataTransfer.getData('NODE_DATA') || '{}'
     );
 
     if (_.isEmpty(data)) {
@@ -219,9 +219,14 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
     const rect = event.currentTarget.getBoundingClientRect();
 
     const pos = snapItemPosition(
-      getZoomedCoord(event.clientX, rect.x, zoom) - 140,
-      getZoomedCoord(event.clientY, rect.y, zoom) - 10,
+      getZoomedCoord(event.clientX, rect.x, zoom) - NODE_WIDTH + 10,
+      getZoomedCoord(event.clientY, rect.y, zoom) - 10
     );
+
+    // const pos = snapItemPosition(
+    //   (event.clientX * 100) / zoom - rect.x - NODE_WIDTH + 10,
+    //   (event.clientY * 100) / zoom - rect.y - 10
+    // );
 
     data.x = pos.x;
     data.y = pos.y;
@@ -284,7 +289,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
 
   const handleDeleteZoneDrop = (event: React.DragEvent<HTMLDivElement>) => {
     const data: IGraphEditorNode = JSON.parse(
-      event.dataTransfer.getData('NODE_DATA') || '{}',
+      event.dataTransfer.getData('NODE_DATA') || '{}'
     );
 
     if (_.isEmpty(data)) {
@@ -306,7 +311,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
   const showEdgeActions = (
     shouldShow: boolean,
     startNode: GraphPolicyNode,
-    endNode: GraphPolicyNode,
+    endNode: GraphPolicyNode
   ) => {
     if (!shouldShow) {
       setShowEdgeActions(undefined);
@@ -339,7 +344,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
             y1={coords.y1}
             x2={coords.x2}
             y2={coords.y2}
-          />,
+          />
         );
       }
       if (getNodeActor(node) === 'AGENT') {
@@ -359,7 +364,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
               y1={coords.y1}
               x2={coords.x2}
               y2={coords.y2}
-            />,
+            />
           );
         });
       }
@@ -425,7 +430,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
 
   const handleTerminalDragStart = (
     event: React.DragEvent<HTMLDivElement>,
-    nodeData: IGraphEditorNode,
+    nodeData: IGraphEditorNode
   ) => {
     const rect = canvasRef.current?.getBoundingClientRect();
 
@@ -441,17 +446,17 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
 
     event.dataTransfer.setData(
       'DRAGGING_OUT_TERMINAL',
-      JSON.stringify(nodeData || '{}'),
+      JSON.stringify(nodeData || '{}')
     );
   };
 
   const handleEdgeDrop = (
     event: React.DragEvent<HTMLDivElement>,
-    targetNode: IGraphEditorNode,
+    targetNode: IGraphEditorNode
   ) => {
     clearDrawingArrow();
     const sourceNode: IGraphEditorNode = JSON.parse(
-      event.dataTransfer.getData('DRAGGING_OUT_TERMINAL') || '{}',
+      event.dataTransfer.getData('DRAGGING_OUT_TERMINAL') || '{}'
     );
 
     if (sourceNode.node && targetNode.node) {
@@ -531,7 +536,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
     if (drawingArrowStart) {
       drawingArrow?.setAttribute(
         'points',
-        `${drawingArrowStart?.x},${drawingArrowStart?.y}  ${arrowEnd.x},${arrowEnd.y}`,
+        `${drawingArrowStart?.x},${drawingArrowStart?.y}  ${arrowEnd.x},${arrowEnd.y}`
       );
     }
   };
@@ -604,6 +609,8 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
               <React.Fragment key={index}>
                 <div className={classes.item} style={{ left: n.x, top: n.y }}>
                   <GraphEditorNode
+                    width={NODE_WIDTH}
+                    height={NODE_HEIGHT}
                     className={classes.node}
                     nodeData={n}
                     draggable={true}
@@ -629,6 +636,8 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
                 style={{ left: n.x, top: n.y }}>
                 <GraphEditorNode
                   className={classes.node}
+                  width={NODE_WIDTH}
+                  height={NODE_HEIGHT}
                   nodeData={n}
                   draggable={true}
                   onEdit={() => setEditingNodeId(n.nodeId)}
