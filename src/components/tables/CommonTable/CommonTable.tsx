@@ -8,6 +8,7 @@ import { CommonTableProps } from './types';
 const CommonTable = ({
   data,
   title,
+  actions,
   editable,
   pagination,
   components,
@@ -45,13 +46,15 @@ const CommonTable = ({
       <Table>
         <CommonTableHead
           columns={data.columns}
+          actions={actions}
           editable={editable}
           HeaderRow={HeaderRow}
         />
         <CommonTableBody
+          actions={actions}
           columns={data.columns}
-          rowsData={pageItems}
           editable={editable}
+          rowsData={pageItems}
           localization={localization}
           Row={Row}
         />
