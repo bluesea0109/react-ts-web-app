@@ -143,6 +143,7 @@ export default function TrainingConversations() {
                 }
                 return (
                   <ConversationBoard
+                    key={index}
                     currentPage={currentPage}
                     docsInPage={docsInPage}
                     index={index}

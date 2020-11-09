@@ -1,16 +1,14 @@
-import {  
+import {
   AccordionDetails,
   Chip,
-  Grid,
-  IconButton,
+  Grid,  
   makeStyles,
   Paper,
   Typography,
-  Box,
 } from '@material-ui/core';
 import MuiAccordion from '@material-ui/core/Accordion';
-import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
+import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import { withStyles } from '@material-ui/core/styles';
 import {
   KeyboardArrowDown,
@@ -39,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
   heading: {
     fontSize: theme.typography.pxToRem(15),
     fontWeight: theme.typography.fontWeightRegular,
-    paddingTop: '5px'
+    paddingTop: '5px',
   },
   listItem: {
     borderTop: '1px solid rgba(0,0,0,.2)',
@@ -164,7 +162,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const AccordionSummary = withStyles({
-  root: {    
+  root: {
     borderBottom: '1px solid rgba(0, 0, 0, .125)',
     marginBottom: -1,
     minHeight: 40,
@@ -224,8 +222,8 @@ export const ConversationBoard = ({
   return (
     <Accordion className={classes.listItemWrapper} key={index} square={true}>
       <AccordionSummary id="conversationId" onClick={() => setOpen(!isOpened)} style={{margin: '0px'}}>
-        <Grid container  style={{margin: '0px'}}>
-          <Grid item xs={11} sm={11} style={{display: 'flex', flexFlow: 'horizontal'}}>
+        <Grid container={true}  style={{margin: '0px'}}>
+          <Grid item={true} xs={11} sm={11} style={{display: 'flex', flexFlow: 'horizontal'}}>
             {isOpened ? (
               <KeyboardArrowDown color="primary" style={{ fontSize: '30px' }} />
             ) : (
@@ -262,8 +260,7 @@ export const ConversationBoard = ({
         <Grid // conversation panel
           container={true}
           direction={'column'}
-          className={classes.paper}>
-        </Grid>
+          className={classes.paper}/>
         <Grid container={true} direction={'column'} className={classes.paper}>
           {item.actions.map((item: any, index: number) => {
             return (
@@ -271,7 +268,7 @@ export const ConversationBoard = ({
                 container={true}
                 className={clsx(
                   classes.actionWrapper,
-                  item.isAgent && classes.agentActionWrapper
+                  item.isAgent && classes.agentActionWrapper,
                 )}
                 key={index}>
                 <Grid
