@@ -9,8 +9,6 @@ import _uniq from 'lodash/uniq';
 import { ENodeActor } from './types';
 
 export const snapItemPosition = (x: number, y: number) => {
-  // let snappedX = Math.ceil((x + 1) / 10) * 10;
-  // let snappedY = Math.ceil((y + 1) / 10) * 10;
   let snappedX = x;
   let snappedY = y;
 
@@ -60,8 +58,9 @@ export const getArrowCoords = (
 
   // Child is to the bottom right of parent
   if (dx >= nodeWidth && dy >= nodeHeight) {
-    x1 = startNode.position.x + nodeWidth;
+    x1 = startNode.position.x + nodeWidth / 2;
     y1 = startNode.position.y + nodeHeight;
+    x2 = endNode.position.x + nodeWidth / 2;
   }
 
   // Child is to the right of parent
@@ -73,8 +72,8 @@ export const getArrowCoords = (
 
   // Child is to the top right of parent
   if (dx >= nodeWidth && dy <= -nodeHeight) {
-    x1 = startNode.position.x + nodeWidth;
-    y2 = endNode.position.y + nodeHeight;
+    x1 = startNode.position.x + nodeWidth / 2;
+    y2 = endNode.position.y + nodeHeight / 2;
   }
 
   // Child is directly above parent
@@ -87,7 +86,7 @@ export const getArrowCoords = (
   // Child is to the top left of parent
   if (dx <= -nodeWidth && dy <= -nodeHeight) {
     x2 = endNode.position.x + nodeWidth;
-    y2 = endNode.position.y + nodeHeight;
+    y2 = endNode.position.y + nodeHeight / 2;
   }
 
   // Child is to the left of parent
@@ -99,8 +98,10 @@ export const getArrowCoords = (
 
   // Child is to the bottom left of parent
   if (dx <= -nodeWidth && dy >= nodeHeight) {
+    x1 = startNode.position.x + nodeWidth / 2;
     y1 = startNode.position.y + nodeHeight;
-    x2 = endNode.position.x + nodeWidth;
+    x2 = endNode.position.x + nodeWidth / 2;
+    y2 = endNode.position.y;
   }
 
   return {
@@ -131,8 +132,5 @@ export const getZoomedCoord = (
   boundingRectCoordinate: number,
   zoomPercentage: number,
 ) => {
-  return (
-    (coordinate * (100 + 100 - zoomPercentage)) / 100 -
-    (boundingRectCoordinate * zoomPercentage) / 100
-  );
+  return (coordinate * 100) / zoomPercentage - boundingRectCoordinate;
 };
