@@ -2,6 +2,7 @@ import { useQuery } from '@apollo/client';
 import { Box} from '@material-ui/core';
 import { Link } from '@material-ui/core';
 import axios from 'axios';
+import FileType from 'file-type';
 import { useSnackbar } from 'notistack';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -50,9 +51,12 @@ const ImageUploader = ({
       if (!!url) {
         (async () => {
           try {
+            const fileType = await FileType.fromBuffer(await file.arrayBuffer());
+            console.log('file type', fileType);
+            console.log('file type', fileType?.mime);
             await axios.put(url, file, {
               headers: {
-                'Content-Type': file.type,
+                'Content-Type': fileType?.mime,
                 'Access-Control-Allow-Origin': '*',
               },
             });
