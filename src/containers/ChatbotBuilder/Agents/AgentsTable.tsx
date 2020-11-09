@@ -85,7 +85,9 @@ function AgentsTable() {
               isDeleteable: true,
               onRowDelete: (agent: IAgent) => deleteAgentHandler(agent.id),
             }}
-            nonRecordError="No Agents Found"
+            localization={{
+              nonRecordError: 'No Agents Found',
+            }}
           />
         )}
       </Grid>

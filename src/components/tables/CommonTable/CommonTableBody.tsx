@@ -35,12 +35,12 @@ const CommonTableBody = ({
   columns,
   rowsData,
   editable,
-  nonRecordError,
+  localization,
   Row,
 }: CommonTableBodyProps<object & { [index: string]: any }>) => {
   return (
     <TableBody>
-      {rowsData.length ? (
+      {rowsData && rowsData.length ? (
         rowsData.map((rowData, rowIndex) =>
           Row ? (
             <Row key={rowIndex} rowData={rowData} index={rowIndex} />
@@ -79,7 +79,7 @@ const CommonTableBody = ({
         <TableRow>
           <StyledTableCell colSpan={4}>
             <Typography align="center">
-              {nonRecordError ?? 'No record can be found.'}
+              {localization?.nonRecordError || 'No record can be found.'}
             </Typography>
           </StyledTableCell>
         </TableRow>

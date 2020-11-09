@@ -1,4 +1,4 @@
-import { Table } from '@material-ui/core';
+import { Paper, Table, TableContainer } from '@material-ui/core';
 import React, { useMemo, useState } from 'react';
 import CommonTableBody from './CommonTableBody';
 import CommonTableFooter from './CommonTableFooter';
@@ -9,7 +9,8 @@ const CommonTable = ({
   data,
   editable,
   pagination,
-  nonRecordError,
+  components,
+  localization,
   Row,
   HeaderRow,
 }: CommonTableProps<object>) => {
@@ -21,7 +22,7 @@ const CommonTable = ({
     }
     const rowsPerPage = pagination.rowsPerPage || 20;
 
-    return data.rowsData.slice(
+    return (data.rowsData || []).slice(
       page * rowsPerPage,
       page * rowsPerPage + rowsPerPage,
     );
@@ -37,30 +38,33 @@ const CommonTable = ({
   const columnCount = data.columns.length + (editable ? 1 : 0);
 
   return (
-    <Table>
-      <CommonTableHead
-        columns={data.columns}
-        editable={editable}
-        HeaderRow={HeaderRow}
-      />
-      <CommonTableBody
-        columns={data.columns}
-        rowsData={pageItems}
-        editable={editable}
-        nonRecordError={nonRecordError}
-        Row={Row}
-      />
-      <CommonTableFooter
-        isPaginated={!!pagination}
-        columnCount={columnCount}
-        pagination={{
-          ...pagination,
-          page,
-          rowCount: data.rowsData.length,
-          handleChangePage,
-        }}
-      />
-    </Table>
+    <TableContainer component={Paper}>
+      {components?.Toolbar && <components.Toolbar />}
+      <Table>
+        <CommonTableHead
+          columns={data.columns}
+          editable={editable}
+          HeaderRow={HeaderRow}
+        />
+        <CommonTableBody
+          columns={data.columns}
+          rowsData={pageItems}
+          editable={editable}
+          localization={localization}
+          Row={Row}
+        />
+        <CommonTableFooter
+          isPaginated={!!pagination}
+          columnCount={columnCount}
+          pagination={{
+            ...pagination,
+            page,
+            rowCount: data.rowsData?.length,
+            handleChangePage,
+          }}
+        />
+      </Table>
+    </TableContainer>
   );
 };
 
