@@ -3,8 +3,9 @@ import React from 'react';
 import { CommonTableFooterProps } from './types';
 
 const CommonTableFooter = ({
-  isPaginated,
   pagination,
+  columnCount,
+  isPaginated,
 }: CommonTableFooterProps) => {
   return (
     <TableFooter>
@@ -12,7 +13,7 @@ const CommonTableFooter = ({
         <TableRow>
           <TablePagination
             rowsPerPageOptions={[pagination.rowsPerPage || 10]}
-            colSpan={pagination.colSpan || 2}
+            colSpan={pagination.colSpan || columnCount || 0}
             count={pagination.rowCount || 0}
             rowsPerPage={pagination.rowsPerPage || 10}
             page={pagination.page || 0}

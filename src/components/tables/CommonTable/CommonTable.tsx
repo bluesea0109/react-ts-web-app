@@ -1,4 +1,4 @@
-import { Table } from '@material-ui/core';
+import { Paper, Table, TableContainer } from '@material-ui/core';
 import React, { useMemo, useState } from 'react';
 import CommonTableBody from './CommonTableBody';
 import CommonTableFooter from './CommonTableFooter';
@@ -7,18 +7,26 @@ import { CommonTableProps } from './types';
 
 const CommonTable = ({
   data,
-  nonRecordError,
+  title,
+  editable,
   pagination,
+  components,
+  localization,
   Row,
   HeaderRow,
 }: CommonTableProps<object>) => {
   const [page, setPage] = useState(0);
 
   const pageItems = useMemo(() => {
-    if (!pagination) { return data.rowsData; }
+    if (!pagination) {
+      return data.rowsData;
+    }
     const rowsPerPage = pagination.rowsPerPage || 20;
 
-    return data.rowsData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+    return (data.rowsData || []).slice(
+      page * rowsPerPage,
+      page * rowsPerPage + rowsPerPage,
+    );
   }, [page, pagination, data.rowsData]);
 
   const handleChangePage = (
@@ -28,28 +36,37 @@ const CommonTable = ({
     setPage(page);
   };
 
+  const columnCount = data.columns.length + (editable ? 1 : 0);
+
   return (
-    <Table>
-      <CommonTableHead
-        columns={data.columns}
-        HeaderRow={HeaderRow}
-      />
-      <CommonTableBody
-        rowsData={pageItems}
-        columns={data.columns}
-        nonRecordError={nonRecordError}
-        Row={Row}
-      />
-      <CommonTableFooter
-        isPaginated={!!pagination}
-        pagination={{
-          ...pagination,
-          page,
-          rowCount: data.rowsData.length,
-          handleChangePage,
-        }}
-      />
-    </Table>
+    <TableContainer component={Paper}>
+      {title}
+      {components?.Toolbar && <components.Toolbar />}
+      <Table>
+        <CommonTableHead
+          columns={data.columns}
+          editable={editable}
+          HeaderRow={HeaderRow}
+        />
+        <CommonTableBody
+          columns={data.columns}
+          rowsData={pageItems}
+          editable={editable}
+          localization={localization}
+          Row={Row}
+        />
+        <CommonTableFooter
+          isPaginated={!!pagination}
+          columnCount={columnCount}
+          pagination={{
+            ...pagination,
+            page,
+            rowCount: data.rowsData?.length,
+            handleChangePage,
+          }}
+        />
+      </Table>
+    </TableContainer>
   );
 };
 
