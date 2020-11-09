@@ -11,7 +11,7 @@ import {
 import { ImageSelectorGrid } from '../../../components';
 import { IOptionImage } from '../../../models/chatbot-service';
 import { IGetOptionImagesQueryResult } from '../../../models/common-service';
-import { uploadFileWithFetch } from '../../../utils/xhr';
+import { uploadImageFile } from '../../../utils/file-uploads';
 
 interface OptionImageUploaderProps {
   option: IImageOption;
@@ -60,7 +60,7 @@ const OptionImageUploader = ({
     }
 
     try {
-      await uploadFileWithFetch(file, imageUrl, 'PUT');
+      await uploadImageFile(file, imageUrl);
     } catch (e) {
       enqueueSnackbar(
         `Error with uploading the image to GCS - ${JSON.stringify(e)}`,
