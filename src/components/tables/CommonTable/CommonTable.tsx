@@ -7,6 +7,7 @@ import { CommonTableProps } from './types';
 
 const CommonTable = ({
   data,
+  title,
   editable,
   pagination,
   components,
@@ -39,6 +40,7 @@ const CommonTable = ({
 
   return (
     <TableContainer component={Paper}>
+      {title}
       {components?.Toolbar && <components.Toolbar />}
       <Table>
         <CommonTableHead

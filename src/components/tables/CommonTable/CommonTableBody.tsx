@@ -32,6 +32,7 @@ const StyledTableCell = withStyles((theme) => ({
 }))(TableCell);
 
 const CommonTableBody = ({
+  actions,
   columns,
   rowsData,
   editable,
@@ -56,7 +57,7 @@ const CommonTableBody = ({
                 </StyledTableCell>
               ))}
 
-              {editable && (
+              {editable && !actions && (
                 <StyledTableCell align="right">
                   {editable.isEditable && editable.onRowUpdate && (
                     // @ts-ignore
@@ -72,6 +73,16 @@ const CommonTableBody = ({
                   )}
                 </StyledTableCell>
               )}
+
+              {!editable &&
+                actions &&
+                actions.map((action, index) => (
+                  <Button
+                    key={index}
+                    onClick={(e) => action.onClick(e, rowData)}>
+                    {action.icon && <action.icon />}
+                  </Button>
+                ))}
             </StyledTableRow>
           ),
         )

@@ -13,6 +13,15 @@ export interface HeaderType<RowData extends object> {
 
 export type RowsType<RowData extends object> = RowData[];
 
+export interface ActionInterface<RowData extends object> {
+  icon: React.ComponentType<any>;
+  tooltip: React.ReactNode;
+  onClick: (
+    event: React.MouseEvent<HTMLButtonElement> | any,
+    rowData: RowData,
+  ) => void;
+}
+
 export interface PaginationInterface {
   rowsPerPage?: number;
   colSpan?: number;
@@ -51,7 +60,12 @@ export interface CommonTableHeadProps<RowData extends object> {
   HeaderRow?: React.ComponentType<any>;
 }
 
+export type ActionsInterface<RowData extends object> = ActionInterface<
+  RowData
+>[];
+
 export interface CommonTableBodyProps<RowData extends object> {
+  actions?: ActionsInterface<RowData>;
   columns: HeaderType<RowData>[];
   rowsData?: RowData[];
   localization?: LocalizationInterface;
@@ -71,6 +85,8 @@ export interface ComponentListInterface {
 
 // prettier-ignore
 export interface CommonTableProps<RowData extends object> {
+  title?: React.ReactNode;
+  actions?: ActionsInterface<RowData>;
   data: DataInterface<RowData>;
   editable?: EditableInterface<RowData>;
   pagination?: PaginationInterface;
