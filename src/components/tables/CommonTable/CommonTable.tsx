@@ -48,6 +48,7 @@ const CommonTable = ({
           columns={data.columns}
           actions={actions}
           editable={editable}
+          localization={localization}
           HeaderRow={HeaderRow}
         />
         <CommonTableBody

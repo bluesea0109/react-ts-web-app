@@ -5,7 +5,7 @@ import {
   TableRow,
   Typography,
 } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
+import { createStyles, makeStyles, withStyles } from '@material-ui/core/styles';
 import { Delete, Edit } from '@material-ui/icons';
 import _ from 'lodash';
 import React from 'react';
@@ -29,7 +29,19 @@ const StyledTableCell = withStyles((theme) => ({
     paddingTop: 5,
     paddingBottom: 5,
   },
+  root: {
+    border: 'none',
+  },
 }))(TableCell);
+
+const useStyles = makeStyles((theme) =>
+  createStyles({
+    button: {
+      padding: 0,
+      minWidth: 48,
+    },
+  }),
+);
 
 const CommonTableBody = ({
   actions,
@@ -39,6 +51,7 @@ const CommonTableBody = ({
   localization,
   Row,
 }: CommonTableBodyProps<object & { [index: string]: any }>) => {
+  const classes = useStyles();
   // prettier-ignore
   const columnCount = columns.length + ((editable !== undefined || actions !== undefined) ? 1 : 0);
 
@@ -63,14 +76,18 @@ const CommonTableBody = ({
               {editable && !actions && (
                 <StyledTableCell align="right">
                   {editable.isEditable && editable.onRowUpdate && (
-                    // @ts-ignore
-                    <Button onClick={() => editable.onRowUpdate(rowData)}>
+                    <Button
+                      className={classes.button}
+                      // @ts-ignore
+                      onClick={() => editable.onRowUpdate(rowData)}>
                       <Edit />
                     </Button>
                   )}
                   {editable.isDeleteable && editable.onRowDelete && (
-                    // @ts-ignore
-                    <Button onClick={() => editable.onRowDelete(rowData)}>
+                    <Button
+                      className={classes.button}
+                      // @ts-ignore
+                      onClick={() => editable.onRowDelete(rowData)}>
                       <Delete />
                     </Button>
                   )}

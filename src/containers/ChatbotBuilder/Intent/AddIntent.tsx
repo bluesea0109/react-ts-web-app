@@ -252,7 +252,6 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
       setAddTag(false);
     } catch (e) {
       enqueueSnackbar('Unable to create tag.', { variant: 'error' });
-      console.error(e);
     } finally {
       setLoading(false);
     }
@@ -425,8 +424,16 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
             <DialogActions>
               <Grid
                 container={true}
-                style={{ display: 'flex', justifyContent: 'center', marginBottom: '15px'}}>
-                <Button onClick={createTag} color="primary" variant="contained" style={{marginRight: '10px'}}>
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  marginBottom: '15px',
+                }}>
+                <Button
+                  onClick={createTag}
+                  color="primary"
+                  variant="contained"
+                  style={{ marginRight: '10px' }}>
                   Save
                 </Button>
                 <Button onClick={() => setAddTag(false)} variant="contained">

@@ -68,11 +68,14 @@ const EditIntent = ({
   };
 
   const handleChangeAction = (action: any) => {
-    setCurrentIntent({...currentIntent, defaultActionName: action } as any);
+    setCurrentIntent({ ...currentIntent, defaultActionName: action } as any);
   };
 
   return (
-    <Dialog fullScreen={true} open={!!intent} TransitionComponent={UpTransition}>
+    <Dialog
+      fullScreen={true}
+      open={!!intent}
+      TransitionComponent={UpTransition}>
       <AppBar className={classes.appBar}>
         <Toolbar>
           <Typography variant="h6" className={classes.title}>
@@ -89,7 +92,7 @@ const EditIntent = ({
       </AppBar>
       <DialogContent>
         <Grid container={true}>
-          <Grid item={true} md={4} xs={12}/>
+          <Grid item={true} md={4} xs={12} />
           <Grid item={true} md={4} xs={12}>
             <Box p={2}>
               <Typography className={classes.fieldLabel}>
@@ -110,10 +113,10 @@ const EditIntent = ({
               />
             </Box>
           </Grid>
-          <Grid item={true} md={4} xs={12}/>
+          <Grid item={true} md={4} xs={12} />
         </Grid>
         <Grid container={true}>
-          <Grid item={true} md={4} xs={12}/>
+          <Grid item={true} md={4} xs={12} />
           <Grid item={true} md={4} xs={12}>
             <Box p={2}>
               <Typography className={classes.fieldLabel}>
@@ -130,16 +133,20 @@ const EditIntent = ({
               />
             </Box>
           </Grid>
-          <Grid item={true} md={4} xs={12}/>
+          <Grid item={true} md={4} xs={12} />
         </Grid>
         <Grid container={true}>
-          <Grid item={true} md={4} xs={12}/>
+          <Grid item={true} md={4} xs={12} />
           <Grid item={true} md={4} xs={12} className={classes.addIntentBtn}>
-            <Button autoFocus={true} color="primary" variant="contained" onClick={saveChanges}>
+            <Button
+              autoFocus={true}
+              color="primary"
+              variant="contained"
+              onClick={saveChanges}>
               Save
             </Button>
           </Grid>
-          <Grid item={true} md={4} xs={12}/>
+          <Grid item={true} md={4} xs={12} />
         </Grid>
       </DialogContent>
     </Dialog>
