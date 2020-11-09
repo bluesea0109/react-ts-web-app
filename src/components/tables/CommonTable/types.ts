@@ -1,23 +1,33 @@
 import React from 'react';
 import { AlignmentType } from '../../types';
 
+// @TODO: Further investigation of RowData: JAMES
 export interface HeaderType<RowData extends object> {
   title: string;
   field: keyof RowData | string;
   alignRow?: AlignmentType;
   alignHeader?: AlignmentType;
-  renderRow?: (rowData: RowData|any) => any;
+  renderRow?: (rowData: RowData | any) => any;
   renderHeader?: () => any;
 }
 
 export type RowsType<RowData extends object> = RowData[];
 
-export interface PaginationAttribute {
+export interface ActionInterface<RowData extends object> {
+  icon: React.ComponentType<any>;
+  tooltip: React.ReactNode;
+  onClick: (
+    event: React.MouseEvent<HTMLButtonElement> | any,
+    rowData: RowData,
+  ) => void;
+}
+
+export interface PaginationInterface {
   rowsPerPage?: number;
   colSpan?: number;
 }
 
-export interface PaginationType extends PaginationAttribute {
+export interface PaginationType extends PaginationInterface {
   page?: number;
   rowCount?: number;
   handleChangePage: (
@@ -26,34 +36,63 @@ export interface PaginationType extends PaginationAttribute {
   ) => void;
 }
 
+export interface EditableInterface<RowData extends object> {
+  isEditable?: boolean | ((rowData: RowData) => boolean);
+  isDeleteable?: boolean | ((rowData: RowData) => boolean);
+  onRowAdd?: (newData: RowData) => Promise<any> | void;
+  onRowUpdate?: (newData: RowData | any) => Promise<any> | void;
+  onRowDelete?: (rowData: RowData | any) => Promise<any> | void;
+}
+
+export interface LocalizationInterface {
+  nonRecordError?: string;
+}
+
 export interface DataInterface<RowData extends object> {
   columns: HeaderType<RowData>[];
-  rowsData: RowsType<RowData>;
+  rowsData?: RowsType<RowData>;
 }
 
 export interface CommonTableHeadProps<RowData extends object> {
   columns?: HeaderType<RowData>[];
+  actions?: ActionsInterface<RowData>;
+  editable?: EditableInterface<RowData>;
   alignments?: AlignmentType[];
   HeaderRow?: React.ComponentType<any>;
 }
 
+export type ActionsInterface<RowData extends object> = ActionInterface<
+  RowData
+>[];
+
 export interface CommonTableBodyProps<RowData extends object> {
-  rowsData: RowData[];
+  actions?: ActionsInterface<RowData>;
   columns: HeaderType<RowData>[];
-  nonRecordError?: string;
+  rowsData?: RowData[];
+  localization?: LocalizationInterface;
+  editable?: EditableInterface<RowData>;
   Row?: React.ComponentType<any>;
 }
 
 export interface CommonTableFooterProps {
-  isPaginated?: boolean;
   pagination?: PaginationType;
+  isPaginated?: boolean;
+  columnCount?: number;
+}
+
+export interface ComponentListInterface {
+  Toolbar?: React.ComponentType<any>;
 }
 
 // prettier-ignore
 export interface CommonTableProps<RowData extends object> {
+  title?: React.ReactNode;
+  actions?: ActionsInterface<RowData>;
   data: DataInterface<RowData>;
-  pagination?: PaginationAttribute;
-  nonRecordError?: string;
+  editable?: EditableInterface<RowData>;
+  pagination?: PaginationInterface;
+  localization?: LocalizationInterface;
+  components?: ComponentListInterface;
   Row?: React.ComponentType<any>;
   HeaderRow?: React.ComponentType<any>;
 }

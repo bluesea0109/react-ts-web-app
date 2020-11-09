@@ -31,9 +31,6 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       padding: theme.spacing(2),
     },
-    table: {
-      height: `70vh`,
-    },
     embedCodeContainer: {
       backgroundColor: theme.palette.info.light,
     },
@@ -134,7 +131,6 @@ export default function PublishAgent() {
     <Grid container={true} spacing={2} className={'page-container'}>
       <Grid item={true} xs={12}>
         <PublishedAgentsTable
-          containerClassName={classes.table}
           publishedAgents={agents}
           loading={queryResult.loading || state.loading}
           toolbarChildren={
