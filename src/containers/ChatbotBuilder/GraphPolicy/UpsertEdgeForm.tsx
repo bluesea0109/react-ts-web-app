@@ -33,7 +33,7 @@ import ImageSelectorGrid from '../../../components/ImageSelectorGrid';
 import { OptionImagesContext } from '../../../context/OptionImages';
 import { IOptionImage } from '../../../models/chatbot-service';
 import { IGetImageUploadSignedUrlQueryResult } from '../../../models/common-service';
-import { uploadFileWithFetch } from '../../../utils/xhr';
+import { uploadImageFile } from '../../../utils/file-uploads';
 import ContentLoading from '../../ContentLoading';
 import UpsertNodeForm from './UpsertNodeForm';
 
@@ -240,7 +240,7 @@ export default function UpsertEdgeForm({
         // Signed upload url is ready. Upload the file
         try {
           setLoading(true);
-          await uploadFileWithFetch(imgFile, uploadUrl, 'PUT');
+          await uploadImageFile(imgFile, uploadUrl);
         } catch (e) {
           enqueueSnackbar(
             `Error with uploading the image to GCS - ${JSON.stringify(e)}`,

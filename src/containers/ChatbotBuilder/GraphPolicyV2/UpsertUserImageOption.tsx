@@ -15,8 +15,8 @@ import { Alert, Autocomplete } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 import ImageSelectorGrid from '../../../components/ImageSelectorGrid';
 import { IOptionImage } from '../../../models/chatbot-service';
+import { uploadImageFile } from '../../../utils/file-uploads';
 import { validateUrl } from '../../../utils/string';
-import { uploadFileWithFetch } from '../../../utils/xhr';
 import ContentLoading from '../../ContentLoading';
 import { getOptionImagesQuery } from './gql';
 import { getSignedImgUploadUrlQuery } from './gql';
@@ -129,7 +129,7 @@ export default function UpsertNodeForm({
       try {
         setLoading(true);
         console.log('UPLOADING FILE: ');
-        await uploadFileWithFetch(imgFile, uploadUrl, 'PUT');
+        await uploadImageFile(imgFile, uploadUrl);
 
         imgQuery.refetch();
         console.log('REFETCHED');

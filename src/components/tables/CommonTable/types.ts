@@ -45,6 +45,7 @@ export interface EditableInterface<RowData extends object> {
 }
 
 export interface LocalizationInterface {
+  actionsText?: string;
   nonRecordError?: string;
 }
 
@@ -53,24 +54,35 @@ export interface DataInterface<RowData extends object> {
   rowsData?: RowsType<RowData>;
 }
 
+export type ActionsInterface<RowData extends object> = ActionInterface<
+  RowData
+>[];
+
 export interface CommonTableHeadProps<RowData extends object> {
   columns?: HeaderType<RowData>[];
   actions?: ActionsInterface<RowData>;
   editable?: EditableInterface<RowData>;
   alignments?: AlignmentType[];
+  localization?: LocalizationInterface;
   HeaderRow?: React.ComponentType<any>;
 }
-
-export type ActionsInterface<RowData extends object> = ActionInterface<
-  RowData
->[];
 
 export interface CommonTableBodyProps<RowData extends object> {
   actions?: ActionsInterface<RowData>;
   columns: HeaderType<RowData>[];
   rowsData?: RowData[];
-  localization?: LocalizationInterface;
   editable?: EditableInterface<RowData>;
+  localization?: LocalizationInterface;
+  Row?: React.ComponentType<any>;
+}
+
+export interface CommonTableRowProps<RowData extends object> {
+  actions?: ActionsInterface<RowData>;
+  columns: HeaderType<RowData>[];
+  rowData: RowData;
+  editable?: EditableInterface<RowData>;
+  columnCount: number;
+  localization?: LocalizationInterface;
   Row?: React.ComponentType<any>;
 }
 

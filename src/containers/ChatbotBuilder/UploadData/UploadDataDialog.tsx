@@ -25,7 +25,7 @@ import {
 
 import { INLUExample, INLUExampleInput } from '../../../models/chatbot-service';
 import { readAgentZipfile } from '../../../utils/archive';
-import { uploadFileWithFetch } from '../../../utils/xhr';
+import { uploadImageFile } from '../../../utils/file-uploads';
 
 import { GET_SIGNED_IMG_UPLOAD_URL } from '../../../common-gql-queries';
 import { IGetImageUploadSignedUrlQueryResult } from '../../../models/common-service';
@@ -361,7 +361,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     }
 
     try {
-      await uploadFileWithFetch(imgFile, url, 'PUT');
+      await uploadImageFile(imgFile, url);
     } catch (e) {
       this.addToErrors(
         `Error in uploading Image: ${imgFile.name}`,

@@ -20,7 +20,9 @@ const IntentSection: React.FC = () => {
   const classes = useStyles();
   const [currentIntent, setCurrentIntent] = useState<IIntent | undefined>();
   const [newIntent, setNewIntent] = useState<boolean>(false);
-  const [config, setConfig] = useRecoilState<AgentConfig | undefined>(currentAgentConfig);
+  const [config, setConfig] = useRecoilState<AgentConfig | undefined>(
+    currentAgentConfig,
+  );
 
   if (!config) {
     return <p>Agent config is empty.</p>;
@@ -35,7 +37,9 @@ const IntentSection: React.FC = () => {
   };
 
   const onSaveIntent = (intent: IIntent) => {
-    if (!currentIntent) { return; }
+    if (!currentIntent) {
+      return;
+    }
     const newConfig = _.cloneDeep(config);
     newConfig
       .deleteIntent(currentIntent.name)
