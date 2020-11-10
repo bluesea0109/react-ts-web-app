@@ -236,7 +236,7 @@ export const ConversationBoard = ({
 
     if (type === ACTION.USER_ACTION) {
       values[index].userActions[0].intent = value;
-    } else if (type === ACTION.AGENT_ACTION) {      
+    } else if (type === ACTION.AGENT_ACTION) {
       values[index].agentActions[0].actionName = value;
     }
 
