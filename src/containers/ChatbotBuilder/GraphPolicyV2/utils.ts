@@ -9,8 +9,8 @@ import _uniq from 'lodash/uniq';
 import { ENodeActor } from './types';
 
 export const snapItemPosition = (x: number, y: number) => {
-  let snappedX = x;
-  let snappedY = y;
+  let snappedX = Math.ceil((x + 1) / 10) * 10;
+  let snappedY = Math.ceil((y + 1) / 10) * 10;
 
   if (snappedX < 10) {
     snappedX = 10;
