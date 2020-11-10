@@ -127,10 +127,10 @@ const useStyles = makeStyles((theme: Theme) =>
     terminalDragHandle: {
       position: 'relative',
       opacity: 0.999,
-      width: '200%',
-      height: '200%',
+      width: '300%',
+      height: '300%',
       background: 'transparent',
-      margin: '-50%',
+      margin: '-75%',
     },
   }),
 );
@@ -250,6 +250,9 @@ const GraphEditorNode = ({
       }}
       onDragOver={() => {
         setDraggingOver(true);
+      }}
+      onDragLeave={() => {
+        setDraggingOver(false);
       }}
       className={clsx([
         classes.node,
