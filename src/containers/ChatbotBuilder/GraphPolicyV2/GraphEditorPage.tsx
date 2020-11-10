@@ -25,12 +25,13 @@ const useStyles = makeStyles((theme: Theme) =>
     styledScrollbars: {
       '&::-webkit-scrollbar': {
         opacity: 0,
-        width: '0.4em',
-        height: '.4em',
+        width: '5px',
+        height: '5px',
       },
       '&::-webkit-scrollbar-track': {
         opacity: 0,
         '-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,0.00)',
+        backgroundColor: 'rgba(0,0,0,.1)',
       },
       '&::-webkit-scrollbar-thumb': {
         opacity: 0,
@@ -55,11 +56,11 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     editorMenu: {
       padding: theme.spacing(2),
-      width: 300,
+      width: 250,
     },
     editorMenuItems: {
       marginTop: theme.spacing(2),
-      height: `calc(100vh - 260px)`,
+      height: `calc(100vh - 280px)`,
       overflowX: 'hidden',
       overflowY: 'scroll',
     },
