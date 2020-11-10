@@ -3,6 +3,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
 import { useQuery } from '@apollo/client';
 import { GraphPolicyV2 } from '@bavard/agent-config/dist/graph-policy-v2';
+import clsx from 'clsx';
 import React, { useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
@@ -10,7 +11,6 @@ import { agentOptionImages, currentAgentConfig } from '../atoms';
 import CreateGraphPolicyDialog from './CreateGraphPolicyDialog';
 import { getOptionImagesQuery } from './gql';
 import { IGetOptionImagesQueryResult } from './types';
-import clsx from 'clsx';
 
 import GraphEditor from './GraphEditor';
 import GraphEditorMenu from './GraphEditorMenu';
