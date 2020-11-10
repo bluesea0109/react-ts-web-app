@@ -1,8 +1,10 @@
 import { useMutation } from '@apollo/client';
 import {
   AccordionDetails,
+  Box,
   Chip,
   Grid,
+  IconButton,
   makeStyles,
   Paper,
   Typography,
@@ -11,13 +13,10 @@ import MuiAccordion from '@material-ui/core/Accordion';
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import { withStyles } from '@material-ui/core/styles';
-import {
-  KeyboardArrowDown,
-  KeyboardArrowRight,
-  KeyboardArrowUp,
-} from '@material-ui/icons';
-import { Delete, Edit } from '@material-ui/icons';
+import { KeyboardArrowDown, KeyboardArrowRight } from '@material-ui/icons';
+import { AddCircleOutline, Delete, Edit } from '@material-ui/icons';
 import clsx from 'clsx';
+import omitDeep from 'omit-deep-lodash';
 import React, { Fragment, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
@@ -31,6 +30,8 @@ import { ACTION, DialogueForm } from './DialogueForm';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
+    display: 'flex',
+    justifyContent: 'center',
     width: '90%',
     marginLeft: '5%',
     marginRight: '5%',
@@ -52,6 +53,16 @@ const useStyles = makeStyles((theme) => ({
     borderTop: '1px solid rgba(0,0,0,.2)',
     flexDirection: 'column',
     alignItems: 'flex-end',
+  },
+  UserActionsHeading: {
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    width: '50%',
+  },
+  AgentActionsHeading: {
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    width: '50%',
   },
   listItemWrapper: {
     border: '1px solid rgba(0,0,0,0.2)',
@@ -82,35 +93,9 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  actionDetailsWrapper: {
-    width: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-  },
   agentActionWrapper: {
     justifyContent: 'space-between',
     margin: '12px 0 10px',
-  },
-  actionsWrapper: {
-    border: '1px solid #ccc',
-    borderRadius: '3px',
-    width: 'calc(50% + 150px)',
-    color: 'white',
-    position: 'relative',
-  },
-  agentTagText: {
-    position: 'absolute',
-    top: '-12px',
-    backgroundColor: '#fff',
-    padding: '2px 6px',
-    left: '9px',
-    fontSize: '12px',
-  },
-  contentTable: {
-    width: '100%',
-    display: 'flex',
   },
   itemWrapper: {
     display: 'flex',
@@ -130,55 +115,18 @@ const useStyles = makeStyles((theme) => ({
       color: '#333',
     },
   },
-  userActionHeader: {
-    display: 'flex',
-    backgroundColor: '#127D78',
-    width: '100%',
-    height: '50px',
-  },
-  agentActionHeader: {
-    display: 'flex',
-    backgroundColor: '#0200E6',
-    width: '100%',
-    height: '50px',
-  },
-  tagList: {
-    marginTop: '17px',
-    display: 'flex',
-    alignItems: 'center',
-    flexWrap: 'unset',
-    position: 'relative',
-  },
-  tagListWrapper: {
-    display: 'flex',
-    overflowX: 'auto',
-    listStyle: 'none',
-    padding: theme.spacing(0.5),
-    margin: '0 13px 0 5px',
-    flex: '1',
-    background: 'transparent',
-    border: '1px solid #000',
-    borderRadius: '3px',
-    height: '40px',
-    '&::-webkit-scrollbar': {
-      width: '0.4em',
-      height: '3px',
-    },
-    '&::-webkit-scrollbar-track': {
-      '-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,0.00)',
-    },
-    '&::-webkit-scrollbar-thumb': {
-      backgroundColor: 'rgba(0,0,0,.1)',
-      outline: '1px solid slategrey',
-    },
-  },
   chip: {
     margin: theme.spacing(0.5),
   },
-  expansionIcon: {
-    position: 'relative',
-    left: '0px',
-    backgroundColor: 'green',
+  saveButton: {
+    display: 'flex',
+    justifyContent: 'center',
+    width: '160px',
+    cursor: 'pointer',
+    marign: 'auto',
+    padding: '10px 20px',
+    borderRadius: '5px',
+    border: '1px solid blue',
   },
 }));
 
@@ -281,20 +229,120 @@ export const ConversationBoard = ({
   const tags: string[] = [];
 
   tagsData?.forEach((item) => tags.push(item));
-  const actionId = actions?.map((item, ind) => ({ text: item.name })) || [];
+  const actionId = actions?.map((item, ind) => item.name) || [];
 
-  const handleOnSelect = (index: number, event: any, value: any) => {
+  const handleOnSelect = (index: number, type: ACTION, value: any) => {
     const values = [...actionData];
 
-    if (event.target.id.startsWith('intent')) {
+    if (type === ACTION.USER_ACTION) {
       values[index].userActions[0].intent = value;
-    } else if (event.target.id.startsWith('actionId')) {
-      values[index].agentActions[0].actionId = value.text;
-      values[index].agentActions[0].utterance = value.text;
+    } else if (type === ACTION.AGENT_ACTION) {
+      console.log('Values in Agent action *** ', values);
+      values[index].agentActions[0].actionName = value;
     }
 
     setActionsValue([...values]);
     setErrStatus('');
+  };
+
+  const handleAddFields = (turnValue: string) => {
+    const values = [...actionData];
+
+    if (turnValue === 'user') {
+      values.push({
+        userActions: [{ turn: 0, intent: '', tagValues: [], utterance: '' }],
+      });
+    } else {
+      values.push({
+        agentActions: [
+          { turn: 0, actionId: '', actionType: '', utterance: '' },
+        ],
+      });
+    }
+
+    setActionsValue(values);
+    setTurns([...turn, turnValue]);
+  };
+  const onSubmit = async () => {
+    const userActions: object[] = [];
+    const agentActions: object[] = [];
+
+    setLoding(true);
+
+    actionData.forEach((item: any, index: number) => {
+      if (item.userActions && item.userActions !== undefined) {
+        item.userActions[0].turn = index;
+        userActions.push(item.userActions[0]);
+      } else if (item.agentActions && item.agentActions !== undefined) {
+        const data = {
+          turn: index,
+          actionName: item.agentActions[0].actionId,
+        };
+        agentActions.push(data);
+      }
+    });
+
+    const userActionsValid = validateUserActions(userActions);
+    const agentActionsValid = validateAgentActions(agentActions);
+
+    if (!userActionsValid) {
+      setLoding(false);
+    } else if (!agentActionsValid) {
+      setLoding(false);
+    } else {
+      try {
+        let response;
+
+        if (isUpdate) {
+          agentActions.map((i: any) => i.isAgent && delete i.isAgent);
+          userActions.map((i: any) => i.isUser && delete i.isUser);
+
+          const updatedUserActions = userActions.map((item) => {
+            const result = omitDeep(item, '__typename');
+            return result;
+          });
+
+          response = await updateConversation({
+            variables: {
+              conversationId: conversation?.id,
+              conversation: {
+                agentId: numAgentId,
+                agentActions,
+                userActions: updatedUserActions,
+              },
+            },
+          });
+        } else {
+          response = await createConversation({
+            variables: {
+              conversation: {
+                agentId: numAgentId,
+                agentActions,
+                userActions,
+              },
+            },
+          });
+        }
+
+        if (response && response !== []) {
+          setActionsValue([]);
+          setTurns([]);
+          setLoding(false);
+          if (onSaveCallback) {
+            onSaveCallback();
+          }
+        }
+      } catch (e) {
+        if (
+          e?.graphQLErrors?.[0]?.extensions?.code === 'NO_MODEL' &&
+          e?.graphQLErrors?.[0]?.message
+        ) {
+          setErrStatus(e.graphQLErrors[0].message);
+        } else {
+          setErrStatus(e.graphQLErrors[0].message);
+        }
+      }
+    }
   };
 
   const handleOnChange = (index: number, event: any) => {
@@ -326,6 +374,26 @@ export const ConversationBoard = ({
 
     setActionsValue(values);
     setTurns(turnValues);
+  };
+
+  const validateUserActions = (actions: any[]): boolean => {
+    for (const action of actions) {
+      if (!action.intent) {
+        setErrStatus('User action intent is required.');
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const validateAgentActions = (actions: any[]): boolean => {
+    for (const action of actions) {
+      if (!action.actionName) {
+        setErrStatus('Agent action Name is required.');
+        return false;
+      }
+    }
+    return true;
   };
 
   const handleAddTags = (tagType: string, tagValue: string, index: number) => {
@@ -376,26 +444,21 @@ export const ConversationBoard = ({
             </Typography>
           </Grid>
           <Grid item={true} container={true} xs={1} sm={1} justify="flex-end">
-            <Delete />
+            <Grid className={classes.actionButtonWrapper}>
+              <Delete fontSize="large" onClick={deleteConfirm} />
+              <ConfirmDialog
+                title="Delete Conversations?"
+                open={confirmOpen}
+                setOpen={setConfirmOpen}
+                onConfirm={() => deleteConversationHandler(conversation.id)}>
+                Are you sure you want to delete this Conversations?
+              </ConfirmDialog>
+            </Grid>
           </Grid>
         </Grid>
       </AccordionSummary>
       <AccordionDetails className={classes.listItem}>
-        {/*<Grid className={classes.actionButtonWrapper}>
-          <IconButton onClick={() => onEditConversation(item.id)}>
-            <Edit fontSize="large" />
-          </IconButton>
-          <IconButton onClick={deleteConfirm}>
-            <Delete fontSize="large" />
-          </IconButton>
-          <ConfirmDialog
-            title="Delete Conversations?"
-            open={confirmOpen}
-            setOpen={setConfirmOpen}
-            onConfirm={() => deleteConversationHandler(item.id)}>
-            Are you sure you want to delete this Conversations?
-          </ConfirmDialog>
-        </Grid>*/}
+        {/**/}
         <Grid // conversation panel
           container={true}
           direction={'column'}
@@ -409,6 +472,7 @@ export const ConversationBoard = ({
             const agentAction: any = inputField.agentActions
               ? inputField.agentActions[0] || {}
               : {};
+
             return (
               <Fragment key={`${inputField}-${index}`}>
                 <Grid
@@ -418,19 +482,14 @@ export const ConversationBoard = ({
                     inputField.agentActions && classes.agentActionWrapper,
                   )}
                   key={index}>
-                  <Grid
-                    container={true}
-                    item={true}
-                    className={classes.actionItemWrapper}>
-                    <Typography> {index} </Typography>
-                  </Grid>
+                  <div/>
                   {turn[index] === 'user' || inputField.userActions ? (
                     <DialogueForm
                       index={index}
                       item={inputField}
                       type={ACTION.USER_ACTION}
                       options={intentOption}
-                      value={userAction}
+                      value={userAction.intent}
                       onAutoFieldChange={handleOnSelect}
                       onTextFieldChange={handleOnChange}
                       onAddTags={handleAddTags}
@@ -441,8 +500,8 @@ export const ConversationBoard = ({
                       index={index}
                       item={inputField}
                       type={ACTION.AGENT_ACTION}
-                      options={intentOption}
-                      value={agentAction}
+                      options={actionId}
+                      value={agentAction.actionName}
                       onAutoFieldChange={handleOnSelect}
                       onTextFieldChange={handleOnChange}
                       onDelete={onDelete}
@@ -452,6 +511,37 @@ export const ConversationBoard = ({
               </Fragment>
             );
           })}
+          <Grid container={true} className={classes.actionWrapper}>
+            <Grid
+              container={true}
+              item={true}
+              className={classes.UserActionsHeading}
+              >
+              <Typography style={{color: 'blue'}}> Add User Action </Typography>
+              <IconButton onClick={() => handleAddFields('user')}>
+                <AddCircleOutline fontSize="large"  style={{color: '#5867ca'}}/>
+              </IconButton>
+            </Grid>
+            <Grid
+              container={true}
+              item={true}
+              className={classes.AgentActionsHeading}
+              justify="flex-end"
+              >
+              <Typography style={{color: 'blue'}}> Add Agent Action </Typography>
+              <IconButton onClick={() => handleAddFields('agent')}>
+                <AddCircleOutline fontSize="large" style={{color: '#5867ca'}}/>
+              </IconButton>
+            </Grid>
+          </Grid>
+          <Box display="flex" justifyContent="center">
+            <div
+              className={classes.saveButton}
+              color="primary"
+              onClick={onSubmit}>
+              Save Conversation
+            </div>
+          </Box>
         </Grid>
       </AccordionDetails>
     </Accordion>

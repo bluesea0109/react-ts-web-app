@@ -231,8 +231,8 @@ interface DialogueFormProps {
   type: ACTION;
   options: string[];
   value: any;
-  onAutoFieldChange?: (index: number, event: any, value: any) => void;
-  onTextFieldChange?: (index: number, event: any) => void;
+  onAutoFieldChange: (index: number, type: ACTION, value: any) => void;
+  onTextFieldChange: (index: number, event: any) => void;
   onAddTags?: (tagType: string, tagValue: string, index: number) => void;
   onDelete: (index: number, event: any) => void;
 }
@@ -251,8 +251,16 @@ export const DialogueForm = ({
   const classes = useStyles();
   const [isOpened, setOpen] = useState(false);
 
-  const handleAutoField = (item: string) => {
+  const handleIntentField = (item: string) => {
+    if (type === ACTION.USER_ACTION) {
+      onAutoFieldChange(index, ACTION.USER_ACTION, item);
+    } else {
+      onAutoFieldChange(index, ACTION.AGENT_ACTION, item);
+    }
+  };
 
+  const handleTagField = (item: string) => {
+    onAutoFieldChange(index, ACTION.AGENT_ACTION, item);
   };
   return (
     <Accordion className={classes.listItemWrapper}>
@@ -277,6 +285,7 @@ export const DialogueForm = ({
               <Typography className={classes.heading}>User Action</Typography>
             </Grid>
             <Grid container={true} justify="flex-end">
+              <Typography className={classes.heading}>{value}</Typography>
               <IconButton
                 onClick={(event) => onDelete(index, event)}
                 style={{ float: 'right', color: 'white', padding: '10px' }}>
@@ -301,6 +310,7 @@ export const DialogueForm = ({
               <Typography className={classes.heading}>Agent Action</Typography>
             </Grid>
             <Grid container={true} justify="flex-end">
+              <Typography className={classes.heading}>{value}</Typography>
               <IconButton
                 onClick={(event) => onDelete(index, event)}
                 style={{ color: 'white' }}>
@@ -314,12 +324,14 @@ export const DialogueForm = ({
         <Grid container={true} className={classes.actionForm}>
           <Grid container={true}>
             <Grid item={true} xs={4}>
-              <Typography>Intent</Typography>
+              <Typography>
+                {type === ACTION.USER_ACTION ? 'Intent' : 'Action Name'}
+              </Typography>
               <DropDown
                 labelPosition="top"
                 current={value}
                 menuItems={options}
-                onChange={handleAutoField}
+                onChange={handleIntentField}
               />
             </Grid>
             <Grid item={true} xs={1} />
@@ -338,12 +350,12 @@ export const DialogueForm = ({
             <Grid container={true} className={classes.actionForm}>
               <Grid container={true}>
                 <Grid item={true} xs={4}>
-                  <Typography>Intent</Typography>
+                  <Typography>User Action</Typography>
                   <DropDown
                     labelPosition="top"
                     current={value}
                     menuItems={options}
-                    onChange={handleAutoField}
+                    onChange={handleTagField}
                   />
                 </Grid>
                 <Grid item={true} xs={1} />
@@ -365,7 +377,7 @@ export const DialogueForm = ({
                     labelPosition="top"
                     current={value}
                     menuItems={options}
-                    onChange={handleAutoField}
+                    onChange={handleTagField}
                   />
                 </Grid>
                 <Grid item={true} xs={1} />
