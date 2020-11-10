@@ -88,7 +88,7 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'absolute',
     },
     canvasControls: {
-      position: 'absolute',
+      position: 'fixed',
       top: 20,
       right: 20,
       zIndex: 10,
@@ -570,7 +570,9 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
 
   return (
     <div className={classes.root} ref={containerRef}>
-      <div className={classes.canvasControls}>
+      <div
+        className={classes.canvasControls}
+        style={{ top: (containerRef.current?.offsetTop || 0) + 40 }}>
         <Tooltip title={`Zoom: ${zoom}%`}>
           <div>
             <Button
