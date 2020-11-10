@@ -37,8 +37,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     canvasContainer: {
       display: 'flex',
-      width: '100%',
-      height: '100%',
       overflow: 'auto',
       padding: theme.spacing(2),
       position: 'relative',

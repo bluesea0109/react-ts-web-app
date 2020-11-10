@@ -27,12 +27,13 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface IProps {
   className?: string;
+  style?: any;
 }
 
-const GraphEditorMenu = ({ className }: IProps) => {
+const GraphEditorMenu = ({ className, style }: IProps) => {
   const classes = useStyles();
   return (
-    <Card className={className}>
+    <Card className={className} style={style}>
       <div className={classes.categoryHead}>
         <Typography variant="h6">Assistant Nodes - </Typography>
         <Typography variant="subtitle2">Assistant Actions</Typography>
