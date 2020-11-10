@@ -18,10 +18,17 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export default function ChatWithAgent() {
-  const { agentId, projectId } = useParams<{ agentId: string, projectId: string }>();
+  const { agentId, projectId } = useParams<{
+    agentId: string;
+    projectId: string;
+  }>();
+
   const [apiKey, setApiKey] = useState<string | null>(null);
   const classes = useStyles();
-  const agentData = useQuery<IGetAgent>(GET_AGENT, { variables: { agentId: Number(agentId) } });
+  const agentData = useQuery<IGetAgent>(GET_AGENT, {
+    variables: { agentId: Number(agentId) },
+  });
+
   const apiKeysQuery = useQuery(getApiKeysQuery, {
     variables: {
       projectId,
@@ -37,7 +44,7 @@ export default function ChatWithAgent() {
   }, [loadedKey, apiKeysQuery.loading]);
 
   useEffect(() => {
-    let script: HTMLScriptElement|null = null;
+    let script: HTMLScriptElement | null = null;
     if (apiKey && agentData && agentData.data) {
       script = document.createElement('script');
       script.type = 'text/javascript';
@@ -56,8 +63,9 @@ export default function ChatWithAgent() {
     }
 
     return () => {
-      if (!script) { return; }
-      document.body.removeChild(script);
+      if (script) {
+        document.body.removeChild(script);
+      }
     };
   }, [apiKey, agentData]);
 
@@ -68,12 +76,7 @@ export default function ChatWithAgent() {
     };
   }, []);
 
-  return (
-    <div
-      className={classes.root}
-      id="chatbot"
-    />
-  );
+  return <div className={classes.root} id="chatbot" />;
 }
 
 interface IGetAgent {
