@@ -1,28 +1,22 @@
 import {
   AccordionDetails,
-  Chip,
   Grid,
   IconButton,
   makeStyles,
-  Paper,
   TextField,
   Typography,
 } from '@material-ui/core';
 import MuiAccordion from '@material-ui/core/Accordion';
-import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import { withStyles } from '@material-ui/core/styles';
-import { Delete, Edit } from '@material-ui/icons';
+import { Delete } from '@material-ui/icons';
 import React, { useState } from 'react';
-import { Action } from 'redux';
 
-import { IIntent } from '@bavard/agent-config';
 import {
   KeyboardArrowDown,
   KeyboardArrowRight,
-  KeyboardArrowUp,
 } from '@material-ui/icons';
-import { DropDown, TextInput } from '../../../components';
+import { DropDown } from '../../../components';
 
 const useStyles = makeStyles((theme) => ({
   actionWrapper: {

@@ -2,19 +2,16 @@ import { useMutation } from '@apollo/client';
 import {
   AccordionDetails,
   Box,
-  Chip,
   Grid,
   IconButton,
   makeStyles,
-  Paper,
   Typography,
 } from '@material-ui/core';
 import MuiAccordion from '@material-ui/core/Accordion';
-import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import { withStyles } from '@material-ui/core/styles';
 import { KeyboardArrowDown, KeyboardArrowRight } from '@material-ui/icons';
-import { AddCircleOutline, Delete, Edit } from '@material-ui/icons';
+import { AddCircleOutline, Delete } from '@material-ui/icons';
 import clsx from 'clsx';
 import omitDeep from 'omit-deep-lodash';
 import React, { Fragment, useState } from 'react';
@@ -207,14 +204,14 @@ export const ConversationBoard = ({
   const [isOpened, setOpen] = useState(false);
   const classes = useStyles();
   const { agentId } = useParams<{ agentId: string }>();
-  const [errStatus, setErrStatus] = useState('');
+  const [, setErrStatus] = useState('');  // errStatus
   const numAgentId = Number(agentId);
   const [actionData, setActionsValue] = useState<any | null>(
     isUpdate ? tempActionData : [],
   );
   const [turn, setTurns] = useState<string[]>(isUpdate ? userTurns : []);
-  const [actionType, setActionType] = useState<string>('UTTER');
-  const [loading, setLoding] = useState<boolean>(false);
+  const [, setActionType] = useState<string>('UTTER');  // actionType
+  const [, setLoding] = useState<boolean>(false); // loading
 
   const [createConversation] = useMutation(CREATE_TRAINING_CONVERSATION);
   const [updateConversation] = useMutation(UPDATE_TRAINING_CONVERSATION);
