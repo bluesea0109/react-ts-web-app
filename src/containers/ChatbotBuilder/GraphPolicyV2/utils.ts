@@ -8,15 +8,19 @@ import { EAgentNodeTypes } from '@bavard/agent-config/dist/graph-policy-v2/nodes
 import _uniq from 'lodash/uniq';
 import { ENodeActor } from './types';
 
-export const snapItemPosition = (x: number, y: number) => {
-  let snappedX = x;
-  let snappedY = y;
+export const snapItemPosition = (
+  x: number,
+  y: number,
+  gridSize: number = 10,
+) => {
+  let snappedX = Math.ceil((x + 1) / gridSize) * gridSize;
+  let snappedY = Math.ceil((y + 1) / gridSize) * gridSize;
 
-  if (snappedX < 10) {
-    snappedX = 10;
+  if (snappedX < gridSize) {
+    snappedX = gridSize;
   }
-  if (snappedY < 10) {
-    snappedY = 10;
+  if (snappedY < gridSize) {
+    snappedY = gridSize;
   }
 
   return {

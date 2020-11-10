@@ -37,8 +37,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     canvasContainer: {
       display: 'flex',
-      width: '100%',
-      height: '100%',
       overflow: 'auto',
       padding: theme.spacing(2),
       position: 'relative',
@@ -48,6 +46,9 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexGrow: 1,
       backgroundColor: theme.palette.background.default,
+      backgroundSize: `10px 10px`,
+      backgroundImage: `linear-gradient(to right, ${theme.palette.grey[200]} 1px, transparent 1px),
+      linear-gradient(to bottom, ${theme.palette.grey[200]} 1px, transparent 1px)`,
     },
     node: {
       zIndex: 2,
@@ -87,7 +88,7 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'absolute',
     },
     canvasControls: {
-      position: 'absolute',
+      position: 'fixed',
       top: 20,
       right: 20,
       zIndex: 10,
@@ -569,7 +570,9 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
 
   return (
     <div className={classes.root} ref={containerRef}>
-      <div className={classes.canvasControls}>
+      <div
+        className={classes.canvasControls}
+        style={{ top: (containerRef.current?.offsetTop || 0) + 40 }}>
         <Tooltip title={`Zoom: ${zoom}%`}>
           <div>
             <Button
