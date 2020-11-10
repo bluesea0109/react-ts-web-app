@@ -13,12 +13,16 @@ import { CommonTableRowProps } from './types';
 
 const StyledTableRow = withStyles((theme) => ({
   root: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: 'rgba(0, 0, 100, 0.16)',
-    },
-
     '&:hover': {
       backgroundColor: theme.palette.action.selected,
+    },
+
+    '&:nth-of-type(odd)': {
+      backgroundColor: 'rgba(0, 0, 100, 0.16)',
+
+      '&:hover': {
+        backgroundColor: 'rgba(0, 0, 100, 0.12)',
+      },
     },
 
     '& a': {
