@@ -127,27 +127,18 @@ export default function TrainingConversations() {
             records
               .sort((a: any, b: any) => parseInt(a.id) + parseInt(b.id))
               .map((item, index) => {
-                if (item.id === editConversation) {
-                  return (
-                    <CreateConversation
-                      key={index}
-                      isUpdate={true}
-                      conversation={item}
-                      onSaveCallback={onSaveCallBack}
-                      conversationLastindex={
-                        (currentPage - 1) * docsInPage + index + 1
-                      }
-                      onCloseCallback={handleClose}
-                    />
-                  );
-                }
                 return (
                   <ConversationBoard
                     key={index}
+                    isUpdate={true}
                     currentPage={currentPage}
                     docsInPage={docsInPage}
                     index={index}
-                    item={item}
+                    conversation={item}
+                    conversationLastindex={
+                      (currentPage - 1) * docsInPage + index + 1
+                    }
+                    onSaveCallback={onSaveCallBack}
                     confirmOpen={confirmOpen}
                     onEditConversation={onEditConversation}
                     deleteConfirm={deleteConfirm}

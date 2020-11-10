@@ -1,3 +1,4 @@
+import { useMutation } from '@apollo/client';
 import {
   AccordionDetails,
   Chip,
@@ -17,8 +18,15 @@ import {
 } from '@material-ui/icons';
 import { Delete, Edit } from '@material-ui/icons';
 import clsx from 'clsx';
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
+import {
+  CREATE_TRAINING_CONVERSATION,
+  UPDATE_TRAINING_CONVERSATION,
+} from '../../../common-gql-queries';
 import { ConfirmDialog } from '../../../components';
+import { currentAgentConfig } from '../atoms';
 import { ACTION, DialogueForm } from './DialogueForm';
 
 const useStyles = makeStyles((theme) => ({
@@ -212,8 +220,11 @@ interface ConversationBoardProps {
   currentPage: number;
   docsInPage: number;
   index: number;
-  item: any;
+  conversation: any;
+  isUpdate: boolean;
   confirmOpen: boolean;
+  conversationLastindex: number;
+  onSaveCallback?: () => void;
   onEditConversation: (item: number) => void;
   deleteConfirm: () => void;
   setConfirmOpen: (open: boolean) => void;
@@ -223,15 +234,123 @@ export const ConversationBoard = ({
   currentPage,
   docsInPage,
   index,
-  item,
+  conversation,
+  isUpdate,
+  conversationLastindex,
   confirmOpen,
   onEditConversation,
+  onSaveCallback,
   deleteConfirm,
   setConfirmOpen,
   deleteConversationHandler,
 }: ConversationBoardProps) => {
+  let tempActionData: any[] = [];
+  const userTurns: string[] = [];
+
+  if (isUpdate && conversation && conversation.actions) {
+    tempActionData = conversation.actions.map((c: any) =>
+      c.isUser ? { userActions: [c] } : { agentActions: [c] },
+    );
+    conversation.actions.map(
+      (i: any) => (userTurns[i.turn] = i.isUser ? 'user' : 'agent'),
+    );
+  }
+
   const [isOpened, setOpen] = useState(false);
   const classes = useStyles();
+  const { agentId } = useParams<{ agentId: string }>();
+  const [errStatus, setErrStatus] = useState('');
+  const numAgentId = Number(agentId);
+  const [actionData, setActionsValue] = useState<any | null>(
+    isUpdate ? tempActionData : [],
+  );
+  const [turn, setTurns] = useState<string[]>(isUpdate ? userTurns : []);
+  const [actionType, setActionType] = useState<string>('UTTER');
+  const [loading, setLoding] = useState<boolean>(false);
+
+  const [createConversation] = useMutation(CREATE_TRAINING_CONVERSATION);
+  const [updateConversation] = useMutation(UPDATE_TRAINING_CONVERSATION);
+
+  const config = useRecoilValue(currentAgentConfig);
+
+  const intents = config?.getIntents();
+  const tagsData = config?.getTagTypes();
+  const actions = config?.getActions();
+
+  const intentOption = intents?.map((intent) => intent.name) || [];
+  const tags: string[] = [];
+
+  tagsData?.forEach((item) => tags.push(item));
+  const actionId = actions?.map((item, ind) => ({ text: item.name })) || [];
+
+  const handleOnSelect = (index: number, event: any, value: any) => {
+    const values = [...actionData];
+
+    if (event.target.id.startsWith('intent')) {
+      values[index].userActions[0].intent = value;
+    } else if (event.target.id.startsWith('actionId')) {
+      values[index].agentActions[0].actionId = value.text;
+      values[index].agentActions[0].utterance = value.text;
+    }
+
+    setActionsValue([...values]);
+    setErrStatus('');
+  };
+
+  const handleOnChange = (index: number, event: any) => {
+    const values = [...actionData];
+
+    if (event.target.id === 'Utterance') {
+      values[index].userActions[0].utterance = event.target.value;
+    } else if (event.target.id === 'agentUtterance') {
+      values[index].agentActions[0].utterance = event.target.value;
+    } else if (event.target.name === 'actionType') {
+      if (event.target.value === 'CUSTOM') {
+        setErrStatus('Custom actions not yet supported');
+        setActionType('CUSTOM');
+      } else {
+        setActionType('UTTER');
+      }
+      values[index].agentActions[0].actionType = event.target.value;
+    }
+
+    setActionsValue([...values]);
+  };
+
+  const onDelete = (index: number, event: any) => {
+    const values = [...actionData];
+    const turnValues = [...turn];
+
+    turnValues.splice(index, 1);
+    values.splice(index, 1);
+
+    setActionsValue(values);
+    setTurns(turnValues);
+  };
+
+  const handleAddTags = (tagType: string, tagValue: string, index: number) => {
+    const values = [...actionData];
+
+    if (tagType && tagValue) {
+      const tagValues = { tagType, value: tagValue };
+      if (values[index].userActions[0].tagValues.length > 10) {
+        setErrStatus('You can not add more than 10 tags');
+      } else {
+        if (isUpdate) {
+          values[index].userActions[0] = {
+            ...values[index].userActions[0],
+            tagValues: [...values[index].userActions[0].tagValues, tagValues],
+          };
+        } else {
+          values[index].userActions[0].tagValues.push(tagValues);
+        }
+        setActionsValue([...values]);
+      }
+    } else {
+      setErrStatus('Please Add tagValues');
+    }
+  };
+
   return (
     <Accordion className={classes.listItemWrapper} key={index} square={true}>
       <AccordionSummary
@@ -253,7 +372,7 @@ export const ConversationBoard = ({
               />
             )}
             <Typography className={classes.heading}>
-              Conversation {(currentPage - 1) * docsInPage + index + 1}
+              Conversation {conversationLastindex}
             </Typography>
           </Grid>
           <Grid item={true} container={true} xs={1} sm={1} justify="flex-end">
@@ -283,27 +402,54 @@ export const ConversationBoard = ({
           className={classes.paper}
         />
         <Grid container={true} direction={'column'} className={classes.paper}>
-          {item.actions.map((item: any, index: number) => {
+          {actionData?.map((inputField: any, index: number) => {
+            const userAction: any = inputField.userActions
+              ? inputField.userActions[0] || {}
+              : {};
+            const agentAction: any = inputField.agentActions
+              ? inputField.agentActions[0] || {}
+              : {};
             return (
-              <Grid
-                container={true}
-                className={clsx(
-                  classes.actionWrapper,
-                  item.isAgent && classes.agentActionWrapper,
-                )}
-                key={index}>
+              <Fragment key={`${inputField}-${index}`}>
                 <Grid
                   container={true}
-                  item={true}
-                  className={classes.actionItemWrapper}>
-                  <Typography> {item.turn} </Typography>
+                  className={clsx(
+                    classes.actionWrapper,
+                    inputField.agentActions && classes.agentActionWrapper,
+                  )}
+                  key={index}>
+                  <Grid
+                    container={true}
+                    item={true}
+                    className={classes.actionItemWrapper}>
+                    <Typography> {index} </Typography>
+                  </Grid>
+                  {turn[index] === 'user' || inputField.userActions ? (
+                    <DialogueForm
+                      index={index}
+                      item={inputField}
+                      type={ACTION.USER_ACTION}
+                      options={intentOption}
+                      value={userAction}
+                      onAutoFieldChange={handleOnSelect}
+                      onTextFieldChange={handleOnChange}
+                      onAddTags={handleAddTags}
+                      onDelete={onDelete}
+                    />
+                  ) : (
+                    <DialogueForm
+                      index={index}
+                      item={inputField}
+                      type={ACTION.AGENT_ACTION}
+                      options={intentOption}
+                      value={agentAction}
+                      onAutoFieldChange={handleOnSelect}
+                      onTextFieldChange={handleOnChange}
+                      onDelete={onDelete}
+                    />
+                  )}
                 </Grid>
-                {item.isUser ? (
-                  <DialogueForm item={item} type={ACTION.USER_ACTION}/>
-                ) : (
-                  <DialogueForm item={item} type={ACTION.AGENT_ACTION}/>
-                )}
-              </Grid>
+              </Fragment>
             );
           })}
         </Grid>

@@ -2,22 +2,27 @@ import {
   AccordionDetails,
   Chip,
   Grid,
+  IconButton,
   makeStyles,
   Paper,
+  TextField,
   Typography,
 } from '@material-ui/core';
 import MuiAccordion from '@material-ui/core/Accordion';
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import { withStyles } from '@material-ui/core/styles';
+import { Delete, Edit } from '@material-ui/icons';
 import React, { useState } from 'react';
 import { Action } from 'redux';
 
+import { IIntent } from '@bavard/agent-config';
 import {
   KeyboardArrowDown,
   KeyboardArrowRight,
   KeyboardArrowUp,
 } from '@material-ui/icons';
+import { DropDown, TextInput } from '../../../components';
 
 const useStyles = makeStyles((theme) => ({
   actionWrapper: {
@@ -163,6 +168,19 @@ const useStyles = makeStyles((theme) => ({
   chip: {
     margin: theme.spacing(0.5),
   },
+  actionForm: {
+    display: 'flex',
+    flexFlow: 'vertical',
+    padding: '10px 20px 20px',
+  },
+  textField: {
+    width: '100%',
+    float: 'right',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    paddingBottom: 0,
+    fontWeight: 450,
+  },
 }));
 
 const AccordionSummary = withStyles({
@@ -208,13 +226,34 @@ export enum ACTION {
 }
 
 interface DialogueFormProps {
+  index: number;
   item: any;
   type: ACTION;
+  options: string[];
+  value: any;
+  onAutoFieldChange?: (index: number, event: any, value: any) => void;
+  onTextFieldChange?: (index: number, event: any) => void;
+  onAddTags?: (tagType: string, tagValue: string, index: number) => void;
+  onDelete: (index: number, event: any) => void;
 }
 
-export const DialogueForm = ({ item, type }: DialogueFormProps) => {
+export const DialogueForm = ({
+  index,
+  item,
+  type,
+  options,
+  value,
+  onAutoFieldChange,
+  onTextFieldChange,
+  onAddTags,
+  onDelete,
+}: DialogueFormProps) => {
   const classes = useStyles();
   const [isOpened, setOpen] = useState(false);
+
+  const handleAutoField = (item: string) => {
+
+  };
   return (
     <Accordion className={classes.listItemWrapper}>
       <AccordionSummary
@@ -222,63 +261,126 @@ export const DialogueForm = ({ item, type }: DialogueFormProps) => {
         onClick={() => setOpen(!isOpened)}
         style={{ margin: '0px' }}>
         {type === ACTION.USER_ACTION ? (
-          <Grid
-            item={true}
-            className={classes.userActionHeader}>
-            {isOpened ? (
-              <KeyboardArrowDown color="primary" style={{ fontSize: '30px', color: 'white' }} />
-            ) : (
-              <KeyboardArrowRight
-                color="primary"
-                style={{ fontSize: '30px', color: 'white' }}
-              />
-            )}
-            <Typography className={classes.heading}>
-              User Action
-            </Typography>
+          <Grid item={true} className={classes.userActionHeader}>
+            <Grid container={true}>
+              {isOpened ? (
+                <KeyboardArrowDown
+                  color="primary"
+                  style={{ fontSize: '30px', color: 'white' }}
+                />
+              ) : (
+                <KeyboardArrowRight
+                  color="primary"
+                  style={{ fontSize: '30px', color: 'white' }}
+                />
+              )}
+              <Typography className={classes.heading}>User Action</Typography>
+            </Grid>
+            <Grid container={true} justify="flex-end">
+              <IconButton
+                onClick={(event) => onDelete(index, event)}
+                style={{ float: 'right', color: 'white', padding: '10px' }}>
+                <Delete fontSize="small" />
+              </IconButton>
+            </Grid>
           </Grid>
         ) : (
-          <Grid
-            item={true}
-            className={classes.agentActionHeader}>
-            {isOpened ? (
-              <KeyboardArrowDown color="primary" style={{ fontSize: '30px', color: 'white' }} />
-            ) : (
-              <KeyboardArrowRight
-                color="primary"
-                style={{ fontSize: '30px', color: 'white' }}
-              />
-            )}
-            <Typography className={classes.heading}>
-              Agent Action
-            </Typography>
+          <Grid item={true} className={classes.agentActionHeader}>
+            <Grid container={true}>
+              {isOpened ? (
+                <KeyboardArrowDown
+                  color="primary"
+                  style={{ fontSize: '30px', color: 'white' }}
+                />
+              ) : (
+                <KeyboardArrowRight
+                  color="primary"
+                  style={{ fontSize: '30px', color: 'white' }}
+                />
+              )}
+              <Typography className={classes.heading}>Agent Action</Typography>
+            </Grid>
+            <Grid container={true} justify="flex-end">
+              <IconButton
+                onClick={(event) => onDelete(index, event)}
+                style={{ color: 'white' }}>
+                <Delete fontSize="small" />
+              </IconButton>
+            </Grid>
           </Grid>
         )}
       </AccordionSummary>
       <AccordionDetails className={classes.listItem}>
-        <Grid className={classes.contentTable}>
-          <span className={classes.itemWrapper}>
-            <h6>Intent:</h6>
-            <p>{item.intent}</p>
-          </span>
-          <span className={classes.itemWrapper}>
-            <h6>Utterance:</h6>
-            <p>{item.utterance}</p>
-          </span>
+        <Grid container={true} className={classes.actionForm}>
+          <Grid container={true}>
+            <Grid item={true} xs={4}>
+              <Typography>Intent</Typography>
+              <DropDown
+                labelPosition="top"
+                current={value}
+                menuItems={options}
+                onChange={handleAutoField}
+              />
+            </Grid>
+            <Grid item={true} xs={1} />
+            <Grid item={true} xs={7}>
+              <Typography>Intent</Typography>
+              <TextField
+                variant="outlined"
+                size="small"
+                className={classes.textField}
+              />
+            </Grid>
+          </Grid>
         </Grid>
-        <Grid container={true} className={classes.tagList}>
-          <span className={classes.agentTagText}>Tags</span>
-          <Paper component="ul" className={classes.tagListWrapper}>
-            {item.tagValues?.map((item: any, i: number) => {
-              const label = item.tagType + ' : ' + item.value;
-              return (
-                <li key={i}>
-                  <Chip label={label} className={classes.chip} />
-                </li>
-              );
-            })}
-          </Paper>
-        </Grid>
+        {type === ACTION.USER_ACTION && (
+          <>
+            <Grid container={true} className={classes.actionForm}>
+              <Grid container={true}>
+                <Grid item={true} xs={4}>
+                  <Typography>Intent</Typography>
+                  <DropDown
+                    labelPosition="top"
+                    current={value}
+                    menuItems={options}
+                    onChange={handleAutoField}
+                  />
+                </Grid>
+                <Grid item={true} xs={1} />
+                <Grid item={true} xs={7}>
+                  <Typography>Intent</Typography>
+                  <TextField
+                    variant="outlined"
+                    size="small"
+                    className={classes.textField}
+                  />
+                </Grid>
+              </Grid>
+            </Grid>
+            <Grid container={true} className={classes.actionForm}>
+              <Grid container={true}>
+                <Grid item={true} xs={4}>
+                  <Typography>Intent</Typography>
+                  <DropDown
+                    labelPosition="top"
+                    current={value}
+                    menuItems={options}
+                    onChange={handleAutoField}
+                  />
+                </Grid>
+                <Grid item={true} xs={1} />
+                <Grid item={true} xs={7}>
+                  <Typography>Intent</Typography>
+                  <TextField
+                    variant="outlined"
+                    size="small"
+                    className={classes.textField}
+                  />
+                </Grid>
+              </Grid>
+            </Grid>
+          </>
+        )}
       </AccordionDetails>
     </Accordion>
   );
