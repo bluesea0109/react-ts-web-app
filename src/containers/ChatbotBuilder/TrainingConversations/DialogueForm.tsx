@@ -10,24 +10,16 @@ import MuiAccordion from '@material-ui/core/Accordion';
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import { withStyles } from '@material-ui/core/styles';
+import React, { useState } from 'react';
+import { Action } from 'redux';
+
 import {
   KeyboardArrowDown,
   KeyboardArrowRight,
   KeyboardArrowUp,
 } from '@material-ui/icons';
-import { Delete, Edit } from '@material-ui/icons';
-import clsx from 'clsx';
-import React, { useState } from 'react';
-import { ConfirmDialog } from '../../../components';
-import { ACTION, DialogueForm } from './DialogueForm';
 
 const useStyles = makeStyles((theme) => ({
-  paper: {
-    width: '90%',
-    marginLeft: '5%',
-    marginRight: '5%',
-    padding: '20px',
-  },
   actionWrapper: {
     width: '100%',
     display: 'flex',
@@ -104,6 +96,22 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     display: 'flex',
   },
+  userActionHeader: {
+    display: 'flex',
+    backgroundColor: '#127D78',
+    width: '40vw',
+    height: '50px',
+    color: 'white',
+    padding: '10px',
+  },
+  agentActionHeader: {
+    display: 'flex',
+    backgroundColor: '#0200E6',
+    width: '40vw',
+    height: '50px',
+    color: 'white',
+    padding: '10px',
+  },
   itemWrapper: {
     display: 'flex',
     marginRight: '10px',
@@ -121,18 +129,6 @@ const useStyles = makeStyles((theme) => ({
       fontWeight: '400',
       color: '#333',
     },
-  },
-  userActionHeader: {
-    display: 'flex',
-    backgroundColor: '#127D78',
-    width: '100%',
-    height: '50px',
-  },
-  agentActionHeader: {
-    display: 'flex',
-    backgroundColor: '#0200E6',
-    width: '100%',
-    height: '50px',
   },
   tagList: {
     marginTop: '17px',
@@ -167,25 +163,23 @@ const useStyles = makeStyles((theme) => ({
   chip: {
     margin: theme.spacing(0.5),
   },
-  expansionIcon: {
-    position: 'relative',
-    left: '0px',
-    backgroundColor: 'green',
-  },
 }));
 
 const AccordionSummary = withStyles({
   root: {
     borderBottom: '1px solid rgba(0, 0, 0, .125)',
     marginBottom: -1,
-    minHeight: 40,
+    minHeight: 50,
+    padding: 0,
+    margin: 0,
     '&$expanded': {
-      minHeight: 40,
+      minHeight: 30,
     },
   },
   content: {
+    margin: 0,
     '&$expanded': {
-      margin: '12px 0',
+      margin: '0',
     },
   },
   expanded: {},
@@ -208,104 +202,82 @@ const Accordion = withStyles({
   expanded: {},
 })(MuiAccordion);
 
-interface ConversationBoardProps {
-  currentPage: number;
-  docsInPage: number;
-  index: number;
-  item: any;
-  confirmOpen: boolean;
-  onEditConversation: (item: number) => void;
-  deleteConfirm: () => void;
-  setConfirmOpen: (open: boolean) => void;
-  deleteConversationHandler: (convId: number) => void;
+export enum ACTION {
+  USER_ACTION = 'user_action',
+  AGENT_ACTION = 'agent_action',
 }
-export const ConversationBoard = ({
-  currentPage,
-  docsInPage,
-  index,
-  item,
-  confirmOpen,
-  onEditConversation,
-  deleteConfirm,
-  setConfirmOpen,
-  deleteConversationHandler,
-}: ConversationBoardProps) => {
-  const [isOpened, setOpen] = useState(false);
+
+interface DialogueFormProps {
+  item: any;
+  type: ACTION;
+}
+
+export const DialogueForm = ({ item, type }: DialogueFormProps) => {
   const classes = useStyles();
+  const [isOpened, setOpen] = useState(false);
   return (
-    <Accordion className={classes.listItemWrapper} key={index} square={true}>
+    <Accordion className={classes.listItemWrapper}>
       <AccordionSummary
         id="conversationId"
         onClick={() => setOpen(!isOpened)}
         style={{ margin: '0px' }}>
-        <Grid container={true} style={{ margin: '0px' }}>
+        {type === ACTION.USER_ACTION ? (
           <Grid
             item={true}
-            xs={11}
-            sm={11}
-            style={{ display: 'flex', flexFlow: 'horizontal' }}>
+            className={classes.userActionHeader}>
             {isOpened ? (
-              <KeyboardArrowDown color="primary" style={{ fontSize: '30px' }} />
+              <KeyboardArrowDown color="primary" style={{ fontSize: '30px', color: 'white' }} />
             ) : (
               <KeyboardArrowRight
                 color="primary"
-                style={{ fontSize: '30px' }}
+                style={{ fontSize: '30px', color: 'white' }}
               />
             )}
             <Typography className={classes.heading}>
-              Conversation {(currentPage - 1) * docsInPage + index + 1}
+              User Action
             </Typography>
           </Grid>
-          <Grid item={true} container={true} xs={1} sm={1} justify="flex-end">
-            <Delete />
+        ) : (
+          <Grid
+            item={true}
+            className={classes.agentActionHeader}>
+            {isOpened ? (
+              <KeyboardArrowDown color="primary" style={{ fontSize: '30px', color: 'white' }} />
+            ) : (
+              <KeyboardArrowRight
+                color="primary"
+                style={{ fontSize: '30px', color: 'white' }}
+              />
+            )}
+            <Typography className={classes.heading}>
+              Agent Action
+            </Typography>
           </Grid>
-        </Grid>
+        )}
       </AccordionSummary>
       <AccordionDetails className={classes.listItem}>
-        {/*<Grid className={classes.actionButtonWrapper}>
-          <IconButton onClick={() => onEditConversation(item.id)}>
-            <Edit fontSize="large" />
-          </IconButton>
-          <IconButton onClick={deleteConfirm}>
-            <Delete fontSize="large" />
-          </IconButton>
-          <ConfirmDialog
-            title="Delete Conversations?"
-            open={confirmOpen}
-            setOpen={setConfirmOpen}
-            onConfirm={() => deleteConversationHandler(item.id)}>
-            Are you sure you want to delete this Conversations?
-          </ConfirmDialog>
-        </Grid>*/}
-        <Grid // conversation panel
-          container={true}
-          direction={'column'}
-          className={classes.paper}
-        />
-        <Grid container={true} direction={'column'} className={classes.paper}>
-          {item.actions.map((item: any, index: number) => {
-            return (
-              <Grid
-                container={true}
-                className={clsx(
-                  classes.actionWrapper,
-                  item.isAgent && classes.agentActionWrapper,
-                )}
-                key={index}>
-                <Grid
-                  container={true}
-                  item={true}
-                  className={classes.actionItemWrapper}>
-                  <Typography> {item.turn} </Typography>
-                </Grid>
-                {item.isUser ? (
-                  <DialogueForm item={item} type={ACTION.USER_ACTION}/>
-                ) : (
-                  <DialogueForm item={item} type={ACTION.AGENT_ACTION}/>
-                )}
-              </Grid>
-            );
-          })}
+        <Grid className={classes.contentTable}>
+          <span className={classes.itemWrapper}>
+            <h6>Intent:</h6>
+            <p>{item.intent}</p>
+          </span>
+          <span className={classes.itemWrapper}>
+            <h6>Utterance:</h6>
+            <p>{item.utterance}</p>
+          </span>
+        </Grid>
+        <Grid container={true} className={classes.tagList}>
+          <span className={classes.agentTagText}>Tags</span>
+          <Paper component="ul" className={classes.tagListWrapper}>
+            {item.tagValues?.map((item: any, i: number) => {
+              const label = item.tagType + ' : ' + item.value;
+              return (
+                <li key={i}>
+                  <Chip label={label} className={classes.chip} />
+                </li>
+              );
+            })}
+          </Paper>
         </Grid>
       </AccordionDetails>
     </Accordion>
