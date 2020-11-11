@@ -33,9 +33,7 @@ interface IUpsertAgentFormNodeProps {
   nodeId: number;
   node?: IAgentFormNode;
 }
-interface IParams {
-  agentId: string;
-}
+
 export default function UpsertAgentFormNode({
   nodeId,
   node,

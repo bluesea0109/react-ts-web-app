@@ -5,3 +5,15 @@ export interface IAgentArchiveFiles {
   uroImages: File[];
   botIcons: File[];
 }
+
+export enum EKeyboardCmd {
+  COPY = 'COPY',
+  PASTE = 'PASTE',
+  UNDO = 'UNDO',
+  REDO = 'REDO',
+  DELETE = 'DELETE',
+  MOVERIGHT = 'MOVERIGHT',
+  MOVELEFT = 'MOVELEFT',
+  MOVEUP = 'MOVEUP',
+  MOVEDOWN = 'MOVEDOWN',
+}

@@ -62,11 +62,6 @@ interface IImageTileProps extends ConnectedProps<typeof connector> {
   activeCategory: ICategory | null;
 }
 
-interface IState {
-  categorySet: null | ICategorySet;
-  selectedCategory: null | ICategory;
-}
-
 function ImageTile(props: IImageTileProps) {
   const classes = useStyles();
   const imageLabels = useSelector(getBatchImageLabels).get(props.imageId) || [];

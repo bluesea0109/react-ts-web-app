@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme: Theme) =>
         color: theme.palette.grey[800],
       },
     },
-    nodeHovered: {
+    nodeActive: {
       border: `dashed 2px #FFFFFF`,
     },
     dragging: {
@@ -142,7 +142,9 @@ interface IProps {
   draggable?: boolean;
   width?: number;
   height?: number;
+  isActive?: boolean;
   onNodeDragStart?: () => void;
+  onNodeClick?: (event: React.MouseEvent) => void;
   onEdit?: () => void;
   onTerminalDragStart?: (
     event: React.DragEvent<HTMLDivElement>,
@@ -166,6 +168,8 @@ const GraphEditorNode = ({
   onTerminalDragEnd,
   onNodeDragStart,
   onEdgeDrop,
+  isActive,
+  onNodeClick,
   width,
   height,
 }: IProps) => {
@@ -242,6 +246,7 @@ const GraphEditorNode = ({
 
   return (
     <div
+      onClick={onNodeClick}
       onMouseEnter={() => setShowTerminals(true)}
       onMouseLeave={() => setShowTerminals(false)}
       onDrop={(event) => {
@@ -259,7 +264,7 @@ const GraphEditorNode = ({
         nodeClass,
         className,
         canDrag ? classes.dragging : '',
-        draggingOver ? classes.nodeHovered : '',
+        draggingOver || isActive ? classes.nodeActive : '',
       ])}
       style={{
         width: nodeWidth,

@@ -169,6 +169,7 @@ export default function UpsertEdgeForm({
     }
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(prepareSignedUploadUrl, [imgFile]);
 
   const handleNewImg = (file: File) => {
