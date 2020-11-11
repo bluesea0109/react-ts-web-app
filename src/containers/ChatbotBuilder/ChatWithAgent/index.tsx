@@ -1,5 +1,4 @@
 import { useQuery } from '@apollo/client';
-import { string } from '@bavard/agent-config/dist/graph-policy/yup';
 import { Button, createStyles, makeStyles, Theme } from '@material-ui/core';
 import gql from 'graphql-tag';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
