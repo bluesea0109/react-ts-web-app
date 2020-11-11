@@ -217,6 +217,8 @@ const Examples = () => {
           <ExamplesTable
             updateFilters={updateFilters}
             examples={examples}
+            exampleCount={exampleCount}
+            examplesPerPage={EXAMPLES_LIMIT}
             intents={intents}
             filters={filters}
             config={config}

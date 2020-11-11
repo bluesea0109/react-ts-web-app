@@ -6,7 +6,7 @@ import {
   Theme,
   Typography,
 } from '@material-ui/core';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { TextAnnotator } from 'react-text-annotate';
 import { CommonTable, DropDown } from '../../../components';
 import { INLUExample } from '../../../models/chatbot-service';
@@ -39,6 +39,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface ExamplesTableProps {
   examples: INLUExample[];
+  exampleCount: number;
+  examplesPerPage: number;
   intents: string[];
   filters?: ExamplesFilter;
   config: any;
@@ -51,21 +53,28 @@ interface ExamplesTableProps {
 
 const ExamplesTable = ({
   examples,
+  exampleCount,
+  examplesPerPage,
   intents,
+  filters,
+  updateFilters,
   onAdd,
   onEdit,
   onDelete,
 }: ExamplesTableProps) => {
   const classes = useStyles();
 
-  const [intent, setIntent] = useState('');
-  const filteredExamples = useMemo(
-    () => examples.filter((item) => item.intent.toLowerCase().includes(intent)),
-    [intent, examples],
-  );
+  const filteredExamples = useMemo(() => {
+      if (!filters || !filters.intent) { return examples; }
+      return examples.filter((item) => item.intent.toLowerCase().includes(filters?.intent || ''));
+  }, [  filters, examples]);
 
   const handleIntentChange = (intent: string) => {
-    setIntent(intent);
+    updateFilters({ intent, offset: 0 });
+  };
+
+  const handlePagechange = (page: number) => {
+    updateFilters({ offset: page * examplesPerPage});
   };
 
   const columns = [
@@ -88,7 +97,7 @@ const ExamplesTable = ({
           <DropDown
             label=""
             width={200}
-            current={intents.find((each) => each === intent)}
+            current={intents.find((each) => each === filters?.intent)}
             menuItems={intents}
             onChange={handleIntentChange}
           />
@@ -129,7 +138,11 @@ const ExamplesTable = ({
       }}
       pagination={{
         colSpan: 3,
-        rowsPerPage: 10,
+        isAsync: true,
+        asyncPage: Math.floor((filters?.offset || 0) / examplesPerPage),
+        rowsPerPage: examplesPerPage,
+        asyncTotalCount: exampleCount,
+        onUpdatePage: handlePagechange,
       }}
       editable={{
         isEditable: true,
