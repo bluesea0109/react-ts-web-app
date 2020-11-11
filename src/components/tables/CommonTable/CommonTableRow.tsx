@@ -18,7 +18,7 @@ const StyledTableRow = withStyles((theme) => ({
     },
 
     '&:nth-of-type(odd)': {
-      backgroundColor: '#3f51b5',
+      backgroundColor: 'rgba(0, 0, 100, 0.16)',
 
       '&:hover': {
         backgroundColor: 'rgba(0, 0, 100, 0.12)',
