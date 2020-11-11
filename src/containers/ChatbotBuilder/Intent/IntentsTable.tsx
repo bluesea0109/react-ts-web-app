@@ -24,23 +24,13 @@ function IntentsTable({
     item.name.toLowerCase().includes(filter.toLocaleLowerCase()),
   );
 
-  const renderIntentName = () => (
-    <Box
-      style={{
-        padding: 0,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'stretch',
-      }}>
-      <FilterBox name="Intent Name" filter={filter} onChange={setFilter} />
-    </Box>
-  );
-
   const columns = [
     {
       title: 'Name',
       field: 'name',
-      renderHeader: renderIntentName,
+      renderHeader: () => (
+        <FilterBox name="Intent Name" filter={filter} onChange={setFilter} />
+      ),
     },
     {
       title: 'Default Action',

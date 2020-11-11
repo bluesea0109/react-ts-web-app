@@ -23,8 +23,12 @@ export interface ActionInterface<RowData extends object> {
 }
 
 export interface PaginationInterface {
-  rowsPerPage?: number;
+  asyncPage?: number;
   colSpan?: number;
+  isAsync?: boolean;
+  asyncTotalCount?: number;
+  rowsPerPage?: number;
+  onUpdatePage?: (page: number) => void;
 }
 
 export interface PaginationType extends PaginationInterface {

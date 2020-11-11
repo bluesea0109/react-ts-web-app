@@ -89,8 +89,10 @@ export default function UpsertNodeForm({
     }
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(prepareSignedUploadUrl, [optionImages]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(prepareSignedUploadUrl, [imgFile]);
 
   const submitUserImage = async () => {

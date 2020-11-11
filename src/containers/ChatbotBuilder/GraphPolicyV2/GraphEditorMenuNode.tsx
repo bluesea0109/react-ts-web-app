@@ -48,7 +48,6 @@ const GraphNode = ({ actor, type, text, className, draggable }: IProps) => {
       className={clsx([classes.node, nodeClass, className])}
       draggable={draggable}
       onDragStart={(event) => {
-        console.log('SETTING NODE DATA ');
         event.dataTransfer.setData(
           'NODE_DATA',
           JSON.stringify({ actor, type, isNew: true }),
