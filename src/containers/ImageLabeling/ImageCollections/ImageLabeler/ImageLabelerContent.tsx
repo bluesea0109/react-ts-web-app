@@ -1,6 +1,5 @@
 import { ApolloError } from '@apollo/client';
 import { useApolloClient } from '@apollo/client';
-import { string } from '@bavard/agent-config/dist/graph-policy/yup';
 import {
   createStyles,
   makeStyles,

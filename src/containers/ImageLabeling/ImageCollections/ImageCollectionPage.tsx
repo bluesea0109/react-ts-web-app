@@ -1,4 +1,4 @@
-import { string } from '@bavard/agent-config/dist/graph-policy/yup';
+
 import { Link, Tabs, Toolbar, Typography } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
