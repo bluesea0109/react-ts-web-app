@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function AcceptInvite() {
   const classes = useStyles();
-  const { inviteId } = useParams();
+  const { inviteId } = useParams<{ inviteId: string }>();
   const [updateActiveOrg, updateActiveOrgResult] = useMutation(UPDATE_ACTIVE_ORG, {
     refetchQueries: [{ query: GET_CURRENT_USER }],
     awaitRefetchQueries: true,

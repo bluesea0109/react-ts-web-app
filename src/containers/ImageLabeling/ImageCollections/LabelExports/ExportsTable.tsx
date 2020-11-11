@@ -39,8 +39,10 @@ const useStyles = makeStyles((theme: Theme) =>
 function ExportsTable() {
   const rowsPerPage = 10;
   const classes = useStyles();
-  let { collectionId } = useParams();
-  collectionId = parseInt(collectionId, 10);
+  const params = useParams<{
+    collectionId: string,
+  }>();
+  const collectionId = parseInt(params.collectionId, 10);
 
   interface IGetLabelExports {
     ImageLabelingService_labelExports: ILabelsExport[];

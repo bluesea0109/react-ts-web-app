@@ -50,7 +50,7 @@ const NewAgent: React.FC<INewAgentProps> = ({ user }) => {
   const [uname, setUname] = useState<string>('');
   const { enqueueSnackbar } = useSnackbar();
 
-  const { projectId } = useParams();
+  const { projectId } = useParams<{ projectId: string}>();
   const [createAgent, { loading, error }] = useMutation(CHATBOT_CREATE_AGENT, {
     refetchQueries: [{ query: CHATBOT_GET_AGENTS, variables: { projectId } }],
     awaitRefetchQueries: true,

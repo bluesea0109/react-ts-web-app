@@ -22,7 +22,12 @@ const useStyles = makeStyles((theme: Theme) =>
 function ImageCollectionPage() {
   // eslint-disable-next-line
   const classes = useStyles();
-  const { orgId, projectId, collectionId, tab } = useParams();
+  const { orgId, projectId, collectionId, tab } = useParams<{
+    orgId: string,
+    projectId: string,
+    collectionId: string,
+    tab: string,
+  }>();
   const history = useHistory();
 
   const handleChangeTab = (event: any, value: any) => {

@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function CategorySets() {
   const classes = useStyles();
-  const { projectId } = useParams();
+  const { projectId } = useParams<{ projectId: string }>();
   const categorySets = useQuery(GET_CATEGORY_SETS, { variables: { projectId } });
   if (categorySets.loading) {
     return <ContentLoading />;

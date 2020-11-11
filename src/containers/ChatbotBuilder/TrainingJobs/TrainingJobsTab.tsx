@@ -28,8 +28,9 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 export default function TrainingJobsTab() {
   const classes = useStyles();
-  let { agentId } = useParams();
-  agentId = Number(agentId);
+  const params = useParams<{ agentId: string }>();
+  const agentId = parseInt(params.agentId, 10);
+
   return (
     <div className={'page-container'}>
       <Typography className={classes.pageTitle} variant="h6">

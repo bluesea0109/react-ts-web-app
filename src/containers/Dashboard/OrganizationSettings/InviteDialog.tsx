@@ -41,10 +41,6 @@ interface IProps {
   onSuccess?: () => void;
 }
 
-interface IGetOrgBilling {
-  billingEnabled: boolean;
-}
-
 export default function InviteDialog(props: IProps) {
   const classes = useStyles();
   const [state, setState] = useState({

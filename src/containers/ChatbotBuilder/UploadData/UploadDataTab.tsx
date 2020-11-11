@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 export default function UploadDataTab() {
   const classes = useStyles();
-  const { agentId, projectId } = useParams();
+  const { agentId, projectId } = useParams<{ agentId: string, projectId: string }>();
   const [config] = useRecoilState(currentAgentConfig);
 
   if (!config) {

@@ -164,7 +164,11 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
   const client = useApolloClient();
   const { image, labelQueueImage } = props;
   const imageId = image.id;
-  const { orgId, projectId, collectionId } = useParams();
+  const { orgId, projectId, collectionId } = useParams<{
+    orgId: string,
+    projectId: string,
+    collectionId: string,
+  }>();
   const labels = useSelector(getLabels);
 
   interface IState {

@@ -149,7 +149,12 @@ function ImageReviewerContent(props: IImageReviewerContentProps) {
   const theme = useTheme();
   const { image } = props;
   const classes = useStyles();
-  const { orgId, projectId, collectionId, queueId } = useParams();
+  const { orgId, projectId, collectionId, queueId } = useParams<{
+    orgId: string,
+    projectId: string,
+    collectionId: string,
+    queueId: string,
+  }>();
   const [state, setState] = useState({
     loading: false,
     zoom: 1.0,

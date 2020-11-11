@@ -225,7 +225,11 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
   const client = useApolloClient();
 
   const { image, labelQueueImage, categorySets } = props;
-  const { orgId, projectId, collectionId } = useParams();
+  const { orgId, projectId, collectionId } = useParams<{
+    orgId: string,
+    projectId: string,
+    collectionId: string,
+  }>();
 
   const [state, setState] = useState<IImageLabelerContentState>({
     closePolygonDisabled: true,

@@ -16,7 +16,11 @@ const mapDispatch = {
 const connector = connect(null, mapDispatch);
 
 function ImageReviewer(props: ConnectedProps<typeof connector>) {
-  const { projectId, queueId, imageId } = useParams();
+  const { projectId, queueId, imageId } = useParams<{
+    projectId: string,
+    imageId: string,
+    queueId: string,
+  }>();
   const { loading, error, data } = useQuery(GET_DATA, {
     variables: {
       projectId,

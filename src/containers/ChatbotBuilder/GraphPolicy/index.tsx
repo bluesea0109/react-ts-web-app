@@ -64,7 +64,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function GraphPolicies() {
   const classes = useStyles();
-  let { agentId } = useParams();
+  let { agentId }: { agentId: any } = useParams<{ agentId: string }>();
   const { enqueueSnackbar } = useSnackbar();
   const [upsertDialogOpen, setUpsertDialogOpen] = useState(false);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);

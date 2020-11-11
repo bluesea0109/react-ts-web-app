@@ -35,7 +35,7 @@ interface ICreateCollectionProps {
 }
 
 function CreateCollection(props: ICreateCollectionProps) {
-  const { projectId } = useParams();
+  const { projectId } = useParams<{ projectId: string }>();
   const [createCollection, { loading, error, data }] = useMutation(CREATE_COLLECTION,
     {
       onCompleted: () => {

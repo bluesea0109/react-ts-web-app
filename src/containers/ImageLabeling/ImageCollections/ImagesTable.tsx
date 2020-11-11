@@ -141,7 +141,7 @@ interface IImagesTableProps {
 function ImagesTable(props: IImagesTableProps) {
   const { collectionId } = props;
   const classes = styles();
-  const { orgId, projectId } = useParams();
+  const { orgId, projectId } = useParams<{ orgId: string, projectId: string }>();
   const [state, setState] = useState({
     loading: false,
     page: 0,

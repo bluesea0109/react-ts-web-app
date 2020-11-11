@@ -22,14 +22,14 @@ const OptionImageUploader = ({
   option,
   onUpdateOption,
 }: OptionImageUploaderProps) => {
-  const { agentId } = useParams<{ agentId: string }>();
-  const numAgentId = Number(agentId);
+  const params = useParams<{ agentId: string }>();
+  const agentId = parseInt(params.agentId, 10);
   const { enqueueSnackbar } = useSnackbar();
   const client = useApolloClient();
   const getImagesQuery = useQuery<IGetOptionImagesQueryResult>(
     GET_OPTION_IMAGES_QUERY,
     {
-      variables: { agentId: numAgentId },
+      variables: { agentId },
     },
   );
   const optionImages = getImagesQuery.data?.ChatbotService_optionImages || [];
@@ -39,7 +39,7 @@ const OptionImageUploader = ({
     const imageName = file.name;
     const { data, errors } = await client.query({
       query: GET_SIGNED_IMG_UPLOAD_URL,
-      variables: { agentId: numAgentId, basename: imageName },
+      variables: { agentId, basename: imageName },
       fetchPolicy: 'network-only',
     });
 

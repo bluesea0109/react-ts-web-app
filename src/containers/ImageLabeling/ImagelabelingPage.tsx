@@ -11,7 +11,7 @@ interface IProjectProps {
 }
 
 function ImageLabelingPageWrapper() {
-  const { orgId, projectId } = useParams();
+  const { orgId, projectId } = useParams<{ orgId: string, projectId: string }>();
 
   if (!orgId) {
     return <Typography>{'No org is active.'}</Typography>;
@@ -39,7 +39,11 @@ const useStyles = makeStyles((theme: Theme) =>
 function ImageLabelingPage(props: IProjectProps) {
   // eslint-disable-next-line
   const classes = useStyles();
-  const { orgId, projectId, tab } = useParams();
+  const { orgId, projectId, tab } = useParams<{
+    orgId: string,
+    projectId: string,
+    tab: string,
+  }>();
   const history = useHistory();
 
   const handleChangeTab = (event: any, value: any) => {

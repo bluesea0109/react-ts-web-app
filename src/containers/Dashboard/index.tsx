@@ -17,7 +17,7 @@ import {
   Folder,
   SupervisedUserCircleOutlined,
 } from '@material-ui/icons';
-import * as firebase from 'firebase/app';
+import firebase from 'firebase/app';
 import 'firebase/auth';
 import React, { useState } from 'react';
 import { IUser } from '../../models/user-service';

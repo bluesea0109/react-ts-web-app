@@ -65,7 +65,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function GraphPolicies() {
   const classes = useStyles();
-  let { agentId } = useParams();
+  const params = useParams<{ agentId: string }>();
+  const agentId = parseInt(params.agentId, 10);
   const { enqueueSnackbar } = useSnackbar();
   const [upsertDialogOpen, setUpsertDialogOpen] = useState(false);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
@@ -82,8 +83,6 @@ export default function GraphPolicies() {
   if (!config || !user) {
     return <></>;
   }
-
-  agentId = parseInt(agentId);
 
   const refetchQueries = [
     {

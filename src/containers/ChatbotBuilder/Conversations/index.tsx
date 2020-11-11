@@ -38,13 +38,14 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function ConversationsTab() {
   const classes = useStyles();
-  const { agentId } = useParams<{ agentId: string }>();
+  const params = useParams<{ agentId: string }>();
+  const agentId = parseInt(params.agentId, 10);
 
   const [selectedConversationId, selectConversation] = useState(0);
 
   const queryResult = useQuery<GetLiveConversationsQueryResult>(getLiveConversationsQuery, {
     fetchPolicy: 'no-cache',
-    variables: { agentId: parseInt(agentId, 10) },
+    variables: { agentId },
   });
 
   const {data, loading} = queryResult;

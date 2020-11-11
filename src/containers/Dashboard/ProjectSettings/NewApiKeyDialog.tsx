@@ -23,7 +23,7 @@ interface CreateApiKeyMutationResult {
 }
 
 const NewApiKeyDialog = ({ isOpen, onClose, onCreateKey }: NewApiKeyDialogProps) => {
-  const { projectId } = useParams();
+  const { projectId } = useParams<{ projectId: string }>();
   const [apiKey, setApiKey] = useState('');
   const [createKey, { loading, error }] = useMutation<CreateApiKeyMutationResult>(createApiKeyMutation);
 

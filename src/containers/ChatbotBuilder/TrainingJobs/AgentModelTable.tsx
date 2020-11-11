@@ -29,14 +29,14 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function AgentModelTable() {
   const classes = useStyles();
-  const { agentId } = useParams<{ agentId: string }>();
-  const numAgentId = parseInt(agentId, 10);
+  const params = useParams<{ agentId: string }>();
+  const agentId = parseInt(params.agentId, 10);
 
   interface IGetAgentModel {
     ChatbotService_agentModelInfo: IAgentModelInfo | null;
   }
   const getModel = useQuery<IGetAgentModel>(GET_AGENT_MODEL_INFO, {
-    variables: { agentId: numAgentId },
+    variables: { agentId },
   });
 
   if (getModel.error) {
