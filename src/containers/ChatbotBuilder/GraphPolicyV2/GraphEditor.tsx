@@ -17,6 +17,8 @@ import EdgeArrow from './EdgeArrow';
 import GraphEditorNode from './GraphEditorNode';
 import { IGraphEditorNode, IItemPosition } from './types';
 import UpsertNodeDialog from './UpsertNodeDialog';
+import { getAction } from '../../../utils/windowEvents';
+import { EKeyboardCmd } from '../../../utils/types';
 
 import {
   getAllIntents,
@@ -26,8 +28,9 @@ import {
   snapItemPosition,
 } from './utils';
 
-const NODE_WIDTH = 230;
-const NODE_HEIGHT = 115;
+const GRID_SIZE = 10;
+const NODE_WIDTH = 23 * GRID_SIZE;
+const NODE_HEIGHT = 12 * GRID_SIZE;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -124,18 +127,21 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
   const drawingArrowRef = useRef<SVGPolylineElement>(null);
   const [changes, setChanges] = useState(0);
   const [editingNodeId, setEditingNodeId] = useState<number>();
+  const [selectedNodeId, selectNode] = useState<number>();
+  const [copiedNodeId, copyNode] = useState<number>();
   const [draggingNodeId, setDraggingNodeId] = useState<number>();
   const [draggingOverDelete, setDraggingOverDelete] = useState(false);
   const [editingNode, setEditingNode] = useState<IGraphEditorNode>();
   const [draftNodes, setDraftNodes] = useState<IGraphEditorNode[]>([]);
   const [showingEdgeActions, setShowEdgeActions] = useState<INodePair>();
-  const [zoom, setzoom] = useState(100);
+
   const [drawingArrowStart, setDrawingArrowStart] = useState<IItemPosition>();
   const [canvasDimensions, setCanvasDimensions] = useState({
     width: 500,
     height: 500,
   });
 
+  // Transform node data to render easily
   const nodeToGraphEditorNode = (node: GraphPolicyNode) => {
     return {
       node,
@@ -148,6 +154,8 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
     };
   };
 
+  // When the editing nodeId changes, set the editingnode value to the node Id.
+  // This value is used in the edit node form
   useEffect(() => {
     if (editingNodeId) {
       const node = gp.getNodeById(editingNodeId);
@@ -163,6 +171,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
     }
   }, [editingNodeId, draftNodes, gp]);
 
+  // Increase the canvas size to always be larger than the bounds of the graph
   useEffect(() => {
     let maxX = 500;
     let maxY = 500;
@@ -180,7 +189,108 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
       width: maxX + 500,
       height: maxY + 500,
     });
-  }, [changes, zoom, gp]);
+  }, [changes, gp.zoom, gp]);
+
+  // Handle ctrl+c, ctrl+v, ctrl+z, ctrl+y
+  const handleKeyboardCmd = (event: KeyboardEvent) => {
+    const cmd = getAction(event);
+    if (!cmd) {
+      return;
+    }
+
+    event.stopPropagation();
+
+    switch (cmd) {
+      case EKeyboardCmd.COPY: {
+        if (selectedNodeId) {
+          copyNode(selectedNodeId);
+        }
+        break;
+      }
+
+      case EKeyboardCmd.PASTE: {
+        if (copiedNodeId) {
+          const newNode = gp.cloneNode(
+            copiedNodeId,
+            gp.newNodeId() + draftNodes.length,
+          );
+
+          if (newNode) {
+            newNode.setPosition({
+              x: newNode.position.x + NODE_WIDTH + GRID_SIZE,
+              y: newNode.position.y + NODE_HEIGHT + GRID_SIZE,
+            });
+
+            gp.upsertNode(newNode);
+
+            setGp(gp);
+            selectNode(undefined);
+          }
+        }
+        break;
+      }
+
+      case EKeyboardCmd.DELETE: {
+        if (selectedNodeId) {
+          gp.deleteNodeById(selectedNodeId);
+          gp.sortAllChildNodes();
+          deleteDraftNode(selectedNodeId);
+          enqueueSnackbar('Node Deleted', { variant: 'success' });
+        }
+        break;
+      }
+    }
+
+    if (
+      cmd === EKeyboardCmd.MOVEDOWN ||
+      cmd === EKeyboardCmd.MOVEUP ||
+      cmd === EKeyboardCmd.MOVELEFT ||
+      cmd === EKeyboardCmd.MOVERIGHT
+    ) {
+      if (selectedNodeId) {
+        const node = gp.getNodeById(selectedNodeId);
+        if (node) {
+          let x = node?.position.x || 0;
+          let y = node?.position.y || 0;
+
+          switch (cmd) {
+            case EKeyboardCmd.MOVEDOWN: {
+              y += GRID_SIZE;
+              break;
+            }
+            case EKeyboardCmd.MOVEUP: {
+              y -= GRID_SIZE;
+              break;
+            }
+            case EKeyboardCmd.MOVERIGHT: {
+              x += GRID_SIZE;
+              break;
+            }
+            case EKeyboardCmd.MOVELEFT: {
+              x -= GRID_SIZE;
+              break;
+            }
+          }
+
+          node?.setPosition({
+            x,
+            y,
+          });
+
+          setGp(gp);
+          setChanges(changes + 1);
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyboardCmd, true);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyboardCmd, true);
+    };
+  }, [selectedNodeId, copiedNodeId, changes]);
 
   const gpNodes = gp.getAllNodes();
 
@@ -206,6 +316,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
     setChanges(changes + 1);
   };
 
+  // Either create a new node if required, or change the position if the node exists
   const handleNodeDrop = (event: React.DragEvent<HTMLDivElement>) => {
     setDraggingNodeId(undefined);
     clearDrawingArrow();
@@ -222,8 +333,8 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
     const rect = event.currentTarget.getBoundingClientRect();
 
     const pos = snapItemPosition(
-      getZoomedCoord(event.clientX, rect.x, zoom) - NODE_WIDTH + 10,
-      getZoomedCoord(event.clientY, rect.y, zoom) - 10,
+      getZoomedCoord(event.clientX, rect.x, gp.zoom) - NODE_WIDTH + 10,
+      getZoomedCoord(event.clientY, rect.y, gp.zoom) - 10,
     );
 
     data.x = pos.x;
@@ -257,6 +368,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
     setDraftNodes(newDraftNodes);
   };
 
+  // Update the node data once the edit node form is submitted
   const handleNodeUpdate = (node: GraphPolicyNode) => {
     // handle existing node
     const existingNode = gp.getNodeById(node.nodeId);
@@ -286,10 +398,13 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
     setDraggingNodeId(nodeId);
   };
 
+  // Delete the dropped item
   const handleDeleteZoneDrop = (event: React.DragEvent<HTMLDivElement>) => {
     const data: IGraphEditorNode = JSON.parse(
       event.dataTransfer.getData('NODE_DATA') || '{}',
     );
+    setDraggingNodeId(undefined);
+    setDraggingOverDelete(false);
 
     if (_.isEmpty(data)) {
       return;
@@ -298,8 +413,6 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
     gp.deleteNodeById(data.nodeId);
     gp.sortAllChildNodes();
     deleteDraftNode(data.nodeId);
-    setDraggingNodeId(undefined);
-    setDraggingOverDelete(false);
     enqueueSnackbar('Node Deleted', { variant: 'success' });
   };
 
@@ -324,6 +437,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
     });
   };
 
+  // Draw arrows for all the edges
   const renderArrows = () => {
     const arrows: React.ReactNode[] = [];
     const nodes = gp.getAllNodes();
@@ -391,6 +505,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
     setShowEdgeActions(undefined);
   };
 
+  // Show the actions in the midpoint of the edge arrow
   const renderEdgeActions = () => {
     if (!showingEdgeActions) {
       return <></>;
@@ -420,15 +535,21 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
   };
 
   const doZoom = (direction: 'in' | 'out') => {
-    if (direction === 'in' && zoom <= 490) {
-      setzoom(zoom + 10);
+    if (!gp.zoom) {
+      gp.zoom = 100;
+    }
+    if (direction === 'in' && gp.zoom <= 490) {
+      gp.zoom += 10;
     }
 
-    if (direction === 'out' && zoom >= 10) {
-      setzoom(zoom - 10);
+    if (direction === 'out' && gp.zoom >= 10) {
+      gp.zoom -= 10;
     }
+    setGp(gp);
+    setChanges(changes + 1);
   };
 
+  // Start drawing an edge arrow when you drag out from a terminal
   const handleTerminalDragStart = (
     event: React.DragEvent<HTMLDivElement>,
     nodeData: IGraphEditorNode,
@@ -439,8 +560,8 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
     const rectY = rect?.y || 0;
 
     const start = {
-      x: getZoomedCoord(event.clientX, rectX, zoom),
-      y: getZoomedCoord(event.clientY, rectY, zoom),
+      x: getZoomedCoord(event.clientX, rectX, gp.zoom),
+      y: getZoomedCoord(event.clientY, rectY, gp.zoom),
     };
 
     setDrawingArrowStart(start);
@@ -451,6 +572,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
     );
   };
 
+  // If an edge arrow is dropped on a node, add the edge
   const handleEdgeDrop = (
     event: React.DragEvent<HTMLDivElement>,
     targetNode: IGraphEditorNode,
@@ -520,6 +642,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
     drawingArrow?.setAttribute('points', ``);
   };
 
+  // When you click and drag a terminal, keep updating the edge arrow drawn from that terminal
   const handleArrowDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
 
@@ -528,8 +651,8 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
     const rectY = rect?.y || 0;
 
     const arrowEnd = {
-      x: (event.clientX * 100) / zoom - rectX,
-      y: (event.clientY * 100) / zoom - rectY,
+      x: (event.clientX * 100) / gp.zoom - rectX,
+      y: (event.clientY * 100) / gp.zoom - rectY,
     };
 
     const drawingArrow = drawingArrowRef.current;
@@ -568,12 +691,18 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
     </React.Fragment>
   );
 
+  // Select the node. Important - Stop propagation to underlying elements
+  const handleNodeClick = (event: React.MouseEvent<any>, nodeId: number) => {
+    event.stopPropagation();
+    selectNode(nodeId);
+  };
+
   return (
     <div className={classes.root} ref={containerRef}>
       <div
         className={classes.canvasControls}
         style={{ top: (containerRef.current?.offsetTop || 0) + 40 }}>
-        <Tooltip title={`Zoom: ${zoom}%`}>
+        <Tooltip title={`Zoom: ${gp.zoom}%`}>
           <div>
             <Button
               variant="outlined"
@@ -595,7 +724,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
           </div>
         </Tooltip>
       </div>
-      <div className={classes.canvasContainer} style={{ zoom: `${zoom}%` }}>
+      <div className={classes.canvasContainer} style={{ zoom: `${gp.zoom}%` }}>
         <div
           className={classes.editorCanvas}
           style={{
@@ -606,12 +735,17 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
           }}
           ref={canvasRef}
           onDragOver={handleArrowDragOver}
+          onClick={() => selectNode(undefined)}
           onDrop={handleNodeDrop}>
           {editorNodes.map((n, index) => {
             return (
               <React.Fragment key={index}>
                 <div className={classes.item} style={{ left: n.x, top: n.y }}>
                   <GraphEditorNode
+                    onNodeClick={(event: React.MouseEvent) =>
+                      handleNodeClick(event, n.nodeId)
+                    }
+                    isActive={n.nodeId === selectedNodeId}
                     width={NODE_WIDTH}
                     height={NODE_HEIGHT}
                     className={classes.node}
@@ -657,7 +791,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
             );
           })}
           <svg
-            zoomAndPan={zoom.toString()}
+            zoomAndPan={(gp.zoom || 100).toString()}
             xmlns="http://www.w3.org/2000/svg"
             width={'100%'}
             height={'100%'}>

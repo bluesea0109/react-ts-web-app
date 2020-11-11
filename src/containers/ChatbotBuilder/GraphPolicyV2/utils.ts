@@ -1,6 +1,7 @@
 import {
   GraphPolicyNode,
   GraphPolicyV2,
+  IGraphPolicyV2,
   IGraphPolicyNode,
   UserNode,
 } from '@bavard/agent-config/dist/graph-policy-v2';
@@ -138,3 +139,19 @@ export const getZoomedCoord = (
 ) => {
   return (coordinate * 100) / zoomPercentage - boundingRectCoordinate;
 };
+
+export const getGpHistory = (): GraphPolicyV2[] => {
+  let gps: GraphPolicyV2[] = [];
+
+  const gpsHistory: IGraphPolicyV2[] = JSON.parse(
+    localStorage.getItem('GP_EDITOR_HISTORY') || '[]',
+  );
+
+  gps = gpsHistory.map((g) => {
+    return GraphPolicyV2.fromJsonObj(g);
+  });
+
+  return gps;
+};
+
+export const pushGpHistory = () => {};
