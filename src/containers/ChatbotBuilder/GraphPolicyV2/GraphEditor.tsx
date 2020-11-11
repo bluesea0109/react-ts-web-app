@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexGrow: 1,
       backgroundColor: theme.palette.background.default,
-      backgroundSize: `10px 10px`,
+      backgroundSize: `${GRID_SIZE}px ${GRID_SIZE}px`,
       backgroundImage: `linear-gradient(to right, ${theme.palette.grey[200]} 1px, transparent 1px),
       linear-gradient(to bottom, ${theme.palette.grey[200]} 1px, transparent 1px)`,
     },
