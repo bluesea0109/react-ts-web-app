@@ -5,7 +5,7 @@ import { CommonTable } from '../../../components';
 const useStyles = makeStyles((theme) => ({
   root: {
     color: 'black',
-    height: '250px',
+    height: '320px',
     backgroundColor: 'white',
     borderRadius: '5px',
   },

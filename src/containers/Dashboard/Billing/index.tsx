@@ -22,7 +22,7 @@ const Billing = () => {
 
   return (
     <Grid container={true} className={classes.root}>
-      <Typography>Billing</Typography>
+      <Typography variant="h5" style={{marginBottom: '20px'}}>Billing</Typography>
       <Grid container={true} spacing={2}>
         <Grid item={true} sm={5} xs={5}>
           <BasicPlanCard />
