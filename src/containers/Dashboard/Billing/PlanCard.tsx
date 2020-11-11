@@ -5,7 +5,9 @@ const useStyles = makeStyles((theme) => ({
   root: {
     color: 'white',
     height: '300px',
-    backgroundColor: '#0f0f69',
+    // backgroundColor: '#0f0f69',
+    backgroundImage: `url(/billing-bg.svg)`,
+    backgroundSize: 'cover',
     borderRadius: '5px',
     padding: '10px',
   },
