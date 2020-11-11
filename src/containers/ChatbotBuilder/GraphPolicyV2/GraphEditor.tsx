@@ -272,6 +272,14 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
             }
           }
 
+          if (x < GRID_SIZE) {
+            x = GRID_SIZE;
+          }
+
+          if (y < GRID_SIZE) {
+            y = GRID_SIZE;
+          }
+
           node?.setPosition({
             x,
             y,
