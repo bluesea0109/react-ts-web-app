@@ -298,6 +298,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
     return () => {
       document.removeEventListener('keydown', handleKeyboardCmd, true);
     };
+    // eslint-disable-next-line
   }, [selectedNodeId, copiedNodeId, changes]);
 
   const gpNodes = gp.getAllNodes();
