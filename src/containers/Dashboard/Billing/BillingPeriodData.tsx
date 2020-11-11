@@ -1,25 +1,13 @@
 import {
   Box,
-  Button,
   Grid,
   IconButton,
   makeStyles,
-  Table,
-  TableBody,
-  TableHead,
-  TableRow,
   Typography,
-  withStyles,
 } from '@material-ui/core';
-import MuiTableCell from '@material-ui/core/TableCell';
 import { AddCircleOutline } from '@material-ui/icons';
 import React from 'react';
-
-const TableCell = withStyles({
-  root: {
-    borderBottom: 'none',
-  },
-})(MuiTableCell);
+import { CommonTable } from '../../../components';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,62 +38,61 @@ const useStyles = makeStyles((theme) => ({
 
 const BillingPeriodData = () => {
   const classes = useStyles();
+  const columns = [
+    {
+      title: 'Scheduled Payment',
+      field: 'scheduled',
+    },
+    {
+      title: 'Autopay',
+      field: 'autopay',
+    },
+    {
+      title: 'Payment Method',
+      field: 'paymentMethod',
+    },
+  ];
   const rows = [
     {
       scheduled: '10/15/2020',
-      autopay: true,
+      autopay: 'yes',
       paymentMethod: 'Visa ending in 3217',
     },
   ];
   return (
     <Grid className={classes.root}>
-      <Box
-        p={1}
-        className={classes.header}
-        display="flex"
-        alignContent="flex-start"
-        flexDirection="row"
-        alignItems="center">
-        <img
-          src="/card.svg"
-          alt="card"
-          width="25px"
-          height="25px"
-          style={{ marginRight: '5px' }}
+      <Box display="flex" style={{ width: '100%' }} flexDirection="column">
+        <CommonTable
+          data={{
+            columns,
+            rowsData: rows,
+          }}
+          components={{
+            Toolbar: () => (
+              <Box
+                p={1}
+                className={classes.header}
+                display="flex"
+                alignContent="flex-start"
+                flexDirection="row"
+                alignItems="center">
+                <img
+                  src="/card.svg"
+                  alt="card"
+                  width="25px"
+                  height="25px"
+                  style={{ marginRight: '5px' }}
+                />
+                <Typography>Current Billing Period</Typography>
+              </Box>
+            ),
+          }}
         />
-        <Typography>Current Billing Period</Typography>
-      </Box>
-      <Box display="flex" style={{ width: '100%', padding: '20px' }} flexDirection="column">
-        <Table className={classes.table}>
-          <TableHead>
-            <TableRow style={{ fontWeight: 'bold' }}>
-              <TableCell style={{ fontWeight: 'bold', fontSize: '16px' }}>
-                Scheduled Payment
-              </TableCell>
-              <TableCell style={{ fontWeight: 'bold', fontSize: '16px' }} align="left">
-                AutoPay
-              </TableCell>
-              <TableCell style={{ fontWeight: 'bold', fontSize: '16px' }} align="left">
-                Payment Method
-              </TableCell>
-              <TableCell style={{ fontWeight: 'bold', fontSize: '16px' }} align="left" />
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row, index) => (
-              <TableRow key={index}>
-                <TableCell align="left">{row.scheduled}</TableCell>
-                <TableCell align="left">{row.autopay ? 'Yes' : 'No'}</TableCell>
-                <TableCell align="left">{row.paymentMethod}</TableCell>
-                <TableCell align="left">
-                  <Button>Edit</Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
         <Grid className={classes.addButton}>
-          <Typography style={{ color: 'blue' }}> Add New Payment Method </Typography>
+          <Typography style={{ color: 'blue' }}>
+            {' '}
+            Add New Payment Method{' '}
+          </Typography>
           <IconButton>
             <AddCircleOutline fontSize="large" style={{ color: '#5867ca' }} />
           </IconButton>
