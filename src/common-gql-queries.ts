@@ -319,22 +319,25 @@ export const GET_EXAMPLES = gql`
       value
     }
     ChatbotService_examples(agentId: $agentId) {
-      id
-      intentId
-      agentId
-      text
-      tags {
+      data {
         id
-        exampleId
-        tagTypeId
-        start
-        end
-        tagType {
+        intentId
+        agentId
+        text
+        tags {
           id
-          agentId
-          value
+          exampleId
+          tagTypeId
+          start
+          end
+          tagType {
+            id
+            agentId
+            value
+          }
         }
       }
+      total
     }
   }
 `;

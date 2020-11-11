@@ -1,7 +1,12 @@
 import { INLUExample } from '../../../models/chatbot-service';
 
+export interface ExampleQueryList {
+  data: INLUExample[] | undefined;
+  total: number;
+}
+
 export interface ExamplesQueryResults {
-  ChatbotService_examples: INLUExample[] | undefined;
+  ChatbotService_examples: ExampleQueryList;
 }
 
 export interface CreateExampleMutationResult {

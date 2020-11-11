@@ -35,6 +35,7 @@ const CommonTable = ({
     page: number,
   ) => {
     setPage(page);
+    pagination?.onUpdatePage?.(page);
   };
 
   const columnCount = data.columns.length + (editable ? 1 : 0);
@@ -64,8 +65,8 @@ const CommonTable = ({
           columnCount={columnCount}
           pagination={{
             ...pagination,
-            page,
-            rowCount: data.rowsData?.length,
+            page: pagination?.asyncPage || page,
+            rowCount: pagination?.asyncTotalCount || data.rowsData?.length,
             handleChangePage,
           }}
         />

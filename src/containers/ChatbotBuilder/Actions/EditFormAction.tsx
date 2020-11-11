@@ -30,7 +30,6 @@ const useStyles = makeStyles((theme: Theme) =>
     input: {
       '& .MuiOutlinedInput-input': {
         padding: '12px 12px',
-
       },
     },
   }),
@@ -49,21 +48,21 @@ interface EditFormActionProps {
   onChangeAction: (action: IAgentFormAction) => void;
 }
 
-const EditFormAction = ({
-  action,
-  onChangeAction,
-}: EditFormActionProps) => {
+const EditFormAction = ({ action, onChangeAction }: EditFormActionProps) => {
   const classes = useStyles();
   const [editingFieldIndex, setEditingFieldIndex] = useState(-1);
 
   const onAddField = () => {
     onChangeAction({
       ...action,
-      fields: [ ...action.fields, {
-        name: '',
-        type: EFormFieldTypes.TEXT,
-        required: false,
-      } as IFormField],
+      fields: [
+        ...action.fields,
+        {
+          name: '',
+          type: EFormFieldTypes.TEXT,
+          required: false,
+        } as IFormField,
+      ],
     });
     setEditingFieldIndex(action.fields.length);
   };
@@ -71,7 +70,11 @@ const EditFormAction = ({
   const onUpdateField = (index: number, field: IFormField) => {
     onChangeAction({
       ...action,
-      fields: [ ...action.fields.slice(0, index), field, ...action.fields.slice(index + 1) ],
+      fields: [
+        ...action.fields.slice(0, index),
+        field,
+        ...action.fields.slice(index + 1),
+      ],
     });
   };
 
@@ -90,11 +93,20 @@ const EditFormAction = ({
           label="Form Url"
           value={action.url || ''}
           className={classes.input}
-          onChange={e => onChangeAction({ ...action, url: e.target.value })}
+          onChange={(e) => onChangeAction({ ...action, url: e.target.value })}
         />
       </Grid>
-      <Grid container={true} item={true} sm={12} className={classes.formField} justify="flex-end">
-        <Button autoFocus={true} color="primary" variant="contained" onClick={onAddField}>
+      <Grid
+        container={true}
+        item={true}
+        sm={12}
+        className={classes.formField}
+        justify="flex-end">
+        <Button
+          autoFocus={true}
+          color="primary"
+          variant="contained"
+          onClick={onAddField}>
           Add Field
         </Button>
       </Grid>
@@ -104,13 +116,15 @@ const EditFormAction = ({
             <TableHead>
               <TableRow>
                 <TabelHeaderCell align="left">Form Filed Name</TabelHeaderCell>
-                <TabelHeaderCell align="center">Form Field Type</TabelHeaderCell>
+                <TabelHeaderCell align="center">
+                  Form Field Type
+                </TabelHeaderCell>
                 <TabelHeaderCell align="center">Required?</TabelHeaderCell>
                 <TabelHeaderCell align="center">Delete</TabelHeaderCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {action.fields.map((field, index) =>
+              {action.fields.map((field, index) => (
                 <FormFieldRow
                   key={index}
                   field={field}
@@ -118,8 +132,8 @@ const EditFormAction = ({
                   onClick={() => setEditingFieldIndex(index)}
                   onDeleteField={() => onDeleteField(index)}
                   onUpdateField={(field) => onUpdateField(index, field)}
-                />,
-              )}
+                />
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
