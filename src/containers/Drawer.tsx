@@ -152,6 +152,22 @@ function CustomDrawer(props: CustomDrawerProps) {
             </ListItem>
             <ListItem
               component={Link}
+              to={createOrgPath('billing')}
+              selected={location.pathname.includes('billing')}
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Organization" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Billing"
+                style={
+                  location.pathname.includes('billing') ? selectedStyle : {}
+                }
+              />
+            </ListItem>
+            <ListItem
+              component={Link}
               to={createPath('settings')}
               selected={
                 location.pathname.includes('projects') &&
