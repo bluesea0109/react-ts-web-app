@@ -1,8 +1,8 @@
 import {
   GraphPolicyNode,
   GraphPolicyV2,
-  IGraphPolicyV2,
   IGraphPolicyNode,
+  IGraphPolicyV2,
   UserNode,
 } from '@bavard/agent-config/dist/graph-policy-v2';
 import { EAgentNodeTypes } from '@bavard/agent-config/dist/graph-policy-v2/nodes';

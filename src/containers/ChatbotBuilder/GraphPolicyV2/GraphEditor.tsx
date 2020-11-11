@@ -13,12 +13,12 @@ import clsx from 'clsx';
 import _ from 'lodash';
 import { useSnackbar } from 'notistack';
 import React, { useEffect, useRef, useState } from 'react';
+import { EKeyboardCmd } from '../../../utils/types';
+import { getAction } from '../../../utils/windowEvents';
 import EdgeArrow from './EdgeArrow';
 import GraphEditorNode from './GraphEditorNode';
 import { IGraphEditorNode, IItemPosition } from './types';
 import UpsertNodeDialog from './UpsertNodeDialog';
-import { getAction } from '../../../utils/windowEvents';
-import { EKeyboardCmd } from '../../../utils/types';
 
 import {
   getAllIntents,

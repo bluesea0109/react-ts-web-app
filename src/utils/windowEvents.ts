@@ -1,8 +1,8 @@
 import { EKeyboardCmd } from './types';
 
 export const getAction = (event: KeyboardEvent): EKeyboardCmd | undefined => {
-  let key = event.key.toLowerCase();
-  let cmd: EKeyboardCmd | undefined = undefined;
+  const key = event.key.toLowerCase();
+  let cmd: EKeyboardCmd | undefined;
 
   switch (key) {
     case 'backspace': {
