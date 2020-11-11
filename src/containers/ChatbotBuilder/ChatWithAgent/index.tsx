@@ -1,4 +1,5 @@
 import { useQuery } from '@apollo/client';
+import { string } from '@bavard/agent-config/dist/graph-policy/yup';
 import { Button, createStyles, makeStyles, Theme } from '@material-ui/core';
 import gql from 'graphql-tag';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -19,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export default function ChatWithAgent() {
-  const { agentId, projectId } = useParams();
+  const { agentId, projectId } = useParams<{ agentId: string, projectId: string }>();
   const [apiKey, setApiKey] = useState<string | null>(null);
   const classes = useStyles();
   const [isActive, setIsActive] = useState(false);

@@ -28,19 +28,19 @@ export default function TrainingConversations() {
   const docsInPage = 5;
   const classes = useStyles();
 
-  const { agentId } = useParams<{ agentId: string }>();
+  const params = useParams<{ agentId: string }>();
   const [createConversation, setcreateConversation] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [, seteditConversation] = useState(0);  // editConversation
   const [currentPage, setCurrentPage] = useState(1);
-  const numAgentId = Number(agentId);
+  const agentId = parseInt(params.agentId, 10);
 
   const [deleteConversations, { loading }] = useMutation(
     DELETE_TRAINING_CONVERSATION,
   );
   const getTrainingConversations = useQuery<IGetTrainingConversation>(
     GET_TRAINING_CONVERSATIONS,
-    { variables: { agentId: numAgentId } },
+    { variables: { agentId } },
   );
   let conversations =
     getTrainingConversations.data?.ChatbotService_trainingConversations || [];

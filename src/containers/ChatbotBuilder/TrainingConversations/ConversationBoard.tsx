@@ -203,9 +203,10 @@ export const ConversationBoard = ({
 
   const [isOpened, setOpen] = useState(false);
   const classes = useStyles();
-  const { agentId } = useParams<{ agentId: string }>();
+  const params = useParams<{ agentId: string }>();
+  const agentId = parseInt(params.agentId, 10);
   const [, setErrStatus] = useState('');  // errStatus
-  const numAgentId = Number(agentId);
+  
   const [actionData, setActionsValue] = useState<any | null>(
     isUpdate ? tempActionData : [],
   );
@@ -302,7 +303,7 @@ export const ConversationBoard = ({
             variables: {
               conversationId: conversation?.id,
               conversation: {
-                agentId: numAgentId,
+                agentId,
                 agentActions,
                 userActions: updatedUserActions,
               },
@@ -312,7 +313,7 @@ export const ConversationBoard = ({
           response = await createConversation({
             variables: {
               conversation: {
-                agentId: numAgentId,
+                agentId,
                 agentActions,
                 userActions,
               },

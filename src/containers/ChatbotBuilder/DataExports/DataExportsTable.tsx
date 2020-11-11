@@ -36,8 +36,8 @@ const useStyles = makeStyles((theme: Theme) =>
 function DataExportsTable() {
   const rowsPerPage = 10;
   const classes = useStyles();
-  let { agentId } = useParams();
-  agentId = parseInt(agentId, 10);
+  const params = useParams<{ agentId: string }>();
+  const agentId = parseInt(params.agentId, 10);
 
   interface IGetDataExports {
     ChatbotService_dataExports: IDataExport[];

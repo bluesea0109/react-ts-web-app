@@ -13,8 +13,10 @@ import IconButtonAdd from '../../../IconButtons/IconButtonAdd';
 import { CREATE_REVIEW_QUEUE, GET_REVIEW_QUEUES } from './gql-queries';
 
 function CreateReviewQueueDialog() {
-  let { collectionId } = useParams();
-  collectionId = parseInt(collectionId, 10);
+  const params = useParams<{
+    collectionId: string,
+  }>();
+  const collectionId = parseInt(params.collectionId, 10);
   const [state, setState] = useState({
     open: false,
     name: '',

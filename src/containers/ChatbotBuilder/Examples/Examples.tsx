@@ -26,7 +26,9 @@ import {
 export const EXAMPLES_LIMIT = 10;
 
 const Examples = () => {
-  const { agentId } = useParams<{ agentId: string }>();
+  const params = useParams<{ agentId: string }>();
+  const agentId = parseInt(params.agentId, 10);
+
   const [filters, setFilters] = useState<ExamplesFilter>();
   const config = useRecoilValue(currentAgentConfig);
   const [currentEdit, setCurrentEdit] = useState<INLUExample | null>();
@@ -35,7 +37,7 @@ const Examples = () => {
 
   const examplesData = useQuery<ExamplesQueryResults>(getExamplesQuery, {
     variables: {
-      agentId: Number(agentId),
+      agentId,
       limit: EXAMPLES_LIMIT,
       offset: filters?.offset,
       intent: filters?.intent,

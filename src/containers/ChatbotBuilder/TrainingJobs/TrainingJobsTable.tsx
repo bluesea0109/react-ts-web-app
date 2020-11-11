@@ -42,9 +42,9 @@ export default function TrainingJobsTable({
   toolbarActions,
 }: ITrainingJobsTableProps) {
   const classes = useStyles();
-  let { agentId } = useParams();
-  agentId = parseInt(agentId, 10);
-
+  const params = useParams<{ agentId: string }>();
+  const agentId = parseInt(params.agentId, 10);
+  
   interface IGetTrainingJobs {
     ChatbotService_trainingJobs: ITrainingJob[];
   }

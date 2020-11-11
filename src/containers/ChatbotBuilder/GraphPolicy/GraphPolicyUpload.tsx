@@ -18,9 +18,9 @@ interface IGraphPolicyUploadProps {
 }
 
 const GraphPolicyUpload = ({ onSuccess, onError }: IGraphPolicyUploadProps) => {
-  const { agentId } = useParams();
+  const params = useParams<{ agentId: string }>();
+  const agentId = parseInt(params.agentId, 10);
   const { enqueueSnackbar } = useSnackbar();
-  const numAgentId = Number(agentId);
 
   const [config] = useRecoilState(currentAgentConfig);
 
@@ -93,7 +93,7 @@ const GraphPolicyUpload = ({ onSuccess, onError }: IGraphPolicyUploadProps) => {
       setLoading(true);
       await updateAgent({
         variables: {
-          agentId: numAgentId,
+          agentId,
           config: config.toJsonObj(),
         },
       });

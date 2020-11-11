@@ -76,7 +76,7 @@ function CreateCategorySetDialog() {
     categorySetName: '',
     categories: [],
   });
-  const { projectId } = useParams();
+  const { projectId } = useParams<{ projectId: string }>();
   const [createCategorySet, { loading, error }] = useMutation(CREATE_CATEGORY_SET,
     {
       onCompleted: () => {

@@ -20,7 +20,11 @@ interface IStartLabelingDialogState {
 }
 
 function StartLabelingDialog() {
-  const { orgId, projectId, collectionId } = useParams();
+  const { orgId, projectId, collectionId } = useParams<{
+    orgId: string,
+    projectId: string,
+    collectionId: string,
+  }>();
   const [state, setState] = useState<IStartLabelingDialogState>({
     open: false,
     error: null,

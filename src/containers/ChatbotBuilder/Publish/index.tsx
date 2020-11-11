@@ -39,9 +39,9 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function PublishAgent() {
   const classes = useStyles();
-  let { agentId } = useParams();
-  agentId = parseInt(agentId);
-  const { projectId } = useParams();
+  const params = useParams<{ agentId: string, projectId: string }>();
+  const agentId = parseInt(params.agentId, 10);
+
   const { enqueueSnackbar } = useSnackbar();
   const [state, setState] = useState({
     loading: false,
@@ -51,7 +51,7 @@ export default function PublishAgent() {
   const apiKeyQueryResult = useQuery(getApiKeysQuery, {
     fetchPolicy: 'cache-and-network',
     variables: {
-      projectId,
+      projectId: params.projectId,
     },
   });
 

@@ -17,8 +17,9 @@ const ImageUploader = ({
   label,
   iconType,
 }: any) => {
-  const { agentId } = useParams<{ agentId: string }>();
-  const numAgentId = Number(agentId);
+  const params = useParams<{ agentId: string }>();
+  const agentId = parseInt(params.agentId, 10);
+
   const { enqueueSnackbar } = useSnackbar();
   const [isFileLoading, setIsFileLoading] = useState(false);
   const [file, setFile] = useState<Maybe<File>>(null);
@@ -39,7 +40,7 @@ const ImageUploader = ({
     {
       variables: {
         iconType,
-        agentId: numAgentId,
+        agentId,
       },
       skip: !file,
     },

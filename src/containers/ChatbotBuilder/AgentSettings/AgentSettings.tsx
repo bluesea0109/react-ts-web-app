@@ -47,8 +47,9 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const AgentSettings = () => {
   const classes = useStyles();
-  const { agentId } = useParams<{ agentId: string }>();
-
+  const params = useParams<{ agentId: string }>();
+  const agentId = parseInt(params.agentId, 10);
+  
   const [config, setConfig] = useRecoilState(currentAgentConfig);
   const [widgetSettings, setWidgetSettings] = useRecoilState(
     currentWidgetSettings,
@@ -71,7 +72,7 @@ const AgentSettings = () => {
   const agentsData = useQuery<{ ChatbotService_agent: IAgent }>(
     CHATBOT_GET_AGENT,
     {
-      variables: { agentId: Number(agentId) },
+      variables: { agentId, },
       onCompleted: (data) => {
         setConfig(AgentConfig.fromJsonObj(data.ChatbotService_agent.config));
       },

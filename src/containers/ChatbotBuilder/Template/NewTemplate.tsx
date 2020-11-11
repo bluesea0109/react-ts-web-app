@@ -33,10 +33,10 @@ const NewUtteranceAction: React.FC = () => {
   const classes = useStyles();
   const [text, setText] = useState<string>('');
   const [name, setName] = useState<string>('');
-  const { agentId } = useParams();
-  const numAgentId = Number(agentId);
+  const params = useParams<{ agentId: string }>();
+  const agentId = parseInt(params.agentId, 10);
   const [createUtteranceAction, { loading, error }] = useMutation(CHATBOT_CREATE_UTTERANCE_ACTION,  {
-    refetchQueries: [{ query: CHATBOT_GET_UTTERANCE_ACTIONS, variables: { agentId : numAgentId }  }],
+    refetchQueries: [{ query: CHATBOT_GET_UTTERANCE_ACTIONS, variables: { agentId }  }],
     awaitRefetchQueries: true,
   });
 
@@ -48,7 +48,7 @@ const NewUtteranceAction: React.FC = () => {
   const onSubmit =  () => {
     createUtteranceAction({
       variables: {
-        agentId: numAgentId ,
+        agentId,
         name,
         text,
       },

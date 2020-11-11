@@ -51,7 +51,7 @@ interface UpdateDomainsMutationResult {
 
 export default function Project() {
   const classes = useStyles();
-  const { projectId } = useParams();
+  const { projectId } = useParams<{ projectId: string }>();
   const [currentKey, setCurrentKey] = useState<IAPIKey | null>(null);
   const [showCreateKeyDialog, setShowCreateKeyDialog] = useState(false);
 

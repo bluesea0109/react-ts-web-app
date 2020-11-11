@@ -101,8 +101,8 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
 
   const tagTypes = Array.from(config?.getTagTypes() ?? []);
 
-  const { agentId } = useParams<{ agentId: string }>();
-  const numAgentId = Number(agentId);
+  const params = useParams<{ agentId: string }>();
+  const agentId = parseInt(params.agentId, 10);
   const [tagType, setTagType] = useState<string | undefined>();
   const [addTag, setAddTag] = useState(false);
   const [newTag, setNewTag] = useState('');
@@ -112,7 +112,7 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
 
   const [updateAgent] = useMutation(CHATBOT_SAVE_CONFIG_AND_SETTINGS, {
     refetchQueries: [
-      { query: CHATBOT_GET_AGENT, variables: { agentId: Number(agentId) } },
+      { query: CHATBOT_GET_AGENT, variables: { agentId } },
     ],
     awaitRefetchQueries: true,
   });
@@ -142,7 +142,7 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
       ...examples,
       {
         id: lastID.current + 1,
-        agentId: numAgentId,
+        agentId,
         intent: '',
         tags: [],
         text: '',
@@ -202,7 +202,7 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
       if (examples.length > 0) {
         await createExamples({
           variables: {
-            agentId: numAgentId,
+            agentId,
             examples: examples.map((ex) => ({
               text: ex.text,
               intent: newIntent.name,

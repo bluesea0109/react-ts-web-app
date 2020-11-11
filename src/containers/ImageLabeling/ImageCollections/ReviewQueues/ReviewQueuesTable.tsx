@@ -37,9 +37,11 @@ const useStyles = makeStyles((theme: Theme) =>
 function ReviewQueuesTable() {
   const classes = useStyles();
   const rowsPerPage = 10;
-  const { orgId, projectId } = useParams();
-  let { collectionId } = useParams();
-  collectionId = parseInt(collectionId, 10);
+  const { orgId, projectId } = useParams<{ orgId: string, projectId: string }>();
+  const params = useParams<{
+    collectionId: string,
+  }>();
+  const collectionId = parseInt(params.collectionId, 10);
   const history = useHistory();
   const [state, setState] = useState({
     loading: false,

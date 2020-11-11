@@ -41,7 +41,7 @@ function DeleteCategorySetDialog(props: IDeleteCategorySetProps) {
   const [state, setState] = useState({
     open: false,
   });
-  const { projectId } = useParams();
+  const { projectId } = useParams<{ projectId: string }>();
   const [deleteCategorySet, { loading, error }] = useMutation(DELETE_CATEGORY_SET,
     {
       onCompleted: () => {

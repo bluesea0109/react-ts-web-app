@@ -49,7 +49,8 @@ export default function CreatePolicyForm({
   const [utterance, setUtterance] = useState('');
   const [policyName, setPolicyName] = useState('');
   const [actionName, setActionName] = useState('');
-  const { agentId } = useParams();
+  const params = useParams<{ agentId: string }>();
+  const agentId = parseInt(params.agentId, 10);
   const [config, setConfig] = useRecoilState(currentAgentConfig);
   const [updateAgent] = useMutation(CHATBOT_UPDATE_AGENT);
 
@@ -73,7 +74,7 @@ export default function CreatePolicyForm({
 
     const mutationResult = await updateAgent({
       variables: {
-        agentId: parseInt(agentId),
+        agentId,
         config: config.toJsonObj(),
       },
     });

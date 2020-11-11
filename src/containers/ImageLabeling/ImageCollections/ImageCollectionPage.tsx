@@ -1,3 +1,4 @@
+import { string } from '@bavard/agent-config/dist/graph-policy/yup';
 import { Link, Tabs, Toolbar, Typography } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -22,7 +23,12 @@ const useStyles = makeStyles((theme: Theme) =>
 function ImageCollectionPage() {
   // eslint-disable-next-line
   const classes = useStyles();
-  const { orgId, projectId, collectionId, tab } = useParams();
+  const { orgId, projectId, collectionId, tab } = useParams<{
+    orgId: string,
+    projectId: string,
+    collectionId: string,
+    tab: string,
+  }>();
   const history = useHistory();
 
   const handleChangeTab = (event: any, value: any) => {
