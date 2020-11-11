@@ -167,7 +167,7 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
   const { orgId, projectId, collectionId } = useParams<{
     orgId: string,
     projectId: string,
-    collectionId: string
+    collectionId: string,
   }>();
   const labels = useSelector(getLabels);
 

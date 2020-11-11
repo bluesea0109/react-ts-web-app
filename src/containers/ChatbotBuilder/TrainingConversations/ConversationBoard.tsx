@@ -206,7 +206,7 @@ export const ConversationBoard = ({
   const params = useParams<{ agentId: string }>();
   const agentId = parseInt(params.agentId, 10);
   const [, setErrStatus] = useState('');  // errStatus
-  
+
   const [actionData, setActionsValue] = useState<any | null>(
     isUpdate ? tempActionData : [],
   );

@@ -49,7 +49,7 @@ const AgentSettings = () => {
   const classes = useStyles();
   const params = useParams<{ agentId: string }>();
   const agentId = parseInt(params.agentId, 10);
-  
+
   const [config, setConfig] = useRecoilState(currentAgentConfig);
   const [widgetSettings, setWidgetSettings] = useRecoilState(
     currentWidgetSettings,
@@ -72,7 +72,7 @@ const AgentSettings = () => {
   const agentsData = useQuery<{ ChatbotService_agent: IAgent }>(
     CHATBOT_GET_AGENT,
     {
-      variables: { agentId, },
+      variables: { agentId },
       onCompleted: (data) => {
         setConfig(AgentConfig.fromJsonObj(data.ChatbotService_agent.config));
       },

@@ -30,7 +30,7 @@ export default function TrainingJobsTab() {
   const classes = useStyles();
   const params = useParams<{ agentId: string }>();
   const agentId = parseInt(params.agentId, 10);
-  
+
   return (
     <div className={'page-container'}>
       <Typography className={classes.pageTitle} variant="h6">
