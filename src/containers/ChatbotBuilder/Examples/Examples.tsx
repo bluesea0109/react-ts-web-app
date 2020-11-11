@@ -82,7 +82,8 @@ const Examples = () => {
     deleteExampleMutation.error ||
     updateExampleMutation.error;
 
-  const examples = examplesData?.data?.ChatbotService_examples || [];
+  const examples = examplesData?.data?.ChatbotService_examples.data || [];
+  const exampleCount = examplesData?.data?.ChatbotService_examples.total || 0;
   const tagTypes = Array.from(config?.getTagTypes() || []);
   const intents = Array.from(config?.getIntents().map((x) => x.name) || []);
 

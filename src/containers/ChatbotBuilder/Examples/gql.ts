@@ -41,17 +41,20 @@ export const getExamplesQuery = gql`
       limit: $limit
       intent: $intent
     ) {
-      id
-      intent
-      agentId
-      text
-      tags {
+      data {
         id
-        exampleId
-        tagType
-        start
-        end
+        intent
+        agentId
+        text
+        tags {
+          id
+          exampleId
+          tagType
+          start
+          end
+        }
       }
+      total
     }
   }
 `;
