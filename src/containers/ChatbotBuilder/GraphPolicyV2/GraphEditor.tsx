@@ -759,7 +759,6 @@ const GraphEditor = ({ agentId, policy, onSave }: IProps) => {
 
   const handleCanvasClick = () => {
     selectNode(undefined);
-    setShowEdgeActions(undefined);
   };
 
   return (
