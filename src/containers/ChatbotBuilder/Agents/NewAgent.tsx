@@ -18,6 +18,7 @@ import {
 } from '../../../common-gql-queries';
 import { TextInput } from '../../../components';
 import { IUser } from '../../../models/user-service';
+import { checkNameValid } from '../../../utils/regexps';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import UploadDataDialog from '../UploadData/UploadDataDialog';
 
@@ -50,7 +51,7 @@ const NewAgent: React.FC<INewAgentProps> = ({ user }) => {
   const [uname, setUname] = useState<string>('');
   const { enqueueSnackbar } = useSnackbar();
 
-  const { projectId } = useParams<{ projectId: string}>();
+  const { projectId } = useParams<{ projectId: string }>();
   const [createAgent, { loading, error }] = useMutation(CHATBOT_CREATE_AGENT, {
     refetchQueries: [{ query: CHATBOT_GET_AGENTS, variables: { projectId } }],
     awaitRefetchQueries: true,
@@ -72,6 +73,14 @@ const NewAgent: React.FC<INewAgentProps> = ({ user }) => {
     if (!user.activeProject) {
       return;
     }
+    if (!checkNameValid(uname)) {
+      enqueueSnackbar(
+        'The name can contain only alphanumeric characters and hyphens, underscores.',
+        { variant: 'error' },
+      );
+      return;
+    }
+
     createAgent({
       variables: {
         projectId,
