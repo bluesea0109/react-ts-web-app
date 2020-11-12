@@ -108,7 +108,6 @@ export default function UpsertNodeForm({
       return setError('Please select an image for the option');
     }
 
-    console.log('EXISTING ', existingImg, imgFile);
     // New image file has been selected
     if (!existingImg && imgFile) {
       const uploadUrl = signedImgUploadResult.data?.ChatbotService_imageOptionUploadUrl?.url.replace(
@@ -130,11 +129,11 @@ export default function UpsertNodeForm({
 
       try {
         setLoading(true);
-        console.log('UPLOADING FILE: ');
+
         await uploadImageFile(imgFile, uploadUrl);
 
         imgQuery.refetch();
-        console.log('REFETCHED');
+
         setLoading(false);
       } catch (e) {
         enqueueSnackbar(
@@ -152,8 +151,6 @@ export default function UpsertNodeForm({
       targetLink,
       intent,
     );
-
-    console.log(newNode);
 
     onSubmit?.(newNode);
   };

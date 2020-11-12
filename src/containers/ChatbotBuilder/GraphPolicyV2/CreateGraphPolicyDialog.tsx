@@ -72,8 +72,6 @@ const CreateGraphPolicyDialog = ({ open, agentId, onSuccess }: IProps) => {
   };
 
   const handleSubmit = async () => {
-    console.log({ policyName, startUtterance });
-
     if (!policyName || !startUtterance) {
       return setError('Policy Name and Start Node Utterance are required');
     }
@@ -85,12 +83,8 @@ const CreateGraphPolicyDialog = ({ open, agentId, onSuccess }: IProps) => {
       startNode,
       new Set([startNode]),
     );
-    console.log('POLICY: ', policy);
 
     agentConfig?.addGraphPolicyV2(policy);
-
-    console.log('AGENT CONFIG: ', agentConfig);
-    console.log('AGENT CONFIG JSON: ', agentConfig.toJsonObj());
 
     setAgentConfig(agentConfig);
 
@@ -100,8 +94,6 @@ const CreateGraphPolicyDialog = ({ open, agentId, onSuccess }: IProps) => {
         config: agentConfig.toJsonObj(),
       },
     });
-
-    console.log('mutation result: ', mutationResult);
 
     setLoading(false);
 
