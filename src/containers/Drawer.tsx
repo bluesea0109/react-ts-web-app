@@ -15,6 +15,15 @@ import SubMenuIcon from './IconButtons/SubMenuIcon';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    '@global': {
+      '*::-webkit-scrollbar': {
+        width: '0.4em'
+      },
+      '*::-webkit-scrollbar-thumb': {
+        backgroundColor: 'rgba(74, 144, 226, .7)',
+        borderRadius: '10px'
+      }
+    },
     list: {
       maxWidth: 260,
       backgroundColor: '#151630',
@@ -50,6 +59,9 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '100px',
       cursor: 'pointer',
     },
+    customDrawer: {
+      
+    }
   }),
 );
 
@@ -274,7 +286,7 @@ function CustomDrawer(props: CustomDrawerProps) {
         return <></>;
     }
   };
-  return <>{list()}</>;
+  return <div className={classes.customDrawer}>{list()}</div>;
 }
 
 export default CustomDrawer;
