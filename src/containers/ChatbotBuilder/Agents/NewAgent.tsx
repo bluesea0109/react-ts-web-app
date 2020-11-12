@@ -1,4 +1,3 @@
-import { useMutation } from '@apollo/client';
 import {
   Button,
   createStyles,
@@ -9,17 +8,10 @@ import {
   Typography,
 } from '@material-ui/core';
 import clsx from 'clsx';
-import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
-import {
-  CHATBOT_CREATE_AGENT,
-  CHATBOT_GET_AGENTS,
-} from '../../../common-gql-queries';
 import { TextInput } from '../../../components';
 import { IUser } from '../../../models/user-service';
-import { checkNameValid } from '../../../utils/regexps';
-import ApolloErrorPage from '../../ApolloErrorPage';
 import UploadDataDialog from '../UploadData/UploadDataDialog';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -44,50 +36,22 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface INewAgentProps {
   user: IUser;
+  loading: boolean;
+  onAddAgent: (uname: string) => void;
 }
 
-const NewAgent: React.FC<INewAgentProps> = ({ user }) => {
+const NewAgent: React.FC<INewAgentProps> = ({ user, loading, onAddAgent }) => {
   const classes = useStyles();
   const [uname, setUname] = useState<string>('');
-  const { enqueueSnackbar } = useSnackbar();
 
   const { projectId } = useParams<{ projectId: string }>();
-  const [createAgent, { loading, error }] = useMutation(CHATBOT_CREATE_AGENT, {
-    refetchQueries: [{ query: CHATBOT_GET_AGENTS, variables: { projectId } }],
-    awaitRefetchQueries: true,
-    onError: (err) => {
-      enqueueSnackbar(err.message, { variant: 'error' });
-    },
-  });
-
-  if (error) {
-    // TODO: handle errors
-    return <ApolloErrorPage error={error} />;
-  }
 
   const onUploadComplete = () => {
     setUname('');
   };
 
-  const onSubmit = () => {
-    if (!user.activeProject) {
-      return;
-    }
-    if (!checkNameValid(uname)) {
-      enqueueSnackbar(
-        'The name can contain only alphanumeric characters and hyphens, underscores.',
-        { variant: 'error' },
-      );
-      return;
-    }
-
-    createAgent({
-      variables: {
-        projectId,
-        uname,
-      },
-    });
-
+  const onAdd = () => {
+    onAddAgent(uname);
     setUname('');
   };
 
@@ -112,7 +76,7 @@ const NewAgent: React.FC<INewAgentProps> = ({ user }) => {
           variant="contained"
           color="primary"
           disabled={loading || !uname}
-          onClick={onSubmit}>
+          onClick={onAdd}>
           Create Without Data
         </Button>
         <UploadDataDialog

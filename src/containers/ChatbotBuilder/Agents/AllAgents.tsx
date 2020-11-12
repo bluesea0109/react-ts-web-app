@@ -1,9 +1,22 @@
+import { useMutation, useQuery } from '@apollo/client';
 import { Card, Grid, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { useSnackbar } from 'notistack';
 import React from 'react';
+import { useParams } from 'react-router';
+import {
+  CHATBOT_CREATE_AGENT,
+  CHATBOT_DELETE_AGENT,
+  CHATBOT_GET_AGENTS,
+} from '../../../common-gql-queries';
+import { IAgent } from '../../../models/chatbot-service';
 import { IUser } from '../../../models/user-service';
+import { checkNameValid } from '../../../utils/regexps';
+import ApolloErrorPage from '../../ApolloErrorPage';
+import ContentLoading from '../../ContentLoading';
 import AgentsTable from './AgentsTable';
 import NewAgent from './NewAgent';
+import { IGetAgents } from './types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,6 +40,86 @@ interface IChatbotBuilderAgentProps {
 const AllAgents: React.FC<IChatbotBuilderAgentProps> = ({ user }) => {
   const classes = useStyles();
   const activeProj = user.activeProject;
+  const { enqueueSnackbar } = useSnackbar();
+
+  const { projectId } = useParams<{
+    projectId: string;
+  }>();
+
+  const agentsData = useQuery<IGetAgents>(CHATBOT_GET_AGENTS, {
+    variables: { projectId },
+  });
+
+  const agents: IAgent[] | undefined =
+    agentsData && agentsData.data && agentsData.data.ChatbotService_agents;
+
+  const [
+    deleteAgent,
+    { loading: deleteAgentLoading, error: deleteAgentError },
+  ] = useMutation(CHATBOT_DELETE_AGENT, {
+    refetchQueries: [{ query: CHATBOT_GET_AGENTS, variables: { projectId } }],
+    awaitRefetchQueries: true,
+  });
+
+  const [
+    createAgent,
+    { loading: createAgentLoading, error: createAgentError },
+  ] = useMutation(CHATBOT_CREATE_AGENT, {
+    refetchQueries: [{ query: CHATBOT_GET_AGENTS, variables: { projectId } }],
+    awaitRefetchQueries: true,
+    onError: (err) => {
+      enqueueSnackbar(err.message, { variant: 'error' });
+    },
+  });
+
+  if (agentsData.loading || createAgentLoading || deleteAgentLoading) {
+    return <ContentLoading shrinked={true} />;
+  }
+
+  const commonError = agentsData.error
+    ? agentsData.error
+    : deleteAgentError || createAgentError;
+  if (commonError) {
+    // TODO: handle errors
+    return <ApolloErrorPage error={commonError} />;
+  }
+
+  const onDeleteAgent = (agent: IAgent) => {
+    deleteAgent({
+      variables: {
+        agentId: Number(agent.id),
+      },
+    });
+  };
+
+  const onAddAgent = (uname: string) => {
+    if (!user.activeProject) {
+      return;
+    }
+
+    if (agents && agents.some((agent) => agent.uname === uname)) {
+      enqueueSnackbar(
+        'The agent name must be unique. You can\'t use that name twice',
+        { variant: 'error' },
+      );
+      return;
+    }
+
+    if (!checkNameValid(uname)) {
+      enqueueSnackbar(
+        'The name can only contain alphanumeric characters and hyphens, underscores.',
+        { variant: 'error' },
+      );
+      return;
+    }
+
+    createAgent({
+      variables: {
+        projectId,
+        uname,
+      },
+    });
+  };
 
   return (
     <Grid container={true} className={classes.root}>
@@ -37,10 +130,18 @@ const AllAgents: React.FC<IChatbotBuilderAgentProps> = ({ user }) => {
       </Grid>
       <Grid item={true} container={true}>
         <Grid item={true} xs={12} sm={12} className={classes.gridRow}>
-          <NewAgent user={user} />
+          <NewAgent
+            user={user}
+            loading={createAgentLoading}
+            onAddAgent={onAddAgent}
+          />
         </Grid>
         <Grid item={true} xs={12} sm={12}>
-          <Card>{activeProj && <AgentsTable />}</Card>
+          <Card>
+            {activeProj && agents && (
+              <AgentsTable agents={agents} onDeleteAgent={onDeleteAgent} />
+            )}
+          </Card>
         </Grid>
       </Grid>
     </Grid>
