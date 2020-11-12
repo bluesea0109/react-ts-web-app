@@ -53,7 +53,6 @@ export default function UpsertAgentFormNode({
     fieldType: EFormFieldTypes,
     required: boolean = true,
   ) => {
-    console.log('ADDING FORM FIELD: ', fieldName, fieldType, required);
     setFormFields([
       ...formFields,
       { name: fieldName, type: fieldType, required },
@@ -66,14 +65,12 @@ export default function UpsertAgentFormNode({
   };
 
   const handleSubmit = () => {
-    console.log({ formFields, url });
-
     if (!url) {
       return setError('Url is required');
     }
 
     const newNode = new AgentFormNode(nodeId, url, formFields);
-    console.log('NEW NODE: ', newNode);
+
     onSubmit?.(newNode);
   };
 

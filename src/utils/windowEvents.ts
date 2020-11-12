@@ -14,22 +14,18 @@ export const getAction = (event: KeyboardEvent): EKeyboardCmd | undefined => {
       break;
     }
     case 'arrowright': {
-      event.preventDefault();
       cmd = EKeyboardCmd.MOVERIGHT;
       break;
     }
     case 'arrowleft': {
-      event.preventDefault();
       cmd = EKeyboardCmd.MOVELEFT;
       break;
     }
     case 'arrowup': {
-      event.preventDefault();
       cmd = EKeyboardCmd.MOVEUP;
       break;
     }
     case 'arrowdown': {
-      event.preventDefault();
       cmd = EKeyboardCmd.MOVEDOWN;
       break;
     }
@@ -47,12 +43,12 @@ export const getAction = (event: KeyboardEvent): EKeyboardCmd | undefined => {
     cmd = EKeyboardCmd.COPY;
   } else if (key === 'v') {
     cmd = EKeyboardCmd.PASTE;
-  } else if (key === 'z') {
-    event.preventDefault();
-    cmd = EKeyboardCmd.UNDO;
-  } else if (key === 'y') {
-    event.preventDefault();
+  } else if (event.shiftKey && key === 'z') {
     cmd = EKeyboardCmd.REDO;
+  } else if (!event.shiftKey && key === 'z') {
+    cmd = EKeyboardCmd.UNDO;
+  } else if (key === 's') {
+    cmd = EKeyboardCmd.SAVE;
   }
 
   return cmd;

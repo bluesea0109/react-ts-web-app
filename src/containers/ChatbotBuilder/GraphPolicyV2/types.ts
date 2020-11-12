@@ -1,4 +1,7 @@
-import { GraphPolicyNode } from '@bavard/agent-config/dist/graph-policy-v2';
+import {
+  GraphPolicyNode,
+  IGraphPolicyV2,
+} from '@bavard/agent-config/dist/graph-policy-v2';
 import {
   EAgentNodeTypes,
   EUserNodeTypes,
@@ -43,4 +46,9 @@ export interface INodeCoordinates {
   nodeId: number;
   x: number;
   y: number;
+}
+
+export interface IGpHistory {
+  history: IGraphPolicyV2[];
+  currentIndex: number;
 }
