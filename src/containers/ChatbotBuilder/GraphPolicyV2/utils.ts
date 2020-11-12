@@ -2,12 +2,11 @@ import {
   GraphPolicyNode,
   GraphPolicyV2,
   IGraphPolicyNode,
-  IGraphPolicyV2,
   UserNode,
 } from '@bavard/agent-config/dist/graph-policy-v2';
 import { EAgentNodeTypes } from '@bavard/agent-config/dist/graph-policy-v2/nodes';
 import _uniq from 'lodash/uniq';
-import { ENodeActor, IGpHistory } from './types';
+import { ENodeActor } from './types';
 
 export const snapItemPosition = (
   x: number,
