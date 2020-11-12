@@ -8,9 +8,10 @@ import {
 } from '@material-ui/core';
 import firebase from 'firebase/app';
 import 'firebase/auth';
-import React from 'react';
+import React, { useMemo } from 'react';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import { useHistory, useLocation } from 'react-router-dom';
+import { EMAIL_ENTER_SCREEN, INITIAL_SCREEN } from './constants';
 import SignInFiller from './SignInFiller';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -60,11 +61,11 @@ const useStyles = makeStyles((theme: Theme) =>
 
         '& .firebaseui-card-actions': {
           padding: '0px !important',
-        },
 
-        '& .firebaseui-form-actions': {
-          display: 'flex !important',
-          flexDirection: 'column !important',
+          '& .firebaseui-form-actions': {
+            display: 'flex !important',
+            flexDirection: 'column-reverse !important',
+          },
         },
       },
     },
@@ -105,6 +106,13 @@ function SignInPage(props: any) {
     },
   };
 
+  const currentScreen = useMemo(() => {
+    if (location.search === '?mode=select') {
+      return EMAIL_ENTER_SCREEN;
+    }
+    return INITIAL_SCREEN;
+  }, [location]);
+
   return (
     <Grid container={true} className={classes.root}>
       <Grid
@@ -119,15 +127,27 @@ function SignInPage(props: any) {
             <Typography variant="h6">Bavard</Typography>
           </Box>
 
-          <Box textAlign="center" my={2}>
-            <Typography variant="h6">Log In</Typography>
-            <Typography variant="subtitle1">
-              Choose how you would like to sign in below.
-            </Typography>
-            <Typography variant="subtitle1">
-              You can create an account with each option.
-            </Typography>
-          </Box>
+          {currentScreen === INITIAL_SCREEN && (
+            <Box textAlign="center" my={2}>
+              <Typography variant="h6">Log In</Typography>
+              <Typography variant="subtitle1">
+                Choose how you would like to sign in below.
+              </Typography>
+              <Typography variant="subtitle1">
+                You can create an account with each option.
+              </Typography>
+            </Box>
+          )}
+
+          {currentScreen === EMAIL_ENTER_SCREEN && (
+            <Box textAlign="center" my={2}>
+              <Typography variant="h6">Enter your Email Address</Typography>
+              <Typography variant="subtitle1">
+                If you do not have an account yet you can choose a password on
+                the next screen.
+              </Typography>
+            </Box>
+          )}
 
           <Box>
             <StyledFirebaseAuth
