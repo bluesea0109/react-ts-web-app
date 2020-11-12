@@ -59,9 +59,9 @@ const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
     if (selected === MenuName.CREATE_BOT && match?.path) {
       // setOpen(true);
       setOpenSubItem(true);
-      onClick(MenuName.OPEN_CONFIG);
-      setSelected(MenuName.OPEN_CONFIG);
-      onSetAgentID(agentParams);
+      onClick(MenuName.OPEN_CONFIG);            // open config in default
+      setSelected(MenuName.OPEN_CONFIG);        // ...
+      onSetAgentID(agentParams);                // who?
     }
   }, [match?.path]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -136,17 +136,15 @@ const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
       onClick(MenuName.DASHBOARD);
       setSelected(MenuName.DASHBOARD);
     } else if (createBotRegx.test(currentLocation)) {
-      onClick(MenuName.CREATE_BOT);
-      setSelected(MenuName.CREATE_BOT);
+      //onClick(MenuName.CREATE_BOT);
+      //setSelected(MenuName.CREATE_BOT);
+      onClose();
     } else if (imageRegx.test(currentLocation)) {
-      // onClick(MenuName.IMAGE_LABELING);
-      setSelected(MenuName.IMAGE_LABELING);
+      onClose()
     } else if (faqRegx.test(currentLocation)) {
-      // onClick(MenuName.FAQ);
-      setSelected(MenuName.FAQ);
+      onClose()
     } else if (txtRegx.test(currentLocation)) {
-      // onClick(MenuName.TEXT_LABELING);
-      setSelected(MenuName.TEXT_LABELING);
+      onClose()
     } else if (
       createBot_Actions.test(currentLocation) ||
       createBot_Intents.test(currentLocation) ||
@@ -229,27 +227,27 @@ const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
       handler: openBotCreation,
       hidden: false,
     },
-    {
-      path: createAgentPath('Actions'),
-      name: MenuName.OPEN_CONFIG,
-      css: 'Configuration',
-      handler: openConfig,
-      hidden: true,
-    },
-    {
-      path: createAgentPath('training-jobs'),
-      name: MenuName.OPEN_TRAINING,
-      css: 'Training',
-      handler: openTraining,
-      hidden: true,
-    },
-    {
-      path: createAgentPath('chats'),
-      name: MenuName.OPEN_LAUNCHING,
-      css: 'Launching',
-      handler: openLaunching,
-      hidden: true,
-    },
+    // {
+    //   path: createAgentPath('Actions'),
+    //   name: MenuName.OPEN_CONFIG,
+    //   css: 'Configuration',
+    //   handler: openConfig,
+    //   hidden: true,
+    // },
+    // {
+    //   path: createAgentPath('training-jobs'),
+    //   name: MenuName.OPEN_TRAINING,
+    //   css: 'Training',
+    //   handler: openTraining,
+    //   hidden: true,
+    // },
+    // {
+    //   path: createAgentPath('chats'),
+    //   name: MenuName.OPEN_LAUNCHING,
+    //   css: 'Launching',
+    //   handler: openLaunching,
+    //   hidden: true,
+    // },
     {
       path: createPath('image-labeling/collections'),
       name: MenuName.IMAGE_LABELING,
@@ -273,15 +271,15 @@ const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
     },
   ];
 
-  if (openSubItem) {
-    data[2].hidden = false;
-    data[3].hidden = false;
-    data[4].hidden = false;
-  } else {
-    data[2].hidden = true;
-    data[3].hidden = true;
-    data[4].hidden = true;
-  }
+  // if (openSubItem) {
+  //   data[2].hidden = false;
+  //   data[3].hidden = false;
+  //   data[4].hidden = false;
+  // } else {
+  //   data[2].hidden = true;
+  //   data[3].hidden = true;
+  //   data[4].hidden = true;
+  // }
 
   return (
     <VerticalSidebar>

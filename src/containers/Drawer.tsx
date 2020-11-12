@@ -175,7 +175,7 @@ function CustomDrawer(props: CustomDrawerProps) {
           </List>
         );
       case MenuName.CREATE_BOT:
-        return (
+      /*  return (
           <List>
             <ListItem className={classes.blank} />
             <ListItem
@@ -200,7 +200,8 @@ function CustomDrawer(props: CustomDrawerProps) {
               />
             </ListItem>
           </List>
-        );
+        );  */
+        return null
       case MenuName.OPEN_CONFIG:
         return (
           <List>
