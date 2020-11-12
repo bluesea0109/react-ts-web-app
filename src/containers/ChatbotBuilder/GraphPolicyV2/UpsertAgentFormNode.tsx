@@ -6,6 +6,7 @@ import {
 
 import { IFormField } from '@bavard/agent-config/dist';
 
+import { EFormFieldTypes } from '@bavard/agent-config/dist/enums';
 import {
   Button,
   FormControl,
@@ -18,7 +19,6 @@ import { CancelOutlined } from '@material-ui/icons';
 import { Alert } from '@material-ui/lab';
 import React, { useState } from 'react';
 import { AddFieldForm } from '../GraphPolicy/AddActionField';
-import { EFormFieldTypes } from '@bavard/agent-config/dist/enums';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
