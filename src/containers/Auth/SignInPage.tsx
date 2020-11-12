@@ -28,8 +28,22 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingLeft: theme.spacing(10),
       paddingRight: theme.spacing(10),
     },
-    styledFirebaseAuth: {
 
+    firebaseUIBox: {
+      '& .firebaseui-idp-button': {
+        border: '1px solid #0061FF !important',
+        backgroundColor: 'white !important',
+
+        '& .firebaseui-idp-text': {
+          color: '#0061FF !important',
+        },
+
+        '&.firebaseui-idp-password': {
+          '& .firebaseui-idp-icon-wrapper': {
+            backgroundColor: '#db4437 !important',
+          },
+        },
+      },
     },
   }),
 );
@@ -49,8 +63,6 @@ function SignInPage(props: any) {
       {
         provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
         customParameters: {
-          // Forces account selection even when one account
-          // is available.
           prompt: 'select_account',
         },
       },
@@ -83,11 +95,34 @@ function SignInPage(props: any) {
         alignItems="center"
         className={classes.loginCol}
       >
-        <StyledFirebaseAuth
-          uiConfig={uiConfig}
-          firebaseAuth={firebase.auth()}
-          className={classes.styledFirebaseAuth}
-        />
+        <Box display="flex" flexDirection="column" alignItems="center">
+          <Box display="flex" alignItems="center" my={2}>
+            <img src={'/logo512.png'} alt="logo" width="60px" height="60px"/>
+            <Typography variant="h6">
+              Bavard
+            </Typography>
+          </Box>
+
+          <Box textAlign="center" my={2}>
+            <Typography variant="h6">
+              Log In
+            </Typography>
+            <Typography variant="subtitle1">
+              Choose how you would like to sign in below.
+            </Typography>
+            <Typography variant="subtitle1">
+              You can create an account with each option.
+            </Typography>
+          </Box>
+
+          <Box>
+            <StyledFirebaseAuth
+              uiConfig={uiConfig}
+              firebaseAuth={firebase.auth()}
+              className={classes.firebaseUIBox}
+            />
+          </Box>
+        </Box>
       </Grid>
       <Grid item={true} container={true} xs={8} className={classes.filler}>
         <Grid item={true} sm={12} lg={8} className={classes.fillerTextBox}>
