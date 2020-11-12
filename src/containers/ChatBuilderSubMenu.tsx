@@ -2,8 +2,8 @@ import { createStyles, List, ListItem, Theme, Typography } from '@material-ui/co
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles } from '@material-ui/core/styles';
-import React, { useEffect, useState } from 'react';
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { botSubMenuData } from './Drawer';
 import SubMenuIcon from './IconButtons/SubMenuIcon';
 interface BotSubMenuProps {
@@ -27,8 +27,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 const BotSubMenu = ({title, items, category, getAgentPath}: BotSubMenuProps) => {
     const classes = useStyles();
-    const location = useLocation();
-    const history = useHistory();
+    const location = useLocation();    
     const selectedStyle = {
       backgroundColor: '#4A90E2',
       padding: '8px 20px 8px 20px',
