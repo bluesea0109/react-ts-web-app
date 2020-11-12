@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
+import { checkNameSchema } from '@bavard/agent-config/src/utils';
 import { Card, Grid, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { useSnackbar } from 'notistack';
@@ -11,7 +12,6 @@ import {
 } from '../../../common-gql-queries';
 import { IAgent } from '../../../models/chatbot-service';
 import { IUser } from '../../../models/user-service';
-import { checkNameValid } from '../../../utils/regexps';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 import AgentsTable from './AgentsTable';
@@ -105,7 +105,7 @@ const AllAgents: React.FC<IChatbotBuilderAgentProps> = ({ user }) => {
       return;
     }
 
-    if (!checkNameValid(uname)) {
+    if (!checkNameSchema(uname)) {
       enqueueSnackbar(
         'The name can only contain alphanumeric characters and hyphens, underscores.',
         { variant: 'error' },
