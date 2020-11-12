@@ -44,6 +44,27 @@ const useStyles = makeStyles((theme: Theme) =>
           },
         },
       },
+
+      '& .mdl-shadow--2dp': {
+        boxShadow: 'none !important',
+
+        '& .firebaseui-card-header': {
+          display: 'none !important',
+        },
+
+        '& .firebaseui-card-content': {
+          padding: '0px !important',
+        },
+
+        '& .firebaseui-card-actions': {
+          padding: '0px !important',
+        },
+
+        '& .firebaseui-form-actions': {
+          display: 'flex !important',
+          flexDirection: 'column !important',
+        },
+      },
     },
   }),
 );
