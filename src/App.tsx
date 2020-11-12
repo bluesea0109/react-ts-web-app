@@ -46,8 +46,8 @@ const useStyles = makeStyles((theme: Theme) =>
     drawer: {
       width: drawerWidth,
       flexShrink: 0,
-      whiteSpace: 'nowrap',      
-    },    
+      whiteSpace: 'nowrap',
+    },
     drawerHeader: {
       // necessary for content to be below app bar
       ...theme.mixins.toolbar,
@@ -117,7 +117,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     container: {
       padding: theme.spacing(2),
-    },    
+    },
   }),
 );
 
@@ -203,7 +203,7 @@ function App() {
         }}
         open={state.drawerOpen}
         onClose={onDrawerClose}>
-        <CustomDrawer          
+        <CustomDrawer
           user={data.currentUser}
           status={state.drawerOpen}
           navigation={navKey}

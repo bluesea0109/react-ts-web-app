@@ -17,12 +17,12 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     '@global': {
       '*::-webkit-scrollbar': {
-        width: '0.4em'
+        width: '0.4em',
       },
       '*::-webkit-scrollbar-thumb': {
         backgroundColor: 'rgba(74, 144, 226, .7)',
-        borderRadius: '10px'
-      }
+        borderRadius: '10px',
+      },
     },
     list: {
       maxWidth: 260,
@@ -60,8 +60,8 @@ const useStyles = makeStyles((theme: Theme) =>
       cursor: 'pointer',
     },
     customDrawer: {
-      
-    }
+
+    },
   }),
 );
 
@@ -183,13 +183,6 @@ function CustomDrawer(props: CustomDrawerProps) {
     }
 
     return `/orgs/${user.activeProject.orgId}`;
-  };
-
-  const createChatbotBuilder = (path: string = ''): string => {
-    if (!user.activeProject) {
-      return '/no-orgs';
-    }
-    return `/orgs/${user.activeProject.orgId}/projects/${user.activeProject.id}/chatbot-builder`;
   };
 
   const list = () => {
