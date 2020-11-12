@@ -1,8 +1,8 @@
 import {
-  EFormFieldTypes,
   IAgentFormAction,
   IFormField,
 } from '@bavard/agent-config';
+import { EFormFieldTypes } from '@bavard/agent-config/dist/enums';
 import {
   Button,
   createStyles,

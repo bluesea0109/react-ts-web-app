@@ -4,7 +4,7 @@ import {
   IAgentFormNode,
 } from '@bavard/agent-config/dist/graph-policy-v2';
 
-import { EFormFieldTypes, IFormField } from '@bavard/agent-config/dist';
+import { IFormField } from '@bavard/agent-config/dist';
 
 import {
   Button,
@@ -18,6 +18,7 @@ import { CancelOutlined } from '@material-ui/icons';
 import { Alert } from '@material-ui/lab';
 import React, { useState } from 'react';
 import { AddFieldForm } from '../GraphPolicy/AddActionField';
+import { EFormFieldTypes } from '@bavard/agent-config/dist/enums';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
