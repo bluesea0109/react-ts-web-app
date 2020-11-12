@@ -73,7 +73,6 @@ export default function UpsertNodeForm({
     const oldFields = formData;
     oldFields[field] = value;
     setFormData(formData);
-    console.log('FORM FIELDS: ', formData);
   };
 
   const submitAgentUtterance = () => {
@@ -101,8 +100,6 @@ export default function UpsertNodeForm({
 
     const newNode = new AgentEmailNode(nodeId, prompt, to);
 
-    console.log(newNode);
-
     onSubmit?.(newNode);
   };
 
@@ -115,8 +112,6 @@ export default function UpsertNodeForm({
     if (targetLink && !validateUrl(targetLink)) {
       return setError('Target Link is an invalid url');
     }
-
-    console.log(text, targetLink, intent);
 
     const newNode = new UserTextOptionNode(nodeId, text, targetLink, intent);
 

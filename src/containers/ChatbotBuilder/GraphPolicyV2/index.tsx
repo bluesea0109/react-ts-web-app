@@ -78,8 +78,6 @@ export default function GraphPolicies() {
   const [selectedPolicy, selectPolicy] = useState<GraphPolicyV2 | undefined>();
   const [updateAgent] = useMutation(CHATBOT_UPDATE_AGENT);
 
-  console.log(selectedPolicy, upsertDialogOpen);
-
   if (!config || !user) {
     return <></>;
   }
@@ -182,10 +180,7 @@ export default function GraphPolicies() {
     setLoading(false);
   };
 
-  console.log('CONFIG: ', config);
   const policies = config.getGraphPoliciesV2() || [];
-  console.log('POLICIES: ', policies);
-  console.log('CONFIG: ', config);
 
   return (
     <Grid container={true} className={'page-container'}>
@@ -196,7 +191,7 @@ export default function GraphPolicies() {
           onDelete={handleDeletePolicy}
           onView={handleViewPolicy}
           onExport={handleExport}
-          activePolicyName={config?.getActiveGraphPolicy()?.policyName}
+          activePolicyName={config.activePolicyName}
           policies={policies}
           toolbarChildren={
             <React.Fragment>
