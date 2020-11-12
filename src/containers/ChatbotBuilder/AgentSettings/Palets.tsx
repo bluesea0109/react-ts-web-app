@@ -28,8 +28,12 @@ export const ColorPalett = ({
             <Box
               style={{
                 height: '100px',
-                backgroundColor: `rgba(${settings.primaryColor.r}, ${settings.primaryColor.g}, ${settings.primaryColor.b}, ${settings.primaryColor.a})`,
-              }}/>
+                backgroundColor:
+                  (typeof settings.primaryColor === 'string') ? (
+                    settings.primaryColor
+                  ) :
+                  `rgba(${settings.primaryColor.r}, ${settings.primaryColor.g}, ${settings.primaryColor.b}, ${settings.primaryColor.a})`,
+              }} />
           </Grid>
           <Grid item={true} sm={4}>
             <Box style={{ marginLeft: '20px' }}>
@@ -59,17 +63,9 @@ export const ColorPalett = ({
           <GradientPicker
             defaultValue={settings?.widgetBg}
             label=""
-            onChange={(gradient) => updateSettings('primaryBg', gradient)}
+            onChange={(gradient) => updateSettings('widgetBg', gradient)}
           />
         </Grid>
-        <Box mt={1} mb={1} mx="auto">
-          {mode === 'dev' && (
-            <AlphaPicker
-              color={settings.primaryBg}
-              onChange={(color) => updateSettings('primaryBg', color.rgb)}
-            />
-          )}
-        </Box>
       </div>
     </div>
   );
