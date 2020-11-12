@@ -160,6 +160,7 @@ const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
       createBot_examples.test(currentLocation) ||
       createBot_Training_Conversations.test(currentLocation)
     ) {
+      console.log('******************************** Opening');
       setOpenSubItem(true);
       onClick(MenuName.OPEN_TRAINING);
       setSelected(MenuName.OPEN_TRAINING);
