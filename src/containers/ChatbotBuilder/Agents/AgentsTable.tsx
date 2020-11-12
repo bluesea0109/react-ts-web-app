@@ -60,7 +60,7 @@ function AgentsTable() {
       field: 'uname',
       renderRow: (agent: IAgent) => (
         <Link
-          to={`/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${agent.id}/Actions`}>
+          to={`/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${agent.id}/Actions/`}>
           {agent.uname}
         </Link>
       ),

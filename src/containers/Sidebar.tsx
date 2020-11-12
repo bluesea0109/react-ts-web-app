@@ -71,6 +71,11 @@ const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
       '^/orgs/[A-Z,a-z,0-9-]+/projects/[A-Z,a-z,0-9-]+/chatbot-builder$',
       'g',
     );
+    const createBotSubMenuRegx = RegExp(
+      '/orgs/[A-Z,a-z,0-9-]+/projects/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+',
+      'g',
+    );
+
     const createBot_Actions = RegExp(
       '^/orgs/[A-Z,a-z,0-9-]+/projects/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/Actions$',
       'g',
@@ -136,9 +141,10 @@ const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
       onClick(MenuName.DASHBOARD);
       setSelected(MenuName.DASHBOARD);
     } else if (createBotRegx.test(currentLocation)) {
-      // onClick(MenuName.CREATE_BOT);
-      // setSelected(MenuName.CREATE_BOT);
+      setSelected(MenuName.CREATE_BOT);
       onClose();
+    } else if (createBotSubMenuRegx.test(currentLocation)) {
+      setSelected(MenuName.CREATE_BOT);
     } else if (imageRegx.test(currentLocation)) {
       onClose();
     } else if (faqRegx.test(currentLocation)) {
@@ -160,7 +166,6 @@ const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
       createBot_examples.test(currentLocation) ||
       createBot_Training_Conversations.test(currentLocation)
     ) {
-      console.log('******************************** Opening');
       setOpenSubItem(true);
       onClick(MenuName.OPEN_TRAINING);
       setSelected(MenuName.OPEN_TRAINING);

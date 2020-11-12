@@ -1,4 +1,4 @@
-import { createStyles, Theme } from '@material-ui/core';
+import { Box, createStyles, Grid, Theme } from '@material-ui/core';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -42,6 +42,13 @@ const useStyles = makeStyles((theme: Theme) =>
 
     selected: {
       backgroundColor: 'red',
+    },
+    closeDrawer: {
+      display: 'flex',
+      justifyContent: 'flex-end',
+      padding: '10px 10px 0px 10px',
+      height: '100px',
+      cursor: 'pointer',
     },
   }),
 );
@@ -127,16 +134,18 @@ interface CustomDrawerProps {
   status: boolean;
   navigation: MenuName;
   agent: IAgentParam;
+  onClose: () => void;
 }
 
 function CustomDrawer(props: CustomDrawerProps) {
-  const { user, navigation, agent } = props;
+  const { user, navigation, agent, onClose } = props;
   const classes = useStyles();
   const location = useLocation();
 
   const selectedStyle = {
     backgroundColor: '#4A90E2',
-    padding: '5px',
+    padding: '8px',
+    marginLeft: '10px',
     borderRadius: '5px',
     wordwrap: 'normal',
   };
@@ -192,7 +201,7 @@ function CustomDrawer(props: CustomDrawerProps) {
                   !location.pathname.includes('projects') &&
                   location.pathname === '/'
                     ? selectedStyle
-                    : {}
+                    : {paddingLeft: '20px'}
                 }
               />
             </ListItem>
@@ -214,7 +223,7 @@ function CustomDrawer(props: CustomDrawerProps) {
                   !location.pathname.includes('projects') &&
                   location.pathname.includes('settings')
                     ? selectedStyle
-                    : {}
+                    : {paddingLeft: '20px'}
                 }
               />
             </ListItem>
@@ -236,7 +245,7 @@ function CustomDrawer(props: CustomDrawerProps) {
                   location.pathname.includes('projects') &&
                   location.pathname.includes('settings')
                     ? selectedStyle
-                    : {}
+                    : {paddingLeft: '20px'}
                 }
               />
             </ListItem>
@@ -244,6 +253,7 @@ function CustomDrawer(props: CustomDrawerProps) {
         );
       case MenuName.OPEN_CONFIG:
         return <>
+          <CloseDrawer handleClose={onClose}/>
           <BotSubMenu
             title={botSubMenuData.configure.category}
             items={botSubMenuData.configure.items}
@@ -268,3 +278,19 @@ function CustomDrawer(props: CustomDrawerProps) {
 }
 
 export default CustomDrawer;
+
+interface CloseDrawerProps {
+  handleClose: () => void;
+}
+
+const CloseDrawer = ({handleClose}: CloseDrawerProps) => {
+  const classes = useStyles();
+  const handleCloseDrawer = () => {
+    handleClose();
+  };
+  return <Grid className={classes.closeDrawer}>
+    <Box onClick={handleCloseDrawer}>
+      <img src="/back.png" width="30px" height="30px" alt="backbutton"/>
+    </Box>
+  </Grid>;
+};

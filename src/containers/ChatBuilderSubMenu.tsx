@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 const BotSubMenu = ({title, items, category, getAgentPath}: BotSubMenuProps) => {
     const classes = useStyles();
-    const location = useLocation();    
+    const location = useLocation();
     const selectedStyle = {
       backgroundColor: '#4A90E2',
       padding: '8px 20px 8px 20px',
