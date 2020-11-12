@@ -119,9 +119,12 @@ const GraphEditorPage = () => {
     return `calc(100vh - ${top ? top : 120}px)`;
   };
 
-  const handleSaveAgent = async () => {
+  const handleSavePolicy = async (policy: GraphPolicyV2) => {
     if (!!agentConfig) {
       try {
+        agentConfig.deleteGraphPolicyV2(policy.name);
+        agentConfig.addGraphPolicyV2(policy);
+
         await updateAgent({
           variables: {
             agentId: Number(agentId),
@@ -165,7 +168,7 @@ const GraphEditorPage = () => {
             <GraphEditor
               policy={gp}
               agentId={parseInt(agentId)}
-              onSave={handleSaveAgent}
+              onSave={handleSavePolicy}
             />
           )}
         </Card>

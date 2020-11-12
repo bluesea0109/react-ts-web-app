@@ -114,7 +114,7 @@ const useStyles = makeStyles((theme: Theme) =>
 interface IProps {
   agentId: number;
   policy: GraphPolicyV2;
-  onSave?: () => void;
+  onSave?: (policy: GraphPolicyV2) => void;
 }
 
 interface INodePair {
@@ -271,6 +271,7 @@ const GraphEditor = ({ agentId, policy, onSave }: IProps) => {
           gp.deleteNodeById(selectedNodeId);
           gp.sortAllChildNodes();
           deleteDraftNode(selectedNodeId);
+          updateGp(gp, true);
           enqueueSnackbar('Node Deleted', { variant: 'success' });
         }
         break;
@@ -285,7 +286,7 @@ const GraphEditor = ({ agentId, policy, onSave }: IProps) => {
         break;
       }
       case EKeyboardCmd.SAVE: {
-        onSave?.();
+        onSave?.(gp);
         event.preventDefault();
         break;
       }
@@ -814,7 +815,7 @@ const GraphEditor = ({ agentId, policy, onSave }: IProps) => {
               color="default"
               size="small"
               className={classes.controlButton}
-              onClick={() => onSave?.()}>
+              onClick={() => onSave?.(gp)}>
               <Save />
             </Button>
           </Tooltip>
