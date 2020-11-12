@@ -18,9 +18,10 @@ import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 import React, { useEffect, useState } from 'react';
 import { validateEmail } from '../../../utils/string';
 
-import {EFormFieldTypes, IFormField} from '@bavard/agent-config/dist';
+import { IFormField } from '@bavard/agent-config/dist';
 import RichTextInput from '../../../components/RichTextInput';
 import { AddFieldForm } from '../GraphPolicy/AddActionField';
+import { EFormFieldTypes } from '@bavard/agent-config/dist/enums';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { checkNameSchema } from '@bavard/agent-config/src/utils';
+import { checkNameSchema } from '@bavard/agent-config/dist/utils';
 import { Card, Grid, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { useSnackbar } from 'notistack';

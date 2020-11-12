@@ -1,4 +1,5 @@
-import { EFormFieldTypes, IFormField } from '@bavard/agent-config';
+import { IFormField } from '@bavard/agent-config';
+import { EFormFieldTypes } from '@bavard/agent-config/dist/enums';
 import {
   Checkbox,
   createStyles,

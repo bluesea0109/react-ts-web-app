@@ -2,7 +2,7 @@ import { createStyles, Grid, makeStyles, Paper, Theme, Typography } from '@mater
 import React from 'react';
 
 import { IUserUtteranceAction } from '@bavard/agent-config/dist/actions/user';
-import { IConversation, IDialogueTurn } from '@bavard/agent-config/dist/dialogue-manager/conversation';
+import { IConversation, IDialogueTurn } from '@bavard/agent-config/dist/conversations';
 
 interface ConversationFullProps {
   conversation: IConversation;
