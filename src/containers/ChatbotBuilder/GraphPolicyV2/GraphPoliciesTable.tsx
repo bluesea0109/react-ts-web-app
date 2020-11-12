@@ -1,15 +1,17 @@
 import { GraphPolicyV2 } from '@bavard/agent-config/dist/graph-policy-v2';
-import { Box, Chip, Typography } from '@material-ui/core';
+import { Box, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { AccountTreeRounded, Delete, GetApp, Power } from '@material-ui/icons';
 import 'firebase/auth';
 import React, { useMemo } from 'react';
 import { CommonTable } from '../../../components';
+import StatusChip from '../../../components/StatusChip';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     title: {
       width: '100%',
+      marginLeft: theme.spacing(2),
     },
   }),
 );
@@ -46,11 +48,13 @@ function GraphPoliciesTable({
       },
       {
         title: 'Status',
-        field: 'isActive',
-        render: (rowData: GraphPolicyV2) => {
+        field: 'name',
+        renderRow: (rowData: GraphPolicyV2) => {
           return (
             <Box>
-              {rowData.name === activePolicyName && <Chip label="Active" />}
+              {rowData.name === activePolicyName && (
+                <StatusChip text="Active" color="green" />
+              )}
             </Box>
           );
         },
@@ -62,7 +66,7 @@ function GraphPoliciesTable({
     <CommonTable
       title={
         <Typography variant="h6" className={classes.title}>
-          Graph Policies {toolbarChildren}
+          Visual Dialogue Graphs {toolbarChildren}
         </Typography>
       }
       data={{
