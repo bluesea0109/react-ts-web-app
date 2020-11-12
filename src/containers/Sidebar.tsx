@@ -29,7 +29,7 @@ interface ISidebarProps {
 
 const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
   // const [open, setOpen] = useState(false);
-  const [openSubItem, setOpenSubItem] = useState(false);
+  const [, setOpenSubItem] = useState(false);
   const [selected, setSelected] = useState(MenuName.DASHBOARD);
 
   const history = useHistory();
@@ -48,16 +48,8 @@ const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
   });
   const agentParams: any = match?.params;
 
-  const createAgentPath = (agentTab: string): string => {
-    if (!user.activeProject) {
-      return '/no-project';
-    }
-    return `/orgs/${user.activeProject.orgId}/projects/${user.activeProject.id}/chatbot-builder/agents/${agentParams?.agentId}/${agentTab}`;
-  };
-
   useEffect(() => {
     if (selected === MenuName.CREATE_BOT && match?.path) {
-      // setOpen(true);
       setOpenSubItem(true);
       onClick(MenuName.OPEN_CONFIG);
       setSelected(MenuName.OPEN_CONFIG);
@@ -71,6 +63,11 @@ const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
       '^/orgs/[A-Z,a-z,0-9-]+/projects/[A-Z,a-z,0-9-]+/chatbot-builder$',
       'g',
     );
+    const createBotSubMenuRegx = RegExp(
+      '/orgs/[A-Z,a-z,0-9-]+/projects/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+',
+      'g',
+    );
+
     const createBot_Actions = RegExp(
       '^/orgs/[A-Z,a-z,0-9-]+/projects/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/Actions$',
       'g',
@@ -136,17 +133,16 @@ const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
       onClick(MenuName.DASHBOARD);
       setSelected(MenuName.DASHBOARD);
     } else if (createBotRegx.test(currentLocation)) {
-      onClick(MenuName.CREATE_BOT);
+      setSelected(MenuName.CREATE_BOT);
+      onClose();
+    } else if (createBotSubMenuRegx.test(currentLocation)) {
       setSelected(MenuName.CREATE_BOT);
     } else if (imageRegx.test(currentLocation)) {
-      // onClick(MenuName.IMAGE_LABELING);
-      setSelected(MenuName.IMAGE_LABELING);
+      onClose();
     } else if (faqRegx.test(currentLocation)) {
-      // onClick(MenuName.FAQ);
-      setSelected(MenuName.FAQ);
+      onClose();
     } else if (txtRegx.test(currentLocation)) {
-      // onClick(MenuName.TEXT_LABELING);
-      setSelected(MenuName.TEXT_LABELING);
+      onClose();
     } else if (
       createBot_Actions.test(currentLocation) ||
       createBot_Intents.test(currentLocation) ||
@@ -195,24 +191,6 @@ const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
     onClose();
   };
 
-  const openConfig = (key: MenuName) => {
-    setSelected(key);
-    setOpenSubItem(true);
-    onClick(MenuName.OPEN_CONFIG);
-  };
-
-  const openLaunching = (key: MenuName) => {
-    setSelected(key);
-    setOpenSubItem(true);
-    onClick(MenuName.OPEN_LAUNCHING);
-  };
-
-  const openTraining = (key: MenuName) => {
-    setSelected(key);
-    setOpenSubItem(true);
-    onClick(MenuName.OPEN_TRAINING);
-  };
-
   const data = [
     {
       path:
@@ -228,27 +206,6 @@ const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
       css: 'BotBuilder',
       handler: openBotCreation,
       hidden: false,
-    },
-    {
-      path: createAgentPath('Actions'),
-      name: MenuName.OPEN_CONFIG,
-      css: 'Configuration',
-      handler: openConfig,
-      hidden: true,
-    },
-    {
-      path: createAgentPath('training-jobs'),
-      name: MenuName.OPEN_TRAINING,
-      css: 'Training',
-      handler: openTraining,
-      hidden: true,
-    },
-    {
-      path: createAgentPath('chats'),
-      name: MenuName.OPEN_LAUNCHING,
-      css: 'Launching',
-      handler: openLaunching,
-      hidden: true,
     },
     {
       path: createPath('image-labeling/collections'),
@@ -272,16 +229,6 @@ const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
       hidden: false,
     },
   ];
-
-  if (openSubItem) {
-    data[2].hidden = false;
-    data[3].hidden = false;
-    data[4].hidden = false;
-  } else {
-    data[2].hidden = true;
-    data[3].hidden = true;
-    data[4].hidden = true;
-  }
 
   return (
     <VerticalSidebar>
