@@ -1,4 +1,4 @@
-import { createStyles, Grid, makeStyles, Theme } from '@material-ui/core';
+import { Box, createStyles, Grid, makeStyles, Theme, Typography } from '@material-ui/core';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import React from 'react';
@@ -13,6 +13,23 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     filler: {
       background: 'linear-gradient(45deg, #1565c0 30%, #29b6f6 90%)',
+
+      '& img': {
+        position: 'absolute',
+        right: 60,
+        bottom: 0,
+        width: 400,
+        height: 598,
+      },
+    },
+    fillerTextBox: {
+      position: 'absolute',
+      paddingTop: theme.spacing(10),
+      paddingLeft: theme.spacing(10),
+      paddingRight: theme.spacing(10),
+    },
+    styledFirebaseAuth: {
+
     },
   }),
 );
@@ -69,9 +86,22 @@ function SignInPage(props: any) {
         <StyledFirebaseAuth
           uiConfig={uiConfig}
           firebaseAuth={firebase.auth()}
+          className={classes.styledFirebaseAuth}
         />
       </Grid>
-      <Grid item={true} xs={8} className={classes.filler} />
+      <Grid item={true} container={true} xs={8} className={classes.filler}>
+        <Grid item={true} sm={12} lg={8} className={classes.fillerTextBox}>
+          <Box pb={4}>
+            <Typography variant="h4" style={{ color: 'white' }}>
+              Engage your customers with smart, automated conversation.
+            </Typography>
+          </Box>
+          <Typography variant="h6" style={{ color: 'white' }}>
+            Our services can help you automate your e-commerce sales, lead generation, and customer engagement.
+          </Typography>
+        </Grid>
+        <img src={'/chatbot-phone.png'} alt="Phone with Chatbot" />
+      </Grid>
     </Grid>
   );
 }
