@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { GraphPolicyV2 } from '@bavard/agent-config/dist/graph-policy-v2';
+
 import { Button, Grid } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { useSnackbar } from 'notistack';
@@ -75,7 +75,6 @@ export default function GraphPolicies() {
   const [user] = useRecoilState(currentUser);
   const history = useHistory();
 
-  const [selectedPolicy, selectPolicy] = useState<GraphPolicyV2 | undefined>();
   const [updateAgent] = useMutation(CHATBOT_UPDATE_AGENT);
 
   if (!config || !user) {
@@ -159,7 +158,6 @@ export default function GraphPolicies() {
     if (!policy) {
       return notFoundError();
     }
-    selectPolicy(policy);
 
     const route = createAgentPath(user, agentId, 'graph-editor', policyName);
 
@@ -168,14 +166,14 @@ export default function GraphPolicies() {
 
   const handleExport = async (policyName: string) => {
     setLoading(true);
-    const policy = config.getGraphPolicy(policyName);
+    const policy = config.getGraphPolicyV2(policyName);
 
     if (!policy) {
       return notFoundError();
     }
     exportJsonFileFromObj(
       policy.toJsonObj(),
-      `graph_policy_${policy.policyName}.json`,
+      `graph_policy_${policy.name}.json`,
     );
     setLoading(false);
   };
