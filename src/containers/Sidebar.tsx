@@ -136,15 +136,15 @@ const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
       onClick(MenuName.DASHBOARD);
       setSelected(MenuName.DASHBOARD);
     } else if (createBotRegx.test(currentLocation)) {
-      //onClick(MenuName.CREATE_BOT);
-      //setSelected(MenuName.CREATE_BOT);
+      // onClick(MenuName.CREATE_BOT);
+      // setSelected(MenuName.CREATE_BOT);
       onClose();
     } else if (imageRegx.test(currentLocation)) {
-      onClose()
+      onClose();
     } else if (faqRegx.test(currentLocation)) {
-      onClose()
+      onClose();
     } else if (txtRegx.test(currentLocation)) {
-      onClose()
+      onClose();
     } else if (
       createBot_Actions.test(currentLocation) ||
       createBot_Intents.test(currentLocation) ||

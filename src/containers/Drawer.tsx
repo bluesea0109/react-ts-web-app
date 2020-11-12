@@ -201,7 +201,7 @@ function CustomDrawer(props: CustomDrawerProps) {
             </ListItem>
           </List>
         );  */
-        return null
+        return null;
       case MenuName.OPEN_CONFIG:
         return (
           <List>
