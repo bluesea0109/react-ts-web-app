@@ -8,7 +8,6 @@ import {
   Typography,
 } from '@material-ui/core';
 import clsx from 'clsx';
-import _ from 'lodash';
 import React, { useState } from 'react';
 
 const useStyles = makeStyles((theme: Theme) =>
