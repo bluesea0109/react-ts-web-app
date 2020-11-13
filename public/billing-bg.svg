@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="368px" height="225px" viewBox="0 0 368 225" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55.2 (78181) - https://sketchapp.com -->
+    <title>Path 2</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="368" height="225" rx="3"></rect>
+    </defs>
+    <g id="Initial-Designs" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Dashboard---Billing---IN-PROGRESS" transform="translate(-102.000000, -118.000000)">
+            <g id="Path-2" transform="translate(102.000000, 118.000000)">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <use id="Mask" fill="#0F1270" xlink:href="#path-1"></use>
+                <path d="M278.545068,0 C281.064381,10.8050847 279.572252,28.2838983 274.06868,52.4364407 C269.268331,73.5028748 238.358317,117.743644 227.452772,156.355932 C220.182409,182.097458 220.182409,204.978814 227.452772,225 L365,225 C366.656854,225 368,223.656854 368,222 L368,3 C368,1.34314575 366.656854,-3.04359188e-16 365,0 L278.545068,0 Z" fill="#1C1F8A" mask="url(#mask-2)"></path>
+            </g>
+        </g>
+    </g>
+</svg>
