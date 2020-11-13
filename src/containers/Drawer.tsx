@@ -4,8 +4,8 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles } from '@material-ui/core/styles';
-import React, { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React from 'react';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import { IAgentParam } from '../models/chatbot-service';
 import { IUser } from '../models/user-service';
 import { MenuName } from '../utils/enums';
@@ -53,15 +53,24 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: 'red',
     },
     closeDrawer: {
-      display: 'flex',
-      justifyContent: 'flex-end',
-      padding: '10px 10px 0px 10px',
-      height: '100px',
+      display: 'flex',      
+      padding: '10px 10px 0px 10px',      
+      flexDirection: 'column',
       cursor: 'pointer',
     },
     customDrawer: {
 
     },
+    allAgentBtn: {      
+      padding: '10px',
+      borderRadius: '5px',
+      backgroundColor: 'rgba(74, 144, 226)',
+      color: 'white',
+      margin: '20px 130px 20px',
+      boxShadow: '1px 1px 4px black inset',
+      borderBottom: '1px solid #888',
+      borderRight: '1px solid #888'
+    }
   }),
 );
 
@@ -262,7 +271,7 @@ function CustomDrawer(props: CustomDrawerProps) {
         );
       case MenuName.OPEN_CONFIG:
         return <>
-          <CloseDrawer handleClose={saveHistory}/>
+          <CloseDrawer handleClose={saveHistory} path={createPath('chatbot-builder')}/>
           <BotSubMenu
             title={botSubMenuData.configure.category}
             items={botSubMenuData.configure.items}
@@ -290,16 +299,25 @@ export default CustomDrawer;
 
 interface CloseDrawerProps {
   handleClose: () => void;
+  path: string;
 }
 
-const CloseDrawer = ({handleClose}: CloseDrawerProps) => {
+const CloseDrawer = ({handleClose, path}: CloseDrawerProps) => {
   const classes = useStyles();
+  const history = useHistory();
+  
   const handleCloseDrawer = () => {
     handleClose();
   };
+  const openAllAgent = () => {
+    history.push(path)
+  };
   return <Grid className={classes.closeDrawer}>
-    <Box onClick={handleCloseDrawer}>
+    <Box display='flex' justifyContent='flex-end' onClick={handleCloseDrawer}>
       <img src="/back.png" width="30px" height="30px" alt="backbutton"/>
+    </Box>
+    <Box display='flex' justifyContent='flex-start' onClick={openAllAgent}>
+      <Grid className={classes.allAgentBtn}>All Agents</Grid>
     </Box>
   </Grid>;
 };
