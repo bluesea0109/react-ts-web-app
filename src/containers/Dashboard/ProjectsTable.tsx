@@ -49,7 +49,6 @@ function ProjectsTable({ activeOrg, activeProject }: IProjectsTableProps) {
     { title: 'Project ID', field: 'id' },
     {
       title: 'Activate',
-      field: 'id',
       renderRow: (project: IProject) =>
         activeProjectId !== project.id ? (
           <Switch

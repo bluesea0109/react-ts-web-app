@@ -5,17 +5,12 @@ import {
   createStyles,
   Grid,
   makeStyles,
-  Table,
-  TableBody,
   TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Theme,
   withStyles,
 } from '@material-ui/core';
 import React, { useState } from 'react';
-import { TextInput } from '../../../components';
+import { TextInput, CommonTable } from '../../../components';
 import FormFieldRow from './FormFieldRow';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -32,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const TabelHeaderCell = withStyles((theme) => ({
+const TableHeaderCell = withStyles((theme) => ({
   root: {
     padding: theme.spacing(1),
     border: '1px solid',
@@ -82,6 +77,13 @@ const EditFormAction = ({ action, onChangeAction }: EditFormActionProps) => {
     });
   };
 
+  const columns = [
+    { title: 'Form Filed Name', field: 'name' },
+    { title: 'Form Field Type', field: 'type' },
+    { title: 'Required?', field: 'required' },
+    { title: 'Delete' },
+  ];
+
   return (
     <>
       <Grid container={true} item={true} sm={12} className={classes.formField}>
@@ -108,32 +110,24 @@ const EditFormAction = ({ action, onChangeAction }: EditFormActionProps) => {
         </Button>
       </Grid>
       <Grid container={true} className={classes.formField}>
-        <TableContainer>
-          <Table aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                <TabelHeaderCell align="left">Form Filed Name</TabelHeaderCell>
-                <TabelHeaderCell align="center">
-                  Form Field Type
-                </TabelHeaderCell>
-                <TabelHeaderCell align="center">Required?</TabelHeaderCell>
-                <TabelHeaderCell align="center">Delete</TabelHeaderCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {action.fields.map((field, index) => (
-                <FormFieldRow
-                  key={index}
-                  field={field}
-                  isEditing={editingFieldIndex === index}
-                  onClick={() => setEditingFieldIndex(index)}
-                  onDeleteField={() => onDeleteField(index)}
-                  onUpdateField={(field) => onUpdateField(index, field)}
-                />
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <CommonTable
+          data={{
+            columns,
+            rowsData: action.fields,
+          }}
+          components={{
+            TableHeaderCell,
+            TableRow: ({ rowData, rowIndex }) => (
+              <FormFieldRow
+                field={rowData}
+                isEditing={editingFieldIndex === rowIndex}
+                onClick={() => setEditingFieldIndex(rowIndex)}
+                onDeleteField={() => onDeleteField(rowIndex)}
+                onUpdateField={(field) => onUpdateField(rowIndex, field)}
+              />
+            ),
+          }}
+        />
       </Grid>
     </>
   );
