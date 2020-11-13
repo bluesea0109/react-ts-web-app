@@ -189,7 +189,9 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
               colSpan: 3,
               rowsPerPage: 5,
             }}
-            Row={MemberRow}
+            components={{
+              TableRow: MemberRow,
+            }}
           />
         </TableContainer>
       )}

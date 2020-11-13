@@ -4,12 +4,6 @@ import {
   CardHeader,
   Dialog,
   Grid,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Typography,
 } from '@material-ui/core';
 import {
@@ -24,6 +18,7 @@ import { IUser } from '../../models/user-service';
 import NewOrganisation from './NewOrganisation';
 import NewProject from './NewProject';
 import ProjectsTable from './ProjectsTable';
+import { CommonTable } from '../../components';
 
 interface IDashboardProps {
   user: IUser;
@@ -43,51 +38,39 @@ function Account(props: IDashboardProps) {
 
   const orgs = props.user.orgs;
   const activeOrg = props.user.activeOrg;
+  const columns = [
+    { title: 'Organization Name', field: 'name' },
+    { title: 'Organization Id', field: 'id' },
+  ];
 
   return (
     <div className={'page-container'}>
       <Grid>
         <Grid item={true} container={true} xs={12} spacing={4}>
           <Grid item={true} sm={12} md={10}>
-            <Card>
-              <CardHeader
-                avatar={<SupervisedUserCircleOutlined />}
-                title={<h4>Your organizations</h4>}
-                action={
-                  <Button
-                    color="primary"
-                    onClick={() => showAddOrg(true)}
-                    endIcon={<AddCircleOutline />}
-                    disabled={(orgs?.length || 0) >= 3}>
-                    Add New Organization
-                  </Button>
-                }
-              />
-              {orgs ? (
-                <TableContainer component="div" aria-label="Orgs">
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Organization Name</TableCell>
-                        <TableCell>Organization ID</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {orgs.map((org) => (
-                        <TableRow key={org.id}>
-                          <TableCell>{org.name}</TableCell>
-                          <TableCell>{org.id}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              ) : (
-                <Typography align="center" variant="h6">
-                  {'No organizations found'}
-                </Typography>
-              )}
-            </Card>
+            <CommonTable
+              data={{
+                columns,
+                rowsData: orgs || [],
+              }}
+              components={{
+                Toolbar: () => (
+                  <CardHeader
+                    avatar={<SupervisedUserCircleOutlined />}
+                    title={<h4>Your organizations</h4>}
+                    action={
+                      <Button
+                        color="primary"
+                        onClick={() => showAddOrg(true)}
+                        endIcon={<AddCircleOutline />}
+                        disabled={(orgs?.length || 0) >= 3}>
+                        Add New Organization
+                      </Button>
+                    }
+                  />
+                ),
+              }}
+            />
           </Grid>
           <Grid item={true} sm={12} md={10}>
             <Card>
