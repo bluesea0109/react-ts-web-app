@@ -4,7 +4,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles } from '@material-ui/core/styles';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { IAgentParam } from '../models/chatbot-service';
 import { IUser } from '../models/user-service';
@@ -185,6 +185,10 @@ function CustomDrawer(props: CustomDrawerProps) {
     return `/orgs/${user.activeProject.orgId}`;
   };
 
+  const saveHistory = () => {
+    onClose();
+    localStorage.setItem('backURL', location.pathname);
+  };
   const list = () => {
     switch (navigation) {
       case MenuName.DASHBOARD:
@@ -258,7 +262,7 @@ function CustomDrawer(props: CustomDrawerProps) {
         );
       case MenuName.OPEN_CONFIG:
         return <>
-          <CloseDrawer handleClose={onClose}/>
+          <CloseDrawer handleClose={saveHistory}/>
           <BotSubMenu
             title={botSubMenuData.configure.category}
             items={botSubMenuData.configure.items}
