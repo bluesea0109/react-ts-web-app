@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
 import {
+  Box,
   Button,
   Card,
   CardContent,
@@ -29,7 +30,15 @@ import AgentEmbedCode from './AgentEmbedCode';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      padding: theme.spacing(2),
+      background: '#eaeaea',
+      height: '100vh',
+      padding: theme.spacing(4),
+    },
+    subContainer: {
+      marginBottom: theme.spacing(4),
+    },
+    cardContainer: {
+      width: '100%',
     },
     embedCodeContainer: {
       backgroundColor: theme.palette.info.light,
@@ -128,8 +137,12 @@ export default function PublishAgent() {
   const agents = queryResult.data?.ChatbotService_getPublishedAgents;
 
   return (
-    <Grid container={true} spacing={2} className={'page-container'}>
-      <Grid item={true} xs={12}>
+    <Grid container={true} className={classes.root}>
+      <Grid
+        item={true}
+        container={true}
+        xs={12}
+        className={classes.subContainer}>
         <PublishedAgentsTable
           publishedAgents={agents}
           loading={queryResult.loading || state.loading}
@@ -141,19 +154,23 @@ export default function PublishAgent() {
         />
       </Grid>
 
-      <Grid item={true} xs={12}>
-        <Card>
+      <Grid
+        item={true}
+        container={true}
+        xs={12}
+        className={classes.subContainer}>
+        <Card className={classes.cardContainer}>
           <CardHeader
             title={<Typography variant="h6">Embed Code</Typography>}
             subheader="Copy and paste this code snippet to embed the bot within your HTML"
           />
           <CardContent>
-            <div className={classes.embedCodeContainer}>
+            <Box className={classes.embedCodeContainer}>
               <AgentEmbedCode
                 agentUname={agentUname || '<your-agent-uname>'}
                 apiKey={apiKeyQueryResult.data?.apiKey?.key || '<your-api-key>'}
               />
-            </div>
+            </Box>
           </CardContent>
         </Card>
       </Grid>
