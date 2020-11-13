@@ -13,8 +13,6 @@ const CommonTable = ({
   pagination,
   components,
   localization,
-  Row,
-  HeaderRow,
 }: CommonTableProps<object>) => {
   const [page, setPage] = useState(0);
 
@@ -50,7 +48,7 @@ const CommonTable = ({
           actions={actions}
           editable={editable}
           localization={localization}
-          HeaderRow={HeaderRow}
+          components={components}
         />
         <CommonTableBody
           actions={actions}
@@ -58,7 +56,7 @@ const CommonTable = ({
           editable={editable}
           rowsData={pageItems}
           localization={localization}
-          Row={Row}
+          components={components}
         />
         <CommonTableFooter
           isPaginated={!!pagination}

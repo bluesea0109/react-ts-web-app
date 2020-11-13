@@ -69,6 +69,7 @@ const CommonTableRow = ({
   actions,
   columns,
   rowData,
+  rowIndex,
   editable,
   columnCount,
   localization,
@@ -84,30 +85,28 @@ const CommonTableRow = ({
   return (
     <StyledTableRow hover={true}>
       {confirmDelete ? (
-        <Fragment>
-          <StyledTableCell colSpan={columnCount}>
-            <Box className={classes.boxContainer}>
-              <Typography>Are you sure to delete this record?</Typography>
-              <Box>
-                <Button onClick={onConfirmDelete}>
-                  <Check />
-                </Button>
-                <Button onClick={() => setConfirmDelete(false)}>
-                  <Close />
-                </Button>
-              </Box>
+        <StyledTableCell colSpan={columnCount}>
+          <Box className={classes.boxContainer}>
+            <Typography>Are you sure to delete this record?</Typography>
+            <Box>
+              <Button onClick={onConfirmDelete}>
+                <Check />
+              </Button>
+              <Button onClick={() => setConfirmDelete(false)}>
+                <Close />
+              </Button>
             </Box>
-          </StyledTableCell>
-        </Fragment>
+          </Box>
+        </StyledTableCell>
       ) : (
         <Fragment>
-          {columns.map((column) => (
+          {columns.map((column, columnIndex) => (
             <StyledTableCell
-              key={column.field}
+              key={column.field || columnIndex}
               align={column.alignRow || 'left'}>
               {column.renderRow
                 ? column.renderRow(rowData)
-                : _.get(rowData, column.field)}
+                : column.field && _.get(rowData, column.field)}
             </StyledTableCell>
           ))}
 

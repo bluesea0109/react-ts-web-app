@@ -9,29 +9,27 @@ const CommonTableBody = ({
   rowsData,
   editable,
   localization,
-  Row,
+  components,
 }: CommonTableBodyProps<object & { [index: string]: any }>) => {
   // prettier-ignore
   const columnCount = columns.length + ((editable !== undefined || actions !== undefined) ? 1 : 0);
+  const StyledTableRow = components?.TableRow || CommonTableRow;
 
   return (
     <TableBody>
       {rowsData && rowsData.length ? (
-        rowsData.map((rowData, rowIndex) =>
-          Row ? (
-            <Row key={rowIndex} rowData={rowData} index={rowIndex} />
-          ) : (
-            <CommonTableRow
-              key={rowIndex}
-              actions={actions}
-              columns={columns}
-              rowData={rowData}
-              editable={editable}
-              columnCount={columnCount}
-              localization={localization}
-            />
-          ),
-        )
+        rowsData.map((rowData, rowIndex) => (
+          <StyledTableRow
+            key={rowIndex}
+            rowIndex={rowIndex}
+            actions={actions}
+            columns={columns}
+            rowData={rowData}
+            editable={editable}
+            columnCount={columnCount}
+            localization={localization}
+          />
+        ))
       ) : (
         <TableRow>
           <StyledTableCell colSpan={columnCount}>

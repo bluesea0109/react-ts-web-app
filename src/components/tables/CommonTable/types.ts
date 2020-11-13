@@ -4,7 +4,7 @@ import { AlignmentType } from '../../types';
 // @TODO: Further investigation of RowData: JAMES
 export interface HeaderType<RowData extends object> {
   title: string;
-  field: keyof RowData | string;
+  field?: keyof RowData | string;
   alignRow?: AlignmentType;
   alignHeader?: AlignmentType;
   renderRow?: (rowData: RowData | any) => any;
@@ -68,7 +68,7 @@ export interface CommonTableHeadProps<RowData extends object> {
   editable?: EditableInterface<RowData>;
   alignments?: AlignmentType[];
   localization?: LocalizationInterface;
-  HeaderRow?: React.ComponentType<any>;
+  components?: ComponentListInterface;
 }
 
 export interface CommonTableBodyProps<RowData extends object> {
@@ -77,17 +77,17 @@ export interface CommonTableBodyProps<RowData extends object> {
   rowsData?: RowData[];
   editable?: EditableInterface<RowData>;
   localization?: LocalizationInterface;
-  Row?: React.ComponentType<any>;
+  components?: ComponentListInterface;
 }
 
 export interface CommonTableRowProps<RowData extends object> {
   actions?: ActionsInterface<RowData>;
   columns: HeaderType<RowData>[];
   rowData: RowData;
+  rowIndex: number;
   editable?: EditableInterface<RowData>;
   columnCount: number;
   localization?: LocalizationInterface;
-  Row?: React.ComponentType<any>;
 }
 
 export interface CommonTableFooterProps {
@@ -98,6 +98,9 @@ export interface CommonTableFooterProps {
 
 export interface ComponentListInterface {
   Toolbar?: React.ComponentType<any>;
+  TableHeaderCell?: React.ComponentType<any>;
+  TableRow?: React.ComponentType<any>;
+  TableHeaderRow?: React.ComponentType<any>;
 }
 
 // prettier-ignore
@@ -109,6 +112,4 @@ export interface CommonTableProps<RowData extends object> {
   pagination?: PaginationInterface;
   localization?: LocalizationInterface;
   components?: ComponentListInterface;
-  Row?: React.ComponentType<any>;
-  HeaderRow?: React.ComponentType<any>;
 }

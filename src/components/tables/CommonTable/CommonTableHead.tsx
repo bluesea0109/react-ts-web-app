@@ -3,7 +3,7 @@ import { withStyles } from '@material-ui/core/styles';
 import React from 'react';
 import { CommonTableHeadProps } from './types';
 
-const StyledTableCell = withStyles((theme) => ({
+const NonBorderedCell = withStyles((theme) => ({
   root: {
     border: 'none',
   },
@@ -15,14 +15,16 @@ const CommonTableHead = ({
   editable,
   alignments,
   localization,
-  HeaderRow,
+  components,
 }: CommonTableHeadProps<object>) => {
   const headerAlignments = alignments || [];
 
+  const StyledTableCell = components?.TableHeaderCell || NonBorderedCell;
+
   return (
     <TableHead>
-      {HeaderRow ? (
-        <HeaderRow columns={columns} />
+      {components?.TableHeaderRow ? (
+        <components.TableHeaderRow columns={columns} />
       ) : (
         columns && (
           <TableRow>
