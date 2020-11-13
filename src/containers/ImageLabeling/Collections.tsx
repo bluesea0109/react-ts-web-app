@@ -1,11 +1,9 @@
 import { useQuery } from '@apollo/client';
 import {
   makeStyles,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
+  Toolbar,
+  Theme,
+  createStyles,
   Typography,
 } from '@material-ui/core';
 import gql from 'graphql-tag';
@@ -13,6 +11,8 @@ import React from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { IImageCollection } from '../../models/image-labeling-service';
 import ContentLoading from '../ContentLoading';
+import { CommonTable } from '../../components';
+import CreateCollection from './CreateCollection';
 
 const GET_COLLECTIONS = gql`
   query($projectId: String!) {
@@ -24,11 +24,16 @@ const GET_COLLECTIONS = gql`
   }
 `;
 
-const useStyles = makeStyles({
-  table: {
-    minWidth: 650,
-  },
-});
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    table: {
+      minWidth: 650,
+    },
+    toolbar: {
+      paddingLeft: theme.spacing(2),
+    },
+  }),
+);
 
 interface IProjectProps {
   orgId: string;
@@ -84,26 +89,29 @@ function CollectionsList(props: IProjectProps) {
 
   const collections = data.ImageLabelingService_collections;
 
+  const columns = [
+    { title: 'Name', field: 'name' },
+    { title: 'Id', field: 'id' },
+  ];
+
   return (
-    <Table className={classes.table} aria-label="simple table">
-      <TableHead>
-        <TableRow>
-          <TableCell>Name</TableCell>
-          <TableCell>Id</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {collections.map((collection: any, i: number) => (
-          <TableRow
-            key={i}
-            onClick={onSelectCollection(collection.id)}
-            hover={true}>
-            <TableCell>{collection.name}</TableCell>
-            <TableCell>{collection.id}</TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+    <CommonTable
+      data={{
+        columns,
+        rowsData: collections,
+      }}
+      components={{
+        Toolbar: () => (
+          <Toolbar
+            variant="dense"
+            disableGutters={true}
+            className={classes.toolbar}>
+            <Typography variant="h6">{'Collections'}</Typography>
+            <CreateCollection />
+          </Toolbar>
+        ),
+      }}
+    />
   );
 }
 

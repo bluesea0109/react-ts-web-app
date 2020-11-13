@@ -13,7 +13,6 @@ import React from 'react';
 import { useHistory, useParams } from 'react-router';
 import CategorySets from './CategorySets/CategorySets';
 import Collections from './Collections';
-import CreateCollection from './CreateCollection';
 
 interface IProjectProps {
   orgId: string;
@@ -81,18 +80,7 @@ function ImageLabelingPage(props: IProjectProps) {
       </Paper>
       {tab === 'collections' && (
         <Grid container={true}>
-          <Grid item={true} xs={12}>
-            <Toolbar
-              variant="dense"
-              disableGutters={true}
-              className={classes.toolbar}>
-              <Typography variant="h6">{'Collections'}</Typography>
-              <CreateCollection />
-            </Toolbar>
-          </Grid>
-          <Grid container={true} item={true} xs={12}>
-            <Collections />
-          </Grid>
+          <Collections />
         </Grid>
       )}
       {tab === 'category-sets' && <CategorySets />}
