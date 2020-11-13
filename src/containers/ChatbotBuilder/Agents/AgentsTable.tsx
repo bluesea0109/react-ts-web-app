@@ -17,6 +17,9 @@ const AgentsTable = ({ agents, onDeleteAgent }: IAgentsTableProps) => {
     orgId: string;
   }>();
 
+  const handleClick = (agent: IAgent) => {    
+    localStorage.setItem('backURL', `/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${agent.id}/Actions/`)
+  }
   const columns = [
     { title: 'ID', field: 'id' },
     {
@@ -24,7 +27,8 @@ const AgentsTable = ({ agents, onDeleteAgent }: IAgentsTableProps) => {
       field: 'uname',
       renderRow: (agent: IAgent) => (
         <Link
-          to={`/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${agent.id}/Actions/`}>
+          to={`/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${agent.id}/Actions/`}
+          onClick={() => handleClick(agent)}>
           {agent.uname}
         </Link>
       ),
