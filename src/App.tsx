@@ -14,6 +14,7 @@ import AppBar from './containers/Appbar';
 import ChatbotBuilder from './containers/ChatbotBuilder';
 import ContentLoading from './containers/ContentLoading';
 import Dashboard from './containers/Dashboard';
+import Billing from './containers/Dashboard/Billing';
 import AcceptInvite from './containers/Dashboard/Invites/AcceptInvite';
 import OrganizationSettings from './containers/Dashboard/OrganizationSettings';
 import ProjectSettings from './containers/Dashboard/ProjectSettings';
@@ -249,6 +250,9 @@ function App() {
             </Route>
             <Route path="/orgs/:orgId/projects/:projectId/chatbot-builder">
               <ChatbotBuilder user={data.currentUser} />
+            </Route>
+            <Route path="/orgs/:orgId/billing">
+              <Billing />
             </Route>
             <Route path="/orgs/:orgId/projects/:projectId/text-labeling" />
             <Route exact={true} path="/no-project">
