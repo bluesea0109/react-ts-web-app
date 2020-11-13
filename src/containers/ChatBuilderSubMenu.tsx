@@ -46,6 +46,7 @@ const BotSubMenu = ({
     padding: '8px 20px 8px 20px',
     borderRadius: '5px',
     wordwrap: 'normal',
+    marginRight: '7px',
   };
 
   const selectedPath = location.pathname.split('/').reverse()[1];

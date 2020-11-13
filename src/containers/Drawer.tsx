@@ -67,8 +67,7 @@ const useStyles = makeStyles((theme: Theme) =>
       borderRadius: '5px',
       backgroundColor: 'rgba(74, 144, 226)',
       color: 'white',
-      margin: '20px 130px 20px',
-      boxShadow: '1px 1px 5px white inset',      
+      margin: '15px 130px 40px',            
     },
   }),
 );
