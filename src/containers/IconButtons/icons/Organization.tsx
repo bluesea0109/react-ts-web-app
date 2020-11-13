@@ -7,7 +7,12 @@ interface SVGProps {
 const Organization = (props: SVGProps) => {
   const { active } = props;
   return (
-    <div style={ active ? {borderRight: '4px solid #4a90e2', padding: '5px 20px'} : { padding: '5px 20px'}}>
+    <div
+      style={
+        active
+          ? { borderRight: '4px solid #4a90e2', padding: '5px 20px' }
+          : { padding: '5px 20px' }
+      }>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="28"
@@ -20,7 +25,7 @@ const Organization = (props: SVGProps) => {
         <path d="M147,260c-35.19,0-66.13-32.72-69-72.93C76.58,166.47,83,147.42,96,133.45,108.86,119.62,127,112,147,112s38,7.66,50.93,21.57c13.1,14.08,19.5,33.09,18,53.52C213.06,227.29,182.13,260,147,260Z" />
         <path d="M212.66,291.45c-17.59-8.6-40.42-12.9-65.65-12.9-29.46,0-58.07,7.68-80.57,21.62C40.93,316,23.77,339.05,16.84,366.88a27.39,27.39,0,0,0,4.79,23.36A25.32,25.32,0,0,0,41.72,400h111a8,8,0,0,0,7.87-6.57c.11-.63.25-1.26.41-1.88,8.48-34.06,28.35-62.84,57.71-83.82a8,8,0,0,0-.63-13.39C216.51,293.42,214.71,292.45,212.66,291.45Z" />
       </svg>
-      <div style={{fontSize: '10px', marginBottom: '15px'}}>Organization</div>
+      <div style={{ fontSize: '10px', marginBottom: '15px' }}>Organization</div>
     </div>
   );
 };

@@ -1,5 +1,13 @@
 import { useMutation } from '@apollo/client';
-import { Button, Card, createStyles, LinearProgress, makeStyles, TextField, Theme } from '@material-ui/core';
+import {
+  Button,
+  Card,
+  createStyles,
+  LinearProgress,
+  makeStyles,
+  TextField,
+  Theme,
+} from '@material-ui/core';
 import clsx from 'clsx';
 import React, { useState } from 'react';
 import { CREATE_PROJECT, GET_CURRENT_USER } from '../../common-gql-queries';
@@ -33,9 +41,11 @@ function NewProject(props: INewProjectProps) {
   });
 
   const [createProject, { loading, error }] = useMutation(CREATE_PROJECT, {
-    refetchQueries: [{
-      query: GET_CURRENT_USER,
-    }],
+    refetchQueries: [
+      {
+        query: GET_CURRENT_USER,
+      },
+    ],
     awaitRefetchQueries: true,
   });
 
@@ -45,7 +55,9 @@ function NewProject(props: INewProjectProps) {
   }
 
   const submit = () => {
-    if (!activeOrg) { return; }
+    if (!activeOrg) {
+      return;
+    }
     createProject({ variables: { orgId: activeOrg.id, name: state.name } });
     setState({ name: '' });
     props.onSuccess?.();
@@ -68,7 +80,8 @@ function NewProject(props: INewProjectProps) {
       <br />
       <Button
         className={clsx(classes.button)}
-        variant="contained" color="primary"
+        variant="contained"
+        color="primary"
         disabled={loading || activeOrg == null || !state.name}
         onClick={submit}>
         {'Submit'}

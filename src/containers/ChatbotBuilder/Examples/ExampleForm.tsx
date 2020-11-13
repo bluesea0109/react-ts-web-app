@@ -1,4 +1,12 @@
-import { Button, createStyles, Grid, makeStyles, Paper, Theme, Typography } from '@material-ui/core';
+import {
+  Button,
+  createStyles,
+  Grid,
+  makeStyles,
+  Paper,
+  Theme,
+  Typography,
+} from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { TextAnnotator } from 'react-text-annotate';
 import { DropDown, TextInput } from '../../../components';
@@ -64,13 +72,15 @@ const ExampleForm = ({
   ] = useEditExampleAnnotation({ tagTypes });
 
   useEffect(() => {
-    if (!example) { return; }
+    if (!example) {
+      return;
+    }
     onExampleUpdate({
       id: example?.id,
       agentId: example?.agentId,
       text: exampleText,
       intent,
-      tags: annotatorState.tags.map(tag => ({
+      tags: annotatorState.tags.map((tag) => ({
         tagType: tag.tag,
         start: tag.start,
         end: tag.end,
@@ -97,7 +107,11 @@ const ExampleForm = ({
 
   return (
     <Grid container={true}>
-      <Grid container={true} item={true} sm={12} className={classes.intentField}>
+      <Grid
+        container={true}
+        item={true}
+        sm={12}
+        className={classes.intentField}>
         <DropDown
           fullWidth={true}
           label="Intent"
@@ -116,7 +130,7 @@ const ExampleForm = ({
             rows={4}
             value={exampleText}
             className={classes.input}
-            onChange={e => setExampleText(e.target.value)}
+            onChange={(e) => setExampleText(e.target.value)}
           />
         </Grid>
 
@@ -134,7 +148,7 @@ const ExampleForm = ({
 
         <Grid container={true} className={classes.formField}>
           <Grid container={true} item={true} xs={12}>
-            <Typography variant="subtitle1" style={{fontWeight: 'bold'}}>
+            <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
               Highlight text to identify it as a tag.
             </Typography>
           </Grid>
@@ -147,12 +161,17 @@ const ExampleForm = ({
                 padding: 12,
                 backgroundColor: 'white',
                 border: '1px solid #ccc',
-                pointerEvents: (loading || !tagType || tagTypes?.length === 0) ? 'none' : 'auto',
+                pointerEvents:
+                  loading || !tagType || tagTypes?.length === 0
+                    ? 'none'
+                    : 'auto',
               }}
               content={exampleText}
               value={annotatorState.tags}
-              onChange={(value: any) => setAnnotatorState({ ...annotatorState, tags: value })}
-              getSpan={span => ({
+              onChange={(value: any) =>
+                setAnnotatorState({ ...annotatorState, tags: value })
+              }
+              getSpan={(span) => ({
                 ...span,
                 tag: tagType,
                 color: colors.current[tagType],
@@ -162,7 +181,11 @@ const ExampleForm = ({
         </Grid>
 
         <Grid container={true} item={true} xs={12} justify="center">
-          <Button autoFocus={true} color="primary" variant="contained" onClick={onSaveChanges}>
+          <Button
+            autoFocus={true}
+            color="primary"
+            variant="contained"
+            onClick={onSaveChanges}>
             {isNew ? 'Add Example' : 'Update Example'}
           </Button>
         </Grid>

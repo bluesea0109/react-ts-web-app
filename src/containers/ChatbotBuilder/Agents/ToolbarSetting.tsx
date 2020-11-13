@@ -75,7 +75,7 @@ export const ToolBarSetting = ({
         </div>
       </div>
       <div className={classes.button}>
-        <div onClick={publishAgent}  className={classes.buttonContent}>
+        <div onClick={publishAgent} className={classes.buttonContent}>
           <img
             src="/rocket.svg"
             alt="save"

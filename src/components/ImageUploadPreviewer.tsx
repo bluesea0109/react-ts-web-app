@@ -1,7 +1,7 @@
-import { Button} from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import {Add} from '@material-ui/icons';
-import React, {useState} from 'react';
+import { Add } from '@material-ui/icons';
+import React, { useState } from 'react';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -28,9 +28,13 @@ interface IImageUploadProps {
   height?: number;
 }
 
-export default function ImageUpload({width, height, onChange}: IImageUploadProps) {
+export default function ImageUpload({
+  width,
+  height,
+  onChange,
+}: IImageUploadProps) {
   const classes = useStyles();
-  const [imgUrl, setImgUrl] = useState<string|undefined>(undefined);
+  const [imgUrl, setImgUrl] = useState<string | undefined>(undefined);
 
   const handleImg = (e: React.ChangeEvent<HTMLInputElement>) => {
     const reader = new FileReader();
@@ -41,17 +45,15 @@ export default function ImageUpload({width, height, onChange}: IImageUploadProps
       reader.readAsDataURL(e.target.files[0]);
       onChange?.(e.target?.files[0]);
     }
-
   };
 
   return (
     <Button
       variant="contained"
       component="label"
-      className={classes.uploadButton}
-      >
-      <img src={imgUrl} alt="" className={classes.thumbnail}/>
-      <Add/>
+      className={classes.uploadButton}>
+      <img src={imgUrl} alt="" className={classes.thumbnail} />
+      <Add />
       <input
         name="optionImg"
         id="optionImg"

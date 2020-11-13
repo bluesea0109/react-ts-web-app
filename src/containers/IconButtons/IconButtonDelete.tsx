@@ -12,7 +12,7 @@ export default function IconButtonDelete(props: ExtendedIconButtonProps) {
   return (
     <IconButton {...rest} style={{ padding: 6 }} disabled={disabled}>
       <Tooltip title={tooltip} disableFocusListener={true}>
-        <DeleteIcon color={disabled ? 'disabled' : 'secondary'}  />
+        <DeleteIcon color={disabled ? 'disabled' : 'secondary'} />
       </Tooltip>
     </IconButton>
   );

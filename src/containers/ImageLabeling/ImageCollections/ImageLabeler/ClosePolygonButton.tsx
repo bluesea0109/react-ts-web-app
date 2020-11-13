@@ -34,9 +34,7 @@ const ClosePolygonButton: React.FC<ConnectedProps<typeof connector>> = (
       return;
     }
 
-    if (
-      selectedLabel?.shapeType !== ImageLabelShapesEnum.POLYGON
-    ) {
+    if (selectedLabel?.shapeType !== ImageLabelShapesEnum.POLYGON) {
       return true;
     }
 

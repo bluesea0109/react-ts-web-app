@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme: Theme) =>
       textAlign: 'center',
       color: theme.palette.text.secondary,
     },
-    avatarPos:  {
+    avatarPos: {
       display: 'flex',
       justifyContent: 'center',
     },
@@ -29,7 +29,13 @@ interface AvatarProps {
   updateSettings: (field: keyof IWidgetSettings, value: any) => void;
 }
 
-export const Avatar = ({title, mode, loading, settings, updateSettings}: AvatarProps) => {
+export const Avatar = ({
+  title,
+  mode,
+  loading,
+  settings,
+  updateSettings,
+}: AvatarProps) => {
   const classes = useStyles();
   return (
     <div>
@@ -40,7 +46,9 @@ export const Avatar = ({title, mode, loading, settings, updateSettings}: AvatarP
         <Grid item={true} sm={12} className={classes.avatarPos}>
           <ImageUploader
             isLoading={loading || mode === 'published'}
-            currentImage={ title === 'Widget Avatar' ? settings.avatarUrl : settings.logoUrl}
+            currentImage={
+              title === 'Widget Avatar' ? settings.avatarUrl : settings.logoUrl
+            }
             label="Widget Avatar"
             onImageUpload={(url: string) => updateSettings('avatar', url)}
             iconType="AVATAR"

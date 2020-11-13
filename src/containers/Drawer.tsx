@@ -59,9 +59,7 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '100px',
       cursor: 'pointer',
     },
-    customDrawer: {
-
-    },
+    customDrawer: {},
   }),
 );
 
@@ -69,31 +67,32 @@ export const botSubMenuData = {
   configure: {
     category: 'Configure',
     items: [
-    {
-      title: 'Actions',
-      path: 'Actions',
-    },
-    {
-      title: 'Intents',
-      path: 'Intents',
-    },
-    {
-      title: 'Tags',
-      path: 'Tags',
-    },
-    {
-      title: 'Slot Values',
-      path: 'Slots',
-    },
-    {
-      title: 'Visual Graphs V1.0',
-      path: 'graph-policy-v1',
-    },
-    {
-      title: 'Visual Graphs V2.0',
-      path: 'graph-policies',
-    },
-  ]},
+      {
+        title: 'Actions',
+        path: 'Actions',
+      },
+      {
+        title: 'Intents',
+        path: 'Intents',
+      },
+      {
+        title: 'Tags',
+        path: 'Tags',
+      },
+      {
+        title: 'Slot Values',
+        path: 'Slots',
+      },
+      {
+        title: 'Visual Graphs V1.0',
+        path: 'graph-policy-v1',
+      },
+      {
+        title: 'Visual Graphs V2.0',
+        path: 'graph-policies',
+      },
+    ],
+  },
   training: {
     category: 'Training',
     items: [
@@ -109,7 +108,8 @@ export const botSubMenuData = {
         title: 'Training Conversations',
         path: 'training-conversations',
       },
-  ]},
+    ],
+  },
   launch: {
     category: 'Launching',
     items: [
@@ -173,7 +173,7 @@ function CustomDrawer(props: CustomDrawerProps) {
     return createAgentPath(user, agent.agentId, agentTab, entityId);
   };
 
-  const createOrgPath = (path: string = ''): string => {
+  const createOrgPath = (path = ''): string => {
     if (!user.activeProject) {
       return '/no-orgs';
     }
@@ -206,7 +206,7 @@ function CustomDrawer(props: CustomDrawerProps) {
                   !location.pathname.includes('projects') &&
                   location.pathname === '/'
                     ? selectedStyle
-                    : {paddingLeft: '20px'}
+                    : { paddingLeft: '20px' }
                 }
               />
             </ListItem>
@@ -228,7 +228,7 @@ function CustomDrawer(props: CustomDrawerProps) {
                   !location.pathname.includes('projects') &&
                   location.pathname.includes('settings')
                     ? selectedStyle
-                    : {paddingLeft: '20px'}
+                    : { paddingLeft: '20px' }
                 }
               />
             </ListItem>
@@ -250,31 +250,36 @@ function CustomDrawer(props: CustomDrawerProps) {
                   location.pathname.includes('projects') &&
                   location.pathname.includes('settings')
                     ? selectedStyle
-                    : {paddingLeft: '20px'}
+                    : { paddingLeft: '20px' }
                 }
               />
             </ListItem>
           </List>
         );
       case MenuName.OPEN_CONFIG:
-        return <>
-          <CloseDrawer handleClose={onClose}/>
-          <BotSubMenu
-            title={botSubMenuData.configure.category}
-            items={botSubMenuData.configure.items}
-            category="Configure" getAgentPath={getAgentPath}
-          />
-          <BotSubMenu
-            title={botSubMenuData.training.category}
-            items={botSubMenuData.training.items}
-            category="Training" getAgentPath={getAgentPath}
-          />
-          <BotSubMenu
-            title={botSubMenuData.launch.category}
-            items={botSubMenuData.launch.items}
-            category="Launch" getAgentPath={getAgentPath}
-          />
-        </>;
+        return (
+          <>
+            <CloseDrawer handleClose={onClose} />
+            <BotSubMenu
+              title={botSubMenuData.configure.category}
+              items={botSubMenuData.configure.items}
+              category="Configure"
+              getAgentPath={getAgentPath}
+            />
+            <BotSubMenu
+              title={botSubMenuData.training.category}
+              items={botSubMenuData.training.items}
+              category="Training"
+              getAgentPath={getAgentPath}
+            />
+            <BotSubMenu
+              title={botSubMenuData.launch.category}
+              items={botSubMenuData.launch.items}
+              category="Launch"
+              getAgentPath={getAgentPath}
+            />
+          </>
+        );
       default:
         return <></>;
     }
@@ -288,14 +293,16 @@ interface CloseDrawerProps {
   handleClose: () => void;
 }
 
-const CloseDrawer = ({handleClose}: CloseDrawerProps) => {
+const CloseDrawer = ({ handleClose }: CloseDrawerProps) => {
   const classes = useStyles();
   const handleCloseDrawer = () => {
     handleClose();
   };
-  return <Grid className={classes.closeDrawer}>
-    <Box onClick={handleCloseDrawer}>
-      <img src="/back.png" width="30px" height="30px" alt="backbutton"/>
-    </Box>
-  </Grid>;
+  return (
+    <Grid className={classes.closeDrawer}>
+      <Box onClick={handleCloseDrawer}>
+        <img src="/back.png" width="30px" height="30px" alt="backbutton" />
+      </Box>
+    </Grid>
+  );
 };

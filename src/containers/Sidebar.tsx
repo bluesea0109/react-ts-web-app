@@ -232,7 +232,7 @@ const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
 
   return (
     <VerticalSidebar>
-      <IconButtonBavard onClick={() => {}} tooltip="tooltip" />
+      <IconButtonBavard tooltip="tooltip" />
       {data.map((item) => (
         <NavItem
           active={selected === item.name}

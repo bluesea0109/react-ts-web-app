@@ -31,7 +31,7 @@ export default function TrainingConversations() {
   const params = useParams<{ agentId: string }>();
   const [createConversation, setcreateConversation] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
-  const [, seteditConversation] = useState(0);  // editConversation
+  const [, seteditConversation] = useState(0); // editConversation
   const [currentPage, setCurrentPage] = useState(1);
   const agentId = parseInt(params.agentId, 10);
 

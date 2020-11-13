@@ -1,9 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { AgentConfig } from '@bavard/agent-config';
-import {
-  Button,
-  Grid,
-} from '@material-ui/core';
+import { Button, Grid } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab/';
 import { useSnackbar } from 'notistack';
@@ -132,7 +129,8 @@ const AgentSettings = () => {
 
   return (
     <Grid className={classes.spanOfPanel}>
-      <Grid style={{ marginBottom: '20px', marginTop: '30px', fontWeight: 'bold' }}>
+      <Grid
+        style={{ marginBottom: '20px', marginTop: '30px', fontWeight: 'bold' }}>
         Assistant Design Settings
       </Grid>
       <Grid style={{ marginBottom: '20px' }}>
@@ -188,7 +186,7 @@ const AgentSettings = () => {
               disabled={loading}
               variant="contained"
               color="primary"
-              style={{marginTop: '25px', marginBottom: '80px'}}
+              style={{ marginTop: '25px', marginBottom: '80px' }}
               onClick={onUpdateSettingsClicked}>
               Update Settings
             </Button>

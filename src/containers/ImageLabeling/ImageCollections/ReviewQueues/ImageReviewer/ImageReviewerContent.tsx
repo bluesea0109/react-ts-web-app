@@ -1,12 +1,21 @@
 import { useMutation } from '@apollo/client';
 import { Button, Typography } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
-import { createStyles, makeStyles, Theme, useTheme } from '@material-ui/core/styles';
+import {
+  createStyles,
+  makeStyles,
+  Theme,
+  useTheme,
+} from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import React, { useState } from 'react';
 import { connect, ConnectedProps, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-import { ICategorySet, IImage, IReviewQueueImage } from '../../../../../models/image-labeling-service';
+import {
+  ICategorySet,
+  IImage,
+  IReviewQueueImage,
+} from '../../../../../models/image-labeling-service';
 import * as actions from '../../../../../store/image-labeling/actions';
 import { getLabels } from '../../../../../store/image-labeling/selectors';
 import ApolloErrorPage from '../../../../ApolloErrorPage';
@@ -66,7 +75,8 @@ const useStyles = makeStyles((theme: Theme) =>
       flex: 1,
     },
     canvasContainer: {
-      backgroundImage: 'linear-gradient(to right, #757575 50%, #a4a4a4 50%), linear-gradient(to bottom, #757575 50%, #a4a4a4 50%)',
+      backgroundImage:
+        'linear-gradient(to right, #757575 50%, #a4a4a4 50%), linear-gradient(to bottom, #757575 50%, #a4a4a4 50%)',
       backgroundBlendMode: 'difference, normal',
       backgroundSize: '2em 2em',
       overflow: 'scroll',
@@ -91,8 +101,7 @@ const useStyles = makeStyles((theme: Theme) =>
       height: 8,
       background: theme.palette.primary.dark,
     },
-    canvas: {
-    },
+    canvas: {},
     appBar: {
       top: 'auto',
       bottom: 0,
@@ -127,8 +136,7 @@ const useStyles = makeStyles((theme: Theme) =>
     grow: {
       flexGrow: 1,
     },
-    bottomToolbar: {
-    },
+    bottomToolbar: {},
   }),
 );
 
@@ -150,18 +158,22 @@ function ImageReviewerContent(props: IImageReviewerContentProps) {
   const { image } = props;
   const classes = useStyles();
   const { orgId, projectId, collectionId, queueId } = useParams<{
-    orgId: string,
-    projectId: string,
-    collectionId: string,
-    queueId: string,
+    orgId: string;
+    projectId: string;
+    collectionId: string;
+    queueId: string;
   }>();
   const [state, setState] = useState({
     loading: false,
     zoom: 1.0,
   });
   const history = useHistory();
-  const [approveImage, approveImageResult] = useMutation(APPROVE_REVIEW_QUEUE_IMAGE);
-  const [disapproveImage, disapproveImageResult] = useMutation(APPROVE_REVIEW_QUEUE_IMAGE);
+  const [approveImage, approveImageResult] = useMutation(
+    APPROVE_REVIEW_QUEUE_IMAGE,
+  );
+  const [disapproveImage, disapproveImageResult] = useMutation(
+    APPROVE_REVIEW_QUEUE_IMAGE,
+  );
   const [nextImage, nextImageResult] = useMutation(NEXT_REVIEW_QUEUE_IMAGE);
 
   const approve = async () => {
@@ -177,12 +189,17 @@ function ImageReviewerContent(props: IImageReviewerContentProps) {
     });
 
     if (res.data) {
-      const nextImageId = res.data.ImageLabelingService_nextReviewQueueImage?.imageId;
+      const nextImageId =
+        res.data.ImageLabelingService_nextReviewQueueImage?.imageId;
       if (nextImageId == null) {
         // end of queue;
-        history.push(`/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/review-queues`);
+        history.push(
+          `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/review-queues`,
+        );
       } else {
-        history.push(`/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/review-queues/${queueId}/images/${nextImageId}`);
+        history.push(
+          `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/review-queues/${queueId}/images/${nextImageId}`,
+        );
       }
     } else {
       setState({ ...state, loading: false });
@@ -202,12 +219,17 @@ function ImageReviewerContent(props: IImageReviewerContentProps) {
     });
 
     if (res.data) {
-      const nextImageId = res.data.ImageLabelingService_nextReviewQueueImage?.imageId;
+      const nextImageId =
+        res.data.ImageLabelingService_nextReviewQueueImage?.imageId;
       if (nextImageId == null) {
         // end of queue;
-        history.push(`/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/review-queues`);
+        history.push(
+          `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/review-queues`,
+        );
       } else {
-        history.push(`/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/review-queues/${queueId}/images/${nextImageId}`);
+        history.push(
+          `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/review-queues/${queueId}/images/${nextImageId}`,
+        );
       }
     } else {
       setState({ ...state, loading: false });
@@ -228,12 +250,19 @@ function ImageReviewerContent(props: IImageReviewerContentProps) {
     });
   };
 
-  const apolloError = approveImageResult.error || disapproveImageResult.error || nextImageResult.error;
+  const apolloError =
+    approveImageResult.error ||
+    disapproveImageResult.error ||
+    nextImageResult.error;
   if (apolloError) {
     return <ApolloErrorPage error={apolloError} />;
   }
 
-  const loading = state.loading || approveImageResult.loading || disapproveImageResult.loading || nextImageResult.loading;
+  const loading =
+    state.loading ||
+    approveImageResult.loading ||
+    disapproveImageResult.loading ||
+    nextImageResult.loading;
   if (loading) {
     return <ContentLoading />;
   }
@@ -241,17 +270,22 @@ function ImageReviewerContent(props: IImageReviewerContentProps) {
   const approvedBy = (
     <>
       <Typography style={{ marginRight: theme.spacing(1) }}>
-        <strong>{'Approved By: '}</strong>{image.approvedBy.length ? image.approvedBy.join(', ') : 'Unapproved'}
+        <strong>{'Approved By: '}</strong>
+        {image.approvedBy.length ? image.approvedBy.join(', ') : 'Unapproved'}
       </Typography>
     </>
   );
 
   const approveButton = (
-    <Button className={classes.marginRight} size="small" onClick={approve}>{'Approve'}</Button>
+    <Button className={classes.marginRight} size="small" onClick={approve}>
+      {'Approve'}
+    </Button>
   );
 
   const disapproveButton = (
-    <Button size="small" onClick={disapprove}>{'Disapprove'}</Button>
+    <Button size="small" onClick={disapprove}>
+      {'Disapprove'}
+    </Button>
   );
 
   return (
@@ -260,17 +294,13 @@ function ImageReviewerContent(props: IImageReviewerContentProps) {
         <div className={classes.labelTools}>
           <Paper>
             <Toolbar variant="dense">
-              <Typography variant="h6">
-                {'Review Image Labels'}
-              </Typography>
+              <Typography variant="h6">{'Review Image Labels'}</Typography>
             </Toolbar>
           </Paper>
           <Paper className={classes.labelListContainer}>
             <React.Fragment>
               <Toolbar variant="dense">
-                <Typography variant="h6">
-                  {'Labels'}
-                </Typography>
+                <Typography variant="h6">{'Labels'}</Typography>
               </Toolbar>
               <div className={classes.labelList}>
                 <ImageLabelList />
@@ -289,15 +319,11 @@ function ImageReviewerContent(props: IImageReviewerContentProps) {
             </Toolbar>
           </Paper>
           <div className={classes.canvasHeader}>
-            <Typography>
-              {`Zoom Level: ${state.zoom}`}
-            </Typography>
+            <Typography>{`Zoom Level: ${state.zoom}`}</Typography>
           </div>
           <ImageCanvas zoom={state.zoom} imageUrl={image.url} labels={labels} />
           <Paper>
-            <Toolbar variant="dense">
-              {approvedBy}
-            </Toolbar>
+            <Toolbar variant="dense">{approvedBy}</Toolbar>
           </Paper>
         </div>
       </div>

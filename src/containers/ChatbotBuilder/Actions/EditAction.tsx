@@ -7,7 +7,10 @@ import {
   IAgentFormAction,
   ITextOption,
 } from '@bavard/agent-config';
-import { EAgentActionTypes, EFormFieldTypes } from '@bavard/agent-config/dist/enums';
+import {
+  EAgentActionTypes,
+  EFormFieldTypes,
+} from '@bavard/agent-config/dist/enums';
 import {
   Button,
   createStyles,
@@ -61,7 +64,9 @@ const EditAction = ({
   }, [action]);
 
   const saveChanges = () => {
-    if (!currentAction || !currentAction.type) { return; }
+    if (!currentAction || !currentAction.type) {
+      return;
+    }
     onSaveAction(currentAction);
   };
 
@@ -69,23 +74,28 @@ const EditAction = ({
     const newAction = { ...currentAction, type } as IAgentAction;
     if (type === EAgentActionTypes.FORM_ACTION) {
       (newAction as IAgentFormAction).url = '';
-      (newAction as IAgentFormAction).fields = [{
-        name: 'Your Name',
-        type: EFormFieldTypes.TEXT,
-        required: true,
-      }, {
-        name: 'Your Email',
-        type: EFormFieldTypes.EMAIL,
-        required: false,
-      }, {
-        name: 'Your Phone',
-        type: EFormFieldTypes.PHONE,
-        required: false,
-      }, {
-        name: 'Your ZIP',
-        type: EFormFieldTypes.ZIP,
-        required: false,
-      }];
+      (newAction as IAgentFormAction).fields = [
+        {
+          name: 'Your Name',
+          type: EFormFieldTypes.TEXT,
+          required: true,
+        },
+        {
+          name: 'Your Email',
+          type: EFormFieldTypes.EMAIL,
+          required: false,
+        },
+        {
+          name: 'Your Phone',
+          type: EFormFieldTypes.PHONE,
+          required: false,
+        },
+        {
+          name: 'Your ZIP',
+          type: EFormFieldTypes.ZIP,
+          required: false,
+        },
+      ];
     }
 
     setCurrentAction(newAction);
@@ -104,7 +114,11 @@ const EditAction = ({
     });
   };
 
-  const ActionTypes = [EAgentActionTypes.EMAIL_ACTION, EAgentActionTypes.UTTERANCE_ACTION, EAgentActionTypes.FORM_ACTION].map((type) => ({
+  const ActionTypes = [
+    EAgentActionTypes.EMAIL_ACTION,
+    EAgentActionTypes.UTTERANCE_ACTION,
+    EAgentActionTypes.FORM_ACTION,
+  ].map((type) => ({
     id: type,
     name: type,
   }));
@@ -112,12 +126,18 @@ const EditAction = ({
   return (
     <FullDialog
       isOpen={!!currentAction}
-      title={isNewAction ? 'Add a New Action' : `Edit Action: ${currentAction?.name}`}
-      onEditClose={onEditActionClose}
-    >
+      title={
+        isNewAction ? 'Add a New Action' : `Edit Action: ${currentAction?.name}`
+      }
+      onEditClose={onEditActionClose}>
       <Grid container={true} justify="center" className={classes.rootGrid}>
         <Grid container={true} item={true} sm={6} xs={4}>
-          <Grid container={true} item={true} sm={12} justify="flex-start" className={classes.formField}>
+          <Grid
+            container={true}
+            item={true}
+            sm={12}
+            justify="flex-start"
+            className={classes.formField}>
             <Typography variant="h6">
               Add an Action to customize your Assistant’s behavior:
             </Typography>
@@ -128,10 +148,22 @@ const EditAction = ({
               label="Action Name"
               value={currentAction?.name}
               className={classes.input}
-              onChange={isNewAction ? e => setCurrentAction({ ...currentAction, name: e.target.value }) : undefined}
+              onChange={
+                isNewAction
+                  ? (e) =>
+                      setCurrentAction({
+                        ...currentAction,
+                        name: e.target.value,
+                      })
+                  : undefined
+              }
             />
           </Grid>
-          <Grid container={true} item={true} sm={12} className={classes.formField}>
+          <Grid
+            container={true}
+            item={true}
+            sm={12}
+            className={classes.formField}>
             <DropDown
               fullWidth={true}
               label="Action Type"
@@ -165,12 +197,18 @@ const EditAction = ({
               <Options
                 options={currentAction.options}
                 onCreateOption={handleOptionCreate}
-                onBulkUpdate={(options) => setCurrentAction({ ...currentAction, options })}
+                onBulkUpdate={(options) =>
+                  setCurrentAction({ ...currentAction, options })
+                }
               />
             )}
           </Grid>
           <Grid container={true} item={true} xs={12} justify="center">
-            <Button autoFocus={true} color="primary" variant="contained" onClick={saveChanges}>
+            <Button
+              autoFocus={true}
+              color="primary"
+              variant="contained"
+              onClick={saveChanges}>
               {isNewAction ? 'Add Action' : 'Update Action'}
             </Button>
           </Grid>

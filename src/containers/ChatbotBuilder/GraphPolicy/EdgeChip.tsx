@@ -1,11 +1,14 @@
 import { ImageOption } from '@bavard/agent-config';
-import {GraphPolicyNode, IOutEdge} from '@bavard/agent-config/dist/graph-policy';
+import {
+  GraphPolicyNode,
+  IOutEdge,
+} from '@bavard/agent-config/dist/graph-policy';
 import { Avatar, Paper, Tooltip } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Email, Feedback, NotInterested, TextFields} from '@material-ui/icons';
+import { Email, Feedback, NotInterested, TextFields } from '@material-ui/icons';
 import _ from 'lodash';
 import React, { ReactElement, useContext } from 'react';
-import {OptionImagesContext} from '../../../context/OptionImages';
+import { OptionImagesContext } from '../../../context/OptionImages';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -41,7 +44,7 @@ interface IEdgeChipProps {
   actions?: ReactElement;
 }
 
-export default function EdgeChip({node, edgeId, actions}: IEdgeChipProps) {
+export default function EdgeChip({ node, edgeId, actions }: IEdgeChipProps) {
   const classes = useStyles();
 
   const optionImages = useContext(OptionImagesContext)?.optionImages || [];
@@ -52,35 +55,56 @@ export default function EdgeChip({node, edgeId, actions}: IEdgeChipProps) {
   const getAvatar = (edge: IOutEdge) => {
     if (edge.option?.type === 'IMAGE') {
       const optionImg = edge.option as ImageOption;
-      return <Avatar className={classes.optionImg} variant="rounded" src={getImgUrl(optionImg.imageName) || ''}/>;
+      return (
+        <Avatar
+          className={classes.optionImg}
+          variant="rounded"
+          src={getImgUrl(optionImg.imageName) || ''}
+        />
+      );
     } else if (edge.type === 'CONFIRM') {
-      return <Avatar className={classes.optionImg} variant="rounded"><Feedback/></Avatar>;
+      return (
+        <Avatar className={classes.optionImg} variant="rounded">
+          <Feedback />
+        </Avatar>
+      );
     } else if (edge.type === 'EMAIL') {
-      return <Avatar className={classes.optionImg} variant="rounded"><Email/></Avatar>;
+      return (
+        <Avatar className={classes.optionImg} variant="rounded">
+          <Email />
+        </Avatar>
+      );
     } else if (edge.type === 'EMPTY') {
-      return <Avatar className={classes.optionImg} variant="rounded"><NotInterested/></Avatar>;
+      return (
+        <Avatar className={classes.optionImg} variant="rounded">
+          <NotInterested />
+        </Avatar>
+      );
     }
-    return <Avatar className={classes.optionImg} variant="rounded"><TextFields/></Avatar>;
+    return (
+      <Avatar className={classes.optionImg} variant="rounded">
+        <TextFields />
+      </Avatar>
+    );
   };
 
   const edgeNode = node.getEdgeById(edgeId);
   const edgeJson = edgeNode?.toJsonObj();
-  const edgeText = edgeNode?.toJsonObj().option?.intent || edgeNode?.dest.actionName;
+  const edgeText =
+    edgeNode?.toJsonObj().option?.intent || edgeNode?.dest.actionName;
   if (!edgeNode || !edgeJson) {
     return <></>;
   }
 
   return (
-    <Tooltip disableFocusListener={true} title={`${edgeJson?.type} edge: ${edgeText}`}>
+    <Tooltip
+      disableFocusListener={true}
+      title={`${edgeJson?.type} edge: ${edgeText}`}>
       <Paper className={classes.option}>
         {getAvatar(edgeJson)}
-        <div className={classes.optionText}>
-          {edgeText}
-        </div>
+        <div className={classes.optionText}>{edgeText}</div>
 
-        <div className={classes.actions}>
-          {actions}
-        </div>
+        <div className={classes.actions}>{actions}</div>
       </Paper>
     </Tooltip>
   );

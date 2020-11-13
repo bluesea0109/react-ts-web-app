@@ -61,7 +61,7 @@ const EditIntent = ({
   }, [intent]);
 
   const saveChanges = () => {
-    if (!!currentIntent) {
+    if (currentIntent) {
       const { tableData, ...intentData } = currentIntent as any;
       onSaveIntent(intentData);
     }

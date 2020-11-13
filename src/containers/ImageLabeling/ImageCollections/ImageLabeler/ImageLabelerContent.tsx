@@ -226,9 +226,9 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
 
   const { image, labelQueueImage, categorySets } = props;
   const { orgId, projectId, collectionId } = useParams<{
-    orgId: string,
-    projectId: string,
-    collectionId: string,
+    orgId: string;
+    projectId: string;
+    collectionId: string;
   }>();
 
   const [state, setState] = useState<IImageLabelerContentState>({
@@ -275,7 +275,9 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
       return;
     }
 
-    const category = categorySet.categories.find((x) => x.name === value?.value);
+    const category = categorySet.categories.find(
+      (x) => x.name === value?.value,
+    );
     if (!category) {
       return;
     }
@@ -610,10 +612,7 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
                   options={categorySetOptions}
                   getOptionLabel={(option) => option.label}
                   renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Category Sets"
-                    />
+                    <TextField {...params} label="Category Sets" />
                   )}
                 />
               </FormControl>
@@ -623,10 +622,7 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
                   options={categoryOptions}
                   getOptionLabel={(option) => option.label}
                   renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Category"
-                    />
+                    <TextField {...params} label="Category" />
                   )}
                 />
               </FormControl>

@@ -143,7 +143,7 @@ class GraphPolicyVisualEditor extends React.Component<
     this.setState({
       treeRenderCount: this.state.treeRenderCount + 1,
     });
-  }
+  };
 
   componentDidMount() {
     window.addEventListener('resize', this.updateDimensions);
@@ -262,24 +262,24 @@ class GraphPolicyVisualEditor extends React.Component<
 
     this.renderedNodeIds.push(node.nodeId);
     return content;
-  }
+  };
 
   onDeleteNode = (nodeId: number) => {
     this.closeForms();
     this.setState({ showDeleteNode: nodeId });
-  }
+  };
 
   onEditNode = (nodeId: number) => {
     this.closeForms();
     this.setState({ showEditNode: nodeId });
-  }
+  };
 
   closeForms = () => {
     this.setState({
       showEditNode: null,
       showDeleteNode: null,
     });
-  }
+  };
 
   renderEditableNode = (
     node: GraphPolicyNode | UtteranceNode | EmailNode,
@@ -311,7 +311,7 @@ class GraphPolicyVisualEditor extends React.Component<
         </div>
       </Box>
     );
-  }
+  };
 
   renderEditNodeForm = () => {
     const gp = this.state.policy;
@@ -331,7 +331,7 @@ class GraphPolicyVisualEditor extends React.Component<
         onUpdate={this.persistChanges}
       />
     );
-  }
+  };
 
   handleEditNode = (updatedPolicy: GraphPolicy) => {
     const newPolicy = this.state.policy;
@@ -347,7 +347,7 @@ class GraphPolicyVisualEditor extends React.Component<
         this.persistChanges(updatedPolicy);
       },
     );
-  }
+  };
 
   deleteNode = (nodeId: number) => {
     const gp = this.state.policy;
@@ -360,7 +360,7 @@ class GraphPolicyVisualEditor extends React.Component<
       }),
       showDeleteNode: null,
     });
-  }
+  };
 
   renderDeleteNodeForm = () => {
     const gp = this.state.policy;
@@ -388,7 +388,7 @@ class GraphPolicyVisualEditor extends React.Component<
         </DialogActions>
       </Dialog>
     );
-  }
+  };
 
   renderStartButton() {
     if (!this.state.policy) {
@@ -447,13 +447,13 @@ class GraphPolicyVisualEditor extends React.Component<
     }
 
     this.setState({ loading: false });
-  }
+  };
 
   handleNewPolicy = (policy: GraphPolicy) => {
     this.setState({
       policy,
     });
-  }
+  };
 
   renderNewPolicy() {
     return (
@@ -537,7 +537,7 @@ class GraphPolicyVisualEditor extends React.Component<
               );
             }}
           </Mutation>
-          {this.state.loading && <ContentLoading shrinked={true}/>}
+          {this.state.loading && <ContentLoading shrinked={true} />}
         </div>
       </React.Fragment>
     );
@@ -548,7 +548,7 @@ class GraphPolicyVisualEditor extends React.Component<
         variables={{ agentId }}>
         {({ loading, data }) => {
           if (loading) {
-            return <ContentLoading/>;
+            return <ContentLoading />;
           }
           return (
             <OptionImagesContext.Provider

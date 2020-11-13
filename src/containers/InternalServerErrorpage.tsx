@@ -58,23 +58,28 @@ const InternalServerErrorPage = () => {
       <Grid container={true} className={classes.root}>
         <Grid className={classes.svg}>
           <Grid className={classes.img}>
-            <img src={'/cloud_error.png'} alt="cloud_error_msg" width="200px" height="140px"/>
+            <img
+              src={'/cloud_error.png'}
+              alt="cloud_error_msg"
+              width="200px"
+              height="140px"
+            />
           </Grid>
-        <Grid>
-          <Typography variant="h4" style={{ marginBottom: '20px' }}>
-            {ErrorTitle}
-          </Typography>
-        </Grid>
-        <Grid>
-          <Typography
-            component="p"
-            paragraph={true}
-            style={{ whiteSpace: 'pre-line' }}>
-            {ErrorDescription}
-          </Typography>
+          <Grid>
+            <Typography variant="h4" style={{ marginBottom: '20px' }}>
+              {ErrorTitle}
+            </Typography>
+          </Grid>
+          <Grid>
+            <Typography
+              component="p"
+              paragraph={true}
+              style={{ whiteSpace: 'pre-line' }}>
+              {ErrorDescription}
+            </Typography>
+          </Grid>
         </Grid>
       </Grid>
-    </Grid>
     </Grid>
   );
 };

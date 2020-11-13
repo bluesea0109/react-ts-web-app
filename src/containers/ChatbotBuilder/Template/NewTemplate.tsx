@@ -12,7 +12,10 @@ import {
 import clsx from 'clsx';
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
-import { CHATBOT_CREATE_UTTERANCE_ACTION, CHATBOT_GET_UTTERANCE_ACTIONS } from '../../../common-gql-queries';
+import {
+  CHATBOT_CREATE_UTTERANCE_ACTION,
+  CHATBOT_GET_UTTERANCE_ACTIONS,
+} from '../../../common-gql-queries';
 import ApolloErrorPage from '../../ApolloErrorPage';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -35,17 +38,22 @@ const NewUtteranceAction: React.FC = () => {
   const [name, setName] = useState<string>('');
   const params = useParams<{ agentId: string }>();
   const agentId = parseInt(params.agentId, 10);
-  const [createUtteranceAction, { loading, error }] = useMutation(CHATBOT_CREATE_UTTERANCE_ACTION,  {
-    refetchQueries: [{ query: CHATBOT_GET_UTTERANCE_ACTIONS, variables: { agentId }  }],
-    awaitRefetchQueries: true,
-  });
+  const [createUtteranceAction, { loading, error }] = useMutation(
+    CHATBOT_CREATE_UTTERANCE_ACTION,
+    {
+      refetchQueries: [
+        { query: CHATBOT_GET_UTTERANCE_ACTIONS, variables: { agentId } },
+      ],
+      awaitRefetchQueries: true,
+    },
+  );
 
   if (error) {
     // TODO: handle errors
     return <ApolloErrorPage error={error} />;
   }
 
-  const onSubmit =  () => {
+  const onSubmit = () => {
     createUtteranceAction({
       variables: {
         agentId,

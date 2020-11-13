@@ -41,7 +41,7 @@ export const GET_IMAGE_DATA = gql`
 `;
 
 export const NEXT_LABEL_QUEUE_IMAGE = gql`
-  mutation ($collectionId: Int!) {
+  mutation($collectionId: Int!) {
     ImageLabelingService_nextLabelQueueImage(collectionId: $collectionId) {
       imageId
       status
@@ -51,7 +51,7 @@ export const NEXT_LABEL_QUEUE_IMAGE = gql`
 `;
 
 export const COMPLETE_LABEL_QUEUE_IMAGE = gql`
-  mutation ($imageId: Int!) {
+  mutation($imageId: Int!) {
     ImageLabelingService_completeLabelQueueImage(imageId: $imageId) {
       imageId
       status
@@ -61,7 +61,7 @@ export const COMPLETE_LABEL_QUEUE_IMAGE = gql`
 `;
 
 export const SET_IN_PROGRESS = gql`
-  mutation ($imageId: Int!) {
+  mutation($imageId: Int!) {
     ImageLabelingService_selectLabelQueueImagene(imageId: $imageId) {
       imageId
       status
@@ -72,10 +72,10 @@ export const SET_IN_PROGRESS = gql`
 
 export const SAVE_LABELS = gql`
   mutation saveImageLabels(
-    $imageId: Int!,
-    $labels: [ImageLabelingService_ImageLabelInput!]!,
-    $delLabelIds: [Int!]!) {
-
+    $imageId: Int!
+    $labels: [ImageLabelingService_ImageLabelInput!]!
+    $delLabelIds: [Int!]!
+  ) {
     ImageLabelingService_saveImageLabels(imageId: $imageId, labels: $labels) {
       id
       imageId
@@ -96,12 +96,8 @@ export const SAVE_LABELS = gql`
 `;
 
 export const DELETE_LABEL = gql`
-  mutation deleteImageCategoricalLabel(
-    $id: Int!,
-  ) {
-    deleteImageCategoricalLabel(
-      id: $id,
-    ) {
+  mutation deleteImageCategoricalLabel($id: Int!) {
+    deleteImageCategoricalLabel(id: $id) {
       id
       status
     }

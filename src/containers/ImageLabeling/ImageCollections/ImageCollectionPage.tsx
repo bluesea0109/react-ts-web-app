@@ -23,10 +23,10 @@ function ImageCollectionPage() {
   // eslint-disable-next-line
   const classes = useStyles();
   const { orgId, projectId, collectionId, tab } = useParams<{
-    orgId: string,
-    projectId: string,
-    collectionId: string,
-    tab: string,
+    orgId: string;
+    projectId: string;
+    collectionId: string;
+    tab: string;
   }>();
   const history = useHistory();
 
@@ -44,14 +44,15 @@ function ImageCollectionPage() {
             value={tab}
             onChange={handleChangeTab}
             indicatorColor="secondary"
-            textColor="primary"
-          >
+            textColor="primary">
             <Tab label="Images" value="images" />
             <Tab label="Review Queues" value="review-queues" />
             <Tab label="Label Exports" value="label-exports" />
           </Tabs>
           <Typography className={classes.root}>
-            <Link component={RouterLink} to={`/orgs/${orgId}/projects/${projectId}/image-labeling/collections/`}>
+            <Link
+              component={RouterLink}
+              to={`/orgs/${orgId}/projects/${projectId}/image-labeling/collections/`}>
               {'All collections'}
             </Link>
           </Typography>
@@ -60,12 +61,8 @@ function ImageCollectionPage() {
       {tab === 'images' && (
         <ImagesTable collectionId={parseInt(collectionId, 10)} />
       )}
-      {tab === 'review-queues' && (
-        <ReviewQueuesTable />
-      )}
-      {tab === 'label-exports' && (
-        <ExportsTable/>
-      )}
+      {tab === 'review-queues' && <ReviewQueuesTable />}
+      {tab === 'label-exports' && <ExportsTable />}
     </div>
   );
 }

@@ -28,7 +28,7 @@ export default class MultiPolygon extends MultiShape {
     return this.polygons;
   }
 
-  endPolygon () {
+  endPolygon() {
     if (this.currentPolygon == null) {
       throw new Error('no polygon has been started');
     }
@@ -45,7 +45,6 @@ export default class MultiPolygon extends MultiShape {
   }
 
   draw(ctx: any, zoom: number): void {
-
     for (const poly of this.polygons) {
       poly.draw(ctx, zoom);
     }
@@ -56,7 +55,7 @@ export default class MultiPolygon extends MultiShape {
   }
 
   coordinates(): number[][][] {
-    return this.polygons.map(x => x.points);
+    return this.polygons.map((x) => x.points);
   }
 
   toJson(): string {

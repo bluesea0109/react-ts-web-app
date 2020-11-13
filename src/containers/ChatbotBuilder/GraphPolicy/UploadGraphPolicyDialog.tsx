@@ -22,7 +22,10 @@ interface IUploadGraphPolicyDialogState {
   policySaved: boolean;
 }
 
-class UploadGraphPolicyDialog extends React.Component<WithApolloClient<IUploadGraphPolicyDialogProps>, IUploadGraphPolicyDialogState> {
+class UploadGraphPolicyDialog extends React.Component<
+  WithApolloClient<IUploadGraphPolicyDialogProps>,
+  IUploadGraphPolicyDialogState
+> {
   constructor(props: IUploadGraphPolicyDialogProps) {
     super(props);
 
@@ -39,15 +42,15 @@ class UploadGraphPolicyDialog extends React.Component<WithApolloClient<IUploadGr
       error: error || null,
       status: error?.message || '',
     });
-  }
+  };
 
   onCancel = () => {
     this.props.onCancel();
-  }
+  };
 
   onClose = () => {
     this.onCancel();
-  }
+  };
 
   onSuccess = () => {
     this.setState({
@@ -56,41 +59,33 @@ class UploadGraphPolicyDialog extends React.Component<WithApolloClient<IUploadGr
     if (this.props.onSuccess) {
       this.props.onSuccess();
     }
-  }
+  };
 
   render() {
     const state = this.state;
 
     const dialogContent = (
       <DialogContent>
-        <DialogContentText>
-          {state.status}
-        </DialogContentText>
-        <GraphPolicyUpload onSuccess={this.onSuccess} onError={this.onError}/>
+        <DialogContentText>{state.status}</DialogContentText>
+        <GraphPolicyUpload onSuccess={this.onSuccess} onError={this.onError} />
       </DialogContent>
     );
 
     return (
       <React.Fragment>
-        <Dialog
-          open={this.props.open}
-          fullWidth={true}
-        >
+        <Dialog open={this.props.open} fullWidth={true}>
           <DialogTitle>{'Import Graph Policy File'}</DialogTitle>
           {dialogContent}
           <DialogActions>
-            {
-              state.policySaved
-              ?
+            {state.policySaved ? (
               <Button color="secondary" onClick={this.onClose}>
                 {'Close'}
               </Button>
-              :
+            ) : (
               <Button color="secondary" onClick={this.onCancel}>
                 {'Cancel'}
               </Button>
-            }
-
+            )}
           </DialogActions>
         </Dialog>
       </React.Fragment>
@@ -98,4 +93,6 @@ class UploadGraphPolicyDialog extends React.Component<WithApolloClient<IUploadGr
   }
 }
 
-export default withApollo<IUploadGraphPolicyDialogProps>(UploadGraphPolicyDialog);
+export default withApollo<IUploadGraphPolicyDialogProps>(
+  UploadGraphPolicyDialog,
+);

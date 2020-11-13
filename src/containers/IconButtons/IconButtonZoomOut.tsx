@@ -11,7 +11,10 @@ interface IIconButtonProps {
 
 export default function IconButtonZoomOut(props: IIconButtonProps) {
   return (
-    <IconButton onClick={props.onClick} style={{ padding: 6 }} disabled={props.disabled}>
+    <IconButton
+      onClick={props.onClick}
+      style={{ padding: 6 }}
+      disabled={props.disabled}>
       <Tooltip title={props.tooltip ?? 'Zoom In'} disableFocusListener={true}>
         <ZoomOutIcon color={props.disabled ? 'disabled' : 'secondary'} />
       </Tooltip>

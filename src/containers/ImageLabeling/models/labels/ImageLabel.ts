@@ -12,10 +12,14 @@ export enum ImageLabelShapesEnum {
 
 export const strToShapesEnum = (str: string): ImageLabelShapesEnum => {
   switch (str.toLowerCase()) {
-    case 'box': return ImageLabelShapesEnum.BOX;
-    case 'polygon': return ImageLabelShapesEnum.POLYGON;
-    case 'none': return ImageLabelShapesEnum.NONE;
-    default: throw new Error(`Unkown image label shape type "${str}"`);
+    case 'box':
+      return ImageLabelShapesEnum.BOX;
+    case 'polygon':
+      return ImageLabelShapesEnum.POLYGON;
+    case 'none':
+      return ImageLabelShapesEnum.NONE;
+    default:
+      throw new Error(`Unkown image label shape type "${str}"`);
   }
 };
 
@@ -32,18 +36,24 @@ class ImageCategoricalLabel {
     public categorySetName: string | null,
     public category: string | null,
     shapeJson?: string,
-    ) {
-
+  ) {
     switch (shapeType) {
-      case ImageLabelShapesEnum.BOX: this.shape = new MultiRectangle(shapeJson); break;
-      case ImageLabelShapesEnum.POLYGON: this.shape = new MultiPolygon(shapeJson); break;
-      default: this.shape = null;
+      case ImageLabelShapesEnum.BOX:
+        this.shape = new MultiRectangle(shapeJson);
+        break;
+      case ImageLabelShapesEnum.POLYGON:
+        this.shape = new MultiPolygon(shapeJson);
+        break;
+      default:
+        this.shape = null;
     }
     this.visible = true;
   }
 
-  deleteShape (i: number): void {
-    if (this.shape) { this.shape.deleteShape(i); }
+  deleteShape(i: number): void {
+    if (this.shape) {
+      this.shape.deleteShape(i);
+    }
     this.modified = true;
   }
 
@@ -61,7 +71,9 @@ class ImageCategoricalLabel {
   }
 
   draw(ctx: any, zoom: number): void {
-    if (this.shape) { this.shape.draw(ctx, zoom); }
+    if (this.shape) {
+      this.shape.draw(ctx, zoom);
+    }
   }
 
   toJson(): string {

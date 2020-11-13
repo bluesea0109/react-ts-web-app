@@ -17,9 +17,9 @@ const connector = connect(null, mapDispatch);
 
 function ImageReviewer(props: ConnectedProps<typeof connector>) {
   const { projectId, queueId, imageId } = useParams<{
-    projectId: string,
-    imageId: string,
-    queueId: string,
+    projectId: string;
+    imageId: string;
+    queueId: string;
   }>();
   const { loading, error, data } = useQuery(GET_DATA, {
     variables: {
@@ -76,7 +76,10 @@ const GET_DATA = gql`
         creator
       }
     }
-    ImageLabelingService_reviewQueueImage(queueId: $queueId, imageId: $imageId) {
+    ImageLabelingService_reviewQueueImage(
+      queueId: $queueId
+      imageId: $imageId
+    ) {
       queueId
       imageId
       reviewer

@@ -58,7 +58,9 @@ export default function UpsertNodeForm({
     node instanceof EmailNode ? node.to : '',
   );
 
-  const [formFields, setFormFields] = useState<IFormField[]>(node instanceof FormNode ? node.fields : []);
+  const [formFields, setFormFields] = useState<IFormField[]>(
+    node instanceof FormNode ? node.fields : [],
+  );
 
   const [url, setURL] = useState(node instanceof FormNode ? node.url : '');
   const [actionName, setActionName] = useState(node?.actionName || '');
@@ -74,7 +76,7 @@ export default function UpsertNodeForm({
     }
   };
 
-  const handleFormNode = async() => {
+  const handleFormNode = async () => {
     const newNode = new FormNode(nodeId, actionName, url, formFields);
     onChange(newNode);
   };
@@ -106,7 +108,7 @@ export default function UpsertNodeForm({
     setShowFormErrors(true);
 
     // Preliminary validation
-    if ( !actionName || !nodeId) {
+    if (!actionName || !nodeId) {
       return;
     }
 
@@ -125,8 +127,15 @@ export default function UpsertNodeForm({
     }
   };
 
-  const addFormField = (fieldName: string, fieldType: EFormFieldTypes, required: boolean) => {
-    setFormFields([...formFields, { name: fieldName, type: fieldType, required }]);
+  const addFormField = (
+    fieldName: string,
+    fieldType: EFormFieldTypes,
+    required: boolean,
+  ) => {
+    setFormFields([
+      ...formFields,
+      { name: fieldName, type: fieldType, required },
+    ]);
   };
 
   const deleteField = (key: number) => {
@@ -135,7 +144,14 @@ export default function UpsertNodeForm({
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(handleChange, [fromEmail, toEmail, actionName, utterance, url, formFields]);
+  useEffect(handleChange, [
+    fromEmail,
+    toEmail,
+    actionName,
+    utterance,
+    url,
+    formFields,
+  ]);
 
   return (
     <div>
@@ -225,7 +241,9 @@ export default function UpsertNodeForm({
                       name={item.name}
                       label={`${item.name} [${item.type}]`}
                       variant="outlined"
-                      style={item.required ? {backgroundColor: '#fff8d9'} : {}}
+                      style={
+                        item.required ? { backgroundColor: '#fff8d9' } : {}
+                      }
                     />
                   </FormControl>
                 </Grid>

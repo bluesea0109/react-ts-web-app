@@ -99,7 +99,7 @@ const AllAgents: React.FC<IChatbotBuilderAgentProps> = ({ user }) => {
 
     if (agents && agents.some((agent) => agent.uname === uname)) {
       enqueueSnackbar(
-        'The agent name must be unique. You can\'t use that name twice',
+        "The agent name must be unique. You can't use that name twice",
         { variant: 'error' },
       );
       return;
