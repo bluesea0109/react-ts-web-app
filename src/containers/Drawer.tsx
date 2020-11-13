@@ -5,7 +5,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles } from '@material-ui/core/styles';
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import { IAgentParam } from '../models/chatbot-service';
 import { IUser } from '../models/user-service';
 import { MenuName } from '../utils/enums';
@@ -54,12 +54,22 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     closeDrawer: {
       display: 'flex',
-      justifyContent: 'flex-end',
       padding: '10px 10px 0px 10px',
-      height: '100px',
+      flexDirection: 'column',
       cursor: 'pointer',
     },
-    customDrawer: {},
+
+    customDrawer: {
+
+    },
+    allAgentBtn: {
+      padding: '10px',
+      borderRadius: '5px',
+      backgroundColor: 'rgba(74, 144, 226)',
+      color: 'white',
+      margin: '20px 130px 20px',
+      boxShadow: '1px 1px 5px white inset',      
+    },
   }),
 );
 
@@ -185,6 +195,10 @@ function CustomDrawer(props: CustomDrawerProps) {
     return `/orgs/${user.activeProject.orgId}`;
   };
 
+  const saveHistory = () => {
+    onClose();
+    localStorage.setItem('backURL', location.pathname);
+  };
   const list = () => {
     switch (navigation) {
       case MenuName.DASHBOARD:
@@ -234,6 +248,24 @@ function CustomDrawer(props: CustomDrawerProps) {
             </ListItem>
             <ListItem
               component={Link}
+              to={createOrgPath('billing')}
+              selected={location.pathname.includes('billing')}
+              button={true}
+              className={classes.listItem}>
+              <ListItemIcon style={{ color: 'white' }}>
+                <SubMenuIcon title="Organization" active={false} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Billing"
+                style={
+                  location.pathname.includes('billing')
+                    ? selectedStyle
+                    : { paddingLeft: '20px' }
+                }
+              />
+            </ListItem>
+            <ListItem
+              component={Link}
               to={createPath('settings')}
               selected={
                 location.pathname.includes('projects') &&
@@ -257,29 +289,24 @@ function CustomDrawer(props: CustomDrawerProps) {
           </List>
         );
       case MenuName.OPEN_CONFIG:
-        return (
-          <>
-            <CloseDrawer handleClose={onClose} />
-            <BotSubMenu
-              title={botSubMenuData.configure.category}
-              items={botSubMenuData.configure.items}
-              category="Configure"
-              getAgentPath={getAgentPath}
-            />
-            <BotSubMenu
-              title={botSubMenuData.training.category}
-              items={botSubMenuData.training.items}
-              category="Training"
-              getAgentPath={getAgentPath}
-            />
-            <BotSubMenu
-              title={botSubMenuData.launch.category}
-              items={botSubMenuData.launch.items}
-              category="Launch"
-              getAgentPath={getAgentPath}
-            />
-          </>
-        );
+        return <>
+          <CloseDrawer handleClose={saveHistory} path={createPath('chatbot-builder')}/>
+          <BotSubMenu
+            title={botSubMenuData.configure.category}
+            items={botSubMenuData.configure.items}
+            category="Configure" getAgentPath={getAgentPath}
+          />
+          <BotSubMenu
+            title={botSubMenuData.training.category}
+            items={botSubMenuData.training.items}
+            category="Training" getAgentPath={getAgentPath}
+          />
+          <BotSubMenu
+            title={botSubMenuData.launch.category}
+            items={botSubMenuData.launch.items}
+            category="Launch" getAgentPath={getAgentPath}
+          />
+        </>;
       default:
         return <></>;
     }
@@ -291,18 +318,25 @@ export default CustomDrawer;
 
 interface CloseDrawerProps {
   handleClose: () => void;
+  path: string;
 }
 
-const CloseDrawer = ({ handleClose }: CloseDrawerProps) => {
+const CloseDrawer = ({handleClose, path}: CloseDrawerProps) => {
   const classes = useStyles();
+  const history = useHistory();
+
   const handleCloseDrawer = () => {
     handleClose();
   };
-  return (
-    <Grid className={classes.closeDrawer}>
-      <Box onClick={handleCloseDrawer}>
-        <img src="/back.png" width="30px" height="30px" alt="backbutton" />
-      </Box>
-    </Grid>
-  );
+  const openAllAgent = () => {
+    history.push(path);
+  };
+  return <Grid className={classes.closeDrawer}>
+    <Box display="flex" justifyContent="flex-end" onClick={handleCloseDrawer}>
+      <img src="/back.png" width="30px" height="30px" alt="backbutton"/>
+    </Box>
+    <Box display="flex" justifyContent="flex-start" onClick={openAllAgent}>
+      <Grid className={classes.allAgentBtn}>All Agents</Grid>
+    </Box>
+  </Grid>;
 };

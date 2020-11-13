@@ -28,7 +28,6 @@ interface ISidebarProps {
 }
 
 const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
-  // const [open, setOpen] = useState(false);
   const [, setOpenSubItem] = useState(false);
   const [selected, setSelected] = useState(MenuName.DASHBOARD);
 
@@ -183,7 +182,13 @@ const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
   const openBotCreation = (key: MenuName) => {
     setSelected(key);
     setOpenSubItem(false);
-    onClick(MenuName.CREATE_BOT);
+    const backURL = localStorage.getItem('backURL');
+    if (!backURL) {
+      onClose();
+    } else {
+      onClick(MenuName.OPEN_CONFIG);
+      history.push(backURL);
+    }
   };
   const openPage = (key: MenuName) => {
     setSelected(key);
@@ -191,6 +196,14 @@ const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
     onClose();
   };
 
+  const getCreateBotURL = () => {
+    const backURL = localStorage.getItem('backURL');
+    if (backURL) {
+      return backURL;
+    } else {
+      return createPath('chatbot-builder');
+    }
+  };
   const data = [
     {
       path:
@@ -201,7 +214,7 @@ const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
       hidden: false,
     },
     {
-      path: createPath('chatbot-builder'),
+      path: getCreateBotURL(),
       name: MenuName.CREATE_BOT,
       css: 'BotBuilder',
       handler: openBotCreation,
