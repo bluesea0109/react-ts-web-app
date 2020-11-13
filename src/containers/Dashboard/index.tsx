@@ -48,27 +48,29 @@ function Account(props: IDashboardProps) {
       <Grid>
         <Grid item={true} container={true} xs={12} spacing={4}>
           <Grid item={true} sm={12} md={10}>
-            <Card>
-              <CardHeader
-                avatar={<SupervisedUserCircleOutlined />}
-                title={<h4>Your organizations</h4>}
-                action={
-                  <Button
-                    color="primary"
-                    onClick={() => showAddOrg(true)}
-                    endIcon={<AddCircleOutline />}
-                    disabled={(orgs?.length || 0) >= 3}>
-                    Add New Organization
-                  </Button>
-                }
-              />
-              <CommonTable
-                data={{
-                  columns,
-                  rowsData: orgs || [],
-                }}
-              />
-            </Card>
+            <CommonTable
+              data={{
+                columns,
+                rowsData: orgs || [],
+              }}
+              components={{
+                Toolbar: () => (
+                  <CardHeader
+                    avatar={<SupervisedUserCircleOutlined />}
+                    title={<h4>Your organizations</h4>}
+                    action={
+                      <Button
+                        color="primary"
+                        onClick={() => showAddOrg(true)}
+                        endIcon={<AddCircleOutline />}
+                        disabled={(orgs?.length || 0) >= 3}>
+                        Add New Organization
+                      </Button>
+                    }
+                  />
+                ),
+              }}
+            />
           </Grid>
           <Grid item={true} sm={12} md={10}>
             <Card>
