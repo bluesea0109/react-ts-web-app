@@ -4,12 +4,6 @@ import {
   CardHeader,
   Dialog,
   Grid,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Typography,
 } from '@material-ui/core';
 import {
@@ -24,6 +18,7 @@ import { IUser } from '../../models/user-service';
 import NewOrganisation from './NewOrganisation';
 import NewProject from './NewProject';
 import ProjectsTable from './ProjectsTable';
+import { CommonTable } from '../../components';
 
 interface IDashboardProps {
   user: IUser;
@@ -43,6 +38,10 @@ function Account(props: IDashboardProps) {
 
   const orgs = props.user.orgs;
   const activeOrg = props.user.activeOrg;
+  const columns = [
+    { title: 'Organization Name', field: 'name' },
+    { title: 'Organization Id', field: 'id' },
+  ];
 
   return (
     <div className={'page-container'}>
@@ -63,30 +62,12 @@ function Account(props: IDashboardProps) {
                   </Button>
                 }
               />
-              {orgs ? (
-                <TableContainer component="div" aria-label="Orgs">
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Organization Name</TableCell>
-                        <TableCell>Organization ID</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {orgs.map((org) => (
-                        <TableRow key={org.id}>
-                          <TableCell>{org.name}</TableCell>
-                          <TableCell>{org.id}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              ) : (
-                <Typography align="center" variant="h6">
-                  {'No organizations found'}
-                </Typography>
-              )}
+              <CommonTable
+                data={{
+                  columns,
+                  rowsData: orgs || [],
+                }}
+              />
             </Card>
           </Grid>
           <Grid item={true} sm={12} md={10}>
