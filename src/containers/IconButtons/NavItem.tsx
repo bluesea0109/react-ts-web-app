@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { Animated } from 'react-animated-css';
@@ -39,6 +39,7 @@ const NavItem = ({ active, path, onClick, name, hidden }: NavItemProps) => {
     onClick(name);
   };
 
+  const history = useHistory();
   const Icon = useMemo(() => {
     switch (name) {
       case MenuName.DASHBOARD:
