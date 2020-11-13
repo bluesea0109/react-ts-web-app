@@ -199,28 +199,28 @@ const GraphEditor = ({ agentId, policy, onSave }: IProps) => {
 
   // Update the graph policy, write the update to history for undo/redo
   const updateGp = (
-    gp: GraphPolicyV2,
+    policy: GraphPolicyV2,
     triggerRender = false,
     writeToHistory = true,
   ) => {
     if (writeToHistory) {
-      gpHistory.pushHistory(gp);
+      gpHistory.pushHistory(policy);
     }
 
-    setGp(gp);
+    setGp(GraphPolicyV2.fromJsonObj(policy.toJsonObj()));
     if (triggerRender) {
       setChanges(changes + 1);
     }
   };
 
   const undoChanges = () => {
-    const gp = gpHistory.undoChanges();
-    updateGp(gp, true, false);
+    const policy = gpHistory.undoChanges();
+    updateGp(policy, true, false);
   };
 
   const redoChanges = () => {
-    const gp = gpHistory.redoChanges();
-    updateGp(gp, true, false);
+    const policy = gpHistory.redoChanges();
+    updateGp(policy, true, false);
   };
 
   // Handle ctrl+c, ctrl+v, ctrl+z, ctrl+y
@@ -271,7 +271,9 @@ const GraphEditor = ({ agentId, policy, onSave }: IProps) => {
           gp.deleteNodeById(selectedNodeId);
           gp.sortAllChildNodes();
           deleteDraftNode(selectedNodeId);
+          selectNode(undefined);
           updateGp(gp, true);
+
           enqueueSnackbar('Node Deleted', { variant: 'success' });
         }
         break;
