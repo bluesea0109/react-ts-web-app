@@ -12,7 +12,9 @@ export interface AnnotatorState {
 
 export const useEditExampleAnnotation = ({
   tagTypes,
-}: { tagTypes: string[] }): [string, any, AnnotatorState, any, MutableRefObject<any>] => {
+}: {
+  tagTypes: string[];
+}): [string, any, AnnotatorState, any, MutableRefObject<any>] => {
   const colors = useRef<any>({});
   const [exampleText, setExampleText] = useState('');
   const [annotatorState, setAnnotatorState] = useState<AnnotatorState>({
@@ -37,5 +39,11 @@ export const useEditExampleAnnotation = ({
     });
   }, [tagTypes]);
 
-  return [exampleText, setExampleText, annotatorState, setAnnotatorState, colors];
+  return [
+    exampleText,
+    setExampleText,
+    annotatorState,
+    setAnnotatorState,
+    colors,
+  ];
 };

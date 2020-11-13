@@ -65,16 +65,20 @@ const ExamplesTable = ({
   const classes = useStyles();
 
   const filteredExamples = useMemo(() => {
-      if (!filters || !filters.intent) { return examples; }
-      return examples.filter((item) => item.intent.toLowerCase().includes(filters?.intent || ''));
-  }, [  filters, examples]);
+    if (!filters || !filters.intent) {
+      return examples;
+    }
+    return examples.filter((item) =>
+      item.intent.toLowerCase().includes(filters?.intent || ''),
+    );
+  }, [filters, examples]);
 
   const handleIntentChange = (intent: string) => {
     updateFilters({ intent, offset: 0 });
   };
 
   const handlePagechange = (page: number) => {
-    updateFilters({ offset: page * examplesPerPage});
+    updateFilters({ offset: page * examplesPerPage });
   };
 
   const columns = [

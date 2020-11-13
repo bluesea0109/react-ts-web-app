@@ -24,7 +24,9 @@ const SlotSection: React.FC = () => {
   const classes = useStyles();
   const [currentSlot, setCurrentSlot] = useState<ISlot | undefined>();
   const [isNewSlot, setIsNewSlot] = useState<boolean>(false);
-  const [config, setConfig] = useRecoilState<AgentConfig | undefined>(currentAgentConfig);
+  const [config, setConfig] = useRecoilState<AgentConfig | undefined>(
+    currentAgentConfig,
+  );
 
   if (!config) {
     return <p>Agent config is empty.</p>;
@@ -37,11 +39,11 @@ const SlotSection: React.FC = () => {
   };
 
   const onSaveSlot = (slot: ISlot) => {
-    if (!currentSlot) { return; }
+    if (!currentSlot) {
+      return;
+    }
     const newConfig = _.cloneDeep<AgentConfig>(config);
-    newConfig
-      .deleteSlot(currentSlot.name)
-      .addSlot(slot.name, slot.type);
+    newConfig.deleteSlot(currentSlot.name).addSlot(slot.name, slot.type);
     setConfig(newConfig);
 
     setIsNewSlot(false);
@@ -76,11 +78,7 @@ const SlotSection: React.FC = () => {
             onEditSlotClose={onEditSlotClose}
             onSaveSlot={onSaveSlot}
           />
-          {isNewSlot && (
-            <AddSlot
-              onAddSlotClose={onEditSlotClose}
-            />
-          )}
+          {isNewSlot && <AddSlot onAddSlotClose={onEditSlotClose} />}
         </>
       )}
     </div>

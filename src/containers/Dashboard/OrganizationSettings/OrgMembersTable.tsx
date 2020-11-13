@@ -203,7 +203,7 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
           </Alert>
         ) : (
           <Alert onClose={handleCloseSnackBar} severity="error">
-            {'Sorry, we couldn\'t remove the member.'}
+            {"Sorry, we couldn't remove the member."}
           </Alert>
         )}
       </Snackbar>

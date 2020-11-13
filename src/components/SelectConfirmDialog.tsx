@@ -6,7 +6,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import React, { ChangeEvent, useState } from 'react';
+import React, { useState } from 'react';
 
 interface ISelectConfirmDialogProps {
   title: string;
@@ -30,8 +30,13 @@ const SelectConfirmDialog: React.FC<ISelectConfirmDialogProps> = (props) => {
   const [text, setText] = useState<string>('');
   const [validIntent, setValidIntent] = useState<string>('');
 
-  const setUpdatingIntent = (e: ChangeEvent<{}>, intent: string | null) =>
+  const setUpdatingIntent = (
+    event: React.ChangeEvent<Record<string, unknown>>,
+    intent: string | null,
+  ) => {
     setValidIntent(intent ?? '');
+  };
+
   return (
     <Dialog
       open={open}

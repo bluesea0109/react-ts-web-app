@@ -34,10 +34,10 @@ export const saveExampleMutation = gql`
 `;
 
 export const getExamplesQuery = gql`
-  query ($agentId: Int!, $offset: Int, $limit: Int, $intent: String) {
+  query($agentId: Int!, $offset: Int, $limit: Int, $intent: String) {
     ChatbotService_examples(
-      agentId: $agentId,
-      offset: $offset,
+      agentId: $agentId
+      offset: $offset
       limit: $limit
       intent: $intent
     ) {

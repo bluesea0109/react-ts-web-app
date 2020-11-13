@@ -36,7 +36,10 @@ interface IProjectProps {
 }
 
 function CollectionsListWrapper() {
-  const { orgId, projectId } = useParams<{ orgId: string, projectId: string }>();
+  const { orgId, projectId } = useParams<{
+    orgId: string;
+    projectId: string;
+  }>();
 
   if (!orgId) {
     return <Typography>{'No org is active.'}</Typography>;
@@ -55,8 +58,14 @@ function CollectionsList(props: IProjectProps) {
     ImageLabelingService_collections: IImageCollection[];
   }
 
-  const { loading, error, data } = useQuery<GetImageCollections>(GET_COLLECTIONS, { variables: { projectId: props.projectId } });
-  const { orgId, projectId } = useParams<{ orgId: string, projectId: string }>();
+  const { loading, error, data } = useQuery<GetImageCollections>(
+    GET_COLLECTIONS,
+    { variables: { projectId: props.projectId } },
+  );
+  const { orgId, projectId } = useParams<{
+    orgId: string;
+    projectId: string;
+  }>();
 
   if (error) {
     console.error(error);
@@ -88,8 +97,7 @@ function CollectionsList(props: IProjectProps) {
           <TableRow
             key={i}
             onClick={onSelectCollection(collection.id)}
-            hover={true}
-          >
+            hover={true}>
             <TableCell>{collection.name}</TableCell>
             <TableCell>{collection.id}</TableCell>
           </TableRow>

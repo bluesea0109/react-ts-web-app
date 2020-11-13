@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const query = gql`
-  query ($article: String, $maxWords: Int) {
+  query($article: String, $maxWords: Int) {
     bertExtractiveSummary(article: $article, maxWords: $maxWords)
   }
 `;
@@ -48,7 +48,11 @@ export default function TextSummarization() {
       },
     });
 
-    setState({ ...state, loading: false, summary: res.data.bertExtractiveSummary });
+    setState({
+      ...state,
+      loading: false,
+      summary: res.data.bertExtractiveSummary,
+    });
   };
 
   let summary: any = null;
@@ -75,10 +79,11 @@ export default function TextSummarization() {
 
   return (
     <form className={classes.root} noValidate={true} autoComplete="off">
-
       <Grid container={true} spacing={2}>
         <Grid item={true} xs={12}>
-          <Typography variant="h4">{'Extractive Text Summarization'}</Typography>
+          <Typography variant="h4">
+            {'Extractive Text Summarization'}
+          </Typography>
         </Grid>
         <Grid item={true} xs={12} sm={12}>
           <TextField
@@ -101,12 +106,16 @@ export default function TextSummarization() {
               shrink: true,
             }}
             variant="outlined"
-            onChange={(e) => setState({ ...state, maxWords: parseInt(e.target.value) })}
+            onChange={(e) =>
+              setState({ ...state, maxWords: parseInt(e.target.value) })
+            }
             value={state.maxWords}
           />
         </Grid>
         <Grid item={true} xs={12}>
-          <Button variant="contained" onClick={onSubmitClick}>{'Submit'}</Button>
+          <Button variant="contained" onClick={onSubmitClick}>
+            {'Submit'}
+          </Button>
         </Grid>
         {summary}
       </Grid>

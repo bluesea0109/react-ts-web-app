@@ -2,11 +2,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Paper from '@material-ui/core/Paper';
-import {
-  createStyles,
-  makeStyles,
-  Theme,
-} from '@material-ui/core/styles';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -34,36 +30,43 @@ const useStyles = makeStyles((theme: Theme) =>
     paper: {
       margin: theme.spacing(1),
     },
-  }));
+  }),
+);
 
 function ExportsTable() {
   const rowsPerPage = 10;
   const classes = useStyles();
   const params = useParams<{
-    collectionId: string,
+    collectionId: string;
   }>();
   const collectionId = parseInt(params.collectionId, 10);
 
   interface IGetLabelExports {
     ImageLabelingService_labelExports: ILabelsExport[];
   }
-  const getExports = useQuery<IGetLabelExports>(GET_LABEL_EXPORTS, { variables: { collectionId } });
+  const getExports = useQuery<IGetLabelExports>(GET_LABEL_EXPORTS, {
+    variables: { collectionId },
+  });
   const [createExport, createExportResult] = useMutation(CREATE_EXPORT, {
-    refetchQueries: [{
-      query: GET_LABEL_EXPORTS,
-      variables: {
-        collectionId,
+    refetchQueries: [
+      {
+        query: GET_LABEL_EXPORTS,
+        variables: {
+          collectionId,
+        },
       },
-    }],
+    ],
     awaitRefetchQueries: true,
   });
   const [deleteExport, deleteExportResult] = useMutation(DELETE_EXPORT, {
-    refetchQueries: [{
-      query: GET_LABEL_EXPORTS,
-      variables: {
-        collectionId,
+    refetchQueries: [
+      {
+        query: GET_LABEL_EXPORTS,
+        variables: {
+          collectionId,
+        },
       },
-    }],
+    ],
     awaitRefetchQueries: true,
   });
 
@@ -72,7 +75,10 @@ function ExportsTable() {
     page: 0,
   });
 
-  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, page: number) => {
+  const handleChangePage = (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    page: number,
+  ) => {
     setState({ ...state, page });
   };
 
@@ -99,18 +105,22 @@ function ExportsTable() {
   };
 
   if (getExports.error) {
-    return <ApolloErrorPage error={getExports.error}/>;
+    return <ApolloErrorPage error={getExports.error} />;
   }
 
   if (createExportResult.error) {
-    return <ApolloErrorPage error={createExportResult.error}/>;
+    return <ApolloErrorPage error={createExportResult.error} />;
   }
 
   if (deleteExportResult.error) {
-    return <ApolloErrorPage error={deleteExportResult.error}/>;
+    return <ApolloErrorPage error={deleteExportResult.error} />;
   }
 
-  if (getExports.loading || createExportResult.loading || deleteExportResult.loading) {
+  if (
+    getExports.loading ||
+    createExportResult.loading ||
+    deleteExportResult.loading
+  ) {
     return <ContentLoading />;
   }
 
@@ -122,9 +132,7 @@ function ExportsTable() {
       <Toolbar variant="dense">
         <Button onClick={onExportClick}>
           {'Export to CSV'}
-          <TableIcon
-            className={classes.rightIcon}
-            color="secondary"/>
+          <TableIcon className={classes.rightIcon} color="secondary" />
         </Button>
         {/* <IconButtonRefresh onClick={this.reload} /> */}
       </Toolbar>

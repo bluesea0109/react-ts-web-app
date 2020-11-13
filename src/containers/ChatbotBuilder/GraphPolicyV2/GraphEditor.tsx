@@ -200,8 +200,8 @@ const GraphEditor = ({ agentId, policy, onSave }: IProps) => {
   // Update the graph policy, write the update to history for undo/redo
   const updateGp = (
     gp: GraphPolicyV2,
-    triggerRender: boolean = false,
-    writeToHistory: boolean = true,
+    triggerRender = false,
+    writeToHistory = true,
   ) => {
     if (writeToHistory) {
       gpHistory.pushHistory(gp);

@@ -1,6 +1,14 @@
-
 import { useMutation } from '@apollo/client';
-import {  Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,  Typography } from '@material-ui/core';
+import {
+  Switch,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from '@material-ui/core';
 
 import 'firebase/auth';
 import React from 'react';
@@ -15,13 +23,11 @@ interface IProjectsTableProps {
 }
 
 function ProjectsTable(props: IProjectsTableProps) {
-
   const { activeOrg, activeProject } = props;
-  const [updateActiveOrg, { loading, error }] = useMutation(UPDATE_ACTIVE_ORG,
-    {
-      refetchQueries: [{ query: GET_CURRENT_USER }],
-      awaitRefetchQueries: false,
-    });
+  const [updateActiveOrg, { loading, error }] = useMutation(UPDATE_ACTIVE_ORG, {
+    refetchQueries: [{ query: GET_CURRENT_USER }],
+    awaitRefetchQueries: false,
+  });
 
   const setActiveProject = async (orgId: string, projectId: string) => {
     updateActiveOrg({
@@ -33,11 +39,11 @@ function ProjectsTable(props: IProjectsTableProps) {
   };
 
   if (loading) {
-    return <ContentLoading shrinked={true}/>;
+    return <ContentLoading shrinked={true} />;
   }
 
   if (error) {
-    return <ApolloErrorPage error={error}/>;
+    return <ApolloErrorPage error={error} />;
   }
 
   const projects = activeOrg.projects;
@@ -51,13 +57,13 @@ function ProjectsTable(props: IProjectsTableProps) {
     if (activeProjectId !== projectId) {
       return (
         <Switch
-        color="primary"
-        checked={false}
-        onChange={(event) => activateProject(projectId)}
-      />
+          color="primary"
+          checked={false}
+          onChange={(event) => activateProject(projectId)}
+        />
       );
     }
-    return <Switch color="primary" checked={true}/>;
+    return <Switch color="primary" checked={true} />;
   };
 
   return (
@@ -84,10 +90,10 @@ function ProjectsTable(props: IProjectsTableProps) {
           </Table>
         </TableContainer>
       ) : (
-          <Typography align="center" variant="h6">
-            {'No organizations found'}
-          </Typography>
-        )}
+        <Typography align="center" variant="h6">
+          {'No organizations found'}
+        </Typography>
+      )}
     </React.Fragment>
   );
 }

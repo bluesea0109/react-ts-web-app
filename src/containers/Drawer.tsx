@@ -58,6 +58,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: 'column',
       cursor: 'pointer',
     },
+
     customDrawer: {
 
     },
@@ -78,31 +79,32 @@ export const botSubMenuData = {
   configure: {
     category: 'Configure',
     items: [
-    {
-      title: 'Actions',
-      path: 'Actions',
-    },
-    {
-      title: 'Intents',
-      path: 'Intents',
-    },
-    {
-      title: 'Tags',
-      path: 'Tags',
-    },
-    {
-      title: 'Slot Values',
-      path: 'Slots',
-    },
-    {
-      title: 'Visual Graphs V1.0',
-      path: 'graph-policy-v1',
-    },
-    {
-      title: 'Visual Graphs V2.0',
-      path: 'graph-policies',
-    },
-  ]},
+      {
+        title: 'Actions',
+        path: 'Actions',
+      },
+      {
+        title: 'Intents',
+        path: 'Intents',
+      },
+      {
+        title: 'Tags',
+        path: 'Tags',
+      },
+      {
+        title: 'Slot Values',
+        path: 'Slots',
+      },
+      {
+        title: 'Visual Graphs V1.0',
+        path: 'graph-policy-v1',
+      },
+      {
+        title: 'Visual Graphs V2.0',
+        path: 'graph-policies',
+      },
+    ],
+  },
   training: {
     category: 'Training',
     items: [
@@ -118,7 +120,8 @@ export const botSubMenuData = {
         title: 'Training Conversations',
         path: 'training-conversations',
       },
-  ]},
+    ],
+  },
   launch: {
     category: 'Launching',
     items: [
@@ -182,7 +185,7 @@ function CustomDrawer(props: CustomDrawerProps) {
     return createAgentPath(user, agent.agentId, agentTab, entityId);
   };
 
-  const createOrgPath = (path: string = ''): string => {
+  const createOrgPath = (path = ''): string => {
     if (!user.activeProject) {
       return '/no-orgs';
     }
@@ -219,7 +222,7 @@ function CustomDrawer(props: CustomDrawerProps) {
                   !location.pathname.includes('projects') &&
                   location.pathname === '/'
                     ? selectedStyle
-                    : {paddingLeft: '20px'}
+                    : { paddingLeft: '20px' }
                 }
               />
             </ListItem>
@@ -241,7 +244,7 @@ function CustomDrawer(props: CustomDrawerProps) {
                   !location.pathname.includes('projects') &&
                   location.pathname.includes('settings')
                     ? selectedStyle
-                    : {paddingLeft: '20px'}
+                    : { paddingLeft: '20px' }
                 }
               />
             </ListItem>
@@ -263,7 +266,7 @@ function CustomDrawer(props: CustomDrawerProps) {
                   location.pathname.includes('projects') &&
                   location.pathname.includes('settings')
                     ? selectedStyle
-                    : {paddingLeft: '20px'}
+                    : { paddingLeft: '20px' }
                 }
               />
             </ListItem>

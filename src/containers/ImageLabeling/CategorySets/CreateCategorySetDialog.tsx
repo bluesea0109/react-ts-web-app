@@ -18,7 +18,10 @@ import AddIcon from '@material-ui/icons/Add';
 import { useState } from 'react';
 import React from 'react';
 import { useParams } from 'react-router';
-import { CREATE_CATEGORY_SET, GET_CATEGORY_SETS } from '../../../common-gql-queries';
+import {
+  CREATE_CATEGORY_SET,
+  GET_CATEGORY_SETS,
+} from '../../../common-gql-queries';
 import ContentLoading from '../../ContentLoading';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -77,7 +80,8 @@ function CreateCategorySetDialog() {
     categories: [],
   });
   const { projectId } = useParams<{ projectId: string }>();
-  const [createCategorySet, { loading, error }] = useMutation(CREATE_CATEGORY_SET,
+  const [createCategorySet, { loading, error }] = useMutation(
+    CREATE_CATEGORY_SET,
     {
       onCompleted: () => {
         handleClose();
@@ -213,8 +217,7 @@ function CreateCategorySetDialog() {
         fullWidth={true}
         open={state.open}
         onClose={handleClose}
-        aria-labelledby="form-dialog-title"
-      >
+        aria-labelledby="form-dialog-title">
         <DialogTitle disableTypography={true}>
           <Typography variant="h6">{'New Category Set'}</Typography>
         </DialogTitle>
@@ -226,8 +229,7 @@ function CreateCategorySetDialog() {
           <Button
             color="secondary"
             disabled={createDisabled()}
-            onClick={handleCreate}
-          >
+            onClick={handleCreate}>
             {'Create'}
           </Button>
         </DialogActions>

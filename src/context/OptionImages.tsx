@@ -1,8 +1,10 @@
 import React from 'react';
-import {IOptionImage} from '../models/chatbot-service';
+import { IOptionImage } from '../models/chatbot-service';
 
 type OptionImagesContextProps = {
-  optionImages: IOptionImage[],
+  optionImages: IOptionImage[];
 };
 
-export const OptionImagesContext = React.createContext<Partial<OptionImagesContextProps>>({});
+export const OptionImagesContext = React.createContext<
+  Partial<OptionImagesContextProps>
+>({});

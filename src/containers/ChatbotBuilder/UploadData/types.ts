@@ -1,8 +1,5 @@
 import { IAgentConfig, IWidgetSettings } from '@bavard/agent-config';
-import {
-  IAgent,
-  INLUExample,
-} from '../../../models/chatbot-service';
+import { IAgent, INLUExample } from '../../../models/chatbot-service';
 
 export interface INLUTrainingData {
   intents: string[];

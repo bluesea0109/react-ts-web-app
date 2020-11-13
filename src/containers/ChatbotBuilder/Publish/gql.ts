@@ -2,7 +2,10 @@ import gql from 'graphql-tag';
 
 export const publishAgentMutation = gql`
   mutation($agentId: Int!, $forceRetrain: Boolean!) {
-    ChatbotService_publishAgent(agentId: $agentId, forceRetrain: $forceRetrain) {
+    ChatbotService_publishAgent(
+      agentId: $agentId
+      forceRetrain: $forceRetrain
+    ) {
       id
       agentId
       status

@@ -205,13 +205,13 @@ export const ConversationBoard = ({
   const classes = useStyles();
   const params = useParams<{ agentId: string }>();
   const agentId = parseInt(params.agentId, 10);
-  const [, setErrStatus] = useState('');  // errStatus
+  const [, setErrStatus] = useState(''); // errStatus
 
   const [actionData, setActionsValue] = useState<any | null>(
     isUpdate ? tempActionData : [],
   );
   const [turn, setTurns] = useState<string[]>(isUpdate ? userTurns : []);
-  const [, setActionType] = useState<string>('UTTER');  // actionType
+  const [, setActionType] = useState<string>('UTTER'); // actionType
   const [, setLoding] = useState<boolean>(false); // loading
 
   const [createConversation] = useMutation(CREATE_TRAINING_CONVERSATION);
@@ -479,7 +479,7 @@ export const ConversationBoard = ({
                     inputField.agentActions && classes.agentActionWrapper,
                   )}
                   key={index}>
-                  <div/>
+                  <div />
                   {turn[index] === 'user' || inputField.userActions ? (
                     <DialogueForm
                       index={index}
@@ -512,22 +512,32 @@ export const ConversationBoard = ({
             <Grid
               container={true}
               item={true}
-              className={classes.UserActionsHeading}
-              >
-              <Typography style={{color: 'blue'}}> Add User Action </Typography>
+              className={classes.UserActionsHeading}>
+              <Typography style={{ color: 'blue' }}>
+                {' '}
+                Add User Action{' '}
+              </Typography>
               <IconButton onClick={() => handleAddFields('user')}>
-                <AddCircleOutline fontSize="large"  style={{color: '#5867ca'}}/>
+                <AddCircleOutline
+                  fontSize="large"
+                  style={{ color: '#5867ca' }}
+                />
               </IconButton>
             </Grid>
             <Grid
               container={true}
               item={true}
               className={classes.AgentActionsHeading}
-              justify="flex-end"
-              >
-              <Typography style={{color: 'blue'}}> Add Agent Action </Typography>
+              justify="flex-end">
+              <Typography style={{ color: 'blue' }}>
+                {' '}
+                Add Agent Action{' '}
+              </Typography>
               <IconButton onClick={() => handleAddFields('agent')}>
-                <AddCircleOutline fontSize="large" style={{color: '#5867ca'}}/>
+                <AddCircleOutline
+                  fontSize="large"
+                  style={{ color: '#5867ca' }}
+                />
               </IconButton>
             </Grid>
           </Grid>

@@ -15,18 +15,18 @@ import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 
 interface IChangeRoleDialogProps {
-    open: boolean;
-    member: any;
-    setOpen: (open: boolean) => void;
-    onUpdateCallback: () => void;
+  open: boolean;
+  member: any;
+  setOpen: (open: boolean) => void;
+  onUpdateCallback: () => void;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     dialogContent: {
-     '&:first-child': {
+      '&:first-child': {
         paddingTop: 0,
-     },
+      },
     },
     dialogTitle: {
       paddingBottom: 0,
@@ -38,7 +38,7 @@ const ChangeRoleDialog: React.FC<IChangeRoleDialogProps> = (props) => {
   const classes = useStyles();
   const [state, setState] = useState({
     role: 'editor',
-   });
+  });
 
   const handleChange = (name: string) => (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -49,11 +49,14 @@ const ChangeRoleDialog: React.FC<IChangeRoleDialogProps> = (props) => {
     });
   };
 
-  const [ changeMemberRole, { loading, error }] = useMutation(CHANGE_ORG_MEMBERS_ROLE, {
-    onCompleted() {
+  const [changeMemberRole, { loading, error }] = useMutation(
+    CHANGE_ORG_MEMBERS_ROLE,
+    {
+      onCompleted() {
         props.onUpdateCallback();
+      },
     },
-  });
+  );
 
   const onChangeMemberRole = () => {
     changeMemberRole({
@@ -84,49 +87,50 @@ const ChangeRoleDialog: React.FC<IChangeRoleDialogProps> = (props) => {
     );
   } else {
     dialogContent = (
-    <React.Fragment>
-      <DialogContent className={classes.dialogContent}>
-        <FormControl component="fieldset">
-          <RadioGroup
-            name="role"
-            value={state.role}
-            onChange={handleChange('role')}
-            row={false}>
-                <FormControlLabel
+      <React.Fragment>
+        <DialogContent className={classes.dialogContent}>
+          <FormControl component="fieldset">
+            <RadioGroup
+              name="role"
+              value={state.role}
+              onChange={handleChange('role')}
+              row={false}>
+              <FormControlLabel
                 value="owner"
                 control={<Radio />}
                 label="Owner"
-                />
-                <FormControlLabel
+              />
+              <FormControlLabel
                 value="editor"
                 control={<Radio />}
                 label="Editor"
-                />
-                <FormControlLabel
+              />
+              <FormControlLabel
                 value="viewer"
                 control={<Radio />}
                 label="Viewer"
-                />
-          </RadioGroup>
-        </FormControl>
-      </DialogContent>
-    </React.Fragment>
-  ); }
+              />
+            </RadioGroup>
+          </FormControl>
+        </DialogContent>
+      </React.Fragment>
+    );
+  }
 
   return (
     <Dialog
       open={props.open}
       onClose={() => props.setOpen(false)}
-      aria-labelledby="confirm-dialog"
-    >
-      <DialogTitle id="confirm-dialog" className={classes.dialogTitle}>Change Member Role</DialogTitle>
+      aria-labelledby="confirm-dialog">
+      <DialogTitle id="confirm-dialog" className={classes.dialogTitle}>
+        Change Member Role
+      </DialogTitle>
       <DialogContent>{dialogContent}</DialogContent>
       <DialogActions>
         <Button
           variant="contained"
           onClick={() => props.setOpen(false)}
-          color="default"
-        >
+          color="default">
           Cancel
         </Button>
         <Button
@@ -135,8 +139,7 @@ const ChangeRoleDialog: React.FC<IChangeRoleDialogProps> = (props) => {
           onClick={() => {
             onChangeMemberRole();
           }}
-          color="secondary"
-        >
+          color="secondary">
           Update
         </Button>
       </DialogActions>

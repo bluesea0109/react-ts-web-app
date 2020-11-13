@@ -17,14 +17,16 @@ export default class MultiRectangle extends MultiShape {
 
   private loadJson(json: string): void {
     const feature = JSON.parse(json);
-    this.rectangles = feature.geometry.coordinates.map((coordinates: number[][]) => {
-      const [upperLeft, , lowerRight  ] = coordinates;
-      const [x, y] = upperLeft;
-      const [xw, yh] = lowerRight;
-      const w = xw - x;
-      const h = yh - y;
-      return new Rectangle(x, y, w, h);
-    });
+    this.rectangles = feature.geometry.coordinates.map(
+      (coordinates: number[][]) => {
+        const [upperLeft, , lowerRight] = coordinates;
+        const [x, y] = upperLeft;
+        const [xw, yh] = lowerRight;
+        const w = xw - x;
+        const h = yh - y;
+        return new Rectangle(x, y, w, h);
+      },
+    );
   }
 
   deleteShape(i: number): void {
@@ -39,7 +41,7 @@ export default class MultiRectangle extends MultiShape {
     return this.currentRectangle !== null;
   }
 
-  startRectangle (x: number, y: number, w: number, h: number): void {
+  startRectangle(x: number, y: number, w: number, h: number): void {
     this.currentRectangle = new Rectangle(x, y, w, h);
   }
 
@@ -64,7 +66,6 @@ export default class MultiRectangle extends MultiShape {
     }
 
     if (this.currentRectangle) {
-
       this.currentRectangle.draw(ctx, zoom);
     }
   }
@@ -74,7 +75,7 @@ export default class MultiRectangle extends MultiShape {
       type: 'Feature',
       geometry: {
         type: 'MultiPolygon',
-        coordinates: this.rectangles.map(r => r.coordinates()),
+        coordinates: this.rectangles.map((r) => r.coordinates()),
       },
       properties: {
         type: 'MultiRectangle',

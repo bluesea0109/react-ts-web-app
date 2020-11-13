@@ -2,7 +2,10 @@ import axios from 'axios';
 import FileType from 'file-type';
 import isSvg from 'is-svg';
 
-export const uploadImageFile = async (file: File, url: string): Promise<any> => {
+export const uploadImageFile = async (
+  file: File,
+  url: string,
+): Promise<any> => {
   const buffer = await file.arrayBuffer();
   let mime;
   if (isSvg(Buffer.from(buffer))) {

@@ -1,6 +1,8 @@
 import {
   createStyles,
-  Grid, InputProps as StandardInputProps, makeStyles,
+  Grid,
+  InputProps as StandardInputProps,
+  makeStyles,
   TextField,
   Theme,
   Typography,
@@ -13,7 +15,8 @@ const useStyles = makeStyles((theme: Theme) =>
     name: {
       marginRight: theme.spacing(1),
     },
-  }));
+  }),
+);
 
 interface TextInputProps {
   id?: string;
@@ -28,7 +31,9 @@ interface TextInputProps {
   variant?: TextVariantTypes;
   className?: string;
   InputProps?: Partial<StandardInputProps>;
-  onChange?: (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void;
+  onChange?: (
+    event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+  ) => void;
 }
 
 const TextInput: React.FC<TextInputProps> = ({
@@ -51,7 +56,10 @@ const TextInput: React.FC<TextInputProps> = ({
   return (
     <Grid container={true} alignItems="center">
       {label && label.length && (
-        <Typography variant="subtitle1" style={{fontWeight: 'bold'}} className={classes.name}>
+        <Typography
+          variant="subtitle1"
+          style={{ fontWeight: 'bold' }}
+          className={classes.name}>
           {label}
         </Typography>
       )}

@@ -29,15 +29,13 @@ interface OptionsProps {
   onBulkUpdate: (options: IResponseOption[]) => void;
 }
 
-const Options = ({
-  options,
-  onCreateOption,
-  onBulkUpdate,
-}: OptionsProps) => {
+const Options = ({ options, onCreateOption, onBulkUpdate }: OptionsProps) => {
   const classes = useStyles();
   const [config] = useRecoilState<AgentConfig | undefined>(currentAgentConfig);
 
-  if (!config) { return null; }
+  if (!config) {
+    return null;
+  }
 
   const intents = config.getIntents();
 
@@ -46,9 +44,7 @@ const Options = ({
       {options && !!options.length && (
         <>
           <Grid container={true} item={true}>
-            <Typography variant="h6">
-              Add a New User Response Option
-            </Typography>
+            <Typography variant="h6">Add a New User Response Option</Typography>
           </Grid>
           <Grid container={true} item={true}>
             <Typography variant="subtitle1">

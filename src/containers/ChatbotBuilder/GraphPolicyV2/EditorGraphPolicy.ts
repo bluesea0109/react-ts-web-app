@@ -13,17 +13,17 @@ export default class EditorGraphPolicy extends GraphPolicyV2 {
 
   public addDraftNode = (editorNode: IGraphEditorNode) => {
     this.draftNodes.push(editorNode);
-  }
+  };
 
   public removeDraftNode = (nodeId: number) => {
     this.draftNodes = _.reject(this.draftNodes, (n) => {
       return n.nodeId === nodeId;
     });
-  }
+  };
 
   public getDraftNodes = (): IGraphEditorNode[] => {
     return this.draftNodes;
-  }
+  };
 
   public getCoordinatesForNode = (
     nodeId: number,
@@ -32,7 +32,7 @@ export default class EditorGraphPolicy extends GraphPolicyV2 {
     if (node) {
       return node;
     }
-  }
+  };
 
   public setCoordinatesForNode = (
     nodeId: number,
@@ -53,5 +53,5 @@ export default class EditorGraphPolicy extends GraphPolicyV2 {
       x,
       y,
     });
-  }
+  };
 }

@@ -1,4 +1,3 @@
-import { AgentConfig } from '@bavard/agent-config';
 import {
   Button,
   Card,
@@ -9,10 +8,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import clsx from 'clsx';
-import _ from 'lodash';
 import React, { useState } from 'react';
-import { useRecoilState } from 'recoil';
-import { currentAgentConfig } from '../atoms';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -28,27 +24,22 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const NewTag: React.FC = () => {
+interface NewTagProps {
+  onAdd: (tag: string) => void;
+}
+
+const NewTag: React.FC<NewTagProps> = ({ onAdd }: NewTagProps) => {
   const classes = useStyles();
   const [tagName, setTagName] = useState<string>('');
-  const [config, setConfig] = useRecoilState<AgentConfig | undefined>(currentAgentConfig);
-
-  if (!config) {
-    return <Typography>Agent config is empty.</Typography>;
-  }
 
   const onSubmit = () => {
-    const newConfig = _.cloneDeep<AgentConfig>(config);
-    newConfig.addTagType(tagName);
-    setConfig(newConfig);
-
+    onAdd(tagName);
     setTagName('');
   };
 
   return (
     <Card className={clsx(classes.root)}>
       <Typography variant="h4">New Tag</Typography>
-      <br />
       <TextField
         id="name"
         label="Tag Name"
@@ -58,7 +49,6 @@ const NewTag: React.FC = () => {
         onChange={(e: any) => setTagName(e.target.value as string)}
         className={clsx(classes.inputBox)}
       />
-      <br />
       <Button
         className={clsx(classes.button)}
         variant="contained"

@@ -267,7 +267,7 @@ const GradientPicker = ({
     let direction = css.split('(')[1]?.split(',')[0] as GradientDirection;
 
     if (
-      !!!(
+      !(
         Object.keys(directionIconMap).indexOf(direction) >= 0 ||
         /\b(\d+\.?\d*)\s*(deg)/.test(direction)
       )

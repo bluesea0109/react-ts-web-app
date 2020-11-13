@@ -1,4 +1,14 @@
-import { createStyles, Grid, makeStyles, Paper, Tab, Tabs, Theme, Toolbar, Typography } from '@material-ui/core';
+import {
+  createStyles,
+  Grid,
+  makeStyles,
+  Paper,
+  Tab,
+  Tabs,
+  Theme,
+  Toolbar,
+  Typography,
+} from '@material-ui/core';
 import React from 'react';
 import { useHistory, useParams } from 'react-router';
 import CategorySets from './CategorySets/CategorySets';
@@ -11,7 +21,10 @@ interface IProjectProps {
 }
 
 function ImageLabelingPageWrapper() {
-  const { orgId, projectId } = useParams<{ orgId: string, projectId: string }>();
+  const { orgId, projectId } = useParams<{
+    orgId: string;
+    projectId: string;
+  }>();
 
   if (!orgId) {
     return <Typography>{'No org is active.'}</Typography>;
@@ -40,9 +53,9 @@ function ImageLabelingPage(props: IProjectProps) {
   // eslint-disable-next-line
   const classes = useStyles();
   const { orgId, projectId, tab } = useParams<{
-    orgId: string,
-    projectId: string,
-    tab: string,
+    orgId: string;
+    projectId: string;
+    tab: string;
   }>();
   const history = useHistory();
 
@@ -60,8 +73,7 @@ function ImageLabelingPage(props: IProjectProps) {
             value={tab}
             onChange={handleChangeTab}
             indicatorColor="secondary"
-            textColor="primary"
-          >
+            textColor="primary">
             <Tab value={'collections'} label="Image Collections" />
             <Tab value={'category-sets'} label="Category Sets" />
           </Tabs>
@@ -70,10 +82,11 @@ function ImageLabelingPage(props: IProjectProps) {
       {tab === 'collections' && (
         <Grid container={true}>
           <Grid item={true} xs={12}>
-            <Toolbar variant="dense" disableGutters={true} className={classes.toolbar}>
-              <Typography variant="h6">
-                {'Collections'}
-              </Typography>
+            <Toolbar
+              variant="dense"
+              disableGutters={true}
+              className={classes.toolbar}>
+              <Typography variant="h6">{'Collections'}</Typography>
               <CreateCollection />
             </Toolbar>
           </Grid>
@@ -82,9 +95,7 @@ function ImageLabelingPage(props: IProjectProps) {
           </Grid>
         </Grid>
       )}
-      {tab === 'category-sets' && (
-        <CategorySets />
-      )}
+      {tab === 'category-sets' && <CategorySets />}
     </div>
   );
 }

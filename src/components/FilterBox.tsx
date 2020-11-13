@@ -28,11 +28,7 @@ interface FilterBoxProps {
   onChange: (filter: string) => void;
 }
 
-const FilterBox = ({
-  name,
-  filter,
-  onChange,
-}: FilterBoxProps) => {
+const FilterBox = ({ name, filter, onChange }: FilterBoxProps) => {
   const classes = useStyles();
 
   return (

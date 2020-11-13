@@ -72,7 +72,9 @@ function ImageLabelListItem(props: IImageLabelListItemProps) {
   const classes = useStyles();
   const { label, labelIndex, selected } = props;
 
-  const toggleLabelVisible = (label: ImageCategoricalLabel) => (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+  const toggleLabelVisible = (label: ImageCategoricalLabel) => (
+    e: React.MouseEvent<SVGSVGElement, MouseEvent>,
+  ) => {
     const updatedLabel = cloneDeep(label);
     updatedLabel.visible = !updatedLabel.visible;
     props.updateLabel(updatedLabel, labelIndex);
@@ -80,7 +82,9 @@ function ImageLabelListItem(props: IImageLabelListItemProps) {
     e.stopPropagation();
   };
 
-  const toggleLabelExpand = (label: ImageCategoricalLabel) => (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+  const toggleLabelExpand = (label: ImageCategoricalLabel) => (
+    e: React.MouseEvent<SVGSVGElement, MouseEvent>,
+  ) => {
     const updatedLabel = cloneDeep(label);
     updatedLabel.open = !updatedLabel.open;
     props.updateLabel(updatedLabel, labelIndex);
@@ -88,7 +92,10 @@ function ImageLabelListItem(props: IImageLabelListItemProps) {
     e.stopPropagation();
   };
 
-  const deleteLabelShape = (label: ImageCategoricalLabel, shapeIndex: number) => (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const deleteLabelShape = (
+    label: ImageCategoricalLabel,
+    shapeIndex: number,
+  ) => (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     const updatedLabel = cloneDeep(label);
     updatedLabel.deleteShape(shapeIndex);
     props.updateLabel(updatedLabel, labelIndex);
@@ -118,17 +125,35 @@ function ImageLabelListItem(props: IImageLabelListItemProps) {
         dense={true}
         selected={selected}
         onClick={onSelect}>
-
         {label.visible ? (
-          <VisibilityIcon color="secondary" onClick={toggleLabelVisible(label)} fontSize="small" />
+          <VisibilityIcon
+            color="secondary"
+            onClick={toggleLabelVisible(label)}
+            fontSize="small"
+          />
         ) : (
-            <VisibilityOffIcon color="secondary" onClick={toggleLabelVisible(label)} fontSize="small" />
-          )}
-        <ListItemText color="inherit" primaryTypographyProps={{ variant: 'body2' }}
-          primary={label.category ? `Category: ${label.categorySetName}-${label.category}` : ''}
-          secondary={`Shape: ${label.displayType}`} />
+          <VisibilityOffIcon
+            color="secondary"
+            onClick={toggleLabelVisible(label)}
+            fontSize="small"
+          />
+        )}
+        <ListItemText
+          color="inherit"
+          primaryTypographyProps={{ variant: 'body2' }}
+          primary={
+            label.category
+              ? `Category: ${label.categorySetName}-${label.category}`
+              : ''
+          }
+          secondary={`Shape: ${label.displayType}`}
+        />
         {props.editable ? (
-          <IconButton size="small" color="default" style={{ padding: 6 }} onClick={onDelete}>
+          <IconButton
+            size="small"
+            color="default"
+            style={{ padding: 6 }}
+            onClick={onDelete}>
             <DeleteIcon color="secondary" fontSize="small" />
           </IconButton>
         ) : null}
@@ -136,9 +161,8 @@ function ImageLabelListItem(props: IImageLabelListItemProps) {
           {label.open ? (
             <ExpandLess color="secondary" onClick={toggleLabelExpand(label)} />
           ) : (
-              <ExpandMore color="secondary" onClick={toggleLabelExpand(label)} />
-            )
-          }
+            <ExpandMore color="secondary" onClick={toggleLabelExpand(label)} />
+          )}
         </ListItemSecondaryAction>
       </ListItem>
       <Collapse in={label.open} timeout="auto" unmountOnExit={true}>
@@ -148,11 +172,19 @@ function ImageLabelListItem(props: IImageLabelListItemProps) {
               {label.visible ? (
                 <VisibilityIcon color="secondary" fontSize="small" />
               ) : (
-                  <VisibilityOffIcon color="secondary" fontSize="small" />
-                )}
-              <ListItemText inset={true} primary={shape.displayString} primaryTypographyProps={{ variant: 'body2' }} />
+                <VisibilityOffIcon color="secondary" fontSize="small" />
+              )}
+              <ListItemText
+                inset={true}
+                primary={shape.displayString}
+                primaryTypographyProps={{ variant: 'body2' }}
+              />
               {props.editable ? (
-                <IconButton size="small" color="default" onClick={deleteLabelShape(label, i)} style={{ padding: 6 }} >
+                <IconButton
+                  size="small"
+                  color="default"
+                  onClick={deleteLabelShape(label, i)}
+                  style={{ padding: 6 }}>
                   <DeleteIcon color="secondary" fontSize="small" />
                 </IconButton>
               ) : null}
@@ -160,7 +192,7 @@ function ImageLabelListItem(props: IImageLabelListItemProps) {
           ))}
         </List>
       </Collapse>
-    </React.Fragment >
+    </React.Fragment>
   );
 }
 

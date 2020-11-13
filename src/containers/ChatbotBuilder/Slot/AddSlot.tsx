@@ -38,16 +38,16 @@ type AddSlotProps = {
   onAddSlotClose: () => void;
 };
 
-const AddSlot = ({
-  onAddSlotClose,
-}: AddSlotProps) => {
+const AddSlot = ({ onAddSlotClose }: AddSlotProps) => {
   const classes = useStyles();
   const [loading, setLoading] = useState(false);
   const [newSlot, setNewSlot] = useState<ISlot>({
     name: '',
     type: '',
   });
-  const [config, setConfig] = useRecoilState<AgentConfig | undefined>(currentAgentConfig);
+  const [config, setConfig] = useRecoilState<AgentConfig | undefined>(
+    currentAgentConfig,
+  );
   const { enqueueSnackbar } = useSnackbar();
 
   if (!config) {
@@ -56,7 +56,7 @@ const AddSlot = ({
 
   const saveChanges = () => {
     if (newSlot.name === '' || newSlot.type === '') {
-      enqueueSnackbar('Slot can\'t be empty', { variant: 'warning' });
+      enqueueSnackbar("Slot can't be empty", { variant: 'warning' });
       return;
     }
 

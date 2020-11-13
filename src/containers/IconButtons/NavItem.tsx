@@ -34,7 +34,7 @@ interface NavItemProps {
   onClick: (key: MenuName) => void;
 }
 
-const NavItem = ({ active, path, onClick, name, hidden}: NavItemProps) => {
+const NavItem = ({ active, path, onClick, name, hidden }: NavItemProps) => {
   const handleClick = () => {
     onClick(name);
   };
@@ -63,15 +63,18 @@ const NavItem = ({ active, path, onClick, name, hidden}: NavItemProps) => {
     }
   }, [name, active]);
 
-  const isOpenMenu = [MenuName.OPEN_CONFIG, MenuName.OPEN_TRAINING, MenuName.OPEN_LAUNCHING].find(menuName => name === menuName);
+  const isOpenMenu = [
+    MenuName.OPEN_CONFIG,
+    MenuName.OPEN_TRAINING,
+    MenuName.OPEN_LAUNCHING,
+  ].find((menuName) => name === menuName);
 
   return (
     <div>
       <NavLink
         to={path}
         onClick={handleClick}
-        style={{color: 'white', textDecoration: 'none'}}
-      >
+        style={{ color: 'white', textDecoration: 'none' }}>
         <Animated
           animationIn="fadeIn"
           animationOut="fadeOut"
@@ -79,8 +82,7 @@ const NavItem = ({ active, path, onClick, name, hidden}: NavItemProps) => {
           style={!hidden ? { display: 'none' } : {}}>
           <StyledNavItem
             className={active ? 'active' : ''}
-            style={isOpenMenu ? { backgroundColor: '#cccccc33' } : {}}
-          >
+            style={isOpenMenu ? { backgroundColor: '#cccccc33' } : {}}>
             {Icon}
           </StyledNavItem>
         </Animated>

@@ -1,10 +1,5 @@
 import { ISlot } from '@bavard/agent-config';
-import {
-  Box,
-  DialogContent,
-  Grid,
-  TextField,
-} from '@material-ui/core';
+import { Box, DialogContent, Grid, TextField } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -36,11 +31,7 @@ type EditSlotProps = {
   error?: Error;
 };
 
-const EditSlot = ({
-  slot,
-  onEditSlotClose,
-  onSaveSlot,
-}: EditSlotProps) => {
+const EditSlot = ({ slot, onEditSlotClose, onSaveSlot }: EditSlotProps) => {
   const classes = useStyles();
   const [currentSlot, setCurrentSlot] = useState<Maybe<ISlot>>(slot);
 
@@ -73,10 +64,7 @@ const EditSlot = ({
               ? 'Create New Slot'
               : `Edit Slot "${currentSlot.name}"`}
           </Typography>
-          <Button
-            autoFocus={true}
-            color="inherit"
-            onClick={saveChanges}>
+          <Button autoFocus={true} color="inherit" onClick={saveChanges}>
             {!currentSlot ? 'Create' : 'Save'}
           </Button>
         </Toolbar>

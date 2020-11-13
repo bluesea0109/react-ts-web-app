@@ -22,9 +22,13 @@ const Actions = () => {
   const classes = useStyles();
   const [currentAction, setCurrentAction] = useState<Maybe<IAgentAction>>();
   const [isNewAction, setIsNewAction] = useState<boolean>(false);
-  const [config, setConfig] = useRecoilState<AgentConfig | undefined>(currentAgentConfig);
+  const [config, setConfig] = useRecoilState<AgentConfig | undefined>(
+    currentAgentConfig,
+  );
 
-  if (!config) { return null; }
+  if (!config) {
+    return null;
+  }
 
   const actions: BaseAgentAction[] = config.getActions();
 
@@ -39,23 +43,16 @@ const Actions = () => {
   };
 
   const onSaveAction = (action: IAgentAction) => {
-    if (!currentAction) { return; }
-    setConfig(
-      config
-        .copy()
-        .deleteAction(currentAction.name)
-        .addAction(action),
-    );
+    if (!currentAction) {
+      return;
+    }
+    setConfig(config.copy().deleteAction(currentAction.name).addAction(action));
     setIsNewAction(false);
     setCurrentAction(undefined);
   };
 
   const onDeleteAction = (action: BaseAgentAction) => {
-    setConfig(
-      config
-        .copy()
-        .deleteAction(action.name),
-    );
+    setConfig(config.copy().deleteAction(action.name));
     setCurrentAction(undefined);
   };
 
