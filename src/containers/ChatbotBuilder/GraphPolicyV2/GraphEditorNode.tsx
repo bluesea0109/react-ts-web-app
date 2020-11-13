@@ -284,9 +284,7 @@ const GraphEditorNode = ({
         setDraggingOver(false);
       }}>
       <div className={classes.nodeContent}>
-        <div>
-          {nodeData.nodeId}. {nodeTitle}
-        </div>
+        <div>{nodeTitle}</div>
         <div
           className={classes.nodeText}
           dangerouslySetInnerHTML={{ __html: nodeText }}
