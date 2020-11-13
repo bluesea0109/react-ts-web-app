@@ -1,8 +1,10 @@
 import JSZip from 'jszip';
 import _ from 'lodash';
-import {IAgentArchiveFiles} from './types';
+import { IAgentArchiveFiles } from './types';
 
-export const readAgentZipfile = async (file: File): Promise<IAgentArchiveFiles> => {
+export const readAgentZipfile = async (
+  file: File,
+): Promise<IAgentArchiveFiles> => {
   const result: IAgentArchiveFiles = {
     uroImages: [],
     botIcons: [],

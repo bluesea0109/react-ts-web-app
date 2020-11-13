@@ -4,8 +4,7 @@ import ImageCategoricalLabel from '../../models/labels/ImageLabel';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    canvasContainer: {
-    },
+    canvasContainer: {},
   }),
 );
 

@@ -1,10 +1,5 @@
 import { useMutation } from '@apollo/client';
-import {
-  Box,
-  createStyles,
-  TextField,
-  Theme,
-} from '@material-ui/core';
+import { Box, createStyles, TextField, Theme } from '@material-ui/core';
 import AppBar, { AppBarProps } from '@material-ui/core/AppBar';
 import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -66,10 +61,7 @@ interface OrgsProps {
   updateActiveOrg: (org: any) => void;
 }
 
-const Orgs: React.FC<OrgsProps> = ({
-  user,
-  updateActiveOrg,
-}) => {
+const Orgs: React.FC<OrgsProps> = ({ user, updateActiveOrg }) => {
   const classes = useStyles();
 
   const setActiveOrg = (orgId: string) => {
@@ -79,7 +71,7 @@ const Orgs: React.FC<OrgsProps> = ({
     updateActiveOrg({
       variables: {
         orgId,
-        ...projectId && { projectId },
+        ...(projectId && { projectId }),
       },
     });
   };
@@ -110,10 +102,7 @@ interface ProjectsProps {
   user: IUser;
   updateActiveProject: (project: any) => void;
 }
-const Projects: React.FC<ProjectsProps> = ({
-  user,
-  updateActiveProject,
-}) => {
+const Projects: React.FC<ProjectsProps> = ({ user, updateActiveProject }) => {
   const projects = user?.activeOrg?.projects || [];
   const projectId = user.activeProject?.id ?? '';
   const classes = useStyles();
@@ -158,35 +147,46 @@ const CustomAppbar: React.FC<CustomAppbarProps> = ({
     firebase.auth().signOut();
   };
 
-  const [updateActiveOrg, { loading: loadingOrganization }] = useMutation(UPDATE_ACTIVE_ORG, {
-    refetchQueries: [{ query: GET_CURRENT_USER }],
-    awaitRefetchQueries: true,
-    onCompleted: ({updateUserActiveOrg}) => {
-      history.push(`/orgs/${updateUserActiveOrg.activeOrg.id}/settings`);
+  const [updateActiveOrg, { loading: loadingOrganization }] = useMutation(
+    UPDATE_ACTIVE_ORG,
+    {
+      refetchQueries: [{ query: GET_CURRENT_USER }],
+      awaitRefetchQueries: true,
+      onCompleted: ({ updateUserActiveOrg }) => {
+        history.push(`/orgs/${updateUserActiveOrg.activeOrg.id}/settings`);
+      },
     },
-  });
+  );
 
-  const [updateActiveProject, { loading: loadingProject }] = useMutation(UPDATE_ACTIVE_ORG, {
-    refetchQueries: [{ query: GET_CURRENT_USER }],
-    awaitRefetchQueries: true,
-    onCompleted: ({updateUserActiveOrg}) => {
-      history.push(`/orgs/${updateUserActiveOrg.activeOrg.id}/projects/${updateUserActiveOrg.activeProject.id}/settings`);
+  const [updateActiveProject, { loading: loadingProject }] = useMutation(
+    UPDATE_ACTIVE_ORG,
+    {
+      refetchQueries: [{ query: GET_CURRENT_USER }],
+      awaitRefetchQueries: true,
+      onCompleted: ({ updateUserActiveOrg }) => {
+        history.push(
+          `/orgs/${updateUserActiveOrg.activeOrg.id}/projects/${updateUserActiveOrg.activeProject.id}/settings`,
+        );
+      },
     },
-  });
+  );
 
   useEffect(() => {
     handleChangeLoadingStatus(loadingOrganization || loadingProject);
   }, [loadingOrganization, loadingProject, handleChangeLoadingStatus]);
 
   return (
-    <AppBar position={position} className={className} style={{boxShadow: 'none'}}>
+    <AppBar
+      position={position}
+      className={className}
+      style={{ boxShadow: 'none' }}>
       <Toolbar>
-        <Typography variant="h6" className={classes.title}/>
+        <Typography variant="h6" className={classes.title} />
         <Box mr={1}>
-          <Orgs user={user} updateActiveOrg={updateActiveOrg}/>
+          <Orgs user={user} updateActiveOrg={updateActiveOrg} />
         </Box>
         <Box mr={2}>
-          <Projects user={user} updateActiveProject={updateActiveProject}/>
+          <Projects user={user} updateActiveProject={updateActiveProject} />
         </Box>
         <Box>
           <BasicButton

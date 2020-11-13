@@ -185,7 +185,7 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
           agentActions.map((i: any) => i.isAgent && delete i.isAgent);
           userActions.map((i: any) => i.isUser && delete i.isUser);
 
-          const updatedUserActions = userActions.map(item => {
+          const updatedUserActions = userActions.map((item) => {
             const result = omitDeep(item, '__typename');
             return result;
           });
@@ -279,7 +279,9 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
   const removeTags = (tagIndex: number, index: number) => {
     const values = [...actionData];
 
-    const rest = values[index].userActions[0].tagValues.filter((item: any, index: number) => index !== tagIndex);
+    const rest = values[index].userActions[0].tagValues.filter(
+      (item: any, index: number) => index !== tagIndex,
+    );
     values[index].userActions[0].tagValues = rest;
     setActionsValue([...values]);
   };
@@ -294,19 +296,23 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
     <Dialog fullScreen={true} open={true}>
       <AppBar className={classes.appBar}>
         <Toolbar>
-          <IconButton disabled={loading} edge="start" color="inherit" onClick={handleClose} aria-label="close">
+          <IconButton
+            disabled={loading}
+            edge="start"
+            color="inherit"
+            onClick={handleClose}
+            aria-label="close">
             <CloseIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
             Create a New Conversation
           </Typography>
-          <Button disabled={loading} autoFocus={true} color="inherit" onClick={onSubmit}>
-            {loading && (
-              <CircularProgress
-                color="secondary"
-                size={20}
-              />
-            )}
+          <Button
+            disabled={loading}
+            autoFocus={true}
+            color="inherit"
+            onClick={onSubmit}>
+            {loading && <CircularProgress color="secondary" size={20} />}
             Save
           </Button>
         </Toolbar>

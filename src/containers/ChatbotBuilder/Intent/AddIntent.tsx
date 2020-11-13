@@ -111,9 +111,7 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
   const lastID = useRef(0);
 
   const [updateAgent] = useMutation(CHATBOT_SAVE_CONFIG_AND_SETTINGS, {
-    refetchQueries: [
-      { query: CHATBOT_GET_AGENT, variables: { agentId } },
-    ],
+    refetchQueries: [{ query: CHATBOT_GET_AGENT, variables: { agentId } }],
     awaitRefetchQueries: true,
   });
 
@@ -162,7 +160,7 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
 
   const saveChanges = async () => {
     if (newIntent.name === '') {
-      enqueueSnackbar('Intent can\'t be empty', { variant: 'warning' });
+      enqueueSnackbar("Intent can't be empty", { variant: 'warning' });
       return;
     }
 
@@ -188,7 +186,7 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
 
       enqueueSnackbar('Intent created successfully', { variant: 'success' });
 
-      if (!!config) {
+      if (config) {
         await updateAgent({
           variables: {
             agentId: Number(agentId),
@@ -241,7 +239,7 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
 
   const createTag = async () => {
     if (newTag === '') {
-      enqueueSnackbar('Can\'t create empty tag', { variant: 'error' });
+      enqueueSnackbar("Can't create empty tag", { variant: 'error' });
       return;
     }
     // tags: Array(0);

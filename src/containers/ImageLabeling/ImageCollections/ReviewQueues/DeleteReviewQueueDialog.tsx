@@ -24,12 +24,14 @@ function DeleteReviewQueueDialog(props: IDeleteReviewQueueProps) {
     onCompleted: () => {
       handleClose();
     },
-    refetchQueries: [{
-      query: GET_REVIEW_QUEUES,
-      variables: {
-        collectionId,
+    refetchQueries: [
+      {
+        query: GET_REVIEW_QUEUES,
+        variables: {
+          collectionId,
+        },
       },
-    }],
+    ],
     awaitRefetchQueries: true,
   });
 
@@ -67,18 +69,20 @@ function DeleteReviewQueueDialog(props: IDeleteReviewQueueProps) {
 
   return (
     <React.Fragment>
-      <Dialog
-        fullWidth={true}
-        open={state.open}
-        onClose={handleClose}
-      >
+      <Dialog fullWidth={true} open={state.open} onClose={handleClose}>
         <DialogTitle>{'Delete Review Queue'}</DialogTitle>
         {dialogContent}
         <DialogActions>
-          <Button color="primary" onClick={handleClose} disabled={deleteQueueResult.loading}>
+          <Button
+            color="primary"
+            onClick={handleClose}
+            disabled={deleteQueueResult.loading}>
             {'Cancel'}
           </Button>
-          <Button color="secondary" onClick={handleDelete} disabled={deleteQueueResult.loading}>
+          <Button
+            color="secondary"
+            onClick={handleDelete}
+            disabled={deleteQueueResult.loading}>
             {'Delete'}
           </Button>
         </DialogActions>

@@ -11,7 +11,10 @@ interface IconButtonEditProps {
 
 export default function IconButtonEdit(props: IconButtonEditProps) {
   return (
-    <IconButton onClick={props.onClick} style={{ padding: 6 }} disabled={props.disabled}>
+    <IconButton
+      onClick={props.onClick}
+      style={{ padding: 6 }}
+      disabled={props.disabled}>
       <Tooltip title={props.tooltip} disableFocusListener={true}>
         <EditIcon color={props.disabled ? 'disabled' : 'secondary'} />
       </Tooltip>

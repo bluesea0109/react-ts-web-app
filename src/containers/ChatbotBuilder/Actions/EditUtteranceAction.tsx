@@ -17,7 +17,9 @@ const EditUtteranceAction = ({
       <RichTextInput
         label="Action Text"
         value={action.utterance || ''}
-        onChange={(html: string) => onChangeAction({ ...action, utterance: html })}
+        onChange={(html: string) =>
+          onChangeAction({ ...action, utterance: html })
+        }
       />
     </Grid>
   );

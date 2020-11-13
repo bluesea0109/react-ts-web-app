@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const query = gql`
-  query ($context: String, $question: String) {
+  query($context: String, $question: String) {
     bertQa(context: $context, question: $question)
   }
 `;
@@ -49,7 +49,11 @@ export default function QuestionAnswering() {
     });
 
     if (res.errors) {
-      setState({ ...state, loading: false, answer: JSON.stringify(res.errors, null, 2) });
+      setState({
+        ...state,
+        loading: false,
+        answer: JSON.stringify(res.errors, null, 2),
+      });
     } else {
       setState({ ...state, loading: false, answer: res.data.bertQa });
     }
@@ -73,7 +77,7 @@ export default function QuestionAnswering() {
             variant="outlined"
           />
         </Grid>
-        <Grid item={true} xs={12} sm={6}/>
+        <Grid item={true} xs={12} sm={6} />
       </React.Fragment>
     );
   }
@@ -96,7 +100,7 @@ export default function QuestionAnswering() {
             value={state.context}
           />
         </Grid>
-        <Grid container={true} item={true} xs={12} sm={12} >
+        <Grid container={true} item={true} xs={12} sm={12}>
           <TextField
             className={classes.textArea}
             id="question"
@@ -109,7 +113,9 @@ export default function QuestionAnswering() {
           />
         </Grid>
         <Grid item={true} xs={12}>
-          <Button variant="contained" onClick={onSubmitClick}>{'Submit'}</Button>
+          <Button variant="contained" onClick={onSubmitClick}>
+            {'Submit'}
+          </Button>
         </Grid>
         {answer}
       </Grid>

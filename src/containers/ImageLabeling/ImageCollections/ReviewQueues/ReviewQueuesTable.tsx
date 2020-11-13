@@ -32,14 +32,18 @@ const useStyles = makeStyles((theme: Theme) =>
     paper: {
       padding: theme.spacing(1),
     },
-  }));
+  }),
+);
 
 function ReviewQueuesTable() {
   const classes = useStyles();
   const rowsPerPage = 10;
-  const { orgId, projectId } = useParams<{ orgId: string, projectId: string }>();
+  const { orgId, projectId } = useParams<{
+    orgId: string;
+    projectId: string;
+  }>();
   const params = useParams<{
-    collectionId: string,
+    collectionId: string;
   }>();
   const collectionId = parseInt(params.collectionId, 10);
   const history = useHistory();
@@ -58,8 +62,13 @@ function ReviewQueuesTable() {
     variables: { collectionId },
   });
 
-  const [nextReviewQueueImage, nextReviewQueueImageResult] = useMutation(NEXT_REVIEW_QUEUE_IMAGE);
-  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, page: number) => {
+  const [nextReviewQueueImage, nextReviewQueueImageResult] = useMutation(
+    NEXT_REVIEW_QUEUE_IMAGE,
+  );
+  const handleChangePage = (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    page: number,
+  ) => {
     setState({ ...state, page });
   };
 
@@ -75,9 +84,12 @@ function ReviewQueuesTable() {
     });
 
     if (res.data) {
-      const imageId = res.data.ImageLabelingService_nextReviewQueueImage?.imageId;
+      const imageId =
+        res.data.ImageLabelingService_nextReviewQueueImage?.imageId;
       if (imageId) {
-        history.push(`/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/review-queues/${queueId}/images/${imageId}`);
+        history.push(
+          `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/review-queues/${queueId}/images/${imageId}`,
+        );
       }
     }
   };
@@ -91,16 +103,15 @@ function ReviewQueuesTable() {
     return <ContentLoading />;
   }
 
-  const reviewQueues = getReviewQueues.data?.ImageLabelingService_reviewQueues || [];
+  const reviewQueues =
+    getReviewQueues.data?.ImageLabelingService_reviewQueues || [];
   const pageItems = getPage(reviewQueues);
 
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
         <Toolbar variant="dense" disableGutters={true}>
-          <Typography variant="h6">
-            {'Queues'}
-          </Typography>
+          <Typography variant="h6">{'Queues'}</Typography>
           <Typography style={{ padding: 2 }} />
           <CreateReviewQueueDialog />
         </Toolbar>
@@ -111,36 +122,33 @@ function ReviewQueuesTable() {
               <TableCell>Name</TableCell>
               <TableCell>{'% Under Review'}</TableCell>
               <TableCell>{'% Approved'}</TableCell>
-              <TableCell/>
-              <TableCell/>
-              <TableCell/>
+              <TableCell />
+              <TableCell />
+              <TableCell />
             </TableRow>
           </TableHead>
           <TableBody>
             {pageItems.map((queue, i) => {
               return (
                 <TableRow key={i} hover={true}>
+                  <TableCell>{queue.id}</TableCell>
+                  <TableCell>{queue.name}</TableCell>
+                  <TableCell>{queue.percentUnderReview.toFixed(2)}</TableCell>
+                  <TableCell>{queue.percentApproved.toFixed(2)}</TableCell>
                   <TableCell>
-                    {queue.id}
+                    <IconButtonPlay
+                      tooltip="Start Reviewing"
+                      onClick={startReviewing(queue.id)}
+                    />
                   </TableCell>
                   <TableCell>
-                    {queue.name}
+                    <EditReviewQueueDialog queue={queue} />
                   </TableCell>
                   <TableCell>
-                    {queue.percentUnderReview.toFixed(2)}
-                  </TableCell>
-                  <TableCell>
-                    {queue.percentApproved.toFixed(2)}
-                  </TableCell>
-                  <TableCell>
-                    <IconButtonPlay tooltip="Start Reviewing"
-                      onClick={startReviewing(queue.id)} />
-                  </TableCell>
-                  <TableCell>
-                    <EditReviewQueueDialog queue={queue}/>
-                  </TableCell>
-                  <TableCell>
-                    <DeleteReviewQueueDialog queueId={queue.id} collectionId={collectionId}/>
+                    <DeleteReviewQueueDialog
+                      queueId={queue.id}
+                      collectionId={collectionId}
+                    />
                   </TableCell>
                 </TableRow>
               );

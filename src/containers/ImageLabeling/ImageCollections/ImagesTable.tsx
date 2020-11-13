@@ -86,15 +86,13 @@ function TablePaginationActions(props: ITablePaginationActions) {
       <IconButton
         onClick={handleFirstPageButtonClick}
         disabled={page === 0}
-        aria-label="First Page"
-      >
+        aria-label="First Page">
         {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
       </IconButton>
       <IconButton
         onClick={handleBackButtonClick}
         disabled={page === 0}
-        aria-label="Previous Page"
-      >
+        aria-label="Previous Page">
         {theme.direction === 'rtl' ? (
           <KeyboardArrowRight />
         ) : (
@@ -104,8 +102,7 @@ function TablePaginationActions(props: ITablePaginationActions) {
       <IconButton
         onClick={handleNextButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-        aria-label="Next Page"
-      >
+        aria-label="Next Page">
         {theme.direction === 'rtl' ? (
           <KeyboardArrowLeft />
         ) : (
@@ -115,8 +112,7 @@ function TablePaginationActions(props: ITablePaginationActions) {
       <IconButton
         onClick={handleLastPageButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-        aria-label="Last Page"
-      >
+        aria-label="Last Page">
         {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
       </IconButton>
     </div>
@@ -141,7 +137,10 @@ interface IImagesTableProps {
 function ImagesTable(props: IImagesTableProps) {
   const { collectionId } = props;
   const classes = styles();
-  const { orgId, projectId } = useParams<{ orgId: string, projectId: string }>();
+  const { orgId, projectId } = useParams<{
+    orgId: string;
+    projectId: string;
+  }>();
   const [state, setState] = useState({
     loading: false,
     page: 0,
@@ -244,7 +243,7 @@ function ImagesTable(props: IImagesTableProps) {
     <Paper className={classes.paper}>
       <Toolbar variant="dense">
         {imageUploadDialog}
-        <StartLabelingDialog/>
+        <StartLabelingDialog />
       </Toolbar>
       <Table>
         <TableHead>
@@ -264,8 +263,7 @@ function ImagesTable(props: IImagesTableProps) {
               <TableRow
                 key={i}
                 onClick={handleImageClick(image.id)}
-                hover={true}
-              >
+                hover={true}>
                 <TableCell>{image.id}</TableCell>
                 <TableCell>{image.name}</TableCell>
                 <TableCell>

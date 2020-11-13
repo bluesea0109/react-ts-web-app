@@ -18,7 +18,9 @@ const TabPanel = ({
   className,
   padding,
 }: TabPanelProps) => {
-  if (value !== index) { return null; }
+  if (value !== index) {
+    return null;
+  }
 
   const tabPadding = padding || 6;
   return (
@@ -26,11 +28,12 @@ const TabPanel = ({
       className={className}
       paddingX={tabPadding}
       paddingBottom={tabPadding}
-      paddingTop={tabName ? 0 : tabPadding}
-    >
+      paddingTop={tabName ? 0 : tabPadding}>
       {tabName && (
         <Box paddingY={2}>
-          <Typography variant="h5" style={{ fontWeight: 'bold' }}>{tabName}</Typography>
+          <Typography variant="h5" style={{ fontWeight: 'bold' }}>
+            {tabName}
+          </Typography>
         </Box>
       )}
       {children}

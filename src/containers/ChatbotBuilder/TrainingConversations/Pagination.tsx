@@ -3,9 +3,9 @@ import Pagination from '@material-ui/lab/Pagination';
 import React from 'react';
 
 interface IPagination {
-    total: number;
+  total: number;
 
-    onChange: (value: number) => void;
+  onChange: (value: number) => void;
 }
 
 const useStyles = makeStyles((theme) =>

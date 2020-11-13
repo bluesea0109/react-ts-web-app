@@ -140,7 +140,10 @@ const Examples = () => {
       tags: updatedExample.tags,
     };
 
-    const isDuplicated = examples.some(each => each.text === updatedExample.text && each.id !== updatedExample.id);
+    const isDuplicated = examples.some(
+      (each) =>
+        each.text === updatedExample.text && each.id !== updatedExample.id,
+    );
     if (isDuplicated) {
       enqueueSnackbar(`The example is duplicated.`, { variant: 'error' });
       return;
@@ -162,20 +165,20 @@ const Examples = () => {
         resp = await updateExample(mutationOpts);
       }
 
-      if (!!createExampleMutationData.error) {
+      if (createExampleMutationData.error) {
         if (
           createExampleMutationData.error.message.indexOf('duplicate key') !==
           -1
         ) {
           setExampleError(ExamplesError.CREATE_ERROR_DUPLICATE_EXAMPLE);
         }
-      } else if (!!updateExampleMutation.error) {
+      } else if (updateExampleMutation.error) {
         if (
           updateExampleMutation.error.message.indexOf('duplicate key') !== -1
         ) {
           setExampleError(ExamplesError.CREATE_ERROR_DUPLICATE_EXAMPLE);
         }
-      } else if (!!resp.errors?.[0]) {
+      } else if (resp.errors?.[0]) {
         if (resp.errors[0].message.indexOf('duplicate key') !== -1) {
           setExampleError(ExamplesError.CREATE_ERROR_DUPLICATE_EXAMPLE);
         }

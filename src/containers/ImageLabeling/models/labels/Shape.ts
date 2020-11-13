@@ -1,4 +1,3 @@
-
 export default abstract class Shape {
   _isVisible = true;
 

@@ -17,7 +17,8 @@ import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 
 import {
-  CardElement, Elements,
+  CardElement,
+  Elements,
   useElements,
   useStripe,
 } from '@stripe/react-stripe-js';
@@ -30,7 +31,6 @@ const stripePromise = loadStripe(config.stripePublicKey);
 
 interface IAllProps {
   user: IUser;
-
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -126,7 +126,7 @@ function CheckoutForm() {
         <Button
           color="secondary"
           onClick={handlePayClick}
-          disabled={(!validateInput() || !stripe || !elements)}>
+          disabled={!validateInput() || !stripe || !elements}>
           {'PAY'}
         </Button>
       </DialogActions>
@@ -146,11 +146,15 @@ function CheckoutForm() {
     dialogContent = (
       <React.Fragment>
         <DialogContent>
-          <ContentLoading shrinked={true}/>
+          <ContentLoading shrinked={true} />
         </DialogContent>
       </React.Fragment>
     );
-  } else if (enableBillingResp.called && enableBillingResp.data && enableBillingResp.data.BillingService_enableBilling) {
+  } else if (
+    enableBillingResp.called &&
+    enableBillingResp.data &&
+    enableBillingResp.data.BillingService_enableBilling
+  ) {
     dialogContent = (
       <React.Fragment>
         <DialogContent>
@@ -218,7 +222,11 @@ function CheckoutForm() {
         {dialogContent}
         {dialogActions}
       </Dialog>
-      <Button size="small" variant="contained" className={classes.button} onClick={handleOpen}>
+      <Button
+        size="small"
+        variant="contained"
+        className={classes.button}
+        onClick={handleOpen}>
         {'Enable Billing'}
       </Button>
     </div>

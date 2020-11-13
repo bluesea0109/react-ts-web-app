@@ -60,7 +60,7 @@ const GraphPolicyUpload = ({ onSuccess, onError }: IGraphPolicyUploadProps) => {
 
         onError?.(e);
 
-        throw new Error('JSON schema doesn\'t match required schema!');
+        throw new Error("JSON schema doesn't match required schema!");
       }
 
       setPolicy(JSON.parse(json) as IGraphPolicy);

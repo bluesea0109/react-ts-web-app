@@ -120,7 +120,7 @@ const GraphEditorPage = () => {
   };
 
   const handleSavePolicy = async (policy: GraphPolicyV2) => {
-    if (!!agentConfig) {
+    if (agentConfig) {
       try {
         agentConfig.deleteGraphPolicyV2(policy.name);
         agentConfig.addGraphPolicyV2(policy);
@@ -147,8 +147,12 @@ const GraphEditorPage = () => {
       <div className={classes.editorContent}>
         <div className={classes.editorMenu}>
           <Typography variant="h6">Visual Graph Builder</Typography>
-          Drag and drop the nodes and edges onto the canvas to create a
-          representation of your assistant's flow.
+          <Typography>
+            {
+              "Drag and drop the nodes and edges onto the canvas to create a\
+          representation of your assistant's flow."
+            }
+          </Typography>
           <GraphEditorMenu
             className={clsx([
               classes.editorMenuItems,

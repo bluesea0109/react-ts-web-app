@@ -39,4 +39,9 @@ export interface ImageLabelingState {
   deletedLabelIds: number[];
 }
 
-export type ImageLabelingActionTypes = AddLabel | RemoveLabel | UpdateLabel | SelectLabel | ResetLabels;
+export type ImageLabelingActionTypes =
+  | AddLabel
+  | RemoveLabel
+  | UpdateLabel
+  | SelectLabel
+  | ResetLabels;

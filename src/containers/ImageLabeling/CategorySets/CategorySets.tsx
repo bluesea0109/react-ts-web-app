@@ -34,7 +34,9 @@ const useStyles = makeStyles((theme: Theme) =>
 function CategorySets() {
   const classes = useStyles();
   const { projectId } = useParams<{ projectId: string }>();
-  const categorySets = useQuery(GET_CATEGORY_SETS, { variables: { projectId } });
+  const categorySets = useQuery(GET_CATEGORY_SETS, {
+    variables: { projectId },
+  });
   if (categorySets.loading) {
     return <ContentLoading />;
   }
@@ -50,8 +52,7 @@ function CategorySets() {
       <Toolbar
         variant="dense"
         disableGutters={true}
-        className={classes.toolbar}
-      >
+        className={classes.toolbar}>
         <Typography variant="h6">{'Category Sets'}</Typography>
         <Typography style={{ padding: 2 }} />
         <CreateCategorySetDialog />

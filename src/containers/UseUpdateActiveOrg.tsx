@@ -13,13 +13,15 @@ export interface IUpdateActiveOrg {
 export const useUpdateActiveOrg = (): IUpdateActiveOrg => {
   const history = useHistory();
   const location = useLocation();
-  const { loading, error , data } = useQuery(GET_CURRENT_USER);
+  const { loading, error, data } = useQuery(GET_CURRENT_USER);
   const params = new URLSearchParams(useLocation().search);
-  const [updateActiveOrg, updateActiveOrgResult] = useMutation(UPDATE_ACTIVE_ORG,
+  const [updateActiveOrg, updateActiveOrgResult] = useMutation(
+    UPDATE_ACTIVE_ORG,
     {
       refetchQueries: [{ query: GET_CURRENT_USER }],
       awaitRefetchQueries: true,
-    });
+    },
+  );
 
   const orgId = params.get('org');
   const projectId = params.get('project');

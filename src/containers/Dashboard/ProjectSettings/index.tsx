@@ -18,7 +18,11 @@ import { useParams } from 'react-router';
 import KeyValueArrayInput from '../../../components/KeyValueArrayInput';
 import { IAPIKey } from '../../../models/user-service';
 import { useQueryAsArray } from '../../../utils/hooks';
-import { deleteApiKeyMutation, getApiKeysQuery, updateDomainsMutation } from './gql';
+import {
+  deleteApiKeyMutation,
+  getApiKeysQuery,
+  updateDomainsMutation,
+} from './gql';
 import NewApiKeyDialog from './NewApiKeyDialog';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -55,14 +59,19 @@ export default function Project() {
   const [currentKey, setCurrentKey] = useState<IAPIKey | null>(null);
   const [showCreateKeyDialog, setShowCreateKeyDialog] = useState(false);
 
-  const [apiKey, apiKeyLoading] = useQueryAsArray<QueryResult>(getApiKeysQuery, {
-    variables: {
-      projectId,
+  const [apiKey, apiKeyLoading] = useQueryAsArray<QueryResult>(
+    getApiKeysQuery,
+    {
+      variables: {
+        projectId,
+      },
     },
-  });
+  );
 
   const [deleteKey, deleteKeyMutation] = useMutation(deleteApiKeyMutation);
-  const [updateAllowedDomains, updateAllowedDomainsMutation] = useMutation<UpdateDomainsMutationResult>(updateDomainsMutation);
+  const [updateAllowedDomains, updateAllowedDomainsMutation] = useMutation<
+    UpdateDomainsMutationResult
+  >(updateDomainsMutation);
 
   const loadedKey = apiKey?.apiKey ?? null;
 
@@ -81,9 +90,7 @@ export default function Project() {
       });
 
       setCurrentKey(null);
-    } catch (e) {
-
-    }
+    } catch (e) {}
   };
 
   const updateDomains = async (e: any) => {
@@ -99,9 +106,7 @@ export default function Project() {
 
       const updatedKey = data?.updateAllowedDomains ?? null;
       setCurrentKey(updatedKey);
-    } catch (e) {
-
-    }
+    } catch (e) {}
   };
 
   const loading = apiKeyLoading || deleteKeyMutation.loading;
@@ -113,7 +118,10 @@ export default function Project() {
           <Typography variant="h5">API Keys</Typography>
         </Grid>
         <Grid item={true}>
-          <IconButton style={{ marginLeft: 16 }} onClick={() => setShowCreateKeyDialog(true)} disabled={loading}>
+          <IconButton
+            style={{ marginLeft: 16 }}
+            onClick={() => setShowCreateKeyDialog(true)}
+            disabled={loading}>
             <Add />
           </IconButton>
         </Grid>
@@ -123,7 +131,7 @@ export default function Project() {
         onClose={() => setShowCreateKeyDialog(false)}
         onCreateKey={setCurrentKey}
       />
-      {(!currentKey && loading) && (
+      {!currentKey && loading && (
         <Box p={4}>
           <Grid container={true} alignItems="center" justify="center">
             <Grid item={true}>
@@ -134,7 +142,11 @@ export default function Project() {
       )}
       {currentKey && (
         <Box>
-          <Grid container={true} className={classes.keyItem} justify="space-between" alignItems="center">
+          <Grid
+            container={true}
+            className={classes.keyItem}
+            justify="space-between"
+            alignItems="center">
             <Grid item={true}>
               <Tooltip title="Copy Key" arrow={true}>
                 <Typography style={{ cursor: 'pointer' }}>
@@ -143,10 +155,19 @@ export default function Project() {
               </Tooltip>
             </Grid>
             <Grid item={true}>
-              <Button className={classes.deleteBtn} disabled={loading} onClick={deleteApiKey}>Delete</Button>
+              <Button
+                className={classes.deleteBtn}
+                disabled={loading}
+                onClick={deleteApiKey}>
+                Delete
+              </Button>
             </Grid>
           </Grid>
-          <Grid container={true} className={classes.domainsContainer} justify="space-between" alignItems="center">
+          <Grid
+            container={true}
+            className={classes.domainsContainer}
+            justify="space-between"
+            alignItems="center">
             <KeyValueArrayInput
               disabled={updateAllowedDomainsMutation.loading}
               name="domains"

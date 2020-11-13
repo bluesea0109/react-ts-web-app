@@ -1,8 +1,12 @@
 import Shape from './Shape';
 
 export default class Rectangle extends Shape {
-
-  constructor(public x: number, public y: number, public w: number, public h: number) {
+  constructor(
+    public x: number,
+    public y: number,
+    public w: number,
+    public h: number,
+  ) {
     super();
   }
 
@@ -23,13 +27,19 @@ export default class Rectangle extends Shape {
     this.h = h;
   }
 
-  toArray (): number[] {
+  toArray(): number[] {
     return [this.x, this.y, this.w, this.h];
   }
 
-  coordinates (): number[][] {
+  coordinates(): number[][] {
     const { x, y, w, h } = this;
-    return [[x, y], [x + w, y], [x + w, y + h], [x, y + h], [x, y]];
+    return [
+      [x, y],
+      [x + w, y],
+      [x + w, y + h],
+      [x, y + h],
+      [x, y],
+    ];
   }
 
   get displayString(): string {
