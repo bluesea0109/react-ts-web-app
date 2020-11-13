@@ -244,7 +244,9 @@ function CustomDrawer(props: CustomDrawerProps) {
               <ListItemText
                 primary="Billing"
                 style={
-                  location.pathname.includes('billing') ? selectedStyle : {}
+                  location.pathname.includes('billing')
+                    ? selectedStyle
+                    : { paddingLeft: '20px' }
                 }
               />
             </ListItem>
