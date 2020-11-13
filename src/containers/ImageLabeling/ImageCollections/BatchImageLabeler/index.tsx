@@ -66,7 +66,10 @@ interface IState {
 
 export default function BatchImageLabeler() {
   const classes = useStyles();
-  const { projectId, collectionId } = useParams<{ projectId: string, collectionId: string }>();
+  const { projectId, collectionId } = useParams<{
+    projectId: string;
+    collectionId: string;
+  }>();
   const categorySetsQuery = useQuery<IGetCategorySets>(GET_CATEGORY_SETS, {
     variables: { projectId },
   });
@@ -91,7 +94,7 @@ export default function BatchImageLabeler() {
 
   const allImagesLabeled = (batchImages: IImage[]) => {
     const labeledImageIds = Array.from(imageLabelsMap.keys()).sort();
-    const allImageIds = batchImages.map(x => x.id).sort();
+    const allImageIds = batchImages.map((x) => x.id).sort();
     return _.isEqual(labeledImageIds, allImageIds);
   };
 
@@ -270,7 +273,10 @@ export default function BatchImageLabeler() {
       <div>
         <Paper>
           <Toolbar variant="dense">
-            <Button variant="contained" onClick={submitBatch} disabled={!allImagesLabeled(batchImages)}>
+            <Button
+              variant="contained"
+              onClick={submitBatch}
+              disabled={!allImagesLabeled(batchImages)}>
               {'Submit Batch'}
             </Button>
           </Toolbar>

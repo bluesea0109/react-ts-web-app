@@ -4,7 +4,10 @@ import gql from 'graphql-tag';
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { resetApolloContext } from '../../../apollo-client';
-import {GET_CURRENT_USER, UPDATE_ACTIVE_ORG } from '../../../common-gql-queries';
+import {
+  GET_CURRENT_USER,
+  UPDATE_ACTIVE_ORG,
+} from '../../../common-gql-queries';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 
@@ -19,18 +22,23 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function AcceptInvite() {
   const classes = useStyles();
   const { inviteId } = useParams<{ inviteId: string }>();
-  const [updateActiveOrg, updateActiveOrgResult] = useMutation(UPDATE_ACTIVE_ORG, {
-    refetchQueries: [{ query: GET_CURRENT_USER }],
-    awaitRefetchQueries: true,
-  });
+  const [updateActiveOrg, updateActiveOrgResult] = useMutation(
+    UPDATE_ACTIVE_ORG,
+    {
+      refetchQueries: [{ query: GET_CURRENT_USER }],
+      awaitRefetchQueries: true,
+    },
+  );
 
   const [acceptInvite, { error, loading }] = useMutation(ACCEPT_INVITE, {
     variables: { inviteId },
-    onError: () => { },
+    onError: () => {},
     onCompleted: async (data) => {
       resetApolloContext();
-      if (!!data?.acceptOrgMemberInvite?.orgId) {
-        await updateActiveOrg({ variables: { orgId: data?.acceptOrgMemberInvite?.orgId } });
+      if (data?.acceptOrgMemberInvite?.orgId) {
+        await updateActiveOrg({
+          variables: { orgId: data?.acceptOrgMemberInvite?.orgId },
+        });
       }
     },
   });
@@ -51,7 +59,7 @@ export default function AcceptInvite() {
   }
 
   if (loading || updateActiveOrgResult.loading) {
-    return <ContentLoading shrinked={true}/>;
+    return <ContentLoading shrinked={true} />;
   }
 
   return (
@@ -62,7 +70,7 @@ export default function AcceptInvite() {
 }
 
 const ACCEPT_INVITE = gql`
-  mutation acceptOrgMemberInvite($inviteId: String!)  {
+  mutation acceptOrgMemberInvite($inviteId: String!) {
     acceptOrgMemberInvite(inviteId: $inviteId) {
       id
       email

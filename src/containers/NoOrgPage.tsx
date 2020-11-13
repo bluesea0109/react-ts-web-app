@@ -87,11 +87,17 @@ const NoOrgPage = (props: NoOrgPageProps) => {
             </Typography>
           </Grid>
           <Grid>
-            <Typography component="h6" paragraph={true} className={classes.content}>
+            <Typography
+              component="h6"
+              paragraph={true}
+              className={classes.content}>
               {type === MSG_TYPES.NO_ORGS
                 ? `No organization is active. Please click `
                 : `No project is active. Please click `}
-              <Link to="/"> here </Link> { type === MSG_TYPES.NO_ORGS ? `to create a new organization.` : ' to create a new project'}
+              <Link to="/"> here </Link>{' '}
+              {type === MSG_TYPES.NO_ORGS
+                ? `to create a new organization.`
+                : ' to create a new project'}
             </Typography>
           </Grid>
         </Grid>

@@ -1,5 +1,11 @@
 import { useApolloClient } from '@apollo/client';
-import { createStyles, makeStyles, Theme, Typography, useTheme } from '@material-ui/core';
+import {
+  createStyles,
+  makeStyles,
+  Theme,
+  Typography,
+  useTheme,
+} from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Paper from '@material-ui/core/Paper';
@@ -21,7 +27,7 @@ import ImageLabelList from '../ImageLabelList';
 import ImageCanvas from './ImageCanvas';
 
 const NEXT_IMAGE = gql`
-  query ($imageId: Int!, $unlabeled: Boolean) {
+  query($imageId: Int!, $unlabeled: Boolean) {
     ImageLabelingService_nextImage(imageId: $imageId, unlabeled: $unlabeled) {
       id
     }
@@ -29,7 +35,7 @@ const NEXT_IMAGE = gql`
 `;
 
 const PREV_IMAGE = gql`
-  query ($imageId: Int!, $unlabeled: Boolean) {
+  query($imageId: Int!, $unlabeled: Boolean) {
     ImageLabelingService_prevImage(imageId: $imageId, unlabeled: $unlabeled) {
       id
     }
@@ -84,7 +90,8 @@ const styles = makeStyles((theme: Theme) =>
       flex: 1,
     },
     canvasContainer: {
-      backgroundImage: 'linear-gradient(to right, #757575 50%, #a4a4a4 50%), linear-gradient(to bottom, #757575 50%, #a4a4a4 50%)',
+      backgroundImage:
+        'linear-gradient(to right, #757575 50%, #a4a4a4 50%), linear-gradient(to bottom, #757575 50%, #a4a4a4 50%)',
       backgroundBlendMode: 'difference, normal',
       backgroundSize: '2em 2em',
       overflow: 'scroll',
@@ -109,8 +116,7 @@ const styles = makeStyles((theme: Theme) =>
       height: 8,
       background: theme.palette.primary.dark,
     },
-    canvas: {
-    },
+    canvas: {},
     appBar: {
       top: 'auto',
       bottom: 0,
@@ -145,8 +151,7 @@ const styles = makeStyles((theme: Theme) =>
     grow: {
       flexGrow: 1,
     },
-    bottomToolbar: {
-    },
+    bottomToolbar: {},
   }),
 );
 
@@ -165,9 +170,9 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
   const { image, labelQueueImage } = props;
   const imageId = image.id;
   const { orgId, projectId, collectionId } = useParams<{
-    orgId: string,
-    projectId: string,
-    collectionId: string,
+    orgId: string;
+    projectId: string;
+    collectionId: string;
   }>();
   const labels = useSelector(getLabels);
 
@@ -187,7 +192,7 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
   });
 
   const handleChangeViewMask = () => {
-    setState(s => ({
+    setState((s) => ({
       ...s,
       viewMask: !state.viewMask,
     }));
@@ -220,7 +225,7 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
     });
 
     if (errors?.[0]) {
-      setState(s => ({
+      setState((s) => ({
         ...s,
         loading: false,
         error: errors[0],
@@ -243,7 +248,7 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
     });
 
     if (errors?.[0]) {
-      setState(s => ({
+      setState((s) => ({
         ...s,
         loading: false,
         error: errors[0],
@@ -266,7 +271,7 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
   };
 
   const labelThisImage = async () => {
-    setState(s => ({
+    setState((s) => ({
       ...s,
       loading: true,
     }));
@@ -279,7 +284,7 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
     });
 
     if (errors?.[0]) {
-      setState(s => ({
+      setState((s) => ({
         ...s,
         error: errors[0],
         loading: false,
@@ -303,7 +308,8 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
   const approvedBy = (
     <>
       <Typography style={{ marginRight: theme.spacing(1) }}>
-        <strong>{'Approved By: '}</strong>{image.approvedBy.length ? image.approvedBy.join(', ') : 'Unapproved'}
+        <strong>{'Approved By: '}</strong>
+        {image.approvedBy.length ? image.approvedBy.join(', ') : 'Unapproved'}
       </Typography>
     </>
   );
@@ -313,10 +319,12 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
     labelInfo = (
       <React.Fragment>
         <Typography style={{ marginRight: theme.spacing(1) }}>
-          <strong>{'Labeler: '}</strong>{labelQueueImage.labeler}
+          <strong>{'Labeler: '}</strong>
+          {labelQueueImage.labeler}
         </Typography>
         <Typography style={{ marginRight: theme.spacing(1) }}>
-          <strong>{'Label Status: '}</strong>{labelQueueImage.status}
+          <strong>{'Label Status: '}</strong>
+          {labelQueueImage.status}
         </Typography>
       </React.Fragment>
     );
@@ -328,47 +336,75 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
         <div className={classes.labelTools}>
           <Paper>
             <Toolbar variant="dense">
-              <Typography variant="h6">
-                {'Image Viewer'}
-              </Typography>
+              <Typography variant="h6">{'Image Viewer'}</Typography>
             </Toolbar>
           </Paper>
           <Paper className={classes.labelListContainer}>
             {state.loading ? (
               <ContentLoading />
             ) : (
-                <React.Fragment>
-                  <Toolbar variant="dense">
-                    <Typography variant="h6">
-                      {'Labels'}
-                    </Typography>
-                  </Toolbar>
-                  <div className={classes.labelList}>
-                    <ImageLabelList />
-                  </div>
-                </React.Fragment>
-              )}
+              <React.Fragment>
+                <Toolbar variant="dense">
+                  <Typography variant="h6">{'Labels'}</Typography>
+                </Toolbar>
+                <div className={classes.labelList}>
+                  <ImageLabelList />
+                </div>
+              </React.Fragment>
+            )}
           </Paper>
         </div>
         <div className={classes.middle}>
           <Toolbar variant="dense" disableGutters={true}>
-            <Button size="small" variant="contained" className={classes.marginRight} onClick={zoomIn} color="secondary">
+            <Button
+              size="small"
+              variant="contained"
+              className={classes.marginRight}
+              onClick={zoomIn}
+              color="secondary">
               <ZoomInIcon />
             </Button>
-            <Button size="small" variant="contained" className={classes.marginRight} onClick={zoomOut} color="secondary">
+            <Button
+              size="small"
+              variant="contained"
+              className={classes.marginRight}
+              onClick={zoomOut}
+              color="secondary">
               <ZoomOutIcon />
             </Button>
-            <Button size="small" color="secondary" className={classes.marginRight} variant="contained" onClick={() => prevImage()}>
+            <Button
+              size="small"
+              color="secondary"
+              className={classes.marginRight}
+              variant="contained"
+              onClick={() => prevImage()}>
               <NavigateBeforeIcon />
             </Button>
-            <Button color="secondary" size="small" className={classes.marginRight} variant="contained" onClick={() => nextImage()}>
+            <Button
+              color="secondary"
+              size="small"
+              className={classes.marginRight}
+              variant="contained"
+              onClick={() => nextImage()}>
               <NavigateNextIcon />
             </Button>
-            <Button color="secondary" size="small" className={classes.marginRight} variant="contained" onClick={() => prevImage(true)}>
-              <NavigateBeforeIcon />{'Unlabeled'}
+            <Button
+              color="secondary"
+              size="small"
+              className={classes.marginRight}
+              variant="contained"
+              onClick={() => prevImage(true)}>
+              <NavigateBeforeIcon />
+              {'Unlabeled'}
             </Button>
-            <Button color="secondary" size="small" className={classes.marginRight} variant="contained" onClick={() => nextImage(true)}>
-              {'Unlabeled'}<NavigateNextIcon />
+            <Button
+              color="secondary"
+              size="small"
+              className={classes.marginRight}
+              variant="contained"
+              onClick={() => nextImage(true)}>
+              {'Unlabeled'}
+              <NavigateNextIcon />
             </Button>
             <FormControlLabel
               control={
@@ -382,12 +418,12 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
               label="View Mask"
             />
             <Typography className={classes.grow} />
-            <Button color="secondary" size="small" onClick={labelThisImage}>{'Label this Image'}</Button>
+            <Button color="secondary" size="small" onClick={labelThisImage}>
+              {'Label this Image'}
+            </Button>
           </Toolbar>
           <div className={classes.canvasHeader}>
-            <Typography>
-              {`Zoom Level: ${state.zoom.toFixed(1)}`}
-            </Typography>
+            <Typography>{`Zoom Level: ${state.zoom.toFixed(1)}`}</Typography>
           </div>
           <ImageCanvas imageUrl={url} zoom={state.zoom} labels={labels} />
           <Paper className={classes.bottomToolbar}>
@@ -403,7 +439,7 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
 };
 
 const SET_LABEL_QUEUE_IMAGE_IN_PROGRESS = gql`
-  mutation ($imageId: Int!) {
+  mutation($imageId: Int!) {
     ImageLabelingService_selectLabelQueueImage(imageId: $imageId) {
       imageId
       status

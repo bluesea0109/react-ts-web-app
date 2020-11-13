@@ -2,7 +2,11 @@ import { useQuery } from '@apollo/client';
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { useParams } from 'react-router';
-import { ICategorySet, IImage, ILabelQueueImage } from '../../../../models/image-labeling-service';
+import {
+  ICategorySet,
+  IImage,
+  ILabelQueueImage,
+} from '../../../../models/image-labeling-service';
 import * as imageLabelingActions from '../../../../store/image-labeling/actions';
 import ApolloErrorPage from '../../../ApolloErrorPage';
 import ContentLoading from '../../../ContentLoading';
@@ -18,7 +22,7 @@ const mapDispatch = {
 const connector = connect(null, mapDispatch);
 
 function ImageLabeler(props: ConnectedProps<typeof connector>) {
-  const params = useParams<{ projectId: string, imageId?: string}>();
+  const params = useParams<{ projectId: string; imageId?: string }>();
   const { projectId, imageId: imageIdStr } = params;
 
   if (!imageIdStr) {

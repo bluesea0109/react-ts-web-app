@@ -52,7 +52,7 @@ export default function UpsertAgentFormNode({
   const addFormField = (
     fieldName: string,
     fieldType: EFormFieldTypes,
-    required: boolean = true,
+    required = true,
   ) => {
     setFormFields([
       ...formFields,

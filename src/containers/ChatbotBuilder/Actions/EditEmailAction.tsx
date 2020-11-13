@@ -1,10 +1,5 @@
 import { IAgentEmailAction } from '@bavard/agent-config';
-import {
-  createStyles,
-  Grid,
-  makeStyles,
-  Theme,
-} from '@material-ui/core';
+import { createStyles, Grid, makeStyles, Theme } from '@material-ui/core';
 import React from 'react';
 import { TextInput } from '../../../components';
 
@@ -27,10 +22,7 @@ interface EditEmailActionProps {
   onChangeAction: (action: IAgentEmailAction) => void;
 }
 
-const EditEmailAction = ({
-  action,
-  onChangeAction,
-}: EditEmailActionProps) => {
+const EditEmailAction = ({ action, onChangeAction }: EditEmailActionProps) => {
   const classes = useStyles();
 
   return (
@@ -42,7 +34,7 @@ const EditEmailAction = ({
           type="email"
           value={action.to || ''}
           className={classes.input}
-          onChange={e => onChangeAction({ ...action, to: e.target.value})}
+          onChange={(e) => onChangeAction({ ...action, to: e.target.value })}
         />
       </Grid>
     </>

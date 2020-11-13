@@ -12,10 +12,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { Delete } from '@material-ui/icons';
 import React, { useState } from 'react';
 
-import {
-  KeyboardArrowDown,
-  KeyboardArrowRight,
-} from '@material-ui/icons';
+import { KeyboardArrowDown, KeyboardArrowRight } from '@material-ui/icons';
 import { DropDown } from '../../../components';
 
 const useStyles = makeStyles((theme) => ({

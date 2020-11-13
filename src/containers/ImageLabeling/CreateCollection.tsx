@@ -36,7 +36,8 @@ interface ICreateCollectionProps {
 
 function CreateCollection(props: ICreateCollectionProps) {
   const { projectId } = useParams<{ projectId: string }>();
-  const [createCollection, { loading, error, data }] = useMutation(CREATE_COLLECTION,
+  const [createCollection, { loading, error, data }] = useMutation(
+    CREATE_COLLECTION,
     {
       onCompleted: () => {
         handleClose();
@@ -121,8 +122,7 @@ function CreateCollection(props: ICreateCollectionProps) {
         fullWidth={true}
         open={state.open}
         onClose={handleClose}
-        aria-labelledby="form-dialog-title"
-      >
+        aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">{'New Collection'}</DialogTitle>
         {dialogConent}
         <DialogActions>
@@ -132,8 +132,7 @@ function CreateCollection(props: ICreateCollectionProps) {
           <Button
             color="secondary"
             disabled={loading || error != null}
-            onClick={handleCreate}
-          >
+            onClick={handleCreate}>
             {'Create'}
           </Button>
         </DialogActions>

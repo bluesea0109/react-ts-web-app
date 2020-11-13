@@ -1,8 +1,11 @@
 import {
   Box,
-  Button, createStyles,
+  Button,
+  createStyles,
   Grid,
-  IconButton, TextField, Theme,
+  IconButton,
+  TextField,
+  Theme,
   Typography,
   useMediaQuery,
   useTheme,
@@ -54,90 +57,98 @@ interface KeyValueArrayInputProps {
   onItemDelete?: any;
 }
 
-const KeyValueArrayInput = React.forwardRef((props: KeyValueArrayInputProps, ref: any) => {
-  const { name, disabled, onItemAdd, value, onChange } = props;
-  const [currentItem, setCurrentItem] = useState<string>('');
-  const classes = makeStyles((theme: Theme) =>
-    createStyles({
-      addBtn: {
-        '&:focus': {
-          border: `2px solid ${theme.palette.primary.main}`,
+const KeyValueArrayInput = React.forwardRef(
+  (props: KeyValueArrayInputProps, ref: any) => {
+    const { name, disabled, onItemAdd, value, onChange } = props;
+    const [currentItem, setCurrentItem] = useState<string>('');
+    const classes = makeStyles((theme: Theme) =>
+      createStyles({
+        addBtn: {
+          '&:focus': {
+            border: `2px solid ${theme.palette.primary.main}`,
+          },
         },
-      },
-    }),
-  )();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+      }),
+    )();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const onDelete = (item: string) => {
-    const newValues = [...value];
-    newValues.splice(
-      newValues.findIndex(val => val === item),
-      1,
-    );
+    const onDelete = (item: string) => {
+      const newValues = [...value];
+      newValues.splice(
+        newValues.findIndex((val) => val === item),
+        1,
+      );
 
-    onChange({ target: { name, value: [...newValues] } });
-
-    props?.onItemDelete?.();
-  };
-
-  const onAdd = () => {
-    const newValues = [...value];
-    const index = newValues.findIndex(val => val === currentItem);
-    if (index === -1) {
-      newValues.push(currentItem);
       onChange({ target: { name, value: [...newValues] } });
-    }
-    setCurrentItem('');
 
-    onItemAdd?.();
-  };
+      props?.onItemDelete?.();
+    };
 
-  return (
-    <Grid xs={12} ref={ref}>
-      <Box mb={1}>
-        <Grid container={true} direction="row" alignItems="center" xs={12}>
-          <Box mr={3} mt={2} mb={1}>
-            <Typography variant="h5" color="textPrimary">{props.label}</Typography>
-          </Box>
-        </Grid>
-      </Box>
-      <Box mb={3}>
-        <Grid container={true} direction="row" alignItems="flex-end" xs={12}>
-          <Grid item={true} xs={6} style={{ maxWidth: 200, paddingRight: 8 }}>
-            <Box mt={1} width="100%" maxWidth={200} flex={true} flexDirection="column">
-              <TextField
-                disabled={disabled}
-                name={name}
-                value={currentItem}
-                onChange={e => setCurrentItem(e.target.value)}
-              />
+    const onAdd = () => {
+      const newValues = [...value];
+      const index = newValues.findIndex((val) => val === currentItem);
+      if (index === -1) {
+        newValues.push(currentItem);
+        onChange({ target: { name, value: [...newValues] } });
+      }
+      setCurrentItem('');
+
+      onItemAdd?.();
+    };
+
+    return (
+      <Grid xs={12} ref={ref}>
+        <Box mb={1}>
+          <Grid container={true} direction="row" alignItems="center" xs={12}>
+            <Box mr={3} mt={2} mb={1}>
+              <Typography variant="h5" color="textPrimary">
+                {props.label}
+              </Typography>
             </Box>
           </Grid>
-          <Box mt={isMobile ? 2 : 0}>
-            <Button
-              className={classes.addBtn}
-              style={{ height: 43 }}
-              variant={'outlined'}
-              disabled={(currentItem ?? '') === '' || disabled}
-              onClick={onAdd}
-            >
-              Add
-            </Button>
-          </Box>
-        </Grid>
-      </Box>
-      {value?.map?.(val => (
-        <KeyValueArrayItemOptimized
-          key={val}
-          item={val}
-          value={val}
-          onDelete={e => onDelete(val)}
-          disabled={disabled}
-        />
-      ))}
-    </Grid>
-  );
-});
+        </Box>
+        <Box mb={3}>
+          <Grid container={true} direction="row" alignItems="flex-end" xs={12}>
+            <Grid item={true} xs={6} style={{ maxWidth: 200, paddingRight: 8 }}>
+              <Box
+                mt={1}
+                width="100%"
+                maxWidth={200}
+                flex={true}
+                flexDirection="column">
+                <TextField
+                  disabled={disabled}
+                  name={name}
+                  value={currentItem}
+                  onChange={(e) => setCurrentItem(e.target.value)}
+                />
+              </Box>
+            </Grid>
+            <Box mt={isMobile ? 2 : 0}>
+              <Button
+                className={classes.addBtn}
+                style={{ height: 43 }}
+                variant={'outlined'}
+                disabled={(currentItem ?? '') === '' || disabled}
+                onClick={onAdd}>
+                Add
+              </Button>
+            </Box>
+          </Grid>
+        </Box>
+        {value?.map?.((val) => (
+          <KeyValueArrayItemOptimized
+            key={val}
+            item={val}
+            value={val}
+            onDelete={(e) => onDelete(val)}
+            disabled={disabled}
+          />
+        ))}
+      </Grid>
+    );
+  },
+);
 
 export default React.memo(KeyValueArrayInput);

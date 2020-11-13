@@ -1,5 +1,13 @@
 import { useMutation } from '@apollo/client';
-import { Button, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, TextField } from '@material-ui/core';
+import {
+  Button,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Radio,
+  RadioGroup,
+  TextField,
+} from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -21,9 +29,9 @@ interface IStartLabelingDialogState {
 
 function StartLabelingDialog() {
   const { orgId, projectId, collectionId } = useParams<{
-    orgId: string,
-    projectId: string,
-    collectionId: string,
+    orgId: string;
+    projectId: string;
+    collectionId: string;
   }>();
   const [state, setState] = useState<IStartLabelingDialogState>({
     open: false,
@@ -48,11 +56,16 @@ function StartLabelingDialog() {
     });
   };
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>, value: string) => {
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    value: string,
+  ) => {
     setState({ ...state, mode: value });
   };
 
-  const handleChangeBatchSize = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChangeBatchSize = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     let batchSize = parseInt(event.target.value, 10);
     batchSize = Math.min(batchSize, 50);
     batchSize = Math.max(batchSize, 1);
@@ -95,9 +108,21 @@ function StartLabelingDialog() {
     <DialogContent>
       <FormControl component="fieldset">
         <FormLabel component="legend">{'Mode'}</FormLabel>
-        <RadioGroup aria-label="mode" name="gender1" value={state.mode} onChange={handleChange}>
-          <FormControlLabel value="single" control={<Radio />} label="Single - label one image at a time" />
-          <FormControlLabel value="batch" control={<Radio />} label="Batch - label batches of images (supports category labeling only)" />
+        <RadioGroup
+          aria-label="mode"
+          name="gender1"
+          value={state.mode}
+          onChange={handleChange}>
+          <FormControlLabel
+            value="single"
+            control={<Radio />}
+            label="Single - label one image at a time"
+          />
+          <FormControlLabel
+            value="batch"
+            control={<Radio />}
+            label="Batch - label batches of images (supports category labeling only)"
+          />
           <FormControl component="fieldset">
             <TextField
               disabled={state.mode !== 'batch'}
@@ -117,7 +142,7 @@ function StartLabelingDialog() {
   if (nextImageResult.error) {
     dialogContent = (
       <DialogContent>
-        <ApolloErrorPage error={nextImageResult.error}/>
+        <ApolloErrorPage error={nextImageResult.error} />
       </DialogContent>
     );
   }
@@ -132,18 +157,17 @@ function StartLabelingDialog() {
 
   return (
     <React.Fragment>
-      <Dialog
-        open={state.open}
-        onClose={handleClose}
-        fullWidth={true}
-      >
+      <Dialog open={state.open} onClose={handleClose} fullWidth={true}>
         <DialogTitle>{'Start Labeling Images'}</DialogTitle>
         {dialogContent}
         <DialogActions>
           <Button color="primary" onClick={handleClose}>
             {'Cancel'}
           </Button>
-          <Button color="secondary" onClick={beginLabeling} disabled={beginDisabled()}>
+          <Button
+            color="secondary"
+            onClick={beginLabeling}
+            disabled={beginDisabled()}>
             {'Begin'}
           </Button>
         </DialogActions>

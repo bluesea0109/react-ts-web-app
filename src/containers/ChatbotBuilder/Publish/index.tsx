@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function PublishAgent() {
   const classes = useStyles();
-  const params = useParams<{ agentId: string, projectId: string }>();
+  const params = useParams<{ agentId: string; projectId: string }>();
   const agentId = parseInt(params.agentId, 10);
 
   const { enqueueSnackbar } = useSnackbar();

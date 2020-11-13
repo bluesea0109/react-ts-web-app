@@ -19,14 +19,19 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export default function ChatWithAgent() {
-  const { agentId, projectId } = useParams<{ agentId: string, projectId: string }>();
+  const { agentId, projectId } = useParams<{
+    agentId: string;
+    projectId: string;
+  }>();
   const [apiKey, setApiKey] = useState<string | null>(null);
   const classes = useStyles();
   const [isActive, setIsActive] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [iframeFirstOpened, setIFrameFirstOpened] = useState(true);
   const iframe = useRef<HTMLIFrameElement | null>(null);
-  const agentData = useQuery<IGetAgent>(GET_AGENT, { variables: { agentId: Number(agentId) } });
+  const agentData = useQuery<IGetAgent>(GET_AGENT, {
+    variables: { agentId: Number(agentId) },
+  });
   const apiKeysQuery = useQuery(getApiKeysQuery, {
     variables: {
       projectId,
@@ -51,9 +56,12 @@ export default function ChatWithAgent() {
     setIsActive(!isActive);
 
     if (iframeFirstOpened) {
-      iframe.current?.contentWindow?.postMessage({
-        iframeFirstOpened: true,
-      }, '*');
+      iframe.current?.contentWindow?.postMessage(
+        {
+          iframeFirstOpened: true,
+        },
+        '*',
+      );
       setIFrameFirstOpened(false);
     }
   };
@@ -64,39 +72,44 @@ export default function ChatWithAgent() {
     return () => {
       window.removeEventListener('message', onMessage);
     };
-  // eslint-disable-next-line
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
-    if (!apiKey) { return; }
-    iframe.current?.contentWindow?.postMessage({
-      apiKey,
-      uname: agentData.data?.ChatbotService_agent.uname,
-      isActive: false,
-      debug: true,
-      dev: true,
-    }, '*');
+    if (!apiKey) {
+      return;
+    }
+    iframe.current?.contentWindow?.postMessage(
+      {
+        apiKey,
+        uname: agentData.data?.ChatbotService_agent.uname,
+        isActive: false,
+        debug: true,
+        dev: true,
+      },
+      '*',
+    );
   }, [apiKey, agentData.data]);
 
   useEffect(() => {
-    iframe.current?.contentWindow?.postMessage({
-      isActive,
-    }, '*');
+    iframe.current?.contentWindow?.postMessage(
+      {
+        isActive,
+      },
+      '*',
+    );
   }, [isActive]);
 
   if (agentData.loading) {
-    return <ContentLoading shrinked={true}/>;
+    return <ContentLoading shrinked={true} />;
   }
 
   return (
-    <div
-      className={classes.root}
-      id="chatbot"
-    >
+    <div className={classes.root} id="chatbot">
       <iframe
         title="chatbot"
         src={config.chatbotUrl}
-        ref={ref => iframe.current = ref}
+        ref={(ref) => (iframe.current = ref)}
         style={{
           border: 'none',
           display: isLoaded && isActive ? 'block' : 'none',
@@ -119,7 +132,11 @@ export default function ChatWithAgent() {
         }}
       />
 
-      <Button color="primary" variant="contained" onClick={toggleContentWindow} disabled={!isLoaded}>
+      <Button
+        color="primary"
+        variant="contained"
+        onClick={toggleContentWindow}
+        disabled={!isLoaded}>
         {isActive ? 'Hide' : 'Show'}
       </Button>
     </div>

@@ -1,8 +1,18 @@
-import { createStyles, Grid, makeStyles, Paper, Theme, Typography } from '@material-ui/core';
+import {
+  createStyles,
+  Grid,
+  makeStyles,
+  Paper,
+  Theme,
+  Typography,
+} from '@material-ui/core';
 import React from 'react';
 
 import { IUserUtteranceAction } from '@bavard/agent-config/dist/actions/user';
-import { IConversation, IDialogueTurn } from '@bavard/agent-config/dist/conversations';
+import {
+  IConversation,
+  IDialogueTurn,
+} from '@bavard/agent-config/dist/conversations';
 
 interface ConversationFullProps {
   conversation: IConversation;
@@ -29,18 +39,14 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const renderTurn = (turn: IDialogueTurn, index: number, classes: any) => {
-  let userContent = <div/>;
-  let agentContent = <div/>;
+  let userContent = <div />;
+  let agentContent = <div />;
 
   if (turn.actor === 'AGENT') {
     agentContent = (
       <Paper className={classes.userMessage}>
-        <Typography align="left">
-          Action: {turn.agentAction?.name}
-        </Typography>
-        <Typography align="left">
-          Type: {turn.agentAction?.type}
-        </Typography>
+        <Typography align="left">Action: {turn.agentAction?.name}</Typography>
+        <Typography align="left">Type: {turn.agentAction?.type}</Typography>
       </Paper>
     );
   } else if (turn.actor === 'USER') {
@@ -69,10 +75,12 @@ const renderTurn = (turn: IDialogueTurn, index: number, classes: any) => {
   );
 };
 
-export default function ConversationFull({conversation}: ConversationFullProps) {
+export default function ConversationFull({
+  conversation,
+}: ConversationFullProps) {
   const classes = useStyles();
   return (
-    <Grid container={true} spacing={2} style={{width: '100%'}}>
+    <Grid container={true} spacing={2} style={{ width: '100%' }}>
       <Grid item={true} xs={6}>
         <Typography align="center" variant="h6">
           User
@@ -83,11 +91,9 @@ export default function ConversationFull({conversation}: ConversationFullProps) 
           Agent
         </Typography>
       </Grid>
-      {
-        conversation.turns.map((turn, index) => {
-          return renderTurn(turn, index, classes);
-        })
-      }
+      {conversation.turns.map((turn, index) => {
+        return renderTurn(turn, index, classes);
+      })}
     </Grid>
   );
 }

@@ -9,26 +9,23 @@ export const REMOVE_ORG_MEMBER = gql`
 `;
 
 export const GET_INVITED_ORG_MEMBERS = gql`
-    query($orgId: String!) {
-        orgMemberInvites(orgId: $orgId){
-            id
-            email
-            orgId
-            orgName
-            senderName
-            senderEmail
-            timestamp
-            role
-        }
+  query($orgId: String!) {
+    orgMemberInvites(orgId: $orgId) {
+      id
+      email
+      orgId
+      orgName
+      senderName
+      senderEmail
+      timestamp
+      role
     }
+  }
 `;
 
 export const REVOKE_INVITATION = gql`
   mutation($orgId: String!, $inviteId: String!) {
-    deleteOrgMemberInvite(
-      orgId: $orgId
-      inviteId: $inviteId
-    )
+    deleteOrgMemberInvite(orgId: $orgId, inviteId: $inviteId)
   }
 `;
 
@@ -56,8 +53,6 @@ export const ENABLE_BILLING = gql`
 
 export const DISABLE_BILLING = gql`
   mutation($orgId: String!) {
-    BillingService_disableBilling(
-      orgId: $orgId
-    )
+    BillingService_disableBilling(orgId: $orgId)
   }
 `;

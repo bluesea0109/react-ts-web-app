@@ -59,7 +59,12 @@ const FormFieldRow = ({
 }: FormFieldRowProps) => {
   const classes = useStyles();
 
-  const FormFieldTypes = [EFormFieldTypes.EMAIL, EFormFieldTypes.PHONE, EFormFieldTypes.TEXT, EFormFieldTypes.ZIP].map(type => ({
+  const FormFieldTypes = [
+    EFormFieldTypes.EMAIL,
+    EFormFieldTypes.PHONE,
+    EFormFieldTypes.TEXT,
+    EFormFieldTypes.ZIP,
+  ].map((type) => ({
     id: type,
     name: type,
   }));
@@ -73,32 +78,30 @@ const FormFieldRow = ({
             variant="outlined"
             value={field.name}
             className={classes.input}
-            onChange={e => onUpdateField({ ...field, name: e.target.value})}
+            onChange={(e) => onUpdateField({ ...field, name: e.target.value })}
           />
         ) : (
-          <Typography onClick={onClick}>
-            {field.name}
-          </Typography>
+          <Typography onClick={onClick}>{field.name}</Typography>
         )}
       </NoPaddingCell>
       <NoPaddingCell align="left">
-      {isEditing ? (
-        <DropDown
-          fullWidth={true}
-          menuItems={FormFieldTypes}
-          current={field.type}
-          onChange={(type) => onUpdateField({ ...field, type} as IFormField)}
-        />
-      ) : (
-        <Typography onClick={onClick}>
-          {field.type}
-        </Typography>
-      )}
+        {isEditing ? (
+          <DropDown
+            fullWidth={true}
+            menuItems={FormFieldTypes}
+            current={field.type}
+            onChange={(type) => onUpdateField({ ...field, type } as IFormField)}
+          />
+        ) : (
+          <Typography onClick={onClick}>{field.type}</Typography>
+        )}
       </NoPaddingCell>
       <NoPaddingCell align="center">
         <Checkbox
           checked={field.required}
-          onChange={() => onUpdateField({ ...field, required: !field.required})}
+          onChange={() =>
+            onUpdateField({ ...field, required: !field.required })
+          }
           inputProps={{ 'aria-label': 'primary checkbox' }}
         />
       </NoPaddingCell>

@@ -29,7 +29,10 @@ interface IUploadImagesDialogState {
   error: GraphQLError | null;
 }
 
-class UploadImagesDialog extends React.Component<IProps, IUploadImagesDialogState> {
+class UploadImagesDialog extends React.Component<
+  IProps,
+  IUploadImagesDialogState
+> {
   constructor(props: IProps) {
     super(props);
 
@@ -50,7 +53,7 @@ class UploadImagesDialog extends React.Component<IProps, IUploadImagesDialogStat
       numCompleted: 0,
       total: 1,
     });
-  }
+  };
 
   uploadSingle = async (file: File) => {
     const res = await this.props.client?.query({
@@ -81,15 +84,17 @@ class UploadImagesDialog extends React.Component<IProps, IUploadImagesDialogStat
       progress: (s.numCompleted + 1) / s.total,
       numCompleted: s.numCompleted + 1,
     }));
-  }
+  };
 
   onCancel = () => {
     this.cancelled = true;
-  }
+  };
 
   handleFiles = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (!files) { return; }
+    if (!files) {
+      return;
+    }
 
     this.setState({
       open: true,
@@ -103,9 +108,11 @@ class UploadImagesDialog extends React.Component<IProps, IUploadImagesDialogStat
       }
 
       try {
-        await Promise.all(chunk.map(file => {
-          return this.uploadSingle(file);
-        }));
+        await Promise.all(
+          chunk.map((file) => {
+            return this.uploadSingle(file);
+          }),
+        );
       } catch (e) {
         console.error(e);
         this.setState({
@@ -118,7 +125,7 @@ class UploadImagesDialog extends React.Component<IProps, IUploadImagesDialogStat
     if (!this.state.error) {
       this.handleClose();
     }
-  }
+  };
 
   render() {
     const state = this.state;
@@ -128,7 +135,11 @@ class UploadImagesDialog extends React.Component<IProps, IUploadImagesDialogStat
         <DialogContentText>
           {`Uploaded ${state.numCompleted} out of ${state.total} images.`}
         </DialogContentText>
-        <LinearProgress color="secondary" variant="determinate" value={state.progress * 100} />
+        <LinearProgress
+          color="secondary"
+          variant="determinate"
+          value={state.progress * 100}
+        />
       </DialogContent>
     );
 
@@ -142,11 +153,7 @@ class UploadImagesDialog extends React.Component<IProps, IUploadImagesDialogStat
 
     return (
       <React.Fragment>
-        <Dialog
-          open={state.open}
-          onClose={this.handleClose}
-          fullWidth={true}
-        >
+        <Dialog open={state.open} onClose={this.handleClose} fullWidth={true}>
           <DialogTitle>{'Uploading Images'}</DialogTitle>
           {dialogContent}
           <DialogActions>
@@ -177,7 +184,10 @@ class UploadImagesDialog extends React.Component<IProps, IUploadImagesDialogStat
 export default withApollo<IUploadImagesDialogProps>(UploadImagesDialog);
 
 const GET_UPLOAD_URL = gql`
-  query ($filename: String!, $collectionId: Int!) {
-    ImageLabelingService_uploadUrl(filename: $filename, collectionId: $collectionId)
+  query($filename: String!, $collectionId: Int!) {
+    ImageLabelingService_uploadUrl(
+      filename: $filename
+      collectionId: $collectionId
+    )
   }
 `;

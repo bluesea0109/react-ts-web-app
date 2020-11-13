@@ -12,7 +12,7 @@ interface RichTextInputProps extends React.HTMLProps<HTMLTextAreaElement> {
   onChange: any;
 }
 
-const useStyles = makeStyles(theme =>
+const useStyles = makeStyles((theme) =>
   createStyles({
     rtiContainer: {
       background: '#fff',
@@ -28,12 +28,14 @@ const useStyles = makeStyles(theme =>
 const RichTextInput = ({ value, onChange, label }: RichTextInputProps) => {
   const classes = useStyles();
 
-  const [editorState, setEditorState] = useState<EditorState>(EditorState.createEmpty());
+  const [editorState, setEditorState] = useState<EditorState>(
+    EditorState.createEmpty(),
+  );
 
   useEffect(() => {
     let editorState = EditorState.createEmpty();
 
-    if (!!value) {
+    if (value) {
       const blocks = htmlToDraft(value);
       const state = ContentState.createFromBlockArray(
         blocks.contentBlocks,
@@ -64,7 +66,19 @@ const RichTextInput = ({ value, onChange, label }: RichTextInputProps) => {
         onEditorStateChange={onEditorStateChange}
         onBlur={() => onChange(newValue)}
         toolbar={{
-          options: ['inline', 'blockType', 'fontSize', 'fontFamily', 'list', 'textAlign', 'colorPicker', 'link', 'emoji', 'remove', 'history'],
+          options: [
+            'inline',
+            'blockType',
+            'fontSize',
+            'fontFamily',
+            'list',
+            'textAlign',
+            'colorPicker',
+            'link',
+            'emoji',
+            'remove',
+            'history',
+          ],
         }}
       />
     </div>

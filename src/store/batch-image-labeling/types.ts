@@ -1,4 +1,7 @@
-import { IBatchLabelingInput, IImage } from '../../models/image-labeling-service';
+import {
+  IBatchLabelingInput,
+  IImage,
+} from '../../models/image-labeling-service';
 
 export const ADD_LABEL = 'BATCH/ADD_LABEL';
 export const REMOVE_LABEL = 'BATCH/REMOVE_LABEL';
@@ -34,4 +37,8 @@ export interface BatchImageLabelingState {
   imageLabels: Map<number, IBatchLabelingInput[]>;
 }
 
-export type BatchImageLabelingActionTypes = AddLabel | RemoveLabel | UpdateLabel | ResetLabels;
+export type BatchImageLabelingActionTypes =
+  | AddLabel
+  | RemoveLabel
+  | UpdateLabel
+  | ResetLabels;

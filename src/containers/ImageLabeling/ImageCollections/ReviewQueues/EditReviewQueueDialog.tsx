@@ -26,12 +26,14 @@ function EditReviewQueueDialog(props: IEditReviewQueueDialogProps) {
     onCompleted: () => {
       handleClose();
     },
-    refetchQueries: [{
-      query: GET_REVIEW_QUEUES,
-      variables: {
-        collectionId: queue.collectionId,
+    refetchQueries: [
+      {
+        query: GET_REVIEW_QUEUES,
+        variables: {
+          collectionId: queue.collectionId,
+        },
       },
-    }],
+    ],
     awaitRefetchQueries: true,
   });
 
@@ -43,7 +45,9 @@ function EditReviewQueueDialog(props: IEditReviewQueueDialogProps) {
     setState({ ...state, open: false });
   };
 
-  const handleChange = (name: string) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (name: string) => (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     setState({
       ...state,
       [name]: event.target.value,
@@ -89,21 +93,24 @@ function EditReviewQueueDialog(props: IEditReviewQueueDialogProps) {
 
   return (
     <React.Fragment>
-      <Dialog
-        fullWidth={true}
-        open={state.open}
-        onClose={handleClose}
-      >
+      <Dialog fullWidth={true} open={state.open} onClose={handleClose}>
         <DialogTitle>{'Edit Review Queue'}</DialogTitle>
         {dialogContent}
         <DialogActions>
-          <Button color="primary" onClick={handleClose} disabled={updateQueueResult.loading}>
+          <Button
+            color="primary"
+            onClick={handleClose}
+            disabled={updateQueueResult.loading}>
             {'Cancel'}
           </Button>
           <Button
             color="secondary"
             onClick={handleSave}
-            disabled={state.name === '' || state.name === queue.name || updateQueueResult.loading}>
+            disabled={
+              state.name === '' ||
+              state.name === queue.name ||
+              updateQueueResult.loading
+            }>
             {'Save'}
           </Button>
         </DialogActions>

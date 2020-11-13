@@ -123,7 +123,8 @@ const AgentDetails = () => {
     currentWidgetSettings,
   );
 
-  const init = agents?.filter((item) => item.id === parseInt(agentId, 10))[0]?.uname;
+  const init = agents?.filter((item) => item.id === parseInt(agentId, 10))[0]
+    ?.uname;
 
   const [curAgent, setCurAgent] = useState<string | undefined>(init);
 
@@ -152,10 +153,10 @@ const AgentDetails = () => {
   }
 
   if (loading || updateAgentData?.loading || !data) {
-    return <ContentLoading shrinked={true}/>;
+    return <ContentLoading shrinked={true} />;
   }
   const saveAgent = () => {
-    if (!!config) {
+    if (config) {
       updateAgent({
         variables: {
           agentId: Number(agentId),
@@ -203,8 +204,7 @@ const AgentDetails = () => {
           index="Intents"
           value={agentTab}
           className={classes.tabPanel}
-          tabName="Manage Assistant Intents"
-        >
+          tabName="Manage Assistant Intents">
           <Intent />
         </TabPanel>
         <TabPanel className={classes.tabPanel} value={agentTab} index="Tags">

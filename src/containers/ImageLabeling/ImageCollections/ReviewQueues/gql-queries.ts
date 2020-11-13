@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
 export const GET_REVIEW_QUEUES = gql`
-  query ($collectionId: Int!) {
+  query($collectionId: Int!) {
     ImageLabelingService_reviewQueues(collectionId: $collectionId) {
       id
       collectionId
@@ -13,8 +13,11 @@ export const GET_REVIEW_QUEUES = gql`
 `;
 
 export const CREATE_REVIEW_QUEUE = gql`
-  mutation ($collectionId: Int!, $name: String!) {
-    ImageLabelingService_createReviewQueue(collectionId: $collectionId, name: $name) {
+  mutation($collectionId: Int!, $name: String!) {
+    ImageLabelingService_createReviewQueue(
+      collectionId: $collectionId
+      name: $name
+    ) {
       id
       collectionId
       name
@@ -25,7 +28,7 @@ export const CREATE_REVIEW_QUEUE = gql`
 `;
 
 export const DELETE_REVIEW_QUEUE = gql`
-  mutation ($queueId: Int!) {
+  mutation($queueId: Int!) {
     ImageLabelingService_deleteReviewQueue(queueId: $queueId) {
       id
       collectionId
@@ -45,13 +48,13 @@ export const NEXT_REVIEW_QUEUE_IMAGE = gql`
 `;
 
 export const UPDATE_REVIEW_QUEUE = gql`
-mutation ($queueId: Int!, $name: String!) {
-  ImageLabelingService_updateReviewQueue(queueId: $queueId, name: $name) {
-    id
-    collectionId
-    name
-    percentUnderReview
-    percentApproved
+  mutation($queueId: Int!, $name: String!) {
+    ImageLabelingService_updateReviewQueue(queueId: $queueId, name: $name) {
+      id
+      collectionId
+      name
+      percentUnderReview
+      percentApproved
+    }
   }
-}
 `;

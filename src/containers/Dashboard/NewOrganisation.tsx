@@ -36,7 +36,7 @@ interface INewOrgProps {
   onSuccess?: () => void;
 }
 
-function NewOrganisation({onSuccess}: INewOrgProps) {
+function NewOrganisation({ onSuccess }: INewOrgProps) {
   const classes = useStyles();
   const [state, setState] = useState({
     name: '',

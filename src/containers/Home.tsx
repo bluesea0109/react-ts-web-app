@@ -1,4 +1,10 @@
-import { createStyles, Grid, makeStyles, Theme, Typography } from '@material-ui/core';
+import {
+  createStyles,
+  Grid,
+  makeStyles,
+  Theme,
+  Typography,
+} from '@material-ui/core';
 import firebase from 'firebase/app';
 import React from 'react';
 
@@ -7,7 +13,8 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       padding: theme.spacing(2),
     },
-  }));
+  }),
+);
 
 function Home() {
   const classes = useStyles();

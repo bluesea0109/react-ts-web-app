@@ -29,11 +29,11 @@ export const ColorPalett = ({
               style={{
                 height: '100px',
                 backgroundColor:
-                  (typeof settings.primaryColor === 'string') ? (
-                    settings.primaryColor
-                  ) :
-                  `rgba(${settings.primaryColor.r}, ${settings.primaryColor.g}, ${settings.primaryColor.b}, ${settings.primaryColor.a})`,
-              }} />
+                  typeof settings.primaryColor === 'string'
+                    ? settings.primaryColor
+                    : `rgba(${settings.primaryColor.r}, ${settings.primaryColor.g}, ${settings.primaryColor.b}, ${settings.primaryColor.a})`,
+              }}
+            />
           </Grid>
           <Grid item={true} sm={4}>
             <Box style={{ marginLeft: '20px' }}>

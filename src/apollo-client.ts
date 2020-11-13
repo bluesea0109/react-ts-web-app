@@ -41,12 +41,18 @@ const getIdToken = async () => {
   }
 };
 
-const exchangeFirebaseToken = async (firebaseToken: string): Promise<string> => {
+const exchangeFirebaseToken = async (
+  firebaseToken: string,
+): Promise<string> => {
   const fetch = createApolloFetch({
     uri: config.apiUrl,
   });
 
-  const { data: { exchangeFirebaseToken: { token } } } = await fetch({
+  const {
+    data: {
+      exchangeFirebaseToken: { token },
+    },
+  } = await fetch({
     query: `query {
       exchangeFirebaseToken(firebaseToken: "Bearer ${firebaseToken}") {
         token

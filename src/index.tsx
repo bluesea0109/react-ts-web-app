@@ -5,9 +5,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router } from 'react-router-dom';
-import {
-  RecoilRoot,
-} from 'recoil';
+import { RecoilRoot } from 'recoil';
 import { client } from './apollo-client';
 import AppAuthWrapper from './AppAuthWrapper';
 import './config'; // initializes firebase

@@ -65,10 +65,7 @@ export default function PaymentDialog(props: IAllProps) {
       <Button color="primary" onClick={handleClose}>
         {'NO'}
       </Button>
-      <Button
-        color="secondary"
-        onClick={handleDisableClick}
-        disabled={false}>
+      <Button color="secondary" onClick={handleDisableClick} disabled={false}>
         {'YES'}
       </Button>
     </DialogActions>
@@ -91,7 +88,11 @@ export default function PaymentDialog(props: IAllProps) {
         </DialogContent>
       </React.Fragment>
     );
-  } else if (disableBillingResp.called && disableBillingResp.data && disableBillingResp.data.BillingService_disableBilling) {
+  } else if (
+    disableBillingResp.called &&
+    disableBillingResp.data &&
+    disableBillingResp.data.BillingService_disableBilling
+  ) {
     dialogContent = (
       <React.Fragment>
         <DialogContent>
@@ -114,7 +115,8 @@ export default function PaymentDialog(props: IAllProps) {
         <DialogContent>
           <Typography>Cancel your subscription?</Typography>
         </DialogContent>
-      </React.Fragment>);
+      </React.Fragment>
+    );
   }
   return (
     <div className={classes.root} color="inherit">
@@ -127,7 +129,11 @@ export default function PaymentDialog(props: IAllProps) {
         {dialogContent}
         {dialogActions}
       </Dialog>
-      <Button size="small" variant="contained" className={classes.button} onClick={handleOpen}>
+      <Button
+        size="small"
+        variant="contained"
+        className={classes.button}
+        onClick={handleOpen}>
         {'Disable Billing'}
       </Button>
     </div>

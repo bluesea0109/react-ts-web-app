@@ -17,10 +17,7 @@ import { useParams } from 'react-router';
 import { IUser } from '../../../models/user-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
-import {
-  GET_INVITED_ORG_MEMBERS,
-  INVITE_ORG_MEMBER,
-} from './gql';
+import { GET_INVITED_ORG_MEMBERS, INVITE_ORG_MEMBER } from './gql';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
