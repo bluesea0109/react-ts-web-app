@@ -33,7 +33,7 @@ export default class Polygon extends Shape {
       throw new Error('Need at least 3 points to close the polygon');
     }
 
-    const [x , y] = this.points[0];
+    const [x, y] = this.points[0];
     this.points.push([x, y]);
   }
 

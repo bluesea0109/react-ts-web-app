@@ -3,7 +3,9 @@ import React, { useState } from 'react';
 import { useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import * as actions from '../../../../store/image-labeling/actions';
-import ImageCategoricalLabel, { ImageLabelShapesEnum } from '../../models/labels/ImageLabel';
+import ImageCategoricalLabel, {
+  ImageLabelShapesEnum,
+} from '../../models/labels/ImageLabel';
 import MultiRectangle from '../../models/labels/MultiRectangle';
 
 const mapDispatch = {
@@ -27,7 +29,13 @@ interface IMousePos {
 }
 
 function ImageLabelerCanvas(props: IImageLabelerCanvasProps) {
-  const { labels, selectedLabel, selectedLabelIndex, zoom, updateLabel } = props;
+  const {
+    labels,
+    selectedLabel,
+    selectedLabelIndex,
+    zoom,
+    updateLabel,
+  } = props;
 
   interface IState {
     imgLoaded: boolean;
@@ -51,7 +59,9 @@ function ImageLabelerCanvas(props: IImageLabelerCanvasProps) {
     }
 
     const canvas = document.getElementById('canvas') as HTMLCanvasElement;
-    if (!canvas) { return; }
+    if (!canvas) {
+      return;
+    }
 
     const ctx = canvas.getContext('2d');
     ctx?.clearRect(0, 0, canvas.width, canvas.height);
@@ -60,12 +70,16 @@ function ImageLabelerCanvas(props: IImageLabelerCanvasProps) {
   };
 
   const drawImage = () => {
-    if (!state.imgLoaded) { return; }
+    if (!state.imgLoaded) {
+      return;
+    }
 
     const zoom = props.zoom;
     const img = document.getElementById('image') as HTMLImageElement;
     const canvas = document.getElementById('canvas') as HTMLCanvasElement;
-    if (!canvas) { return; }
+    if (!canvas) {
+      return;
+    }
 
     const ctx = canvas.getContext('2d');
     const w = img.width * zoom;
@@ -77,7 +91,9 @@ function ImageLabelerCanvas(props: IImageLabelerCanvasProps) {
 
   const drawLabels = () => {
     const canvas = document.getElementById('canvas') as HTMLCanvasElement;
-    if (!canvas) { return; }
+    if (!canvas) {
+      return;
+    }
 
     const ctx = canvas.getContext('2d');
 
@@ -88,7 +104,9 @@ function ImageLabelerCanvas(props: IImageLabelerCanvasProps) {
     }
   };
 
-  const getMousePos = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>): IMousePos => {
+  const getMousePos = (
+    e: React.MouseEvent<HTMLCanvasElement, MouseEvent>,
+  ): IMousePos => {
     const rect = e.currentTarget.getBoundingClientRect();
     return {
       x: (e.clientX - rect.left) / zoom,
@@ -114,8 +132,11 @@ function ImageLabelerCanvas(props: IImageLabelerCanvasProps) {
       return;
     }
 
-    if (selectedLabel.shape instanceof MultiRectangle && selectedLabel.shape.isRectangleStarted()) {
-      const label =  cloneDeep(selectedLabel);
+    if (
+      selectedLabel.shape instanceof MultiRectangle &&
+      selectedLabel.shape.isRectangleStarted()
+    ) {
+      const label = cloneDeep(selectedLabel);
       (label.shape as MultiRectangle).endRectangle();
       props.updateLabel(label, selectedLabelIndex);
     }
@@ -123,14 +144,21 @@ function ImageLabelerCanvas(props: IImageLabelerCanvasProps) {
 
   const onMouseMove = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
     if (!selectedLabel || selectedLabelIndex === null) {
-
       if (state.mouseDownPos) {
-        props.addLabel(new ImageCategoricalLabel(null, ImageLabelShapesEnum.BOX, null, null, null));
+        props.addLabel(
+          new ImageCategoricalLabel(
+            null,
+            ImageLabelShapesEnum.BOX,
+            null,
+            null,
+            null,
+          ),
+        );
       }
       return;
     }
 
-    const label =  cloneDeep(selectedLabel);
+    const label = cloneDeep(selectedLabel);
 
     const shape = label.shape;
     if (!(shape instanceof MultiRectangle)) {
@@ -163,8 +191,17 @@ function ImageLabelerCanvas(props: IImageLabelerCanvasProps) {
   };
 
   return (
-    <canvas id="canvas" onMouseDown={onMouseDown} onMouseUp={onMouseUp} onMouseMove={onMouseMove}>
-      <img id="image" src={props.imageUrl} onLoad={onImageLoad} alt="to-label" />
+    <canvas
+      id="canvas"
+      onMouseDown={onMouseDown}
+      onMouseUp={onMouseUp}
+      onMouseMove={onMouseMove}>
+      <img
+        id="image"
+        src={props.imageUrl}
+        onLoad={onImageLoad}
+        alt="to-label"
+      />
     </canvas>
   );
 }

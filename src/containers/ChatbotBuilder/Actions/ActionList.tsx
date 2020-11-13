@@ -1,4 +1,5 @@
-import { BaseAgentAction, EAgentActionTypes } from '@bavard/agent-config';
+import { BaseAgentAction } from '@bavard/agent-config';
+import { EAgentActionTypes } from '@bavard/agent-config/dist/enums';
 import {
   Box,
   createStyles,

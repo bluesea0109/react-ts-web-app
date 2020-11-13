@@ -16,4 +16,5 @@ export enum EKeyboardCmd {
   MOVELEFT = 'MOVELEFT',
   MOVEUP = 'MOVEUP',
   MOVEDOWN = 'MOVEDOWN',
+  SAVE = 'SAVE',
 }

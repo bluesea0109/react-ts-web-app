@@ -209,6 +209,7 @@ function App() {
           status={state.drawerOpen}
           navigation={navKey}
           agent={agentId}
+          onClose={onDrawerClose}
         />
       </Drawer>
 

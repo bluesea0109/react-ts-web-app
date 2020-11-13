@@ -1,19 +1,27 @@
+import { useMutation, useQuery } from '@apollo/client';
+import { GraphPolicyV2 } from '@bavard/agent-config/dist/graph-policy-v2';
 import { Card, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-
-import { useQuery } from '@apollo/client';
-import { GraphPolicyV2 } from '@bavard/agent-config/dist/graph-policy-v2';
 import clsx from 'clsx';
+import { useSnackbar } from 'notistack';
 import React, { useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
-import { agentOptionImages, currentAgentConfig } from '../atoms';
+import {
+  CHATBOT_GET_AGENT,
+  CHATBOT_SAVE_CONFIG_AND_SETTINGS,
+} from '../../../common-gql-queries';
+import BlockingLoader from '../../../components/BlockingLoader';
+import {
+  agentOptionImages,
+  currentAgentConfig,
+  currentWidgetSettings,
+} from '../atoms';
 import CreateGraphPolicyDialog from './CreateGraphPolicyDialog';
 import { getOptionImagesQuery } from './gql';
-import { IGetOptionImagesQueryResult } from './types';
-
 import GraphEditor from './GraphEditor';
 import GraphEditorMenu from './GraphEditorMenu';
+import { IGetOptionImagesQueryResult } from './types';
 
 interface IParams {
   entityId: string;
@@ -72,7 +80,9 @@ const GraphEditorPage = () => {
   const { entityId, agentId }: IParams = useParams();
   const [, setOptionImages] = useRecoilState(agentOptionImages);
   const [agentConfig] = useRecoilState(currentAgentConfig);
+  const [widgetSettings] = useRecoilState(currentWidgetSettings);
   const containerRef = useRef<HTMLDivElement>(null);
+  const { enqueueSnackbar } = useSnackbar();
 
   const imgQuery = useQuery<IGetOptionImagesQueryResult>(getOptionImagesQuery, {
     variables: { agentId: parseInt(agentId) },
@@ -83,6 +93,16 @@ const GraphEditorPage = () => {
       });
     },
   });
+
+  const [updateAgent, updateAgentData] = useMutation(
+    CHATBOT_SAVE_CONFIG_AND_SETTINGS,
+    {
+      refetchQueries: [
+        { query: CHATBOT_GET_AGENT, variables: { agentId: Number(agentId) } },
+      ],
+      awaitRefetchQueries: true,
+    },
+  );
 
   let gp: GraphPolicyV2 | undefined;
   if (entityId) {
@@ -99,13 +119,40 @@ const GraphEditorPage = () => {
     return `calc(100vh - ${top ? top : 120}px)`;
   };
 
+  const handleSavePolicy = async (policy: GraphPolicyV2) => {
+    if (agentConfig) {
+      try {
+        agentConfig.deleteGraphPolicyV2(policy.name);
+        agentConfig.addGraphPolicyV2(policy);
+
+        await updateAgent({
+          variables: {
+            agentId: Number(agentId),
+            config: agentConfig.toJsonObj(),
+            uname: agentConfig?.toJsonObj().uname,
+            settings: widgetSettings,
+          },
+        });
+        enqueueSnackbar('Graph policy & agent config updated', {
+          variant: 'success',
+        });
+      } catch (e) {
+        enqueueSnackbar(e.toString(), { variant: 'error' });
+      }
+    }
+  };
+
   return (
     <div>
       <div className={classes.editorContent}>
         <div className={classes.editorMenu}>
           <Typography variant="h6">Visual Graph Builder</Typography>
-          Drag and drop the nodes and edges onto the canvas to create a
-          representation of your assistant's flow.
+          <Typography>
+            {
+              "Drag and drop the nodes and edges onto the canvas to create a\
+          representation of your assistant's flow."
+            }
+          </Typography>
           <GraphEditorMenu
             className={clsx([
               classes.editorMenuItems,
@@ -120,7 +167,14 @@ const GraphEditorPage = () => {
             classes.styledScrollbars,
           ])}
           style={{ width: getEditorWidth(), height: getEditorHeight() }}>
-          {gp && <GraphEditor policy={gp} agentId={parseInt(agentId)} />}
+          {updateAgentData.loading && <BlockingLoader />}
+          {gp && (
+            <GraphEditor
+              policy={gp}
+              agentId={parseInt(agentId)}
+              onSave={handleSavePolicy}
+            />
+          )}
         </Card>
       </div>
       {!gp && (

@@ -40,11 +40,7 @@ const FullDialog = ({
   const classes = useStyles();
 
   return (
-    <Dialog
-      open={isOpen}
-      fullScreen={true}
-      TransitionComponent={UpTransition}
-    >
+    <Dialog open={isOpen} fullScreen={true} TransitionComponent={UpTransition}>
       <AppBar className={classes.appBar}>
         <Toolbar>
           <Typography variant="h6" className={classes.title}>
@@ -54,13 +50,12 @@ const FullDialog = ({
             edge="start"
             color="inherit"
             onClick={onEditClose}
-            aria-label="close"
-          >
+            aria-label="close">
             <CloseIcon />
           </IconButton>
         </Toolbar>
       </AppBar>
-      { children }
+      {children}
     </Dialog>
   );
 };

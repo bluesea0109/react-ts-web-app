@@ -4,8 +4,9 @@ import {
   IAgentFormNode,
 } from '@bavard/agent-config/dist/graph-policy-v2';
 
-import { EFormFieldTypes, IFormField } from '@bavard/agent-config/dist';
+import { IFormField } from '@bavard/agent-config/dist';
 
+import { EFormFieldTypes } from '@bavard/agent-config/dist/enums';
 import {
   Button,
   FormControl,
@@ -51,9 +52,8 @@ export default function UpsertAgentFormNode({
   const addFormField = (
     fieldName: string,
     fieldType: EFormFieldTypes,
-    required: boolean = true,
+    required = true,
   ) => {
-    console.log('ADDING FORM FIELD: ', fieldName, fieldType, required);
     setFormFields([
       ...formFields,
       { name: fieldName, type: fieldType, required },
@@ -66,14 +66,12 @@ export default function UpsertAgentFormNode({
   };
 
   const handleSubmit = () => {
-    console.log({ formFields, url });
-
     if (!url) {
       return setError('Url is required');
     }
 
     const newNode = new AgentFormNode(nodeId, url, formFields);
-    console.log('NEW NODE: ', newNode);
+
     onSubmit?.(newNode);
   };
 

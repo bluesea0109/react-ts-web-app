@@ -4,10 +4,12 @@ const dev = {
   projectId: 'bavard-dev',
   apiBaseUrl: 'https://api.dev.bavard.ai',
   apiUrl: 'https://api.dev.bavard.ai/graphql',
-  predictionServiceUrl: 'https://prediction-service-dot-bavard-dev.appspot.com/graphql',
+  predictionServiceUrl:
+    'https://prediction-service-dot-bavard-dev.appspot.com/graphql',
   chatbotUrl: 'https://bavard-chatbot.web.app/widget/index.html',
   bundleUrl: 'https://bavard-chatbot.web.app/main.bundle.js',
-  stripePublicKey: 'pk_test_51HL9t1DslhlvaFGjUIoSzWldID1pYsNstl7pRQadJQ2EGohCGoXuGrrEPr8K7bj4NyZKlwU3vMv8fM2bRSrvSNHK00nQSkQKke',
+  stripePublicKey:
+    'pk_test_51HL9t1DslhlvaFGjUIoSzWldID1pYsNstl7pRQadJQ2EGohCGoXuGrrEPr8K7bj4NyZKlwU3vMv8fM2bRSrvSNHK00nQSkQKke',
   firebase: {
     apiKey: 'AIzaSyDwt9YZ88n3dsp2bHS0nV7uU2oUULQLdo0',
     authDomain: 'bavard-dev.firebaseapp.com',
@@ -24,10 +26,12 @@ const prod = {
   projectId: 'bavard-prod',
   apiBaseUrl: 'https://api.prod.bavard.ai',
   apiUrl: 'https://api.prod.bavard.ai/graphql',
-  predictionServiceUrl: 'https://prediction-service-dot-bavard-prod.appspot.com/graphql',
+  predictionServiceUrl:
+    'https://prediction-service-dot-bavard-prod.appspot.com/graphql',
   chatbotUrl: 'https://bavard-widget-prod.web.app/widget/index.html',
   bundleUrl: 'https://bavard-widget-prod.web.app/main.bundle.js',
-  stripePublicKey: 'pk_test_51HL9t1DslhlvaFGjUIoSzWldID1pYsNstl7pRQadJQ2EGohCGoXuGrrEPr8K7bj4NyZKlwU3vMv8fM2bRSrvSNHK00nQSkQKke',
+  stripePublicKey:
+    'pk_test_51HL9t1DslhlvaFGjUIoSzWldID1pYsNstl7pRQadJQ2EGohCGoXuGrrEPr8K7bj4NyZKlwU3vMv8fM2bRSrvSNHK00nQSkQKke',
   firebase: {
     apiKey: 'AIzaSyDFg05-2YvUvfjaufJoFpMubpQnJ_Z7R28',
     authDomain: 'bavard-prod.firebaseapp.com',
@@ -44,10 +48,12 @@ const local = {
   projectId: 'bavard-dev',
   apiBaseUrl: 'http://localhost:8081',
   apiUrl: 'http://localhost:8081/graphql',
-  predictionServiceUrl: 'https://prediction-service-dot-bavard-dev.appspot.com/graphql',
+  predictionServiceUrl:
+    'https://prediction-service-dot-bavard-dev.appspot.com/graphql',
   chatbotUrl: 'http://localhost:8000/public/index.html',
   bundleUrl: 'https://bavard-chatbot.web.app/main.bundle.js',
-  stripePublicKey: 'pk_test_51HL9t1DslhlvaFGjUIoSzWldID1pYsNstl7pRQadJQ2EGohCGoXuGrrEPr8K7bj4NyZKlwU3vMv8fM2bRSrvSNHK00nQSkQKke',
+  stripePublicKey:
+    'pk_test_51HL9t1DslhlvaFGjUIoSzWldID1pYsNstl7pRQadJQ2EGohCGoXuGrrEPr8K7bj4NyZKlwU3vMv8fM2bRSrvSNHK00nQSkQKke',
   firebase: {
     apiKey: 'AIzaSyDwt9YZ88n3dsp2bHS0nV7uU2oUULQLdo0',
     authDomain: 'bavard-dev.firebaseapp.com',

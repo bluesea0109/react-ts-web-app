@@ -22,32 +22,36 @@ interface CreateApiKeyMutationResult {
   generateApiKey: IAPIKey;
 }
 
-const NewApiKeyDialog = ({ isOpen, onClose, onCreateKey }: NewApiKeyDialogProps) => {
+const NewApiKeyDialog = ({
+  isOpen,
+  onClose,
+  onCreateKey,
+}: NewApiKeyDialogProps) => {
   const { projectId } = useParams<{ projectId: string }>();
   const [apiKey, setApiKey] = useState('');
-  const [createKey, { loading, error }] = useMutation<CreateApiKeyMutationResult>(createApiKeyMutation);
+  const [createKey, { loading, error }] = useMutation<
+    CreateApiKeyMutationResult
+  >(createApiKeyMutation);
 
   const createAPIKey = async () => {
-      let key: string | null = apiKey;
-      if (!key || key === '') {
-        key = null;
+    let key: string | null = apiKey;
+    if (!key || key === '') {
+      key = null;
+    }
+
+    try {
+      const data = await createKey({
+        variables: {
+          projectId,
+          apiKey: key,
+        },
+      });
+
+      if (data.data) {
+        onCreateKey(data.data.generateApiKey);
+        onClose();
       }
-
-      try {
-        const data = await createKey({
-          variables: {
-            projectId,
-            apiKey: key,
-          },
-        });
-
-        if (!!data.data) {
-          onCreateKey(data.data.generateApiKey);
-          onClose();
-        }
-      } catch (e) {
-
-      }
+    } catch (e) {}
   };
 
   return (
@@ -66,14 +70,18 @@ const NewApiKeyDialog = ({ isOpen, onClose, onCreateKey }: NewApiKeyDialogProps)
             variant="outlined"
             rows={2}
             value={apiKey}
-            onChange={e => setApiKey(e.target.value)}
+            onChange={(e) => setApiKey(e.target.value)}
             placeholder="Enter example text"
             error={!!error}
           />
           <Box mt={1}>
-            <Typography variant="caption" color={!!error ? 'error' : 'primary'} style={{ textTransform: 'capitalize' }}>
+            <Typography
+              variant="caption"
+              color={error ? 'error' : 'primary'}
+              style={{ textTransform: 'capitalize' }}>
               {!!error && error?.message.replace('GraphQL error: ', '')}
-              {!error && 'API Keys must be between 8 to 32 characters long and can only contain alphanumeric characters'}
+              {!error &&
+                'API Keys must be between 8 to 32 characters long and can only contain alphanumeric characters'}
             </Typography>
           </Box>
         </Box>
@@ -89,9 +97,7 @@ const NewApiKeyDialog = ({ isOpen, onClose, onCreateKey }: NewApiKeyDialogProps)
             </Button>
           </>
         )}
-        {loading && (
-          <CircularProgress size={20} color="primary" />
-        )}
+        {loading && <CircularProgress size={20} color="primary" />}
       </DialogActions>
     </Dialog>
   );

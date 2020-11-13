@@ -2,18 +2,13 @@ import {
   GraphPolicyNode,
   GraphPolicyV2,
   IGraphPolicyNode,
-  IGraphPolicyV2,
   UserNode,
 } from '@bavard/agent-config/dist/graph-policy-v2';
 import { EAgentNodeTypes } from '@bavard/agent-config/dist/graph-policy-v2/nodes';
 import _uniq from 'lodash/uniq';
 import { ENodeActor } from './types';
 
-export const snapItemPosition = (
-  x: number,
-  y: number,
-  gridSize: number = 10,
-) => {
+export const snapItemPosition = (x: number, y: number, gridSize = 10) => {
   let snappedX = Math.ceil((x + 1) / gridSize) * gridSize;
   let snappedY = Math.ceil((y + 1) / gridSize) * gridSize;
 
@@ -139,19 +134,3 @@ export const getZoomedCoord = (
 ) => {
   return (coordinate * 100) / zoomPercentage - boundingRectCoordinate;
 };
-
-export const getGpHistory = (): GraphPolicyV2[] => {
-  let gps: GraphPolicyV2[] = [];
-
-  const gpsHistory: IGraphPolicyV2[] = JSON.parse(
-    localStorage.getItem('GP_EDITOR_HISTORY') || '[]',
-  );
-
-  gps = gpsHistory.map((g) => {
-    return GraphPolicyV2.fromJsonObj(g);
-  });
-
-  return gps;
-};
-
-export const pushGpHistory = () => {};

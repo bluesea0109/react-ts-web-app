@@ -14,7 +14,7 @@ import { CREATE_REVIEW_QUEUE, GET_REVIEW_QUEUES } from './gql-queries';
 
 function CreateReviewQueueDialog() {
   const params = useParams<{
-    collectionId: string,
+    collectionId: string;
   }>();
   const collectionId = parseInt(params.collectionId, 10);
   const [state, setState] = useState({
@@ -25,12 +25,14 @@ function CreateReviewQueueDialog() {
     onCompleted: () => {
       handleClose();
     },
-    refetchQueries: [{
-      query: GET_REVIEW_QUEUES,
-      variables: {
-        collectionId,
+    refetchQueries: [
+      {
+        query: GET_REVIEW_QUEUES,
+        variables: {
+          collectionId,
+        },
       },
-    }],
+    ],
     awaitRefetchQueries: true,
   });
 
@@ -42,7 +44,9 @@ function CreateReviewQueueDialog() {
     setState({ ...state, open: false });
   };
 
-  const handleChange = (name: string) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (name: string) => (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     setState({
       ...state,
       [name]: event.target.value,
@@ -88,18 +92,20 @@ function CreateReviewQueueDialog() {
 
   return (
     <React.Fragment>
-      <Dialog
-        fullWidth={true}
-        open={state.open}
-        onClose={handleClose}
-      >
+      <Dialog fullWidth={true} open={state.open} onClose={handleClose}>
         <DialogTitle>{'Create Review Queue'}</DialogTitle>
         {dialogContent}
         <DialogActions>
-          <Button color="primary" onClick={handleClose} disabled={createQueueResult.loading}>
+          <Button
+            color="primary"
+            onClick={handleClose}
+            disabled={createQueueResult.loading}>
             {'Cancel'}
           </Button>
-          <Button color="secondary" onClick={handleCreate} disabled={state.name === '' || createQueueResult.loading}>
+          <Button
+            color="secondary"
+            onClick={handleCreate}
+            disabled={state.name === '' || createQueueResult.loading}>
             {'Save'}
           </Button>
         </DialogActions>

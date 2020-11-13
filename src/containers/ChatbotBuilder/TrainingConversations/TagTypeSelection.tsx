@@ -6,7 +6,7 @@ import React, { Fragment, useState } from 'react';
 interface ITagSelection {
   tags: any[];
   onAddTags: (tagType: string, tagValue: string, index: number) => any;
-  userTags:  any;
+  userTags: any;
   index: number;
 }
 
@@ -20,11 +20,19 @@ const useStyles = makeStyles((theme: Theme) =>
     tagSelectionWrapper: {
       alignItems: 'center',
     },
-}));
+  }),
+);
 
-const TagTypeSelection: React.FC<ITagSelection> = ({tags, onAddTags, userTags, index}) => {
+const TagTypeSelection: React.FC<ITagSelection> = ({
+  tags,
+  onAddTags,
+  userTags,
+  index,
+}) => {
   const classes = useStyles();
-  const [tagSelectedValue, setTagSelectedValue] = useState<string | null>(tags[0]);
+  const [tagSelectedValue, setTagSelectedValue] = useState<string | null>(
+    tags[0],
+  );
   const [tagValue, setTagValues] = useState<any | null>('');
 
   function _onTagAdd() {
@@ -34,37 +42,39 @@ const TagTypeSelection: React.FC<ITagSelection> = ({tags, onAddTags, userTags, i
   }
 
   return (
-      <Fragment>
-        <Grid container={true} className={classes.tagSelectionWrapper}>
-          <Grid item={true} className={classes.controlsWidth}>
-            <Autocomplete
-              options={tags.filter(o => !userTags?.find((o2: any) => o.value === o2.tagType))}
-              value={tagSelectedValue}
-              getOptionLabel={(option) =>  option}
-              onChange={(event: any, newValue: any | null) => setTagSelectedValue(newValue)}
-              renderInput={(params) => <TextField {...params} label="Tag Types" variant="outlined" />}
-              size="small"
-            />
-          </Grid>
-          <Grid item={true} className={classes.controlsWidth}>
-            <TextField
-              label="Values"
-              variant="outlined"
-              id="tagValues"
-              value={tagValue}
-              onChange={(event: any) => setTagValues(event.target.value)}
-              size="small"
-            />
-          </Grid>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={_onTagAdd}
-          >
-           Add Tag
-        </Button>
+    <Fragment>
+      <Grid container={true} className={classes.tagSelectionWrapper}>
+        <Grid item={true} className={classes.controlsWidth}>
+          <Autocomplete
+            options={tags.filter(
+              (o) => !userTags?.find((o2: any) => o.value === o2.tagType),
+            )}
+            value={tagSelectedValue}
+            getOptionLabel={(option) => option}
+            onChange={(event: any, newValue: any | null) =>
+              setTagSelectedValue(newValue)
+            }
+            renderInput={(params) => (
+              <TextField {...params} label="Tag Types" variant="outlined" />
+            )}
+            size="small"
+          />
         </Grid>
-      </Fragment>
+        <Grid item={true} className={classes.controlsWidth}>
+          <TextField
+            label="Values"
+            variant="outlined"
+            id="tagValues"
+            value={tagValue}
+            onChange={(event: any) => setTagValues(event.target.value)}
+            size="small"
+          />
+        </Grid>
+        <Button variant="contained" color="primary" onClick={_onTagAdd}>
+          Add Tag
+        </Button>
+      </Grid>
+    </Fragment>
   );
 };
 

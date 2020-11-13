@@ -55,8 +55,8 @@ const connector = connect(null, mapDispatch);
 
 function ImageViewer(props: ConnectedProps<typeof connector>) {
   const { imageId, projectId } = useParams<{
-    imageId: string,
-    projectId: string,
+    imageId: string;
+    projectId: string;
   }>();
   const { loading, error, data } = useQuery(GET_DATA, {
     variables: {

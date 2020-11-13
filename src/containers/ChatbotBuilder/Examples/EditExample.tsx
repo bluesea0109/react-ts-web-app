@@ -1,4 +1,10 @@
-import {  createStyles, Grid, makeStyles, Theme, Typography } from '@material-ui/core';
+import {
+  createStyles,
+  Grid,
+  makeStyles,
+  Theme,
+  Typography,
+} from '@material-ui/core';
 import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
 import FullDialog from '../../../components/dialogs/FullDialog';
@@ -48,8 +54,14 @@ const EditExample = ({
   const isNew = example?.id === -1;
 
   const handleSaveChanges = async () => {
-    if (!updatedExample || !updatedExample.intent.length || !updatedExample.text.length) {
-      enqueueSnackbar(`The required field(s) is missing for the example.`, { variant: 'error' });
+    if (
+      !updatedExample ||
+      !updatedExample.intent.length ||
+      !updatedExample.text.length
+    ) {
+      enqueueSnackbar(`The required field(s) is missing for the example.`, {
+        variant: 'error',
+      });
       return;
     }
     await onSaveExample(updatedExample);
@@ -59,14 +71,15 @@ const EditExample = ({
     <FullDialog
       isOpen={!!example}
       title={isNew ? 'Create NLU Example' : `Edit NLU Example #${example?.id}`}
-      onEditClose={onEditExampleClose}
-    >
+      onEditClose={onEditExampleClose}>
       <Grid container={true} justify="center" className={classes.rootGrid}>
         <Grid container={true} item={true} sm={4} xs={6}>
           <Grid container={true} item={true} xs={12} justify="center">
             <Typography variant="h6">
-              Add an example in natural language below to improve your
-              Assistant's detection of user's intent.
+              {
+                "Add an example in natural language below to improve your\
+              Assistant's detection of user's intent."
+              }
             </Typography>
           </Grid>
 

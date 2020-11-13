@@ -63,7 +63,7 @@ const ActionsTable = ({
         <Box>
           <Typography variant="h6">Actions</Typography>
           <Typography>
-            Select an Action below to change the Assistant's behavior:
+            {"Select an Action below to change the Assistant's behavior:"}
           </Typography>
         </Box>
         <Button variant="contained" color="primary" onClick={onAddAction}>

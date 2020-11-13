@@ -1,4 +1,4 @@
-import { GridList, GridListTile} from '@material-ui/core';
+import { GridList, GridListTile } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { CheckCircle } from '@material-ui/icons';
 import _ from 'lodash';
@@ -41,7 +41,7 @@ interface ISelectorGridProps {
 }
 
 export default function ImageSelectorGrid({
-  cols= 4,
+  cols = 4,
   images,
   imgWidth,
   selectedImgName,
@@ -49,13 +49,10 @@ export default function ImageSelectorGrid({
   onNewImg,
 }: ISelectorGridProps) {
   const classes = useStyles();
-  const [selectedImg, selectImg] = useState<IImage|undefined>(
-    selectedImgName ?
-    _.find(images, { name: selectedImgName })
-    :
-    undefined,
+  const [selectedImg, selectImg] = useState<IImage | undefined>(
+    selectedImgName ? _.find(images, { name: selectedImgName }) : undefined,
   );
-  const [newImg, setNewImg] = useState<File|undefined>(undefined);
+  const [newImg, setNewImg] = useState<File | undefined>(undefined);
 
   const handleNewImg = (file: File) => {
     setNewImg(file);
@@ -64,21 +61,41 @@ export default function ImageSelectorGrid({
   };
 
   useEffect(() => {
-    selectImg(selectedImgName ? _.find(images, { name: selectedImgName }) : undefined);
+    selectImg(
+      selectedImgName ? _.find(images, { name: selectedImgName }) : undefined,
+    );
   }, [images, selectedImgName]);
 
   return (
-    <GridList cellHeight={imgWidth || 100} cols={cols || 4} style={{width: '100%'}}>
-      <GridListTile className={classes.gridTile} key={'new_img'} onClick={() => {selectImg(undefined); }}>
+    <GridList
+      cellHeight={imgWidth || 100}
+      cols={cols || 4}
+      style={{ width: '100%' }}>
+      <GridListTile
+        className={classes.gridTile}
+        key={'new_img'}
+        onClick={() => {
+          selectImg(undefined);
+        }}>
         <ImageUploadPreviewer onChange={handleNewImg} width={imgWidth} />
-        { (!selectedImg && newImg) && <CheckCircle className={classes.selectedIcon}/>}
+        {!selectedImg && newImg && (
+          <CheckCircle className={classes.selectedIcon} />
+        )}
       </GridListTile>
 
       {images.map((img) => {
         return (
-          <GridListTile className={classes.gridTile} key={img.name} onClick={() => {selectImg(img); onSelect?.(img); }}>
-            <img alt={img.name} src={img.url}/>
-            { (selectedImg?.name === img.name) && <CheckCircle className={classes.selectedIcon}/>}
+          <GridListTile
+            className={classes.gridTile}
+            key={img.name}
+            onClick={() => {
+              selectImg(img);
+              onSelect?.(img);
+            }}>
+            <img alt={img.name} src={img.url} />
+            {selectedImg?.name === img.name && (
+              <CheckCircle className={classes.selectedIcon} />
+            )}
           </GridListTile>
         );
       })}

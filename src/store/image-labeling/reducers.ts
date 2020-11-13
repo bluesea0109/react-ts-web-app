@@ -26,8 +26,7 @@ export function imageLabelingReducer(
         labels: [...state.labels, action.label],
         selectedLabelIndex: state.labels.length,
       };
-    case REMOVE_LABEL:
-
+    case REMOVE_LABEL: {
       let selectedLabelIndex = state.selectedLabelIndex;
       if (selectedLabelIndex !== null && state.selectedLabelIndex !== null) {
         if (state.selectedLabelIndex >= action.labelIndex) {
@@ -47,14 +46,23 @@ export function imageLabelingReducer(
 
       return {
         deletedLabelIds,
-        deletedSavedLabels: state.labels[action.labelIndex].id === null ? false : true,
+        deletedSavedLabels:
+          state.labels[action.labelIndex].id === null ? false : true,
         selectedLabelIndex,
-        labels: [...state.labels.slice(0, action.labelIndex), ...state.labels.slice(action.labelIndex + 1)],
+        labels: [
+          ...state.labels.slice(0, action.labelIndex),
+          ...state.labels.slice(action.labelIndex + 1),
+        ],
       };
+    }
     case UPDATE_LABEL:
       return {
         ...state,
-        labels: [...state.labels.slice(0, action.labelIndex), action.label, ...state.labels.slice(action.labelIndex + 1)],
+        labels: [
+          ...state.labels.slice(0, action.labelIndex),
+          action.label,
+          ...state.labels.slice(action.labelIndex + 1),
+        ],
       };
     case SELECT_LABEL:
       return {

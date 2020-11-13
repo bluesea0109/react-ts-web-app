@@ -2,7 +2,7 @@ import { IOptionImage } from './chatbot-service';
 
 export interface IGetImageUploadSignedUrlQueryResult {
   ChatbotService_imageOptionUploadUrl: {
-    url: string,
+    url: string;
   };
 }
 

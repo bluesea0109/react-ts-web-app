@@ -3,12 +3,12 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import React, { Fragment } from 'react';
 
 interface IComboBoxProps {
-    value: string | number | null;
-    label: string;
-    onChange: any;
-    options: any[] | undefined;
-  }
-const ComboBox: React.FC<IComboBoxProps> = ({value, onChange, label, options}) => {
+  value: string | number | null;
+  label: string;
+  onChange: any;
+  options: any[] | undefined;
+}
+const ComboBox: React.FC<IComboBoxProps> = ({ onChange, label, options }) => {
   if (options) {
     return (
       <Autocomplete
@@ -18,13 +18,14 @@ const ComboBox: React.FC<IComboBoxProps> = ({value, onChange, label, options}) =
         getOptionLabel={(option) => option.value}
         options={options}
         style={{ width: '100%' }}
-        renderInput={(params) => <TextField {...params} label={label} variant="outlined" />}
+        renderInput={(params) => (
+          <TextField {...params} label={label} variant="outlined" />
+        )}
       />
     );
   } else {
     return null;
   }
-
 };
 
 export default ComboBox;

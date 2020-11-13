@@ -1,14 +1,14 @@
 import { GraphPolicyV2 } from '@bavard/agent-config/dist/graph-policy-v2';
-
 import {
   AgentNode,
   GraphPolicyNode,
   UserNode,
 } from '@bavard/agent-config/dist/graph-policy-v2';
+import GraphEditorHistory from './GraphEditorHistory';
 
 import { Button, IconButton, Tooltip } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Add, Delete, Remove } from '@material-ui/icons';
+import { Add, Delete, Redo, Remove, Save, Undo } from '@material-ui/icons';
 import clsx from 'clsx';
 import _ from 'lodash';
 import { useSnackbar } from 'notistack';
@@ -93,8 +93,11 @@ const useStyles = makeStyles((theme: Theme) =>
     canvasControls: {
       position: 'fixed',
       top: 20,
-      right: 20,
+      right: 5,
       zIndex: 10,
+      background: theme.palette.background.default,
+      padding: theme.spacing(1),
+      border: `solid 1px ${theme.palette.grey[400]}`,
     },
     controlButton: {
       minWidth: 30,
@@ -111,6 +114,7 @@ const useStyles = makeStyles((theme: Theme) =>
 interface IProps {
   agentId: number;
   policy: GraphPolicyV2;
+  onSave?: (policy: GraphPolicyV2) => void;
 }
 
 interface INodePair {
@@ -118,7 +122,7 @@ interface INodePair {
   end: GraphPolicyNode;
 }
 
-const GraphEditor = ({ agentId, policy }: IProps) => {
+const GraphEditor = ({ agentId, policy, onSave }: IProps) => {
   const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const [gp, setGp] = useState<GraphPolicyV2>(policy);
@@ -140,6 +144,8 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
     width: 500,
     height: 500,
   });
+
+  const gpHistory = new GraphEditorHistory(gp);
 
   // Transform node data to render easily
   const nodeToGraphEditorNode = (node: GraphPolicyNode) => {
@@ -191,8 +197,38 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
     });
   }, [changes, gp.zoom, gp]);
 
+  // Update the graph policy, write the update to history for undo/redo
+  const updateGp = (
+    gp: GraphPolicyV2,
+    triggerRender = false,
+    writeToHistory = true,
+  ) => {
+    if (writeToHistory) {
+      gpHistory.pushHistory(gp);
+    }
+
+    setGp(gp);
+    if (triggerRender) {
+      setChanges(changes + 1);
+    }
+  };
+
+  const undoChanges = () => {
+    const gp = gpHistory.undoChanges();
+    updateGp(gp, true, false);
+  };
+
+  const redoChanges = () => {
+    const gp = gpHistory.redoChanges();
+    updateGp(gp, true, false);
+  };
+
   // Handle ctrl+c, ctrl+v, ctrl+z, ctrl+y
   const handleKeyboardCmd = (event: KeyboardEvent) => {
+    if (editingNodeId) {
+      return;
+    }
+
     const cmd = getAction(event);
     if (!cmd) {
       return;
@@ -223,7 +259,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
 
             gp.upsertNode(newNode);
 
-            setGp(gp);
+            updateGp(gp);
             selectNode(undefined);
           }
         }
@@ -235,8 +271,23 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
           gp.deleteNodeById(selectedNodeId);
           gp.sortAllChildNodes();
           deleteDraftNode(selectedNodeId);
+          updateGp(gp, true);
           enqueueSnackbar('Node Deleted', { variant: 'success' });
         }
+        break;
+      }
+
+      case EKeyboardCmd.UNDO: {
+        undoChanges();
+        break;
+      }
+      case EKeyboardCmd.REDO: {
+        redoChanges();
+        break;
+      }
+      case EKeyboardCmd.SAVE: {
+        onSave?.(gp);
+        event.preventDefault();
         break;
       }
     }
@@ -248,6 +299,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
       cmd === EKeyboardCmd.MOVERIGHT
     ) {
       if (selectedNodeId) {
+        event.preventDefault();
         const node = gp.getNodeById(selectedNodeId);
         if (node) {
           let x = node?.position.x || 0;
@@ -285,8 +337,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
             y,
           });
 
-          setGp(gp);
-          setChanges(changes + 1);
+          updateGp(gp, true);
         }
       }
     }
@@ -299,7 +350,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
       document.removeEventListener('keydown', handleKeyboardCmd, true);
     };
     // eslint-disable-next-line
-  }, [selectedNodeId, copiedNodeId, changes]);
+  }, [selectedNodeId, copiedNodeId, changes, editingNodeId]);
 
   const gpNodes = gp.getAllNodes();
 
@@ -357,13 +408,14 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
 
     // Handle existing gp node
     const node = gp.getNodeById(data.node?.nodeId || 0);
-    if (node && node) {
+
+    if (node) {
       node.setPosition({
         x: data.x,
         y: data.y,
       });
       gp.sortAllChildNodes();
-      setGp(gp);
+      updateGp(gp);
     }
 
     // Trigger render
@@ -398,9 +450,8 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
     deleteDraftNode(node.nodeId);
 
     gp.upsertNode(node);
-
-    setGp(gp);
     setEditingNodeId(undefined);
+    updateGp(gp, true);
   };
 
   const handleNodeDragStart = (nodeId: number) => {
@@ -421,6 +472,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
 
     gp.deleteNodeById(data.nodeId);
     gp.sortAllChildNodes();
+    updateGp(gp);
     deleteDraftNode(data.nodeId);
     enqueueSnackbar('Node Deleted', { variant: 'success' });
   };
@@ -462,7 +514,10 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
             endElementId={caNode.nodeId}
             startNodeId={node.nodeId}
             endNodeId={caNode.nodeId}
-            onLineClick={(event) => showEdgeActions(true, node, caNode)}
+            onLineClick={(event) => {
+              event.stopPropagation();
+              showEdgeActions(true, node, caNode);
+            }}
             x1={coords.x1}
             y1={coords.y1}
             x2={coords.x2}
@@ -509,7 +564,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
     }
 
     gp.sortAllChildNodes();
-    setGp(gp);
+    updateGp(gp);
     enqueueSnackbar('Edge deleted', { variant: 'success' });
     setShowEdgeActions(undefined);
   };
@@ -528,18 +583,16 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
     const y = (coords.y1 + coords.y2) / 2;
 
     return (
-      <Tooltip title="Delete this edge">
-        <IconButton
-          size="small"
-          className={classes.deleteEdgeButton}
-          onClick={() => handleDeleteEdge(start, end)}
-          style={{
-            top: y,
-            left: x,
-          }}>
-          <Delete />
-        </IconButton>
-      </Tooltip>
+      <IconButton
+        size="small"
+        className={classes.deleteEdgeButton}
+        onClick={() => handleDeleteEdge(start, end)}
+        style={{
+          top: y,
+          left: x,
+        }}>
+        <Delete />
+      </IconButton>
     );
   };
 
@@ -554,8 +607,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
     if (direction === 'out' && gp.zoom >= 10) {
       gp.zoom -= 10;
     }
-    setGp(gp);
-    setChanges(changes + 1);
+    updateGp(gp, true);
   };
 
   // Start drawing an edge arrow when you drag out from a terminal
@@ -639,8 +691,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
           }
         }
 
-        setGp(gp);
-        setChanges(changes + 1);
+        updateGp(gp, true);
       }
     }
   };
@@ -706,11 +757,15 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
     selectNode(nodeId);
   };
 
+  const handleCanvasClick = () => {
+    selectNode(undefined);
+  };
+
   return (
     <div className={classes.root} ref={containerRef}>
       <div
         className={classes.canvasControls}
-        style={{ top: (containerRef.current?.offsetTop || 0) + 40 }}>
+        style={{ top: (containerRef.current?.offsetTop || 0) + 10 }}>
         <Tooltip title={`Zoom: ${gp.zoom}%`}>
           <div>
             <Button
@@ -732,6 +787,38 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
             </Button>
           </div>
         </Tooltip>
+        <Tooltip title="Undo Changes">
+          <Button
+            variant="outlined"
+            color="default"
+            size="small"
+            className={classes.controlButton}
+            onClick={undoChanges}>
+            <Undo />
+          </Button>
+        </Tooltip>
+        <Tooltip title="Redo Changes">
+          <Button
+            variant="outlined"
+            color="default"
+            size="small"
+            className={classes.controlButton}
+            onClick={redoChanges}>
+            <Redo />
+          </Button>
+        </Tooltip>
+        {onSave && (
+          <Tooltip title="Save Changes">
+            <Button
+              variant="outlined"
+              color="default"
+              size="small"
+              className={classes.controlButton}
+              onClick={() => onSave?.(gp)}>
+              <Save />
+            </Button>
+          </Tooltip>
+        )}
       </div>
       <div className={classes.canvasContainer} style={{ zoom: `${gp.zoom}%` }}>
         <div
@@ -744,7 +831,7 @@ const GraphEditor = ({ agentId, policy }: IProps) => {
           }}
           ref={canvasRef}
           onDragOver={handleArrowDragOver}
-          onClick={() => selectNode(undefined)}
+          onClick={handleCanvasClick}
           onDrop={handleNodeDrop}>
           {editorNodes.map((n, index) => {
             return (
