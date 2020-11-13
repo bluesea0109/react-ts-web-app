@@ -21,6 +21,7 @@ import { useParams } from 'react-router-dom';
 import { IDataExport } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
+import { CommonTable } from '../../../components';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -68,23 +69,6 @@ function DataExportsTable() {
     awaitRefetchQueries: true,
   });
 
-  const [state, setState] = useState({
-    loading: false,
-    page: 0,
-  });
-
-  const handleChangePage = (
-    event: React.MouseEvent<HTMLButtonElement> | null,
-    page: number,
-  ) => {
-    setState({ ...state, page });
-  };
-
-  const getPage = (exports: IDataExport[]) => {
-    const { page } = state;
-    return exports.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-  };
-
   const onExportClick = async (kind: 'JSON' | 'ZIP') => {
     // create export mutation
     createExport({
@@ -95,7 +79,7 @@ function DataExportsTable() {
     });
   };
 
-  const onDeleteExportClick = (exportId: number) => async () => {
+  const onDeleteExportClick = (exportId: number) => {
     deleteExport({
       variables: {
         exportId,
@@ -124,81 +108,63 @@ function DataExportsTable() {
   }
 
   const exports = getExports.data?.ChatbotService_dataExports ?? [];
-  const pageItems = getPage(exports);
+
+  const columns = [
+    { title: 'Id', field: 'id' },
+    { title: 'Status', field: 'status' },
+    { title: 'Type', field: 'kind' },
+    { title: 'Info', field: 'info' },
+    {
+      title: 'Created At',
+      field: 'createdAt',
+      renderRow: (rowData: IDataExport) =>
+        new Date(parseInt(rowData.createdAt)).toISOString(),
+    },
+    { title: 'Creator', field: 'creator' },
+    {
+      title: 'Download',
+      field: 'url',
+      renderRow: (rowData: IDataExport) => (
+        <IconButton
+          disabled={rowData.url === null}
+          style={{ padding: 6 }}
+          href={rowData.url}>
+          <CloudDownloadIcon color="secondary" />
+        </IconButton>
+      ),
+    },
+  ];
 
   return (
-    <Paper className={classes.paper}>
-      <Toolbar variant="dense">
-        <Button onClick={() => onExportClick('JSON')}>
-          {'Export to JSON'}
-          <TableIcon className={classes.rightIcon} color="secondary" />
-        </Button>
-        <Button onClick={() => onExportClick('ZIP')}>
-          {'Export to Zip'}
-          <FolderIcon className={classes.rightIcon} color="secondary" />
-        </Button>
-        {/* <IconButtonRefresh onClick={this.reload} /> */}
-      </Toolbar>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell align="left">Id</TableCell>
-            <TableCell align="left">Status</TableCell>
-            <TableCell align="left">Type</TableCell>
-            <TableCell align="left">Info</TableCell>
-            <TableCell align="left">Created At</TableCell>
-            <TableCell align="left">Creator</TableCell>
-            <TableCell align="left">Download</TableCell>
-            <TableCell align="left">Delete</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {pageItems.map((dataExport: IDataExport) => {
-            return (
-              <TableRow key={dataExport.id} hover={true}>
-                <TableCell align="left">{dataExport.id}</TableCell>
-                <TableCell align="left">{dataExport.status}</TableCell>
-                <TableCell align="left">{dataExport.kind}</TableCell>
-                <TableCell align="left">{dataExport.info}</TableCell>
-                <TableCell align="left">
-                  {new Date(parseInt(dataExport.createdAt)).toISOString()}
-                </TableCell>
-                <TableCell align="left">{dataExport.creator}</TableCell>
-                <TableCell align="left">
-                  <IconButton
-                    disabled={dataExport.url === null}
-                    style={{ padding: 6 }}
-                    href={dataExport.url}>
-                    <CloudDownloadIcon color="secondary" />
-                  </IconButton>
-                </TableCell>
-                <TableCell align="left">
-                  <IconButton
-                    style={{ padding: 6 }}
-                    onClick={onDeleteExportClick(dataExport.id)}>
-                    <DeleteIcon color="secondary" />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TablePagination
-              colSpan={3}
-              count={exports.length}
-              rowsPerPage={10}
-              page={state.page}
-              SelectProps={{
-                native: true,
-              }}
-              onChangePage={handleChangePage}
-            />
-          </TableRow>
-        </TableFooter>
-      </Table>
-    </Paper>
+    <CommonTable
+      data={{
+        columns,
+        rowsData: exports,
+      }}
+      editable={{
+        isDeleteable: true,
+        onRowDelete: (rowData: IDataExport) => onDeleteExportClick(rowData.id),
+      }}
+      pagination={{
+        colSpan: 3,
+        rowsPerPage: 10,
+      }}
+      components={{
+        Toolbar: () => (
+          <Toolbar variant="dense">
+            <Button onClick={() => onExportClick('JSON')}>
+              {'Export to JSON'}
+              <TableIcon className={classes.rightIcon} color="secondary" />
+            </Button>
+            <Button onClick={() => onExportClick('ZIP')}>
+              {'Export to Zip'}
+              <FolderIcon className={classes.rightIcon} color="secondary" />
+            </Button>
+            {/* <IconButtonRefresh onClick={this.reload} /> */}
+          </Toolbar>
+        ),
+      }}
+    />
   );
 }
 
