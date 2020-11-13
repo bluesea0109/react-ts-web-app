@@ -181,13 +181,13 @@ const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
   };
   const openBotCreation = (key: MenuName) => {
     setSelected(key);
-    setOpenSubItem(false);    
-    const backURL = localStorage.getItem('backURL')
+    setOpenSubItem(false);
+    const backURL = localStorage.getItem('backURL');
     if (!backURL) {
       onClose();
     } else {
-      onClick(MenuName.OPEN_CONFIG)
-      history.push(backURL)
+      onClick(MenuName.OPEN_CONFIG);
+      history.push(backURL);
     }
   };
   const openPage = (key: MenuName) => {

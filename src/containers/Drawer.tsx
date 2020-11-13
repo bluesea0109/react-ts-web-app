@@ -53,15 +53,15 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: 'red',
     },
     closeDrawer: {
-      display: 'flex',      
-      padding: '10px 10px 0px 10px',      
+      display: 'flex',
+      padding: '10px 10px 0px 10px',
       flexDirection: 'column',
       cursor: 'pointer',
     },
     customDrawer: {
 
     },
-    allAgentBtn: {      
+    allAgentBtn: {
       padding: '10px',
       borderRadius: '5px',
       backgroundColor: 'rgba(74, 144, 226)',
@@ -69,8 +69,8 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: '20px 130px 20px',
       boxShadow: '1px 1px 4px black inset',
       borderBottom: '1px solid #888',
-      borderRight: '1px solid #888'
-    }
+      borderRight: '1px solid #888',
+    },
   }),
 );
 
@@ -305,18 +305,18 @@ interface CloseDrawerProps {
 const CloseDrawer = ({handleClose, path}: CloseDrawerProps) => {
   const classes = useStyles();
   const history = useHistory();
-  
+
   const handleCloseDrawer = () => {
     handleClose();
   };
   const openAllAgent = () => {
-    history.push(path)
+    history.push(path);
   };
   return <Grid className={classes.closeDrawer}>
-    <Box display='flex' justifyContent='flex-end' onClick={handleCloseDrawer}>
+    <Box display="flex" justifyContent="flex-end" onClick={handleCloseDrawer}>
       <img src="/back.png" width="30px" height="30px" alt="backbutton"/>
     </Box>
-    <Box display='flex' justifyContent='flex-start' onClick={openAllAgent}>
+    <Box display="flex" justifyContent="flex-start" onClick={openAllAgent}>
       <Grid className={classes.allAgentBtn}>All Agents</Grid>
     </Box>
   </Grid>;
