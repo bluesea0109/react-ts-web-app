@@ -1,13 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { createStyles, makeStyles, Theme } from '@material-ui/core';
-import Paper from '@material-ui/core/Paper';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableFooter from '@material-ui/core/TableFooter';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import React, { useState } from 'react';
@@ -20,23 +12,9 @@ import CreateReviewQueueDialog from './CreateReviewQueueDialog';
 import DeleteReviewQueueDialog from './DeleteReviewQueueDialog';
 import EditReviewQueueDialog from './EditReviewQueueDialog';
 import { GET_REVIEW_QUEUES, NEXT_REVIEW_QUEUE_IMAGE } from './gql-queries';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      flexGrow: 1,
-      display: 'flex',
-      flexDirection: 'column',
-      margin: theme.spacing(1),
-    },
-    paper: {
-      padding: theme.spacing(1),
-    },
-  }),
-);
+import { CommonTable } from '../../../../components';
 
 function ReviewQueuesTable() {
-  const classes = useStyles();
   const rowsPerPage = 10;
   const { orgId, projectId } = useParams<{
     orgId: string;
@@ -107,67 +85,62 @@ function ReviewQueuesTable() {
     getReviewQueues.data?.ImageLabelingService_reviewQueues || [];
   const pageItems = getPage(reviewQueues);
 
+  const columns = [
+    { title: 'Id', field: 'id' },
+    { title: 'Name', field: 'name' },
+    {
+      title: '% Under Review',
+      field: 'percentUnderReview',
+      renderRow: (rowData: any) => rowData.percentUnderReview.toFixed(2),
+    },
+    {
+      title: '% Approved',
+      field: 'percentApproved',
+      renderRow: (rowData: any) => rowData.percentApproved.toFixed(2),
+    },
+    {
+      title: 'Review',
+      renderRow: (rowData: any) => (
+        <IconButtonPlay
+          tooltip="Start Reviewing"
+          onClick={startReviewing(rowData.id)}
+        />
+      ),
+    },
+    {
+      title: 'Edit',
+      renderRow: (rowData: any) => <EditReviewQueueDialog queue={rowData} />,
+    },
+    {
+      title: 'Delete',
+      renderRow: (rowData: any) => (
+        <DeleteReviewQueueDialog
+          queueId={rowData.id}
+          collectionId={collectionId}
+        />
+      ),
+    },
+  ];
+
   return (
-    <div className={classes.root}>
-      <Paper className={classes.paper}>
-        <Toolbar variant="dense" disableGutters={true}>
-          <Typography variant="h6">{'Queues'}</Typography>
-          <Typography style={{ padding: 2 }} />
-          <CreateReviewQueueDialog />
-        </Toolbar>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Id</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>{'% Under Review'}</TableCell>
-              <TableCell>{'% Approved'}</TableCell>
-              <TableCell />
-              <TableCell />
-              <TableCell />
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {pageItems.map((queue, i) => {
-              return (
-                <TableRow key={i} hover={true}>
-                  <TableCell>{queue.id}</TableCell>
-                  <TableCell>{queue.name}</TableCell>
-                  <TableCell>{queue.percentUnderReview.toFixed(2)}</TableCell>
-                  <TableCell>{queue.percentApproved.toFixed(2)}</TableCell>
-                  <TableCell>
-                    <IconButtonPlay
-                      tooltip="Start Reviewing"
-                      onClick={startReviewing(queue.id)}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <EditReviewQueueDialog queue={queue} />
-                  </TableCell>
-                  <TableCell>
-                    <DeleteReviewQueueDialog
-                      queueId={queue.id}
-                      collectionId={collectionId}
-                    />
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TablePagination
-                rowsPerPageOptions={[rowsPerPage]}
-                count={reviewQueues.length}
-                rowsPerPage={rowsPerPage}
-                page={state.page}
-                onChangePage={handleChangePage}
-              />
-            </TableRow>
-          </TableFooter>
-        </Table>
-      </Paper>
-    </div>
+    <CommonTable
+      data={{
+        columns,
+      }}
+      components={{
+        Toolbar: () => (
+          <Toolbar variant="dense" disableGutters={true}>
+            <Typography variant="h6">{'Queues'}</Typography>
+            <Typography style={{ padding: 2 }} />
+            <CreateReviewQueueDialog />
+          </Toolbar>
+        ),
+      }}
+      pagination={{
+        colSpan: 7,
+        rowsPerPage: 10,
+      }}
+    />
   );
 }
 
