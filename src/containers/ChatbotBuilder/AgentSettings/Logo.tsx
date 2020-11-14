@@ -2,8 +2,7 @@ import { IWidgetSettings } from '@bavard/agent-config';
 import { Grid } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
-import { Avatar } from './Avatar';
-import { Logo } from './Logo';
+import ImageUploader from './ImageUploader';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -17,45 +16,40 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     avatarPos: {
       display: 'flex',
-      alignItems: 'center',
+      justifyContent: 'center',
     },
   }),
 );
 
-// (e) => updateSettings('name', e.target.value)}
-interface AvatarsProps {
+interface LogoProps {
+  title: string;
   mode: string;
   loading: boolean;
   settings: IWidgetSettings;
   updateSettings: (field: keyof IWidgetSettings, value: any) => void;
 }
 
-export const Avatars = ({
+export const Logo = ({
+  title,
   mode,
   loading,
   settings,
   updateSettings,
-}: AvatarsProps) => {
+}: LogoProps) => {
   const classes = useStyles();
   return (
-    <div className={classes.root}>
+    <div>
       <Grid container={true}>
-        <Grid item={true} xs={12} sm={6}>
-          <Avatar
-            title="Widget Avatar"
-            mode={mode}
-            loading={loading}
-            settings={settings}
-            updateSettings={updateSettings}
-          />
+        <Grid item={true} sm={12} className={classes.avatarPos}>
+          {title}
         </Grid>
-        <Grid item={true} xs={12} sm={6}>
-          <Logo
-            title="Brand Logo"
-            mode={mode}
-            loading={loading}
-            settings={settings}
-            updateSettings={updateSettings}
+        <Grid item={true} sm={12} className={classes.avatarPos}>
+          <ImageUploader
+            isLoading={loading || mode === 'published'}
+            currentImage={settings.logoUrl}
+            label="Brand Logo"
+            onImageUpload={(url: string) => updateSettings('logo', url)}
+            iconType="LOGO"
           />
         </Grid>
       </Grid>
