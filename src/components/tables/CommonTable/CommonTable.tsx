@@ -13,6 +13,7 @@ const CommonTable = ({
   pagination,
   components,
   localization,
+  eventHandlers,
 }: CommonTableProps<object>) => {
   const [page, setPage] = useState(0);
 
@@ -56,6 +57,7 @@ const CommonTable = ({
           editable={editable}
           rowsData={pageItems}
           localization={localization}
+          eventHandlers={eventHandlers}
           components={components}
         />
         <CommonTableFooter

@@ -81,7 +81,7 @@ function CollectionsList(props: IProjectProps) {
     return <ContentLoading />;
   }
 
-  const onSelectCollection = (collectionId: number) => () => {
+  const onSelectCollection = (collectionId: number) => {
     history.push({
       pathname: `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/images`,
     });
@@ -99,6 +99,10 @@ function CollectionsList(props: IProjectProps) {
       data={{
         columns,
         rowsData: collections,
+      }}
+      eventHandlers={{
+        onRowClick: (collection: IImageCollection) =>
+          onSelectCollection(collection.id),
       }}
       components={{
         Toolbar: () => (

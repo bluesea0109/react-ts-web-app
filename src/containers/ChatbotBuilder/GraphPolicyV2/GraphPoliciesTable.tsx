@@ -11,7 +11,6 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     title: {
       width: '100%',
-      marginLeft: theme.spacing(2),
     },
   }),
 );
