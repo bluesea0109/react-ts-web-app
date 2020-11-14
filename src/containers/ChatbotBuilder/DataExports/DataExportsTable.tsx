@@ -1,22 +1,13 @@
 import { useMutation, useQuery } from '@apollo/client';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import Paper from '@material-ui/core/Paper';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableFooter from '@material-ui/core/TableFooter';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
 import Toolbar from '@material-ui/core/Toolbar';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
-import DeleteIcon from '@material-ui/icons/Delete';
 import FolderIcon from '@material-ui/icons/Folder';
 import TableIcon from '@material-ui/icons/TableChart';
 import gql from 'graphql-tag';
-import React, { useState } from 'react';
+import React from 'react';
 import { useParams } from 'react-router-dom';
 import { IDataExport } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
@@ -35,7 +26,6 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 function DataExportsTable() {
-  const rowsPerPage = 10;
   const classes = useStyles();
   const params = useParams<{ agentId: string }>();
   const agentId = parseInt(params.agentId, 10);
