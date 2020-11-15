@@ -154,7 +154,7 @@ interface CustomDrawerProps {
   user: IUser;
   status: boolean;
   navigation: MenuName;
-  agent: IAgentParam;
+  agent?: IAgentParam | undefined;
   onClose: () => void;
 }
 
@@ -179,7 +179,7 @@ function CustomDrawer(props: CustomDrawerProps) {
   };
 
   const getAgentPath = (agentTab: string, entityId?: string | number) => {
-    return createAgentPath(user, agent.agentId, agentTab, entityId);
+    return createAgentPath(user, agent?.agentId, agentTab, entityId);
   };
 
   const createOrgPath = (path = ''): string => {

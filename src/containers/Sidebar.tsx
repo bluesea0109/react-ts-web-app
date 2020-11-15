@@ -55,6 +55,7 @@ const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
       onSetAgentID(agentParams);
     }
   }, [match?.path]); // eslint-disable-line react-hooks/exhaustive-deps
+  const generalRegx = RegExp('/orgs/[A-Z,a-z,0-9-]+/projects/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/[A-Z,a-z,0-9-]+')
 
   useEffect(() => {
     const homeRegx = RegExp('^/$', 'g');
@@ -182,12 +183,11 @@ const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
   const openBotCreation = (key: MenuName) => {
     setSelected(key);
     setOpenSubItem(false);
-    const backURL = localStorage.getItem('backURL');
-    if (!backURL) {
-      onClose();
+    if (generalRegx.test(location.pathname)) {
+      onClick(MenuName.OPEN_CONFIG)
+      history.push(location.pathname)
     } else {
-      onClick(MenuName.OPEN_CONFIG);
-      history.push(backURL);
+      onClose()
     }
   };
   const openPage = (key: MenuName) => {
@@ -197,9 +197,9 @@ const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
   };
 
   const getCreateBotURL = () => {
-    const backURL = localStorage.getItem('backURL');
-    if (backURL) {
-      return backURL;
+    const currentPath = location.pathname
+    if (generalRegx.test(currentPath)) {
+      return currentPath
     } else {
       return createPath('chatbot-builder');
     }

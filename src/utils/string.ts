@@ -23,7 +23,7 @@ export const removeSpecialChars = (text: string): string => {
 
 export const createAgentPath = (
   user: IUser,
-  agentId: number,
+  agentId: number | undefined,
   agentTab: string,
   entityId?: string | number,
 ): string => {
