@@ -53,7 +53,7 @@ export default function ChatWithAgent() {
         (function (uname, apiKey, debug, dev) {
           return function (i, s, o, g, r, a, m) {
             a = s.createElement(o), m = s.querySelector("body");
-            a.onload = function () { i['loadBavard'](uname, apiKey, debug, dev) };
+            a.onload = function () { i['loadBavard']({uname, apiKey, debug, dev}) };
             a.async = 1; a.src = g; m.appendChild(a), a.type = "application/javascript";
           }
         })('${agentData.data.ChatbotService_agent.uname}', '${apiKey}', true, true)

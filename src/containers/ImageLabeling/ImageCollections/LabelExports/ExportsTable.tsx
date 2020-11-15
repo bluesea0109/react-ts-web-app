@@ -1,7 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import Paper from '@material-ui/core/Paper';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';

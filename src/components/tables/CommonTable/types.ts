@@ -62,6 +62,10 @@ export type ActionsInterface<RowData extends object> = ActionInterface<
   RowData
 >[];
 
+export interface EventHandlerInterface<RowData extends object> {
+  onRowClick?: (rowData: RowData | any) => void;
+}
+
 export interface CommonTableHeadProps<RowData extends object> {
   columns?: HeaderType<RowData>[];
   actions?: ActionsInterface<RowData>;
@@ -77,6 +81,7 @@ export interface CommonTableBodyProps<RowData extends object> {
   rowsData?: RowData[];
   editable?: EditableInterface<RowData>;
   localization?: LocalizationInterface;
+  eventHandlers?: EventHandlerInterface<RowData>;
   components?: ComponentListInterface;
 }
 
@@ -88,6 +93,7 @@ export interface CommonTableRowProps<RowData extends object> {
   editable?: EditableInterface<RowData>;
   columnCount: number;
   localization?: LocalizationInterface;
+  onClick?: (rowData: RowData) => void;
 }
 
 export interface CommonTableFooterProps {
@@ -111,5 +117,6 @@ export interface CommonTableProps<RowData extends object> {
   editable?: EditableInterface<RowData>;
   pagination?: PaginationInterface;
   localization?: LocalizationInterface;
+  eventHandlers?: EventHandlerInterface<RowData>;
   components?: ComponentListInterface;
 }

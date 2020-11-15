@@ -46,9 +46,7 @@ export const Avatar = ({
         <Grid item={true} sm={12} className={classes.avatarPos}>
           <ImageUploader
             isLoading={loading || mode === 'published'}
-            currentImage={
-              title === 'Widget Avatar' ? settings.avatarUrl : settings.logoUrl
-            }
+            currentImage={settings.avatarUrl}
             label="Widget Avatar"
             onImageUpload={(url: string) => updateSettings('avatar', url)}
             iconType="AVATAR"

@@ -9,6 +9,7 @@ const CommonTableBody = ({
   rowsData,
   editable,
   localization,
+  eventHandlers,
   components,
 }: CommonTableBodyProps<object & { [index: string]: any }>) => {
   // prettier-ignore
@@ -28,6 +29,7 @@ const CommonTableBody = ({
             editable={editable}
             columnCount={columnCount}
             localization={localization}
+            onClick={eventHandlers?.onRowClick}
           />
         ))
       ) : (

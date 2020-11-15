@@ -72,6 +72,7 @@ const CommonTableRow = ({
   rowIndex,
   editable,
   columnCount,
+  onClick,
   localization,
 }: CommonTableRowProps<object>) => {
   const classes = useStyles();
@@ -83,7 +84,9 @@ const CommonTableRow = ({
   };
 
   return (
-    <StyledTableRow hover={true}>
+    <StyledTableRow
+      hover={true}
+      onClick={onClick ? () => onClick(rowData) : undefined}>
       {confirmDelete ? (
         <StyledTableCell colSpan={columnCount}>
           <Box className={classes.boxContainer}>

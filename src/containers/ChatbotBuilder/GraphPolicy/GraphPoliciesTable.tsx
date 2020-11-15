@@ -8,12 +8,6 @@ import { CommonTable } from '../../../components';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      margin: theme.spacing(3),
-    },
-    paper: {
-      padding: theme.spacing(2),
-    },
     title: {
       width: '100%',
     },
