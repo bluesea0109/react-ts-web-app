@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: '14px',
     },
     inputField: {
-      marginBottom: '10px',
+      marginBottom: '40px',
       padding: '0px',
     },
     textAreaField: {
