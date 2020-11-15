@@ -49,7 +49,7 @@ export const ColorPalett = ({
             </Box>
           </Grid>
         </Grid>
-        <Box mt={4} mb={1} mx="auto">
+        <Box mt={4} mb={4} mx="auto">
           {mode === 'dev' && (
             <AlphaPicker
               color={settings.primaryColor}
