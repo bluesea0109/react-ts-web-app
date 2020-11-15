@@ -4,7 +4,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles } from '@material-ui/core/styles';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { IAgentParam } from '../models/chatbot-service';
 import { IUser } from '../models/user-service';
@@ -154,7 +154,7 @@ interface CustomDrawerProps {
   user: IUser;
   status: boolean;
   navigation: MenuName;
-  agent: IAgentParam;
+  agent?: IAgentParam | undefined;
   onClose: () => void;
 }
 
@@ -162,7 +162,6 @@ function CustomDrawer(props: CustomDrawerProps) {
   const { user, navigation, agent, onClose } = props;
   const classes = useStyles();
   const location = useLocation();
-  const [agentIDFS, setAgentIDFS] = useState(0)
 
   const selectedStyle = {
     backgroundColor: '#4A90E2',
@@ -179,14 +178,8 @@ function CustomDrawer(props: CustomDrawerProps) {
     return `/orgs/${user.activeProject.orgId}/projects/${user.activeProject.id}/${pageName}`;
   };
 
-  useEffect(() => {
-    if (agent.agentId === 0) {
-      const currentPath = location.pathname
-      setAgentIDFS(parseInt(currentPath.split('/').reverse()[2]))
-    }
-  }, [agent.agentId, location.pathname]) // eslint-disable-next-line
   const getAgentPath = (agentTab: string, entityId?: string | number) => {
-    return createAgentPath(user, agent.agentId === 0? agentIDFS : agent.agentId , agentTab, entityId);
+    return createAgentPath(user, agent?.agentId, agentTab, entityId);
   };
 
   const createOrgPath = (path = ''): string => {
@@ -203,6 +196,7 @@ function CustomDrawer(props: CustomDrawerProps) {
 
   const saveHistory = () => {
     onClose();
+    localStorage.setItem('backURL', location.pathname);
   };
   const list = () => {
     switch (navigation) {
