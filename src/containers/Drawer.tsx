@@ -4,7 +4,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles } from '@material-ui/core/styles';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { IAgentParam } from '../models/chatbot-service';
 import { IUser } from '../models/user-service';
@@ -162,6 +162,7 @@ function CustomDrawer(props: CustomDrawerProps) {
   const { user, navigation, agent, onClose } = props;
   const classes = useStyles();
   const location = useLocation();
+  const [currentAgentId, setCurrentAgentIdId] = useState(0)
 
   const selectedStyle = {
     backgroundColor: '#4A90E2',
@@ -179,7 +180,7 @@ function CustomDrawer(props: CustomDrawerProps) {
   };
 
   const getAgentPath = (agentTab: string, entityId?: string | number) => {
-    return createAgentPath(user, agent?.agentId, agentTab, entityId);
+    return createAgentPath(user, currentAgentId, agentTab, entityId);
   };
 
   const createOrgPath = (path = ''): string => {
@@ -194,9 +195,14 @@ function CustomDrawer(props: CustomDrawerProps) {
     return `/orgs/${user.activeProject.orgId}`;
   };
 
+  useEffect(() => {
+    if (agent?.agentId === 0) {      
+      const currentPath = location.pathname
+      setCurrentAgentIdId(parseInt(currentPath.split('/').reverse()[2]))
+    }
+  }, [agent?.agentId, location.pathname])
   const saveHistory = () => {
     onClose();
-    localStorage.setItem('backURL', location.pathname);
   };
   const list = () => {
     switch (navigation) {
