@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { AgentConfig } from '@bavard/agent-config';
 import { Box, makeStyles, Theme, Toolbar } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { useHistory } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
@@ -126,7 +126,11 @@ const AgentDetails = () => {
   const init = agents?.filter((item) => item.id === parseInt(agentId, 10))[0]
     ?.uname;
 
-  const [curAgent, setCurAgent] = useState<string | undefined>(init);
+  const [curAgent, setCurAgent] = useState<string | undefined>('');
+  //useEffect is for setting the current Agent name
+  useEffect(() => {
+    setCurAgent(init)
+  }, [init])
 
   const [config, setConfig] = useRecoilState(currentAgentConfig);
 
@@ -169,7 +173,7 @@ const AgentDetails = () => {
   };
 
   const publishAgent = () => {
-    const newURL = `/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${agentId}/publish`;
+    const newURL = `/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${agentId}/publish/`;
     history.push(newURL);
   };
 
@@ -177,7 +181,7 @@ const AgentDetails = () => {
     setCurAgent(field);
 
     const agentId = agents?.filter((agent) => agent.uname === field)[0].id;
-    const newURL = `/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${agentId}/Actions`;
+    const newURL = `/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${agentId}/Actions/`;
     history.push(newURL);
   };
 
