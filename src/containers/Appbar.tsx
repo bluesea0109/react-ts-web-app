@@ -14,6 +14,7 @@ import { IUser } from '../models/user-service';
 interface CustomAppbarProps extends AppBarProps {
   user: IUser;
   handleChangeLoadingStatus: (loading: boolean) => void;
+  closeDrawer: () => void;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -139,6 +140,7 @@ const CustomAppbar: React.FC<CustomAppbarProps> = ({
   position,
   className,
   handleChangeLoadingStatus,
+  closeDrawer
 }) => {
   const classes = useStyles();
   const history = useHistory();
@@ -154,6 +156,7 @@ const CustomAppbar: React.FC<CustomAppbarProps> = ({
       awaitRefetchQueries: true,
       onCompleted: ({ updateUserActiveOrg }) => {
         history.push(`/orgs/${updateUserActiveOrg.activeOrg.id}/settings`);
+        closeDrawer();
       },
     },
   );
@@ -167,6 +170,7 @@ const CustomAppbar: React.FC<CustomAppbarProps> = ({
         history.push(
           `/orgs/${updateUserActiveOrg.activeOrg.id}/projects/${updateUserActiveOrg.activeProject.id}/settings`,
         );
+        closeDrawer();
       },
     },
   );
