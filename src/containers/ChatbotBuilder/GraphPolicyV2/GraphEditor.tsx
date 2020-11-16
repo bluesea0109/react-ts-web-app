@@ -115,6 +115,7 @@ interface IProps {
   agentId: number;
   policy: GraphPolicyV2;
   onSave?: (policy: GraphPolicyV2) => void;
+  onPolicyChanged?: (policy: GraphPolicyV2) => void;
 }
 
 interface INodePair {
@@ -122,7 +123,7 @@ interface INodePair {
   end: GraphPolicyNode;
 }
 
-const GraphEditor = ({ agentId, policy, onSave }: IProps) => {
+const GraphEditor = ({ agentId, policy, onSave, onPolicyChanged }: IProps) => {
   const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const [gp, setGp] = useState<GraphPolicyV2>(policy);
@@ -207,7 +208,10 @@ const GraphEditor = ({ agentId, policy, onSave }: IProps) => {
       gpHistory.pushHistory(policy);
     }
 
-    setGp(GraphPolicyV2.fromJsonObj(policy.toJsonObj()));
+    const updatedPolicy = GraphPolicyV2.fromJsonObj(policy.toJsonObj());
+    setGp(updatedPolicy);
+    onPolicyChanged?.(updatedPolicy);
+
     if (triggerRender) {
       setChanges(changes + 1);
     }
