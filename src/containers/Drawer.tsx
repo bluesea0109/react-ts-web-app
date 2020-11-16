@@ -162,7 +162,7 @@ function CustomDrawer(props: CustomDrawerProps) {
   const { user, navigation, agent, onClose } = props;
   const classes = useStyles();
   const location = useLocation();
-  const [currentId, setCurrentId] = useState(0)
+  const [currentAgentId, setCurrentAgentIdId] = useState(0)
 
   const selectedStyle = {
     backgroundColor: '#4A90E2',
@@ -180,7 +180,7 @@ function CustomDrawer(props: CustomDrawerProps) {
   };
 
   const getAgentPath = (agentTab: string, entityId?: string | number) => {
-    return createAgentPath(user, currentId, agentTab, entityId);
+    return createAgentPath(user, currentAgentId, agentTab, entityId);
   };
 
   const createOrgPath = (path = ''): string => {
@@ -198,7 +198,7 @@ function CustomDrawer(props: CustomDrawerProps) {
   useEffect(() => {
     if (agent?.agentId === 0) {      
       const currentPath = location.pathname
-      setCurrentId(parseInt(currentPath.split('/').reverse()[2]))
+      setCurrentAgentIdId(parseInt(currentPath.split('/').reverse()[2]))
     }
   }, [agent?.agentId, location.pathname])
   const saveHistory = () => {
