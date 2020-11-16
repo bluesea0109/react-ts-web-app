@@ -79,7 +79,7 @@ const GraphEditorPage = () => {
   const classes = useStyles();
   const { entityId, agentId }: IParams = useParams();
   const [, setOptionImages] = useRecoilState(agentOptionImages);
-  const [agentConfig] = useRecoilState(currentAgentConfig);
+  const [agentConfig, setAgentConfig] = useRecoilState(currentAgentConfig);
   const [widgetSettings] = useRecoilState(currentWidgetSettings);
   const containerRef = useRef<HTMLDivElement>(null);
   const { enqueueSnackbar } = useSnackbar();
@@ -117,6 +117,20 @@ const GraphEditorPage = () => {
   const getEditorHeight = () => {
     const top = containerRef.current?.offsetTop;
     return `calc(100vh - ${top ? top : 120}px)`;
+  };
+
+  const handlePolicyChanged = async (policy: GraphPolicyV2) => {
+    if (agentConfig) {
+      try {
+        agentConfig.deleteGraphPolicyV2(policy.name);
+        agentConfig.addGraphPolicyV2(policy);
+        setAgentConfig(agentConfig);
+      } catch (e) {
+        enqueueSnackbar(`Could not modify agent config - ${e.toString()}`, {
+          variant: 'error',
+        });
+      }
+    }
   };
 
   const handleSavePolicy = async (policy: GraphPolicyV2) => {
@@ -173,6 +187,7 @@ const GraphEditorPage = () => {
               policy={gp}
               agentId={parseInt(agentId)}
               onSave={handleSavePolicy}
+              onPolicyChanged={handlePolicyChanged}
             />
           )}
         </Card>
