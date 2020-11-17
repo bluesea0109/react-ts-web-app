@@ -113,7 +113,7 @@ export default function TrainingConversations() {
 
   return (
     <Grid className={classes.root}>
-      <Grid style={{fontSize: '26px', marginBottom: '24px'}}>Training Conversations</Grid>
+      <Grid className={classes.pageTitle}>Training Conversations</Grid>
       <Paper className={classes.paper}>
         <Button
           className={classes.button}
@@ -185,5 +185,9 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'center',
     },
+    pageTitle: {
+      fontSize: '26px', 
+      marginBottom: '24px'
+    }
   }),
 );

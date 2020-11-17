@@ -9,6 +9,10 @@ const useStyles = makeStyles((theme: Theme) =>
       overflow: 'auto',
       padding: '50px',
     },
+    pageTitle: {
+      fontSize: '26px', 
+      marginBottom: '24px'
+    }
   }),
 );
 export default function DataExportsTab() {
@@ -17,7 +21,7 @@ export default function DataExportsTab() {
   return (
     <div className={classes.root}>
       <Grid container={true} spacing={2}>
-        <Grid style={{fontSize: '26px', marginBottom: '24px'}}>Data Exports</Grid>
+        <Grid className={classes.pageTitle}>Data Exports</Grid>
         <DataExportsTable />
       </Grid>
     </div>

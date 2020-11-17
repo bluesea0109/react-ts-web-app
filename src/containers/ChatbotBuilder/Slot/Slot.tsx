@@ -17,6 +17,10 @@ const useStyles = makeStyles((theme: Theme) =>
     paper: {
       padding: theme.spacing(2),
     },
+    pageTitle: {
+      fontSize: '26px', 
+      marginBottom: '24px'
+    }
   }),
 );
 
@@ -65,7 +69,7 @@ const SlotSection: React.FC = () => {
 
   return (
     <div className={classes.root}>
-      <Grid style={{fontSize: '26px', marginBottom: '24px'}}>Slot Values</Grid>
+      <Grid className={classes.pageTitle}>Slot Values</Grid>
       <SlotsTable
         slots={slots ?? []}
         onAdd={() => setIsNewSlot(true)}

@@ -13,6 +13,10 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexFlow: 'column',
   },
+  pageTitle: {
+    fontSize: '26px', 
+    marginBottom: '24px'
+  }
 }));
 
 const Billing = () => {
@@ -20,7 +24,7 @@ const Billing = () => {
 
   return (
     <Grid container={true} className={classes.root}>
-      <Typography variant="h5" style={{ fontSize: '26px', marginBottom: '24px'}}>Billing</Typography>
+      <Typography variant="h5" className={classes.pageTitle}>Billing</Typography>
       <Grid container={true} spacing={2}>
         <Grid item={true} sm={5} xs={5}>
           <BasicPlanCard />
