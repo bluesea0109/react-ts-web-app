@@ -59,15 +59,13 @@ const useStyles = makeStyles((theme: Theme) =>
       cursor: 'pointer',
     },
 
-    customDrawer: {
-
-    },
+    customDrawer: {},
     allAgentBtn: {
       padding: '10px',
       borderRadius: '5px',
       backgroundColor: 'rgba(74, 144, 226)',
       color: 'white',
-      margin: '15px 130px 40px',            
+      margin: '15px 130px 40px',
     },
   }),
 );
@@ -162,7 +160,7 @@ function CustomDrawer(props: CustomDrawerProps) {
   const { user, navigation, agent, onClose } = props;
   const classes = useStyles();
   const location = useLocation();
-  const [currentAgentId, setCurrentAgentIdId] = useState(0)
+  const [currentAgentId, setCurrentAgentIdId] = useState(0);
 
   const selectedStyle = {
     backgroundColor: '#4A90E2',
@@ -196,11 +194,9 @@ function CustomDrawer(props: CustomDrawerProps) {
   };
 
   useEffect(() => {
-    if (agent?.agentId === 0) {      
-      const currentPath = location.pathname
-      setCurrentAgentIdId(parseInt(currentPath.split('/').reverse()[2]))
-    }
-  }, [agent?.agentId, location.pathname])
+    const currentPath = location.pathname;
+    setCurrentAgentIdId(parseInt(currentPath.split('/').reverse()[2]));
+  }, [agent?.agentId, location.pathname]);
   const saveHistory = () => {
     onClose();
   };
@@ -294,24 +290,32 @@ function CustomDrawer(props: CustomDrawerProps) {
           </List>
         );
       case MenuName.OPEN_CONFIG:
-        return <>
-          <CloseDrawer handleClose={saveHistory} path={createPath('chatbot-builder')}/>
-          <BotSubMenu
-            title={botSubMenuData.configure.category}
-            items={botSubMenuData.configure.items}
-            category="Configure" getAgentPath={getAgentPath}
-          />
-          <BotSubMenu
-            title={botSubMenuData.training.category}
-            items={botSubMenuData.training.items}
-            category="Training" getAgentPath={getAgentPath}
-          />
-          <BotSubMenu
-            title={botSubMenuData.launch.category}
-            items={botSubMenuData.launch.items}
-            category="Launch" getAgentPath={getAgentPath}
-          />
-        </>;
+        return (
+          <>
+            <CloseDrawer
+              handleClose={saveHistory}
+              path={createPath('chatbot-builder')}
+            />
+            <BotSubMenu
+              title={botSubMenuData.configure.category}
+              items={botSubMenuData.configure.items}
+              category="Configure"
+              getAgentPath={getAgentPath}
+            />
+            <BotSubMenu
+              title={botSubMenuData.training.category}
+              items={botSubMenuData.training.items}
+              category="Training"
+              getAgentPath={getAgentPath}
+            />
+            <BotSubMenu
+              title={botSubMenuData.launch.category}
+              items={botSubMenuData.launch.items}
+              category="Launch"
+              getAgentPath={getAgentPath}
+            />
+          </>
+        );
       default:
         return <></>;
     }
@@ -326,7 +330,7 @@ interface CloseDrawerProps {
   path: string;
 }
 
-const CloseDrawer = ({handleClose, path}: CloseDrawerProps) => {
+const CloseDrawer = ({ handleClose, path }: CloseDrawerProps) => {
   const classes = useStyles();
   const history = useHistory();
 
@@ -336,12 +340,14 @@ const CloseDrawer = ({handleClose, path}: CloseDrawerProps) => {
   const openAllAgent = () => {
     history.push(path);
   };
-  return <Grid className={classes.closeDrawer}>
-    <Box display="flex" justifyContent="flex-end" onClick={handleCloseDrawer}>
-      <img src="/back.png" width="30px" height="30px" alt="backbutton"/>
-    </Box>
-    <Box display="flex" justifyContent="flex-start" onClick={openAllAgent}>
-      <Grid className={classes.allAgentBtn}>All Agents</Grid>
-    </Box>
-  </Grid>;
+  return (
+    <Grid className={classes.closeDrawer}>
+      <Box display="flex" justifyContent="flex-end" onClick={handleCloseDrawer}>
+        <img src="/back.png" width="30px" height="30px" alt="backbutton" />
+      </Box>
+      <Box display="flex" justifyContent="flex-start" onClick={openAllAgent}>
+        <Grid className={classes.allAgentBtn}>All Agents</Grid>
+      </Box>
+    </Grid>
+  );
 };
