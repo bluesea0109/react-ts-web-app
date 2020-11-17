@@ -181,6 +181,7 @@ function App() {
           [classes.appBarShift]: state.drawerOpen,
         })}
         handleChangeLoadingStatus={handleChangeLoadingStatus}
+        closeDrawer={onDrawerClose}
       />
       <MySidebar
         user={data.currentUser}
