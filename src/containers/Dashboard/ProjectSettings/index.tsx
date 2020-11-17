@@ -112,7 +112,7 @@ export default function Project() {
   const loading = apiKeyLoading || deleteKeyMutation.loading;
 
   return (
-    <Box p={3}>
+    <Box style={{padding: '50px'}}>
       <Grid container={true} alignItems="center">
         <Grid item={true}>
           <Typography style={{fontSize: '26px'}}>API Keys</Typography>

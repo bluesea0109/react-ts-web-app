@@ -32,6 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     pageTitle: {
       fontSize: '26px',
+      marginTop: '20px',
       marginBottom: theme.spacing(3),
     },
   }),

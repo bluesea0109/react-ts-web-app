@@ -20,7 +20,7 @@ import UploadGraphPolicyDialog from './UploadGraphPolicyDialog';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      padding: theme.spacing(2),
+      padding: '50px',
     },
     textArea: {
       width: '100%',

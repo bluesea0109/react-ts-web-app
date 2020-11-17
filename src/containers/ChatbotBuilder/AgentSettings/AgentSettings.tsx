@@ -130,7 +130,7 @@ const AgentSettings = () => {
   return (
     <Grid className={classes.spanOfPanel}>
       <Grid
-        style={{ marginBottom: '24px', marginTop: '30px', fontSize: '26px' }}>
+        style={{ marginBottom: '24px', marginTop: '50px', fontSize: '26px' }}>
         Assistant Design Settings
       </Grid>
       <Grid style={{ marginBottom: '20px' }}>

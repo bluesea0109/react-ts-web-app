@@ -6,9 +6,8 @@ import BasicPlanCard from './PlanCard';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    padding: theme.spacing(3),
-    display: 'flex',
-    marginTop: '30px',
+    padding: theme.spacing(6),
+    display: 'flex',    
   },
   billData: {
     display: 'flex',

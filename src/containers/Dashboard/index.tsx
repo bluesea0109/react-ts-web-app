@@ -45,7 +45,7 @@ function Account(props: IDashboardProps) {
 
   return (
     <div className={'page-container'}>
-      <Grid>
+      <Grid style={{marginTop: '20px'}}>
         <Grid item={true} container={true} xs={12} spacing={4}>
           <Grid item={true} sm={12} md={10}>
             <Grid item={true} style={{ fontSize: '26px', marginBottom: '24px'}}>

@@ -30,11 +30,7 @@ const TabPanel = ({
       paddingBottom={tabPadding}
       paddingTop={tabName ? 0 : tabPadding}>
       {tabName && (
-        <Box paddingY={3}>
-          <Typography variant="h5" style={{ fontSize: '26px' }}>
-            {tabName}
-          </Typography>
-        </Box>
+        <Typography style={{ fontSize: '26px', marginBottom: '24px' }}>{tabName}</Typography>
       )}
       {children}
     </Box>
