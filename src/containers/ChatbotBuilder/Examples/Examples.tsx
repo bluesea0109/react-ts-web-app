@@ -206,12 +206,12 @@ const Examples = () => {
     <Grid container={true}>
       <Grid container={true}>
         <Grid item={true} container={true}>
-          <Box fontWeight="bold" fontSize={24}>
+          <Box fontSize={26} mb={3}>
             Natural Language Understanding Examples
           </Box>
         </Grid>
         <Grid item={true} container={true} sm={6}>
-          <Box fontSize={16} my={2} lineHeight={1.5}>
+          <Box fontSize={16} mb={2} lineHeight={1.5}>
             Add or delete examples of natural language below to improve your
             Assistant’s detection of the user’s intent.
           </Box>

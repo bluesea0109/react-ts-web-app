@@ -183,6 +183,7 @@ export default function GraphPolicies() {
   return (
     <Grid container={true} className={'page-container'}>
       <Grid item={true} xs={12}>
+        <Grid style={{fontSize: '26px', marginBottom: '24px'}}>Graph Policy v 2.0</Grid>
         <GraphPoliciesTable
           loading={loading}
           onActivate={handleActivatePolicy}

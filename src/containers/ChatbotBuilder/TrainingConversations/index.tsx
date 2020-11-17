@@ -112,7 +112,8 @@ export default function TrainingConversations() {
   const deleteConfirm = () => setConfirmOpen(true);
 
   return (
-    <>
+    <Grid className={classes.root}>
+      <Grid style={{fontSize: '26px', marginBottom: '24px'}}>Training Conversations</Grid>
       <Paper className={classes.paper}>
         <Button
           className={classes.button}
@@ -164,17 +165,18 @@ export default function TrainingConversations() {
           onCloseCallback={handleClose}
         />
       )}
-    </>
+    </Grid>
   );
 }
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    root: {
+      padding: theme.spacing(6),
+      width: '100%'
+    }, 
     paper: {
-      width: '90%',
-      marginLeft: '5%',
-      marginRight: '5%',
-      padding: '20px',
+      padding: '20px'
     },
     button: {
       margin: '0px 50px 20px',

@@ -115,7 +115,7 @@ export default function Project() {
     <Box p={3}>
       <Grid container={true} alignItems="center">
         <Grid item={true}>
-          <Typography variant="h5">API Keys</Typography>
+          <Typography style={{fontSize: '26px'}}>API Keys</Typography>
         </Grid>
         <Grid item={true}>
           <IconButton

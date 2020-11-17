@@ -10,7 +10,7 @@ import React from 'react';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      padding: theme.spacing(2),
+      padding: theme.spacing(6),
     },
   }),
 );
@@ -21,7 +21,7 @@ export default function FAQService() {
   return (
     <div className={classes.root}>
       <Grid container={true}>
-        <Typography variant="h6">{'Under Construction'}</Typography>
+        <Typography style={{fontSize: '26px', marginBottom: '24px'}}>{'Under Construction'}</Typography>
       </Grid>
     </div>
   );

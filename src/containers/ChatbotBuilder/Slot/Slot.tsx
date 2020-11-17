@@ -1,4 +1,5 @@
 import { AgentConfig, ISlot } from '@bavard/agent-config';
+import { Grid } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import _ from 'lodash';
 import React, { useState } from 'react';
@@ -65,6 +66,7 @@ const SlotSection: React.FC = () => {
 
   return (
     <div className={classes.root}>
+      <Grid style={{fontSize: '26px', marginBottom: '24px'}}>Slot Values</Grid>
       <SlotsTable
         slots={slots ?? []}
         onAdd={() => setIsNewSlot(true)}

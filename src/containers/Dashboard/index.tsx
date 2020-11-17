@@ -48,6 +48,9 @@ function Account(props: IDashboardProps) {
       <Grid>
         <Grid item={true} container={true} xs={12} spacing={4}>
           <Grid item={true} sm={12} md={10}>
+            <Grid item={true} style={{ fontSize: '26px', marginBottom: '24px'}}>
+              Dashboard
+            </Grid>
             <CommonTable
               data={{
                 columns,

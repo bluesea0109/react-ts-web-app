@@ -5,9 +5,9 @@ import DataExportsTable from './DataExportsTable';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      width: '100%',
+      width: '100%',      
       overflow: 'auto',
-      padding: theme.spacing(2),
+      padding: '50px',
     },
   }),
 );
@@ -17,6 +17,7 @@ export default function DataExportsTab() {
   return (
     <div className={classes.root}>
       <Grid container={true} spacing={2}>
+        <Grid style={{fontSize: '26px', marginBottom: '24px'}}>Data Exports</Grid>
         <DataExportsTable />
       </Grid>
     </div>
