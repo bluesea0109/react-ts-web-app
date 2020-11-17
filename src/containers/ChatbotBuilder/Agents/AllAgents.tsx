@@ -21,7 +21,7 @@ import { IGetAgents } from './types';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      padding: theme.spacing(3),
+      padding: '50px',
       overflow: 'auto',
     },
     pageTitle: {
