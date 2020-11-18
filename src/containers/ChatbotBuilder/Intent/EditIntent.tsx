@@ -9,9 +9,9 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import React, { useEffect, useState } from 'react';
-import { DropDown } from '../../../components';
-import { UpTransition, TextInput } from '../../../components';
+import { UpTransition } from '../../../components';
 import { Maybe } from '../../../utils/types';
+import EditIntentForm from './EditIntentForm';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -22,15 +22,6 @@ const useStyles = makeStyles((theme: Theme) =>
     title: {
       marginLeft: theme.spacing(2),
       flex: 1,
-    },
-    input: {
-      '& .MuiOutlinedInput-input': {
-        padding: '12px 12px',
-      },
-    },
-    formField: {
-      marginTop: theme.spacing(2),
-      marginBottom: theme.spacing(2),
     },
     buttonGrid: {
       paddingTop: theme.spacing(3),
@@ -66,10 +57,6 @@ const EditIntent = ({
     }
   };
 
-  const handleChangeAction = (action: any) => {
-    setCurrentIntent({ ...currentIntent, defaultActionName: action } as any);
-  };
-
   return (
     <Dialog
       fullScreen={true}
@@ -92,52 +79,11 @@ const EditIntent = ({
       <DialogContent>
         <Grid container={true} justify="center">
           <Grid item={true} sm={6} xs={8}>
-            <Grid
-              container={true}
-              item={true}
-              sm={12}
-              justify="flex-start"
-              className={classes.formField}>
-              <Typography variant="h6">
-                {
-                  'Add an intent to customize your Assistant’s behavior. Each intent must have a unique name'
-                }
-              </Typography>
-            </Grid>
-            <Grid
-              container={true}
-              item={true}
-              sm={12}
-              className={classes.formField}>
-              <TextInput
-                fullWidth={true}
-                label="Intent*"
-                value={currentIntent?.name || ''}
-                className={classes.input}
-                onChange={(e) =>
-                  setCurrentIntent({
-                    ...currentIntent,
-                    name: e.target.value.replace(/ /g, '+'),
-                  } as any)
-                }
-              />
-            </Grid>
-            <Grid
-              container={true}
-              item={true}
-              sm={12}
-              className={classes.formField}>
-              <DropDown
-                label="Default Action"
-                labelPosition="left"
-                fullWidth={true}
-                current={actions.find(
-                  (a) => a.name === currentIntent?.defaultActionName,
-                )}
-                menuItems={actions}
-                onChange={handleChangeAction}
-              />
-            </Grid>
+            <EditIntentForm
+              actions={actions}
+              currentIntent={currentIntent}
+              onUpdateIntent={setCurrentIntent}
+            />
             <Grid
               container={true}
               item={true}

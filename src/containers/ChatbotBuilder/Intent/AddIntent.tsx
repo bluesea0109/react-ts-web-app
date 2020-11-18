@@ -30,6 +30,7 @@ import AddExampleItem from '../Examples/AddExamples';
 
 import { EXAMPLES_LIMIT } from '../Examples/Examples';
 import { getExamplesQuery } from '../Examples/gql';
+import EditIntentForm from './EditIntentForm';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -283,51 +284,14 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
         </Toolbar>
       </AppBar>
       <DialogContent>
-        <Grid container={true}>
-          <Grid item={true} md={4} xs={12} />
-          <Grid item={true} md={4} xs={12}>
-            <Typography className={classes.instruction}>
-              Add an Intent to customize your Assistant’s behavior:
-            </Typography>
-          </Grid>
-          <Grid item={true} md={4} xs={12} />
-        </Grid>
-        <Grid container={true} className={classes.fields}>
-          <Grid item={true} md={4} xs={12} />
-          <Grid item={true} md={4} xs={12}>
-            <Typography className={classes.fieldLabel}>Intent Value</Typography>
-            <TextField
-              fullWidth={true}
-              variant="outlined"
-              value={newIntent.name}
-              onChange={(e) =>
-                setNewIntent({
-                  ...newIntent,
-                  name: e.target.value.replace(/ /g, '+'),
-                })
-              }
-              inputProps={{ className: classes.intent }}
+        <Grid container={true} justify="center">
+          <Grid item={true} sm={6} xs={8}>
+            <EditIntentForm
+              actions={actions}
+              currentIntent={newIntent}
+              onUpdateIntent={setNewIntent}
             />
           </Grid>
-          <Grid item={true} xs={4} md={12} />
-        </Grid>
-        <Grid container={true} className={classes.fields}>
-          <Grid item={true} md={4} xs={12} />
-          <Grid item={true} md={4} xs={12}>
-            <Typography className={classes.fieldLabel}>
-              Default Action
-            </Typography>
-            <DropDown
-              label=""
-              fullWidth={true}
-              current={actions.find(
-                (a) => a.name === newIntent?.defaultActionName,
-              )}
-              menuItems={actions}
-              onChange={handleActionFieldChange}
-            />
-          </Grid>
-          <Grid item={true} xs={4} md={12} />
         </Grid>
 
         <Grid container={true} className={classes.fields}>
