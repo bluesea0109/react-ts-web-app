@@ -16,10 +16,10 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const IntentSection: React.FC = () => {
+const Intents: React.FC = () => {
   const classes = useStyles();
   const [currentIntent, setCurrentIntent] = useState<IIntent | undefined>();
-  const [newIntent, setNewIntent] = useState<boolean>(false);
+  const [isNewIntent, setIsNewIntent] = useState<boolean>(false);
   const [config, setConfig] = useRecoilState<AgentConfig | undefined>(
     currentAgentConfig,
   );
@@ -32,6 +32,11 @@ const IntentSection: React.FC = () => {
   const actions = config.getActions();
   const tagTypes = config.getTagTypes();
 
+  const onAddIntent = () => {
+    setIsNewIntent(true);
+    setCurrentIntent({ name: '' } as IIntent);
+  };
+
   const onEditIntent = (intent: IIntent) => {
     setCurrentIntent(intent);
   };
@@ -40,27 +45,25 @@ const IntentSection: React.FC = () => {
     if (!currentIntent) {
       return;
     }
-    const newConfig = _.cloneDeep(config);
-    newConfig
-      .deleteIntent(currentIntent.name)
-      .addIntent(intent.name, intent.defaultActionName);
-    setConfig(newConfig);
 
-    setNewIntent(false);
+    setConfig(
+      config
+        .copy()
+        .deleteIntent(currentIntent.name)
+        .addIntent(intent.name, intent.defaultActionName),
+    );
+    setIsNewIntent(false);
     setCurrentIntent(undefined);
   };
 
   const onDeleteIntent = (intent: IIntent) => {
-    const newConfig = _.cloneDeep(config);
-    newConfig.deleteIntent(intent.name);
-    setConfig(newConfig);
-
+    setConfig(config.copy().deleteIntent(intent.name));
     setCurrentIntent(undefined);
   };
 
   const onEditIntentClose = () => {
     setCurrentIntent(undefined);
-    setNewIntent(false);
+    setIsNewIntent(false);
   };
 
   return (
@@ -69,7 +72,7 @@ const IntentSection: React.FC = () => {
         <IntentsTable
           intents={intents ?? []}
           actions={actions}
-          onAdd={() => setNewIntent(true)}
+          onAddIntent={onAddIntent}
           onEditIntent={onEditIntent}
           onDeleteIntent={onDeleteIntent}
         />
@@ -82,7 +85,7 @@ const IntentSection: React.FC = () => {
             onEditIntentClose={onEditIntentClose}
             onSaveIntent={onSaveIntent}
           />
-          {newIntent && (
+          {isNewIntent && (
             <AddIntent
               actions={actions}
               onAddIntentClose={onEditIntentClose}
@@ -95,4 +98,4 @@ const IntentSection: React.FC = () => {
   );
 };
 
-export default IntentSection;
+export default Intents;

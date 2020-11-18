@@ -129,8 +129,8 @@ const AgentDetails = () => {
   const [curAgent, setCurAgent] = useState<string | undefined>('');
   //useEffect is for setting the current Agent name
   useEffect(() => {
-    setCurAgent(init)
-  }, [init])
+    setCurAgent(init);
+  }, [init]);
 
   const [config, setConfig] = useRecoilState(currentAgentConfig);
 
@@ -216,12 +216,6 @@ const AgentDetails = () => {
         </TabPanel>
         <TabPanel className={classes.tabPanel} value={agentTab} index="Slots">
           <Slot />
-        </TabPanel>
-        <TabPanel
-          className={classes.tabPanel}
-          value={agentTab}
-          index="nluExamples">
-          <Examples />
         </TabPanel>
         {agentTab === 'graph-policy-v1' && <GraphPolicyV1 />}
         {agentTab === 'graph-policies' && <GraphPolicy />}

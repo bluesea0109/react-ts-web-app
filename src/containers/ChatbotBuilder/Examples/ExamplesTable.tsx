@@ -22,13 +22,6 @@ export interface InvalidExist {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    paper: {
-      padding: theme.spacing(2),
-      marginBottom: theme.spacing(2),
-      borderRadius: `4px`,
-      position: `relative`,
-      width: '100%',
-    },
     panel: {
       display: 'flex',
       justifyContent: 'flex-end',
@@ -73,44 +66,14 @@ const ExamplesTable = ({
     );
   }, [filters, examples]);
 
-  const handleIntentChange = (intent: string) => {
-    updateFilters({ intent, offset: 0 });
-  };
-
-  const handlePagechange = (page: number) => {
+  const handlePageChange = (page: number) => {
     updateFilters({ offset: page * examplesPerPage });
   };
 
   const columns = [
     {
-      title: 'Intent',
+      title: 'Natural Language Examples',
       field: 'intent',
-      renderHeader: () => (
-        <Box
-          style={{
-            padding: 0,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'stretch',
-          }}>
-          <Typography
-            variant="subtitle1"
-            style={{ fontWeight: 'bold', marginRight: 10 }}>
-            Intent
-          </Typography>
-          <DropDown
-            label=""
-            width={200}
-            current={intents.find((each) => each === filters?.intent)}
-            menuItems={intents}
-            onChange={handleIntentChange}
-          />
-        </Box>
-      ),
-    },
-    {
-      title: 'Text',
-      field: 'text',
       renderRow: (data: INLUExample) => (
         <TextAnnotator
           style={{
@@ -132,6 +95,12 @@ const ExamplesTable = ({
         />
       ),
     },
+    {
+      title: 'Selected Tag Type',
+      field: 'text',
+      renderRow: (data: INLUExample) =>
+        data.tags.map((tag) => tag.tagType).join(', '),
+    },
   ];
 
   return (
@@ -146,7 +115,7 @@ const ExamplesTable = ({
         asyncPage: Math.floor((filters?.offset || 0) / examplesPerPage),
         rowsPerPage: examplesPerPage,
         asyncTotalCount: exampleCount,
-        onUpdatePage: handlePagechange,
+        onUpdatePage: handlePageChange,
       }}
       editable={{
         isEditable: true,
@@ -158,12 +127,10 @@ const ExamplesTable = ({
         actionsText: '',
       }}
       components={{
-        Toolbar: () => (
-          <Box className={classes.panel}>
-            <Button variant="contained" color="primary" onClick={onAdd}>
-              Add New Examples
-            </Button>
-          </Box>
+        TableFooter: () => (
+          <Button variant="contained" color="primary" onClick={onAdd}>
+            Add New Examples
+          </Button>
         ),
       }}
     />
