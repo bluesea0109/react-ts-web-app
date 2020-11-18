@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface ExampleFormProps {
-  isNew: boolean;
+  isNew?: boolean;
   loading: boolean;
   example?: INLUExample;
   tagTypes: string[];
@@ -106,11 +106,23 @@ const ExampleForm = ({
 
   return (
     <Grid container={true}>
+      <Grid
+        container={true}
+        item={true}
+        xs={12}
+        justify="center"
+        className={classes.formField}>
+        <Typography variant="subtitle1">
+          {
+            "Edit or add an example in natural language below to improve your Assistant's detection of the user's input."
+          }
+        </Typography>
+      </Grid>
       <Paper className={classes.paper}>
         <Grid container={true} className={classes.formField}>
           <TextInput
             fullWidth={true}
-            label="NLU Example 1"
+            label="NLU Example 1*"
             rows={4}
             value={exampleText}
             className={classes.input}
@@ -164,15 +176,17 @@ const ExampleForm = ({
           </Grid>
         </Grid>
 
-        <Grid container={true} item={true} xs={12} justify="center">
-          <Button
-            autoFocus={true}
-            color="primary"
-            variant="contained"
-            onClick={onSaveChanges}>
-            {isNew ? 'Add Example' : 'Update Example'}
-          </Button>
-        </Grid>
+        {isNew !== undefined && (
+          <Grid container={true} item={true} xs={12} justify="center">
+            <Button
+              autoFocus={true}
+              color="primary"
+              variant="contained"
+              onClick={onSaveChanges}>
+              {isNew ? 'Add Example' : 'Update Example'}
+            </Button>
+          </Grid>
+        )}
       </Paper>
     </Grid>
   );

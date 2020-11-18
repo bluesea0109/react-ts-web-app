@@ -46,7 +46,7 @@ const EditIntentForm: React.FC<EditIntentFormProps> = ({
         className={classes.formField}>
         <Typography variant="h6">
           {
-            'Add an intent to customize your Assistant’s behavior. Each intent must have a unique name'
+            'Add an intent to customize your Assistant’s behavior. Each intent must have a unique name.'
           }
         </Typography>
       </Grid>

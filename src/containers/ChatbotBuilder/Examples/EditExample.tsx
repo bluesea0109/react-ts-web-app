@@ -78,35 +78,16 @@ const EditExample = ({
       }
       onEditClose={onEditExampleClose}>
       <Grid container={true} justify="center" className={classes.root}>
-        <Grid container={true} item={true} sm={6} xs={8}>
-          <Grid
-            container={true}
-            item={true}
-            xs={12}
-            justify="center"
-            className={classes.formField}>
-            <Typography variant="subtitle1">
-              {
-                "Edit or add an example in natural language below to improve your Assistant's detection of the user's input."
-              }
-            </Typography>
-          </Grid>
-          <Grid
-            container={true}
-            item={true}
-            xs={12}
-            justify="center"
-            className={classes.formField}>
-            <ExampleForm
-              isNew={isNew}
-              loading={loading}
-              example={example}
-              tagTypes={tagTypes}
-              intent={intent}
-              onSaveChanges={handleSaveChanges}
-              onExampleUpdate={setUpdatedExample}
-            />
-          </Grid>
+        <Grid container={true} item={true} sm={4} xs={8}>
+          <ExampleForm
+            isNew={isNew}
+            loading={loading}
+            example={example}
+            tagTypes={tagTypes}
+            intent={intent}
+            onSaveChanges={handleSaveChanges}
+            onExampleUpdate={setUpdatedExample}
+          />
         </Grid>
       </Grid>
     </FullDialog>
