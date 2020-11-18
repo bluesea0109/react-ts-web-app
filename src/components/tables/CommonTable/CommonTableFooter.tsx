@@ -1,4 +1,9 @@
-import { TableFooter, TablePagination, TableRow } from '@material-ui/core';
+import {
+  TableFooter,
+  TableCell,
+  TablePagination,
+  TableRow,
+} from '@material-ui/core';
 import React from 'react';
 import { CommonTableFooterProps } from './types';
 
@@ -12,7 +17,11 @@ const CommonTableFooter = ({
     <TableFooter>
       {((isPaginated && pagination) || components?.TableFooter) && (
         <TableRow>
-          {components?.TableFooter && <components.TableFooter />}
+          {components?.TableFooter && (
+            <TableCell>
+              <components.TableFooter />
+            </TableCell>
+          )}
           {pagination && (
             <TablePagination
               rowsPerPageOptions={[pagination.rowsPerPage || 10]}

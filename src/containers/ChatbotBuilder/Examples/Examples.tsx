@@ -237,7 +237,7 @@ const Examples: React.FC<ExamplesProps> = ({ intent }) => {
           <EditExample
             loading={examplesData.loading}
             tagTypes={tagTypes}
-            intents={intents}
+            intent={intent}
             example={currentEdit}
             onEditExampleClose={onExampleEditClose}
             onSaveExample={onExampleSave}

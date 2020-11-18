@@ -1,15 +1,9 @@
-import {
-  Box,
-  Button,
-  createStyles,
-  makeStyles,
-  Theme,
-  Typography,
-} from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import React, { useMemo } from 'react';
 import { TextAnnotator } from 'react-text-annotate';
-import { CommonTable, DropDown } from '../../../components';
+import { CommonTable, IconButton } from '../../../components';
 import { INLUExample } from '../../../models/chatbot-service';
+import AddCircleOutline from '@material-ui/icons/AddCircleOutline';
 
 export interface ExamplesFilter {
   intent?: string;
@@ -19,16 +13,6 @@ export interface ExamplesFilter {
 export interface InvalidExist {
   invalidExist?: boolean;
 }
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    panel: {
-      display: 'flex',
-      justifyContent: 'flex-end',
-      padding: theme.spacing(3),
-    },
-  }),
-);
 
 interface ExamplesTableProps {
   examples: INLUExample[];
@@ -55,8 +39,6 @@ const ExamplesTable = ({
   onEdit,
   onDelete,
 }: ExamplesTableProps) => {
-  const classes = useStyles();
-
   const filteredExamples = useMemo(() => {
     if (!filters || !filters.intent) {
       return examples;
@@ -128,9 +110,14 @@ const ExamplesTable = ({
       }}
       components={{
         TableFooter: () => (
-          <Button variant="contained" color="primary" onClick={onAdd}>
-            Add New Examples
-          </Button>
+          <IconButton
+            color="primary"
+            title="Add New Example"
+            variant="text"
+            iconPosition="left"
+            onClick={onAdd}
+            Icon={AddCircleOutline}
+          />
         ),
       }}
     />

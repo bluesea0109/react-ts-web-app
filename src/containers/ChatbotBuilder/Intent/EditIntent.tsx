@@ -1,5 +1,5 @@
 import { BaseAgentAction, IIntent } from '@bavard/agent-config';
-import { Box, DialogContent, Grid, TextField } from '@material-ui/core';
+import { DialogContent, Grid } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import React, { useEffect, useState } from 'react';
 import { DropDown } from '../../../components';
-import { UpTransition } from '../../../components';
+import { UpTransition, TextInput } from '../../../components';
 import { Maybe } from '../../../utils/types';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -23,18 +23,17 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: theme.spacing(2),
       flex: 1,
     },
-    intent: {
-      padding: '7px',
-      fontSize: '16px',
+    input: {
+      '& .MuiOutlinedInput-input': {
+        padding: '12px 12px',
+      },
     },
-    fieldLabel: {
-      marginBottom: '5px',
-      fontSize: '18px',
-      fontWeight: 'bold',
+    formField: {
+      marginTop: theme.spacing(2),
+      marginBottom: theme.spacing(2),
     },
-    addIntentBtn: {
-      display: 'flex',
-      justifyContent: 'center',
+    buttonGrid: {
+      paddingTop: theme.spacing(3),
     },
   }),
 );
@@ -91,39 +90,46 @@ const EditIntent = ({
         </Toolbar>
       </AppBar>
       <DialogContent>
-        <Grid container={true}>
-          <Grid item={true} md={4} xs={12} />
-          <Grid item={true} md={4} xs={12}>
-            <Box p={2}>
-              <Typography className={classes.fieldLabel}>
-                Intent Value
+        <Grid container={true} justify="center">
+          <Grid item={true} sm={6} xs={8}>
+            <Grid
+              container={true}
+              item={true}
+              sm={12}
+              justify="flex-start"
+              className={classes.formField}>
+              <Typography variant="h6">
+                {
+                  'Add an intent to customize your Assistant’s behavior. Each intent must have a unique name'
+                }
               </Typography>
-              <TextField
+            </Grid>
+            <Grid
+              container={true}
+              item={true}
+              sm={12}
+              className={classes.formField}>
+              <TextInput
                 fullWidth={true}
-                label=""
-                variant="outlined"
-                value={currentIntent?.name}
+                label="Intent*"
+                value={currentIntent?.name || ''}
+                className={classes.input}
                 onChange={(e) =>
                   setCurrentIntent({
                     ...currentIntent,
                     name: e.target.value.replace(/ /g, '+'),
                   } as any)
                 }
-                inputProps={{ className: classes.intent }}
               />
-            </Box>
-          </Grid>
-          <Grid item={true} md={4} xs={12} />
-        </Grid>
-        <Grid container={true}>
-          <Grid item={true} md={4} xs={12} />
-          <Grid item={true} md={4} xs={12}>
-            <Box p={2}>
-              <Typography className={classes.fieldLabel}>
-                Default Action
-              </Typography>
+            </Grid>
+            <Grid
+              container={true}
+              item={true}
+              sm={12}
+              className={classes.formField}>
               <DropDown
-                label=""
+                label="Default Action"
+                labelPosition="left"
                 fullWidth={true}
                 current={actions.find(
                   (a) => a.name === currentIntent?.defaultActionName,
@@ -131,22 +137,22 @@ const EditIntent = ({
                 menuItems={actions}
                 onChange={handleChangeAction}
               />
-            </Box>
+            </Grid>
+            <Grid
+              container={true}
+              item={true}
+              sm={12}
+              justify="center"
+              className={classes.buttonGrid}>
+              <Button
+                autoFocus={true}
+                color="primary"
+                variant="contained"
+                onClick={saveChanges}>
+                Save Intent
+              </Button>
+            </Grid>
           </Grid>
-          <Grid item={true} md={4} xs={12} />
-        </Grid>
-        <Grid container={true}>
-          <Grid item={true} md={4} xs={12} />
-          <Grid item={true} md={4} xs={12} className={classes.addIntentBtn}>
-            <Button
-              autoFocus={true}
-              color="primary"
-              variant="contained"
-              onClick={saveChanges}>
-              Save
-            </Button>
-          </Grid>
-          <Grid item={true} md={4} xs={12} />
         </Grid>
       </DialogContent>
     </Dialog>

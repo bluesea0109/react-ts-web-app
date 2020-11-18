@@ -1,3 +1,4 @@
+import { IIntent } from '@bavard/agent-config';
 import {
   Button,
   createStyles,
@@ -42,7 +43,7 @@ interface ExampleFormProps {
   loading: boolean;
   example?: INLUExample;
   tagTypes: string[];
-  intents: string[];
+  intent: IIntent;
   onSaveChanges: () => void;
   onExampleUpdate: (updatedExample: INLUExample) => void;
 }
@@ -52,13 +53,11 @@ const ExampleForm = ({
   loading,
   example,
   tagTypes,
-  intents,
+  intent,
   onSaveChanges,
   onExampleUpdate,
 }: ExampleFormProps) => {
   const classes = useStyles();
-  const defaultIntent = example?.intent ?? intents?.[0];
-  const [intent, setIntent] = useState<string>(defaultIntent);
 
   const defaultTagType = example?.tags?.[0]?.tagType ?? tagTypes?.[0];
   const [tagType, setTagType] = useState<string>(defaultTagType);
@@ -79,7 +78,7 @@ const ExampleForm = ({
       id: example?.id,
       agentId: example?.agentId,
       text: exampleText,
-      intent,
+      intent: intent.name,
       tags: annotatorState.tags.map((tag) => ({
         tagType: tag.tag,
         start: tag.start,
@@ -107,21 +106,6 @@ const ExampleForm = ({
 
   return (
     <Grid container={true}>
-      <Grid
-        container={true}
-        item={true}
-        sm={12}
-        className={classes.intentField}>
-        <DropDown
-          fullWidth={true}
-          label="Intent"
-          labelPosition="left"
-          menuItems={intents}
-          current={intent}
-          padding="12px"
-          onChange={setIntent}
-        />
-      </Grid>
       <Paper className={classes.paper}>
         <Grid container={true} className={classes.formField}>
           <TextInput
@@ -140,7 +124,7 @@ const ExampleForm = ({
             label="Selected Tag Type"
             labelPosition="left"
             menuItems={tagTypes}
-            current={tagTypes?.[0]}
+            current={tagType}
             padding="12px"
             onChange={updateTagType}
           />
