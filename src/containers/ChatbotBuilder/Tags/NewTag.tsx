@@ -38,8 +38,7 @@ const NewTag: React.FC<NewTagProps> = ({ onAdd }: NewTagProps) => {
   };
 
   return (
-    <Card className={clsx(classes.root)}>
-      <Typography variant="h4">New Tag</Typography>
+    <Card className={clsx(classes.root)}>      
       <TextField
         id="name"
         label="Tag Name"

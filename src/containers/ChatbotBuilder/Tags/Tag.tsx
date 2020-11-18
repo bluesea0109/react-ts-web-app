@@ -10,13 +10,16 @@ import TagsTable from './TagsTable';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      padding: theme.spacing(2),
+    root: {      
       overflow: 'auto',
     },
     paper: {
       padding: theme.spacing(2),
     },
+    pageTitle: {
+      fontSize: '26px', 
+      marginBottom: '24px'
+    }
   }),
 );
 
@@ -47,6 +50,7 @@ const TagSection: React.FC = () => {
   return (
     <div className={classes.root}>
       <Grid item={true} xs={12} sm={12}>
+        <Grid className={classes.pageTitle}>Tag Type Manager</Grid>
         <NewTag onAdd={onAddTagType} />
       </Grid>
       <Grid item={true} xs={12} sm={12}>

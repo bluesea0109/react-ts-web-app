@@ -20,7 +20,7 @@ import UploadGraphPolicyDialog from './UploadGraphPolicyDialog';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      padding: theme.spacing(2),
+      padding: '50px',
     },
     textArea: {
       width: '100%',
@@ -185,6 +185,9 @@ export default function GraphPolicies() {
   return (
     <Grid container={true} spacing={2} className={classes.root}>
       <Grid item={true} xs={12}>
+        <Grid style={{ fontSize: '26px', marginBottom: '24px' }}>
+          Graph Policy v 1.0
+        </Grid>
         <GraphPoliciesTable
           loading={loading}
           onActivate={handleActivatePolicy}
