@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       background: '#eaeaea',
       height: '100vh',
-      padding: theme.spacing(4),
+      padding: theme.spacing(6),
     },
     subContainer: {
       marginBottom: theme.spacing(4),

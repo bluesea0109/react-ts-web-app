@@ -48,6 +48,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   tabPanel: {
     overflow: 'auto',
     width: '100%',
+    padding: '50px',
     background: '#f5f5f5',
   },
   toolbar: {
