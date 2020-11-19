@@ -13,7 +13,11 @@ import {
   DELETE_TRAINING_CONVERSATION,
   GET_TRAINING_CONVERSATIONS,
 } from '../../../common-gql-queries';
-import { ITrainingConversations } from '../../../models/chatbot-service';
+// import { IConversation, ITrainingConversations } from '../../../models/chatbot-service';
+import {
+  IConversation,
+} from '@bavard/agent-config/dist/conversations';
+import {  } from '@bavard/agent-config';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 import { ConversationBoard } from './ConversationBoard';
@@ -21,7 +25,7 @@ import CreateConversation from './NewTrainingConversations';
 import BavardPagination from './Pagination';
 
 interface IGetTrainingConversation {
-  ChatbotService_trainingConversations: ITrainingConversations[];
+  ChatbotService_trainingConversations: IConversation[];
 }
 
 export default function TrainingConversations() {
