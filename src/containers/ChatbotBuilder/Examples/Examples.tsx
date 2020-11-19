@@ -1,5 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
+import { IIntent } from '@bavard/agent-config';
 import { Box, Grid, Typography } from '@material-ui/core';
+import { createStyles, makeStyles } from '@material-ui/core/styles';
 import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
@@ -22,10 +24,22 @@ import {
   ExamplesFilter,
   ExamplesQueryResults,
 } from './types';
+import { EXAMPLES_LIMIT } from './constants';
 
-export const EXAMPLES_LIMIT = 10;
+const useStyles = makeStyles(() =>
+  createStyles({
+    root: {
+      width: '100%',
+    },
+  }),
+);
 
-const Examples = () => {
+interface ExamplesProps {
+  intent: IIntent;
+}
+
+const Examples: React.FC<ExamplesProps> = ({ intent }) => {
+  const classes = useStyles();
   const params = useParams<{ agentId: string }>();
   const agentId = parseInt(params.agentId, 10);
 
@@ -38,9 +52,9 @@ const Examples = () => {
   const examplesData = useQuery<ExamplesQueryResults>(getExamplesQuery, {
     variables: {
       agentId,
+      intent: intent.name,
       limit: EXAMPLES_LIMIT,
       offset: filters?.offset,
-      intent: filters?.intent,
     },
   });
 
@@ -49,10 +63,10 @@ const Examples = () => {
       {
         query: getExamplesQuery,
         variables: {
-          agentId: Number(agentId),
+          agentId,
+          intent: intent.name,
           limit: EXAMPLES_LIMIT,
           offset: filters?.offset,
-          intent: filters?.intent,
         },
       },
     ],
@@ -203,51 +217,34 @@ const Examples = () => {
   };
 
   return (
-    <Grid container={true}>
-      <Grid container={true}>
-        <Grid item={true} container={true}>
-          <Box fontWeight="bold" fontSize={24}>
-            Natural Language Understanding Examples
-          </Box>
-        </Grid>
-        <Grid item={true} container={true} sm={6}>
-          <Box fontSize={16} my={2} lineHeight={1.5}>
-            Add or delete examples of natural language below to improve your
-            Assistant’s detection of the user’s intent.
-          </Box>
-        </Grid>
-      </Grid>
-      <Grid container={true}>
+    <Box className={classes.root}>
+      <ExamplesTable
+        updateFilters={updateFilters}
+        examples={examples}
+        exampleCount={exampleCount}
+        examplesPerPage={EXAMPLES_LIMIT}
+        filters={filters}
+        config={config}
+        tagTypes={tagTypes}
+        onDelete={onExampleDelete}
+        onEdit={onExampleEdit}
+        onAdd={onNewExample}
+        onUpdateExample={onExampleSave}
+      />
+      {!!intents && !!tagTypes && !!currentEdit && (
         <Grid container={true} item={true} xs={12}>
-          <ExamplesTable
-            updateFilters={updateFilters}
-            examples={examples}
-            exampleCount={exampleCount}
-            examplesPerPage={EXAMPLES_LIMIT}
-            intents={intents}
-            filters={filters}
-            config={config}
-            onDelete={onExampleDelete}
-            onEdit={onExampleEdit}
-            onAdd={onNewExample}
-            onUpdateExample={onExampleSave}
+          <EditExample
+            loading={examplesData.loading}
+            tagTypes={tagTypes}
+            intent={intent}
+            example={currentEdit}
+            onEditExampleClose={onExampleEditClose}
+            onSaveExample={onExampleSave}
+            error={exampleError}
           />
         </Grid>
-        {!!intents && !!tagTypes && !!currentEdit && (
-          <Grid container={true} item={true} xs={12}>
-            <EditExample
-              loading={examplesData.loading}
-              tagTypes={tagTypes}
-              intents={intents}
-              example={currentEdit}
-              onEditExampleClose={onExampleEditClose}
-              onSaveExample={onExampleSave}
-              error={exampleError}
-            />
-          </Grid>
-        )}
-      </Grid>
-    </Grid>
+      )}
+    </Box>
   );
 };
 

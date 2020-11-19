@@ -22,7 +22,7 @@ interface IconButtonProps {
   color?: ButtonColorTypes;
   variant?: ButtonVariantTypes;
   Icon: OverridableComponent<SvgIconTypeMap<{}, 'svg'>>;
-  iconPosition: 'left' | 'right' | undefined;
+  iconPosition?: 'left' | 'right' | undefined;
   textTransform?: TextTransformTypes;
   onClick: () => void;
 }
@@ -46,7 +46,7 @@ const IconButton: React.FC<IconButtonProps> = ({
       variant={variant || 'contained'}
       className={classes.root}
       onClick={onClick}
-      startIcon={iconPosition === 'left' ? <Icon /> : undefined}
+      startIcon={iconPosition !== 'right' ? <Icon /> : undefined}
       endIcon={iconPosition === 'right' ? <Icon /> : undefined}>
       {title}
     </Button>

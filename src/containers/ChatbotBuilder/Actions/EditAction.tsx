@@ -131,7 +131,7 @@ const EditAction = ({
       }
       onEditClose={onEditActionClose}>
       <Grid container={true} justify="center" className={classes.rootGrid}>
-        <Grid container={true} item={true} sm={6} xs={4}>
+        <Grid container={true} item={true} sm={6} xs={8}>
           <Grid
             container={true}
             item={true}

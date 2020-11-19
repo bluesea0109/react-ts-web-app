@@ -1,3 +1,4 @@
+import { IIntent } from '@bavard/agent-config';
 import {
   createStyles,
   Grid,
@@ -15,8 +16,8 @@ import { ExamplesError } from './types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    rootGrid: {
-      padding: theme.spacing(2),
+    root: {
+      padding: theme.spacing(3),
     },
     formField: {
       marginTop: theme.spacing(1),
@@ -32,9 +33,9 @@ const useStyles = makeStyles((theme: Theme) =>
 
 type EditExampleProps = {
   loading: boolean;
-  example?: INLUExample;
+  example: INLUExample;
   tagTypes: string[];
-  intents: string[];
+  intent: IIntent;
   error: Maybe<ExamplesError>;
   onSaveExample: (updatedExample: INLUExample) => Promise<void>;
   onEditExampleClose: () => void;
@@ -44,12 +45,12 @@ const EditExample = ({
   loading,
   example,
   tagTypes,
-  intents,
+  intent,
   onSaveExample,
   onEditExampleClose,
 }: EditExampleProps) => {
   const classes = useStyles();
-  const [updatedExample, setUpdatedExample] = useState<INLUExample>();
+  const [updatedExample, setUpdatedExample] = useState<INLUExample>(example);
   const { enqueueSnackbar } = useSnackbar();
   const isNew = example?.id === -1;
 
@@ -70,25 +71,32 @@ const EditExample = ({
   return (
     <FullDialog
       isOpen={!!example}
-      title={isNew ? 'Create NLU Example' : `Edit NLU Example #${example?.id}`}
+      title={
+        isNew
+          ? 'Add a New Natural Language Example'
+          : `Edit a Natural Language Example #${example?.id}`
+      }
       onEditClose={onEditExampleClose}>
-      <Grid container={true} justify="center" className={classes.rootGrid}>
-        <Grid container={true} item={true} sm={4} xs={6}>
-          <Grid container={true} item={true} xs={12} justify="center">
-            <Typography variant="h6">
+      <Grid container={true} justify="center" className={classes.root}>
+        <Grid container={true} item={true} sm={4} xs={8}>
+          <Grid
+            container={true}
+            item={true}
+            xs={12}
+            justify="center"
+            className={classes.formField}>
+            <Typography variant="subtitle1">
               {
-                "Add an example in natural language below to improve your\
-              Assistant's detection of user's intent."
+                "Edit or add an example in natural language below to improve your Assistant's detection of the user's input."
               }
             </Typography>
           </Grid>
-
           <ExampleForm
             isNew={isNew}
             loading={loading}
-            example={example}
+            example={updatedExample}
             tagTypes={tagTypes}
-            intents={intents}
+            intent={intent}
             onSaveChanges={handleSaveChanges}
             onExampleUpdate={setUpdatedExample}
           />

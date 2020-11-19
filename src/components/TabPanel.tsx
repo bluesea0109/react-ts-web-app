@@ -1,4 +1,4 @@
-import { Box, Typography } from '@material-ui/core';
+import { Box, Typography, makeStyles } from '@material-ui/core';
 import React from 'react';
 
 interface TabPanelProps {
@@ -18,6 +18,9 @@ const TabPanel = ({
   className,
   padding,
 }: TabPanelProps) => {
+
+  const classes = useStyles();
+
   if (value !== index) {
     return null;
   }
@@ -30,15 +33,18 @@ const TabPanel = ({
       paddingBottom={tabPadding}
       paddingTop={tabName ? 0 : tabPadding}>
       {tabName && (
-        <Box paddingY={2}>
-          <Typography variant="h5" style={{ fontWeight: 'bold' }}>
-            {tabName}
-          </Typography>
-        </Box>
+        <Typography className={classes.pageTitle}>{tabName}</Typography>
       )}
       {children}
     </Box>
   );
 };
+
+const useStyles=makeStyles((theme) => ({
+  pageTitle: {
+    fontSize: '26px', 
+    marginBottom: '24px'
+  }
+}))
 
 export default TabPanel;
