@@ -24,6 +24,7 @@ import {
   ExamplesFilter,
   ExamplesQueryResults,
 } from './types';
+import { EXAMPLES_LIMIT } from './constants';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -32,8 +33,6 @@ const useStyles = makeStyles(() =>
     },
   }),
 );
-
-export const EXAMPLES_LIMIT = 10;
 
 interface ExamplesProps {
   intent: IIntent;

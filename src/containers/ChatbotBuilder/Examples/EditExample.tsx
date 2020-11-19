@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 type EditExampleProps = {
   loading: boolean;
-  example?: INLUExample;
+  example: INLUExample;
   tagTypes: string[];
   intent: IIntent;
   error: Maybe<ExamplesError>;
@@ -50,7 +50,7 @@ const EditExample = ({
   onEditExampleClose,
 }: EditExampleProps) => {
   const classes = useStyles();
-  const [updatedExample, setUpdatedExample] = useState<INLUExample>();
+  const [updatedExample, setUpdatedExample] = useState<INLUExample>(example);
   const { enqueueSnackbar } = useSnackbar();
   const isNew = example?.id === -1;
 
@@ -79,10 +79,22 @@ const EditExample = ({
       onEditClose={onEditExampleClose}>
       <Grid container={true} justify="center" className={classes.root}>
         <Grid container={true} item={true} sm={4} xs={8}>
+          <Grid
+            container={true}
+            item={true}
+            xs={12}
+            justify="center"
+            className={classes.formField}>
+            <Typography variant="subtitle1">
+              {
+                "Edit or add an example in natural language below to improve your Assistant's detection of the user's input."
+              }
+            </Typography>
+          </Grid>
           <ExampleForm
             isNew={isNew}
             loading={loading}
-            example={example}
+            example={updatedExample}
             tagTypes={tagTypes}
             intent={intent}
             onSaveChanges={handleSaveChanges}

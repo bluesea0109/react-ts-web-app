@@ -7,7 +7,9 @@ import {
   Paper,
   Theme,
   Typography,
+  IconButton,
 } from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
 import React, { useEffect, useState } from 'react';
 import { TextAnnotator } from 'react-text-annotate';
 import { DropDown, TextInput } from '../../../components';
@@ -20,10 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       padding: theme.spacing(2),
       backgroundColor: '#EAEAEA',
-    },
-    intentField: {
-      marginTop: theme.spacing(3),
-      marginBottom: theme.spacing(3),
+      position: 'relative',
     },
     formField: {
       marginTop: theme.spacing(2),
@@ -35,28 +34,35 @@ const useStyles = makeStyles((theme: Theme) =>
         backgroundColor: 'white',
       },
     },
+    trashButton: {
+      position: 'absolute',
+      top: '5px',
+      right: '0px',
+    },
   }),
 );
 
 interface ExampleFormProps {
   isNew?: boolean;
   loading: boolean;
-  example?: INLUExample;
+  example: INLUExample;
   tagTypes: string[];
   intent: IIntent;
+  onDelete?: () => void;
   onSaveChanges: () => void;
   onExampleUpdate: (updatedExample: INLUExample) => void;
 }
 
-const ExampleForm = ({
+const ExampleForm: React.FC<ExampleFormProps> = ({
   isNew,
   loading,
   example,
   tagTypes,
   intent,
+  onDelete,
   onSaveChanges,
   onExampleUpdate,
-}: ExampleFormProps) => {
+}) => {
   const classes = useStyles();
 
   const defaultTagType = example?.tags?.[0]?.tagType ?? tagTypes?.[0];
@@ -71,9 +77,7 @@ const ExampleForm = ({
   ] = useEditExampleAnnotation({ tagTypes });
 
   useEffect(() => {
-    if (!example) {
-      return;
-    }
+    if (!example?.id) return;
     onExampleUpdate({
       id: example?.id,
       agentId: example?.agentId,
@@ -85,7 +89,8 @@ const ExampleForm = ({
         end: tag.end,
       })),
     });
-  }, [intent, example, onExampleUpdate, exampleText, annotatorState.tags]);
+    // eslint-disable-next-line
+  }, [intent, example?.id, example?.agentId, exampleText, annotatorState.tags]);
 
   useEffect(() => {
     setExampleText(example?.text ?? '');
@@ -106,23 +111,20 @@ const ExampleForm = ({
 
   return (
     <Grid container={true}>
-      <Grid
-        container={true}
-        item={true}
-        xs={12}
-        justify="center"
-        className={classes.formField}>
-        <Typography variant="subtitle1">
-          {
-            "Edit or add an example in natural language below to improve your Assistant's detection of the user's input."
-          }
-        </Typography>
-      </Grid>
       <Paper className={classes.paper}>
+        {onDelete && (
+          <IconButton
+            size="small"
+            color="default"
+            className={classes.trashButton}
+            onClick={onDelete}>
+            <DeleteIcon color="secondary" fontSize="small" />
+          </IconButton>
+        )}
         <Grid container={true} className={classes.formField}>
           <TextInput
             fullWidth={true}
-            label="NLU Example 1*"
+            label={`NLU Example ${example?.id || 1}*`}
             rows={4}
             value={exampleText}
             className={classes.input}
