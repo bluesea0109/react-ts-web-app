@@ -223,9 +223,9 @@ const Examples: React.FC<ExamplesProps> = ({ intent }) => {
         examples={examples}
         exampleCount={exampleCount}
         examplesPerPage={EXAMPLES_LIMIT}
-        intents={intents}
         filters={filters}
         config={config}
+        tagTypes={tagTypes}
         onDelete={onExampleDelete}
         onEdit={onExampleEdit}
         onAdd={onNewExample}

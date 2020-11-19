@@ -1,9 +1,10 @@
-import { Button } from '@material-ui/core';
 import React, { useMemo } from 'react';
+import randomcolor from 'randomcolor';
 import { TextAnnotator } from 'react-text-annotate';
 import { CommonTable, IconButton } from '../../../components';
 import { INLUExample } from '../../../models/chatbot-service';
 import AddCircleOutline from '@material-ui/icons/AddCircleOutline';
+import { Typography } from '@material-ui/core';
 
 export interface ExamplesFilter {
   intent?: string;
@@ -18,9 +19,9 @@ interface ExamplesTableProps {
   examples: INLUExample[];
   exampleCount: number;
   examplesPerPage: number;
-  intents: string[];
   filters?: ExamplesFilter;
   config: any;
+  tagTypes: string[];
   onDelete: (example: INLUExample) => Promise<void>;
   onEdit: (example: INLUExample) => void;
   onAdd: () => void;
@@ -32,7 +33,7 @@ const ExamplesTable = ({
   examples,
   exampleCount,
   examplesPerPage,
-  intents,
+  tagTypes,
   filters,
   updateFilters,
   onAdd,
@@ -52,6 +53,11 @@ const ExamplesTable = ({
     updateFilters({ offset: page * examplesPerPage });
   };
 
+  const randColors = randomcolor({
+    luminosity: 'light',
+    count: tagTypes.length,
+  });
+
   const columns = [
     {
       title: 'Natural Language Examples',
@@ -67,9 +73,11 @@ const ExamplesTable = ({
             start: tag.start,
             end: tag.end,
             tag: tag.tagType,
+            // prettier-ignore
+            color: randColors[tagTypes.findIndex(tagType => tagType === tag.tagType)],
           }))}
           onChange={() => {}}
-          getSpan={(span) => ({
+          getSpan={(span: any) => ({
             ...span,
             tag: null,
             color: '#ccc',
@@ -81,7 +89,17 @@ const ExamplesTable = ({
       title: 'Selected Tag Type',
       field: 'text',
       renderRow: (data: INLUExample) =>
-        data.tags.map((tag) => tag.tagType).join(', '),
+        data.tags.map((tag, index) => (
+          <span
+            key={index}
+            style={{
+              margin: '2px',
+              // prettier-ignore
+              backgroundColor: randColors[tagTypes.findIndex((tagType) => tagType === tag.tagType)],
+            }}>
+            {tag.tagType}
+          </span>
+        )),
     },
   ];
 
