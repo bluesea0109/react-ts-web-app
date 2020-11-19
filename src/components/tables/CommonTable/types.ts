@@ -100,6 +100,7 @@ export interface CommonTableFooterProps {
   pagination?: PaginationType;
   isPaginated?: boolean;
   columnCount?: number;
+  components?: ComponentListInterface;
 }
 
 export interface ComponentListInterface {
@@ -107,6 +108,7 @@ export interface ComponentListInterface {
   TableHeaderCell?: React.ComponentType<any>;
   TableRow?: React.ComponentType<any>;
   TableHeaderRow?: React.ComponentType<any>;
+  TableFooter?: React.ComponentType<any>;
 }
 
 // prettier-ignore

@@ -63,6 +63,7 @@ const CommonTable = ({
         <CommonTableFooter
           isPaginated={!!pagination}
           columnCount={columnCount}
+          components={components}
           pagination={{
             ...pagination,
             page: pagination?.asyncPage || page,

@@ -1,15 +1,10 @@
-import {
-  Box,
-  Button,
-  createStyles,
-  makeStyles,
-  Theme,
-  Typography,
-} from '@material-ui/core';
 import React, { useMemo } from 'react';
+import randomcolor from 'randomcolor';
 import { TextAnnotator } from 'react-text-annotate';
-import { CommonTable, DropDown } from '../../../components';
+import { CommonTable, IconButton } from '../../../components';
 import { INLUExample } from '../../../models/chatbot-service';
+import AddCircleOutline from '@material-ui/icons/AddCircleOutline';
+import { Typography } from '@material-ui/core';
 
 export interface ExamplesFilter {
   intent?: string;
@@ -20,30 +15,13 @@ export interface InvalidExist {
   invalidExist?: boolean;
 }
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    paper: {
-      padding: theme.spacing(2),
-      marginBottom: theme.spacing(2),
-      borderRadius: `4px`,
-      position: `relative`,
-      width: '100%',
-    },
-    panel: {
-      display: 'flex',
-      justifyContent: 'flex-end',
-      padding: theme.spacing(3),
-    },
-  }),
-);
-
 interface ExamplesTableProps {
   examples: INLUExample[];
   exampleCount: number;
   examplesPerPage: number;
-  intents: string[];
   filters?: ExamplesFilter;
   config: any;
+  tagTypes: string[];
   onDelete: (example: INLUExample) => Promise<void>;
   onEdit: (example: INLUExample) => void;
   onAdd: () => void;
@@ -55,15 +33,13 @@ const ExamplesTable = ({
   examples,
   exampleCount,
   examplesPerPage,
-  intents,
+  tagTypes,
   filters,
   updateFilters,
   onAdd,
   onEdit,
   onDelete,
 }: ExamplesTableProps) => {
-  const classes = useStyles();
-
   const filteredExamples = useMemo(() => {
     if (!filters || !filters.intent) {
       return examples;
@@ -73,44 +49,19 @@ const ExamplesTable = ({
     );
   }, [filters, examples]);
 
-  const handleIntentChange = (intent: string) => {
-    updateFilters({ intent, offset: 0 });
-  };
-
-  const handlePagechange = (page: number) => {
+  const handlePageChange = (page: number) => {
     updateFilters({ offset: page * examplesPerPage });
   };
 
+  const randColors = randomcolor({
+    luminosity: 'light',
+    count: tagTypes.length,
+  });
+
   const columns = [
     {
-      title: 'Intent',
+      title: 'Natural Language Examples',
       field: 'intent',
-      renderHeader: () => (
-        <Box
-          style={{
-            padding: 0,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'stretch',
-          }}>
-          <Typography
-            variant="subtitle1"
-            style={{ fontWeight: 'bold', marginRight: 10 }}>
-            Intent
-          </Typography>
-          <DropDown
-            label=""
-            width={200}
-            current={intents.find((each) => each === filters?.intent)}
-            menuItems={intents}
-            onChange={handleIntentChange}
-          />
-        </Box>
-      ),
-    },
-    {
-      title: 'Text',
-      field: 'text',
       renderRow: (data: INLUExample) => (
         <TextAnnotator
           style={{
@@ -122,15 +73,33 @@ const ExamplesTable = ({
             start: tag.start,
             end: tag.end,
             tag: tag.tagType,
+            // prettier-ignore
+            color: randColors[tagTypes.findIndex(tagType => tagType === tag.tagType)],
           }))}
           onChange={() => {}}
-          getSpan={(span) => ({
+          getSpan={(span: any) => ({
             ...span,
             tag: null,
             color: '#ccc',
           })}
         />
       ),
+    },
+    {
+      title: 'Selected Tag Type',
+      field: 'text',
+      renderRow: (data: INLUExample) =>
+        data.tags.map((tag, index) => (
+          <span
+            key={index}
+            style={{
+              margin: '2px',
+              // prettier-ignore
+              backgroundColor: randColors[tagTypes.findIndex((tagType) => tagType === tag.tagType)],
+            }}>
+            {tag.tagType}
+          </span>
+        )),
     },
   ];
 
@@ -146,7 +115,7 @@ const ExamplesTable = ({
         asyncPage: Math.floor((filters?.offset || 0) / examplesPerPage),
         rowsPerPage: examplesPerPage,
         asyncTotalCount: exampleCount,
-        onUpdatePage: handlePagechange,
+        onUpdatePage: handlePageChange,
       }}
       editable={{
         isEditable: true,
@@ -158,12 +127,15 @@ const ExamplesTable = ({
         actionsText: '',
       }}
       components={{
-        Toolbar: () => (
-          <Box className={classes.panel}>
-            <Button variant="contained" color="primary" onClick={onAdd}>
-              Add New Examples
-            </Button>
-          </Box>
+        TableFooter: () => (
+          <IconButton
+            color="primary"
+            title="Add New Example"
+            variant="text"
+            iconPosition="left"
+            onClick={onAdd}
+            Icon={AddCircleOutline}
+          />
         ),
       }}
     />

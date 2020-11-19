@@ -27,15 +27,14 @@ const Actions = () => {
   );
 
   if (!config) {
-    return null;
+    return <p>Agent config is empty.</p>;
   }
 
   const actions: BaseAgentAction[] = config.getActions();
 
   const onAddAction = () => {
     setIsNewAction(true);
-    const utteranceAction = new AgentUtteranceAction('', '').toJsonObj();
-    setCurrentAction(utteranceAction);
+    setCurrentAction(new AgentUtteranceAction('', '').toJsonObj());
   };
 
   const onEditAction = (action: BaseAgentAction) => {
@@ -46,6 +45,7 @@ const Actions = () => {
     if (!currentAction) {
       return;
     }
+
     setConfig(config.copy().deleteAction(currentAction.name).addAction(action));
     setIsNewAction(false);
     setCurrentAction(undefined);

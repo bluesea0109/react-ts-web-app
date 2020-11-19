@@ -7,6 +7,7 @@ import {
   Theme,
   Toolbar,
   Typography,
+  DialogContent,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import React from 'react';
@@ -55,7 +56,7 @@ const FullDialog = ({
           </IconButton>
         </Toolbar>
       </AppBar>
-      {children}
+      <DialogContent>{children}</DialogContent>
     </Dialog>
   );
 };

@@ -58,3 +58,9 @@ export const getExamplesQuery = gql`
     }
   }
 `;
+
+export const createExamplesMutation = gql`
+  mutation($agentId: Int!, $examples: [ChatbotService_ExampleInput!]!) {
+    ChatbotService_uploadExamples(agentId: $agentId, examples: $examples)
+  }
+`;
