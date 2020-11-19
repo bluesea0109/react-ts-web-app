@@ -63,10 +63,10 @@ const Examples: React.FC<ExamplesProps> = ({ intent }) => {
       {
         query: getExamplesQuery,
         variables: {
-          agentId: Number(agentId),
+          agentId,
+          intent: intent.name,
           limit: EXAMPLES_LIMIT,
           offset: filters?.offset,
-          intent: filters?.intent,
         },
       },
     ],
