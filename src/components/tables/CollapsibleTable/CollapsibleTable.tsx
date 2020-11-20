@@ -1,5 +1,5 @@
 import { Grid } from '@material-ui/core';
-import React from 'react';
+import React, { useState } from 'react';
 import CollapsibleItem from './CollapsibleItem';
 import { ItemInterface } from './types';
 
@@ -26,6 +26,7 @@ const CollapsibleTable = ({
   ItemDetail,
   otherProps,
 }: CollapsibleTableProps<ItemInterface>) => {
+  const [selected, setSelected] = useState(-1)
   return (
     <Grid container={true}>
       {items.map((item, index) => (
@@ -39,6 +40,8 @@ const CollapsibleTable = ({
           onDelete={onDeleteItem}
           onBulkUpdate={onBulkUpdate}
           ItemRow={ItemRow}
+          isOpened={selected === index}
+          onClickItem={() => setSelected(index)}
           ItemDetail={ItemDetail}
           otherProps={otherProps}
         />

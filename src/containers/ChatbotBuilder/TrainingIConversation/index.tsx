@@ -5,6 +5,7 @@ import {
   LinearProgress,
   Paper,
   Typography,
+  Box,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { useState } from 'react';
@@ -14,45 +15,44 @@ import {
   GET_TRAINING_CONVERSATIONS,
 } from '../../../common-gql-queries';
 // import { IConversation, ITrainingConversations } from '../../../models/chatbot-service';
-import {
-  IConversation,
-} from '@bavard/agent-config/dist/conversations';
+import { IConversation } from '@bavard/agent-config/dist/conversations';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
-import { ConversationBoard } from './ConversationBoard';
-import CreateConversation from './NewTrainingConversations';
-import BavardPagination from './Pagination';
+import {ConversationList} from './ConversationList';
+import ConversationPanel from './ConversationPanel';
+import { CollapsibleTable } from '../../../components';
 
 interface IGetTrainingConversation {
-  ChatbotService_trainingConversations: IConversation[];
+  ChatbotService_trainingConversations: [];
 }
-
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       padding: theme.spacing(6),
-      width: '100%'
-    }, 
-    paper: {
-      padding: '20px'
+      width: '100%',
     },
-    button: {
-      margin: '0px 50px 20px',
+    paper: {
+      padding: '20px',
     },
     cetnerPagination: {
       display: 'flex',
       justifyContent: 'center',
     },
     pageTitle: {
-      fontSize: '26px', 
-      marginBottom: '24px'
-    }
+      fontSize: '26px',
+      marginBottom: '24px',
+    },
   }),
 );
 
+const ActionRow = () => (
+  <div>
+    <div>Action</div>
+  </div>
+);
 
-export default function TrainingConversations() {
+export default function TrainingIConversations() {
   const docsInPage = 5;
   const classes = useStyles();
 
@@ -70,20 +70,18 @@ export default function TrainingConversations() {
     GET_TRAINING_CONVERSATIONS,
     { variables: { agentId } },
   );
-  let conversations = getTrainingConversations.data?.ChatbotService_trainingConversations || [];
+  let conversations =
+    getTrainingConversations.data?.ChatbotService_trainingConversations || [];
 
   const refetchConversations = getTrainingConversations.refetch;
-  const data = conversations.map((item: any) => {    
-    return { actions: item.conversation.turns, id: item.id };
-  });
 
-  const totalPages = Math.ceil(data.length / docsInPage);
-  const records = data.slice(
+  const totalPages = Math.ceil(conversations.length / docsInPage);
+  const records = conversations.slice(
     (currentPage - 1) * docsInPage,
     currentPage * docsInPage,
   );
 
-  console.log('records >>> ', records)
+  console.log('records >>> ', records);
   if (getTrainingConversations.error) {
     return <ApolloErrorPage error={getTrainingConversations.error} />;
   }
@@ -108,81 +106,39 @@ export default function TrainingConversations() {
     seteditConversation(index);
   };
 
-  const deleteConversationHandler = async (conversationId: number) => {
-    const response = await deleteConversations({
-      variables: {
-        conversationId,
-      },
-    });
-    if (response) {
-      onSaveCallBack();
-    }
-  };
-
-  const handleClose = () => {
-    setcreateConversation(false);
-  };
-
-  const handlePageChange = (value: number) => {
-    setCurrentPage(value); // set the page
-  };
-
   const deleteConfirm = () => setConfirmOpen(true);
+
+  const handleSaveItem = () => console.log('save')
+  const handleDeleteItem = () => console.log('delete')
 
   return (
     <Grid className={classes.root}>
       <Grid className={classes.pageTitle}>Training Conversations</Grid>
       <Paper className={classes.paper}>
-        <Button
-          className={classes.button}
-          variant="contained"
-          color="primary"
-          onClick={onCreateNewConversation}>
-          Create New Conversation
-        </Button>
+        <Box display="flex" justifyContent="flex-end">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={onCreateNewConversation}>
+            Create New Conversation
+          </Button>
+        </Box>
+
         {loading && <LinearProgress />}
         <>
           {records.length > 0 && records ? (
-            records
-              .sort((a: any, b: any) => parseInt(a.id) + parseInt(b.id))
-              .map((item, index) => {
-                return (
-                  <ConversationBoard
-                    key={index}
-                    isUpdate={true}
-                    currentPage={currentPage}
-                    docsInPage={docsInPage}
-                    index={index}
-                    conversation={item}
-                    conversationLastindex={
-                      (currentPage - 1) * docsInPage + index + 1
-                    }
-                    onSaveCallback={onSaveCallBack}
-                    confirmOpen={confirmOpen}
-                    onEditConversation={onEditConversation}
-                    deleteConfirm={deleteConfirm}
-                    setConfirmOpen={setConfirmOpen}
-                    deleteConversationHandler={deleteConversationHandler}
-                  />
-                );
-              })
+            <ConversationList 
+              records={records ?? []}
+              handleDelete={handleDeleteItem}
+              handleSave={handleSaveItem}
+            />
           ) : (
             <Typography align="center" variant="h6">
               {'No Conversation found'}
             </Typography>
           )}
-          <Grid className={classes.cetnerPagination}>
-            <BavardPagination total={totalPages} onChange={handlePageChange} />
-          </Grid>
         </>
       </Paper>
-      {createConversation && (
-        <CreateConversation
-          onSaveCallback={onSaveCallBack}
-          conversationLastindex={conversations.length + 1}
-          onCloseCallback={handleClose}
-        />
-      )}
     </Grid>
   );
 }

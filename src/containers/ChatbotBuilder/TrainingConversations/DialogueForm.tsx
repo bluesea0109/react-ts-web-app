@@ -242,6 +242,8 @@ export const DialogueForm = ({
   const classes = useStyles();
   const [isOpened, setOpen] = useState(false);
 
+  console.log('Item in DLG >>> ', item)
+
   const handleIntentField = (item: string) => {
     if (type === ACTION.USER_ACTION) {
       onAutoFieldChange(index, ACTION.USER_ACTION, item);
@@ -359,29 +361,7 @@ export const DialogueForm = ({
                   />
                 </Grid>
               </Grid>
-            </Grid>
-            <Grid container={true} className={classes.actionForm}>
-              <Grid container={true}>
-                <Grid item={true} xs={4}>
-                  <Typography>Intent</Typography>
-                  <DropDown
-                    labelPosition="top"
-                    current={value}
-                    menuItems={options}
-                    onChange={handleTagField}
-                  />
-                </Grid>
-                <Grid item={true} xs={1} />
-                <Grid item={true} xs={7}>
-                  <Typography>Intent</Typography>
-                  <TextField
-                    variant="outlined"
-                    size="small"
-                    className={classes.textField}
-                  />
-                </Grid>
-              </Grid>
-            </Grid>
+            </Grid>            
           </>
         )}
       </AccordionDetails>

@@ -1,4 +1,5 @@
 import { AgentConfig, WidgetSettings } from '@bavard/agent-config';
+import { IConversation } from '@bavard/agent-config/dist/conversations';
 import { atom } from 'recoil';
 import { IOptionImage } from '../../models/chatbot-service';
 
@@ -23,3 +24,14 @@ export const agentOptionImages = atom<IAgentOptionAtomData | undefined>({
   default: undefined,
   dangerouslyAllowMutability: true,
 });
+
+interface ITrainingConversation {
+  conversation: IConversation,
+  id: number
+}
+
+export const trainingConversation = atom<ITrainingConversation | undefined>({
+  key: 'conversation',
+  default: undefined,
+  dangerouslyAllowMutability: true
+})

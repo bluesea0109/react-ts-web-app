@@ -162,15 +162,14 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
     setLoding(true);
 
     actionData.forEach((item: any, index: number) => {
-      if (item.userActions && item.userActions !== undefined) {
-        // userActions.push(item.userActions[0]);
+      if (item.userActions && item.userActions !== undefined) {                
         turns.push({
           actor: EDialogueActor.USER,
           userAction: {
             type: EUserActionType.UTTERANCE_ACTION,
             utterance: item.userActions[0].utterance,
-            // intent: item.userActions[0].intent,
-            // tags: item.userActions[0].tagValues
+            intent: item.userActions[0].intent,
+            tags: item.userActions[0].tagValues
           }
         })
       } else if (item.agentActions && item.agentActions !== undefined) {
@@ -178,7 +177,7 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
           actor: EDialogueActor.AGENT,
           agentAction: {
             type: EAgentActionTypes.UTTERANCE_ACTION,
-            utterance: item.agentActions[0].utternace
+            utterance: item.agentActions[0].utterance
           }
         })
       }

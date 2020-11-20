@@ -34,6 +34,9 @@ interface CollapsibleItemProps<ItemInterface> {
   ItemRow: React.ComponentType<any>;
   ItemDetail: React.ComponentType<any>;
   otherProps?: object;
+  isMultiple?: boolean;
+  isOpened?: boolean;
+  onClickItem?: (index: number) => void;
 }
 
 const CollapsibleItem = ({
@@ -44,6 +47,8 @@ const CollapsibleItem = ({
   onUpdate,
   onDelete,
   ItemRow,
+  isOpened,
+  onClickItem,
   ItemDetail,
   otherProps,
 }: CollapsibleItemProps<ItemInterface>) => {
@@ -62,9 +67,10 @@ const CollapsibleItem = ({
           onEditRow={onEdit}
           onDeleteRow={onDelete}
           onToggleCollapse={onToggleCollapse}
+          onClickItem={onClickItem}
         />
       </Paper>
-      {!isCollapsed && (
+      {isOpened && (
         <Paper variant="outlined" square={true} className={classes.paper}>
           <ItemDetail
             item={item}
