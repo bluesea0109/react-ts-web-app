@@ -10,8 +10,7 @@ import {
 } from '@material-ui/icons';
 import { IUserUtteranceAction } from '@bavard/agent-config/dist/actions/user';
 import { IAgentUtteranceAction } from '@bavard/agent-config';
-import { ACTION_TYPE } from './ConversationPanel';
-
+import { ACTION_TYPE, FIELD_TYPE } from './type';
 import { GroupField } from './GroupField';
 import { config } from 'process';
 import { useRecoilValue } from 'recoil';
@@ -47,14 +46,14 @@ const useStyle = makeStyles((theme) => ({
   agentActionHeader: {
     display: 'flex',
     backgroundColor: '#0200E6',
-    width: '100%',    
+    width: '100%',
     color: 'white',
     padding: '10px',
   },
   arrow: {
     color: 'white',
-    fontSize: '30px'
-  }
+    fontSize: '30px',
+  },
 }));
 
 const AccordionSummary = withStyles({
@@ -80,10 +79,17 @@ const AccordionSummary = withStyles({
 interface ActionPanelProps {
   action: IUserUtteranceAction | IAgentUtteranceAction;
   type: ACTION_TYPE;
+  order: number;
+  onDelete: (index:number) => void;
 }
 
-const ActionPanel = ({ action, type }: ActionPanelProps) => {
-  console.log('Data for action >>> ', action);
+export enum CHANGE_FIELD {
+  UTTERANCE = 'utterance',
+  INTENT = 'INTENT',
+  ACTION_NAME = 'ACTION_NAME',
+}
+
+const ActionPanel = ({ action, type, order, onDelete }: ActionPanelProps) => {
   const config = useRecoilValue(currentAgentConfig);
 
   const classes = useStyle();
@@ -109,20 +115,14 @@ const ActionPanel = ({ action, type }: ActionPanelProps) => {
           <Box display="flex" justifyContent="space-between" width={1}>
             <Box display="flex" flexDirection="row">
               {isOpened ? (
-                <KeyboardArrowDown
-                  color="primary"
-                  className={classes.arrow}
-                />
+                <KeyboardArrowDown color="primary" className={classes.arrow} />
               ) : (
-                <KeyboardArrowRight
-                  color="primary"
-                  className={classes.arrow}
-                />
+                <KeyboardArrowRight color="primary" className={classes.arrow} />
               )}
               <Typography className={classes.heading}>Conversation</Typography>
             </Box>
             <Box>
-              <Delete fontSize="large" onClick={() => console.log('okay')} />
+              <Delete fontSize="large" onClick={() => onDelete(order)} />
             </Box>
           </Box>
         </Grid>
@@ -133,16 +133,20 @@ const ActionPanel = ({ action, type }: ActionPanelProps) => {
             <>
               <GroupField
                 type={ACTION_TYPE.USER_ACTION}
+                field={FIELD_TYPE.INTENT}
                 data={(action as IUserUtteranceAction).intent}
                 option={intents}
+                order={order}
               />
               {(action as IUserUtteranceAction)?.tags?.length &&
                 (action as IUserUtteranceAction)?.tags?.map((item, index) => (
                   <GroupField
                     data={item.value}
-                    type={ACTION_TYPE.AGENT_ACTION}
+                    type={ACTION_TYPE.USER_ACTION}
+                    field={FIELD_TYPE.TAG}
                     key={index}
                     option={tags}
+                    order={order}
                   />
                 ))}
             </>
@@ -151,7 +155,9 @@ const ActionPanel = ({ action, type }: ActionPanelProps) => {
               <GroupField
                 data={action.utterance}
                 type={ACTION_TYPE.AGENT_ACTION}
+                field={FIELD_TYPE.NAME}
                 option={intents}
+                order={order}
               />
             </>
           )}

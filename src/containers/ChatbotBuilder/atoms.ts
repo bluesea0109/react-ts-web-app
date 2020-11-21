@@ -25,12 +25,7 @@ export const agentOptionImages = atom<IAgentOptionAtomData | undefined>({
   dangerouslyAllowMutability: true,
 });
 
-interface ITrainingConversation {
-  conversation: IConversation,
-  id: number
-}
-
-export const trainingConversation = atom<ITrainingConversation | undefined>({
+export const trainingConversation = atom<IConversation | undefined>({
   key: 'conversation',
   default: undefined,
   dangerouslyAllowMutability: true
