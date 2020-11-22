@@ -368,7 +368,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
 
   ensureAgentExists = async (data: IAgentDataExport) => {
     // Returns a promise to await the state
-    return new Promise(async (resolve) => {
+    return new Promise<void>(async (resolve) => {
       this.setStepStatus('Create Agent', 'importing');
       try {
         if (this.props.uname) {
