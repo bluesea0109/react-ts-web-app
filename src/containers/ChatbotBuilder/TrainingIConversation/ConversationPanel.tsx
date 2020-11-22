@@ -112,9 +112,7 @@ const ConversationPanel = ({ conversation }: ConversationPanelProps) => {
 
   useEffect(() => {
     updateData(conversation.conversation);
-  }, [conversation.conversation, updateData]);
-
-  console.log('Conversation >>>> Recoil >>> ', data);
+  }, [conversation.conversation, updateData]);  
 
   const renderActions = () => {
     return (

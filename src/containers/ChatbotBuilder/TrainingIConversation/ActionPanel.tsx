@@ -1,4 +1,4 @@
-import { makeStyles, AccordionDetails } from '@material-ui/core';
+import { makeStyles, AccordionDetails, IconButton } from '@material-ui/core';
 import React, { useState } from 'react';
 import { Accordion, Box, Typography, Grid } from '@material-ui/core';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
@@ -7,14 +7,27 @@ import {
   KeyboardArrowDown,
   KeyboardArrowRight,
   Delete,
+  AddCircleOutline,
 } from '@material-ui/icons';
-import { IUserUtteranceAction } from '@bavard/agent-config/dist/actions/user';
+import {
+  EUserActionType,
+  IUserAction,
+  IUserUtteranceAction,
+} from '@bavard/agent-config/dist/actions/user';
+import { IConversation } from '@bavard/agent-config/dist/conversations/'
 import { IAgentUtteranceAction } from '@bavard/agent-config';
 import { ACTION_TYPE, FIELD_TYPE } from './type';
 import { GroupField } from './GroupField';
+
 import { config } from 'process';
-import { useRecoilValue } from 'recoil';
-import { currentAgentConfig } from '../atoms';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { currentAgentConfig, trainingConversation } from '../atoms';
+import _ from 'lodash';
+import {
+  EDialogueActor,
+  IUserDialogueTurn,
+} from '@bavard/agent-config/dist/conversations';
+import userEvent from '@testing-library/user-event';
 
 const useStyle = makeStyles((theme) => ({
   listItemWrapper: {
@@ -54,6 +67,11 @@ const useStyle = makeStyles((theme) => ({
     color: 'white',
     fontSize: '30px',
   },
+  AgentActionsHeading: {
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    width: '50%',
+  },
 }));
 
 const AccordionSummary = withStyles({
@@ -73,6 +91,11 @@ const AccordionSummary = withStyles({
       margin: '0',
     },
   },
+  AgentActionsHeading: {
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    width: '50%',
+  },
   expanded: {},
 })(MuiAccordionSummary);
 
@@ -80,7 +103,7 @@ interface ActionPanelProps {
   action: IUserUtteranceAction | IAgentUtteranceAction;
   type: ACTION_TYPE;
   order: number;
-  onDelete: (index:number) => void;
+  onDelete: (index: number) => void;
 }
 
 export enum CHANGE_FIELD {
@@ -98,8 +121,27 @@ const ActionPanel = ({ action, type, order, onDelete }: ActionPanelProps) => {
   const tagList = config?.getTagTypes();
   const intents: string[] = [];
   const tags: string[] = [];
+
+  const [data, updateData] = useRecoilState(trainingConversation);
+
+  console.log('***data in action panel', data);
+
+  const handleAddTag = () => {
+    const updatedData = _.cloneDeep(data);
+    const another = {
+      ...updatedData,
+      turns: [...(updatedData as IConversation).turns, ((updatedData?.turns[order] as IUserDialogueTurn)
+        ?.userAction as IUserUtteranceAction)?.tags?.push({
+        tagType: '',
+        value: '',
+      })],
+    };
+    updateData(another as IConversation)
+  };
   tagList?.forEach((item) => tags.push(item));
   intentList?.forEach((item) => intents.push(item.name));
+  type === ACTION_TYPE.USER_ACTION;
+
   return (
     <Accordion className={classes.listItemWrapper} square={true}>
       <AccordionSummary
@@ -149,6 +191,22 @@ const ActionPanel = ({ action, type, order, onDelete }: ActionPanelProps) => {
                     order={order}
                   />
                 ))}
+              <Grid
+                container={true}
+                item={true}
+                className={classes.AgentActionsHeading}
+                justify="flex-end">
+                <Typography style={{ color: 'blue' }}>
+                  {' '}
+                  Add Agent Action{' '}
+                </Typography>
+                <IconButton onClick={() => handleAddTag}>
+                  <AddCircleOutline
+                    fontSize="large"
+                    style={{ color: '#5867ca' }}
+                  />
+                </IconButton>
+              </Grid>
             </>
           ) : (
             <>
