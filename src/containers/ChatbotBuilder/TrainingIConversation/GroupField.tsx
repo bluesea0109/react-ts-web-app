@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid, makeStyles, Box } from '@material-ui/core';
 import { ACTION_TYPE, FIELD_TYPE } from './type';
-import { DropDown, TextInput } from '../../../components';
+import { DropDown, TextInput } from '@bavard/react-components';
 import { IUserUtteranceAction } from '@bavard/agent-config/dist/actions/user';
 import { IAgentUtteranceAction } from '@bavard/agent-config';
 import { IIntent } from '../../../models/chatbot-service';
@@ -53,7 +53,7 @@ export const GroupField = ({
           labelPosition="left"
           label="Intent"
           menuItems={option}
-          current={data}
+          current={data || ''}
           onChange={handleDropdownChange}
         />
       </Grid>

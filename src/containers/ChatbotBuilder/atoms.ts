@@ -28,5 +28,5 @@ export const agentOptionImages = atom<IAgentOptionAtomData | undefined>({
 export const trainingConversation = atom<IConversation | undefined>({
   key: 'conversation',
   default: undefined,
-  dangerouslyAllowMutability: true
-})
+  dangerouslyAllowMutability: true,
+});

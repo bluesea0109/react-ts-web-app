@@ -152,7 +152,7 @@ const ConversationPanel = ({ conversation }: ConversationPanelProps) => {
           intent: '',
           tags: [],
         },
-        timestamp: new Date(),
+        timestamp: new Date().getTime(),
       };
       const updatedData = _.cloneDeep(data);
       const another = {
@@ -169,7 +169,7 @@ const ConversationPanel = ({ conversation }: ConversationPanelProps) => {
           name: '',
           options: [],
         },
-        timestamp: new Date(),
+        timestamp: new Date().getTime(),
       };
 
       const updatedData = _.cloneDeep(data);
