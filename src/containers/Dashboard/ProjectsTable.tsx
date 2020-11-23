@@ -7,7 +7,7 @@ import { GET_CURRENT_USER, UPDATE_ACTIVE_ORG } from '../../common-gql-queries';
 import { IOrg, IProject } from '../../models/user-service';
 import ApolloErrorPage from '../ApolloErrorPage';
 import ContentLoading from '../ContentLoading';
-import { CommonTable } from '../../components';
+import { CommonTable } from '@bavard/react-components';
 
 interface IProjectsTableProps {
   activeOrg: IOrg;

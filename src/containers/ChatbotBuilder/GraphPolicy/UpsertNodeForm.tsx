@@ -4,6 +4,7 @@ import {
   GraphPolicyNode,
   UtteranceNode,
 } from '@bavard/agent-config/dist/graph-policy';
+import { RichTextInput } from '@bavard/react-components';
 import {
   FormControl,
   FormControlLabel,
@@ -20,7 +21,6 @@ import { validateEmail } from '../../../utils/string';
 
 import { IFormField } from '@bavard/agent-config/dist';
 import { EFormFieldTypes } from '@bavard/agent-config/dist/enums';
-import RichTextInput from '../../../components/RichTextInput';
 import { AddFieldForm } from '../GraphPolicy/AddActionField';
 
 const useStyles = makeStyles((theme: Theme) =>

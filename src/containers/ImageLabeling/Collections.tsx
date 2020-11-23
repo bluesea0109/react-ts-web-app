@@ -1,4 +1,5 @@
 import { useQuery } from '@apollo/client';
+import { CommonTable } from '@bavard/react-components';
 import {
   makeStyles,
   Toolbar,
@@ -11,7 +12,6 @@ import React from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { IImageCollection } from '../../models/image-labeling-service';
 import ContentLoading from '../ContentLoading';
-import { CommonTable } from '../../components';
 import CreateCollection from './CreateCollection';
 
 const GET_COLLECTIONS = gql`

@@ -11,6 +11,7 @@ import {
   EAgentActionTypes,
   EFormFieldTypes,
 } from '@bavard/agent-config/dist/enums';
+import { DropDown, FullDialog, TextInput } from '@bavard/react-components';
 import {
   Button,
   createStyles,
@@ -20,7 +21,6 @@ import {
   Typography,
 } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
-import { DropDown, FullDialog, TextInput } from '../../../components';
 import EditEmailAction from './EditEmailAction';
 import EditFormAction from './EditFormAction';
 import EditUtteranceAction from './EditUtteranceAction';
@@ -124,97 +124,100 @@ const EditAction = ({
   }));
 
   return (
-    <FullDialog
-      isOpen={!!currentAction}
-      title={
-        isNewAction ? 'Add a New Action' : `Edit Action: ${currentAction?.name}`
-      }
-      onEditClose={onEditActionClose}>
-      <Grid container={true} justify="center" className={classes.rootGrid}>
-        <Grid container={true} item={true} sm={6} xs={8}>
-          <Grid
-            container={true}
-            item={true}
-            sm={12}
-            justify="flex-start"
-            className={classes.formField}>
-            <Typography variant="h6">
-              Add an Action to customize your Assistant’s behavior:
-            </Typography>
-          </Grid>
-          <Grid item={true} sm={12} className={classes.formField}>
-            <TextInput
-              fullWidth={true}
-              label="Action Name"
-              value={currentAction?.name}
-              className={classes.input}
-              onChange={
-                isNewAction
-                  ? (e) =>
-                      setCurrentAction({
-                        ...currentAction,
-                        name: e.target.value,
-                      })
-                  : undefined
-              }
-            />
-          </Grid>
-          <Grid
-            container={true}
-            item={true}
-            sm={12}
-            className={classes.formField}>
-            <DropDown
-              fullWidth={true}
-              label="Action Type"
-              labelPosition="left"
-              menuItems={ActionTypes}
-              current={currentAction?.type}
-              padding="12px"
-              onChange={(actionType) => handleUpdateActionType(actionType)}
-            />
-          </Grid>
-          {currentAction?.type === EAgentActionTypes.UTTERANCE_ACTION && (
-            <EditUtteranceAction
-              action={currentAction as AgentUtteranceAction}
-              onChangeAction={(action) => setCurrentAction(action)}
-            />
-          )}
-          {currentAction?.type === EAgentActionTypes.EMAIL_ACTION && (
-            <EditEmailAction
-              action={currentAction as EmailAction}
-              onChangeAction={(action) => setCurrentAction(action)}
-            />
-          )}
-          {currentAction?.type === EAgentActionTypes.FORM_ACTION && (
-            <EditFormAction
-              action={currentAction as FormAction}
-              onChangeAction={(action) => setCurrentAction(action)}
-            />
-          )}
-          <Grid container={true} item={true} xs={12}>
-            {!!currentAction && !!currentAction.options && (
-              <Options
-                options={currentAction.options}
-                onCreateOption={handleOptionCreate}
-                onBulkUpdate={(options) =>
-                  setCurrentAction({ ...currentAction, options })
+    !!currentAction && (
+      <FullDialog
+        title={
+          isNewAction
+            ? 'Add a New Action'
+            : `Edit Action: ${currentAction?.name}`
+        }
+        onClose={onEditActionClose}>
+        <Grid container={true} justify="center" className={classes.rootGrid}>
+          <Grid container={true} item={true} sm={6} xs={8}>
+            <Grid
+              container={true}
+              item={true}
+              sm={12}
+              justify="flex-start"
+              className={classes.formField}>
+              <Typography variant="h6">
+                Add an Action to customize your Assistant’s behavior:
+              </Typography>
+            </Grid>
+            <Grid item={true} sm={12} className={classes.formField}>
+              <TextInput
+                fullWidth={true}
+                label="Action Name"
+                value={currentAction?.name}
+                className={classes.input}
+                onChange={
+                  isNewAction
+                    ? (e) =>
+                        setCurrentAction({
+                          ...currentAction,
+                          name: e.target.value,
+                        })
+                    : undefined
                 }
               />
+            </Grid>
+            <Grid
+              container={true}
+              item={true}
+              sm={12}
+              className={classes.formField}>
+              <DropDown
+                fullWidth={true}
+                label="Action Type"
+                labelPosition="left"
+                menuItems={ActionTypes}
+                current={currentAction?.type}
+                padding="12px"
+                onChange={(actionType) => handleUpdateActionType(actionType)}
+              />
+            </Grid>
+            {currentAction?.type === EAgentActionTypes.UTTERANCE_ACTION && (
+              <EditUtteranceAction
+                action={currentAction as AgentUtteranceAction}
+                onChangeAction={(action) => setCurrentAction(action)}
+              />
             )}
-          </Grid>
-          <Grid container={true} item={true} xs={12} justify="center">
-            <Button
-              autoFocus={true}
-              color="primary"
-              variant="contained"
-              onClick={saveChanges}>
-              {isNewAction ? 'Add Action' : 'Update Action'}
-            </Button>
+            {currentAction?.type === EAgentActionTypes.EMAIL_ACTION && (
+              <EditEmailAction
+                action={currentAction as EmailAction}
+                onChangeAction={(action) => setCurrentAction(action)}
+              />
+            )}
+            {currentAction?.type === EAgentActionTypes.FORM_ACTION && (
+              <EditFormAction
+                action={currentAction as FormAction}
+                onChangeAction={(action) => setCurrentAction(action)}
+              />
+            )}
+            <Grid container={true} item={true} xs={12}>
+              {!!currentAction && !!currentAction.options && (
+                <Options
+                  options={currentAction.options}
+                  onCreateOption={handleOptionCreate}
+                  onBulkUpdate={(options) =>
+                    setCurrentAction({ ...currentAction, options })
+                  }
+                />
+              )}
+            </Grid>
+            <Grid container={true} item={true} xs={12} justify="center">
+              <Button
+                autoFocus={true}
+                color="primary"
+                variant="contained"
+                onClick={saveChanges}>
+                {isNewAction ? 'Add Action' : 'Update Action'}
+              </Button>
+            </Grid>
           </Grid>
         </Grid>
-      </Grid>
-    </FullDialog>
+      </FullDialog>
+    )
   );
 };
 

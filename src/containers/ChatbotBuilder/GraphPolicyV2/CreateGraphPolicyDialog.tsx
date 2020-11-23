@@ -1,6 +1,7 @@
 import { useMutation } from '@apollo/client';
 import { GraphPolicyV2 } from '@bavard/agent-config/dist/graph-policy-v2';
 import { AgentUtteranceNode } from '@bavard/agent-config/dist/graph-policy-v2';
+import { FullDialog, RichTextInput } from '@bavard/react-components';
 import {
   Button,
   FormControl,
@@ -11,8 +12,6 @@ import {
 } from '@material-ui/core';
 import { createStyles, makeStyles } from '@material-ui/styles';
 import React, { useState } from 'react';
-import FullScreenDialog from '../../../components/FullScreenDialog';
-import RichTextInput from '../../../components/RichTextInput';
 import ContentLoading from '../../ContentLoading';
 
 import { useSnackbar } from 'notistack';
@@ -111,57 +110,56 @@ const CreateGraphPolicyDialog = ({ open, agentId, onSuccess }: IProps) => {
   };
 
   return (
-    <FullScreenDialog
-      title={'Create Graph Policy'}
-      open={isOpen}
-      onClose={closeDialog}>
-      <Grid
-        container={true}
-        direction="row"
-        justify="center"
-        alignItems="center"
-        className={classes.gridContainer}>
-        <Grid item={true} xs={12} md={4}>
-          <Typography className={classes.formControl}>
-            Create a new graph policy
-          </Typography>
-          <TextField
-            onChange={(e) => {
-              setPolicyName(e.currentTarget.value);
-              onFormChange();
-            }}
-            size="small"
-            className={classes.formControl}
-            label="Policy Name"
-            variant="outlined"
-          />
-
-          <FormControl variant="outlined" className={classes.formControl}>
-            <RichTextInput
-              label="Utterance"
-              onChange={(value: string) => {
-                setStartUtterance(value);
+    isOpen && (
+      <FullDialog title={'Create Graph Policy'} onClose={closeDialog}>
+        <Grid
+          container={true}
+          direction="row"
+          justify="center"
+          alignItems="center"
+          className={classes.gridContainer}>
+          <Grid item={true} xs={12} md={4}>
+            <Typography className={classes.formControl}>
+              Create a new graph policy
+            </Typography>
+            <TextField
+              onChange={(e) => {
+                setPolicyName(e.currentTarget.value);
                 onFormChange();
               }}
+              size="small"
+              className={classes.formControl}
+              label="Policy Name"
+              variant="outlined"
             />
-          </FormControl>
 
-          {error && (
-            <Alert className={classes.formControl} severity="error">
-              {error}
-            </Alert>
-          )}
-          <Button
-            disabled={loading}
-            variant="contained"
-            color="primary"
-            onClick={handleSubmit}>
-            Submit
-          </Button>
-          {loading && <ContentLoading />}
+            <FormControl variant="outlined" className={classes.formControl}>
+              <RichTextInput
+                label="Utterance"
+                onChange={(value: string) => {
+                  setStartUtterance(value);
+                  onFormChange();
+                }}
+              />
+            </FormControl>
+
+            {error && (
+              <Alert className={classes.formControl} severity="error">
+                {error}
+              </Alert>
+            )}
+            <Button
+              disabled={loading}
+              variant="contained"
+              color="primary"
+              onClick={handleSubmit}>
+              Submit
+            </Button>
+            {loading && <ContentLoading />}
+          </Grid>
         </Grid>
-      </Grid>
-    </FullScreenDialog>
+      </FullDialog>
+    )
   );
 };
 

@@ -1,4 +1,5 @@
 import { IIntent } from '@bavard/agent-config';
+import { DropDown, TextInput } from '@bavard/react-components';
 import {
   Button,
   createStyles,
@@ -12,7 +13,6 @@ import {
 import DeleteIcon from '@material-ui/icons/Delete';
 import React, { useEffect, useState } from 'react';
 import { TextAnnotator } from 'react-text-annotate';
-import { DropDown, TextInput } from '../../../components';
 import { INLUExample } from '../../../models/chatbot-service';
 import { useEditExampleAnnotation } from './useEditExample';
 

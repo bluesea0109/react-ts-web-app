@@ -1,4 +1,5 @@
 import { IIntent } from '@bavard/agent-config';
+import { FullDialog } from '@bavard/react-components';
 import {
   createStyles,
   Grid,
@@ -8,7 +9,6 @@ import {
 } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
-import FullDialog from '../../../components/dialogs/FullDialog';
 import { INLUExample } from '../../../models/chatbot-service';
 import { Maybe } from '../../../utils/types';
 import ExampleForm from './ExampleForm';
@@ -69,40 +69,41 @@ const EditExample = ({
   };
 
   return (
-    <FullDialog
-      isOpen={!!example}
-      title={
-        isNew
-          ? 'Add a New Natural Language Example'
-          : `Edit a Natural Language Example #${example?.id}`
-      }
-      onEditClose={onEditExampleClose}>
-      <Grid container={true} justify="center" className={classes.root}>
-        <Grid container={true} item={true} sm={4} xs={8}>
-          <Grid
-            container={true}
-            item={true}
-            xs={12}
-            justify="center"
-            className={classes.formField}>
-            <Typography variant="subtitle1">
-              {
-                "Edit or add an example in natural language below to improve your Assistant's detection of the user's input."
-              }
-            </Typography>
+    !!example && (
+      <FullDialog
+        title={
+          isNew
+            ? 'Add a New Natural Language Example'
+            : `Edit a Natural Language Example #${example?.id}`
+        }
+        onClose={onEditExampleClose}>
+        <Grid container={true} justify="center" className={classes.root}>
+          <Grid container={true} item={true} sm={4} xs={8}>
+            <Grid
+              container={true}
+              item={true}
+              xs={12}
+              justify="center"
+              className={classes.formField}>
+              <Typography variant="subtitle1">
+                {
+                  "Edit or add an example in natural language below to improve your Assistant's detection of the user's input."
+                }
+              </Typography>
+            </Grid>
+            <ExampleForm
+              isNew={isNew}
+              loading={loading}
+              example={updatedExample}
+              tagTypes={tagTypes}
+              intent={intent}
+              onSaveChanges={handleSaveChanges}
+              onExampleUpdate={setUpdatedExample}
+            />
           </Grid>
-          <ExampleForm
-            isNew={isNew}
-            loading={loading}
-            example={updatedExample}
-            tagTypes={tagTypes}
-            intent={intent}
-            onSaveChanges={handleSaveChanges}
-            onExampleUpdate={setUpdatedExample}
-          />
         </Grid>
-      </Grid>
-    </FullDialog>
+      </FullDialog>
+    )
   );
 };
 

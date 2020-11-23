@@ -1,6 +1,6 @@
+import { DropDown } from '@bavard/react-components';
 import { makeStyles, Theme, Toolbar, Typography } from '@material-ui/core';
-import React from 'react';
-import { DropDown } from '../../../components';
+import React, { useMemo } from 'react';
 import { IAgent } from '../../../models/chatbot-service';
 
 interface ToolBarSettingProps {
@@ -49,6 +49,16 @@ export const ToolBarSetting = ({
   publishAgent,
 }: ToolBarSettingProps) => {
   const classes = useStyles();
+
+  const dropDownAgents = useMemo(() => {
+    return (
+      agents?.map((agent) => ({
+        id: agent.id,
+        value: agent.uname,
+      })) || []
+    );
+  }, [agents]);
+
   return (
     <Toolbar className={classes.root} variant="dense">
       <div className={classes.dropdown}>
@@ -56,8 +66,10 @@ export const ToolBarSetting = ({
         {agents && (
           <DropDown
             label=""
-            current={agents.find((agent) => agent.uname === currentAgent)}
-            menuItems={agents}
+            current={
+              dropDownAgents.find((agent) => agent.value === currentAgent) || ''
+            }
+            menuItems={dropDownAgents}
             onChange={handleChange}
           />
         )}

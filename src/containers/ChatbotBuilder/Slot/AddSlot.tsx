@@ -1,4 +1,5 @@
 import { AgentConfig, ISlot } from '@bavard/agent-config';
+import { UpTransition } from '@bavard/react-components';
 import {
   Box,
   CircularProgress,
@@ -19,7 +20,6 @@ import _ from 'lodash';
 import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
-import { UpTransition } from '../../../components';
 import { currentAgentConfig } from '../atoms';
 
 const useStyles = makeStyles((theme: Theme) =>

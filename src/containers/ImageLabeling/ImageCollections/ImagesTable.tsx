@@ -1,4 +1,5 @@
 import { useQuery } from '@apollo/client';
+import { CommonTable } from '@bavard/react-components';
 import Paper from '@material-ui/core/Paper';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -11,7 +12,6 @@ import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 import StartLabelingDialog from './StartLabelingDialog';
 import UploadImagesDialog from './UploadImagesDialog';
-import { CommonTable } from '../../../components';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

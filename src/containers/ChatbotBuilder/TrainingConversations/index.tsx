@@ -173,10 +173,10 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       padding: theme.spacing(6),
-      width: '100%'
-    }, 
+      width: '100%',
+    },
     paper: {
-      padding: '20px'
+      padding: '20px',
     },
     button: {
       margin: '0px 50px 20px',
@@ -186,8 +186,8 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'center',
     },
     pageTitle: {
-      fontSize: '26px', 
-      marginBottom: '24px'
-    }
+      fontSize: '26px',
+      marginBottom: '24px',
+    },
   }),
 );

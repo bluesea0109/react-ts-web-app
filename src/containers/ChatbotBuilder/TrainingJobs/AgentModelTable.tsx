@@ -1,12 +1,11 @@
 import { useQuery } from '@apollo/client';
+import { CommonTable, StatusChip } from '@bavard/react-components';
 import { Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import gql from 'graphql-tag';
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { CommonTable } from '../../../components';
-import StatusChip from '../../../components/StatusChip';
 import { IAgentModelInfo } from '../../../models/chatbot-service';
 import { removeSpecialChars } from '../../../utils/string';
 import ApolloErrorPage from '../../ApolloErrorPage';

@@ -1,9 +1,9 @@
 import { GraphPolicyNode } from '@bavard/agent-config/dist/graph-policy-v2';
+import { FullDialog } from '@bavard/react-components';
 
 import { Grid, Theme } from '@material-ui/core';
 import { createStyles, makeStyles } from '@material-ui/styles';
 import React, { useState } from 'react';
-import FullScreenDialog from '../../../components/FullScreenDialog';
 
 import { IGraphEditorNode } from './types';
 
@@ -50,29 +50,30 @@ const UpsertNodeDialog = ({
   };
 
   return (
-    <FullScreenDialog
-      title={nodeId ? 'Create a Node' : 'Update Node'}
-      open={isOpen}
-      onClose={closeDialog}>
-      <Grid
-        container={true}
-        direction="row"
-        justify="center"
-        alignItems="center"
-        className={classes.gridContainer}>
-        <Grid item={true} xs={12} md={4}>
-          <UpsertNodeForm
-            actor={editorNode.actor}
-            type={editorNode.type}
-            nodeId={nodeId}
-            node={editorNode.node?.toJsonObj()}
-            onDelete={onDelete}
-            onSubmit={onSuccess}
-            intents={intents}
-          />
+    isOpen && (
+      <FullDialog
+        title={nodeId ? 'Create a Node' : 'Update Node'}
+        onClose={closeDialog}>
+        <Grid
+          container={true}
+          direction="row"
+          justify="center"
+          alignItems="center"
+          className={classes.gridContainer}>
+          <Grid item={true} xs={12} md={4}>
+            <UpsertNodeForm
+              actor={editorNode.actor}
+              type={editorNode.type}
+              nodeId={nodeId}
+              node={editorNode.node?.toJsonObj()}
+              onDelete={onDelete}
+              onSubmit={onSuccess}
+              intents={intents}
+            />
+          </Grid>
         </Grid>
-      </Grid>
-    </FullScreenDialog>
+      </FullDialog>
+    )
   );
 };
 

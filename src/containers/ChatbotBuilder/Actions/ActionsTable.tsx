@@ -1,4 +1,5 @@
 import { BaseAgentAction } from '@bavard/agent-config';
+import { FilterBox } from '@bavard/react-components';
 import {
   Box,
   Button,
@@ -10,7 +11,6 @@ import {
   Typography,
 } from '@material-ui/core';
 import React, { useMemo, useState } from 'react';
-import { FilterBox } from '../../../components';
 import ActionList from './ActionList';
 
 const useStyles = makeStyles((theme: Theme) =>

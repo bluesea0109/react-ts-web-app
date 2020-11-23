@@ -1,12 +1,11 @@
 import { IIntent, BaseAgentAction } from '@bavard/agent-config';
-import { DropDown } from '../../../components';
-import React from 'react';
+import { DropDown, TextInput } from '@bavard/react-components';
+import React, { useMemo } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { Theme } from '@material-ui/core/styles/createMuiTheme';
 import createStyles from '@material-ui/core/styles/createStyles';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { TextInput } from '../../../components';
 import { Maybe } from '../../../utils/types';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -35,6 +34,10 @@ const EditIntentForm: React.FC<EditIntentFormProps> = ({
   onUpdateIntent,
 }) => {
   const classes = useStyles();
+
+  const dropDownActions = useMemo(() => {
+    return actions.map((action) => action.name);
+  }, [actions]);
 
   return (
     <>
@@ -69,10 +72,12 @@ const EditIntentForm: React.FC<EditIntentFormProps> = ({
           label="Default Action"
           labelPosition="left"
           fullWidth={true}
-          current={actions.find(
-            (action) => action.name === currentIntent?.defaultActionName,
-          )}
-          menuItems={actions}
+          current={
+            dropDownActions.find(
+              (action) => action === currentIntent?.defaultActionName,
+            ) || ''
+          }
+          menuItems={dropDownActions}
           onChange={(action: any) => {
             onUpdateIntent({
               ...currentIntent,

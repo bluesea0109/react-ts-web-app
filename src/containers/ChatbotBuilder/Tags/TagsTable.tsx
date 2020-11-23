@@ -1,6 +1,6 @@
+import { CommonTable } from '@bavard/react-components';
 import 'firebase/auth';
 import React from 'react';
-import { CommonTable } from '../../../components';
 
 interface TagsProps {
   tagTypes: Set<string>;

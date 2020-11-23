@@ -1,4 +1,5 @@
 import { BaseAgentAction, IIntent } from '@bavard/agent-config';
+import { FilterBox } from '@bavard/react-components';
 import {
   Box,
   Button,
@@ -12,7 +13,6 @@ import {
 import 'firebase/auth';
 import React, { useState, useMemo } from 'react';
 import IntentList from './IntentList';
-import { FilterBox } from '../../../components';
 
 interface IntentsTableProps {
   intents: IIntent[];

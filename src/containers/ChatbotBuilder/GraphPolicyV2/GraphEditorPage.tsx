@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { GraphPolicyV2 } from '@bavard/agent-config/dist/graph-policy-v2';
+import { BlockingLoader } from '@bavard/react-components';
 import { Card, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import clsx from 'clsx';
@@ -11,7 +12,6 @@ import {
   CHATBOT_GET_AGENT,
   CHATBOT_SAVE_CONFIG_AND_SETTINGS,
 } from '../../../common-gql-queries';
-import BlockingLoader from '../../../components/BlockingLoader';
 import {
   agentOptionImages,
   currentAgentConfig,

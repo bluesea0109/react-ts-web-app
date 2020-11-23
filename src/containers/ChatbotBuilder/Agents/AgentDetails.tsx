@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { AgentConfig } from '@bavard/agent-config';
+import { TabPanel } from '@bavard/react-components';
 import { Box, makeStyles, Theme, Toolbar } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
@@ -10,7 +11,6 @@ import {
   CHATBOT_SAVE_CONFIG_AND_SETTINGS,
 } from '../../../common-gql-queries';
 import { CHATBOT_GET_AGENTS } from '../../../common-gql-queries';
-import { TabPanel } from '../../../components';
 import { IAgent } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';

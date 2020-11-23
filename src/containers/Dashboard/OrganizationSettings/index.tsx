@@ -70,9 +70,7 @@ export default function OrganizationSettings(props: IOrgSettingsProps) {
   const org = data.orgs[0];
   return (
     <div className={'page-container'}>
-      <Typography className={classes.pageTitle}>
-        {'Membership'}
-      </Typography>
+      <Typography className={classes.pageTitle}>{'Membership'}</Typography>
       <Grid item={true} container={true} xs={10} spacing={2}>
         <Grid item={true} xs={12} sm={12}>
           <Card>

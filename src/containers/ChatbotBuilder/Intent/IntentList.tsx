@@ -1,4 +1,5 @@
 import { IIntent } from '@bavard/agent-config';
+import { CollapsibleTable } from '@bavard/react-components';
 import {
   Box,
   createStyles,
@@ -14,7 +15,6 @@ import {
   KeyboardArrowRight,
 } from '@material-ui/icons';
 import React from 'react';
-import { CollapsibleTable } from '../../../components';
 import { Examples } from '../Examples';
 
 const useStyles = makeStyles((theme: Theme) =>

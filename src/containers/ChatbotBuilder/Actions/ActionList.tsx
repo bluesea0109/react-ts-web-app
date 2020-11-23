@@ -1,5 +1,6 @@
 import { BaseAgentAction } from '@bavard/agent-config';
 import { EAgentActionTypes } from '@bavard/agent-config/dist/enums';
+import { CollapsibleTable } from '@bavard/react-components';
 import {
   Box,
   createStyles,
@@ -15,7 +16,6 @@ import {
   KeyboardArrowRight,
 } from '@material-ui/icons';
 import React from 'react';
-import { CollapsibleTable } from '../../../components';
 import ActionDetailPanel from './ActionDetailPanel';
 
 const useStyles = makeStyles((theme: Theme) =>

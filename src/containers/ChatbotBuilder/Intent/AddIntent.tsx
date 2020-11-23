@@ -1,5 +1,6 @@
 import { useMutation } from '@apollo/client';
 import { AgentConfig, BaseAgentAction, IIntent } from '@bavard/agent-config';
+import { FullDialog, IconButton } from '@bavard/react-components';
 import { DialogContent, Grid, Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -14,7 +15,6 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import EditIntentForm from './EditIntentForm';
 import { currentAgentConfig, currentWidgetSettings } from '../atoms';
 import { INLUExample } from '../../../models/chatbot-service';
-import { FullDialog, IconButton } from '../../../components';
 import { ExampleForm } from '../Examples';
 
 import {
@@ -192,10 +192,7 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
   };
 
   return (
-    <FullDialog
-      isOpen={true}
-      title="Create New Intent"
-      onEditClose={onAddIntentClose}>
+    <FullDialog title="Create New Intent" onClose={onAddIntentClose}>
       <DialogContent>
         <Grid container={true} justify="center">
           <Grid item={true} sm={4} xs={8}>
