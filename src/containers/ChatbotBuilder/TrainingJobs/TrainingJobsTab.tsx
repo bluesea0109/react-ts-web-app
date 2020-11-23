@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
     pageTitle: {
       fontSize: '26px',
       marginBottom: theme.spacing(3),
-      marginTop: theme.spacing(1)
+      marginTop: theme.spacing(1),
     },
   }),
 );

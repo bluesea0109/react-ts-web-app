@@ -38,7 +38,7 @@ const NewTag: React.FC<NewTagProps> = ({ onAdd }: NewTagProps) => {
   };
 
   return (
-    <Card className={clsx(classes.root)}>      
+    <Card className={clsx(classes.root)}>
       <TextField
         id="name"
         label="Tag Name"

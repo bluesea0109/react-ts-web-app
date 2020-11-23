@@ -13,9 +13,9 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(6),
     },
     pageTitle: {
-      fontSize: '26px', 
-      marginBottom: '24px'
-    }
+      fontSize: '26px',
+      marginBottom: '24px',
+    },
   }),
 );
 
@@ -25,7 +25,9 @@ export default function TextLabeling() {
   return (
     <div className={classes.root}>
       <Grid container={true}>
-        <Typography className={classes.pageTitle}>{'Under Construction'}</Typography>
+        <Typography className={classes.pageTitle}>
+          {'Under Construction'}
+        </Typography>
       </Grid>
     </div>
   );
