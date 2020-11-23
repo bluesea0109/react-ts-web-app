@@ -24,7 +24,7 @@ import {
 } from '../../../common-gql-queries';
 import { currentAgentConfig } from '../atoms';
 import { ACTION, DialogueForm } from './DialogueForm';
-import { EDialogueActor } from '@bavard/agent-config/dist/conversations'
+import { EDialogueActor } from '@bavard/agent-config/dist/conversations';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -190,32 +190,30 @@ export const ConversationBoard = ({
   setConfirmOpen,
   deleteConversationHandler,
 }: ConversationBoardProps) => {
-  
   const classes = useStyles();
 
   let tempActionData: any[] = [];
   const userTurns: string[] = [];
-  console.log('conversation prop >>> ', conversation)
   if (isUpdate && conversation && conversation.actions) {
     tempActionData = conversation.actions.map((c: any) =>
-    c.actor === EDialogueActor.USER ? { userActions: [c] } : { agentActions: [c] },
+      c.actor === EDialogueActor.USER
+        ? { userActions: [c] }
+        : { agentActions: [c] },
     );
     conversation.actions.map(
       (i: any) => (userTurns[i.turn] = i.isUser ? 'user' : 'agent'),
-      );
+    );
   }
 
-  
   const tags: string[] = [];
   const [isOpened, setOpen] = useState(false);
   const params = useParams<{ agentId: string }>();
   const agentId = parseInt(params.agentId, 10);
   const [, setErrStatus] = useState(''); // errStatus
-  
+
   const [actionData, setActionsValue] = useState<any | null>(
     isUpdate ? tempActionData : [],
-    );
-  console.log('Action Data >>> ', actionData);
+  );
   const [turn, setTurns] = useState<string[]>(isUpdate ? userTurns : []);
   const [, setActionType] = useState<string>('UTTER'); // actionType
   const [, setLoding] = useState<boolean>(false); // loading
@@ -462,7 +460,7 @@ export const ConversationBoard = ({
           </Grid>
         </Grid>
       </AccordionSummary>
-      <AccordionDetails className={classes.listItem}>        
+      <AccordionDetails className={classes.listItem}>
         <Grid // conversation panel
           container={true}
           direction={'column'}

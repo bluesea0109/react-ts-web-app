@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {  
+import {
   Grid,
   makeStyles,
   Typography,
@@ -19,7 +19,7 @@ import { AddCircleOutline, Delete } from '@material-ui/icons';
 import { EUserActionType } from '@bavard/agent-config/dist/actions/user';
 import _ from 'lodash';
 import { EAgentActionTypes } from '@bavard/agent-config/dist/enums';
-import {ACTION_TYPE} from './type';
+import { ACTION_TYPE } from './type';
 
 interface ReceiveProps {
   agentId: number;
@@ -107,12 +107,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ConversationPanel = ({ conversation }: ConversationPanelProps) => {
-  const classes = useStyles();  
+  const classes = useStyles();
   const [data, updateData] = useRecoilState(trainingConversation);
 
   useEffect(() => {
     updateData(conversation.conversation);
-  }, [conversation.conversation, updateData]);  
+  }, [conversation.conversation, updateData]);
 
   const renderActions = () => {
     return (
@@ -141,7 +141,7 @@ const ConversationPanel = ({ conversation }: ConversationPanelProps) => {
       </Grid>
     );
   };
-  
+
   const handleAddFields = (param: ACTION_TYPE) => {
     if (param === ACTION_TYPE.USER_ACTION) {
       const userActionData: IUserDialogueTurn = {
@@ -152,42 +152,46 @@ const ConversationPanel = ({ conversation }: ConversationPanelProps) => {
           intent: '',
           tags: [],
         },
-        timestamp: new Date()
+        timestamp: new Date(),
       };
       const updatedData = _.cloneDeep(data);
-      const another = {...updatedData, 
-        turns: [...(updatedData as IConversation).turns, userActionData]
-      }
-      updateData(another as IConversation)
-  } else {
-    const agentActionData: IAgentDialogueTurn = {
-      actor: EDialogueActor.AGENT,
-      agentAction: {
-        type: EAgentActionTypes.UTTERANCE_ACTION,
-        utterance: '',
-        name: '',
-        options: []
-      },
-      timestamp: new Date()
-    }
+      const another = {
+        ...updatedData,
+        turns: [...(updatedData as IConversation).turns, userActionData],
+      };
+      updateData(another as IConversation);
+    } else {
+      const agentActionData: IAgentDialogueTurn = {
+        actor: EDialogueActor.AGENT,
+        agentAction: {
+          type: EAgentActionTypes.UTTERANCE_ACTION,
+          utterance: '',
+          name: '',
+          options: [],
+        },
+        timestamp: new Date(),
+      };
 
-    const updatedData = _.cloneDeep(data);
-    const another = {...updatedData, 
-      turns: [...(updatedData as IConversation).turns, agentActionData]
+      const updatedData = _.cloneDeep(data);
+      const another = {
+        ...updatedData,
+        turns: [...(updatedData as IConversation).turns, agentActionData],
+      };
+      updateData(another as IConversation);
     }
-    updateData(another as IConversation)
   };
-  }
 
   const handleDelete = (param: number) => {
-    
     const tempData = _.cloneDeep(data);
-    const deletedData = { ...tempData, 
-      turns:  (tempData as IConversation).turns.filter((item , index) => index !== param)
-    }    
-    updateData(deletedData as IConversation)
-  }
-  const onSubmit = () => console.log('save data');
+    const deletedData = {
+      ...tempData,
+      turns: (tempData as IConversation).turns.filter(
+        (item, index) => index !== param,
+      ),
+    };
+    updateData(deletedData as IConversation);
+  };
+  const onSubmit = () => {};
   return (
     <Grid>
       <Grid container={true} direction={'column'} className={classes.paper}>

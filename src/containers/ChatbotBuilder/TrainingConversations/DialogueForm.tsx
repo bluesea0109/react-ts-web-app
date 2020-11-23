@@ -242,8 +242,6 @@ export const DialogueForm = ({
   const classes = useStyles();
   const [isOpened, setOpen] = useState(false);
 
-  console.log('Item in DLG >>> ', item)
-
   const handleIntentField = (item: string) => {
     if (type === ACTION.USER_ACTION) {
       onAutoFieldChange(index, ACTION.USER_ACTION, item);
@@ -361,7 +359,7 @@ export const DialogueForm = ({
                   />
                 </Grid>
               </Grid>
-            </Grid>            
+            </Grid>
           </>
         )}
       </AccordionDetails>

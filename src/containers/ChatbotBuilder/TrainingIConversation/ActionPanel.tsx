@@ -14,7 +14,7 @@ import {
   IUserAction,
   IUserUtteranceAction,
 } from '@bavard/agent-config/dist/actions/user';
-import { IConversation } from '@bavard/agent-config/dist/conversations/'
+import { IConversation } from '@bavard/agent-config/dist/conversations/';
 import { IAgentUtteranceAction } from '@bavard/agent-config';
 import { ACTION_TYPE, FIELD_TYPE } from './type';
 import { GroupField } from './GroupField';
@@ -124,19 +124,20 @@ const ActionPanel = ({ action, type, order, onDelete }: ActionPanelProps) => {
 
   const [data, updateData] = useRecoilState(trainingConversation);
 
-  console.log('***data in action panel', data);
-
   const handleAddTag = () => {
     const updatedData = _.cloneDeep(data);
     const another = {
       ...updatedData,
-      turns: [...(updatedData as IConversation).turns, ((updatedData?.turns[order] as IUserDialogueTurn)
-        ?.userAction as IUserUtteranceAction)?.tags?.push({
-        tagType: '',
-        value: '',
-      })],
+      turns: [
+        ...(updatedData as IConversation).turns,
+        ((updatedData?.turns[order] as IUserDialogueTurn)
+          ?.userAction as IUserUtteranceAction)?.tags?.push({
+          tagType: '',
+          value: '',
+        }),
+      ],
     };
-    updateData(another as IConversation)
+    updateData(another as IConversation);
   };
   tagList?.forEach((item) => tags.push(item));
   intentList?.forEach((item) => intents.push(item.name));

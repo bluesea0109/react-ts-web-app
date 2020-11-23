@@ -80,7 +80,6 @@ export default function TrainingConversations() {
     currentPage * docsInPage,
   );
 
-  console.log('records >>> ', records);
   if (getTrainingConversations.error) {
     return <ApolloErrorPage error={getTrainingConversations.error} />;
   }

@@ -86,7 +86,6 @@ const ConversationHeader = ({
   onToggleCollapse,
 }: ConversationHeaderProps) => {
   const classes = useStyles();
-  console.log('Is opened ', isOpened);
   return (
     <Grid
       container={true}
@@ -116,7 +115,7 @@ const ConversationHeader = ({
       <Grid xs={4} sm={4}></Grid>
       <Grid item={true} container={true} xs={2} sm={2} justify="flex-end">
         <Box ml={1}>
-          <Delete onClick={() => console.log('oka')} />
+          <Delete onClick={() => {}} />
         </Box>
       </Grid>
     </Grid>

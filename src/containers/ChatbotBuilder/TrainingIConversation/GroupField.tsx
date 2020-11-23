@@ -17,10 +17,10 @@ interface GroupFieldProps {
 
 const useStyles = makeStyles((theme) => ({
   input: {
-		'& .MuiOutlinedInput-input': {
-			padding: '8px 8px',
-		},
-	},
+    '& .MuiOutlinedInput-input': {
+      padding: '8px 8px',
+    },
+  },
   root: {
     flexGrow: 1,
   },
@@ -28,22 +28,25 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
   },
 }));
-export const GroupField = ({ type, data, option, field, order }: GroupFieldProps) => {
-  
+export const GroupField = ({
+  type,
+  data,
+  option,
+  field,
+  order,
+}: GroupFieldProps) => {
   const classes = useStyles();
   const [re_data, updateData] = useRecoilState(trainingConversation);
 
-  console.log('Training Conversaiton in Update Field >>> ', re_data);
-  console.log('>>> metadata >>> ', type, data, option, field, order)
-  const handleDropdownChange = () => {
+  const handleDropdownChange = () => {};
 
-  }
-
-  const handleTextChange = () => {
-
-  }
+  const handleTextChange = () => {};
   return (
-    <Box display="flex" flexDirection="row" style={{width: '100%'}} paddingX={1}>
+    <Box
+      display="flex"
+      flexDirection="row"
+      style={{ width: '100%' }}
+      paddingX={1}>
       <Grid item sm={4} xs={4} className={classes.field}>
         <DropDown
           fullWidth={true}
@@ -57,7 +60,7 @@ export const GroupField = ({ type, data, option, field, order }: GroupFieldProps
       <Grid item sm={8} xs={8} className={classes.field}>
         <TextInput
           fullWidth={true}
-					label="Action Name"
+          label="Action Name"
           value={data}
           className={classes.input}
           onChange={handleTextChange}

@@ -78,7 +78,6 @@ export default function TrainingIConversations() {
     currentPage * docsInPage,
   );
 
-  console.log('records >>> ', records);
   if (getTrainingConversations.error) {
     return <ApolloErrorPage error={getTrainingConversations.error} />;
   }
@@ -105,8 +104,8 @@ export default function TrainingIConversations() {
 
   const deleteConfirm = () => setConfirmOpen(true);
 
-  const handleSaveItem = () => console.log('save');
-  const handleDeleteItem = () => console.log('delete');
+  const handleSaveItem = () => {};
+  const handleDeleteItem = () => {};
 
   return (
     <Grid className={classes.root}>
