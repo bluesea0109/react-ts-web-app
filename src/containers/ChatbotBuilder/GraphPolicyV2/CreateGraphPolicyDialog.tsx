@@ -110,56 +110,57 @@ const CreateGraphPolicyDialog = ({ open, agentId, onSuccess }: IProps) => {
   };
 
   return (
-    isOpen && (
-      <FullDialog title={'Create Graph Policy'} onClose={closeDialog}>
-        <Grid
-          container={true}
-          direction="row"
-          justify="center"
-          alignItems="center"
-          className={classes.gridContainer}>
-          <Grid item={true} xs={12} md={4}>
-            <Typography className={classes.formControl}>
-              Create a new graph policy
-            </Typography>
-            <TextField
-              onChange={(e) => {
-                setPolicyName(e.currentTarget.value);
+    <FullDialog
+      isOpen={isOpen}
+      title={'Create Graph Policy'}
+      onClose={closeDialog}>
+      <Grid
+        container={true}
+        direction="row"
+        justify="center"
+        alignItems="center"
+        className={classes.gridContainer}>
+        <Grid item={true} xs={12} md={4}>
+          <Typography className={classes.formControl}>
+            Create a new graph policy
+          </Typography>
+          <TextField
+            onChange={(e) => {
+              setPolicyName(e.currentTarget.value);
+              onFormChange();
+            }}
+            size="small"
+            className={classes.formControl}
+            label="Policy Name"
+            variant="outlined"
+          />
+
+          <FormControl variant="outlined" className={classes.formControl}>
+            <RichTextInput
+              label="Utterance"
+              onChange={(value: string) => {
+                setStartUtterance(value);
                 onFormChange();
               }}
-              size="small"
-              className={classes.formControl}
-              label="Policy Name"
-              variant="outlined"
             />
+          </FormControl>
 
-            <FormControl variant="outlined" className={classes.formControl}>
-              <RichTextInput
-                label="Utterance"
-                onChange={(value: string) => {
-                  setStartUtterance(value);
-                  onFormChange();
-                }}
-              />
-            </FormControl>
-
-            {error && (
-              <Alert className={classes.formControl} severity="error">
-                {error}
-              </Alert>
-            )}
-            <Button
-              disabled={loading}
-              variant="contained"
-              color="primary"
-              onClick={handleSubmit}>
-              Submit
-            </Button>
-            {loading && <ContentLoading />}
-          </Grid>
+          {error && (
+            <Alert className={classes.formControl} severity="error">
+              {error}
+            </Alert>
+          )}
+          <Button
+            disabled={loading}
+            variant="contained"
+            color="primary"
+            onClick={handleSubmit}>
+            Submit
+          </Button>
+          {loading && <ContentLoading />}
         </Grid>
-      </FullDialog>
-    )
+      </Grid>
+    </FullDialog>
   );
 };
 

@@ -155,19 +155,18 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
             }}
             disabled={role !== 'owner'}
           />
-          {confirmOpen && (
-            <ConfirmDialog
-              title="Are you sure?"
-              onReject={() => {
-                setConfirmOpen(false);
-              }}
-              onConfirm={() => {
-                setConfirmOpen(true);
-                onRemoveMember();
-              }}>
-              Are you sure you want to delete this member?
-            </ConfirmDialog>
-          )}
+          <ConfirmDialog
+            isOpen={confirmOpen}
+            title="Are you sure?"
+            onReject={() => {
+              setConfirmOpen(false);
+            }}
+            onConfirm={() => {
+              setConfirmOpen(true);
+              onRemoveMember();
+            }}>
+            Are you sure you want to delete this member?
+          </ConfirmDialog>
         </TableCell>
       </TableRow>
     );

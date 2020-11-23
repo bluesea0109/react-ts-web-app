@@ -50,30 +50,29 @@ const UpsertNodeDialog = ({
   };
 
   return (
-    isOpen && (
-      <FullDialog
-        title={nodeId ? 'Create a Node' : 'Update Node'}
-        onClose={closeDialog}>
-        <Grid
-          container={true}
-          direction="row"
-          justify="center"
-          alignItems="center"
-          className={classes.gridContainer}>
-          <Grid item={true} xs={12} md={4}>
-            <UpsertNodeForm
-              actor={editorNode.actor}
-              type={editorNode.type}
-              nodeId={nodeId}
-              node={editorNode.node?.toJsonObj()}
-              onDelete={onDelete}
-              onSubmit={onSuccess}
-              intents={intents}
-            />
-          </Grid>
+    <FullDialog
+      isOpen={isOpen}
+      title={nodeId ? 'Create a Node' : 'Update Node'}
+      onClose={closeDialog}>
+      <Grid
+        container={true}
+        direction="row"
+        justify="center"
+        alignItems="center"
+        className={classes.gridContainer}>
+        <Grid item={true} xs={12} md={4}>
+          <UpsertNodeForm
+            actor={editorNode.actor}
+            type={editorNode.type}
+            nodeId={nodeId}
+            node={editorNode.node?.toJsonObj()}
+            onDelete={onDelete}
+            onSubmit={onSuccess}
+            intents={intents}
+          />
         </Grid>
-      </FullDialog>
-    )
+      </Grid>
+    </FullDialog>
   );
 };
 

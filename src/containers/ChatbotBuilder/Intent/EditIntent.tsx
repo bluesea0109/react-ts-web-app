@@ -52,35 +52,34 @@ const EditIntent = ({
   };
 
   return (
-    !!intent && (
-      <FullDialog
-        title={`Edit Intent "${currentIntent?.name}"`}
-        onClose={onEditIntentClose}>
-        <Grid container={true} justify="center">
-          <Grid item={true} sm={4} xs={8}>
-            <EditIntentForm
-              actions={actions}
-              currentIntent={currentIntent}
-              onUpdateIntent={setCurrentIntent}
-            />
-            <Grid
-              container={true}
-              item={true}
-              sm={12}
-              justify="center"
-              className={classes.buttonGrid}>
-              <Button
-                autoFocus={true}
-                color="primary"
-                variant="contained"
-                onClick={saveChanges}>
-                Save Intent
-              </Button>
-            </Grid>
+    <FullDialog
+      isOpen={!!intent}
+      title={`Edit Intent "${currentIntent?.name}"`}
+      onClose={onEditIntentClose}>
+      <Grid container={true} justify="center">
+        <Grid item={true} sm={4} xs={8}>
+          <EditIntentForm
+            actions={actions}
+            currentIntent={currentIntent}
+            onUpdateIntent={setCurrentIntent}
+          />
+          <Grid
+            container={true}
+            item={true}
+            sm={12}
+            justify="center"
+            className={classes.buttonGrid}>
+            <Button
+              autoFocus={true}
+              color="primary"
+              variant="contained"
+              onClick={saveChanges}>
+              Save Intent
+            </Button>
           </Grid>
         </Grid>
-      </FullDialog>
-    )
+      </Grid>
+    </FullDialog>
   );
 };
 

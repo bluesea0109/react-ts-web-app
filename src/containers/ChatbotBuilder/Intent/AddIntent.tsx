@@ -192,7 +192,10 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
   };
 
   return (
-    <FullDialog title="Create New Intent" onClose={onAddIntentClose}>
+    <FullDialog
+      isOpen={true}
+      title="Create New Intent"
+      onClose={onAddIntentClose}>
       <DialogContent>
         <Grid container={true} justify="center">
           <Grid item={true} sm={4} xs={8}>

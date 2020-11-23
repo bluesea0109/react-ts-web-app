@@ -22,6 +22,7 @@ import { getOptionImagesQuery } from './gql';
 import GraphEditor from './GraphEditor';
 import GraphEditorMenu from './GraphEditorMenu';
 import { IGetOptionImagesQueryResult } from './types';
+import ContentLoading from '../../ContentLoading';
 
 interface IParams {
   entityId: string;
@@ -181,7 +182,9 @@ const GraphEditorPage = () => {
             classes.styledScrollbars,
           ])}
           style={{ width: getEditorWidth(), height: getEditorHeight() }}>
-          {updateAgentData.loading && <BlockingLoader />}
+          {updateAgentData.loading && (
+            <BlockingLoader ContentLoading={ContentLoading} />
+          )}
           {gp && (
             <GraphEditor
               policy={gp}

@@ -69,41 +69,40 @@ const EditExample = ({
   };
 
   return (
-    !!example && (
-      <FullDialog
-        title={
-          isNew
-            ? 'Add a New Natural Language Example'
-            : `Edit a Natural Language Example #${example?.id}`
-        }
-        onClose={onEditExampleClose}>
-        <Grid container={true} justify="center" className={classes.root}>
-          <Grid container={true} item={true} sm={4} xs={8}>
-            <Grid
-              container={true}
-              item={true}
-              xs={12}
-              justify="center"
-              className={classes.formField}>
-              <Typography variant="subtitle1">
-                {
-                  "Edit or add an example in natural language below to improve your Assistant's detection of the user's input."
-                }
-              </Typography>
-            </Grid>
-            <ExampleForm
-              isNew={isNew}
-              loading={loading}
-              example={updatedExample}
-              tagTypes={tagTypes}
-              intent={intent}
-              onSaveChanges={handleSaveChanges}
-              onExampleUpdate={setUpdatedExample}
-            />
+    <FullDialog
+      isOpen={!!example}
+      title={
+        isNew
+          ? 'Add a New Natural Language Example'
+          : `Edit a Natural Language Example #${example?.id}`
+      }
+      onClose={onEditExampleClose}>
+      <Grid container={true} justify="center" className={classes.root}>
+        <Grid container={true} item={true} sm={4} xs={8}>
+          <Grid
+            container={true}
+            item={true}
+            xs={12}
+            justify="center"
+            className={classes.formField}>
+            <Typography variant="subtitle1">
+              {
+                "Edit or add an example in natural language below to improve your Assistant's detection of the user's input."
+              }
+            </Typography>
           </Grid>
+          <ExampleForm
+            isNew={isNew}
+            loading={loading}
+            example={updatedExample}
+            tagTypes={tagTypes}
+            intent={intent}
+            onSaveChanges={handleSaveChanges}
+            onExampleUpdate={setUpdatedExample}
+          />
         </Grid>
-      </FullDialog>
-    )
+      </Grid>
+    </FullDialog>
   );
 };
 

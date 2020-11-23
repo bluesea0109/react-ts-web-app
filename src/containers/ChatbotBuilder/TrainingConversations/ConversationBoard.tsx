@@ -443,17 +443,16 @@ export const ConversationBoard = ({
           <Grid item={true} container={true} xs={1} sm={1} justify="flex-end">
             <Grid className={classes.actionButtonWrapper}>
               <Delete fontSize="large" onClick={deleteConfirm} />
-              {confirmOpen && (
-                <ConfirmDialog
-                  title="Delete Conversations?"
-                  onReject={() => setConfirmOpen(false)}
-                  onConfirm={() => {
-                    setConfirmOpen(true);
-                    deleteConversationHandler(conversation.id);
-                  }}>
-                  Are you sure you want to delete this Conversations?
-                </ConfirmDialog>
-              )}
+              <ConfirmDialog
+                isOpen={confirmOpen}
+                title="Delete Conversations?"
+                onReject={() => setConfirmOpen(false)}
+                onConfirm={() => {
+                  setConfirmOpen(true);
+                  deleteConversationHandler(conversation.id);
+                }}>
+                Are you sure you want to delete this Conversations?
+              </ConfirmDialog>
             </Grid>
           </Grid>
         </Grid>
