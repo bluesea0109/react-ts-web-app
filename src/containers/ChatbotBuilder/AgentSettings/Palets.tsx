@@ -1,8 +1,8 @@
 import { IWidgetSettings } from '@bavard/agent-config';
+import { GradientPicker } from '@bavard/react-components';
 import { Box, Grid, Typography } from '@material-ui/core';
 import React from 'react';
 import { AlphaPicker, TwitterPicker } from 'react-color';
-import GradientPicker from '../../../components/GradientPicker';
 
 interface PalleteProps {
   mode: string;

@@ -1,4 +1,5 @@
 import { useQuery } from '@apollo/client';
+import { CommonTable, StatusChip } from '@bavard/react-components';
 import { Typography } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -9,7 +10,6 @@ import { ITrainingJob } from '../../../models/chatbot-service';
 import { removeSpecialChars } from '../../../utils/string';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
-import { CommonTable, StatusChip } from '../../../components';
 
 interface ITrainingJobsTableProps {
   toolbarActions?: React.ReactNode;

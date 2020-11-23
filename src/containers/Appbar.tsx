@@ -1,4 +1,5 @@
 import { useMutation } from '@apollo/client';
+import { BasicButton, DropDown } from '@bavard/react-components';
 import { Box, createStyles, TextField, Theme } from '@material-ui/core';
 import AppBar, { AppBarProps } from '@material-ui/core/AppBar';
 import { makeStyles } from '@material-ui/core/styles';
@@ -8,7 +9,6 @@ import firebase from 'firebase/app';
 import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { GET_CURRENT_USER, UPDATE_ACTIVE_ORG } from '../common-gql-queries';
-import { BasicButton, DropDown } from '../components';
 import { IUser } from '../models/user-service';
 
 interface CustomAppbarProps extends AppBarProps {
@@ -82,7 +82,7 @@ const Orgs: React.FC<OrgsProps> = ({ user, updateActiveOrg }) => {
     <DropDown
       label="Organization:"
       labelPosition="top"
-      current={user.activeOrg?.id}
+      current={user.activeOrg?.id || ''}
       menuItems={orgs}
       onChange={(name) => setActiveOrg(name)}
     />
@@ -140,7 +140,7 @@ const CustomAppbar: React.FC<CustomAppbarProps> = ({
   position,
   className,
   handleChangeLoadingStatus,
-  closeDrawer
+  closeDrawer,
 }) => {
   const classes = useStyles();
   const history = useHistory();

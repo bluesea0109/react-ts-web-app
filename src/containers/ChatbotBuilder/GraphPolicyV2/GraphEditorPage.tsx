@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { GraphPolicyV2 } from '@bavard/agent-config/dist/graph-policy-v2';
+import { BlockingLoader } from '@bavard/react-components';
 import { Card, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import clsx from 'clsx';
@@ -11,7 +12,6 @@ import {
   CHATBOT_GET_AGENT,
   CHATBOT_SAVE_CONFIG_AND_SETTINGS,
 } from '../../../common-gql-queries';
-import BlockingLoader from '../../../components/BlockingLoader';
 import {
   agentOptionImages,
   currentAgentConfig,
@@ -22,6 +22,7 @@ import { getOptionImagesQuery } from './gql';
 import GraphEditor from './GraphEditor';
 import GraphEditorMenu from './GraphEditorMenu';
 import { IGetOptionImagesQueryResult } from './types';
+import ContentLoading from '../../ContentLoading';
 
 interface IParams {
   entityId: string;
@@ -181,7 +182,9 @@ const GraphEditorPage = () => {
             classes.styledScrollbars,
           ])}
           style={{ width: getEditorWidth(), height: getEditorHeight() }}>
-          {updateAgentData.loading && <BlockingLoader />}
+          {updateAgentData.loading && (
+            <BlockingLoader ContentLoading={ContentLoading} />
+          )}
           {gp && (
             <GraphEditor
               policy={gp}

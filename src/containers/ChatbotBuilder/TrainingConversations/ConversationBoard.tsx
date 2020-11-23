@@ -1,4 +1,5 @@
 import { useMutation } from '@apollo/client';
+import { ConfirmDialog } from '@bavard/react-components';
 import {
   AccordionDetails,
   Box,
@@ -21,7 +22,6 @@ import {
   CREATE_TRAINING_CONVERSATION,
   UPDATE_TRAINING_CONVERSATION,
 } from '../../../common-gql-queries';
-import { ConfirmDialog } from '../../../components';
 import { currentAgentConfig } from '../atoms';
 import { ACTION, DialogueForm } from './DialogueForm';
 
@@ -444,10 +444,13 @@ export const ConversationBoard = ({
             <Grid className={classes.actionButtonWrapper}>
               <Delete fontSize="large" onClick={deleteConfirm} />
               <ConfirmDialog
+                isOpen={confirmOpen}
                 title="Delete Conversations?"
-                open={confirmOpen}
-                setOpen={setConfirmOpen}
-                onConfirm={() => deleteConversationHandler(conversation.id)}>
+                onReject={() => setConfirmOpen(false)}
+                onConfirm={() => {
+                  setConfirmOpen(true);
+                  deleteConversationHandler(conversation.id);
+                }}>
                 Are you sure you want to delete this Conversations?
               </ConfirmDialog>
             </Grid>

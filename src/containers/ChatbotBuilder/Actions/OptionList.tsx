@@ -1,8 +1,8 @@
 import { IIntent, IResponseOption } from '@bavard/agent-config';
 import { createStyles, Grid, makeStyles, Typography } from '@material-ui/core';
 import { KeyboardArrowDown, KeyboardArrowUp } from '@material-ui/icons';
+import { CollapsibleTable } from '@bavard/react-components';
 import React from 'react';
-import { CollapsibleTable } from '../../../components';
 import EditOption from './EditOption';
 
 const useStyles = makeStyles((_) =>

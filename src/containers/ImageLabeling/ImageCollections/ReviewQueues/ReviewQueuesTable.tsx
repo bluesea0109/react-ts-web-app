@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
+import { CommonTable } from '@bavard/react-components';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import React, { useState } from 'react';
@@ -11,7 +12,6 @@ import CreateReviewQueueDialog from './CreateReviewQueueDialog';
 import DeleteReviewQueueDialog from './DeleteReviewQueueDialog';
 import EditReviewQueueDialog from './EditReviewQueueDialog';
 import { GET_REVIEW_QUEUES, NEXT_REVIEW_QUEUE_IMAGE } from './gql-queries';
-import { CommonTable } from '../../../../components';
 
 function ReviewQueuesTable() {
   const rowsPerPage = 10;

@@ -1,10 +1,9 @@
+import { CommonTable, IconButton } from '@bavard/react-components';
+import AddCircleOutline from '@material-ui/icons/AddCircleOutline';
 import React, { useMemo } from 'react';
 import randomcolor from 'randomcolor';
 import { TextAnnotator } from 'react-text-annotate';
-import { CommonTable, IconButton } from '../../../components';
 import { INLUExample } from '../../../models/chatbot-service';
-import AddCircleOutline from '@material-ui/icons/AddCircleOutline';
-import { Typography } from '@material-ui/core';
 
 export interface ExamplesFilter {
   intent?: string;

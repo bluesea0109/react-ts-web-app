@@ -1,4 +1,5 @@
 import { useMutation } from '@apollo/client';
+import { CommonTable, ConfirmDialog } from '@bavard/react-components';
 import {
   Box,
   Snackbar,
@@ -11,7 +12,6 @@ import MuiAlert from '@material-ui/lab/Alert';
 import _ from 'lodash';
 import React, { useState } from 'react';
 
-import { CommonTable, ConfirmDialog } from '../../../components';
 import { IMember, IUser } from '../../../models/user-service';
 import ContentLoading from '../../ContentLoading';
 import IconButtonDelete from '../../IconButtons/IconButtonDelete';
@@ -156,10 +156,15 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
             disabled={role !== 'owner'}
           />
           <ConfirmDialog
+            isOpen={confirmOpen}
             title="Are you sure?"
-            open={confirmOpen}
-            setOpen={setConfirmOpen}
-            onConfirm={onRemoveMember}>
+            onReject={() => {
+              setConfirmOpen(false);
+            }}
+            onConfirm={() => {
+              setConfirmOpen(true);
+              onRemoveMember();
+            }}>
             Are you sure you want to delete this member?
           </ConfirmDialog>
         </TableCell>

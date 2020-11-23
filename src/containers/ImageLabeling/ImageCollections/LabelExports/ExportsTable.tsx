@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
+import { CommonTable } from '@bavard/react-components';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -11,7 +12,6 @@ import { useParams } from 'react-router-dom';
 import { ILabelsExport } from '../../../../models/image-labeling-service';
 import ApolloErrorPage from '../../../ApolloErrorPage';
 import ContentLoading from '../../../ContentLoading';
-import { CommonTable } from '../../../../components';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

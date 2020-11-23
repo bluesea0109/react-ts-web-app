@@ -1,4 +1,5 @@
 import { useQuery } from '@apollo/client';
+import { CommonTable } from '@bavard/react-components';
 import { Typography } from '@material-ui/core';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -11,7 +12,6 @@ import { GET_CATEGORY_SETS } from '../../../common-gql-queries';
 import ContentLoading from '../../ContentLoading';
 import CreateCategorySetDialog from './CreateCategorySetDialog';
 import DeleteCategorySetDialog from './DeleteCategorySetDialog';
-import { CommonTable } from '../../../components';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

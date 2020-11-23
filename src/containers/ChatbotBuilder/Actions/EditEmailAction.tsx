@@ -1,7 +1,7 @@
 import { IAgentEmailAction } from '@bavard/agent-config';
+import { TextInput } from '@bavard/react-components';
 import { createStyles, Grid, makeStyles, Theme } from '@material-ui/core';
 import React from 'react';
-import { TextInput } from '../../../components';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

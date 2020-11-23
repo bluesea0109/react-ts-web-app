@@ -1,9 +1,9 @@
 import { BaseAgentAction, IIntent } from '@bavard/agent-config';
+import { FullDialog } from '@bavard/react-components';
 import { Grid } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { useEffect, useState } from 'react';
-import { FullDialog } from '../../../components';
 import { Maybe } from '../../../utils/types';
 import EditIntentForm from './EditIntentForm';
 
@@ -55,7 +55,7 @@ const EditIntent = ({
     <FullDialog
       isOpen={!!intent}
       title={`Edit Intent "${currentIntent?.name}"`}
-      onEditClose={onEditIntentClose}>
+      onClose={onEditIntentClose}>
       <Grid container={true} justify="center">
         <Grid item={true} sm={4} xs={8}>
           <EditIntentForm

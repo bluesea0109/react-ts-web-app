@@ -12,6 +12,7 @@ import {
   UtteranceEdge,
   UtteranceNode,
 } from '@bavard/agent-config/dist/graph-policy';
+import { ImageSelectorGrid } from '@bavard/react-components';
 import {
   Button,
   FormControl,
@@ -29,7 +30,6 @@ import _ from 'lodash';
 import { useSnackbar } from 'notistack';
 import React, { useContext, useEffect, useState } from 'react';
 import { GET_SIGNED_IMG_UPLOAD_URL } from '../../../common-gql-queries';
-import ImageSelectorGrid from '../../../components/ImageSelectorGrid';
 import { OptionImagesContext } from '../../../context/OptionImages';
 import { IOptionImage } from '../../../models/chatbot-service';
 import { IGetImageUploadSignedUrlQueryResult } from '../../../models/common-service';
@@ -148,9 +148,12 @@ export default function UpsertEdgeForm({
     imgOption?.imageName || undefined,
   );
   const [imgCaption, setImgCaption] = useState(imgOption?.caption || '');
-  const [getSignedImgUploadUrl, signedImgUploadResult] = useLazyQuery<
-    IGetImageUploadSignedUrlQueryResult
-  >(GET_SIGNED_IMG_UPLOAD_URL);
+  const [
+    getSignedImgUploadUrl,
+    signedImgUploadResult,
+  ] = useLazyQuery<IGetImageUploadSignedUrlQueryResult>(
+    GET_SIGNED_IMG_UPLOAD_URL,
+  );
 
   const optionImages = useContext(OptionImagesContext)?.optionImages || [];
 

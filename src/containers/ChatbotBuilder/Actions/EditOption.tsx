@@ -5,15 +5,15 @@ import {
   IIntent,
   IResponseOption,
 } from '@bavard/agent-config';
-import { createStyles, Grid, makeStyles, Theme } from '@material-ui/core';
-import Delete from '@material-ui/icons/Delete';
-import React, { useMemo } from 'react';
 import {
   DropDown,
   IconButton,
   RichTextInput,
   TextInput,
-} from '../../../components';
+} from '@bavard/react-components';
+import { createStyles, Grid, makeStyles, Theme } from '@material-ui/core';
+import Delete from '@material-ui/icons/Delete';
+import React, { useMemo } from 'react';
 import OptionImageUploader from './OptionImageUploader';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -119,7 +119,7 @@ const EditOption = ({
             label="Option Intent"
             labelPosition="left"
             menuItems={allIntents}
-            current={option.intent}
+            current={option.intent || ''}
             padding="12px"
             onChange={(intent) =>
               onUpdateOption({
