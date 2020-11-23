@@ -20,18 +20,6 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '100vh',
     },
 
-    filler: {
-      background: 'linear-gradient(45deg, #1565c0 30%, #29b6f6 90%)',
-
-      '& img': {
-        position: 'absolute',
-        right: 60,
-        bottom: 0,
-        width: 400,
-        height: 598,
-      },
-    },
-
     firebaseUIBox: {
       '& .firebaseui-idp-button': {
         border: '1px solid #0061FF !important',
@@ -158,9 +146,7 @@ function SignInPage(props: any) {
           </Box>
         </Box>
       </Grid>
-      <Grid item={true} container={true} xs={8} className={classes.filler}>
-        <SignInFiller />
-      </Grid>
+      <SignInFiller />
     </Grid>
   );
 }
