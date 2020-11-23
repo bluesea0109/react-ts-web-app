@@ -1,5 +1,6 @@
 import { useApolloClient, useQuery } from '@apollo/client';
 import { IImageOption } from '@bavard/agent-config';
+import { ImageSelectorGrid } from '@bavard/react-components';
 import { Grid } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
 import React from 'react';
@@ -8,7 +9,6 @@ import {
   GET_OPTION_IMAGES_QUERY,
   GET_SIGNED_IMG_UPLOAD_URL,
 } from '../../../common-gql-queries';
-import { ImageSelectorGrid } from '../../../components';
 import { IOptionImage } from '../../../models/chatbot-service';
 import { IGetOptionImagesQueryResult } from '../../../models/common-service';
 import { uploadImageFile } from '../../../utils/file-uploads';

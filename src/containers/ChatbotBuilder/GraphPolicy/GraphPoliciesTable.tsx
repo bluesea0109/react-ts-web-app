@@ -1,10 +1,10 @@
 import { GraphPolicy } from '@bavard/agent-config';
+import { CommonTable } from '@bavard/react-components';
 import { Box, Chip, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { AccountTreeRounded, Delete, GetApp, Power } from '@material-ui/icons';
 import 'firebase/auth';
 import React, { useMemo } from 'react';
-import { CommonTable } from '../../../components';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

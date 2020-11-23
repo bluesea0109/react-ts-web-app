@@ -1,11 +1,10 @@
 import { GraphPolicyV2 } from '@bavard/agent-config/dist/graph-policy-v2';
+import { CommonTable, StatusChip } from '@bavard/react-components';
 import { Box, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { AccountTreeRounded, Delete, GetApp, Power } from '@material-ui/icons';
 import 'firebase/auth';
 import React, { useMemo } from 'react';
-import { CommonTable } from '../../../components';
-import StatusChip from '../../../components/StatusChip';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

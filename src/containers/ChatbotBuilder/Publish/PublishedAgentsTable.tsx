@@ -1,9 +1,9 @@
+import { CommonTable, StatusChip } from '@bavard/react-components';
 import { Box, IconButton, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import moment from 'moment';
 import React, { useMemo } from 'react';
-import { CommonTable, StatusChip } from '../../../components';
 import { IPublishedAgent } from '../../../models/chatbot-service';
 import { exportJsonFileFromObj } from '../../../utils/exports';
 import { removeSpecialChars } from '../../../utils/string';

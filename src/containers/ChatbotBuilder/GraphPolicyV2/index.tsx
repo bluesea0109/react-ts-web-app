@@ -181,9 +181,11 @@ export default function GraphPolicies() {
   const policies = config.getGraphPoliciesV2() || [];
 
   return (
-    <Grid container={true} style={{padding: '50px'}}>
+    <Grid container={true} style={{ padding: '50px' }}>
       <Grid item={true} xs={12}>
-        <Grid style={{fontSize: '26px', marginBottom: '24px'}}>Graph Policy v 2.0</Grid>
+        <Grid style={{ fontSize: '26px', marginBottom: '24px' }}>
+          Graph Policy v 2.0
+        </Grid>
         <GraphPoliciesTable
           loading={loading}
           onActivate={handleActivatePolicy}

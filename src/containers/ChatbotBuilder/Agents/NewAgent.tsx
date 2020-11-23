@@ -1,3 +1,4 @@
+import { TextInput } from '@bavard/react-components';
 import {
   Button,
   createStyles,
@@ -10,7 +11,6 @@ import {
 import clsx from 'clsx';
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
-import { TextInput } from '../../../components';
 import { IUser } from '../../../models/user-service';
 import UploadDataDialog from '../UploadData/UploadDataDialog';
 

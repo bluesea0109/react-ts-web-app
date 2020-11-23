@@ -87,9 +87,10 @@ const Examples: React.FC<ExamplesProps> = ({ intent }) => {
     },
   );
 
-  const [createExample, createExampleMutationData] = useMutation<
-    CreateExampleMutationResult
-  >(createExampleMutation, {
+  const [
+    createExample,
+    createExampleMutationData,
+  ] = useMutation<CreateExampleMutationResult>(createExampleMutation, {
     ...refetchOptions,
   });
 

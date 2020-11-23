@@ -15,12 +15,9 @@ import {
   GET_TRAINING_CONVERSATIONS,
 } from '../../../common-gql-queries';
 // import { IConversation, ITrainingConversations } from '../../../models/chatbot-service';
-import { IConversation } from '@bavard/agent-config/dist/conversations';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
-import {ConversationList} from './ConversationList';
-import ConversationPanel from './ConversationPanel';
-import { CollapsibleTable } from '../../../components';
+import { ConversationList } from './ConversationList';
 
 interface IGetTrainingConversation {
   ChatbotService_trainingConversations: [];
@@ -108,8 +105,8 @@ export default function TrainingIConversations() {
 
   const deleteConfirm = () => setConfirmOpen(true);
 
-  const handleSaveItem = () => console.log('save')
-  const handleDeleteItem = () => console.log('delete')
+  const handleSaveItem = () => console.log('save');
+  const handleDeleteItem = () => console.log('delete');
 
   return (
     <Grid className={classes.root}>
@@ -127,7 +124,7 @@ export default function TrainingIConversations() {
         {loading && <LinearProgress />}
         <>
           {records.length > 0 && records ? (
-            <ConversationList 
+            <ConversationList
               records={records ?? []}
               handleDelete={handleDeleteItem}
               handleSave={handleSaveItem}

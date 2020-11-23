@@ -11,6 +11,7 @@ import {
   EAgentActionTypes,
   EFormFieldTypes,
 } from '@bavard/agent-config/dist/enums';
+import { DropDown, FullDialog, TextInput } from '@bavard/react-components';
 import {
   Button,
   createStyles,
@@ -20,7 +21,6 @@ import {
   Typography,
 } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
-import { DropDown, FullDialog, TextInput } from '../../../components';
 import EditEmailAction from './EditEmailAction';
 import EditFormAction from './EditFormAction';
 import EditUtteranceAction from './EditUtteranceAction';
@@ -129,7 +129,7 @@ const EditAction = ({
       title={
         isNewAction ? 'Add a New Action' : `Edit Action: ${currentAction?.name}`
       }
-      onEditClose={onEditActionClose}>
+      onClose={onEditActionClose}>
       <Grid container={true} justify="center" className={classes.rootGrid}>
         <Grid container={true} item={true} sm={6} xs={8}>
           <Grid

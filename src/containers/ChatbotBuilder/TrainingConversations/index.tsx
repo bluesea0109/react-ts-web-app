@@ -14,9 +14,7 @@ import {
   GET_TRAINING_CONVERSATIONS,
 } from '../../../common-gql-queries';
 // import { IConversation, ITrainingConversations } from '../../../models/chatbot-service';
-import {
-  IConversation,
-} from '@bavard/agent-config/dist/conversations';
+import { IConversation } from '@bavard/agent-config/dist/conversations';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 import { ConversationBoard } from './ConversationBoard';
@@ -27,15 +25,14 @@ interface IGetTrainingConversation {
   ChatbotService_trainingConversations: IConversation[];
 }
 
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       padding: theme.spacing(6),
-      width: '100%'
-    }, 
+      width: '100%',
+    },
     paper: {
-      padding: '20px'
+      padding: '20px',
     },
     button: {
       margin: '0px 50px 20px',
@@ -45,12 +42,11 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'center',
     },
     pageTitle: {
-      fontSize: '26px', 
-      marginBottom: '24px'
-    }
+      fontSize: '26px',
+      marginBottom: '24px',
+    },
   }),
 );
-
 
 export default function TrainingConversations() {
   const docsInPage = 5;
@@ -70,10 +66,11 @@ export default function TrainingConversations() {
     GET_TRAINING_CONVERSATIONS,
     { variables: { agentId } },
   );
-  let conversations = getTrainingConversations.data?.ChatbotService_trainingConversations || [];
+  let conversations =
+    getTrainingConversations.data?.ChatbotService_trainingConversations || [];
 
   const refetchConversations = getTrainingConversations.refetch;
-  const data = conversations.map((item: any) => {    
+  const data = conversations.map((item: any) => {
     return { actions: item.conversation.turns, id: item.id };
   });
 
@@ -83,7 +80,7 @@ export default function TrainingConversations() {
     currentPage * docsInPage,
   );
 
-  console.log('records >>> ', records)
+  console.log('records >>> ', records);
   if (getTrainingConversations.error) {
     return <ApolloErrorPage error={getTrainingConversations.error} />;
   }

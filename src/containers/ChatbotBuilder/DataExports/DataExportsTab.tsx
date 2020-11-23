@@ -5,14 +5,14 @@ import DataExportsTable from './DataExportsTable';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      width: '100%',      
+      width: '100%',
       overflow: 'auto',
       padding: '50px',
     },
     pageTitle: {
-      fontSize: '26px', 
-      marginBottom: '24px'
-    }
+      fontSize: '26px',
+      marginBottom: '24px',
+    },
   }),
 );
 export default function DataExportsTab() {

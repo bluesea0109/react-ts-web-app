@@ -1,7 +1,7 @@
 import { IAgentUtteranceAction } from '@bavard/agent-config';
+import { RichTextInput } from '@bavard/react-components';
 import { Grid } from '@material-ui/core';
 import React from 'react';
-import RichTextInput from '../../../components/RichTextInput';
 
 interface EditUtteranceActionProps {
   action: IAgentUtteranceAction;

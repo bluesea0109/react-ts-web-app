@@ -71,7 +71,7 @@ export default function UpsertNodeOptionForm({
       return;
     }
 
-    if (Number.isInteger(optionIndex)) {
+    if (optionIndex && Number.isInteger(optionIndex)) {
       node?.removeOptionAtIndex(optionIndex as number);
     }
 

@@ -1,4 +1,5 @@
 import { IIntent } from '@bavard/agent-config';
+import { FullDialog } from '@bavard/react-components';
 import {
   createStyles,
   Grid,
@@ -8,7 +9,6 @@ import {
 } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
-import FullDialog from '../../../components/dialogs/FullDialog';
 import { INLUExample } from '../../../models/chatbot-service';
 import { Maybe } from '../../../utils/types';
 import ExampleForm from './ExampleForm';
@@ -76,7 +76,7 @@ const EditExample = ({
           ? 'Add a New Natural Language Example'
           : `Edit a Natural Language Example #${example?.id}`
       }
-      onEditClose={onEditExampleClose}>
+      onClose={onEditExampleClose}>
       <Grid container={true} justify="center" className={classes.root}>
         <Grid container={true} item={true} sm={4} xs={8}>
           <Grid

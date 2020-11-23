@@ -1,6 +1,6 @@
+import { CommonTable } from '@bavard/react-components';
 import { Box, Grid, makeStyles, Typography } from '@material-ui/core';
 import React, { useMemo } from 'react';
-import { CommonTable } from '../../../components';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,7 +21,7 @@ const PaymentHistory = () => {
   const data = [
     { date: '09/15/2020', method: 'Visa ending in 3217', amount: '$19.66' },
     { date: '09/15/2020', method: 'Visa ending in 3217', amount: '$19.66' },
-    { date: '09/15/2020', method: 'Visa ending in 3217', amount: '$19.66'},
+    { date: '09/15/2020', method: 'Visa ending in 3217', amount: '$19.66' },
   ];
   const columns = useMemo(() => {
     return [
@@ -49,7 +49,7 @@ const PaymentHistory = () => {
         alignItems="center">
         <Typography>Payment History</Typography>
       </Box>
-      <Box style={{width: '100%'}}>
+      <Box style={{ width: '100%' }}>
         <CommonTable
           data={{
             columns,

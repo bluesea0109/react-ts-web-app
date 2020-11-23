@@ -1,5 +1,6 @@
 import { useMutation } from '@apollo/client';
 import { GraphPolicy, UtteranceNode } from '@bavard/agent-config';
+import { RichTextInput } from '@bavard/react-components';
 import {
   Button,
   FormControl,
@@ -15,7 +16,6 @@ import { currentAgentConfig } from '../atoms';
 
 import { useParams } from 'react-router-dom';
 import { CHATBOT_UPDATE_AGENT } from '../../../common-gql-queries';
-import RichTextInput from '../../../components/RichTextInput';
 import ContentLoading from '../../ContentLoading';
 
 const useStyles = makeStyles((theme: Theme) =>

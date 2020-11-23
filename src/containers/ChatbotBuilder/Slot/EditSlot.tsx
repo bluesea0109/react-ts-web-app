@@ -1,4 +1,5 @@
 import { ISlot } from '@bavard/agent-config';
+import { UpTransition } from '@bavard/react-components';
 import { Box, DialogContent, Grid, TextField } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
@@ -9,7 +10,6 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import React, { useEffect, useState } from 'react';
-import { UpTransition } from '../../../components';
 import { Maybe } from '../../../utils/types';
 
 const useStyles = makeStyles((theme: Theme) =>

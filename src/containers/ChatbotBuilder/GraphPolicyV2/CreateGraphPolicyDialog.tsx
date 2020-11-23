@@ -1,6 +1,7 @@
 import { useMutation } from '@apollo/client';
 import { GraphPolicyV2 } from '@bavard/agent-config/dist/graph-policy-v2';
 import { AgentUtteranceNode } from '@bavard/agent-config/dist/graph-policy-v2';
+import { FullDialog, RichTextInput } from '@bavard/react-components';
 import {
   Button,
   FormControl,
@@ -11,8 +12,6 @@ import {
 } from '@material-ui/core';
 import { createStyles, makeStyles } from '@material-ui/styles';
 import React, { useState } from 'react';
-import FullScreenDialog from '../../../components/FullScreenDialog';
-import RichTextInput from '../../../components/RichTextInput';
 import ContentLoading from '../../ContentLoading';
 
 import { useSnackbar } from 'notistack';
@@ -111,9 +110,9 @@ const CreateGraphPolicyDialog = ({ open, agentId, onSuccess }: IProps) => {
   };
 
   return (
-    <FullScreenDialog
+    <FullDialog
+      isOpen={isOpen}
       title={'Create Graph Policy'}
-      open={isOpen}
       onClose={closeDialog}>
       <Grid
         container={true}
@@ -161,7 +160,7 @@ const CreateGraphPolicyDialog = ({ open, agentId, onSuccess }: IProps) => {
           {loading && <ContentLoading />}
         </Grid>
       </Grid>
-    </FullScreenDialog>
+    </FullDialog>
   );
 };
 

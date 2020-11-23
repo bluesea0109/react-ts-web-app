@@ -1,3 +1,4 @@
+import { DropDown } from '@bavard/react-components';
 import {
   AccordionDetails,
   Grid,
@@ -13,7 +14,6 @@ import { Delete } from '@material-ui/icons';
 import React, { useState } from 'react';
 
 import { KeyboardArrowDown, KeyboardArrowRight } from '@material-ui/icons';
-import { DropDown } from '../../../components';
 
 const useStyles = makeStyles((theme) => ({
   actionWrapper: {
