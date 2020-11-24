@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-interface ItemRowProps {
+interface ItemHeaderProps {
   item: IIntent;
   isCollapsed: boolean;
   onEditRow: (item: IIntent) => void;
@@ -47,13 +47,13 @@ interface NewActionTableProps {
   onDeleteIntent: (action: IIntent) => void;
 }
 
-const IntentRow = ({
+const IntentHeader: React.FC<ItemHeaderProps> = ({
   item,
   isCollapsed,
   onEditRow,
   onDeleteRow,
   onToggleCollapse,
-}: ItemRowProps) => {
+}) => {
   const classes = useStyles();
 
   return (
@@ -106,7 +106,7 @@ const NewActionTable = ({
       defaultCollapsed={true}
       onEditItem={onEditIntent}
       onDeleteItem={onDeleteIntent}
-      ItemRow={IntentRow}
+      ItemHeader={IntentHeader}
       ItemDetail={IntentDetail}
     />
   );

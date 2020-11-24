@@ -17,7 +17,8 @@ import {
 // import { IConversation, ITrainingConversations } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
-import { ConversationList } from './ConversationList';
+import ConversationList, { ConversationHeader } from './ConversationList';
+import ConversationPanel from './ConversationPanel';
 
 interface IGetTrainingConversation {
   ChatbotService_trainingConversations: [];
@@ -54,7 +55,8 @@ export default function TrainingIConversations() {
   const classes = useStyles();
 
   const params = useParams<{ agentId: string }>();
-  const [createConversation, setcreateConversation] = useState(false);
+  const [isNewConversation, setIsNewConverstaion] = useState(false);
+  const [newConversation, setNewConversation] = useState(undefined);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [, seteditConversation] = useState(0); // editConversation
   const [currentPage, setCurrentPage] = useState(1);
@@ -87,14 +89,14 @@ export default function TrainingIConversations() {
   }
 
   const onCreateNewConversation = () => {
-    setcreateConversation(true);
+    setIsNewConverstaion(true);
   };
 
   const onSaveCallBack = async () => {
     const refetchData = await refetchConversations();
     conversations =
       refetchData.data?.ChatbotService_trainingConversations || [];
-    setcreateConversation(false);
+    setIsNewConverstaion(false);
     seteditConversation(0);
   };
 
@@ -120,20 +122,25 @@ export default function TrainingIConversations() {
           </Button>
         </Box>
 
+        {isNewConversation && (
+          <>
+            {/* <ConversationHeader />
+            <ConversationPanel conversation={newConversation} /> */}
+          </>
+        )}
+
         {loading && <LinearProgress />}
-        <>
-          {records.length > 0 && records ? (
-            <ConversationList
-              records={records ?? []}
-              handleDelete={handleDeleteItem}
-              handleSave={handleSaveItem}
-            />
-          ) : (
-            <Typography align="center" variant="h6">
-              {'No Conversation found'}
-            </Typography>
-          )}
-        </>
+        {records.length > 0 && records ? (
+          <ConversationList
+            records={records ?? []}
+            handleDelete={handleDeleteItem}
+            handleSave={handleSaveItem}
+          />
+        ) : (
+          <Typography align="center" variant="h6">
+            {'No Conversation found'}
+          </Typography>
+        )}
       </Paper>
     </Grid>
   );

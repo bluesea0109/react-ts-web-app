@@ -24,7 +24,7 @@ interface ConversationListProps {
   handleSave: () => void;
 }
 
-export const ConversationList = ({
+const ConversationList: React.FC<ConversationListProps> = ({
   records,
   handleDelete,
   handleSave,
@@ -44,7 +44,6 @@ export const ConversationList = ({
 
 interface ConversationHeaderProps {
   index: number;
-  isOpened: boolean;
   isCollapsed: boolean;
   onClickItem: () => void;
   handleDelete: (id: number) => void;
@@ -77,14 +76,13 @@ const ConversationDetail = ({ item }: IConversationDetailProps) => (
   <ConversationPanel conversation={item} />
 );
 
-const ConversationHeader = ({
+export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
   index,
   isCollapsed,
-  isOpened,
   handleDelete,
   onClickItem,
   onToggleCollapse,
-}: ConversationHeaderProps) => {
+}) => {
   const classes = useStyles();
   return (
     <Grid
@@ -94,7 +92,7 @@ const ConversationHeader = ({
       onClick={() => onClickItem()}>
       <Grid item={true} container={true} xs={6} sm={6} alignItems="center">
         <Box mr={1}>
-          {!isOpened ? (
+          {!isCollapsed ? (
             <KeyboardArrowRight
               color="primary"
               fontSize="large"
@@ -121,3 +119,5 @@ const ConversationHeader = ({
     </Grid>
   );
 };
+
+export default ConversationList;
