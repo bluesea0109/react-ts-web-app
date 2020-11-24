@@ -1,9 +1,9 @@
+import { CommonTable } from '@bavard/react-components';
 import { Grid } from '@material-ui/core';
 import 'firebase/auth';
 import React from 'react';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
-import { CommonTable } from '../../../components';
 import { IAgent } from '../../../models/chatbot-service';
 
 export interface IAgentsTableProps {

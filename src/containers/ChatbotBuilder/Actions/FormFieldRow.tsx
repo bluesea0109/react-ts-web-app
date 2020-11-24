@@ -1,5 +1,6 @@
 import { IFormField } from '@bavard/agent-config';
 import { EFormFieldTypes } from '@bavard/agent-config/dist/enums';
+import { DropDown, TextInput } from '@bavard/react-components';
 import {
   Checkbox,
   createStyles,
@@ -12,7 +13,6 @@ import {
 } from '@material-ui/core';
 import { Delete } from '@material-ui/icons';
 import React from 'react';
-import { DropDown, TextInput } from '../../../components';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

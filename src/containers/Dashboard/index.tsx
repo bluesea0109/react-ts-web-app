@@ -1,3 +1,4 @@
+import { CommonTable } from '@bavard/react-components';
 import {
   Button,
   Card,
@@ -18,7 +19,6 @@ import { IUser } from '../../models/user-service';
 import NewOrganisation from './NewOrganisation';
 import NewProject from './NewProject';
 import ProjectsTable from './ProjectsTable';
-import { CommonTable } from '../../components';
 
 interface IDashboardProps {
   user: IUser;
@@ -45,9 +45,14 @@ function Account(props: IDashboardProps) {
 
   return (
     <div className={'page-container'}>
-      <Grid>
+      <Grid style={{ marginTop: '20px' }}>
         <Grid item={true} container={true} xs={12} spacing={4}>
           <Grid item={true} sm={12} md={10}>
+            <Grid
+              item={true}
+              style={{ fontSize: '26px', marginBottom: '24px' }}>
+              Dashboard
+            </Grid>
             <CommonTable
               data={{
                 columns,

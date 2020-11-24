@@ -31,6 +31,8 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
     },
     pageTitle: {
+      fontSize: '26px',
+      marginTop: '20px',
       marginBottom: theme.spacing(3),
     },
   }),
@@ -68,9 +70,7 @@ export default function OrganizationSettings(props: IOrgSettingsProps) {
   const org = data.orgs[0];
   return (
     <div className={'page-container'}>
-      <Typography className={classes.pageTitle} variant="h5">
-        {'Membership'}
-      </Typography>
+      <Typography className={classes.pageTitle}>{'Membership'}</Typography>
       <Grid item={true} container={true} xs={10} spacing={2}>
         <Grid item={true} xs={12} sm={12}>
           <Card>

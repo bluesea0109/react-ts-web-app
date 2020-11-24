@@ -1,9 +1,9 @@
 import { GraphPolicyNode } from '@bavard/agent-config/dist/graph-policy-v2';
+import { FullDialog } from '@bavard/react-components';
 
 import { Grid, Theme } from '@material-ui/core';
 import { createStyles, makeStyles } from '@material-ui/styles';
 import React, { useState } from 'react';
-import FullScreenDialog from '../../../components/FullScreenDialog';
 
 import { IGraphEditorNode } from './types';
 
@@ -50,9 +50,9 @@ const UpsertNodeDialog = ({
   };
 
   return (
-    <FullScreenDialog
+    <FullDialog
+      isOpen={isOpen}
       title={nodeId ? 'Create a Node' : 'Update Node'}
-      open={isOpen}
       onClose={closeDialog}>
       <Grid
         container={true}
@@ -72,7 +72,7 @@ const UpsertNodeDialog = ({
           />
         </Grid>
       </Grid>
-    </FullScreenDialog>
+    </FullDialog>
   );
 };
 

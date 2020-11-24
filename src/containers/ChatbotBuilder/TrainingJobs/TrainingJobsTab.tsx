@@ -22,7 +22,9 @@ const useStyles = makeStyles((theme: Theme) =>
       float: 'right',
     },
     pageTitle: {
-      marginBottom: theme.spacing(2),
+      fontSize: '26px',
+      marginBottom: theme.spacing(3),
+      marginTop: theme.spacing(1),
     },
   }),
 );

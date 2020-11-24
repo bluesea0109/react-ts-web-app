@@ -1,5 +1,4 @@
-import { BaseAgentAction } from '@bavard/agent-config';
-import { EAgentActionTypes } from '@bavard/agent-config/dist/enums';
+import { IIntent } from '@bavard/agent-config';
 import { CollapsibleTable } from '@bavard/react-components';
 import {
   Box,
@@ -16,7 +15,7 @@ import {
   KeyboardArrowRight,
 } from '@material-ui/icons';
 import React from 'react';
-import ActionDetailPanel from './ActionDetailPanel';
+import { Examples } from '../Examples';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -30,25 +29,25 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface ItemRowProps {
-  item: BaseAgentAction;
+  item: IIntent;
   isCollapsed: boolean;
-  onEditRow: (item: BaseAgentAction) => void;
-  onDeleteRow: (item: BaseAgentAction) => void;
+  onEditRow: (item: IIntent) => void;
+  onDeleteRow: (item: IIntent) => void;
   onToggleCollapse: () => void;
 }
 
 interface ItemDetailProps {
-  item: BaseAgentAction;
+  item: IIntent;
 }
 
 interface NewActionTableProps {
-  actions: BaseAgentAction[];
+  intents: IIntent[];
   onAddAction?: () => void;
-  onEditAction: (action: BaseAgentAction) => void;
-  onDeleteAction: (action: BaseAgentAction) => void;
+  onEditIntent: (action: IIntent) => void;
+  onDeleteIntent: (action: IIntent) => void;
 }
 
-const ActionRow = ({
+const IntentRow = ({
   item,
   isCollapsed,
   onEditRow,
@@ -56,19 +55,6 @@ const ActionRow = ({
   onToggleCollapse,
 }: ItemRowProps) => {
   const classes = useStyles();
-
-  const getActionType = (action: BaseAgentAction) => {
-    switch (action.type) {
-      case EAgentActionTypes.UTTERANCE_ACTION:
-        return 'Utterance';
-      case EAgentActionTypes.EMAIL_ACTION:
-        return 'Email';
-      case EAgentActionTypes.FORM_ACTION:
-        return 'Form';
-      default:
-        return 'Utterance';
-    }
-  };
 
   return (
     <Grid container={true} className={classes.header} alignItems="center">
@@ -93,7 +79,7 @@ const ActionRow = ({
         </Typography>
       </Grid>
       <Grid item={true} xs={4} sm={4}>
-        <Typography>{getActionType(item)}</Typography>
+        <Typography>{item.defaultActionName}</Typography>
       </Grid>
       <Grid item={true} container={true} xs={2} sm={2} justify="flex-end">
         <Box mr={1}>
@@ -107,23 +93,21 @@ const ActionRow = ({
   );
 };
 
-const ActionDetail = ({ item }: ItemDetailProps) => (
-  <ActionDetailPanel action={item} />
-);
+const IntentDetail = ({ item }: ItemDetailProps) => <Examples intent={item} />;
 
 const NewActionTable = ({
-  actions,
-  onEditAction,
-  onDeleteAction,
+  intents,
+  onEditIntent,
+  onDeleteIntent,
 }: NewActionTableProps) => {
   return (
     <CollapsibleTable
-      items={actions}
+      items={intents}
       defaultCollapsed={true}
-      onEditItem={onEditAction}
-      onDeleteItem={onDeleteAction}
-      ItemRow={ActionRow}
-      ItemDetail={ActionDetail}
+      onEditItem={onEditIntent}
+      onDeleteItem={onDeleteIntent}
+      ItemRow={IntentRow}
+      ItemDetail={IntentDetail}
     />
   );
 };

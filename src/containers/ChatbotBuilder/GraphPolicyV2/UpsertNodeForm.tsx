@@ -15,6 +15,9 @@ import {
   UserSubmitNode,
   UserTextOptionNode,
 } from '@bavard/agent-config/dist/graph-policy-v2';
+
+import { RichTextInput } from '@bavard/react-components';
+
 import clsx from 'clsx';
 import { ENodeActor } from './types';
 
@@ -22,7 +25,6 @@ import { Button, FormControl, TextField, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Alert, Autocomplete } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
-import RichTextInput from '../../../components/RichTextInput';
 import { validateEmail, validateUrl } from '../../../utils/string';
 import UpsertAgentFormNode from './UpsertAgentFormNode';
 import UpsertUserImageOption from './UpsertUserImageOption';

@@ -38,8 +38,12 @@ const BasicPlanCard = () => {
       <Grid style={{ width: '100%' }} item={true}>
         CurrentPlan
       </Grid>
-      <Grid style={{ width: '100%', marginBottom: '20px' }} className={classes.content}>
-        <Typography variant="h4" style={{ marginBottom: '20px' }}>Bavard Basic Plan</Typography>
+      <Grid
+        style={{ width: '100%', marginBottom: '20px' }}
+        className={classes.content}>
+        <Typography variant="h4" style={{ marginBottom: '20px' }}>
+          Bavard Basic Plan
+        </Typography>
         <Typography variant="h6" style={{ marginBottom: '20px' }}>
           Two organizations with three chatbots each.
         </Typography>

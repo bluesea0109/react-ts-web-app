@@ -1,17 +1,11 @@
 import { BaseAgentAction, IIntent } from '@bavard/agent-config';
-import { Box, DialogContent, Grid, TextField } from '@material-ui/core';
-import AppBar from '@material-ui/core/AppBar';
+import { FullDialog } from '@bavard/react-components';
+import { Grid } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import IconButton from '@material-ui/core/IconButton';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import CloseIcon from '@material-ui/icons/Close';
 import React, { useEffect, useState } from 'react';
-import { DropDown } from '../../../components';
-import { UpTransition } from '../../../components';
 import { Maybe } from '../../../utils/types';
+import EditIntentForm from './EditIntentForm';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -23,18 +17,8 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: theme.spacing(2),
       flex: 1,
     },
-    intent: {
-      padding: '7px',
-      fontSize: '16px',
-    },
-    fieldLabel: {
-      marginBottom: '5px',
-      fontSize: '18px',
-      fontWeight: 'bold',
-    },
-    addIntentBtn: {
-      display: 'flex',
-      justifyContent: 'center',
+    buttonGrid: {
+      paddingTop: theme.spacing(3),
     },
   }),
 );
@@ -67,89 +51,35 @@ const EditIntent = ({
     }
   };
 
-  const handleChangeAction = (action: any) => {
-    setCurrentIntent({ ...currentIntent, defaultActionName: action } as any);
-  };
-
   return (
-    <Dialog
-      fullScreen={true}
-      open={!!intent}
-      TransitionComponent={UpTransition}>
-      <AppBar className={classes.appBar}>
-        <Toolbar>
-          <Typography variant="h6" className={classes.title}>
-            {currentIntent && `Edit Intent "${currentIntent.name}"`}
-          </Typography>
-          <IconButton
-            edge="start"
-            color="inherit"
-            onClick={onEditIntentClose}
-            aria-label="close">
-            <CloseIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-      <DialogContent>
-        <Grid container={true}>
-          <Grid item={true} md={4} xs={12} />
-          <Grid item={true} md={4} xs={12}>
-            <Box p={2}>
-              <Typography className={classes.fieldLabel}>
-                Intent Value
-              </Typography>
-              <TextField
-                fullWidth={true}
-                label=""
-                variant="outlined"
-                value={currentIntent?.name}
-                onChange={(e) =>
-                  setCurrentIntent({
-                    ...currentIntent,
-                    name: e.target.value.replace(/ /g, '+'),
-                  } as any)
-                }
-                inputProps={{ className: classes.intent }}
-              />
-            </Box>
-          </Grid>
-          <Grid item={true} md={4} xs={12} />
-        </Grid>
-        <Grid container={true}>
-          <Grid item={true} md={4} xs={12} />
-          <Grid item={true} md={4} xs={12}>
-            <Box p={2}>
-              <Typography className={classes.fieldLabel}>
-                Default Action
-              </Typography>
-              <DropDown
-                label=""
-                fullWidth={true}
-                current={actions.find(
-                  (a) => a.name === currentIntent?.defaultActionName,
-                )}
-                menuItems={actions}
-                onChange={handleChangeAction}
-              />
-            </Box>
-          </Grid>
-          <Grid item={true} md={4} xs={12} />
-        </Grid>
-        <Grid container={true}>
-          <Grid item={true} md={4} xs={12} />
-          <Grid item={true} md={4} xs={12} className={classes.addIntentBtn}>
+    <FullDialog
+      isOpen={!!intent}
+      title={`Edit Intent "${currentIntent?.name}"`}
+      onClose={onEditIntentClose}>
+      <Grid container={true} justify="center">
+        <Grid item={true} sm={4} xs={8}>
+          <EditIntentForm
+            actions={actions}
+            currentIntent={currentIntent}
+            onUpdateIntent={setCurrentIntent}
+          />
+          <Grid
+            container={true}
+            item={true}
+            sm={12}
+            justify="center"
+            className={classes.buttonGrid}>
             <Button
               autoFocus={true}
               color="primary"
               variant="contained"
               onClick={saveChanges}>
-              Save
+              Save Intent
             </Button>
           </Grid>
-          <Grid item={true} md={4} xs={12} />
         </Grid>
-      </DialogContent>
-    </Dialog>
+      </Grid>
+    </FullDialog>
   );
 };
 

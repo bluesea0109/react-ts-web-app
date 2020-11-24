@@ -1,3 +1,5 @@
+import { IIntent } from '@bavard/agent-config';
+import { DropDown, TextInput } from '@bavard/react-components';
 import {
   Button,
   createStyles,
@@ -6,10 +8,11 @@ import {
   Paper,
   Theme,
   Typography,
+  IconButton,
 } from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
 import React, { useEffect, useState } from 'react';
 import { TextAnnotator } from 'react-text-annotate';
-import { DropDown, TextInput } from '../../../components';
 import { INLUExample } from '../../../models/chatbot-service';
 import { useEditExampleAnnotation } from './useEditExample';
 
@@ -19,10 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       padding: theme.spacing(2),
       backgroundColor: '#EAEAEA',
-    },
-    intentField: {
-      marginTop: theme.spacing(3),
-      marginBottom: theme.spacing(3),
+      position: 'relative',
     },
     formField: {
       marginTop: theme.spacing(2),
@@ -34,31 +34,36 @@ const useStyles = makeStyles((theme: Theme) =>
         backgroundColor: 'white',
       },
     },
+    trashButton: {
+      position: 'absolute',
+      top: '5px',
+      right: '0px',
+    },
   }),
 );
 
 interface ExampleFormProps {
-  isNew: boolean;
+  isNew?: boolean;
   loading: boolean;
-  example?: INLUExample;
+  example: INLUExample;
   tagTypes: string[];
-  intents: string[];
+  intent: IIntent;
+  onDelete?: () => void;
   onSaveChanges: () => void;
   onExampleUpdate: (updatedExample: INLUExample) => void;
 }
 
-const ExampleForm = ({
+const ExampleForm: React.FC<ExampleFormProps> = ({
   isNew,
   loading,
   example,
   tagTypes,
-  intents,
+  intent,
+  onDelete,
   onSaveChanges,
   onExampleUpdate,
-}: ExampleFormProps) => {
+}) => {
   const classes = useStyles();
-  const defaultIntent = example?.intent ?? intents?.[0];
-  const [intent, setIntent] = useState<string>(defaultIntent);
 
   const defaultTagType = example?.tags?.[0]?.tagType ?? tagTypes?.[0];
   const [tagType, setTagType] = useState<string>(defaultTagType);
@@ -72,21 +77,20 @@ const ExampleForm = ({
   ] = useEditExampleAnnotation({ tagTypes });
 
   useEffect(() => {
-    if (!example) {
-      return;
-    }
+    if (!example?.id) return;
     onExampleUpdate({
       id: example?.id,
       agentId: example?.agentId,
       text: exampleText,
-      intent,
+      intent: intent.name,
       tags: annotatorState.tags.map((tag) => ({
         tagType: tag.tag,
         start: tag.start,
         end: tag.end,
       })),
     });
-  }, [intent, example, onExampleUpdate, exampleText, annotatorState.tags]);
+    // eslint-disable-next-line
+  }, [intent, example?.id, example?.agentId, exampleText, annotatorState.tags]);
 
   useEffect(() => {
     setExampleText(example?.text ?? '');
@@ -107,26 +111,20 @@ const ExampleForm = ({
 
   return (
     <Grid container={true}>
-      <Grid
-        container={true}
-        item={true}
-        sm={12}
-        className={classes.intentField}>
-        <DropDown
-          fullWidth={true}
-          label="Intent"
-          labelPosition="left"
-          menuItems={intents}
-          current={intent}
-          padding="12px"
-          onChange={setIntent}
-        />
-      </Grid>
       <Paper className={classes.paper}>
+        {onDelete && (
+          <IconButton
+            size="small"
+            color="default"
+            className={classes.trashButton}
+            onClick={onDelete}>
+            <DeleteIcon color="secondary" fontSize="small" />
+          </IconButton>
+        )}
         <Grid container={true} className={classes.formField}>
           <TextInput
             fullWidth={true}
-            label="NLU Example 1"
+            label={`NLU Example ${example?.id || 1}*`}
             rows={4}
             value={exampleText}
             className={classes.input}
@@ -140,7 +138,7 @@ const ExampleForm = ({
             label="Selected Tag Type"
             labelPosition="left"
             menuItems={tagTypes}
-            current={tagTypes?.[0]}
+            current={tagType}
             padding="12px"
             onChange={updateTagType}
           />
@@ -180,15 +178,17 @@ const ExampleForm = ({
           </Grid>
         </Grid>
 
-        <Grid container={true} item={true} xs={12} justify="center">
-          <Button
-            autoFocus={true}
-            color="primary"
-            variant="contained"
-            onClick={onSaveChanges}>
-            {isNew ? 'Add Example' : 'Update Example'}
-          </Button>
-        </Grid>
+        {isNew !== undefined && (
+          <Grid container={true} item={true} xs={12} justify="center">
+            <Button
+              autoFocus={true}
+              color="primary"
+              variant="contained"
+              onClick={onSaveChanges}>
+              {isNew ? 'Add Example' : 'Update Example'}
+            </Button>
+          </Grid>
+        )}
       </Paper>
     </Grid>
   );

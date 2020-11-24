@@ -39,6 +39,11 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'center',
     },
+    pageTitle: {
+      marginBottom: '24px',
+      marginTop: '50px',
+      fontSize: '26px',
+    },
   }),
 );
 
@@ -129,10 +134,7 @@ const AgentSettings = () => {
 
   return (
     <Grid className={classes.spanOfPanel}>
-      <Grid
-        style={{ marginBottom: '20px', marginTop: '30px', fontWeight: 'bold' }}>
-        Assistant Design Settings
-      </Grid>
+      <Grid className={classes.pageTitle}>Assistant Design Settings</Grid>
       <Grid style={{ marginBottom: '20px' }}>
         <ToggleButtonGroup
           value={mode === 'dev' ? 'left' : 'right'}

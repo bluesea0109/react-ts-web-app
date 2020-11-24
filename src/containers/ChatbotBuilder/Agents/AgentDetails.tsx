@@ -1,7 +1,8 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { AgentConfig } from '@bavard/agent-config';
+import { TabPanel } from '@bavard/react-components';
 import { Box, makeStyles, Theme, Toolbar } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { useHistory } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
@@ -10,7 +11,6 @@ import {
   CHATBOT_SAVE_CONFIG_AND_SETTINGS,
 } from '../../../common-gql-queries';
 import { CHATBOT_GET_AGENTS } from '../../../common-gql-queries';
-import { TabPanel } from '../../../components';
 import { IAgent } from '../../../models/chatbot-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
@@ -48,6 +48,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   tabPanel: {
     overflow: 'auto',
     width: '100%',
+    padding: '50px',
     background: '#f5f5f5',
   },
   toolbar: {
@@ -126,7 +127,11 @@ const AgentDetails = () => {
   const init = agents?.filter((item) => item.id === parseInt(agentId, 10))[0]
     ?.uname;
 
-  const [curAgent, setCurAgent] = useState<string | undefined>(init);
+  const [curAgent, setCurAgent] = useState<string | undefined>('');
+  //useEffect is for setting the current Agent name
+  useEffect(() => {
+    setCurAgent(init);
+  }, [init]);
 
   const [config, setConfig] = useRecoilState(currentAgentConfig);
 
@@ -169,7 +174,7 @@ const AgentDetails = () => {
   };
 
   const publishAgent = () => {
-    const newURL = `/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${agentId}/publish`;
+    const newURL = `/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${agentId}/publish/`;
     history.push(newURL);
   };
 
@@ -177,7 +182,7 @@ const AgentDetails = () => {
     setCurAgent(field);
 
     const agentId = agents?.filter((agent) => agent.uname === field)[0].id;
-    const newURL = `/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${agentId}/Actions`;
+    const newURL = `/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${agentId}/Actions/`;
     history.push(newURL);
   };
 
@@ -212,12 +217,6 @@ const AgentDetails = () => {
         </TabPanel>
         <TabPanel className={classes.tabPanel} value={agentTab} index="Slots">
           <Slot />
-        </TabPanel>
-        <TabPanel
-          className={classes.tabPanel}
-          value={agentTab}
-          index="nluExamples">
-          <Examples />
         </TabPanel>
         {agentTab === 'graph-policy-v1' && <GraphPolicyV1 />}
         {agentTab === 'graph-policies' && <GraphPolicy />}

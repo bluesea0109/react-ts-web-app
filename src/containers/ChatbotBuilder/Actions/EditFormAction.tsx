@@ -1,5 +1,6 @@
 import { IAgentFormAction, IFormField } from '@bavard/agent-config';
 import { EFormFieldTypes } from '@bavard/agent-config/dist/enums';
+import { TextInput, CommonTable } from '@bavard/react-components';
 import {
   Button,
   createStyles,
@@ -10,7 +11,6 @@ import {
   withStyles,
 } from '@material-ui/core';
 import React, { useState } from 'react';
-import { TextInput, CommonTable } from '../../../components';
 import FormFieldRow from './FormFieldRow';
 
 const useStyles = makeStyles((theme: Theme) =>

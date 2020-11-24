@@ -1,8 +1,8 @@
 import { ISlot } from '@bavard/agent-config';
+import { CommonTable } from '@bavard/react-components';
 import { Button, Paper } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
-import { CommonTable } from '../../../components';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

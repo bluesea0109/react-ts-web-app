@@ -3,6 +3,7 @@ import {
   IUserImageOptionNode,
   UserImageOptionNode,
 } from '@bavard/agent-config/dist/graph-policy-v2';
+import { RichTextInput, ImageSelectorGrid } from '@bavard/react-components';
 
 import { useLazyQuery } from '@apollo/client';
 import { useSnackbar } from 'notistack';
@@ -13,7 +14,6 @@ import { Button, FormControl, TextField } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Alert, Autocomplete } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
-import ImageSelectorGrid from '../../../components/ImageSelectorGrid';
 import { IOptionImage } from '../../../models/chatbot-service';
 import { uploadImageFile } from '../../../utils/file-uploads';
 import { validateUrl } from '../../../utils/string';
@@ -22,8 +22,6 @@ import { getOptionImagesQuery } from './gql';
 import { getSignedImgUploadUrlQuery } from './gql';
 import { IGetImageUploadSignedUrlQueryResult } from './types';
 import { IGetOptionImagesQueryResult } from './types';
-
-import RichTextInput from '../../../components/RichTextInput';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -74,9 +72,12 @@ export default function UpsertNodeForm({
 
   const optionImages = imgQuery.data?.ChatbotService_optionImages || [];
 
-  const [getSignedImgUploadUrl, signedImgUploadResult] = useLazyQuery<
-    IGetImageUploadSignedUrlQueryResult
-  >(getSignedImgUploadUrlQuery);
+  const [
+    getSignedImgUploadUrl,
+    signedImgUploadResult,
+  ] = useLazyQuery<IGetImageUploadSignedUrlQueryResult>(
+    getSignedImgUploadUrlQuery,
+  );
 
   const prepareSignedUploadUrl = () => {
     if (imageName.length >= 1 && imgFile) {

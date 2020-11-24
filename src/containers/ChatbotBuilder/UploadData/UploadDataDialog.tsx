@@ -238,14 +238,14 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     }
 
     if (!uname) {
-      const agentQueryResult = await this.props.client?.query<
-        IGetAgentQueryResult
-      >({
-        query: CHATBOT_GET_AGENT,
-        variables: {
-          agentId: this.state.agentId,
+      const agentQueryResult = await this.props.client?.query<IGetAgentQueryResult>(
+        {
+          query: CHATBOT_GET_AGENT,
+          variables: {
+            agentId: this.state.agentId,
+          },
         },
-      });
+      );
 
       uname = agentQueryResult?.data?.ChatbotService_agent.uname;
     }
@@ -368,7 +368,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
 
   ensureAgentExists = async (data: IAgentDataExport) => {
     // Returns a promise to await the state
-    return new Promise(async (resolve) => {
+    return new Promise<void>(async (resolve) => {
       this.setStepStatus('Create Agent', 'importing');
       try {
         if (this.props.uname) {
@@ -376,26 +376,26 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
           data.config.projectId = this.props.projectId;
         }
 
-        const createAgentResult = await this.props.client?.mutate<
-          ICreateAgentMutationResult
-        >({
-          mutation: CHATBOT_CREATE_AGENT,
-          variables: {
-            uname: this.props.uname || data.config.uname,
-            projectId: this.props.projectId,
-            language: 'EN_US',
-            config: data.config,
-          },
-          refetchQueries: [
-            {
-              query: CHATBOT_GET_AGENTS,
-              variables: {
-                projectId: this.props.projectId,
-              },
+        const createAgentResult = await this.props.client?.mutate<ICreateAgentMutationResult>(
+          {
+            mutation: CHATBOT_CREATE_AGENT,
+            variables: {
+              uname: this.props.uname || data.config.uname,
+              projectId: this.props.projectId,
+              language: 'EN_US',
+              config: data.config,
             },
-          ],
-          awaitRefetchQueries: false,
-        });
+            refetchQueries: [
+              {
+                query: CHATBOT_GET_AGENTS,
+                variables: {
+                  projectId: this.props.projectId,
+                },
+              },
+            ],
+            awaitRefetchQueries: false,
+          },
+        );
 
         if (createAgentResult?.data?.ChatbotService_createAgent?.id) {
           this.setState(
@@ -428,24 +428,24 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
         config.projectId = this.props.projectId;
       }
 
-      const updateAgentResult = await this.props.client?.mutate<
-        IUpdateAgentMutationResult
-      >({
-        mutation: CHATBOT_UPDATE_AGENT,
-        variables: {
-          agentId: this.state.agentId,
-          config,
-        },
-        refetchQueries: [
-          {
-            query: CHATBOT_GET_AGENTS,
-            variables: {
-              projectId: this.props.projectId,
-            },
+      const updateAgentResult = await this.props.client?.mutate<IUpdateAgentMutationResult>(
+        {
+          mutation: CHATBOT_UPDATE_AGENT,
+          variables: {
+            agentId: this.state.agentId,
+            config,
           },
-        ],
-        awaitRefetchQueries: false,
-      });
+          refetchQueries: [
+            {
+              query: CHATBOT_GET_AGENTS,
+              variables: {
+                projectId: this.props.projectId,
+              },
+            },
+          ],
+          awaitRefetchQueries: false,
+        },
+      );
 
       if (updateAgentResult?.errors?.length) {
         throw new Error(JSON.stringify(updateAgentResult));

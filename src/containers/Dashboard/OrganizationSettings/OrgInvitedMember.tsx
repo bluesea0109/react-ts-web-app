@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
+import { CommonTable } from '@bavard/react-components';
 import { Button } from '@material-ui/core';
 
 import React, { useState } from 'react';
@@ -7,7 +8,6 @@ import { IInvitedMember } from '../../../models/user-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 import { GET_INVITED_ORG_MEMBERS, REVOKE_INVITATION } from './gql';
-import { CommonTable } from '../../../components';
 
 interface IInvitedMemberProps {
   orgMemberInvites: IInvitedMember[] | undefined;

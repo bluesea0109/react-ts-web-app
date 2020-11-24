@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { GraphPolicyV2 } from '@bavard/agent-config/dist/graph-policy-v2';
 import { Card, Typography, Grid } from '@material-ui/core';
+import { BlockingLoader } from '@bavard/react-components';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import { useSnackbar } from 'notistack';
@@ -11,7 +12,6 @@ import {
   CHATBOT_GET_AGENT,
   CHATBOT_SAVE_CONFIG_AND_SETTINGS,
 } from '../../../common-gql-queries';
-import BlockingLoader from '../../../components/BlockingLoader';
 import {
   agentOptionImages,
   currentAgentConfig,
@@ -22,6 +22,7 @@ import { getOptionImagesQuery } from './gql';
 import GraphEditor from './GraphEditor';
 import GraphEditorMenu from './GraphEditorMenu';
 import { IGetOptionImagesQueryResult } from './types';
+import ContentLoading from '../../ContentLoading';
 
 interface IParams {
   entityId: string;

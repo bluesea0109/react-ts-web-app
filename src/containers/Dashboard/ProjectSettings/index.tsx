@@ -1,4 +1,5 @@
 import { useMutation } from '@apollo/client';
+import { KeyValueArrayInput } from '@bavard/react-components';
 import {
   Box,
   Button,
@@ -15,7 +16,6 @@ import { Add } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 
-import KeyValueArrayInput from '../../../components/KeyValueArrayInput';
 import { IAPIKey } from '../../../models/user-service';
 import { useQueryAsArray } from '../../../utils/hooks';
 import {
@@ -69,9 +69,10 @@ export default function Project() {
   );
 
   const [deleteKey, deleteKeyMutation] = useMutation(deleteApiKeyMutation);
-  const [updateAllowedDomains, updateAllowedDomainsMutation] = useMutation<
-    UpdateDomainsMutationResult
-  >(updateDomainsMutation);
+  const [
+    updateAllowedDomains,
+    updateAllowedDomainsMutation,
+  ] = useMutation<UpdateDomainsMutationResult>(updateDomainsMutation);
 
   const loadedKey = apiKey?.apiKey ?? null;
 
@@ -112,10 +113,10 @@ export default function Project() {
   const loading = apiKeyLoading || deleteKeyMutation.loading;
 
   return (
-    <Box p={3}>
+    <Box style={{ padding: '50px' }}>
       <Grid container={true} alignItems="center">
         <Grid item={true}>
-          <Typography variant="h5">API Keys</Typography>
+          <Typography style={{ fontSize: '26px' }}>API Keys</Typography>
         </Grid>
         <Grid item={true}>
           <IconButton

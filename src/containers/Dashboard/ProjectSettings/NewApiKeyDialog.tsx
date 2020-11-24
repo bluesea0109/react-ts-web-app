@@ -29,9 +29,10 @@ const NewApiKeyDialog = ({
 }: NewApiKeyDialogProps) => {
   const { projectId } = useParams<{ projectId: string }>();
   const [apiKey, setApiKey] = useState('');
-  const [createKey, { loading, error }] = useMutation<
-    CreateApiKeyMutationResult
-  >(createApiKeyMutation);
+  const [
+    createKey,
+    { loading, error },
+  ] = useMutation<CreateApiKeyMutationResult>(createApiKeyMutation);
 
   const createAPIKey = async () => {
     let key: string | null = apiKey;
