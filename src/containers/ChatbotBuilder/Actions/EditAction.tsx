@@ -120,7 +120,7 @@ const EditAction = ({
     EAgentActionTypes.FORM_ACTION,
   ].map((type) => ({
     id: type,
-    name: type,
+    value: type,
   }));
 
   return (
