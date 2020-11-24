@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { GraphPolicyV2 } from '@bavard/agent-config/dist/graph-policy-v2';
-import { Card, Typography } from '@material-ui/core';
+import { Card, Typography, Grid } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import { useSnackbar } from 'notistack';
@@ -157,9 +157,15 @@ const GraphEditorPage = () => {
   };
 
   return (
-    <div>
-      <div className={classes.editorContent}>
-        <div className={classes.editorMenu}>
+    <React.Fragment>
+      <Grid container={true} className={classes.editorContent}>
+        <Grid
+          item={true}
+          className={classes.editorMenu}
+          xs={12}
+          sm={12}
+          md={3}
+          lg={3}>
           <Typography variant="h6">Visual Graph Builder</Typography>
           <Typography>
             {
@@ -173,29 +179,34 @@ const GraphEditorPage = () => {
               classes.styledScrollbars,
             ])}
           />
-        </div>
-        <Card
-          ref={containerRef}
+        </Grid>
+        <Grid
+          item={true}
+          xs={12}
+          sm={12}
+          md={9}
+          lg={9}
           className={clsx([
             classes.graphEditorContainer,
             classes.styledScrollbars,
-          ])}
-          style={{ width: getEditorWidth(), height: getEditorHeight() }}>
-          {updateAgentData.loading && <BlockingLoader />}
-          {gp && (
-            <GraphEditor
-              policy={gp}
-              agentId={parseInt(agentId)}
-              onSave={handleSavePolicy}
-              onPolicyChanged={handlePolicyChanged}
-            />
-          )}
-        </Card>
-      </div>
+          ])}>
+          <Card ref={containerRef}>
+            {updateAgentData.loading && <BlockingLoader />}
+            {gp && (
+              <GraphEditor
+                policy={gp}
+                agentId={parseInt(agentId)}
+                onSave={handleSavePolicy}
+                onPolicyChanged={handlePolicyChanged}
+              />
+            )}
+          </Card>
+        </Grid>
+      </Grid>
       {!gp && (
         <CreateGraphPolicyDialog agentId={parseInt(agentId)} open={true} />
       )}
-    </div>
+    </React.Fragment>
   );
 };
 export default GraphEditorPage;
