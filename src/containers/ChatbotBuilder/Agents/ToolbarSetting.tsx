@@ -64,9 +64,7 @@ export const ToolBarSetting = ({
         {agents && (
           <DropDown
             label=""
-            current={
-              dropDownAgents.find((agent) => agent.value === currentAgent) || ''
-            }
+            current={currentAgent || ''}
             menuItems={dropDownAgents}
             onChange={handleChange}
           />
