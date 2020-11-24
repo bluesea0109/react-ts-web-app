@@ -91,7 +91,7 @@ export default function PaymentDialog(props: IAllProps) {
   } else if (
     disableBillingResp.called &&
     disableBillingResp.data &&
-    disableBillingResp.data.BillingService_disableBilling
+    disableBillingResp.data.disableBilling
   ) {
     dialogContent = (
       <React.Fragment>

@@ -43,7 +43,7 @@ export const INVITE_ORG_MEMBER = gql`
 
 export const ENABLE_BILLING = gql`
   mutation($orgId: String!, $stripeToken: String!, $billingEmail: String!) {
-    BillingService_enableBilling(
+    enableBilling(
       orgId: $orgId
       stripeToken: $stripeToken
       billingEmail: $billingEmail
@@ -53,6 +53,6 @@ export const ENABLE_BILLING = gql`
 
 export const DISABLE_BILLING = gql`
   mutation($orgId: String!) {
-    BillingService_disableBilling(orgId: $orgId)
+    disableBilling(orgId: $orgId)
   }
 `;
