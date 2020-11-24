@@ -53,6 +53,6 @@ export const ENABLE_BILLING = gql`
 
 export const DISABLE_BILLING = gql`
   mutation($orgId: String!) {
-    BillingService_disableBilling(orgId: $orgId)
+    disableBilling(orgId: $orgId)
   }
 `;
