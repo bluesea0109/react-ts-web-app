@@ -51,12 +51,10 @@ export const ToolBarSetting = ({
   const classes = useStyles();
 
   const dropDownAgents = useMemo(() => {
-    return (
-      agents?.map((agent) => ({
-        id: agent.id,
-        value: agent.uname,
-      })) || []
-    );
+    return (agents || []).map((agent) => ({
+      id: agent.id,
+      value: agent.uname,
+    }));
   }, [agents]);
 
   return (

@@ -57,7 +57,7 @@ const EditOption = ({
     EResponseOptionTypes.IMAGE,
   ].map((type) => ({
     id: type,
-    name: type,
+    value: type,
   }));
 
   const isIntentRequired = option.type !== EResponseOptionTypes.HYPERLINK;
