@@ -125,15 +125,6 @@ const AgentDetails = () => {
     currentWidgetSettings,
   );
 
-  const init = agents?.filter((item) => item.id === parseInt(agentId, 10))[0]
-    ?.uname;
-
-  const [curAgent, setCurAgent] = useState<string | undefined>('');
-  //useEffect is for setting the current Agent name
-  useEffect(() => {
-    setCurAgent(init);
-  }, [init]);
-
   const [config, setConfig] = useRecoilState(currentAgentConfig);
 
   const { error, loading, data } = useQuery<IGetAgent>(CHATBOT_GET_AGENT, {
@@ -179,10 +170,7 @@ const AgentDetails = () => {
     history.push(newURL);
   };
 
-  const handleAgentChanage = (field: string) => {
-    setCurAgent(field);
-
-    const agentId = agents?.filter((agent) => agent.uname === field)[0].id;
+  const handleAgentChanage = (agentId: string) => {
     const newURL = `/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${agentId}/Actions/`;
     history.push(newURL);
   };
@@ -192,7 +180,7 @@ const AgentDetails = () => {
       <Toolbar className={classes.toolbar} variant="dense">
         <ToolBarSetting
           agents={agents}
-          currentAgent={curAgent}
+          currentAgent={agentId}
           handleChange={handleAgentChanage}
           saveAgent={saveAgent}
           publishAgent={publishAgent}
