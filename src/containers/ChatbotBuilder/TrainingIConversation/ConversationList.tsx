@@ -19,23 +19,23 @@ import {
 } from '@material-ui/icons';
 
 interface ConversationListProps {
-  records: IConversation[];
-  handleDelete: () => void;
-  handleSave: () => void;
+  conversations: IConversation[];
+  onDelete: () => void;
+  onSave: () => void;
 }
 
 const ConversationList: React.FC<ConversationListProps> = ({
-  records,
-  handleDelete,
-  handleSave,
+  conversations,
+  onDelete,
+  onSave,
 }: ConversationListProps) => {
   return (
     <Grid>
       <CollapsibleTable
-        items={records}
+        items={conversations}
         defaultCollapsed={true}
-        onDeleteItem={handleDelete}
-        ItemRow={ConversationHeader}
+        onDeleteItem={onDelete}
+        ItemHeader={ConversationHeader}
         ItemDetail={ConversationDetail}
       />
     </Grid>
@@ -43,10 +43,11 @@ const ConversationList: React.FC<ConversationListProps> = ({
 };
 
 interface ConversationHeaderProps {
-  index: number;
+  isNew?: boolean;
+  index?: number;
   isCollapsed: boolean;
   onClickItem: () => void;
-  handleDelete: (id: number) => void;
+  onDelete: () => void;
   onToggleCollapse: () => void;
 }
 
@@ -77,9 +78,10 @@ const ConversationDetail = ({ item }: IConversationDetailProps) => (
 );
 
 export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
+  isNew,
   index,
   isCollapsed,
-  handleDelete,
+  onDelete,
   onClickItem,
   onToggleCollapse,
 }) => {
@@ -107,13 +109,13 @@ export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
           )}
         </Box>
         <Typography style={{ textTransform: 'capitalize' }}>
-          Conversation {index + 1}
+          {isNew ? 'New Conversation' : `Conversation {${(index || 0) + 1}`}
         </Typography>
       </Grid>
       <Grid xs={4} sm={4}></Grid>
       <Grid item={true} container={true} xs={2} sm={2} justify="flex-end">
         <Box ml={1}>
-          <Delete onClick={() => {}} />
+          <Delete onClick={onDelete} />
         </Box>
       </Grid>
     </Grid>
