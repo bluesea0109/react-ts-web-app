@@ -15,7 +15,7 @@ const getIdToken = async () => {
     if (user) {
       const token = await user.getIdToken();
       const customToken = await exchangeFirebaseToken(token);
-
+      console.log('Bavard JWT Token:', customToken);
       sessionStorage.setItem('token', customToken);
 
       return customToken;

@@ -153,7 +153,7 @@ function CheckoutForm() {
   } else if (
     enableBillingResp.called &&
     enableBillingResp.data &&
-    enableBillingResp.data.BillingService_enableBilling
+    enableBillingResp.data.enableBilling
   ) {
     dialogContent = (
       <React.Fragment>
