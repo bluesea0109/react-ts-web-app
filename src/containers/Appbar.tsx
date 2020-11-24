@@ -6,10 +6,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import firebase from 'firebase/app';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import { GET_CURRENT_USER, UPDATE_ACTIVE_ORG } from '../common-gql-queries';
-import { IUser } from '../models/user-service';
+import { IUser, IProject } from '../models/user-service';
 
 interface CustomAppbarProps extends AppBarProps {
   user: IUser;
@@ -77,14 +77,20 @@ const Orgs: React.FC<OrgsProps> = ({ user, updateActiveOrg }) => {
     });
   };
 
-  const orgs = user.orgs ?? [];
-  return orgs?.length !== 0 ? (
+  const orgs = useMemo(() => {
+    return (user.orgs || []).map((org) => ({
+      id: org.id,
+      value: org.name,
+    }));
+  }, [user.orgs]);
+
+  return orgs.length !== 0 ? (
     <DropDown
       label="Organization:"
       labelPosition="top"
       current={user.activeOrg?.id || ''}
       menuItems={orgs}
-      onChange={(name) => setActiveOrg(name)}
+      onChange={(id) => setActiveOrg(id)}
     />
   ) : (
     <TextField
@@ -104,7 +110,12 @@ interface ProjectsProps {
   updateActiveProject: (project: any) => void;
 }
 const Projects: React.FC<ProjectsProps> = ({ user, updateActiveProject }) => {
-  const projects = user?.activeOrg?.projects || [];
+  const projects = useMemo(() => {
+    return (user?.activeOrg?.projects || []).map((project: IProject) => ({
+      id: project.id,
+      value: project.name,
+    }));
+  }, [user?.activeOrg?.projects]);
   const projectId = user.activeProject?.id ?? '';
   const classes = useStyles();
 

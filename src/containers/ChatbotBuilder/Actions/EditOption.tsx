@@ -67,7 +67,7 @@ const EditOption = ({
   const allIntents = useMemo(() => {
     return intents.map((intent) => ({
       id: intent.name,
-      name: intent.name,
+      value: intent.name,
     }));
   }, [intents]);
 
