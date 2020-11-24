@@ -72,7 +72,7 @@ const useStyles = makeStyles((theme: Theme) =>
       bottom: 30,
       right: 30,
       borderRadius: '50%',
-      zIndex: 1,
+      zIndex: 3,
       color: theme.palette.error.main,
       display: 'flex',
       flexDirection: 'column',
