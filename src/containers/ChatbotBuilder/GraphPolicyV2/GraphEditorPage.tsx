@@ -192,7 +192,9 @@ const GraphEditorPage = () => {
             classes.styledScrollbars,
           ])}>
           <Card ref={containerRef}>
-            {updateAgentData.loading && <BlockingLoader />}
+            {updateAgentData.loading && (
+              <BlockingLoader ContentLoading={ContentLoading} />
+            )}
             {gp && (
               <GraphEditor
                 policy={gp}
