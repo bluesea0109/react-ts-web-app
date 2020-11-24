@@ -10,16 +10,16 @@ import TagsTable from './TagsTable';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {      
+    root: {
       overflow: 'auto',
     },
     paper: {
       padding: theme.spacing(2),
     },
     pageTitle: {
-      fontSize: '26px', 
-      marginBottom: '24px'
-    }
+      fontSize: '26px',
+      marginBottom: '24px',
+    },
   }),
 );
 
