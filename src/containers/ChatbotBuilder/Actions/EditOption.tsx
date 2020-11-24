@@ -57,7 +57,7 @@ const EditOption = ({
     EResponseOptionTypes.IMAGE,
   ].map((type) => ({
     id: type,
-    name: type,
+    value: type,
   }));
 
   const isIntentRequired = option.type !== EResponseOptionTypes.HYPERLINK;
@@ -67,7 +67,7 @@ const EditOption = ({
   const allIntents = useMemo(() => {
     return intents.map((intent) => ({
       id: intent.name,
-      name: intent.name,
+      value: intent.name,
     }));
   }, [intents]);
 

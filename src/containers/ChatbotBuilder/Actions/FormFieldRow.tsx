@@ -66,7 +66,7 @@ const FormFieldRow = ({
     EFormFieldTypes.ZIP,
   ].map((type) => ({
     id: type,
-    name: type,
+    value: type,
   }));
 
   return (
