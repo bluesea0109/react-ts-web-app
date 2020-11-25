@@ -1,11 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import {
-  Grid,
-  makeStyles,
-  Typography,
-  Box,
-  IconButton,
-} from '@material-ui/core';
+import React, { useEffect } from 'react';
+import clsx from 'clsx';
+import { BasicButton, IconButton } from '@bavard/react-components';
+import { Grid, makeStyles, Box } from '@material-ui/core';
 import {
   EDialogueActor,
   IConversation,
@@ -15,7 +11,7 @@ import {
 import { useRecoilState } from 'recoil';
 import { trainingConversation } from '../atoms';
 import ActionPanel from './ActionPanel';
-import { AddCircleOutline, Delete } from '@material-ui/icons';
+import { AddCircleOutline } from '@material-ui/icons';
 import { EUserActionType } from '@bavard/agent-config/dist/actions/user';
 import _ from 'lodash';
 import { EAgentActionTypes } from '@bavard/agent-config/dist/enums';
@@ -39,57 +35,6 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     padding: '20px',
   },
-  saveButton: {
-    display: 'flex',
-    justifyContent: 'center',
-    width: '160px',
-    cursor: 'pointer',
-    marign: 'auto',
-    padding: '10px 20px',
-    borderRadius: '5px',
-    border: '1px solid blue',
-    marginBottom: '30px',
-  },
-  actionWrapper: {
-    width: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    flexWrap: 'unset',
-    flexDirection: 'row',
-    padding: '30px',
-  },
-  listItemWrapper: {
-    border: '1px solid rgba(0,0,0,0.2)',
-    boxShadow: 'none',
-
-    '&:before': {
-      display: 'none',
-    },
-    '&$expanded': {
-      margin: '0px',
-    },
-    marginBottom: '30px',
-  },
-  UserActionsHeading: {
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    width: '50%',
-  },
-  AgentActionsHeading: {
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    width: '50%',
-  },
-  heading: {
-    fontSize: theme.typography.pxToRem(15),
-    fontWeight: theme.typography.fontWeightRegular,
-    paddingTop: '5px',
-  },
-  listItem: {
-    borderTop: '1px solid rgba(0,0,0,.2)',
-    flexDirection: 'column',
-    alignItems: 'flex-end',
-  },
   userAction: {
     display: 'flex',
     justifyContent: 'flex-start',
@@ -100,47 +45,17 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'flex-end',
     marginBottom: '30px',
   },
-  arrow: {
-    color: 'blue',
-    fontSize: '30px',
-  },
 }));
 
-const ConversationPanel = ({ conversation }: ConversationPanelProps) => {
+const ConversationPanel: React.FC<ConversationPanelProps> = ({
+  conversation,
+}) => {
   const classes = useStyles();
   const [data, updateData] = useRecoilState(trainingConversation);
 
   useEffect(() => {
     updateData(conversation.conversation);
   }, [conversation.conversation, updateData]);
-
-  const renderActions = () => {
-    return (
-      <Grid>
-        {data?.turns.map((action: any, index) => {
-          return action.actor === 'USER' ? (
-            <Grid className={classes.userAction}>
-              <ActionPanel
-                action={action.userAction}
-                type={ACTION_TYPE.USER_ACTION}
-                order={index}
-                onDelete={handleDelete}
-              />
-            </Grid>
-          ) : (
-            <Grid className={classes.agentAction}>
-              <ActionPanel
-                action={action.agentAction}
-                type={ACTION_TYPE.AGENT_ACTION}
-                order={index}
-                onDelete={handleDelete}
-              />
-            </Grid>
-          );
-        })}
-      </Grid>
-    );
-  };
 
   const handleAddFields = (param: ACTION_TYPE) => {
     if (param === ACTION_TYPE.USER_ACTION) {
@@ -192,36 +107,55 @@ const ConversationPanel = ({ conversation }: ConversationPanelProps) => {
     updateData(deletedData as IConversation);
   };
   const onSubmit = () => {};
+
   return (
     <Grid>
       <Grid container={true} direction={'column'} className={classes.paper}>
-        {renderActions()}
+        {data?.turns.map((action: any, index) => {
+          const isUserAction = action.actor === 'USER';
+          return (
+            <Grid
+              key={index}
+              className={clsx({
+                [classes.userAction]: isUserAction,
+                [classes.agentAction]: !isUserAction,
+              })}>
+              <ActionPanel
+                order={index}
+                action={isUserAction ? action.userAction : action.agentAction}
+                type={
+                  isUserAction
+                    ? ACTION_TYPE.USER_ACTION
+                    : ACTION_TYPE.AGENT_ACTION
+                }
+                onDelete={handleDelete}
+              />
+            </Grid>
+          );
+        })}
       </Grid>
-      <Grid container={true} className={classes.actionWrapper}>
-        <Grid
-          container={true}
-          item={true}
-          className={classes.UserActionsHeading}>
-          <Typography style={{ color: 'blue' }}> Add User Action </Typography>
-          <IconButton onClick={() => handleAddFields(ACTION_TYPE.USER_ACTION)}>
-            <AddCircleOutline fontSize="large" style={{ color: '#5867ca' }} />
-          </IconButton>
-        </Grid>
-        <Grid
-          container={true}
-          item={true}
-          className={classes.AgentActionsHeading}
-          justify="flex-end">
-          <Typography style={{ color: 'blue' }}> Add Agent Action </Typography>
-          <IconButton onClick={() => handleAddFields(ACTION_TYPE.AGENT_ACTION)}>
-            <AddCircleOutline fontSize="large" style={{ color: '#5867ca' }} />
-          </IconButton>
-        </Grid>
-      </Grid>
-      <Box display="flex" justifyContent="center">
-        <div className={classes.saveButton} color="primary" onClick={onSubmit}>
-          Save Conversation
-        </div>
+      <Box display="flex" justifyContent="space-between" px={5}>
+        <IconButton
+          variant="text"
+          title="Add User Action"
+          iconPosition="right"
+          Icon={AddCircleOutline}
+          onClick={() => handleAddFields(ACTION_TYPE.USER_ACTION)}
+        />
+        <IconButton
+          variant="text"
+          title="Add Agent Action"
+          iconPosition="right"
+          Icon={AddCircleOutline}
+          onClick={() => handleAddFields(ACTION_TYPE.AGENT_ACTION)}
+        />
+      </Box>
+      <Box display="flex" justifyContent="center" mb={2}>
+        <BasicButton
+          variant="outlined"
+          title="Save Conversation"
+          onClick={onSubmit}
+        />
       </Box>
     </Grid>
   );

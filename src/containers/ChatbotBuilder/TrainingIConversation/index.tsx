@@ -5,7 +5,7 @@ import {
 } from '@bavard/agent-config/dist/conversations';
 import { Button, Grid, Paper, Typography, Box } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 
