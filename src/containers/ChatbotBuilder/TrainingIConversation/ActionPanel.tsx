@@ -19,11 +19,15 @@ import {
 import { IUserUtteranceAction } from '@bavard/agent-config/dist/actions/user';
 import { ITagValue } from '@bavard/agent-config';
 import { IconButton } from '@bavard/react-components';
-import { ACTION_TYPE, FIELD_TYPE, IUtternaceAction } from './type';
+import { FIELD_TYPE, IUtternaceAction } from './type';
 import { GroupField } from './GroupField';
 
 import { useRecoilValue } from 'recoil';
 import { currentAgentConfig } from '../atoms';
+import {
+  EDialogueActor,
+  IDialogueTurn,
+} from '@bavard/agent-config/dist/conversations';
 
 const useStyle = makeStyles((theme: Theme) => ({
   listItemWrapper: {
@@ -79,9 +83,9 @@ const AccordionSummary = withStyles({
 
 interface ActionPanelProps {
   action: IUtternaceAction;
-  type: ACTION_TYPE;
+  actor: EDialogueActor;
   onDelete: () => void;
-  updateAction: (action: IUtternaceAction) => void;
+  onUpdate: (action: IDialogueTurn) => void;
 }
 
 export enum CHANGE_FIELD {
@@ -92,8 +96,8 @@ export enum CHANGE_FIELD {
 
 const ActionPanel = ({
   action,
-  type,
-  updateAction,
+  actor,
+  onUpdate: handleUpdate,
   onDelete,
 }: ActionPanelProps) => {
   const config = useRecoilValue(currentAgentConfig);
@@ -105,20 +109,22 @@ const ActionPanel = ({
   const intents: string[] = [];
   const tags: string[] = [];
 
-  const isUserAction = type === ACTION_TYPE.USER_ACTION;
-  const isAgentAction = type === ACTION_TYPE.AGENT_ACTION;
+  const isUserAction = actor === EDialogueActor.USER;
 
   const onAddTag = () => {
-    updateAction({
-      ...action,
-      tags: [
-        ...((action as IUserUtteranceAction)?.tags || []),
-        {
-          tagType: '',
-          value: '',
-        } as ITagValue,
-      ],
-    } as IUserUtteranceAction);
+    handleUpdate({
+      actor,
+      userAction: {
+        ...action,
+        tags: [
+          ...((action as IUserUtteranceAction)?.tags || []),
+          {
+            tagType: '',
+            value: '',
+          } as ITagValue,
+        ],
+      } as IUserUtteranceAction,
+    } as IDialogueTurn);
   };
   tagList?.forEach((item) => tags.push(item));
   intentList?.forEach((item) => intents.push(item.name));
@@ -128,9 +134,7 @@ const ActionPanel = ({
       <AccordionSummary id="conversationId" onClick={() => setOpen(!isOpened)}>
         <Grid
           className={
-            type === ACTION_TYPE.USER_ACTION
-              ? classes.userActionHeader
-              : classes.agentActionHeader
+            isUserAction ? classes.userActionHeader : classes.agentActionHeader
           }>
           <Box
             display="flex"
@@ -155,7 +159,7 @@ const ActionPanel = ({
       </AccordionSummary>
       <AccordionDetails>
         <Box width={1}>
-          {type === ACTION_TYPE.USER_ACTION ? (
+          {isUserAction ? (
             <>
               <GroupField field={FIELD_TYPE.INTENT} options={intents} />
               {(action as IUserUtteranceAction)?.tags?.map((item, index) => (

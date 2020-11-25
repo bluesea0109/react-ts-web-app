@@ -7,6 +7,7 @@ import {
   IConversation,
   IUserDialogueTurn,
   IAgentDialogueTurn,
+  IDialogueTurn,
 } from '@bavard/agent-config/dist/conversations';
 import { useRecoilState } from 'recoil';
 import { trainingConversation } from '../atoms';
@@ -88,7 +89,7 @@ const ConversationPanel = ({
     }
   };
 
-  const handleDelete = (index: number) => {
+  const handleDeleteTurn = (index: number) => {
     const oldConversation = _.cloneDeep(data);
     updateData({
       ...oldConversation,
@@ -98,12 +99,12 @@ const ConversationPanel = ({
     } as IConversation);
   };
 
-  const handleUpdateAction = (action: IUtternaceAction, index: number) => {
+  const handleUpdateTurn = (turn: IDialogueTurn, index: number) => {
     const oldConversation = _.cloneDeep(data);
     const newConversation = {
       ...oldConversation,
-      turns: (oldConversation as IConversation).turns.filter(
-        (conversation, i) => (i !== index ? conversation : action),
+      turns: (oldConversation as IConversation).turns.map((each, i) =>
+        i !== index ? each : turn,
       ),
     } as IConversation;
     updateData(newConversation);
@@ -114,8 +115,8 @@ const ConversationPanel = ({
   return (
     <Grid>
       <Grid container={true} direction={'column'} className={classes.paper}>
-        {data?.turns.map((action: any, index) => {
-          const isUserAction = action.actor === 'USER';
+        {data?.turns.map((turn: IDialogueTurn, index) => {
+          const isUserAction = turn.actor === EDialogueActor.USER;
           return (
             <Grid
               key={index}
@@ -124,14 +125,16 @@ const ConversationPanel = ({
                 [classes.agentAction]: !isUserAction,
               })}>
               <ActionPanel
-                action={isUserAction ? action.userAction : action.agentAction}
-                type={
-                  isUserAction
-                    ? ACTION_TYPE.USER_ACTION
-                    : ACTION_TYPE.AGENT_ACTION
+                action={
+                  // prettier-ignore
+                  (isUserAction
+                    ? (turn as IUserDialogueTurn).userAction
+                    : (turn as IAgentDialogueTurn).agentAction
+                  ) as IUtternaceAction
                 }
-                updateAction={(action) => handleUpdateAction(action, index)}
-                onDelete={() => handleDelete(index)}
+                actor={turn.actor}
+                onUpdate={(turn) => handleUpdateTurn(turn, index)}
+                onDelete={() => handleDeleteTurn(index)}
               />
             </Grid>
           );
