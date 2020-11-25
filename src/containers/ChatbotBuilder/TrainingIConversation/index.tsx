@@ -1,5 +1,9 @@
 import { useMutation, useQuery } from '@apollo/client';
 import {
+  IConversation,
+  IDialogueTurn,
+} from '@bavard/agent-config/dist/conversations';
+import {
   Button,
   Grid,
   LinearProgress,
@@ -10,17 +14,21 @@ import {
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
+
+import { ITrainingConversation } from '../../../models/chatbot-service';
 import {
+  CREATE_TRAINING_CONVERSATION,
   DELETE_TRAINING_CONVERSATION,
   GET_TRAINING_CONVERSATIONS,
 } from '../../../common-gql-queries';
-// import { IConversation, ITrainingConversations } from '../../../models/chatbot-service';
+
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 import ConversationList from './ConversationList';
 
 interface IGetTrainingConversation {
-  ChatbotService_trainingConversations: [];
+  ChatbotService_trainingConversations: ITrainingConversation[];
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -47,12 +55,33 @@ export default function TrainingIConversations() {
   const classes = useStyles();
 
   const params = useParams<{ agentId: string }>();
-  const [conversations, setConversations] = useState([]);
+  const { enqueueSnackbar } = useSnackbar();
+  const [conversations, setConversations] = useState<ITrainingConversation[]>(
+    [],
+  );
   const agentId = parseInt(params.agentId, 10);
 
   const [deleteConversations, { loading }] = useMutation(
     DELETE_TRAINING_CONVERSATION,
   );
+  const [
+    createTrainingConversation,
+    {
+      loading: createTrainingConversationLoading,
+      error: createTrainingConversationError,
+    },
+  ] = useMutation(CREATE_TRAINING_CONVERSATION, {
+    refetchQueries: [
+      {
+        query: GET_TRAINING_CONVERSATIONS,
+        variables: { agentId: Number(agentId) },
+      },
+    ],
+    awaitRefetchQueries: true,
+    onError: (error) => {
+      enqueueSnackbar(error.message, { variant: 'error' });
+    },
+  });
   const getTrainingConversations = useQuery<IGetTrainingConversation>(
     GET_TRAINING_CONVERSATIONS,
     { variables: { agentId } },
@@ -72,7 +101,18 @@ export default function TrainingIConversations() {
     return <ContentLoading shrinked={true} />;
   }
 
-  const onCreateNewConversation = () => {};
+  const onCreateNewConversation = () => {
+    createTrainingConversation({
+      variables: {
+        agentId: Number(agentId),
+        conversation: {
+          id: null,
+          turns: [] as IDialogueTurn[],
+          currentAgentType: 'BOT',
+        } as IConversation,
+      },
+    });
+  };
 
   const handleSaveConversation = () => {};
 

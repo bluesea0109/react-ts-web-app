@@ -3,6 +3,7 @@ import {
   IAgentConfig,
   IWidgetSettings,
 } from '@bavard/agent-config';
+import { IConversation } from '@bavard/agent-config/dist/conversations';
 import { IGraphPolicy } from '@bavard/agent-config/dist/graph-policy';
 
 export enum ChatbotLanguage {
@@ -114,12 +115,6 @@ export interface IDialogueTurn {
   action: IAgentAction;
 }
 
-export interface IConversation {
-  id: number;
-  agentId: number;
-  turns: IDialogueTurn[];
-}
-
 export interface ITrainingConversations {
   agentId: number;
   id: number;
@@ -178,4 +173,11 @@ export interface ISlot {
   agentId: number;
   name: string;
   type: string;
+}
+
+export interface ITrainingConversation {
+  agentId: number;
+  id: number;
+  conversation: IConversation;
+  metadata: any;
 }

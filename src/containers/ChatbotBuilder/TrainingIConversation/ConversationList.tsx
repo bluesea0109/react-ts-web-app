@@ -1,4 +1,4 @@
-import { IConversation } from '@bavard/agent-config/dist/conversations';
+import { ITrainingConversation } from '../../../models/chatbot-service';
 import { CollapsibleTable } from '@bavard/react-components';
 import React from 'react';
 import {
@@ -19,7 +19,7 @@ import {
 } from '@material-ui/icons';
 
 interface ConversationListProps {
-  conversations: IConversation[];
+  conversations: ITrainingConversation[];
   onDelete: () => void;
   onSave: () => void;
 }
@@ -43,8 +43,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
 };
 
 interface ConversationHeaderProps {
-  isNew?: boolean;
-  index?: number;
+  index: number;
   isCollapsed: boolean;
   onClickItem: () => void;
   onDelete: () => void;
@@ -62,15 +61,8 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-interface ReceiveProps {
-  agentId: number;
-  id: number;
-  conversation: IConversation;
-  metadata: object;
-}
-
 interface IConversationDetailProps {
-  item: ReceiveProps;
+  item: ITrainingConversation;
 }
 
 const ConversationDetail = ({ item }: IConversationDetailProps) => (
@@ -78,45 +70,34 @@ const ConversationDetail = ({ item }: IConversationDetailProps) => (
 );
 
 export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
-  isNew,
   index,
   isCollapsed,
   onDelete,
-  onClickItem,
   onToggleCollapse,
 }) => {
   const classes = useStyles();
   return (
-    <Grid
-      container={true}
-      className={classes.header}
-      alignItems="center"
-      onClick={() => onClickItem()}>
-      <Grid item={true} container={true} xs={6} sm={6} alignItems="center">
-        <Box mr={1}>
-          {!isCollapsed ? (
-            <KeyboardArrowRight
-              color="primary"
-              fontSize="large"
-              onClick={onToggleCollapse}
-            />
-          ) : (
-            <KeyboardArrowDown
-              color="primary"
-              fontSize="large"
-              onClick={onToggleCollapse}
-            />
-          )}
-        </Box>
+    <Grid container={true} className={classes.header} alignItems="center">
+      <Grid item={true} container={true} xs={8} alignItems="center">
+        {isCollapsed ? (
+          <KeyboardArrowRight
+            color="primary"
+            fontSize="large"
+            onClick={onToggleCollapse}
+          />
+        ) : (
+          <KeyboardArrowDown
+            color="primary"
+            fontSize="large"
+            onClick={onToggleCollapse}
+          />
+        )}
         <Typography style={{ textTransform: 'capitalize' }}>
-          {isNew ? 'New Conversation' : `Conversation {${(index || 0) + 1}`}
+          {`Conversation ${(index || 0) + 1}`}
         </Typography>
       </Grid>
-      <Grid xs={4} sm={4}></Grid>
-      <Grid item={true} container={true} xs={2} sm={2} justify="flex-end">
-        <Box ml={1}>
-          <Delete onClick={onDelete} />
-        </Box>
+      <Grid item={true} container={true} xs={4} justify="flex-end">
+        <Delete onClick={onDelete} />
       </Grid>
     </Grid>
   );

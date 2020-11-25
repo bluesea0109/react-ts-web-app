@@ -439,8 +439,11 @@ export const CREATE_TRAINING_JOB = gql`
 `;
 
 export const CREATE_TRAINING_CONVERSATION = gql`
-  mutation($agentId:Int!, $conversation: JSON!) {
-    ChatbotService_createTrainingConversation(agentId: $agentId, conversation: $conversation) {
+  mutation($agentId: Int!, $conversation: JSON!) {
+    ChatbotService_createTrainingConversation(
+      agentId: $agentId
+      conversation: $conversation
+    ) {
       agentId
       id
       conversation
@@ -451,20 +454,17 @@ export const CREATE_TRAINING_CONVERSATION = gql`
 
 export const GET_TRAINING_CONVERSATIONS = gql`
   query($agentId: Int!) {
-    ChatbotService_trainingConversations(agentId: $agentId) {      
-        agentId
-        id
-        conversation                                                                                                                                                                                                               
-        metadata
+    ChatbotService_trainingConversations(agentId: $agentId) {
+      agentId
+      id
+      conversation
+      metadata
     }
   }
 `;
 
 export const UPDATE_TRAINING_CONVERSATION = gql`
-  mutation(
-    $conversationId: Int!
-    $conversation: JSON!
-  ) {
+  mutation($conversationId: Int!, $conversation: JSON!) {
     ChatbotService_updateTrainingConversation(
       conversationId: $conversationId
       conversation: $conversation

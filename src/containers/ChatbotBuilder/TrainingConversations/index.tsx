@@ -13,7 +13,6 @@ import {
   DELETE_TRAINING_CONVERSATION,
   GET_TRAINING_CONVERSATIONS,
 } from '../../../common-gql-queries';
-// import { IConversation, ITrainingConversations } from '../../../models/chatbot-service';
 import { IConversation } from '@bavard/agent-config/dist/conversations';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
