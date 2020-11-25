@@ -4,8 +4,6 @@ const dev = {
   projectId: 'bavard-dev',
   apiBaseUrl: 'https://api.dev.bavard.ai',
   apiUrl: 'https://api.dev.bavard.ai/graphql',
-  predictionServiceUrl:
-    'https://prediction-service-dot-bavard-dev.appspot.com/graphql',
   chatbotUrl: 'https://bavard-chatbot.web.app/widget/index.html',
   bundleUrl: 'https://bavard-chatbot.web.app/main.bundle.js',
   stripePublicKey:
@@ -26,12 +24,10 @@ const prod = {
   projectId: 'bavard-prod',
   apiBaseUrl: 'https://api.prod.bavard.ai',
   apiUrl: 'https://api.prod.bavard.ai/graphql',
-  predictionServiceUrl:
-    'https://prediction-service-dot-bavard-prod.appspot.com/graphql',
   chatbotUrl: 'https://bavard-widget-prod.web.app/widget/index.html',
   bundleUrl: 'https://bavard-widget-prod.web.app/main.bundle.js',
   stripePublicKey:
-    'pk_test_51HL9t1DslhlvaFGjUIoSzWldID1pYsNstl7pRQadJQ2EGohCGoXuGrrEPr8K7bj4NyZKlwU3vMv8fM2bRSrvSNHK00nQSkQKke',
+    'pk_live_51HL9t1DslhlvaFGjPwzUTJusBTMW793OfbjvXDH8mBb0ZSUzL52biHeuo96xvqwjEcHqWs4O8q584yH02Yiwycd600r5Rdl7re',
   firebase: {
     apiKey: 'AIzaSyDFg05-2YvUvfjaufJoFpMubpQnJ_Z7R28',
     authDomain: 'bavard-prod.firebaseapp.com',
@@ -48,8 +44,6 @@ const local = {
   projectId: 'bavard-dev',
   apiBaseUrl: 'http://localhost:8081',
   apiUrl: 'http://localhost:8081/graphql',
-  predictionServiceUrl:
-    'https://prediction-service-dot-bavard-dev.appspot.com/graphql',
   chatbotUrl: 'http://localhost:8000/public/index.html',
   bundleUrl: 'https://bavard-chatbot.web.app/main.bundle.js',
   stripePublicKey:
