@@ -1,5 +1,6 @@
 import { IUserUtteranceAction } from '@bavard/agent-config/dist/actions/user';
 import { IAgentUtteranceAction } from '@bavard/agent-config';
+
 export enum ACTION_TYPE {
   USER_ACTION = 'user_action',
   AGENT_ACTION = 'agent_action',
