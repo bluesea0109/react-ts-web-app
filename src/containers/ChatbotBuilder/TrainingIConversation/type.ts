@@ -1,10 +1,14 @@
+import { IUserUtteranceAction } from '@bavard/agent-config/dist/actions/user';
+import { IAgentUtteranceAction } from '@bavard/agent-config';
 export enum ACTION_TYPE {
   USER_ACTION = 'user_action',
   AGENT_ACTION = 'agent_action',
 }
 
 export enum FIELD_TYPE {
-	INTENT = 'intent',
-	TAG = 'tag',
-	NAME = 'name'
+  INTENT = 'Intent',
+  TAG = 'Tag Type',
+  NAME = 'name',
 }
+
+export type IUtternaceAction = IUserUtteranceAction | IAgentUtteranceAction;

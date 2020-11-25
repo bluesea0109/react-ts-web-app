@@ -15,7 +15,7 @@ import { AddCircleOutline } from '@material-ui/icons';
 import { EUserActionType } from '@bavard/agent-config/dist/actions/user';
 import _ from 'lodash';
 import { EAgentActionTypes } from '@bavard/agent-config/dist/enums';
-import { ACTION_TYPE } from './type';
+import { ACTION_TYPE, IUtternaceAction } from './type';
 
 interface ReceiveProps {
   agentId: number;
@@ -57,7 +57,7 @@ const ConversationPanel: React.FC<ConversationPanelProps> = ({
     updateData(conversation.conversation);
   }, [conversation.conversation, updateData]);
 
-  const handleAddFields = (param: ACTION_TYPE) => {
+  const handleAddField = (param: ACTION_TYPE) => {
     if (param === ACTION_TYPE.USER_ACTION) {
       const userActionData: IUserDialogueTurn = {
         actor: EDialogueActor.USER,
@@ -96,16 +96,26 @@ const ConversationPanel: React.FC<ConversationPanelProps> = ({
     }
   };
 
-  const handleDelete = (param: number) => {
-    const tempData = _.cloneDeep(data);
-    const deletedData = {
-      ...tempData,
-      turns: (tempData as IConversation).turns.filter(
-        (item, index) => index !== param,
+  const handleDelete = (index: number) => {
+    const oldConversation = _.cloneDeep(data);
+    updateData({
+      ...oldConversation,
+      turns: (oldConversation as IConversation).turns.filter(
+        (_, i) => i !== index,
       ),
-    };
-    updateData(deletedData as IConversation);
+    } as IConversation);
   };
+
+  const handleUpdateAction = (action: IUtternaceAction, index: number) => {
+    const oldConversation = _.cloneDeep(data);
+    updateData({
+      ...oldConversation,
+      turns: (oldConversation as IConversation).turns.filter(
+        (conversation, i) => (i !== index ? conversation : action),
+      ),
+    } as IConversation);
+  };
+
   const onSubmit = () => {};
 
   return (
@@ -121,14 +131,14 @@ const ConversationPanel: React.FC<ConversationPanelProps> = ({
                 [classes.agentAction]: !isUserAction,
               })}>
               <ActionPanel
-                order={index}
                 action={isUserAction ? action.userAction : action.agentAction}
                 type={
                   isUserAction
                     ? ACTION_TYPE.USER_ACTION
                     : ACTION_TYPE.AGENT_ACTION
                 }
-                onDelete={handleDelete}
+                updateAction={(action) => handleUpdateAction(action, index)}
+                onDelete={() => handleDelete(index)}
               />
             </Grid>
           );
@@ -140,14 +150,14 @@ const ConversationPanel: React.FC<ConversationPanelProps> = ({
           title="Add User Action"
           iconPosition="right"
           Icon={AddCircleOutline}
-          onClick={() => handleAddFields(ACTION_TYPE.USER_ACTION)}
+          onClick={() => handleAddField(ACTION_TYPE.USER_ACTION)}
         />
         <IconButton
           variant="text"
           title="Add Agent Action"
           iconPosition="right"
           Icon={AddCircleOutline}
-          onClick={() => handleAddFields(ACTION_TYPE.AGENT_ACTION)}
+          onClick={() => handleAddField(ACTION_TYPE.AGENT_ACTION)}
         />
       </Box>
       <Box display="flex" justifyContent="center" mb={2}>
