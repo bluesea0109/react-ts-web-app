@@ -9,13 +9,16 @@ interface GroupFieldProps {
 }
 
 const useStyles = makeStyles((theme) => ({
-  field: {
-    padding: theme.spacing(2),
-  },
   input: {
     '& .MuiOutlinedInput-input': {
       padding: '8px 8px',
     },
+  },
+  nameField: {
+    paddingRight: theme.spacing(2),
+  },
+  valueField: {
+    paddingLeft: theme.spacing(2),
   },
 }));
 export const GroupField = ({ options, field }: GroupFieldProps) => {
@@ -35,12 +38,8 @@ export const GroupField = ({ options, field }: GroupFieldProps) => {
   };
 
   return (
-    <Box
-      display="flex"
-      flexDirection="row"
-      style={{ width: '100%' }}
-      paddingX={1}>
-      <Grid item sm={4} xs={4} className={classes.field}>
+    <Box display="flex" flexDirection="row" width={1} my={1}>
+      <Grid item sm={4} xs={4} className={classes.nameField}>
         <DropDown
           fullWidth={true}
           labelPosition="top"
@@ -51,7 +50,7 @@ export const GroupField = ({ options, field }: GroupFieldProps) => {
           onChange={handleDropDownValueChange}
         />
       </Grid>
-      <Grid item sm={8} xs={8} className={classes.field}>
+      <Grid item sm={8} xs={8} className={classes.valueField}>
         <TextInput
           fullWidth={true}
           value={textValue}

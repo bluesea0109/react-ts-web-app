@@ -16,17 +16,7 @@ import { EUserActionType } from '@bavard/agent-config/dist/actions/user';
 import _ from 'lodash';
 import { EAgentActionTypes } from '@bavard/agent-config/dist/enums';
 import { ACTION_TYPE, IUtternaceAction } from './type';
-
-interface ReceiveProps {
-  agentId: number;
-  id: number;
-  conversation: IConversation;
-  metadata: object;
-}
-
-interface ConversationPanelProps {
-  conversation: ReceiveProps;
-}
+import { ITrainingConversation } from '../../../models/chatbot-service';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -47,8 +37,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ConversationPanel: React.FC<ConversationPanelProps> = ({
+const ConversationPanel = ({
   conversation,
+}: {
+  conversation: ITrainingConversation;
 }) => {
   const classes = useStyles();
   const [data, updateData] = useRecoilState(trainingConversation);
@@ -108,12 +100,13 @@ const ConversationPanel: React.FC<ConversationPanelProps> = ({
 
   const handleUpdateAction = (action: IUtternaceAction, index: number) => {
     const oldConversation = _.cloneDeep(data);
-    updateData({
+    const newConversation = {
       ...oldConversation,
       turns: (oldConversation as IConversation).turns.filter(
         (conversation, i) => (i !== index ? conversation : action),
       ),
-    } as IConversation);
+    } as IConversation;
+    updateData(newConversation);
   };
 
   const onSubmit = () => {};

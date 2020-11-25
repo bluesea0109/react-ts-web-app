@@ -154,25 +154,25 @@ const ActionPanel = ({
         </Grid>
       </AccordionSummary>
       <AccordionDetails>
-        <Box justifyContent="column" style={{ width: '100%' }}>
+        <Box width={1}>
           {type === ACTION_TYPE.USER_ACTION ? (
             <>
               <GroupField field={FIELD_TYPE.INTENT} options={intents} />
               {(action as IUserUtteranceAction)?.tags?.map((item, index) => (
                 <GroupField key={index} options={tags} field={FIELD_TYPE.TAG} />
               ))}
-              <IconButton
-                variant="text"
-                title="Add Tag"
-                iconPosition="right"
-                Icon={AddCircleOutline}
-                onClick={onAddTag}
-              />
+              <Box width={1} display="flex" justifyContent="flex-end">
+                <IconButton
+                  variant="text"
+                  title="Add Tag"
+                  iconPosition="right"
+                  Icon={AddCircleOutline}
+                  onClick={onAddTag}
+                />
+              </Box>
             </>
           ) : (
-            <>
-              <GroupField field={FIELD_TYPE.INTENT} options={intents} />
-            </>
+            <GroupField field={FIELD_TYPE.INTENT} options={intents} />
           )}
         </Box>
       </AccordionDetails>
