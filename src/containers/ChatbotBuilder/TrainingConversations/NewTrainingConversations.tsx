@@ -30,8 +30,8 @@ import {
   CREATE_TRAINING_CONVERSATION,
   UPDATE_TRAINING_CONVERSATION,
 } from '../../../common-gql-queries';
-import { EDialogueActor } from '@bavard/agent-config/dist/conversations'
-import { EUserActionType } from '@bavard/agent-config/dist/actions/user'
+import { EDialogueActor } from '@bavard/agent-config/dist/conversations';
+import { EUserActionType } from '@bavard/agent-config/dist/actions/user';
 import { currentAgentConfig } from '../atoms';
 import TagTypeSelection from './TagTypeSelection';
 import { EAgentActionTypes } from '@bavard/agent-config/dist/enums';
@@ -157,29 +157,29 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
   const onSubmit = async () => {
     const userActions: object[] = [];
     const agentActions: object[] = [];
-    const turns: object[] = []
+    const turns: object[] = [];
 
     setLoding(true);
 
     actionData.forEach((item: any, index: number) => {
-      if (item.userActions && item.userActions !== undefined) {                
+      if (item.userActions && item.userActions !== undefined) {
         turns.push({
           actor: EDialogueActor.USER,
           userAction: {
             type: EUserActionType.UTTERANCE_ACTION,
             utterance: item.userActions[0].utterance,
             intent: item.userActions[0].intent,
-            tags: item.userActions[0].tagValues
-          }
-        })
+            tags: item.userActions[0].tagValues,
+          },
+        });
       } else if (item.agentActions && item.agentActions !== undefined) {
         turns.push({
           actor: EDialogueActor.AGENT,
           agentAction: {
             type: EAgentActionTypes.UTTERANCE_ACTION,
-            utterance: item.agentActions[0].utterance
-          }
-        })
+            utterance: item.agentActions[0].utterance,
+          },
+        });
       }
     });
 
@@ -219,7 +219,7 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
               agentId,
               conversation: {
                 turns,
-                currentAgentType: 'BOT'
+                currentAgentType: 'BOT',
               },
             },
           });

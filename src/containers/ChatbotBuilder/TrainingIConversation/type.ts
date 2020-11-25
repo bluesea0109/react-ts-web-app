@@ -4,7 +4,7 @@ export enum ACTION_TYPE {
 }
 
 export enum FIELD_TYPE {
-	INTENT = 'intent',
-	TAG = 'tag',
-	NAME = 'name'
+  INTENT = 'intent',
+  TAG = 'tag',
+  NAME = 'name',
 }
