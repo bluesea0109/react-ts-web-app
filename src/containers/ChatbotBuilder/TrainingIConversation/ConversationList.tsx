@@ -43,7 +43,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
 };
 
 interface ConversationHeaderProps {
-  index: number;
+  item: ITrainingConversation;
   isCollapsed: boolean;
   onClickItem: () => void;
   onDelete: () => void;
@@ -70,7 +70,7 @@ const ConversationDetail = ({ item }: IConversationDetailProps) => (
 );
 
 export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
-  index,
+  item: conversation,
   isCollapsed,
   onDelete,
   onToggleCollapse,
@@ -93,7 +93,7 @@ export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
           />
         )}
         <Typography style={{ textTransform: 'capitalize' }}>
-          {`Conversation ${(index || 0) + 1}`}
+          {`Conversation ${conversation.id}`}
         </Typography>
       </Grid>
       <Grid item={true} container={true} xs={4} justify="flex-end">
