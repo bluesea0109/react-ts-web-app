@@ -19,7 +19,7 @@ import {
 import { IUserUtteranceAction } from '@bavard/agent-config/dist/actions/user';
 import { ITagValue } from '@bavard/agent-config';
 import { IconButton } from '@bavard/react-components';
-import { FIELD_TYPE, IUtternaceAction } from './type';
+import { FIELD_TYPE, IUtternaceAction, Field } from './type';
 import { GroupField } from './GroupField';
 
 import { useRecoilValue } from 'recoil';
@@ -106,8 +106,6 @@ const ActionPanel = ({
   const [isOpened, setOpen] = useState(false);
   const intentList = config?.getIntents();
   const tagList = config?.getTagTypes();
-  const intents: string[] = [];
-  const tags: string[] = [];
 
   const isUserAction = actor === EDialogueActor.USER;
 
@@ -126,8 +124,11 @@ const ActionPanel = ({
       } as IUserUtteranceAction,
     } as IDialogueTurn);
   };
-  tagList?.forEach((item) => tags.push(item));
-  intentList?.forEach((item) => intents.push(item.name));
+  const onUpdateIntent = (field: Field) => {};
+
+  const onUpdateTag = (field: Field, index: number) => {};
+
+  const intents = (intentList || []).map((item) => item.name);
 
   return (
     <Accordion className={classes.listItemWrapper} square={true}>
@@ -161,9 +162,26 @@ const ActionPanel = ({
         <Box width={1}>
           {isUserAction ? (
             <>
-              <GroupField field={FIELD_TYPE.INTENT} options={intents} />
+              <GroupField
+                field={{
+                  name: (action as IUserUtteranceAction).intent || '',
+                  value: (action as IUserUtteranceAction).utterance || '',
+                }}
+                fieldType={FIELD_TYPE.INTENT}
+                options={intents}
+                onUpdate={onUpdateIntent}
+              />
               {(action as IUserUtteranceAction)?.tags?.map((item, index) => (
-                <GroupField key={index} options={tags} field={FIELD_TYPE.TAG} />
+                <GroupField
+                  key={index}
+                  field={{
+                    name: item.tagType,
+                    value: item.value,
+                  }}
+                  options={Array.from(tagList || [])}
+                  fieldType={FIELD_TYPE.TAG}
+                  onUpdate={(field: Field) => onUpdateTag(field, index)}
+                />
               ))}
               <Box width={1} display="flex" justifyContent="flex-end">
                 <IconButton
@@ -176,7 +194,15 @@ const ActionPanel = ({
               </Box>
             </>
           ) : (
-            <GroupField field={FIELD_TYPE.INTENT} options={intents} />
+            <GroupField
+              fieldType={FIELD_TYPE.INTENT}
+              field={{
+                name: (action as any).intent,
+                value: action.utterance,
+              }}
+              options={intents}
+              onUpdate={onUpdateIntent}
+            />
           )}
         </Box>
       </AccordionDetails>

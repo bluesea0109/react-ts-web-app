@@ -13,3 +13,8 @@ export enum FIELD_TYPE {
 }
 
 export type IUtternaceAction = IUserUtteranceAction | IAgentUtteranceAction;
+
+export type Field = {
+  name: string;
+  value: string;
+};

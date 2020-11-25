@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
-import clsx from 'clsx';
+import { useMutation } from '@apollo/client';
 import { BasicButton, IconButton } from '@bavard/react-components';
-import { Grid, makeStyles, Box } from '@material-ui/core';
+import { EUserActionType } from '@bavard/agent-config/dist/actions/user';
+import { EAgentActionTypes } from '@bavard/agent-config/dist/enums';
 import {
   EDialogueActor,
   IConversation,
@@ -9,17 +9,25 @@ import {
   IAgentDialogueTurn,
   IDialogueTurn,
 } from '@bavard/agent-config/dist/conversations';
-import { useRecoilState } from 'recoil';
-import { trainingConversation } from '../atoms';
-import ActionPanel from './ActionPanel';
 import { AddCircleOutline } from '@material-ui/icons';
-import { EUserActionType } from '@bavard/agent-config/dist/actions/user';
+import clsx from 'clsx';
+import React, { useEffect } from 'react';
+import { useParams } from 'react-router';
+import { Grid, makeStyles, Box } from '@material-ui/core';
+import { useRecoilState } from 'recoil';
+import { useSnackbar } from 'notistack';
 import _ from 'lodash';
-import { EAgentActionTypes } from '@bavard/agent-config/dist/enums';
+
+import ActionPanel from './ActionPanel';
+import { trainingConversation } from '../atoms';
 import { ACTION_TYPE, IUtternaceAction } from './type';
 import { ITrainingConversation } from '../../../models/chatbot-service';
+import {
+  UPDATE_TRAINING_CONVERSATION,
+  GET_TRAINING_CONVERSATIONS,
+} from '../../../common-gql-queries';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles({
   paper: {
     display: 'flex',
     justifyContent: 'center',
@@ -36,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'flex-end',
     marginBottom: '30px',
   },
-}));
+});
 
 const ConversationPanel = ({
   conversation,
@@ -44,7 +52,25 @@ const ConversationPanel = ({
   conversation: ITrainingConversation;
 }) => {
   const classes = useStyles();
+  const params = useParams<{ agentId: string }>();
   const [data, updateData] = useRecoilState(trainingConversation);
+  const { enqueueSnackbar } = useSnackbar();
+
+  const [updateConversation, { loading, error }] = useMutation(
+    UPDATE_TRAINING_CONVERSATION,
+    {
+      refetchQueries: [
+        {
+          query: GET_TRAINING_CONVERSATIONS,
+          variables: { agentId: Number(params.agentId) },
+        },
+      ],
+      awaitRefetchQueries: true,
+      onError: (error) => {
+        enqueueSnackbar(error.message, { variant: 'error' });
+      },
+    },
+  );
 
   useEffect(() => {
     updateData(conversation.conversation);
@@ -110,7 +136,15 @@ const ConversationPanel = ({
     updateData(newConversation);
   };
 
-  const onSubmit = () => {};
+  const onSubmit = () => {
+    debugger;
+    updateConversation({
+      variables: {
+        id: conversation.id,
+        conversation: data,
+      },
+    });
+  };
 
   return (
     <Grid>

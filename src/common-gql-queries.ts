@@ -464,9 +464,9 @@ export const GET_TRAINING_CONVERSATIONS = gql`
 `;
 
 export const UPDATE_TRAINING_CONVERSATION = gql`
-  mutation($conversationId: Int!, $conversation: JSON!) {
+  mutation($id: Int!, $conversation: JSON!) {
     ChatbotService_updateTrainingConversation(
-      conversationId: $conversationId
+      id: $id
       conversation: $conversation
     ) {
       agentId
