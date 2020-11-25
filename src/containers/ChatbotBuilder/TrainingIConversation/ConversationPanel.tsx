@@ -69,6 +69,11 @@ const ConversationPanel = ({
       onError: (error) => {
         enqueueSnackbar(error.message, { variant: 'error' });
       },
+      onCompleted: () => {
+        enqueueSnackbar('Conversation Successfully Updated!', {
+          variant: 'success',
+        });
+      },
     },
   );
 
@@ -137,7 +142,6 @@ const ConversationPanel = ({
   };
 
   const onSubmit = () => {
-    debugger;
     updateConversation({
       variables: {
         id: conversation.id,

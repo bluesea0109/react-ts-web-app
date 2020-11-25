@@ -49,7 +49,8 @@ export const GroupField: React.FC<GroupFieldProps> = ({
       name: dropDownValue,
       value: textValue,
     } as Field);
-  }, [dropDownValue, textValue, handleUpdate]);
+    // eslint-disable-next-line
+  }, [dropDownValue, textValue]);
 
   return (
     <Box display="flex" flexDirection="row" width={1} my={1}>

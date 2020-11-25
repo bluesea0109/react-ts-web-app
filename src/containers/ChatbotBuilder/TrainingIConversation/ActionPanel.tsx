@@ -161,9 +161,9 @@ const ActionPanel = ({
     } as IDialogueTurn);
   };
 
-  const intents = useMemo(() => {
-    return (intentList || []).map((item) => item.name);
-  }, [intentList]);
+  const intents = (intentList || []).map((item) => item.name);
+
+  const tags = Array.from(tagList || []);
 
   return (
     <Accordion className={classes.listItemWrapper} square={true}>
@@ -213,7 +213,7 @@ const ActionPanel = ({
                     name: item.tagType,
                     value: item.value,
                   }}
-                  options={Array.from(tagList || [])}
+                  options={tags}
                   fieldType={FIELD_TYPE.TAG}
                   onUpdate={(field: Field) => onUpdateTag(field, index)}
                 />
@@ -232,8 +232,8 @@ const ActionPanel = ({
             <GroupField
               fieldType={FIELD_TYPE.INTENT}
               field={{
-                name: (action as any).intent,
-                value: action.utterance,
+                name: (action as any).intent || '',
+                value: action.utterance || '',
               }}
               options={intents}
               onUpdate={onUpdateIntent}
