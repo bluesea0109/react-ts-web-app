@@ -49,7 +49,7 @@ export const GroupField: React.FC<GroupFieldProps> = ({
       name: dropDownValue,
       value: textValue,
     } as Field);
-  }, [dropDownValue, textValue]);
+  }, [dropDownValue, textValue, handleUpdate]);
 
   return (
     <Box display="flex" flexDirection="row" width={1} my={1}>

@@ -7,7 +7,7 @@ import {
   Typography,
   Grid,
 } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import { withStyles } from '@material-ui/core/styles';
 import {
@@ -17,7 +17,7 @@ import {
   AddCircleOutline,
 } from '@material-ui/icons';
 import { IUserUtteranceAction } from '@bavard/agent-config/dist/actions/user';
-import { ITagValue } from '@bavard/agent-config';
+import { IAgentUtteranceAction, ITagValue } from '@bavard/agent-config';
 import { IconButton } from '@bavard/react-components';
 import { FIELD_TYPE, IUtternaceAction, Field } from './type';
 import { GroupField } from './GroupField';
@@ -110,6 +110,7 @@ const ActionPanel = ({
   const isUserAction = actor === EDialogueActor.USER;
 
   const onAddTag = () => {
+    if (!isUserAction) return;
     handleUpdate({
       actor,
       userAction: {
@@ -124,11 +125,45 @@ const ActionPanel = ({
       } as IUserUtteranceAction,
     } as IDialogueTurn);
   };
-  const onUpdateIntent = (field: Field) => {};
+  const onUpdateIntent = (field: Field) => {
+    if (isUserAction) {
+      handleUpdate({
+        actor,
+        userAction: {
+          ...action,
+          intent: field.name,
+          utterance: field.value,
+        } as IUserUtteranceAction,
+      } as IDialogueTurn);
+    } else {
+      handleUpdate({
+        actor,
+        agentAction: {
+          ...action,
+          utterance: field.value,
+        } as IAgentUtteranceAction,
+      } as IDialogueTurn);
+    }
+  };
 
-  const onUpdateTag = (field: Field, index: number) => {};
+  const onUpdateTag = (field: Field, index: number) => {
+    if (!isUserAction) return;
+    handleUpdate({
+      actor,
+      userAction: {
+        ...action,
+        tags: (action as IUserUtteranceAction)?.tags?.map((tag, i) => {
+          return i === index
+            ? { tagType: field.name, value: field.value }
+            : tag;
+        }),
+      } as IUserUtteranceAction,
+    } as IDialogueTurn);
+  };
 
-  const intents = (intentList || []).map((item) => item.name);
+  const intents = useMemo(() => {
+    return (intentList || []).map((item) => item.name);
+  }, [intentList]);
 
   return (
     <Accordion className={classes.listItemWrapper} square={true}>
