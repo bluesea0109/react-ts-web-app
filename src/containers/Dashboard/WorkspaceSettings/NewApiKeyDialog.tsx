@@ -27,7 +27,7 @@ const NewApiKeyDialog = ({
   onClose,
   onCreateKey,
 }: NewApiKeyDialogProps) => {
-  const { projectId } = useParams<{ projectId: string }>();
+  const { workspaceId } = useParams<{ workspaceId: string }>();
   const [apiKey, setApiKey] = useState('');
   const [
     createKey,
@@ -43,7 +43,7 @@ const NewApiKeyDialog = ({
     try {
       const data = await createKey({
         variables: {
-          projectId,
+          workspaceId,
           apiKey: key,
         },
       });

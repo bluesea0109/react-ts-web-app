@@ -67,7 +67,7 @@ export const DISABLE_BILLING = gql`
 
 export const getApiKeysQuery = gql`
   query($workspaceId: String!) {
-    apiKey(workspaceId: $workspaceId) {
+    apiKeys(workspaceId: $workspaceId) {
       key
       workspaceName
       workspaceId
@@ -88,16 +88,16 @@ export const createApiKeyMutation = gql`
 `;
 
 export const deleteApiKeyMutation = gql`
-  mutation($workspaceId: String!) {
-    deleteApiKey(workspaceId: $workspaceId) {
+  mutation($keyId: String!) {
+    deleteApiKey(keyId: $keyId) {
       key
     }
   }
 `;
 
 export const updateDomainsMutation = gql`
-  mutation($workspaceId: String!, $domains: [String!]!) {
-    updateAllowedDomains(workspaceId: $workspaceId, domains: $domains) {
+  mutation($keyId: String!, $domains: [String!]!) {
+    updateAllowedDomains(keyId: $keyId, domains: $domains) {
       key
       workspaceId
       workspaceName

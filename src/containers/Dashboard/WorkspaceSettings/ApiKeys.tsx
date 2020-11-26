@@ -86,7 +86,7 @@ export default function Project() {
     try {
       await deleteKey({
         variables: {
-          workspaceId,
+          keyId: currentKey,
         },
       });
 
@@ -100,7 +100,7 @@ export default function Project() {
     try {
       const { data } = await updateAllowedDomains({
         variables: {
-          workspaceId,
+          keyId: currentKey,
           domains,
         },
       });
