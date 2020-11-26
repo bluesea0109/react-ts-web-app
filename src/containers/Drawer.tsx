@@ -260,24 +260,6 @@ function CustomDrawer(props: CustomDrawerProps) {
                 }
               />
             </ListItem>
-            <ListItem
-              component={Link}
-              to={createPath('settings')}
-              selected={location.pathname.includes('settings')}
-              button={true}
-              className={classes.listItem}>
-              <ListItemIcon style={{ color: 'white' }}>
-                <SubMenuIcon title="Workspace" active={false} />
-              </ListItemIcon>
-              <ListItemText
-                primary="Workspace"
-                style={
-                  location.pathname.includes('settings')
-                    ? selectedStyle
-                    : { paddingLeft: '20px' }
-                }
-              />
-            </ListItem>
           </List>
         );
       case MenuName.OPEN_CONFIG:

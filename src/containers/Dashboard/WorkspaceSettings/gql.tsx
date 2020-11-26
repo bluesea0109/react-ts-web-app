@@ -35,7 +35,7 @@ export const INVITE_WORKSPACE_MEMBER = gql`
     $recipientEmail: String!
     $role: WorkspaceMemberRole!
   ) {
-    inviteworkspaceMember(
+    inviteWorkspaceMember(
       workspaceId: $workspaceId
       recipientEmail: $recipientEmail
       role: $role
