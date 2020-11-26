@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
 export const GET_IMAGE_DATA = gql`
-  query test($imageId: Int!, $projectId: String!) {
+  query test($imageId: Int!, $workspaceId: String!) {
     ImageLabelingService_image(imageId: $imageId) {
       id
       collectionId
@@ -29,7 +29,7 @@ export const GET_IMAGE_DATA = gql`
       labeler
     }
 
-    ImageLabelingService_categorySets(projectId: $projectId) {
+    ImageLabelingService_categorySets(workspaceId: $workspaceId) {
       id
       name
       categories {

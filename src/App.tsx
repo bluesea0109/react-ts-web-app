@@ -16,13 +16,12 @@ import ContentLoading from './containers/ContentLoading';
 import Dashboard from './containers/Dashboard';
 import Billing from './containers/Dashboard/Billing';
 import AcceptInvite from './containers/Dashboard/Invites/AcceptInvite';
-import OrganizationSettings from './containers/Dashboard/OrganizationSettings';
-import ProjectSettings from './containers/Dashboard/ProjectSettings';
+import WorkspaceSettings from './containers/Dashboard/WorkspaceSettings';
 import CustomDrawer from './containers/Drawer';
 import FAQService from './containers/FAQService';
 import ImageLabeling from './containers/ImageLabeling';
 import InternalServerErrorPage from './containers/InternalServerErrorpage';
-import NoOrgPage from './containers/NoOrgPage';
+import NoWorkspacePage from './containers/NoWorkspacePage';
 import MySidebar from './containers/Sidebar';
 import TextLabeling from './containers/TextLabeling';
 import { IUser } from './models/user-service';
@@ -229,38 +228,30 @@ function App() {
             <Route exact={true} path="/invites/:inviteId">
               <AcceptInvite />
             </Route>
-            <Route exact={true} path="/orgs/:orgId/settings">
-              <OrganizationSettings user={data.currentUser} />
+            <Route exact={true} path="/workspaces/:workspaceId/settings">
+              <WorkspaceSettings user={data.currentUser} />
             </Route>
-            <Route
-              exact={true}
-              path="/orgs/:orgId/projects/:projectId/settings">
-              <ProjectSettings />
-            </Route>
-            <Route path="/orgs/:orgId/projects/:projectId/qa">
+            <Route path="/workspaces/:workspaceId/qa">
               <FAQService />
             </Route>
-            <Route path="/orgs/:orgId/projects/:projectId/text-labeling">
+            <Route path="/workspaces/:workspaceId/text-labeling">
               <TextLabeling />
             </Route>
-            {/* <Route path="/orgs/:orgId/projects/:projectId/text-summarization">
+            {/* <Route path="/workspaces/:workspaceId/text-summarization">
               <TextSummarization />
               </Route> */}
-            <Route path="/orgs/:orgId/projects/:projectId/image-labeling">
+            <Route path="/workspaces/:workspaceId/image-labeling">
               <ImageLabeling />
             </Route>
-            <Route path="/orgs/:orgId/projects/:projectId/chatbot-builder">
+            <Route path="/workspaces/:workspaceId/chatbot-builder">
               <ChatbotBuilder user={data.currentUser} />
             </Route>
-            <Route path="/orgs/:orgId/billing">
+            <Route path="/workspaces/:workspaceId/billing">
               <Billing />
             </Route>
-            <Route path="/orgs/:orgId/projects/:projectId/text-labeling" />
-            <Route exact={true} path="/no-project">
-              <NoOrgPage type="NO_PROJECTS" />
-            </Route>
-            <Route exact={true} path="/no-orgs">
-              <NoOrgPage type="NO_ORGS" />
+            <Route path="/workspaces/:workspaceId/text-labeling" />
+            <Route exact={true} path="/no-workspace">
+              <NoWorkspacePage />
             </Route>
           </Switch>
         </main>

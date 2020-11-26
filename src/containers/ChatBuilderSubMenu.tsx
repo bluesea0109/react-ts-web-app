@@ -78,19 +78,15 @@ const BotSubMenu = ({
       component={Link}
       key={index}
       to={getAgentPath(item.path)}
-      selected={
-        location.pathname.includes('projects') &&
-        location.pathname.includes(item.path)
-      }
+      selected={location.pathname.includes(item.path)}
       button={true}
       className={classes.listItem}>
       <ListItemIcon style={{ color: 'white' }}>
-        <SubMenuIcon title="Project" active={false} />
+        <SubMenuIcon title="Workspace" active={false} />
       </ListItemIcon>
       <ListItemText
         primary={item.title}
         style={
-          location.pathname.includes('projects') &&
           location.pathname.includes(item.path)
             ? selectedStyle
             : { paddingLeft: '20px' }

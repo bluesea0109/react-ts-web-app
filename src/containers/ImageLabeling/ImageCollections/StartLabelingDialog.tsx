@@ -28,9 +28,8 @@ interface IStartLabelingDialogState {
 }
 
 function StartLabelingDialog() {
-  const { orgId, projectId, collectionId } = useParams<{
-    orgId: string;
-    projectId: string;
+  const { workspaceId, collectionId } = useParams<{
+    workspaceId: string;
     collectionId: string;
   }>();
   const [state, setState] = useState<IStartLabelingDialogState>({
@@ -93,12 +92,12 @@ function StartLabelingDialog() {
       if (res.data?.ImageLabelingService_nextLabelQueueImage) {
         const { imageId } = res.data.ImageLabelingService_nextLabelQueueImage;
         history.push({
-          pathname: `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/label-image/${imageId}`,
+          pathname: `/workspaces/${workspaceId}/image-labeling/collections/${collectionId}/label-image/${imageId}`,
         });
       }
     } else {
       history.push({
-        pathname: `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/batch-labeling/label-batch`,
+        pathname: `/workspaces/${workspaceId}/image-labeling/collections/${collectionId}/batch-labeling/label-batch`,
         search: `?batchSize=${state.batchSize}`,
       });
     }

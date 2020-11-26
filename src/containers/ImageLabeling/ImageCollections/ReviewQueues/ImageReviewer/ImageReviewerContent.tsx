@@ -157,9 +157,8 @@ function ImageReviewerContent(props: IImageReviewerContentProps) {
   const theme = useTheme();
   const { image } = props;
   const classes = useStyles();
-  const { orgId, projectId, collectionId, queueId } = useParams<{
-    orgId: string;
-    projectId: string;
+  const { workspaceId, collectionId, queueId } = useParams<{
+    workspaceId: string;
     collectionId: string;
     queueId: string;
   }>();
@@ -194,11 +193,11 @@ function ImageReviewerContent(props: IImageReviewerContentProps) {
       if (nextImageId == null) {
         // end of queue;
         history.push(
-          `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/review-queues`,
+          `/workspaces/${workspaceId}/image-labeling/collections/${collectionId}/review-queues`,
         );
       } else {
         history.push(
-          `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/review-queues/${queueId}/images/${nextImageId}`,
+          `/workspaces/${workspaceId}/image-labeling/collections/${collectionId}/review-queues/${queueId}/images/${nextImageId}`,
         );
       }
     } else {
@@ -224,11 +223,11 @@ function ImageReviewerContent(props: IImageReviewerContentProps) {
       if (nextImageId == null) {
         // end of queue;
         history.push(
-          `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/review-queues`,
+          `/workspaces/${workspaceId}/image-labeling/collections/${collectionId}/review-queues`,
         );
       } else {
         history.push(
-          `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/review-queues/${queueId}/images/${nextImageId}`,
+          `/workspaces/${workspaceId}/image-labeling/collections/${collectionId}/review-queues/${queueId}/images/${nextImageId}`,
         );
       }
     } else {

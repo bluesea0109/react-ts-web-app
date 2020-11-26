@@ -39,15 +39,15 @@ interface IChatbotBuilderAgentProps {
 
 const AllAgents: React.FC<IChatbotBuilderAgentProps> = ({ user }) => {
   const classes = useStyles();
-  const activeProj = user.activeProject;
+  const activeWorkspace = user.activeWorkspace;
   const { enqueueSnackbar } = useSnackbar();
 
-  const { projectId } = useParams<{
-    projectId: string;
+  const { workspaceId } = useParams<{
+    workspaceId: string;
   }>();
 
   const agentsData = useQuery<IGetAgents>(CHATBOT_GET_AGENTS, {
-    variables: { projectId },
+    variables: { workspaceId },
   });
 
   const agents: IAgent[] | undefined =
@@ -57,7 +57,7 @@ const AllAgents: React.FC<IChatbotBuilderAgentProps> = ({ user }) => {
     deleteAgent,
     { loading: deleteAgentLoading, error: deleteAgentError },
   ] = useMutation(CHATBOT_DELETE_AGENT, {
-    refetchQueries: [{ query: CHATBOT_GET_AGENTS, variables: { projectId } }],
+    refetchQueries: [{ query: CHATBOT_GET_AGENTS, variables: { workspaceId } }],
     awaitRefetchQueries: true,
   });
 
@@ -65,7 +65,7 @@ const AllAgents: React.FC<IChatbotBuilderAgentProps> = ({ user }) => {
     createAgent,
     { loading: createAgentLoading, error: createAgentError },
   ] = useMutation(CHATBOT_CREATE_AGENT, {
-    refetchQueries: [{ query: CHATBOT_GET_AGENTS, variables: { projectId } }],
+    refetchQueries: [{ query: CHATBOT_GET_AGENTS, variables: { workspaceId } }],
     awaitRefetchQueries: true,
     onError: (err) => {
       enqueueSnackbar(err.message, { variant: 'error' });
@@ -93,7 +93,7 @@ const AllAgents: React.FC<IChatbotBuilderAgentProps> = ({ user }) => {
   };
 
   const onAddAgent = (uname: string) => {
-    if (!user.activeProject) {
+    if (!user.activeWorkspace) {
       return;
     }
 
@@ -115,7 +115,7 @@ const AllAgents: React.FC<IChatbotBuilderAgentProps> = ({ user }) => {
 
     createAgent({
       variables: {
-        projectId,
+        workspaceId,
         uname,
       },
     });
@@ -138,7 +138,7 @@ const AllAgents: React.FC<IChatbotBuilderAgentProps> = ({ user }) => {
         </Grid>
         <Grid item={true} xs={12} sm={12}>
           <Card>
-            {activeProj && agents && (
+            {activeWorkspace && agents && (
               <AgentsTable agents={agents} onDeleteAgent={onDeleteAgent} />
             )}
           </Card>

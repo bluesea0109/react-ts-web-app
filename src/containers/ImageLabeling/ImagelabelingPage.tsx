@@ -14,25 +14,15 @@ import { useHistory, useParams } from 'react-router';
 import CategorySets from './CategorySets/CategorySets';
 import Collections from './Collections';
 
-interface IProjectProps {
-  orgId: string;
-  projectId: string;
-}
-
 function ImageLabelingPageWrapper() {
-  const { orgId, projectId } = useParams<{
-    orgId: string;
-    projectId: string;
+  const { workspaceId } = useParams<{
+    workspaceId: string;
   }>();
 
-  if (!orgId) {
-    return <Typography>{'No org is active.'}</Typography>;
+  if (!workspaceId) {
+    return <Typography>{'No workspace is active.'}</Typography>;
   }
-  if (!projectId) {
-    return <Typography>{'No project is active.'}</Typography>;
-  }
-
-  return <ImageLabelingPage orgId={orgId} projectId={projectId} />;
+  return <ImageLabelingPage />;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -48,19 +38,18 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-function ImageLabelingPage(props: IProjectProps) {
+function ImageLabelingPage() {
   // eslint-disable-next-line
   const classes = useStyles();
-  const { orgId, projectId, tab } = useParams<{
-    orgId: string;
-    projectId: string;
+  const { workspaceId, tab } = useParams<{
+    workspaceId: string;
     tab: string;
   }>();
   const history = useHistory();
 
   const handleChangeTab = (event: any, value: any) => {
     history.push({
-      pathname: `/orgs/${orgId}/projects/${projectId}/image-labeling/${value}`,
+      pathname: `/workspaces/${workspaceId}/image-labeling/${value}`,
     });
   };
 

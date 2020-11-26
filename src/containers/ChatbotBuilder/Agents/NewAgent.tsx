@@ -44,7 +44,7 @@ const NewAgent: React.FC<INewAgentProps> = ({ user, loading, onAddAgent }) => {
   const classes = useStyles();
   const [uname, setUname] = useState<string>('');
 
-  const { projectId } = useParams<{ projectId: string }>();
+  const { workspaceId } = useParams<{ workspaceId: string }>();
 
   const onUploadComplete = () => {
     setUname('');
@@ -81,7 +81,7 @@ const NewAgent: React.FC<INewAgentProps> = ({ user, loading, onAddAgent }) => {
         </Button>
         <UploadDataDialog
           uname={uname}
-          projectId={projectId}
+          workspaceId={workspaceId}
           buttonsDisabled={loading || !uname}
           onSuccess={onUploadComplete}
           onError={onUploadComplete}

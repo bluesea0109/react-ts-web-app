@@ -4,7 +4,7 @@ import gql from 'graphql-tag';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import config from '../../../config';
-import { getApiKeysQuery } from '../../Dashboard/ProjectSettings/gql';
+import { getApiKeysQuery } from '../../Dashboard/WorkspaceSettings/gql';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -18,9 +18,9 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export default function ChatWithAgent() {
-  const { agentId, projectId } = useParams<{
+  const { agentId, workspaceId } = useParams<{
     agentId: string;
-    projectId: string;
+    workspaceId: string;
   }>();
 
   const [apiKey, setApiKey] = useState<string | null>(null);
@@ -31,9 +31,9 @@ export default function ChatWithAgent() {
 
   const apiKeysQuery = useQuery(getApiKeysQuery, {
     variables: {
-      projectId,
+      workspaceId,
     },
-    skip: !projectId,
+    skip: !workspaceId,
   });
 
   const loadedKey = apiKeysQuery.data?.apiKey?.key ?? null;

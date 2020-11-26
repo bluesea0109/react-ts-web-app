@@ -17,7 +17,7 @@ export enum ChatbotActorEnum {
 
 export interface IAgent {
   id: number;
-  projectId: string;
+  workspaceId: string;
   uname: string;
   config: IAgentConfig;
   widgetSettings: IWidgetSettings;

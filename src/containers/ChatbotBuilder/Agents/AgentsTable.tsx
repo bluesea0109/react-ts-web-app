@@ -12,9 +12,8 @@ export interface IAgentsTableProps {
 }
 
 const AgentsTable = ({ agents, onDeleteAgent }: IAgentsTableProps) => {
-  const { projectId, orgId } = useParams<{
-    projectId: string;
-    orgId: string;
+  const { workspaceId } = useParams<{
+    workspaceId: string;
   }>();
 
   const columns = [
@@ -24,7 +23,7 @@ const AgentsTable = ({ agents, onDeleteAgent }: IAgentsTableProps) => {
       field: 'uname',
       renderRow: (agent: IAgent) => (
         <Link
-          to={`/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${agent.id}/Actions/`}>
+          to={`/workspaces/${workspaceId}/chatbot-builder/agents/${agent.id}/Actions/`}>
           {agent.uname}
         </Link>
       ),
