@@ -65,8 +65,6 @@ export const DISABLE_BILLING = gql`
   }
 `;
 
-import gql from 'graphql-tag';
-
 export const getApiKeysQuery = gql`
   query($workspaceId: String!) {
     apiKey(workspaceId: $workspaceId) {

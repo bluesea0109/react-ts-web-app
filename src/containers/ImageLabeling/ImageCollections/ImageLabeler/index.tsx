@@ -59,7 +59,6 @@ function ImageLabeler(props: ConnectedProps<typeof connector>) {
 
   return (
     <ImageLabelingPageContent
-      workspaceId={workspaceId}
       labelQueueImage={data.ImageLabelingService_labelQueueImage}
       image={data.ImageLabelingService_image}
       categorySets={data.ImageLabelingService_categorySets}

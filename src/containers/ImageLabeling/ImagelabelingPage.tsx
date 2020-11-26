@@ -22,7 +22,7 @@ function ImageLabelingPageWrapper() {
   if (!workspaceId) {
     return <Typography>{'No workspace is active.'}</Typography>;
   }
-  return <ImageLabelingPage workspaceId={workspaceId} />;
+  return <ImageLabelingPage />;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
