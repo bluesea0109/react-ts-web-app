@@ -22,8 +22,8 @@ const mapDispatch = {
 const connector = connect(null, mapDispatch);
 
 function ImageLabeler(props: ConnectedProps<typeof connector>) {
-  const params = useParams<{ projectId: string; imageId?: string }>();
-  const { projectId, imageId: imageIdStr } = params;
+  const params = useParams<{ workspaceId: string; imageId?: string }>();
+  const { workspaceId, imageId: imageIdStr } = params;
 
   if (!imageIdStr) {
     throw new Error('imageId url params is required');
@@ -39,7 +39,7 @@ function ImageLabeler(props: ConnectedProps<typeof connector>) {
 
   const { loading, error, data } = useQuery<IGetData>(GET_IMAGE_DATA, {
     variables: {
-      projectId,
+      workspaceId,
       imageId,
     },
     fetchPolicy: 'network-only',
@@ -59,7 +59,7 @@ function ImageLabeler(props: ConnectedProps<typeof connector>) {
 
   return (
     <ImageLabelingPageContent
-      projectId={projectId}
+      workspaceId={workspaceId}
       labelQueueImage={data.ImageLabelingService_labelQueueImage}
       image={data.ImageLabelingService_image}
       categorySets={data.ImageLabelingService_categorySets}

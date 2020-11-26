@@ -11,7 +11,7 @@ import { convertLabels } from '../ImageLabeler/utils';
 import ImageViewerContent from './ImageViewerContent';
 
 const GET_DATA = gql`
-  query($projectId: String!, $imageId: Int!) {
+  query($workspaceId: String!, $imageId: Int!) {
     ImageLabelingService_image(imageId: $imageId) {
       collectionId
       id
@@ -36,7 +36,7 @@ const GET_DATA = gql`
       labeler
       status
     }
-    ImageLabelingService_categorySets(projectId: $projectId) {
+    ImageLabelingService_categorySets(workspaceId: $workspaceId) {
       id
       name
       categories {
@@ -54,13 +54,13 @@ const mapDispatch = {
 const connector = connect(null, mapDispatch);
 
 function ImageViewer(props: ConnectedProps<typeof connector>) {
-  const { imageId, projectId } = useParams<{
+  const { imageId, workspaceId } = useParams<{
     imageId: string;
-    projectId: string;
+    workspaceId: string;
   }>();
   const { loading, error, data } = useQuery(GET_DATA, {
     variables: {
-      projectId,
+      workspaceId,
       imageId: parseInt(imageId, 10),
     },
     fetchPolicy: 'network-only',

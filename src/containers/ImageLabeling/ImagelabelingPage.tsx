@@ -14,17 +14,13 @@ import { useHistory, useParams } from 'react-router';
 import CategorySets from './CategorySets/CategorySets';
 import Collections from './Collections';
 
-interface IProjectProps {
-  workspaceId: string;
-}
-
 function ImageLabelingPageWrapper() {
   const { workspaceId } = useParams<{
     workspaceId: string;
   }>();
 
   if (!workspaceId) {
-    return <Typography>{'No org is active.'}</Typography>;
+    return <Typography>{'No workspace is active.'}</Typography>;
   }
   return <ImageLabelingPage workspaceId={workspaceId} />;
 }
@@ -42,12 +38,11 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-function ImageLabelingPage(props: IProjectProps) {
+function ImageLabelingPage() {
   // eslint-disable-next-line
   const classes = useStyles();
-  const { workspaceId, projectId, tab } = useParams<{
+  const { workspaceId, tab } = useParams<{
     workspaceId: string;
-    projectId: string;
     tab: string;
   }>();
   const history = useHistory();

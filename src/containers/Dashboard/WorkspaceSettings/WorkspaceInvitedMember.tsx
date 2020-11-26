@@ -66,7 +66,7 @@ function InvitedMemberTable() {
 
   const columns = [
     { title: 'Email', field: 'email' },
-    { title: 'Org Name', field: 'workspaceName' },
+    { title: 'Workspace Name', field: 'workspaceName' },
     { title: 'Sender Name', field: 'senderName' },
     { title: 'Sender Email', field: 'senderEmail' },
     { title: 'Role', field: 'role' },

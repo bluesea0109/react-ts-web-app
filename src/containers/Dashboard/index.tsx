@@ -22,7 +22,7 @@ interface IDashboardProps {
 
 function Account(props: IDashboardProps) {
   const firebaseUser = firebase.auth().currentUser;
-  const [viewAddOrg, showAddOrg] = useState(false);
+  const [viewAddWorkspace, showAddWorkspace] = useState(false);
 
   if (!firebaseUser) {
     // this shouldn't happen
@@ -55,11 +55,11 @@ function Account(props: IDashboardProps) {
                 Toolbar: () => (
                   <CardHeader
                     avatar={<SupervisedUserCircleOutlined />}
-                    title={<h4>Your organizations</h4>}
+                    title={<h4>Your Workspaces</h4>}
                     action={
                       <Button
                         color="primary"
-                        onClick={() => showAddOrg(true)}
+                        onClick={() => showAddWorkspace(true)}
                         endIcon={<AddCircleOutline />}
                         disabled={(workspaces?.length || 0) >= 3}>
                         Add New Workspace
@@ -72,12 +72,12 @@ function Account(props: IDashboardProps) {
           </Grid>
 
           <Grid item={true} xs={12} sm={6}>
-            {viewAddOrg && (
+            {viewAddWorkspace && (
               <Dialog
                 title="Add an Workspace"
                 open={true}
-                onClose={() => showAddOrg(false)}>
-                <NewWorkspace onSuccess={() => showAddOrg(false)} />
+                onClose={() => showAddWorkspace(false)}>
+                <NewWorkspace onSuccess={() => showAddWorkspace(false)} />
               </Dialog>
             )}
           </Grid>

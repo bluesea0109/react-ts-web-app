@@ -24,7 +24,6 @@ export interface IMember {
 export interface IAPIKey {
   workspaceId: string;
   workspaceName: string;
-  projectName: string;
   key: string;
   domains: string[];
 }

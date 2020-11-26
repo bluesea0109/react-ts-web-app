@@ -32,17 +32,17 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-interface INewOrgProps {
+interface INewWorkspaceProps {
   onSuccess?: () => void;
 }
 
-function NewOrganisation({ onSuccess }: INewOrgProps) {
+function NewWorkspace({ onSuccess }: INewWorkspaceProps) {
   const classes = useStyles();
   const [state, setState] = useState({
     name: '',
   });
 
-  const [createOrg, { loading, error }] = useMutation(CREATE_WORKSPACE, {
+  const [createWorkspace, { loading, error }] = useMutation(CREATE_WORKSPACE, {
     refetchQueries: [
       {
         query: GET_CURRENT_USER,
@@ -51,14 +51,17 @@ function NewOrganisation({ onSuccess }: INewOrgProps) {
     awaitRefetchQueries: true,
   });
 
-  const [activateOrg, activateResult] = useMutation(UPDATE_ACTIVE_WORKSPACE, {
-    refetchQueries: [
-      {
-        query: GET_CURRENT_USER,
-      },
-    ],
-    awaitRefetchQueries: true,
-  });
+  const [activateWorkspace, activateResult] = useMutation(
+    UPDATE_ACTIVE_WORKSPACE,
+    {
+      refetchQueries: [
+        {
+          query: GET_CURRENT_USER,
+        },
+      ],
+      awaitRefetchQueries: true,
+    },
+  );
 
   if (error) {
     // TODO: handle errors
@@ -66,16 +69,18 @@ function NewOrganisation({ onSuccess }: INewOrgProps) {
   }
 
   const submit = async () => {
-    const org = await createOrg({ variables: { name: state.name } });
+    const workspace = await createWorkspace({
+      variables: { name: state.name },
+    });
     // This should happen before activating, otherwise it fails
     resetApolloContext();
 
-    const orgId = org.data.createOrg?.id;
+    const workspaceId = workspace.data.createWorkspace?.id;
 
-    if (orgId) {
-      await activateOrg({
+    if (workspaceId) {
+      await activateWorkspace({
         variables: {
-          orgId,
+          workspaceId,
         },
       });
     }
@@ -87,11 +92,11 @@ function NewOrganisation({ onSuccess }: INewOrgProps) {
   return (
     <Card className={clsx(classes.root)}>
       {(loading || activateResult.loading) && <LinearProgress />}
-      <h4>{'New Organisation'}</h4>
+      <h4>{'New Workspace'}</h4>
       <br />
       <TextField
         id="name"
-        label="Organisation Name"
+        label="Workspace Name"
         type="string"
         value={state.name || ''}
         variant="outlined"
@@ -111,4 +116,4 @@ function NewOrganisation({ onSuccess }: INewOrgProps) {
   );
 }
 
-export default NewOrganisation;
+export default NewWorkspace;

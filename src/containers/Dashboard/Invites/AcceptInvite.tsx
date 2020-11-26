@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function AcceptInvite() {
   const classes = useStyles();
   const { inviteId } = useParams<{ inviteId: string }>();
-  const [updateActiveOrg, updateActiveOrgResult] = useMutation(
+  const [updateactiveWorkspace, updateactiveWorkspaceResult] = useMutation(
     UPDATE_ACTIVE_WORKSPACE,
     {
       refetchQueries: [{ query: GET_CURRENT_USER }],
@@ -36,7 +36,7 @@ export default function AcceptInvite() {
     onCompleted: async (data) => {
       resetApolloContext();
       if (data?.acceptWorkspaceMemberInvite?.workspaceId) {
-        await updateActiveOrg({
+        await updateactiveWorkspace({
           variables: {
             workspaceId: data?.acceptWorkspaceMemberInvite?.workspaceId,
           },
@@ -55,12 +55,12 @@ export default function AcceptInvite() {
     }
   }, [acceptInvite, inviteId]);
 
-  const err = error || updateActiveOrgResult.error;
+  const err = error || updateactiveWorkspaceResult.error;
   if (err) {
     return <ApolloErrorPage error={err} />;
   }
 
-  if (loading || updateActiveOrgResult.loading) {
+  if (loading || updateactiveWorkspaceResult.loading) {
     return <ContentLoading shrinked={true} />;
   }
 

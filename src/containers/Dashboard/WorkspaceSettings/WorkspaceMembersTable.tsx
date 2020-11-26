@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme: Theme) =>
 interface IWorkspaceMembersTableProps {
   user: IUser;
   members: IMember[];
-  refetchOrgs: () => void;
+  refetchWorkspaces: () => void;
 }
 export default function WorkspaceMembersTable(
   props: IWorkspaceMembersTableProps,
@@ -67,7 +67,7 @@ export default function WorkspaceMembersTable(
     REMOVE_WORKSPACE_MEMBER,
     {
       onCompleted() {
-        props.refetchOrgs();
+        props.refetchWorkspaces();
         setOpenSnackBar(true);
       },
     },
@@ -89,7 +89,7 @@ export default function WorkspaceMembersTable(
   const role = props.user.activeWorkspace?.currentUserMember?.role || null;
 
   const onUpdateCallback = () => {
-    props.refetchOrgs();
+    props.refetchWorkspaces();
     setChangeConfirm(false);
   };
 

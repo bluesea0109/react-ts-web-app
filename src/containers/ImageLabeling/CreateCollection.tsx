@@ -11,20 +11,23 @@ import ContentLoading from '../ContentLoading';
 import IconButtonAdd from '../IconButtons/IconButtonAdd';
 
 const CREATE_COLLECTION = gql`
-  mutation($projectId: String!, $name: String!) {
-    ImageLabelingService_createCollection(projectId: $projectId, name: $name) {
+  mutation($workspaceId: String!, $name: String!) {
+    ImageLabelingService_createCollection(
+      workspaceId: $workspaceId
+      name: $name
+    ) {
       id
-      projectId
+      workspaceId
       name
     }
   }
 `;
 
 const GET_COLLECTIONS = gql`
-  query($projectId: String!) {
-    ImageLabelingService_collections(projectId: $projectId) {
+  query($workspaceId: String!) {
+    ImageLabelingService_collections(workspaceId: $workspaceId) {
       id
-      projectId
+      workspaceId
       name
     }
   }
@@ -35,14 +38,14 @@ interface ICreateCollectionProps {
 }
 
 function CreateCollection(props: ICreateCollectionProps) {
-  const { projectId } = useParams<{ projectId: string }>();
+  const { workspaceId } = useParams<{ workspaceId: string }>();
   const [createCollection, { loading, error, data }] = useMutation(
     CREATE_COLLECTION,
     {
       onCompleted: () => {
         handleClose();
       },
-      refetchQueries: [{ query: GET_COLLECTIONS, variables: { projectId } }],
+      refetchQueries: [{ query: GET_COLLECTIONS, variables: { workspaceId } }],
       awaitRefetchQueries: true,
     },
   );
@@ -68,11 +71,11 @@ function CreateCollection(props: ICreateCollectionProps) {
   };
 
   const handleCreate = () => {
-    if (state.name && projectId) {
+    if (state.name && workspaceId) {
       createCollection({
         variables: {
           name: state.name,
-          projectId,
+          workspaceId,
         },
       });
     }

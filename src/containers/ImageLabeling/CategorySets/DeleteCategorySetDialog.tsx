@@ -44,14 +44,16 @@ function DeleteCategorySetDialog(props: IDeleteCategorySetProps) {
   const [state, setState] = useState({
     open: false,
   });
-  const { projectId } = useParams<{ projectId: string }>();
+  const { workspaceId } = useParams<{ workspaceId: string }>();
   const [deleteCategorySet, { loading, error }] = useMutation(
     DELETE_CATEGORY_SET,
     {
       onCompleted: () => {
         handleClose();
       },
-      refetchQueries: [{ query: GET_CATEGORY_SETS, variables: { projectId } }],
+      refetchQueries: [
+        { query: GET_CATEGORY_SETS, variables: { workspaceId } },
+      ],
       awaitRefetchQueries: true,
     },
   );

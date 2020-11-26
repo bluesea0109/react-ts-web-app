@@ -181,9 +181,9 @@ function CustomDrawer(props: CustomDrawerProps) {
     return createAgentPath(user, currentAgentId, agentTab, entityId);
   };
 
-  const createOrgPath = (path = ''): string => {
+  const createWorkspacePath = (path = ''): string => {
     if (!user.activeWorkspace) {
-      return '/no-workspaces';
+      return '/no-workspace';
     }
 
     if (path !== '') {
@@ -213,12 +213,11 @@ function CustomDrawer(props: CustomDrawerProps) {
               button={true}
               className={classes.listItem}>
               <ListItemIcon style={{ color: 'white' }}>
-                <SubMenuIcon title="Organization" active={false} />
+                <SubMenuIcon title="Workspace" active={false} />
               </ListItemIcon>
               <ListItemText
                 primary="Overview"
                 style={
-                  !location.pathname.includes('projects') &&
                   location.pathname === '/'
                     ? selectedStyle
                     : { paddingLeft: '20px' }
@@ -227,20 +226,16 @@ function CustomDrawer(props: CustomDrawerProps) {
             </ListItem>
             <ListItem
               component={Link}
-              to={createOrgPath('settings')}
-              selected={
-                !location.pathname.includes('projects') &&
-                location.pathname.includes('settings')
-              }
+              to={createWorkspacePath('settings')}
+              selected={location.pathname.includes('settings')}
               button={true}
               className={classes.listItem}>
               <ListItemIcon style={{ color: 'white' }}>
-                <SubMenuIcon title="Organization" active={false} />
+                <SubMenuIcon title="Workspace" active={false} />
               </ListItemIcon>
               <ListItemText
-                primary="Organization"
+                primary="Workspace"
                 style={
-                  !location.pathname.includes('projects') &&
                   location.pathname.includes('settings')
                     ? selectedStyle
                     : { paddingLeft: '20px' }
@@ -249,12 +244,12 @@ function CustomDrawer(props: CustomDrawerProps) {
             </ListItem>
             <ListItem
               component={Link}
-              to={createOrgPath('billing')}
+              to={createWorkspacePath('billing')}
               selected={location.pathname.includes('billing')}
               button={true}
               className={classes.listItem}>
               <ListItemIcon style={{ color: 'white' }}>
-                <SubMenuIcon title="Organization" active={false} />
+                <SubMenuIcon title="Workspace" active={false} />
               </ListItemIcon>
               <ListItemText
                 primary="Billing"
@@ -268,19 +263,15 @@ function CustomDrawer(props: CustomDrawerProps) {
             <ListItem
               component={Link}
               to={createPath('settings')}
-              selected={
-                location.pathname.includes('projects') &&
-                location.pathname.includes('settings')
-              }
+              selected={location.pathname.includes('settings')}
               button={true}
               className={classes.listItem}>
               <ListItemIcon style={{ color: 'white' }}>
-                <SubMenuIcon title="Project" active={false} />
+                <SubMenuIcon title="Workspace" active={false} />
               </ListItemIcon>
               <ListItemText
-                primary="Project"
+                primary="Workspace"
                 style={
-                  location.pathname.includes('projects') &&
                   location.pathname.includes('settings')
                     ? selectedStyle
                     : { paddingLeft: '20px' }

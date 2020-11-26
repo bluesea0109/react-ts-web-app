@@ -15,10 +15,10 @@ import ContentLoading from '../ContentLoading';
 import CreateCollection from './CreateCollection';
 
 const GET_COLLECTIONS = gql`
-  query($projectId: String!) {
-    ImageLabelingService_collections(projectId: $projectId) {
+  query($workspaceId: String!) {
+    ImageLabelingService_collections(workspaceId: $workspaceId) {
       id
-      projectId
+      workspaceId
       name
     }
   }
@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-interface IProjectProps {
+interface ICollectionsListProps {
   workspaceId: string;
 }
 
@@ -45,15 +45,12 @@ function CollectionsListWrapper() {
   }>();
 
   if (!workspaceId) {
-    return <Typography>{'No org is active.'}</Typography>;
+    return <Typography>{'No workspace is active.'}</Typography>;
   }
-  if (!projectId) {
-    return <Typography>{'No project is active.'}</Typography>;
-  }
-  return <CollectionsList workspaceId={orgId} projectId={projectId} />;
+  return <CollectionsList workspaceId={workspaceId} />;
 }
 
-function CollectionsList(props: IProjectProps) {
+function CollectionsList(props: ICollectionsListProps) {
   const classes = useStyles();
   const history = useHistory();
 
@@ -63,7 +60,7 @@ function CollectionsList(props: IProjectProps) {
 
   const { loading, error, data } = useQuery<GetImageCollections>(
     GET_COLLECTIONS,
-    { variables: { projectId: props.projectId } },
+    { variables: { workspaceId: props.workspaceId } },
   );
   const { workspaceId } = useParams<{
     workspaceId: string;

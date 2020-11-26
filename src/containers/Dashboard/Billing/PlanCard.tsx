@@ -45,7 +45,7 @@ const BasicPlanCard = () => {
           Bavard Basic Plan
         </Typography>
         <Typography variant="h6" style={{ marginBottom: '20px' }}>
-          Two organizations with three chatbots each.
+          Two workspaces with three chatbots each.
         </Typography>
         <Typography variant="h6">$300 /</Typography>
         <Typography>month</Typography>

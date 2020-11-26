@@ -148,8 +148,12 @@ const ChangeRoleDialog: React.FC<IChangeRoleDialogProps> = (props) => {
 };
 
 const CHANGE_WORKSPACE_MEMBERS_ROLE = gql`
-  mutation($workspaceId: String!, $role: OrgMemberRole!, $userId: String!) {
-    changeOrgMemberRole(
+  mutation(
+    $workspaceId: String!
+    $role: WorkspaceMemberRole!
+    $userId: String!
+  ) {
+    changeWorkspaceMemberRole(
       workspaceId: $workspaceId
       role: $role
       userId: $userId

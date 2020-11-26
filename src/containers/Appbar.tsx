@@ -90,7 +90,7 @@ const Workspaces: React.FC<WorkspacesProps> = ({
     <DropDown
       label="Workspace:"
       labelPosition="top"
-      current={user.activeOrg?.id || ''}
+      current={user.activeWorkspace?.id || ''}
       menuItems={workspaces}
       onChange={(id) => setActiveWorkspace(id)}
     />
@@ -98,8 +98,8 @@ const Workspaces: React.FC<WorkspacesProps> = ({
     <TextField
       className={classes.noWorkspace}
       id="no-workspace"
-      label="Org"
-      defaultValue=" No Org"
+      label="Workspace"
+      defaultValue=" No Workspace"
       InputProps={{
         readOnly: true,
       }}
@@ -126,9 +126,9 @@ const CustomAppbar: React.FC<CustomAppbarProps> = ({
     {
       refetchQueries: [{ query: GET_CURRENT_USER }],
       awaitRefetchQueries: true,
-      onCompleted: ({ updateUserActiveOrg }) => {
+      onCompleted: ({ updateUseractiveWorkspace }) => {
         history.push(
-          `/workspaces/${updateUserActiveOrg.activeOrg.id}/settings`,
+          `/workspaces/${updateUseractiveWorkspace.activeWorkspace.id}/settings`,
         );
         closeDrawer();
       },

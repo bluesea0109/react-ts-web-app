@@ -24,9 +24,9 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 export default function UploadDataTab() {
   const classes = useStyles();
-  const { agentId, projectId } = useParams<{
+  const { agentId, workspaceId } = useParams<{
     agentId: string;
-    projectId: string;
+    workspaceId: string;
   }>();
   const [config] = useRecoilState(currentAgentConfig);
 
@@ -45,7 +45,7 @@ export default function UploadDataTab() {
           <UploadDataDialog
             uname={config.uname}
             agentId={parseInt(agentId)}
-            projectId={projectId}
+            workspaceId={workspaceId}
             buttonsDisabled={false}
           />
         </Grid>

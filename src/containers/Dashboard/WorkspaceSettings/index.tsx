@@ -20,7 +20,7 @@ import DisablePaymentDialog from './DisablePaymentDialog';
 import EnablePaymentDialog from './EnablePaymentDialog';
 import InviteDialog from './InviteDialog';
 import WorkspaceInvitedMember from './WorkspaceInvitedMember';
-import OrgMembersTable from './WorkspaceMembersTable';
+import WorkspaceMembersTable from './WorkspaceMembersTable';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -42,16 +42,19 @@ interface IWorkspaceSettingsProps {
   user: IUser;
 }
 
-interface IGetOrgs {
+interface IGetWorkspaces {
   workspaces: IWorkspace[];
 }
 
-export default function OrganizationSettings(props: IWorkspaceSettingsProps) {
+export default function WorkspaceSettings(props: IWorkspaceSettingsProps) {
   const classes = useStyles();
   const { workspaceId } = useParams<{ workspaceId: string }>();
-  const { error, loading, data, refetch } = useQuery<IGetOrgs>(GET_WORKSPACES, {
-    variables: { id: workspaceId },
-  });
+  const { error, loading, data, refetch } = useQuery<IGetWorkspaces>(
+    GET_WORKSPACES,
+    {
+      variables: { id: workspaceId },
+    },
+  );
 
   const [viewInviteDialog, showInviteDialog] = useState(false);
 
@@ -76,7 +79,7 @@ export default function OrganizationSettings(props: IWorkspaceSettingsProps) {
           <Card>
             <CardHeader
               avatar={<Group />}
-              title={<h4>Organization Members</h4>}
+              title={<h4>Workspace Members</h4>}
               action={
                 <React.Fragment>
                   {workspace.billingEnabled === true && (
@@ -88,10 +91,10 @@ export default function OrganizationSettings(props: IWorkspaceSettingsProps) {
                 </React.Fragment>
               }
             />
-            <OrgMembersTable
+            <WorkspaceMembersTable
               members={workspace.members || []}
               user={props.user}
-              refetchOrgs={refetch}
+              refetchWorkspaces={refetch}
             />
           </Card>
         </Grid>
@@ -99,7 +102,7 @@ export default function OrganizationSettings(props: IWorkspaceSettingsProps) {
           <Card>
             <CardHeader
               avatar={<PersonAdd />}
-              title={<h4>Invited Organization Members</h4>}
+              title={<h4>Invited Workspace Members</h4>}
               action={
                 <Button
                   color="primary"

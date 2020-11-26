@@ -47,7 +47,7 @@ export default function InviteDialog(props: IProps) {
   });
   const { workspaceId } = useParams<{ workspaceId: string }>();
 
-  const [inviteOrgMember, inviteOrgMemberResp] = useMutation(
+  const [inviteWorkspaceMember, inviteWorkspaceMemberResp] = useMutation(
     INVITE_WORKSPACE_MEMBER,
     {
       variables: {
@@ -88,7 +88,7 @@ export default function InviteDialog(props: IProps) {
   };
 
   const handleInvite = async () => {
-    inviteOrgMember({
+    inviteWorkspaceMember({
       variables: {
         workspaceId,
         recipientEmail: state.email,
@@ -100,22 +100,22 @@ export default function InviteDialog(props: IProps) {
   };
 
   let dialogContent;
-  const role = props.user.activeOrg?.currentUserMember?.role || null;
+  const role = props.user.activeWorkspace?.currentUserMember?.role || null;
   if (!role) {
     dialogContent = (
       <DialogContent>
         <Typography>{'Error: User member type unknown.'}</Typography>
       </DialogContent>
     );
-  } else if (inviteOrgMemberResp.error) {
+  } else if (inviteWorkspaceMemberResp.error) {
     dialogContent = (
       <React.Fragment>
         <DialogContent>
-          <ApolloErrorPage error={inviteOrgMemberResp.error} />
+          <ApolloErrorPage error={inviteWorkspaceMemberResp.error} />
         </DialogContent>
       </React.Fragment>
     );
-  } else if (inviteOrgMemberResp.loading) {
+  } else if (inviteWorkspaceMemberResp.loading) {
     dialogContent = (
       <React.Fragment>
         <DialogContent>
@@ -179,7 +179,9 @@ export default function InviteDialog(props: IProps) {
         open={state.modalOpen}
         onClose={handleClose}
         aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Invite Project Member</DialogTitle>
+        <DialogTitle id="form-dialog-title">
+          Invite Workspace Member
+        </DialogTitle>
         {dialogContent}
         <DialogActions>
           <Button color="primary" onClick={handleClose}>

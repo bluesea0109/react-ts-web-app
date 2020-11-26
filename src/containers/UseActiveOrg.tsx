@@ -4,7 +4,7 @@ export interface IActiveWorkspace {
   workspaceId: string | null;
 }
 
-export const useActiveOrg = (): IActiveWorkspace => {
+export const useActiveWorkspace = (): IActiveWorkspace => {
   const params = new URLSearchParams(useLocation().search);
   const workspaceParam = params.get('workspace');
   return {

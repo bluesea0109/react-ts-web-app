@@ -6,13 +6,13 @@ import {
   UPDATE_ACTIVE_WORKSPACE,
 } from '../common-gql-queries';
 
-export interface IUpdateActiveOrg {
+export interface IUpdateactiveWorkspace {
   loading: boolean;
   error?: ApolloError;
   workspaceId: string | null;
 }
 
-export const useUpdateActiveOrg = (): IUpdateActiveOrg => {
+export const useUpdateactiveWorkspace = (): IUpdateactiveWorkspace => {
   const history = useHistory();
   const location = useLocation();
   const { loading, error, data } = useQuery(GET_CURRENT_USER);
@@ -52,7 +52,7 @@ export const useUpdateActiveOrg = (): IUpdateActiveOrg => {
   if (!workspaceId) {
     if (activeWorkspaceId) {
       // update url with the user's active workspace
-      let search = `?workspace=${activeWorkspaceId}`;
+      const search = `?workspace=${activeWorkspaceId}`;
       history.push({ pathname: location.pathname, search });
 
       return {
