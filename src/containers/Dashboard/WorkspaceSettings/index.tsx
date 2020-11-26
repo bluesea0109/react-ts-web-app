@@ -12,15 +12,15 @@ import {
 import { AddCircleOutline, Group, PersonAdd } from '@material-ui/icons';
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
-import { GET_ORGS } from '../../../common-gql-queries';
-import { IOrg, IUser } from '../../../models/user-service';
+import { GET_WORKSPACES } from '../../../common-gql-queries';
+import { IWorkspace, IUser } from '../../../models/user-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 import DisablePaymentDialog from './DisablePaymentDialog';
 import EnablePaymentDialog from './EnablePaymentDialog';
 import InviteDialog from './InviteDialog';
-import OrginvitedMember from './OrgInvitedMember';
-import OrgMembersTable from './OrgMembersTable';
+import WorkspaceInvitedMember from './WorkspaceInvitedMember';
+import OrgMembersTable from './WorkspaceMembersTable';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -38,19 +38,19 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-interface IOrgSettingsProps {
+interface IWorkspaceSettingsProps {
   user: IUser;
 }
 
 interface IGetOrgs {
-  orgs: IOrg[];
+  workspaces: IWorkspace[];
 }
 
-export default function OrganizationSettings(props: IOrgSettingsProps) {
+export default function OrganizationSettings(props: IWorkspaceSettingsProps) {
   const classes = useStyles();
-  const { orgId } = useParams<{ orgId: string }>();
-  const { error, loading, data, refetch } = useQuery<IGetOrgs>(GET_ORGS, {
-    variables: { id: orgId },
+  const { workspaceId } = useParams<{ workspaceId: string }>();
+  const { error, loading, data, refetch } = useQuery<IGetOrgs>(GET_WORKSPACES, {
+    variables: { id: workspaceId },
   });
 
   const [viewInviteDialog, showInviteDialog] = useState(false);
@@ -63,11 +63,11 @@ export default function OrganizationSettings(props: IOrgSettingsProps) {
     return <ContentLoading shrinked={true} />;
   }
 
-  if (data.orgs.length === 0) {
-    return <Typography>{'Error: failed to load org data'}</Typography>;
+  if (data.workspaces.length === 0) {
+    return <Typography>{'Error: failed to load workspace data'}</Typography>;
   }
 
-  const org = data.orgs[0];
+  const workspace = data.workspaces[0];
   return (
     <div className={'page-container'}>
       <Typography className={classes.pageTitle}>{'Membership'}</Typography>
@@ -79,17 +79,17 @@ export default function OrganizationSettings(props: IOrgSettingsProps) {
               title={<h4>Organization Members</h4>}
               action={
                 <React.Fragment>
-                  {org.billingEnabled === true && (
+                  {workspace.billingEnabled === true && (
                     <DisablePaymentDialog user={props.user} />
                   )}
-                  {org.billingEnabled === false && (
+                  {workspace.billingEnabled === false && (
                     <EnablePaymentDialog user={props.user} />
                   )}
                 </React.Fragment>
               }
             />
             <OrgMembersTable
-              members={org.members || []}
+              members={workspace.members || []}
               user={props.user}
               refetchOrgs={refetch}
             />
@@ -109,7 +109,7 @@ export default function OrganizationSettings(props: IOrgSettingsProps) {
                 </Button>
               }
             />
-            <OrginvitedMember />
+            <WorkspaceInvitedMember />
           </Card>
           {viewInviteDialog && (
             <InviteDialog

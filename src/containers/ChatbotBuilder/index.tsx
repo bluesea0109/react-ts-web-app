@@ -12,12 +12,12 @@ const ChatbotBuilder: React.FC<IChatbotBuilderProps> = ({ user }) => {
     <Switch>
       <Route
         exact={true}
-        path="/orgs/:orgId/projects/:projectId/chatbot-builder">
+        path="/workspaces/:orgId/projects/:projectId/chatbot-builder">
         <AllAgents user={user} />
       </Route>
       <Route
         exact={true}
-        path="/orgs/:orgId/projects/:projectId/chatbot-builder/agents/:agentId/:agentTab/:entityId?"
+        path="/workspaces/:orgId/projects/:projectId/chatbot-builder/agents/:agentId/:agentTab/:entityId?"
         component={AgentDetails}
       />
     </Switch>

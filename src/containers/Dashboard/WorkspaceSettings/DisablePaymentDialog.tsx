@@ -10,15 +10,10 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
 import { useMutation } from '@apollo/client';
 
-import { IUser } from '../../../models/user-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 
 import { DISABLE_BILLING } from './gql';
-
-interface IAllProps {
-  user: IUser;
-}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -34,13 +29,13 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-export default function PaymentDialog(props: IAllProps) {
+export default function PaymentDialog() {
   const classes = useStyles();
   const [state, setState] = React.useState({
     modalOpen: false,
     role: 'editor',
   });
-  const { orgId } = useParams<{ orgId: string }>();
+  const { workspaceId } = useParams<{ workspaceId: string }>();
 
   const [doDisableBilling, disableBillingResp] = useMutation(DISABLE_BILLING);
 
@@ -55,7 +50,7 @@ export default function PaymentDialog(props: IAllProps) {
   const handleDisableClick = () => {
     doDisableBilling({
       variables: {
-        orgId,
+        workspaceId,
       },
     });
   };

@@ -186,7 +186,6 @@ const mapDispatch = {
 const connector = connect(null, mapDispatch);
 
 interface IImageLabelerContentProps extends ConnectedProps<typeof connector> {
-  projectId: string;
   categorySets: ICategorySet[];
   image: IImage;
   labelQueueImage: ILabelQueueImage;
@@ -225,9 +224,8 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
   const client = useApolloClient();
 
   const { image, labelQueueImage, categorySets } = props;
-  const { orgId, projectId, collectionId } = useParams<{
-    orgId: string;
-    projectId: string;
+  const { workspaceId, collectionId } = useParams<{
+    workspaceId: string;
     collectionId: string;
   }>();
 
@@ -354,12 +352,12 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
     if (data.ImageLabelingService_nextLabelQueueImage) {
       const nextId = data.ImageLabelingService_nextLabelQueueImage.imageId;
       history.push(
-        `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/label-image/${nextId}`,
+        `/workspaces/${workspaceId}/image-labeling/collections/${collectionId}/label-image/${nextId}`,
       );
     } else {
       // the queue is empty so go to collection page
       history.push(
-        `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/images`,
+        `/workspaces/${workspaceId}/image-labeling/collections/${collectionId}/images`,
       );
     }
   };

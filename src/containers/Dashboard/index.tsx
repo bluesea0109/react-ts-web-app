@@ -1,7 +1,6 @@
 import { CommonTable } from '@bavard/react-components';
 import {
   Button,
-  Card,
   CardHeader,
   Dialog,
   Grid,
@@ -9,26 +8,21 @@ import {
 } from '@material-ui/core';
 import {
   AddCircleOutline,
-  Folder,
   SupervisedUserCircleOutlined,
 } from '@material-ui/icons';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import React, { useState } from 'react';
 import { IUser } from '../../models/user-service';
-import NewOrganisation from './NewOrganisation';
-import NewProject from './NewProject';
-import ProjectsTable from './ProjectsTable';
+import NewWorkspace from './NewWorkspace';
 
 interface IDashboardProps {
   user: IUser;
 }
 
 function Account(props: IDashboardProps) {
-  const orgId = props.user.activeOrg?.id;
   const firebaseUser = firebase.auth().currentUser;
   const [viewAddOrg, showAddOrg] = useState(false);
-  const [viewAddProject, showAddProject] = useState(false);
 
   if (!firebaseUser) {
     // this shouldn't happen
@@ -36,11 +30,10 @@ function Account(props: IDashboardProps) {
     return <Typography>{'No user is signed in.'}</Typography>;
   }
 
-  const orgs = props.user.orgs;
-  const activeOrg = props.user.activeOrg;
+  const workspaces = props.user.workspaces;
   const columns = [
-    { title: 'Organization Name', field: 'name' },
-    { title: 'Organization Id', field: 'id' },
+    { title: 'Workspace Name', field: 'name' },
+    { title: 'Workspace Id', field: 'id' },
   ];
 
   return (
@@ -56,7 +49,7 @@ function Account(props: IDashboardProps) {
             <CommonTable
               data={{
                 columns,
-                rowsData: orgs || [],
+                rowsData: workspaces || [],
               }}
               components={{
                 Toolbar: () => (
@@ -68,8 +61,8 @@ function Account(props: IDashboardProps) {
                         color="primary"
                         onClick={() => showAddOrg(true)}
                         endIcon={<AddCircleOutline />}
-                        disabled={(orgs?.length || 0) >= 3}>
-                        Add New Organization
+                        disabled={(workspaces?.length || 0) >= 3}>
+                        Add New Workspace
                       </Button>
                     }
                   />
@@ -77,49 +70,14 @@ function Account(props: IDashboardProps) {
               }}
             />
           </Grid>
-          <Grid item={true} sm={12} md={10}>
-            <Card>
-              <CardHeader
-                avatar={<Folder />}
-                title={<h4>Projects for {activeOrg?.name}</h4>}
-                action={
-                  <Button
-                    color="primary"
-                    onClick={() => showAddProject(true)}
-                    endIcon={<AddCircleOutline />}>
-                    Add New Project
-                  </Button>
-                }
-              />
-              {activeOrg ? (
-                <ProjectsTable
-                  activeOrg={activeOrg}
-                  activeProject={props.user.activeProject}
-                />
-              ) : (
-                <Typography>{'No organization is active.'}</Typography>
-              )}
-            </Card>
-          </Grid>
 
           <Grid item={true} xs={12} sm={6}>
             {viewAddOrg && (
               <Dialog
-                title="Add an Organization"
+                title="Add an Workspace"
                 open={true}
                 onClose={() => showAddOrg(false)}>
-                <NewOrganisation onSuccess={() => showAddOrg(false)} />
-              </Dialog>
-            )}
-            {viewAddProject && orgId && (
-              <Dialog
-                title="Create a Project"
-                open={true}
-                onClose={() => showAddProject(false)}>
-                <NewProject
-                  activeOrg={activeOrg}
-                  onSuccess={() => showAddProject(false)}
-                />
+                <NewWorkspace onSuccess={() => showAddOrg(false)} />
               </Dialog>
             )}
           </Grid>

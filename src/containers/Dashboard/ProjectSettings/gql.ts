@@ -1,47 +1,41 @@
 import gql from 'graphql-tag';
 
 export const getApiKeysQuery = gql`
-  query($projectId: String!) {
-    apiKey(projectId: $projectId) {
+  query($workspaceId: String!) {
+    apiKey(workspaceId: $workspaceId) {
       key
-      orgId
-      orgName
-      projectId
-      projectName
+      workspaceName
+      workspaceId
       domains
     }
   }
 `;
 
 export const createApiKeyMutation = gql`
-  mutation($projectId: String!, $apiKey: String) {
-    generateApiKey(projectId: $projectId, key: $apiKey) {
+  mutation($workspaceId: String!, $apiKey: String) {
+    generateApiKey(workspaceId: $workspaceId, key: $apiKey) {
       key
-      orgId
-      orgName
-      projectId
-      projectName
+      workspaceId
+      workspaceName
       domains
     }
   }
 `;
 
 export const deleteApiKeyMutation = gql`
-  mutation($projectId: String!) {
-    deleteApiKey(projectId: $projectId) {
+  mutation($workspaceId: String!) {
+    deleteApiKey(workspaceId: $workspaceId) {
       key
     }
   }
 `;
 
 export const updateDomainsMutation = gql`
-  mutation($projectId: String!, $domains: [String!]!) {
-    updateAllowedDomains(projectId: $projectId, domains: $domains) {
+  mutation($workspaceId: String!, $domains: [String!]!) {
+    updateAllowedDomains(workspaceId: $workspaceId, domains: $domains) {
       key
-      orgId
-      orgName
-      projectId
-      projectName
+      workspaceId
+      workspaceName
       domains
     }
   }

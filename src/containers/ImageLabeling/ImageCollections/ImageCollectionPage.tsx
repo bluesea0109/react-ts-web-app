@@ -22,9 +22,8 @@ const useStyles = makeStyles((theme: Theme) =>
 function ImageCollectionPage() {
   // eslint-disable-next-line
   const classes = useStyles();
-  const { orgId, projectId, collectionId, tab } = useParams<{
-    orgId: string;
-    projectId: string;
+  const { workspaceId, collectionId, tab } = useParams<{
+    workspaceId: string;
     collectionId: string;
     tab: string;
   }>();
@@ -32,7 +31,7 @@ function ImageCollectionPage() {
 
   const handleChangeTab = (event: any, value: any) => {
     history.push({
-      pathname: `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/${value}`,
+      pathname: `/workspaces/${workspaceId}/image-labeling/collections/${collectionId}/${value}`,
     });
   };
 
@@ -52,7 +51,7 @@ function ImageCollectionPage() {
           <Typography className={classes.root}>
             <Link
               component={RouterLink}
-              to={`/orgs/${orgId}/projects/${projectId}/image-labeling/collections/`}>
+              to={`/workspaces/${workspaceId}/image-labeling/collections/`}>
               {'All collections'}
             </Link>
           </Typography>

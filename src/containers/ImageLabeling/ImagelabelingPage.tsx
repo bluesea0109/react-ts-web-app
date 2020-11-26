@@ -15,24 +15,18 @@ import CategorySets from './CategorySets/CategorySets';
 import Collections from './Collections';
 
 interface IProjectProps {
-  orgId: string;
-  projectId: string;
+  workspaceId: string;
 }
 
 function ImageLabelingPageWrapper() {
-  const { orgId, projectId } = useParams<{
-    orgId: string;
-    projectId: string;
+  const { workspaceId } = useParams<{
+    workspaceId: string;
   }>();
 
-  if (!orgId) {
+  if (!workspaceId) {
     return <Typography>{'No org is active.'}</Typography>;
   }
-  if (!projectId) {
-    return <Typography>{'No project is active.'}</Typography>;
-  }
-
-  return <ImageLabelingPage orgId={orgId} projectId={projectId} />;
+  return <ImageLabelingPage workspaceId={workspaceId} />;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -51,8 +45,8 @@ const useStyles = makeStyles((theme: Theme) =>
 function ImageLabelingPage(props: IProjectProps) {
   // eslint-disable-next-line
   const classes = useStyles();
-  const { orgId, projectId, tab } = useParams<{
-    orgId: string;
+  const { workspaceId, projectId, tab } = useParams<{
+    workspaceId: string;
     projectId: string;
     tab: string;
   }>();
@@ -60,7 +54,7 @@ function ImageLabelingPage(props: IProjectProps) {
 
   const handleChangeTab = (event: any, value: any) => {
     history.push({
-      pathname: `/orgs/${orgId}/projects/${projectId}/image-labeling/${value}`,
+      pathname: `/workspaces/${workspaceId}/image-labeling/${value}`,
     });
   };
 

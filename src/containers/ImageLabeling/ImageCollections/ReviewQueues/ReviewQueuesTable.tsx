@@ -15,9 +15,8 @@ import { GET_REVIEW_QUEUES, NEXT_REVIEW_QUEUE_IMAGE } from './gql-queries';
 
 function ReviewQueuesTable() {
   const rowsPerPage = 10;
-  const { orgId, projectId } = useParams<{
-    orgId: string;
-    projectId: string;
+  const { workspaceId } = useParams<{
+    workspaceId: string;
   }>();
   const params = useParams<{
     collectionId: string;
@@ -65,7 +64,7 @@ function ReviewQueuesTable() {
         res.data.ImageLabelingService_nextReviewQueueImage?.imageId;
       if (imageId) {
         history.push(
-          `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/review-queues/${queueId}/images/${imageId}`,
+          `/workspaces/${workspaceId}/image-labeling/collections/${collectionId}/review-queues/${queueId}/images/${imageId}`,
         );
       }
     }

@@ -8,8 +8,11 @@ import Typography from '@material-ui/core/Typography';
 import firebase from 'firebase/app';
 import React, { useEffect, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
-import { GET_CURRENT_USER, UPDATE_ACTIVE_ORG } from '../common-gql-queries';
-import { IUser, IProject } from '../models/user-service';
+import {
+  GET_CURRENT_USER,
+  UPDATE_ACTIVE_WORKSPACE,
+} from '../common-gql-queries';
+import { IUser } from '../models/user-service';
 
 interface CustomAppbarProps extends AppBarProps {
   user: IUser;
@@ -41,7 +44,7 @@ const useStyles = makeStyles((theme: Theme) =>
     border: {
       borderBottom: '1px solid black',
     },
-    noProject: {
+    noWorkspace: {
       width: 100,
       marginLeft: 10,
       '& label': {
@@ -57,88 +60,46 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-interface OrgsProps {
+interface WorkspacesProps {
   user: IUser;
-  updateActiveOrg: (org: any) => void;
+  updateActiveWorkspace: (workspace: any) => void;
 }
 
-const Orgs: React.FC<OrgsProps> = ({ user, updateActiveOrg }) => {
+const Workspaces: React.FC<WorkspacesProps> = ({
+  user,
+  updateActiveWorkspace,
+}) => {
   const classes = useStyles();
 
-  const setActiveOrg = (orgId: string) => {
-    const org = user.orgs?.find((org) => org.id === orgId);
-    const projects = org?.projects;
-    const projectId = projects?.[0]?.id;
-    updateActiveOrg({
+  const setActiveWorkspace = (workspaceId: string) => {
+    updateActiveWorkspace({
       variables: {
-        orgId,
-        ...(projectId && { projectId }),
+        workspaceId,
       },
     });
   };
 
-  const orgs = useMemo(() => {
-    return (user.orgs || []).map((org) => ({
-      id: org.id,
-      value: org.name,
+  const workspaces = useMemo(() => {
+    return (user.workspaces || []).map((workspace) => ({
+      id: workspace.id,
+      value: workspace.name,
     }));
-  }, [user.orgs]);
+  }, [user.workspaces]);
 
-  return orgs.length !== 0 ? (
+  return workspaces.length !== 0 ? (
     <DropDown
-      label="Organization:"
+      label="Workspace:"
       labelPosition="top"
       current={user.activeOrg?.id || ''}
-      menuItems={orgs}
-      onChange={(id) => setActiveOrg(id)}
+      menuItems={workspaces}
+      onChange={(id) => setActiveWorkspace(id)}
     />
   ) : (
     <TextField
-      className={classes.noProject}
-      id="no-org"
+      className={classes.noWorkspace}
+      id="no-workspace"
       label="Org"
       defaultValue=" No Org"
-      InputProps={{
-        readOnly: true,
-      }}
-    />
-  );
-};
-
-interface ProjectsProps {
-  user: IUser;
-  updateActiveProject: (project: any) => void;
-}
-const Projects: React.FC<ProjectsProps> = ({ user, updateActiveProject }) => {
-  const projects = useMemo(() => {
-    return (user?.activeOrg?.projects || []).map((project: IProject) => ({
-      id: project.id,
-      value: project.name,
-    }));
-  }, [user?.activeOrg?.projects]);
-  const projectId = user.activeProject?.id ?? '';
-  const classes = useStyles();
-
-  const setActiveProject = (projectId: string) => {
-    updateActiveProject({
-      variables: { projectId, orgId: user?.activeOrg?.id },
-    });
-  };
-
-  return projects?.length !== 0 ? (
-    <DropDown
-      label="Project:"
-      labelPosition="top"
-      current={projectId}
-      menuItems={projects}
-      onChange={(name) => setActiveProject(name)}
-    />
-  ) : (
-    <TextField
-      className={classes.noProject}
-      id="no-project"
-      label="Project"
-      defaultValue=" No Project"
       InputProps={{
         readOnly: true,
       }}
@@ -160,26 +121,14 @@ const CustomAppbar: React.FC<CustomAppbarProps> = ({
     firebase.auth().signOut();
   };
 
-  const [updateActiveOrg, { loading: loadingOrganization }] = useMutation(
-    UPDATE_ACTIVE_ORG,
-    {
-      refetchQueries: [{ query: GET_CURRENT_USER }],
-      awaitRefetchQueries: true,
-      onCompleted: ({ updateUserActiveOrg }) => {
-        history.push(`/orgs/${updateUserActiveOrg.activeOrg.id}/settings`);
-        closeDrawer();
-      },
-    },
-  );
-
-  const [updateActiveProject, { loading: loadingProject }] = useMutation(
-    UPDATE_ACTIVE_ORG,
+  const [updateActiveWorkspace, { loading: loadingWorkspace }] = useMutation(
+    UPDATE_ACTIVE_WORKSPACE,
     {
       refetchQueries: [{ query: GET_CURRENT_USER }],
       awaitRefetchQueries: true,
       onCompleted: ({ updateUserActiveOrg }) => {
         history.push(
-          `/orgs/${updateUserActiveOrg.activeOrg.id}/projects/${updateUserActiveOrg.activeProject.id}/settings`,
+          `/workspaces/${updateUserActiveOrg.activeOrg.id}/settings`,
         );
         closeDrawer();
       },
@@ -187,8 +136,8 @@ const CustomAppbar: React.FC<CustomAppbarProps> = ({
   );
 
   useEffect(() => {
-    handleChangeLoadingStatus(loadingOrganization || loadingProject);
-  }, [loadingOrganization, loadingProject, handleChangeLoadingStatus]);
+    handleChangeLoadingStatus(loadingWorkspace);
+  }, [loadingWorkspace, handleChangeLoadingStatus]);
 
   return (
     <AppBar
@@ -198,10 +147,10 @@ const CustomAppbar: React.FC<CustomAppbarProps> = ({
       <Toolbar>
         <Typography variant="h6" className={classes.title} />
         <Box mr={1}>
-          <Orgs user={user} updateActiveOrg={updateActiveOrg} />
-        </Box>
-        <Box mr={2}>
-          <Projects user={user} updateActiveProject={updateActiveProject} />
+          <Workspaces
+            user={user}
+            updateActiveWorkspace={updateActiveWorkspace}
+          />
         </Box>
         <Box>
           <BasicButton

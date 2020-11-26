@@ -10,8 +10,12 @@ import {
 } from '@material-ui/core';
 import clsx from 'clsx';
 import React, { useState } from 'react';
-import { CREATE_PROJECT, GET_CURRENT_USER } from '../../common-gql-queries';
-import { IOrg } from '../../models/user-service';
+import { resetApolloContext } from '../../apollo-client';
+import {
+  CREATE_WORKSPACE,
+  GET_CURRENT_USER,
+  UPDATE_ACTIVE_WORKSPACE,
+} from '../../common-gql-queries';
 import ApolloErrorPage from '../ApolloErrorPage';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -28,19 +32,26 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-interface INewProjectProps {
-  activeOrg: IOrg | null;
+interface INewOrgProps {
   onSuccess?: () => void;
 }
 
-function NewProject(props: INewProjectProps) {
-  const { activeOrg } = props;
+function NewOrganisation({ onSuccess }: INewOrgProps) {
   const classes = useStyles();
   const [state, setState] = useState({
     name: '',
   });
 
-  const [createProject, { loading, error }] = useMutation(CREATE_PROJECT, {
+  const [createOrg, { loading, error }] = useMutation(CREATE_WORKSPACE, {
+    refetchQueries: [
+      {
+        query: GET_CURRENT_USER,
+      },
+    ],
+    awaitRefetchQueries: true,
+  });
+
+  const [activateOrg, activateResult] = useMutation(UPDATE_ACTIVE_WORKSPACE, {
     refetchQueries: [
       {
         query: GET_CURRENT_USER,
@@ -54,23 +65,33 @@ function NewProject(props: INewProjectProps) {
     return <ApolloErrorPage error={error} />;
   }
 
-  const submit = () => {
-    if (!activeOrg) {
-      return;
+  const submit = async () => {
+    const org = await createOrg({ variables: { name: state.name } });
+    // This should happen before activating, otherwise it fails
+    resetApolloContext();
+
+    const orgId = org.data.createOrg?.id;
+
+    if (orgId) {
+      await activateOrg({
+        variables: {
+          orgId,
+        },
+      });
     }
-    createProject({ variables: { orgId: activeOrg.id, name: state.name } });
+
     setState({ name: '' });
-    props.onSuccess?.();
+    onSuccess?.();
   };
 
   return (
     <Card className={clsx(classes.root)}>
-      {loading && <LinearProgress />}
-      <h4>{'New Project'}</h4>
+      {(loading || activateResult.loading) && <LinearProgress />}
+      <h4>{'New Organisation'}</h4>
       <br />
       <TextField
         id="name"
-        label="Project Name"
+        label="Organisation Name"
         type="string"
         value={state.name || ''}
         variant="outlined"
@@ -80,9 +101,9 @@ function NewProject(props: INewProjectProps) {
       <br />
       <Button
         className={clsx(classes.button)}
+        disabled={loading || activateResult.loading || !state.name}
         variant="contained"
         color="primary"
-        disabled={loading || activeOrg == null || !state.name}
         onClick={submit}>
         {'Submit'}
       </Button>
@@ -90,4 +111,4 @@ function NewProject(props: INewProjectProps) {
   );
 }
 
-export default NewProject;
+export default NewOrganisation;

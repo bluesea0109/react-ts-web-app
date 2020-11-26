@@ -28,9 +28,9 @@ export const createAgentPath = (
   entityId?: string | number,
 ): string => {
   if (!user.activeProject) {
-    return '/no-project';
+    return '/no-workspace';
   }
-  return `/orgs/${user.activeProject.orgId}/projects/${
+  return `/workspaces/${user.activeProject.orgId}/projects/${
     user.activeProject.id
   }/chatbot-builder/agents/${agentId}/${agentTab}/${entityId || ''}`;
 };

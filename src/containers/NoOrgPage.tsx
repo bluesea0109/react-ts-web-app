@@ -74,7 +74,7 @@ const NoOrgPage = (props: NoOrgPageProps) => {
               src={
                 type === MSG_TYPES.NO_ORGS
                   ? '/icons/no-org.png'
-                  : '/icons/no-project.png'
+                  : '/icons/no-workspace.png'
               }
               alt="no-org-project"
               width="150px"

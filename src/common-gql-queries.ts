@@ -6,57 +6,44 @@ export const GET_CURRENT_USER = gql`
       name
       uid
       email
-      orgs {
+      workspaces {
         id
         name
-        projects {
-          id
-          name
-        }
+        members
+        billingEnabled
       }
-      activeOrg {
+      activeWorkspace {
         id
         name
-        projects {
-          id
-          name
-        }
+        billingEnabled
         currentUserMember {
           role
         }
-      }
-      activeProject {
-        id
-        orgId
-        name
       }
     }
   }
 `;
 
-export const CREATE_ORG = gql`
+export const CREATE_WORKSPACE = gql`
   mutation($name: String!) {
-    createOrg(name: $name) {
+    createWorkspace(name: $name) {
       id
       name
       members {
         uid
         role
       }
+      billingEnabled
     }
   }
 `;
 
-export const UPDATE_ACTIVE_ORG = gql`
-  mutation($orgId: String!, $projectId: String) {
-    updateUserActiveOrg(orgId: $orgId, projectId: $projectId) {
+export const UPDATE_ACTIVE_WORKSPACE = gql`
+  mutation($workspaceId: String!) {
+    updateUserActiveWorkspace(workspaceId: $workspaceId) {
       name
       email
-      activeOrg {
-        id
-        name
-      }
-      activeProject {
+      activeWorkspace {
         id
         name
       }
@@ -102,23 +89,14 @@ export const CHATBOT_CREATE_EMAIL_ACTION = gql`
   }
 `;
 
-export const GET_PROJECTS = gql`
-  query($orgId: String!) {
-    projects(orgId: $orgId) {
-      id
-      name
-    }
-  }
-`;
-
-export const GET_ORGS = gql`
+export const GET_WORKSPACES = gql`
   query($id: String) {
-    orgs(id: $id) {
+    workspaces(id: $id) {
       id
       name
       billingEnabled
       members {
-        orgId
+        workspaceId
         uid
         role
         user {
@@ -131,21 +109,11 @@ export const GET_ORGS = gql`
   }
 `;
 
-export const CREATE_PROJECT = gql`
-  mutation($orgId: String!, $name: String!) {
-    createProject(orgId: $orgId, name: $name) {
-      id
-      name
-      orgId
-    }
-  }
-`;
-
 export const GET_CATEGORY_SETS = gql`
-  query($projectId: String!) {
-    ImageLabelingService_categorySets(projectId: $projectId) {
+  query($workspaceId: String!) {
+    ImageLabelingService_categorySets(workspaceId: $workspaceId) {
       id
-      projectId
+      workspaceId
       name
       categories {
         categorySetId
@@ -156,14 +124,14 @@ export const GET_CATEGORY_SETS = gql`
 `;
 
 export const CREATE_CATEGORY_SET = gql`
-  mutation($projectId: String!, $name: String!, $categories: [String!]!) {
+  mutation($workspaceId: String!, $name: String!, $categories: [String!]!) {
     ImageLabelingService_createCategorySet(
-      projectId: $projectId
+      workspaceId: $workspaceId
       name: $name
       categories: $categories
     ) {
       id
-      projectId
+      workspaceId
       name
       categories {
         categorySetId
@@ -177,17 +145,17 @@ export const DELETE_CATEGORY_SET = gql`
   mutation($categorySetId: Int!) {
     ImageLabelingService_deleteCategorySet(categorySetId: $categorySetId) {
       id
-      projectId
+      workspaceId
       name
     }
   }
 `;
 
 export const CHATBOT_GET_AGENTS = gql`
-  query($projectId: String!) {
-    ChatbotService_agents(projectId: $projectId) {
+  query($workspaceId: String!) {
+    ChatbotService_agents(workspaceId: $workspaceId) {
       id
-      projectId
+      workspaceId
       uname
       config
       widgetSettings
@@ -199,7 +167,7 @@ export const CHATBOT_GET_AGENT = gql`
   query($agentId: Int!) {
     ChatbotService_agent(agentId: $agentId) {
       id
-      projectId
+      workspaceId
       uname
       config
       widgetSettings
@@ -227,14 +195,14 @@ export const CHATBOT_GET_UTTERANCE_ACTIONS = gql`
 `;
 
 export const CHATBOT_CREATE_AGENT = gql`
-  mutation($projectId: String!, $uname: String!, $config: JSON) {
+  mutation($workspaceId: String!, $uname: String!, $config: JSON) {
     ChatbotService_createAgent(
-      projectId: $projectId
+      workspaceId: $workspaceId
       uname: $uname
       config: $config
     ) {
       id
-      projectId
+      workspaceId
       uname
       config
       widgetSettings
@@ -246,7 +214,7 @@ export const CHATBOT_DELETE_AGENT = gql`
   mutation($agentId: Int!) {
     ChatbotService_deleteAgent(agentId: $agentId) {
       id
-      projectId
+      workspaceId
     }
   }
 `;

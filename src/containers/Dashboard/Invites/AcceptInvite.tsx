@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 import { resetApolloContext } from '../../../apollo-client';
 import {
   GET_CURRENT_USER,
-  UPDATE_ACTIVE_ORG,
+  UPDATE_ACTIVE_WORKSPACE,
 } from '../../../common-gql-queries';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
@@ -23,7 +23,7 @@ export default function AcceptInvite() {
   const classes = useStyles();
   const { inviteId } = useParams<{ inviteId: string }>();
   const [updateActiveOrg, updateActiveOrgResult] = useMutation(
-    UPDATE_ACTIVE_ORG,
+    UPDATE_ACTIVE_WORKSPACE,
     {
       refetchQueries: [{ query: GET_CURRENT_USER }],
       awaitRefetchQueries: true,
@@ -35,9 +35,11 @@ export default function AcceptInvite() {
     onError: () => {},
     onCompleted: async (data) => {
       resetApolloContext();
-      if (data?.acceptOrgMemberInvite?.orgId) {
+      if (data?.acceptWorkspaceMemberInvite?.workspaceId) {
         await updateActiveOrg({
-          variables: { orgId: data?.acceptOrgMemberInvite?.orgId },
+          variables: {
+            workspaceId: data?.acceptWorkspaceMemberInvite?.workspaceId,
+          },
         });
       }
     },
@@ -70,12 +72,12 @@ export default function AcceptInvite() {
 }
 
 const ACCEPT_INVITE = gql`
-  mutation acceptOrgMemberInvite($inviteId: String!) {
-    acceptOrgMemberInvite(inviteId: $inviteId) {
+  mutation acceptWorkspaceMemberInvite($inviteId: String!) {
+    acceptWorkspaceMemberInvite(inviteId: $inviteId) {
       id
       email
-      orgId
-      orgName
+      workspaceId
+      workspaceName
       senderName
       senderEmail
       timestamp

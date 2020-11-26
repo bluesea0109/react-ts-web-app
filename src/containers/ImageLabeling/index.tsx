@@ -12,32 +12,32 @@ export default function ImageLabelingRouter() {
     <React.Fragment>
       <Route
         exact={true}
-        path="/orgs/:orgId/projects/:projectId/image-labeling/:tab">
+        path="/workspaces/:orgId/projects/:projectId/image-labeling/:tab">
         <ImageLabelingPage />
       </Route>
       <Route
         exact={true}
-        path="/orgs/:orgId/projects/:projectId/image-labeling/collections/:collectionId/batch-labeling/label-batch">
+        path="/workspaces/:orgId/projects/:projectId/image-labeling/collections/:collectionId/batch-labeling/label-batch">
         <BatchImageLabeler />
       </Route>
       <Route
         exact={true}
-        path="/orgs/:orgId/projects/:projectId/image-labeling/collections/:collectionId/:tab">
+        path="/workspaces/:orgId/projects/:projectId/image-labeling/collections/:collectionId/:tab">
         <ImageCollectionPage />
       </Route>
       <Route
         exact={true}
-        path="/orgs/:orgId/projects/:projectId/image-labeling/collections/:collectionId/images/:imageId">
+        path="/workspaces/:orgId/projects/:projectId/image-labeling/collections/:collectionId/images/:imageId">
         <ImageViewer />
       </Route>
       <Route
         exact={true}
-        path="/orgs/:orgId/projects/:projectId/image-labeling/collections/:collectionId/label-image/:imageId">
+        path="/workspaces/:orgId/projects/:projectId/image-labeling/collections/:collectionId/label-image/:imageId">
         <ImageLabeler />
       </Route>
       <Route
         exact={true}
-        path="/orgs/:orgId/projects/:projectId/image-labeling/collections/:collectionId/review-queues/:queueId/images/:imageId">
+        path="/workspaces/:orgId/projects/:projectId/image-labeling/collections/:collectionId/review-queues/:queueId/images/:imageId">
         <ImageReviewer />
       </Route>
     </React.Fragment>

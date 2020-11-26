@@ -171,10 +171,10 @@ function CustomDrawer(props: CustomDrawerProps) {
   };
 
   const createPath = (pageName: string): string => {
-    if (!user.activeProject) {
-      return '/no-project';
+    if (!user.activeWorkspace) {
+      return '/no-workspace';
     }
-    return `/orgs/${user.activeProject.orgId}/projects/${user.activeProject.id}/${pageName}`;
+    return `/workspaces/${user.activeWorkspace.id}/${pageName}`;
   };
 
   const getAgentPath = (agentTab: string, entityId?: string | number) => {
@@ -182,15 +182,15 @@ function CustomDrawer(props: CustomDrawerProps) {
   };
 
   const createOrgPath = (path = ''): string => {
-    if (!user.activeProject) {
-      return '/no-orgs';
+    if (!user.activeWorkspace) {
+      return '/no-workspaces';
     }
 
     if (path !== '') {
-      return `/orgs/${user.activeProject.orgId}/${path}`;
+      return `/workspaces/${user.activeWorkspace.id}/${path}`;
     }
 
-    return `/orgs/${user.activeProject.orgId}`;
+    return `/workspaces/${user.activeWorkspace.id}`;
   };
 
   useEffect(() => {

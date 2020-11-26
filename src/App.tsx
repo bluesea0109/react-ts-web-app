@@ -254,7 +254,7 @@ function App() {
               <Billing />
             </Route>
             <Route path="/workspaces/:workspaceId/text-labeling" />
-            <Route exact={true} path="/no-project">
+            <Route exact={true} path="/no-workspace">
               <NoOrgPage type="NO_PROJECTS" />
             </Route>
             <Route exact={true} path="/no-orgs">

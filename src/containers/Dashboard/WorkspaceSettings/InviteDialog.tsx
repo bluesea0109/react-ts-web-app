@@ -17,7 +17,7 @@ import { useParams } from 'react-router';
 import { IUser } from '../../../models/user-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
-import { GET_INVITED_ORG_MEMBERS, INVITE_ORG_MEMBER } from './gql';
+import { GET_INVITED_WORKSPACE_MEMBERS, INVITE_WORKSPACE_MEMBER } from './gql';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -45,20 +45,20 @@ export default function InviteDialog(props: IProps) {
     role: 'editor',
     email: '',
   });
-  const { orgId } = useParams<{ orgId: string }>();
+  const { workspaceId } = useParams<{ workspaceId: string }>();
 
   const [inviteOrgMember, inviteOrgMemberResp] = useMutation(
-    INVITE_ORG_MEMBER,
+    INVITE_WORKSPACE_MEMBER,
     {
       variables: {
-        orgId,
+        workspaceId,
         recipientEmail: state.email,
         role: state.role,
       },
       refetchQueries: [
         {
-          query: GET_INVITED_ORG_MEMBERS,
-          variables: { orgId },
+          query: GET_INVITED_WORKSPACE_MEMBERS,
+          variables: { workspaceId },
         },
       ],
       awaitRefetchQueries: true,
@@ -90,7 +90,7 @@ export default function InviteDialog(props: IProps) {
   const handleInvite = async () => {
     inviteOrgMember({
       variables: {
-        orgId,
+        workspaceId,
         recipientEmail: state.email,
         role: state.role,
       },

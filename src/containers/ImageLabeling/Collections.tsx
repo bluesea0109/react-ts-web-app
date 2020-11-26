@@ -36,23 +36,21 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface IProjectProps {
-  orgId: string;
-  projectId: string | null;
+  workspaceId: string;
 }
 
 function CollectionsListWrapper() {
-  const { orgId, projectId } = useParams<{
-    orgId: string;
-    projectId: string;
+  const { workspaceId } = useParams<{
+    workspaceId: string;
   }>();
 
-  if (!orgId) {
+  if (!workspaceId) {
     return <Typography>{'No org is active.'}</Typography>;
   }
   if (!projectId) {
     return <Typography>{'No project is active.'}</Typography>;
   }
-  return <CollectionsList orgId={orgId} projectId={projectId} />;
+  return <CollectionsList workspaceId={orgId} projectId={projectId} />;
 }
 
 function CollectionsList(props: IProjectProps) {
@@ -67,9 +65,8 @@ function CollectionsList(props: IProjectProps) {
     GET_COLLECTIONS,
     { variables: { projectId: props.projectId } },
   );
-  const { orgId, projectId } = useParams<{
-    orgId: string;
-    projectId: string;
+  const { workspaceId } = useParams<{
+    workspaceId: string;
   }>();
 
   if (error) {
@@ -83,7 +80,7 @@ function CollectionsList(props: IProjectProps) {
 
   const onSelectCollection = (collectionId: number) => {
     history.push({
-      pathname: `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/images`,
+      pathname: `/workspaces/${workspaceId}/image-labeling/collections/${collectionId}/images`,
     });
   };
 

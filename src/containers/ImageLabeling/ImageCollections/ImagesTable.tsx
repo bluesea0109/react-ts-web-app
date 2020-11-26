@@ -31,9 +31,8 @@ interface IImagesTableProps {
 function ImagesTable({ collectionId }: IImagesTableProps) {
   const ImagesPerPage = 10;
   const classes = useStyles();
-  const { orgId, projectId } = useParams<{
-    orgId: string;
-    projectId: string;
+  const { workspaceId } = useParams<{
+    workspaceId: string;
   }>();
   const [state, setState] = useState({
     loading: false,
@@ -71,7 +70,7 @@ function ImagesTable({ collectionId }: IImagesTableProps) {
 
   const handleImageClick = (imageId: number) => () => {
     history.push({
-      pathname: `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/images/${imageId}`,
+      pathname: `/workspaces/${workspaceId}/image-labeling/collections/${collectionId}/images/${imageId}`,
     });
   };
 
@@ -194,7 +193,6 @@ const GET_COLLECTION_DATA = gql`
   query($collectionId: Int!, $offset: Int!, $limit: Int!) {
     ImageLabelingService_collectionById(collectionId: $collectionId) {
       id
-      projectId
       name
       imageCount
       labeledImageCount
