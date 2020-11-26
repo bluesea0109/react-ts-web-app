@@ -70,8 +70,9 @@ const EditIntentForm: React.FC<EditIntentFormProps> = ({
       <Grid container={true} item={true} sm={12} className={classes.formField}>
         <DropDown
           label="Default Action"
-          labelPosition="left"
+          labelPosition="top"
           fullWidth={true}
+          variant="Typography"
           current={
             dropDownActions.find(
               (action) => action === currentIntent?.defaultActionName,
