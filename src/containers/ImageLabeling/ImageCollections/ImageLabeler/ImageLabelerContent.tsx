@@ -186,7 +186,6 @@ const mapDispatch = {
 const connector = connect(null, mapDispatch);
 
 interface IImageLabelerContentProps extends ConnectedProps<typeof connector> {
-  workspaceId: string;
   categorySets: ICategorySet[];
   image: IImage;
   labelQueueImage: ILabelQueueImage;

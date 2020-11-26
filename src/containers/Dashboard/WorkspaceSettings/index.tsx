@@ -86,7 +86,7 @@ export default function WorkspaceSettings(props: IWorkspaceSettingsProps) {
                     <DisablePaymentDialog />
                   )}
                   {workspace.billingEnabled === false && (
-                    <EnablePaymentDialog/>
+                    <EnablePaymentDialog />
                   )}
                 </React.Fragment>
               }
