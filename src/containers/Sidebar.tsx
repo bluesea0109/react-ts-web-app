@@ -28,7 +28,7 @@ interface ISidebarProps {
 }
 
 const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
-  const [, setOpenSubItem] = useState(false);
+  const [openSubItem, setOpenSubItem] = useState(false);
   const [selected, setSelected] = useState(MenuName.DASHBOARD);
 
   const history = useHistory();

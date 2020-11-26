@@ -22,6 +22,7 @@ export interface IMember {
 }
 
 export interface IAPIKey {
+  id: string;
   workspaceId: string;
   workspaceName: string;
   key: string;
