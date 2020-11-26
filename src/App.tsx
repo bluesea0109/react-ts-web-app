@@ -229,33 +229,31 @@ function App() {
             <Route exact={true} path="/invites/:inviteId">
               <AcceptInvite />
             </Route>
-            <Route exact={true} path="/orgs/:orgId/settings">
+            <Route exact={true} path="/workspaces/:workspaceId/settings">
               <OrganizationSettings user={data.currentUser} />
             </Route>
-            <Route
-              exact={true}
-              path="/orgs/:orgId/projects/:projectId/settings">
+            <Route exact={true} path="/workspaces/:workspaceId/settings">
               <ProjectSettings />
             </Route>
-            <Route path="/orgs/:orgId/projects/:projectId/qa">
+            <Route path="/workspaces/:workspaceId/qa">
               <FAQService />
             </Route>
-            <Route path="/orgs/:orgId/projects/:projectId/text-labeling">
+            <Route path="/workspaces/:workspaceId/text-labeling">
               <TextLabeling />
             </Route>
-            {/* <Route path="/orgs/:orgId/projects/:projectId/text-summarization">
+            {/* <Route path="/workspaces/:workspaceId/text-summarization">
               <TextSummarization />
               </Route> */}
-            <Route path="/orgs/:orgId/projects/:projectId/image-labeling">
+            <Route path="/workspaces/:workspaceId/image-labeling">
               <ImageLabeling />
             </Route>
-            <Route path="/orgs/:orgId/projects/:projectId/chatbot-builder">
+            <Route path="/workspaces/:workspaceId/chatbot-builder">
               <ChatbotBuilder user={data.currentUser} />
             </Route>
-            <Route path="/orgs/:orgId/billing">
+            <Route path="/workspaces/:workspaceId/billing">
               <Billing />
             </Route>
-            <Route path="/orgs/:orgId/projects/:projectId/text-labeling" />
+            <Route path="/workspaces/:workspaceId/text-labeling" />
             <Route exact={true} path="/no-project">
               <NoOrgPage type="NO_PROJECTS" />
             </Route>
