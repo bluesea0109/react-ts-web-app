@@ -7,38 +7,38 @@ import { useParams } from 'react-router';
 import { IInvitedMember } from '../../../models/user-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
-import { GET_INVITED_ORG_MEMBERS, REVOKE_INVITATION } from './gql';
+import { GET_INVITED_WORKSPACE_MEMBERS, REVOKE_INVITATION } from './gql';
 
 interface IInvitedMemberProps {
-  orgMemberInvites: IInvitedMember[] | undefined;
+  workspaceMemberInvites: IInvitedMember[] | undefined;
 }
 
 function InvitedMemberTable() {
-  const { orgId } = useParams<{ orgId: string }>();
+  const { workspaceId } = useParams<{ workspaceId: string }>();
   const [item, setInvite] = useState<{
-    orgId: string;
+    workspaceId: string;
     id: string;
   }>();
   const invitedMemberData = useQuery<IInvitedMemberProps>(
-    GET_INVITED_ORG_MEMBERS,
-    { variables: { orgId } },
+    GET_INVITED_WORKSPACE_MEMBERS,
+    { variables: { workspaceId } },
   );
   const invitedMembers: IInvitedMember[] | undefined =
     invitedMemberData &&
     invitedMemberData.data &&
-    invitedMemberData.data.orgMemberInvites;
+    invitedMemberData.data.workspaceMemberInvites;
 
   const [doRevokeInvitation, revokeInvitationResp] = useMutation(
     REVOKE_INVITATION,
     {
       variables: {
-        orgId: item?.orgId,
+        workspaceId: item?.workspaceId,
         inviteId: item?.id,
       },
       refetchQueries: [
         {
-          query: GET_INVITED_ORG_MEMBERS,
-          variables: { orgId },
+          query: GET_INVITED_WORKSPACE_MEMBERS,
+          variables: { workspaceId },
         },
       ],
     },
@@ -47,7 +47,7 @@ function InvitedMemberTable() {
     setInvite(item);
     doRevokeInvitation({
       variables: {
-        orgId: invite.orgId,
+        workspaceId: invite.workspaceId,
         inviteId: invite.id,
       },
     });
@@ -66,7 +66,7 @@ function InvitedMemberTable() {
 
   const columns = [
     { title: 'Email', field: 'email' },
-    { title: 'Org Name', field: 'orgName' },
+    { title: 'Workspace Name', field: 'workspaceName' },
     { title: 'Sender Name', field: 'senderName' },
     { title: 'Sender Email', field: 'senderEmail' },
     { title: 'Role', field: 'role' },

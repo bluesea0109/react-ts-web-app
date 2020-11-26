@@ -20,7 +20,7 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { CHATBOT_GET_AGENT } from '../../../common-gql-queries';
 import { IAgent } from '../../../models/chatbot-service';
-import { getApiKeysQuery } from '../../Dashboard/ProjectSettings/gql';
+import { getApiKeysQuery } from '../../Dashboard/WorkspaceSettings/gql';
 import { getPublishedAgentsQuery, publishAgentMutation } from './gql';
 import PublishedAgentsTable from './PublishedAgentsTable';
 import { IGetPublishedAgentsQueryResult } from './types';
@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function PublishAgent() {
   const classes = useStyles();
-  const params = useParams<{ agentId: string; projectId: string }>();
+  const params = useParams<{ agentId: string; workspaceId: string }>();
   const agentId = parseInt(params.agentId, 10);
 
   const { enqueueSnackbar } = useSnackbar();
@@ -60,7 +60,7 @@ export default function PublishAgent() {
   const apiKeyQueryResult = useQuery(getApiKeysQuery, {
     fetchPolicy: 'cache-and-network',
     variables: {
-      projectId: params.projectId,
+      workspaceId: params.workspaceId,
     },
   });
 

@@ -17,7 +17,7 @@ import ContentLoading from '../../ContentLoading';
 import IconButtonDelete from '../../IconButtons/IconButtonDelete';
 import IconButtonEdit from '../../IconButtons/IconButtonEdit';
 import ChangeRoleDialog from './changeRoleDialog';
-import { REMOVE_ORG_MEMBER } from './gql';
+import { REMOVE_WORKSPACE_MEMBER } from './gql';
 
 interface IAlertProps {
   severity: 'error' | 'success';
@@ -46,35 +46,37 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-interface IOrgMembersTableProps {
+interface IWorkspaceMembersTableProps {
   user: IUser;
   members: IMember[];
-  refetchOrgs: () => void;
+  refetchWorkspaces: () => void;
 }
-export default function OrgMembersTable(props: IOrgMembersTableProps) {
+export default function WorkspaceMembersTable(
+  props: IWorkspaceMembersTableProps,
+) {
   const classes = useStyles();
   const [openSnackBar, setOpenSnackBar] = useState(false);
   const [selectedMember, setSelectedMember] = useState({
-    orgId: '',
+    workspaceId: '',
     uid: '',
     role: '',
   });
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [changeConfirm, setChangeConfirm] = useState(false);
-  const [removeOrgMember, { loading, data: removedMember }] = useMutation(
-    REMOVE_ORG_MEMBER,
+  const [removeWorkspaceMember, { loading, data: removedMember }] = useMutation(
+    REMOVE_WORKSPACE_MEMBER,
     {
       onCompleted() {
-        props.refetchOrgs();
+        props.refetchWorkspaces();
         setOpenSnackBar(true);
       },
     },
   );
 
   const onRemoveMember = () => {
-    removeOrgMember({
+    removeWorkspaceMember({
       variables: {
-        orgId: selectedMember.orgId,
+        workspaceId: selectedMember.workspaceId,
         userId: selectedMember.uid,
       },
     });
@@ -84,10 +86,10 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
     setOpenSnackBar(false);
   };
 
-  const role = props.user.activeOrg?.currentUserMember?.role || null;
+  const role = props.user.activeWorkspace?.currentUserMember?.role || null;
 
   const onUpdateCallback = () => {
-    props.refetchOrgs();
+    props.refetchWorkspaces();
     setChangeConfirm(false);
   };
 
@@ -204,7 +206,7 @@ export default function OrgMembersTable(props: IOrgMembersTableProps) {
         open={openSnackBar}
         autoHideDuration={6000}
         onClose={handleCloseSnackBar}>
-        {removedMember && removedMember.removeOrgMember ? (
+        {removedMember && removedMember.removeWorkspaceMember ? (
           <Alert onClose={handleCloseSnackBar} severity="success">
             {'A Member is removed successfully!'}
           </Alert>

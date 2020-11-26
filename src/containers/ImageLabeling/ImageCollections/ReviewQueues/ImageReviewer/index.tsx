@@ -16,14 +16,14 @@ const mapDispatch = {
 const connector = connect(null, mapDispatch);
 
 function ImageReviewer(props: ConnectedProps<typeof connector>) {
-  const { projectId, queueId, imageId } = useParams<{
-    projectId: string;
+  const { workspaceId, queueId, imageId } = useParams<{
+    workspaceId: string;
     imageId: string;
     queueId: string;
   }>();
   const { loading, error, data } = useQuery(GET_DATA, {
     variables: {
-      projectId,
+      workspaceId,
       imageId: parseInt(imageId, 10),
       queueId: parseInt(queueId, 10),
     },
@@ -55,7 +55,7 @@ function ImageReviewer(props: ConnectedProps<typeof connector>) {
 }
 
 const GET_DATA = gql`
-  query($projectId: String!, $imageId: Int!, $queueId: Int!) {
+  query($workspaceId: String!, $imageId: Int!, $queueId: Int!) {
     ImageLabelingService_image(imageId: $imageId) {
       collectionId
       id
@@ -85,7 +85,7 @@ const GET_DATA = gql`
       reviewer
       status
     }
-    ImageLabelingService_categorySets(projectId: $projectId) {
+    ImageLabelingService_categorySets(workspaceId: $workspaceId) {
       id
       name
       categories {

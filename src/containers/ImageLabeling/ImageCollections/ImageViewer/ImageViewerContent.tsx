@@ -169,9 +169,8 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
   const client = useApolloClient();
   const { image, labelQueueImage } = props;
   const imageId = image.id;
-  const { orgId, projectId, collectionId } = useParams<{
-    orgId: string;
-    projectId: string;
+  const { workspaceId, collectionId } = useParams<{
+    workspaceId: string;
     collectionId: string;
   }>();
   const labels = useSelector(getLabels);
@@ -261,11 +260,11 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
   const goToImage = (imageId: number) => {
     if (imageId) {
       history.push({
-        pathname: `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/images/${imageId}`,
+        pathname: `/workspaces/${workspaceId}/image-labeling/collections/${collectionId}/images/${imageId}`,
       });
     } else {
       history.push({
-        pathname: `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/images`,
+        pathname: `/workspaces/${workspaceId}/image-labeling/collections/${collectionId}/images`,
       });
     }
   };
@@ -293,7 +292,7 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
     }
 
     history.push({
-      pathname: `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/label-image/${imageId}`,
+      pathname: `/workspaces/${workspaceId}/image-labeling/collections/${collectionId}/label-image/${imageId}`,
     });
   };
 

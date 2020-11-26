@@ -48,7 +48,7 @@ function IntentsTable({
     );
   }, [intents, nameFilter]);
 
-  return intents.length ? (
+  return (
     <Paper aria-label="Agents" className={classes.root}>
       <Box
         display="flex"
@@ -93,18 +93,20 @@ function IntentsTable({
         </Grid>
       </Grid>
 
-      <Grid container={true}>
-        <IntentList
-          intents={filteredIntents}
-          onEditIntent={onEditIntent}
-          onDeleteIntent={onDeleteIntent}
-        />
+      <Grid container={true} alignItems="center" justify="center">
+        {intents.length ? (
+          <IntentList
+            intents={filteredIntents}
+            onEditIntent={onEditIntent}
+            onDeleteIntent={onDeleteIntent}
+          />
+        ) : (
+          <Typography align="center" variant="h6">
+            {'No Intents found'}
+          </Typography>
+        )}
       </Grid>
     </Paper>
-  ) : (
-    <Typography align="center" variant="h6">
-      {'No Intents found'}
-    </Typography>
   );
 }
 

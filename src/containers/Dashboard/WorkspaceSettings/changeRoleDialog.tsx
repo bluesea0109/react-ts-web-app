@@ -50,7 +50,7 @@ const ChangeRoleDialog: React.FC<IChangeRoleDialogProps> = (props) => {
   };
 
   const [changeMemberRole, { loading, error }] = useMutation(
-    CHANGE_ORG_MEMBERS_ROLE,
+    CHANGE_WORKSPACE_MEMBERS_ROLE,
     {
       onCompleted() {
         props.onUpdateCallback();
@@ -61,7 +61,7 @@ const ChangeRoleDialog: React.FC<IChangeRoleDialogProps> = (props) => {
   const onChangeMemberRole = () => {
     changeMemberRole({
       variables: {
-        orgId: props.member?.orgId,
+        workspaceId: props.member?.workspaceId,
         userId: props.member?.uid,
         role: state.role,
       },
@@ -147,17 +147,25 @@ const ChangeRoleDialog: React.FC<IChangeRoleDialogProps> = (props) => {
   );
 };
 
-const CHANGE_ORG_MEMBERS_ROLE = gql`
-  mutation($orgId: String!, $role: OrgMemberRole!, $userId: String!) {
-    changeOrgMemberRole(orgId: $orgId, role: $role, userId: $userId) {
-      orgId
+const CHANGE_WORKSPACE_MEMBERS_ROLE = gql`
+  mutation(
+    $workspaceId: String!
+    $role: WorkspaceMemberRole!
+    $userId: String!
+  ) {
+    changeWorkspaceMemberRole(
+      workspaceId: $workspaceId
+      role: $role
+      userId: $userId
+    ) {
+      workspaceId
       uid
       role
       user {
         uid
         email
         name
-        orgs {
+        workspaces {
           id
           name
         }

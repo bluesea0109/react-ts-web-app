@@ -1,6 +1,6 @@
 export interface IImageCollection {
   id: number;
-  projectId: string;
+  workspaceId: string;
   name: string;
 }
 

@@ -66,12 +66,12 @@ interface IState {
 
 export default function BatchImageLabeler() {
   const classes = useStyles();
-  const { projectId, collectionId } = useParams<{
-    projectId: string;
+  const { workspaceId, collectionId } = useParams<{
+    workspaceId: string;
     collectionId: string;
   }>();
   const categorySetsQuery = useQuery<IGetCategorySets>(GET_CATEGORY_SETS, {
-    variables: { projectId },
+    variables: { workspaceId },
   });
   const [getBatch, getBatchResult] = useMutation<IGetBatch>(GET_BATCH);
   const [submitBatchMutation, submitBatchResult] = useMutation(SUBMIT_BATCH);

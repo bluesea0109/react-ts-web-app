@@ -2,7 +2,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { AgentConfig } from '@bavard/agent-config';
 import { TabPanel } from '@bavard/react-components';
 import { Box, makeStyles, Theme, Toolbar } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useParams } from 'react-router';
 import { useHistory } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
@@ -20,7 +20,6 @@ import AssistDemo from '../AssistDemo';
 import { currentAgentConfig, currentWidgetSettings } from '../atoms';
 import ConversationsTab from '../Conversations';
 import DataExportsTab from '../DataExports/DataExportsTab';
-import Examples from '../Examples/Examples';
 import GraphPolicyV1 from '../GraphPolicy';
 import GraphPolicy from '../GraphPolicyV2';
 import GraphEditorPage from '../GraphPolicyV2/GraphEditorPage';
@@ -108,16 +107,15 @@ interface IGetAgents {
 
 const AgentDetails = () => {
   const classes = useStyles();
-  const { agentId, agentTab, projectId, orgId } = useParams<{
-    orgId: string;
-    projectId: string;
+  const { agentId, agentTab, workspaceId } = useParams<{
+    workspaceId: string;
     agentId: string;
     agentTab: string;
   }>();
 
   const history = useHistory();
   const agentsData = useQuery<IGetAgents>(CHATBOT_GET_AGENTS, {
-    variables: { projectId },
+    variables: { workspaceId },
   });
   const agents: IAgent[] | undefined =
     agentsData && agentsData.data && agentsData.data.ChatbotService_agents;
@@ -166,12 +164,12 @@ const AgentDetails = () => {
   };
 
   const publishAgent = () => {
-    const newURL = `/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${agentId}/publish/`;
+    const newURL = `/workspaces/${workspaceId}/chatbot-builder/agents/${agentId}/publish/`;
     history.push(newURL);
   };
 
   const handleAgentChanage = (agentId: string) => {
-    const newURL = `/orgs/${orgId}/projects/${projectId}/chatbot-builder/agents/${agentId}/Actions/`;
+    const newURL = `/workspaces/${workspaceId}/chatbot-builder/agents/${agentId}/Actions/`;
     history.push(newURL);
   };
 

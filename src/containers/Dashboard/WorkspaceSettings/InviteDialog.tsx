@@ -17,7 +17,7 @@ import { useParams } from 'react-router';
 import { IUser } from '../../../models/user-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
-import { GET_INVITED_ORG_MEMBERS, INVITE_ORG_MEMBER } from './gql';
+import { GET_INVITED_WORKSPACE_MEMBERS, INVITE_WORKSPACE_MEMBER } from './gql';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -45,20 +45,20 @@ export default function InviteDialog(props: IProps) {
     role: 'editor',
     email: '',
   });
-  const { orgId } = useParams<{ orgId: string }>();
+  const { workspaceId } = useParams<{ workspaceId: string }>();
 
-  const [inviteOrgMember, inviteOrgMemberResp] = useMutation(
-    INVITE_ORG_MEMBER,
+  const [inviteWorkspaceMember, inviteWorkspaceMemberResp] = useMutation(
+    INVITE_WORKSPACE_MEMBER,
     {
       variables: {
-        orgId,
+        workspaceId,
         recipientEmail: state.email,
         role: state.role,
       },
       refetchQueries: [
         {
-          query: GET_INVITED_ORG_MEMBERS,
-          variables: { orgId },
+          query: GET_INVITED_WORKSPACE_MEMBERS,
+          variables: { workspaceId },
         },
       ],
       awaitRefetchQueries: true,
@@ -88,9 +88,9 @@ export default function InviteDialog(props: IProps) {
   };
 
   const handleInvite = async () => {
-    inviteOrgMember({
+    inviteWorkspaceMember({
       variables: {
-        orgId,
+        workspaceId,
         recipientEmail: state.email,
         role: state.role,
       },
@@ -100,22 +100,22 @@ export default function InviteDialog(props: IProps) {
   };
 
   let dialogContent;
-  const role = props.user.activeOrg?.currentUserMember?.role || null;
+  const role = props.user.activeWorkspace?.currentUserMember?.role || null;
   if (!role) {
     dialogContent = (
       <DialogContent>
         <Typography>{'Error: User member type unknown.'}</Typography>
       </DialogContent>
     );
-  } else if (inviteOrgMemberResp.error) {
+  } else if (inviteWorkspaceMemberResp.error) {
     dialogContent = (
       <React.Fragment>
         <DialogContent>
-          <ApolloErrorPage error={inviteOrgMemberResp.error} />
+          <ApolloErrorPage error={inviteWorkspaceMemberResp.error} />
         </DialogContent>
       </React.Fragment>
     );
-  } else if (inviteOrgMemberResp.loading) {
+  } else if (inviteWorkspaceMemberResp.loading) {
     dialogContent = (
       <React.Fragment>
         <DialogContent>
@@ -179,7 +179,9 @@ export default function InviteDialog(props: IProps) {
         open={state.modalOpen}
         onClose={handleClose}
         aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Invite Project Member</DialogTitle>
+        <DialogTitle id="form-dialog-title">
+          Invite Workspace Member
+        </DialogTitle>
         {dialogContent}
         <DialogActions>
           <Button color="primary" onClick={handleClose}>

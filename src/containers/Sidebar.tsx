@@ -28,20 +28,20 @@ interface ISidebarProps {
 }
 
 const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
-  const [, setOpenSubItem] = useState(false);
+  const [openSubItem, setOpenSubItem] = useState(false);
   const [selected, setSelected] = useState(MenuName.DASHBOARD);
 
   const history = useHistory();
   const currentLocation = history.location.pathname;
   const createPath = (pageName: string): string => {
-    if (!user.activeProject) {
-      return '/no-project';
+    if (!user.activeWorkspace) {
+      return '/no-workspace';
     }
-    return `/orgs/${user.activeProject.orgId}/projects/${user.activeProject.id}/${pageName}`;
+    return `/workspaces/${user.activeWorkspace.id}/${pageName}`;
   };
 
   const match = useRouteMatch({
-    path: '/orgs/:orgId/projects/:projectId/chatbot-builder/agents/:agentId',
+    path: '/workspaces/:workspaceId/chatbot-builder/agents/:agentId',
     strict: false,
     sensitive: true,
   });
@@ -56,81 +56,75 @@ const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
     }
   }, [match?.path]); // eslint-disable-line react-hooks/exhaustive-deps
   const generalRegx = RegExp(
-    '/orgs/[A-Z,a-z,0-9-]+/projects/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/[A-Z,a-z,0-9-]+',
+    '/workspaces/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/[A-Z,a-z,0-9-]+',
   );
 
   useEffect(() => {
     const homeRegx = RegExp('^/$', 'g');
     const createBotRegx = RegExp(
-      '^/orgs/[A-Z,a-z,0-9-]+/projects/[A-Z,a-z,0-9-]+/chatbot-builder$',
+      '^/workspaces/[A-Z,a-z,0-9-]+/chatbot-builder$',
       'g',
     );
     const createBotSubMenuRegx = RegExp(
-      '/orgs/[A-Z,a-z,0-9-]+/projects/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+',
+      '/workspaces/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+',
       'g',
     );
 
     const createBot_Actions = RegExp(
-      '^/orgs/[A-Z,a-z,0-9-]+/projects/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/Actions$',
+      '^/workspaces/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/Actions$',
       'g',
     );
     const createBot_Intents = RegExp(
-      '^/orgs/[A-Z,a-z,0-9-]+/projects/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/Intents$',
+      '^/workspaces/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/Intents$',
       'g',
     );
     const createBot_Tags = RegExp(
-      '^/orgs/[A-Z,a-z,0-9-]+/projects/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/Tags$',
+      '^/workspaces/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/Tags$',
       'g',
     );
     const createBot_Slots = RegExp(
-      '^/orgs/[A-Z,a-z,0-9-]+/projects/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/Slots$',
+      '^/workspaces/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/Slots$',
       'g',
     );
     const createBot_Graph = RegExp(
-      '^/orgs/[A-Z,a-z,0-9-]+/projects/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/graph-policy$',
+      '^/workspaces/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/graph-policy$',
       'g',
     );
     const createBot_training = RegExp(
-      '^/orgs/[A-Z,a-z,0-9-]+/projects/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/training$',
+      '^/workspaces/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/training$',
       'g',
     );
     const createBot_examples = RegExp(
-      '^/orgs/[A-Z,a-z,0-9-]+/projects/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/nluExamples$',
+      '^/workspaces/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/nluExamples$',
       'g',
     );
     const createBot_Launch = RegExp(
-      '^/orgs/[A-Z,a-z,0-9-]+/projects/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/chats$',
+      '^/workspaces/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/chats$',
     );
     const createBot_Upload = RegExp(
-      '^/orgs/[A-Z,a-z,0-9-]+/projects/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/upload-data$',
+      '^/workspaces/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/upload-data$',
     );
     const createBot_Live_Conversations = RegExp(
-      '^/orgs/[A-Z,a-z,0-9-]+/projects/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/live-conversations$',
+      '^/workspaces/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/live-conversations$',
     );
     const createBot_Training_Conversations = RegExp(
-      '^/orgs/[A-Z,a-z,0-9-]+/projects/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/training-conversations$',
+      '^/workspaces/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/training-conversations$',
     );
     const createBot_Training_Exports = RegExp(
-      '^/orgs/[A-Z,a-z,0-9-]+/projects/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/exports$',
+      '^/workspaces/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/exports$',
     );
     const createBot_Training_Settings = RegExp(
-      '^/orgs/[A-Z,a-z,0-9-]+/projects/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/settings$',
+      '^/workspaces/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/settings$',
     );
     const createBot_Training_Agents = RegExp(
-      '^/orgs/[A-Z,a-z,0-9-]+/projects/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/settings$',
+      '^/workspaces/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/settings$',
     );
     const imageRegx = RegExp(
-      '^/orgs/[A-Z,a-z,0-9-]+/projects/[A-Z,a-z,0-9-]+/image-labeling/collections$',
+      '^/workspaces/[A-Z,a-z,0-9-]+/image-labeling/collections$',
       'g',
     );
-    const faqRegx = RegExp(
-      '^/orgs/[A-Z,a-z,0-9-]+/projects/[A-Z,a-z,0-9-]+/qa$',
-      'g',
-    );
-    const txtRegx = RegExp(
-      '^/orgs/[A-Z,a-z,0-9-]+/projects/[A-Z,a-z,0-9-]+/text-labeling$',
-      'g',
-    );
+    const faqRegx = RegExp('^/workspaces/[A-Z,a-z,0-9-]+/qa$', 'g');
+    const txtRegx = RegExp('^/workspaces/[A-Z,a-z,0-9-]+/text-labeling$', 'g');
     if (homeRegx.test(currentLocation)) {
       onClick(MenuName.DASHBOARD);
       setSelected(MenuName.DASHBOARD);

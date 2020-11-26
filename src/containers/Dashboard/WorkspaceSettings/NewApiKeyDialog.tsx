@@ -10,7 +10,7 @@ import TextField from '@material-ui/core/TextField';
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
 import { IAPIKey } from '../../../models/user-service';
-import { createApiKeyMutation } from './gql';
+import { createApiKeyMutation, getApiKeysQuery } from './gql';
 
 interface NewApiKeyDialogProps {
   isOpen: boolean;
@@ -27,12 +27,19 @@ const NewApiKeyDialog = ({
   onClose,
   onCreateKey,
 }: NewApiKeyDialogProps) => {
-  const { projectId } = useParams<{ projectId: string }>();
+  const { workspaceId } = useParams<{ workspaceId: string }>();
   const [apiKey, setApiKey] = useState('');
   const [
     createKey,
     { loading, error },
-  ] = useMutation<CreateApiKeyMutationResult>(createApiKeyMutation);
+  ] = useMutation<CreateApiKeyMutationResult>(createApiKeyMutation, {
+    refetchQueries: [
+      {
+        query: getApiKeysQuery,
+        variables: { workspaceId },
+      },
+    ],
+  });
 
   const createAPIKey = async () => {
     let key: string | null = apiKey;
@@ -43,7 +50,7 @@ const NewApiKeyDialog = ({
     try {
       const data = await createKey({
         variables: {
-          projectId,
+          workspaceId,
           apiKey: key,
         },
       });

@@ -77,10 +77,11 @@ const EditOption = ({
         <DropDown
           fullWidth={true}
           label="Option Type"
-          labelPosition="left"
+          labelPosition="top"
           menuItems={OptionTypes}
           current={option.type}
           padding="12px"
+          variant="Typography"
           onChange={(type) =>
             onUpdateOption({
               ...option,
@@ -117,10 +118,11 @@ const EditOption = ({
           <DropDown
             fullWidth={true}
             label="Option Intent"
-            labelPosition="left"
+            labelPosition="top"
             menuItems={allIntents}
             current={option.intent || ''}
             padding="12px"
+            variant="Typography"
             onChange={(intent) =>
               onUpdateOption({
                 ...option,

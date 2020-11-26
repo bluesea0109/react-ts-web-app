@@ -15,10 +15,10 @@ import ContentLoading from '../ContentLoading';
 import CreateCollection from './CreateCollection';
 
 const GET_COLLECTIONS = gql`
-  query($projectId: String!) {
-    ImageLabelingService_collections(projectId: $projectId) {
+  query($workspaceId: String!) {
+    ImageLabelingService_collections(workspaceId: $workspaceId) {
       id
-      projectId
+      workspaceId
       name
     }
   }
@@ -35,27 +35,22 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-interface IProjectProps {
-  orgId: string;
-  projectId: string | null;
+interface ICollectionsListProps {
+  workspaceId: string;
 }
 
 function CollectionsListWrapper() {
-  const { orgId, projectId } = useParams<{
-    orgId: string;
-    projectId: string;
+  const { workspaceId } = useParams<{
+    workspaceId: string;
   }>();
 
-  if (!orgId) {
-    return <Typography>{'No org is active.'}</Typography>;
+  if (!workspaceId) {
+    return <Typography>{'No workspace is active.'}</Typography>;
   }
-  if (!projectId) {
-    return <Typography>{'No project is active.'}</Typography>;
-  }
-  return <CollectionsList orgId={orgId} projectId={projectId} />;
+  return <CollectionsList workspaceId={workspaceId} />;
 }
 
-function CollectionsList(props: IProjectProps) {
+function CollectionsList(props: ICollectionsListProps) {
   const classes = useStyles();
   const history = useHistory();
 
@@ -65,11 +60,10 @@ function CollectionsList(props: IProjectProps) {
 
   const { loading, error, data } = useQuery<GetImageCollections>(
     GET_COLLECTIONS,
-    { variables: { projectId: props.projectId } },
+    { variables: { workspaceId: props.workspaceId } },
   );
-  const { orgId, projectId } = useParams<{
-    orgId: string;
-    projectId: string;
+  const { workspaceId } = useParams<{
+    workspaceId: string;
   }>();
 
   if (error) {
@@ -83,7 +77,7 @@ function CollectionsList(props: IProjectProps) {
 
   const onSelectCollection = (collectionId: number) => {
     history.push({
-      pathname: `/orgs/${orgId}/projects/${projectId}/image-labeling/collections/${collectionId}/images`,
+      pathname: `/workspaces/${workspaceId}/image-labeling/collections/${collectionId}/images`,
     });
   };
 

@@ -29,10 +29,6 @@ import { ENABLE_BILLING } from './gql';
 
 const stripePromise = loadStripe(config.stripePublicKey);
 
-interface IAllProps {
-  user: IUser;
-}
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -55,7 +51,7 @@ function CheckoutForm() {
     modalOpen: false,
     email: '',
   });
-  const { orgId } = useParams<{ orgId: string }>();
+  const { workspaceId } = useParams<{ workspaceId: string }>();
 
   const [doEnableBilling, enableBillingResp] = useMutation(ENABLE_BILLING);
 
@@ -110,7 +106,7 @@ function CheckoutForm() {
     // enable billing
     doEnableBilling({
       variables: {
-        orgId,
+        workspaceId,
         stripeToken,
         billingEmail: state.email,
       },
@@ -233,7 +229,7 @@ function CheckoutForm() {
   );
 }
 
-export default function PaymentDialog(props: IAllProps) {
+export default function PaymentDialog() {
   return (
     <Elements stripe={stripePromise}>
       <CheckoutForm />

@@ -46,7 +46,7 @@ import {
 
 interface IUploadDataDialogProps {
   agentId?: number;
-  projectId: string;
+  workspaceId: string;
   uname?: string;
   name?: string;
   buttonsDisabled?: boolean;
@@ -373,7 +373,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       try {
         if (this.props.uname) {
           data.config.uname = this.props.uname;
-          data.config.projectId = this.props.projectId;
+          data.config.workspaceId = this.props.workspaceId;
         }
 
         const createAgentResult = await this.props.client?.mutate<ICreateAgentMutationResult>(
@@ -381,7 +381,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
             mutation: CHATBOT_CREATE_AGENT,
             variables: {
               uname: this.props.uname || data.config.uname,
-              projectId: this.props.projectId,
+              workspaceId: this.props.workspaceId,
               language: 'EN_US',
               config: data.config,
             },
@@ -389,7 +389,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
               {
                 query: CHATBOT_GET_AGENTS,
                 variables: {
-                  projectId: this.props.projectId,
+                  workspaceId: this.props.workspaceId,
                 },
               },
             ],
@@ -425,7 +425,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     try {
       if (this.props.uname) {
         config.uname = this.props.uname;
-        config.projectId = this.props.projectId;
+        config.workspaceId = this.props.workspaceId;
       }
 
       const updateAgentResult = await this.props.client?.mutate<IUpdateAgentMutationResult>(
@@ -439,7 +439,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
             {
               query: CHATBOT_GET_AGENTS,
               variables: {
-                projectId: this.props.projectId,
+                workspaceId: this.props.workspaceId,
               },
             },
           ],

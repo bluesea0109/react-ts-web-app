@@ -1,94 +1,87 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { ApolloError } from '@apollo/client';
 import { useHistory, useLocation } from 'react-router';
-import { GET_CURRENT_USER, UPDATE_ACTIVE_ORG } from '../common-gql-queries';
+import {
+  GET_CURRENT_USER,
+  UPDATE_ACTIVE_WORKSPACE,
+} from '../common-gql-queries';
 
-export interface IUpdateActiveOrg {
+export interface IUpdateactiveWorkspace {
   loading: boolean;
   error?: ApolloError;
-  orgId: string | null;
-  projectId: string | null;
+  workspaceId: string | null;
 }
 
-export const useUpdateActiveOrg = (): IUpdateActiveOrg => {
+export const useUpdateactiveWorkspace = (): IUpdateactiveWorkspace => {
   const history = useHistory();
   const location = useLocation();
   const { loading, error, data } = useQuery(GET_CURRENT_USER);
   const params = new URLSearchParams(useLocation().search);
-  const [updateActiveOrg, updateActiveOrgResult] = useMutation(
-    UPDATE_ACTIVE_ORG,
+  const [updateActiveWorkspace, updateActiveWorkspaceResult] = useMutation(
+    UPDATE_ACTIVE_WORKSPACE,
     {
       refetchQueries: [{ query: GET_CURRENT_USER }],
       awaitRefetchQueries: true,
     },
   );
 
-  const orgId = params.get('org');
-  const projectId = params.get('project');
+  const workspaceId = params.get('workspace');
 
   if (loading || error) {
     return {
       loading,
       error,
-      orgId,
-      projectId,
+      workspaceId,
     };
   }
 
-  if (updateActiveOrgResult.loading || updateActiveOrgResult.error) {
+  if (
+    updateActiveWorkspaceResult.loading ||
+    updateActiveWorkspaceResult.error
+  ) {
     return {
-      loading: updateActiveOrgResult.loading,
-      error: updateActiveOrgResult.error,
-      orgId,
-      projectId,
+      loading: updateActiveWorkspaceResult.loading,
+      error: updateActiveWorkspaceResult.error,
+      workspaceId,
     };
   }
 
-  const { activeOrg, activeProject } = data.currentUser;
-  const activeOrgId = activeOrg ? activeOrg.id : null;
-  const activeProjectId = activeProject ? activeProject.id : null;
+  const { activeWorkspace } = data.currentUser;
+  const activeWorkspaceId = activeWorkspace ? activeWorkspace.id : null;
 
-  if (!orgId) {
-    if (activeOrgId) {
-      // update url with the user's active org and project
-      let search = `?org=${activeOrgId}`;
-      if (activeProjectId) {
-        search += `&project=${activeProjectId}`;
-      }
+  if (!workspaceId) {
+    if (activeWorkspaceId) {
+      // update url with the user's active workspace
+      const search = `?workspace=${activeWorkspaceId}`;
       history.push({ pathname: location.pathname, search });
 
       return {
         loading: false,
-        orgId,
-        projectId,
+        workspaceId,
       };
     }
 
     return {
       loading: false,
-      orgId,
-      projectId,
+      workspaceId,
     };
   }
 
-  if (orgId !== activeOrgId || projectId !== activeProjectId) {
-    // update active org
-    updateActiveOrg({
+  if (workspaceId !== activeWorkspaceId) {
+    // update active workspace
+    updateActiveWorkspace({
       variables: {
-        orgId,
-        projectId,
+        workspaceId,
       },
     });
     return {
       loading: true,
-      orgId,
-      projectId,
+      workspaceId,
     };
   }
 
   return {
     loading: false,
-    orgId,
-    projectId,
+    workspaceId,
   };
 };

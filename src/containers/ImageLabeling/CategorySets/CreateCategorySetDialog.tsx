@@ -79,14 +79,16 @@ function CreateCategorySetDialog() {
     categorySetName: '',
     categories: [],
   });
-  const { projectId } = useParams<{ projectId: string }>();
+  const { workspaceId } = useParams<{ workspaceId: string }>();
   const [createCategorySet, { loading, error }] = useMutation(
     CREATE_CATEGORY_SET,
     {
       onCompleted: () => {
         handleClose();
       },
-      refetchQueries: [{ query: GET_CATEGORY_SETS, variables: { projectId } }],
+      refetchQueries: [
+        { query: GET_CATEGORY_SETS, variables: { workspaceId } },
+      ],
       awaitRefetchQueries: true,
     },
   );
@@ -111,7 +113,7 @@ function CreateCategorySetDialog() {
       createCategorySet({
         variables: {
           name: state.categorySetName,
-          projectId,
+          workspaceId,
           categories: state.categories,
         },
       });

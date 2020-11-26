@@ -1,16 +1,13 @@
 import { useLocation } from 'react-router';
 
-export interface IActiveOrg {
-  orgId: string | null;
-  projectId: string | null;
+export interface IActiveWorkspace {
+  workspaceId: string | null;
 }
 
-export const useActiveOrg = (): IActiveOrg => {
+export const useActiveWorkspace = (): IActiveWorkspace => {
   const params = new URLSearchParams(useLocation().search);
-  const orgParam = params.get('org');
-  const projectParam = params.get('project');
+  const workspaceParam = params.get('workspace');
   return {
-    orgId: orgParam,
-    projectId: projectParam,
+    workspaceId: workspaceParam,
   };
 };
