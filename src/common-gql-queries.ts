@@ -9,7 +9,10 @@ export const GET_CURRENT_USER = gql`
       workspaces {
         id
         name
-        members
+        members {
+          uid
+          role
+        }
         billingEnabled
       }
       activeWorkspace {

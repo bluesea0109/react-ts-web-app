@@ -31,6 +31,7 @@ export interface IAPIKey {
 export interface IInvitedMember {
   id: string;
   email: string;
+  workspaceId: string;
   workspaceName: string;
   senderName: string;
   senderEmail: string;
