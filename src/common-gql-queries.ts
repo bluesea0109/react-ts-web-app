@@ -410,22 +410,15 @@ export const CREATE_TRAINING_JOB = gql`
 `;
 
 export const CREATE_TRAINING_CONVERSATION = gql`
-  mutation($conversation: ChatbotService_TrainingConversationInput!) {
-    ChatbotService_createTrainingConversation(conversation: $conversation) {
+  mutation($agentId: Int!, $conversation: JSON!) {
+    ChatbotService_createTrainingConversation(
+      agentId: $agentId
+      conversation: $conversation
+    ) {
       agentId
-      userActions {
-        turn
-        intent
-        tagValues {
-          tagType
-          value
-        }
-        utterance
-      }
-      agentActions {
-        turn
-        actionName
-      }
+      id
+      conversation
+      metadata
     }
   }
 `;
@@ -435,47 +428,22 @@ export const GET_TRAINING_CONVERSATIONS = gql`
     ChatbotService_trainingConversations(agentId: $agentId) {
       agentId
       id
-      userActions {
-        turn
-        tagValues {
-          tagType
-          value
-        }
-        intent
-        utterance
-      }
-      agentActions {
-        turn
-        actionName
-      }
+      conversation
+      metadata
     }
   }
 `;
 
 export const UPDATE_TRAINING_CONVERSATION = gql`
-  mutation(
-    $conversationId: Int!
-    $conversation: ChatbotService_TrainingConversationInput!
-  ) {
+  mutation($id: Int!, $conversation: JSON!) {
     ChatbotService_updateTrainingConversation(
-      conversationId: $conversationId
+      id: $id
       conversation: $conversation
     ) {
-      id
       agentId
-      userActions {
-        turn
-        intent
-        tagValues {
-          tagType
-          value
-        }
-        utterance
-      }
-      agentActions {
-        turn
-        actionName
-      }
+      id
+      conversation
+      metadata
     }
   }
 `;

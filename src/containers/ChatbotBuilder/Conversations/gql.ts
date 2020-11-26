@@ -14,9 +14,11 @@ export const getLiveConversationsQuery = gql`
             name
             options {
               type
+              nodeId
               ... on ChatbotService_TextOption {
                 intent
                 text
+                targetLink
               }
               ... on ChatbotService_ImageOption {
                 intent
@@ -46,14 +48,6 @@ export const getLiveConversationsQuery = gql`
               tagType
               value
             }
-          }
-        }
-        ... on ChatbotService_HumanAgentTurn {
-          actor
-          timestamp
-          humanAgentId
-          humanAgentAction {
-            utterance
           }
         }
       }

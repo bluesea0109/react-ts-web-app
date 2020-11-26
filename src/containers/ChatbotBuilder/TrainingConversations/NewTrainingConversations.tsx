@@ -30,8 +30,11 @@ import {
   CREATE_TRAINING_CONVERSATION,
   UPDATE_TRAINING_CONVERSATION,
 } from '../../../common-gql-queries';
+import { EDialogueActor } from '@bavard/agent-config/dist/conversations';
+import { EUserActionType } from '@bavard/agent-config/dist/actions/user';
 import { currentAgentConfig } from '../atoms';
 import TagTypeSelection from './TagTypeSelection';
+import { EAgentActionTypes } from '@bavard/agent-config/dist/enums';
 
 interface IConversationProps {
   conversationLastindex: number;
@@ -154,19 +157,29 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
   const onSubmit = async () => {
     const userActions: object[] = [];
     const agentActions: object[] = [];
+    const turns: object[] = [];
 
     setLoding(true);
 
     actionData.forEach((item: any, index: number) => {
       if (item.userActions && item.userActions !== undefined) {
-        item.userActions[0].turn = index;
-        userActions.push(item.userActions[0]);
+        turns.push({
+          actor: EDialogueActor.USER,
+          userAction: {
+            type: EUserActionType.UTTERANCE_ACTION,
+            utterance: item.userActions[0].utterance,
+            intent: item.userActions[0].intent,
+            tags: item.userActions[0].tagValues,
+          },
+        });
       } else if (item.agentActions && item.agentActions !== undefined) {
-        const data = {
-          turn: index,
-          actionName: item.agentActions[0].actionId,
-        };
-        agentActions.push(data);
+        turns.push({
+          actor: EDialogueActor.AGENT,
+          agentAction: {
+            type: EAgentActionTypes.UTTERANCE_ACTION,
+            utterance: item.agentActions[0].utterance,
+          },
+        });
       }
     });
 
@@ -203,10 +216,10 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
         } else {
           response = await createConversation({
             variables: {
+              agentId,
               conversation: {
-                agentId,
-                agentActions,
-                userActions,
+                turns,
+                currentAgentType: 'BOT',
               },
             },
           });
