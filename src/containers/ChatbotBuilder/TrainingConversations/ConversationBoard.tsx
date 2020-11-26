@@ -24,6 +24,7 @@ import {
 } from '../../../common-gql-queries';
 import { currentAgentConfig } from '../atoms';
 import { ACTION, DialogueForm } from './DialogueForm';
+import { EDialogueActor } from '@bavard/agent-config/dist/conversations';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -189,20 +190,23 @@ export const ConversationBoard = ({
   setConfirmOpen,
   deleteConversationHandler,
 }: ConversationBoardProps) => {
+  const classes = useStyles();
+
   let tempActionData: any[] = [];
   const userTurns: string[] = [];
-
   if (isUpdate && conversation && conversation.actions) {
     tempActionData = conversation.actions.map((c: any) =>
-      c.isUser ? { userActions: [c] } : { agentActions: [c] },
+      c.actor === EDialogueActor.USER
+        ? { userActions: [c] }
+        : { agentActions: [c] },
     );
     conversation.actions.map(
       (i: any) => (userTurns[i.turn] = i.isUser ? 'user' : 'agent'),
     );
   }
 
+  const tags: string[] = [];
   const [isOpened, setOpen] = useState(false);
-  const classes = useStyles();
   const params = useParams<{ agentId: string }>();
   const agentId = parseInt(params.agentId, 10);
   const [, setErrStatus] = useState(''); // errStatus
@@ -224,10 +228,9 @@ export const ConversationBoard = ({
   const actions = config?.getActions();
 
   const intentOption = intents?.map((intent) => intent.name) || [];
-  const tags: string[] = [];
 
   tagsData?.forEach((item) => tags.push(item));
-  const actionId = actions?.map((item, ind) => item.name) || [];
+  const actionId = actions?.map((item) => item.name) || [];
 
   const handleOnSelect = (index: number, type: ACTION, value: any) => {
     const values = [...actionData];
@@ -458,7 +461,6 @@ export const ConversationBoard = ({
         </Grid>
       </AccordionSummary>
       <AccordionDetails className={classes.listItem}>
-        {/**/}
         <Grid // conversation panel
           container={true}
           direction={'column'}
@@ -467,10 +469,10 @@ export const ConversationBoard = ({
         <Grid container={true} direction={'column'} className={classes.paper}>
           {actionData?.map((inputField: any, index: number) => {
             const userAction: any = inputField.userActions
-              ? inputField.userActions[0] || {}
+              ? inputField.userActions || {}
               : {};
             const agentAction: any = inputField.agentActions
-              ? inputField.agentActions[0] || {}
+              ? inputField.agentActions || {}
               : {};
 
             return (

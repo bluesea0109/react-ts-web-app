@@ -28,6 +28,7 @@ import PublishAgent from '../Publish';
 import Slot from '../Slot/Slot';
 import Tag from '../Tags/Tag';
 import TrainingConversations from '../TrainingConversations';
+import TrainingIConversations from '../TrainingIConversation';
 import TrainingJobsTab from '../TrainingJobs/TrainingJobsTab';
 import UploadDataTab from '../UploadData/UploadDataTab';
 import { ToolBarSetting } from './ToolbarSetting';
@@ -211,7 +212,7 @@ const AgentDetails = () => {
         {agentTab === 'training-jobs' && <TrainingJobsTab />}
         {agentTab === 'chats' && <AssistDemo />}
         {agentTab === 'live-conversations' && <ConversationsTab />}
-        {agentTab === 'training-conversations' && <TrainingConversations />}
+        {agentTab === 'training-conversations' && <TrainingIConversations />}
         {agentTab === 'settings' && <AgentSettings />}
         {agentTab === 'publish' && <PublishAgent />}
         {agentTab === 'upload-data' && <UploadDataTab />}

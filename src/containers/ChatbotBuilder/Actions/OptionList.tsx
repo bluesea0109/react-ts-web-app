@@ -16,7 +16,7 @@ const useStyles = makeStyles((_) =>
   }),
 );
 
-interface ItemRowProps {
+interface ItemHeaderProps {
   item: IResponseOption;
   index: number;
   isCollapsed: boolean;
@@ -38,7 +38,11 @@ interface OptionListProps {
   onBulkUpdate: (options: IResponseOption[]) => void;
 }
 
-const OptionRow = ({ index, isCollapsed, onToggleCollapse }: ItemRowProps) => {
+const OptionHeader: React.FC<ItemHeaderProps> = ({
+  index,
+  isCollapsed,
+  onToggleCollapse,
+}) => {
   const classes = useStyles();
 
   return (
@@ -98,7 +102,7 @@ const OptionList = ({ intents, options, onBulkUpdate }: OptionListProps) => {
       onDeleteItem={onDeleteOption}
       defaultCollapsed={false}
       otherProps={{ intents }}
-      ItemRow={OptionRow}
+      ItemHeader={OptionHeader}
       ItemDetail={OptionDetail}
     />
   );

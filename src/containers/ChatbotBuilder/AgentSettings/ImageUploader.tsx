@@ -55,8 +55,6 @@ const ImageUploader = ({
             const fileType = await FileType.fromBuffer(
               await file.arrayBuffer(),
             );
-            console.log('file type', fileType);
-            console.log('file type', fileType?.mime);
             await axios.put(url, file, {
               headers: {
                 'Content-Type': fileType?.mime,

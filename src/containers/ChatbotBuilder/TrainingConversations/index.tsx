@@ -13,7 +13,7 @@ import {
   DELETE_TRAINING_CONVERSATION,
   GET_TRAINING_CONVERSATIONS,
 } from '../../../common-gql-queries';
-import { ITrainingConversations } from '../../../models/chatbot-service';
+import { IConversation } from '@bavard/agent-config/dist/conversations';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 import { ConversationBoard } from './ConversationBoard';
@@ -21,8 +21,31 @@ import CreateConversation from './NewTrainingConversations';
 import BavardPagination from './Pagination';
 
 interface IGetTrainingConversation {
-  ChatbotService_trainingConversations: ITrainingConversations[];
+  ChatbotService_trainingConversations: IConversation[];
 }
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      padding: theme.spacing(6),
+      width: '100%',
+    },
+    paper: {
+      padding: '20px',
+    },
+    button: {
+      margin: '0px 50px 20px',
+    },
+    cetnerPagination: {
+      display: 'flex',
+      justifyContent: 'center',
+    },
+    pageTitle: {
+      fontSize: '26px',
+      marginBottom: '24px',
+    },
+  }),
+);
 
 export default function TrainingConversations() {
   const docsInPage = 5;
@@ -47,18 +70,7 @@ export default function TrainingConversations() {
 
   const refetchConversations = getTrainingConversations.refetch;
   const data = conversations.map((item: any) => {
-    const userActions = item.userActions.map((a: any) => ({
-      ...a,
-      isUser: true,
-    }));
-    const agentActions = item.agentActions.map((a: any) => ({
-      ...a,
-      isAgent: true,
-    }));
-    const arr = userActions
-      .concat(agentActions)
-      .sort((a: any, b: any) => parseFloat(a.turn) - parseFloat(b.turn));
-    return { actions: arr, id: item.id };
+    return { actions: item.conversation.turns, id: item.id };
   });
 
   const totalPages = Math.ceil(data.length / docsInPage);
@@ -66,6 +78,7 @@ export default function TrainingConversations() {
     (currentPage - 1) * docsInPage,
     currentPage * docsInPage,
   );
+
   if (getTrainingConversations.error) {
     return <ApolloErrorPage error={getTrainingConversations.error} />;
   }
@@ -168,26 +181,3 @@ export default function TrainingConversations() {
     </Grid>
   );
 }
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(6),
-      width: '100%',
-    },
-    paper: {
-      padding: '20px',
-    },
-    button: {
-      margin: '0px 50px 20px',
-    },
-    cetnerPagination: {
-      display: 'flex',
-      justifyContent: 'center',
-    },
-    pageTitle: {
-      fontSize: '26px',
-      marginBottom: '24px',
-    },
-  }),
-);
