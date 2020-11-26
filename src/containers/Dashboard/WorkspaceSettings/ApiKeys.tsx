@@ -1,23 +1,19 @@
-import { useMutation } from '@apollo/client';
-import { KeyValueArrayInput } from '@bavard/react-components';
+import { useMutation, useQuery } from '@apollo/client';
+import { CommonTable, KeyValueArrayInput } from '@bavard/react-components';
 import {
   Box,
-  Button,
-  CircularProgress,
   createStyles,
   Grid,
   IconButton,
   Theme,
-  Tooltip,
   Typography,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { Add } from '@material-ui/icons';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router';
 
 import { IAPIKey } from '../../../models/user-service';
-import { useQueryAsArray } from '../../../utils/hooks';
 import {
   deleteApiKeyMutation,
   getApiKeysQuery,
@@ -45,10 +41,6 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-interface QueryResult {
-  apiKey: IAPIKey;
-}
-
 interface UpdateDomainsMutationResult {
   updateAllowedDomains: IAPIKey;
 }
@@ -56,37 +48,34 @@ interface UpdateDomainsMutationResult {
 export default function Project() {
   const classes = useStyles();
   const { workspaceId } = useParams<{ workspaceId: string }>();
+  const [apiKeys, setAPIKeys] = useState<IAPIKey[]>([]);
   const [currentKey, setCurrentKey] = useState<IAPIKey | null>(null);
   const [showCreateKeyDialog, setShowCreateKeyDialog] = useState(false);
 
-  const [apiKey, apiKeyLoading] = useQueryAsArray<QueryResult>(
-    getApiKeysQuery,
-    {
-      variables: {
-        workspaceId,
-      },
+  const { loading } = useQuery<any>(getApiKeysQuery, {
+    variables: {
+      workspaceId,
     },
-  );
+    onCompleted: (data) => {
+      setAPIKeys(data.apiKeys);
+    },
+  });
 
-  const [deleteKey, deleteKeyMutation] = useMutation(deleteApiKeyMutation);
+  const [deleteKey] = useMutation(deleteApiKeyMutation, {
+    refetchQueries: [{ query: getApiKeysQuery, variables: { workspaceId } }],
+  });
   const [
     updateAllowedDomains,
     updateAllowedDomainsMutation,
-  ] = useMutation<UpdateDomainsMutationResult>(updateDomainsMutation);
+  ] = useMutation<UpdateDomainsMutationResult>(updateDomainsMutation, {
+    refetchQueries: [{ query: getApiKeysQuery, variables: { workspaceId } }],
+  });
 
-  const loadedKey = apiKey?.apiKey ?? null;
-
-  useEffect(() => {
-    if (!apiKeyLoading) {
-      setCurrentKey(loadedKey);
-    }
-  }, [loadedKey, apiKeyLoading]);
-
-  const deleteApiKey = async () => {
+  const deleteApiKey = async (apiKey: IAPIKey) => {
     try {
       await deleteKey({
         variables: {
-          keyId: currentKey,
+          keyId: Number(apiKey.id),
         },
       });
 
@@ -100,7 +89,7 @@ export default function Project() {
     try {
       const { data } = await updateAllowedDomains({
         variables: {
-          keyId: currentKey,
+          keyId: Number(currentKey?.id),
           domains,
         },
       });
@@ -110,10 +99,17 @@ export default function Project() {
     } catch (e) {}
   };
 
-  const loading = apiKeyLoading || deleteKeyMutation.loading;
+  const columns = [
+    { title: 'API Key', field: 'key' },
+    {
+      title: 'Domain',
+      field: 'domains',
+      renderRow: (rowData: IAPIKey) => rowData.domains.join(', '),
+    },
+  ];
 
   return (
-    <Box style={{ padding: '50px' }}>
+    <Box width={1} mx={1}>
       <Grid container={true} alignItems="center">
         <Grid item={true}>
           <Typography style={{ fontSize: '26px' }}>API Keys</Typography>
@@ -132,39 +128,27 @@ export default function Project() {
         onClose={() => setShowCreateKeyDialog(false)}
         onCreateKey={setCurrentKey}
       />
-      {!currentKey && loading && (
-        <Box p={4}>
-          <Grid container={true} alignItems="center" justify="center">
-            <Grid item={true}>
-              <CircularProgress size={18} />
-            </Grid>
-          </Grid>
-        </Box>
-      )}
+      <CommonTable
+        data={{
+          columns,
+          rowsData: apiKeys,
+        }}
+        eventHandlers={{
+          onRowClick: (rowData: IAPIKey) => {
+            setCurrentKey(rowData);
+          },
+        }}
+        editable={{
+          isDeleteable: true,
+          onRowDelete: (rowData: IAPIKey) => {
+            deleteApiKey(rowData);
+          },
+        }}
+      />
       {currentKey && (
-        <Box>
+        <Box width={1}>
           <Grid
-            container={true}
-            className={classes.keyItem}
-            justify="space-between"
-            alignItems="center">
-            <Grid item={true}>
-              <Tooltip title="Copy Key" arrow={true}>
-                <Typography style={{ cursor: 'pointer' }}>
-                  {currentKey.key}
-                </Typography>
-              </Tooltip>
-            </Grid>
-            <Grid item={true}>
-              <Button
-                className={classes.deleteBtn}
-                disabled={loading}
-                onClick={deleteApiKey}>
-                Delete
-              </Button>
-            </Grid>
-          </Grid>
-          <Grid
+            item={true}
             container={true}
             className={classes.domainsContainer}
             justify="space-between"
