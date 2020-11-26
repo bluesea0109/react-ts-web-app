@@ -138,7 +138,7 @@ const ExampleForm: React.FC<ExampleFormProps> = ({
             label="Selected Tag Type"
             labelPosition="left"
             menuItems={tagTypes}
-            current={tagType}
+            current={tagType || ''}
             padding="12px"
             onChange={updateTagType}
           />

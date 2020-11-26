@@ -21,6 +21,7 @@ import EnablePaymentDialog from './EnablePaymentDialog';
 import InviteDialog from './InviteDialog';
 import WorkspaceInvitedMember from './WorkspaceInvitedMember';
 import WorkspaceMembersTable from './WorkspaceMembersTable';
+import ApiKeys from './ApiKeys';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -123,6 +124,9 @@ export default function WorkspaceSettings(props: IWorkspaceSettingsProps) {
             />
           )}
         </Grid>
+      </Grid>
+      <Grid item={true} container={true} xs={10} spacing={2}>
+        <ApiKeys />
       </Grid>
     </div>
   );
