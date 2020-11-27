@@ -1,9 +1,11 @@
-import { CommonTable, Switch } from '@bavard/react-components';
+import { CommonTable, BasicButton } from '@bavard/react-components';
 import {
   Button,
   CardHeader,
+  makeStyles,
   Dialog,
   Grid,
+  Theme,
   Typography,
 } from '@material-ui/core';
 import {
@@ -24,6 +26,7 @@ interface IDashboardProps {
 
 function Account(props: IDashboardProps) {
   const firebaseUser = firebase.auth().currentUser;
+  const classes = useStyles();
   const [viewAddWorkspace, showAddWorkspace] = useState(false);
   const [deleteWorkspace] = useMutation(DELETE_WORKSPACE, {
     refetchQueries: [
@@ -44,14 +47,14 @@ function Account(props: IDashboardProps) {
   const columns = [
     { title: 'Name', field: 'name' },
     {
-      title: 'Status',
-      field: 'billingEnabled',
+      title: 'Actions',
+      field: '',
       renderRow: (workspace: IWorkspace) => (
-        <Switch
-          checked={workspace.billingEnabled}
-          onChange={(billingEnabled: boolean) => {
-            // onUpdateBilling(workspace, billingEnabled);
-          }}
+        <BasicButton
+          title="Delete Workspace"
+          variant="text"
+          className={classes.redButton}
+          onClick={() => handleDeleteWorkspace(workspace)}
         />
       ),
     },
@@ -78,9 +81,8 @@ function Account(props: IDashboardProps) {
                 columns,
                 rowsData: workspaces || [],
               }}
-              editable={{
-                isDeleteable: true,
-                onRowDelete: handleDeleteWorkspace,
+              visibilities={{
+                showHeader: false,
               }}
               components={{
                 Toolbar: () => (
@@ -117,4 +119,11 @@ function Account(props: IDashboardProps) {
     </div>
   );
 }
+
+const useStyles = makeStyles((theme: Theme) => ({
+  redButton: {
+    color: '#FF0000',
+  },
+}));
+
 export default Account;
