@@ -1,13 +1,12 @@
+import { BasicButton, TextInput } from '@bavard/react-components';
 import {
-  Button,
+  Box,
   Card,
   createStyles,
   makeStyles,
-  TextField,
   Theme,
   Typography,
 } from '@material-ui/core';
-import clsx from 'clsx';
 import React, { useState } from 'react';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -15,11 +14,12 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       padding: theme.spacing(3),
     },
-    inputBox: {
-      margin: theme.spacing(1),
-    },
-    button: {
-      margin: theme.spacing(1),
+    textInput: {
+      marginBottom: theme.spacing(1),
+
+      '& .MuiOutlinedInput-input': {
+        padding: '9px 12px',
+      },
     },
   }),
 );
@@ -38,24 +38,31 @@ const NewTag: React.FC<NewTagProps> = ({ onAdd }: NewTagProps) => {
   };
 
   return (
-    <Card className={clsx(classes.root)}>
-      <TextField
-        id="name"
-        label="Tag Name"
-        type="text"
-        value={tagName}
-        variant="outlined"
-        onChange={(e: any) => setTagName(e.target.value as string)}
-        className={clsx(classes.inputBox)}
-      />
-      <Button
-        className={clsx(classes.button)}
-        variant="contained"
-        color="primary"
-        disabled={!tagName}
-        onClick={onSubmit}>
-        Submit
-      </Button>
+    <Card className={classes.root}>
+      <Box
+        width={300}
+        display="flex"
+        flexDirection="column"
+        justifyContent="stretch">
+        <Typography variant="h5">Create a New Tag Type</Typography>
+        <TextInput
+          id="name"
+          label="Tag Type Name"
+          labelType="Typography"
+          labelPosition="top"
+          value={tagName}
+          variant="outlined"
+          fullWidth={true}
+          onChange={(e: any) => setTagName(e.target.value as string)}
+          className={classes.textInput}
+        />
+        <BasicButton
+          title="Create Tag"
+          textTransform="none"
+          disabled={!tagName}
+          onClick={onSubmit}
+        />
+      </Box>
     </Card>
   );
 };

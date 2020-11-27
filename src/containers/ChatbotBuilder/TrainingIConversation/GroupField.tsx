@@ -57,9 +57,9 @@ export const GroupField: React.FC<GroupFieldProps> = ({
       <Grid item sm={4} xs={4} className={classes.nameField}>
         <DropDown
           fullWidth={true}
-          labelPosition="top"
           label={fieldType}
-          variant="Typography"
+          labelType="Typography"
+          labelPosition="top"
           menuItems={options}
           current={dropDownValue}
           onChange={handleDropDownValueChange}
