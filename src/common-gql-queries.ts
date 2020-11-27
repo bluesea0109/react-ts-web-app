@@ -112,6 +112,14 @@ export const GET_WORKSPACES = gql`
   }
 `;
 
+export const DELETE_WORKSPACE = gql`
+  mutation($workspaceId: String!) {
+    deleteWorkspace(workspaceId: $workspaceId) {
+      id
+    }
+  }
+`;
+
 export const GET_CATEGORY_SETS = gql`
   query($workspaceId: String!) {
     ImageLabelingService_categorySets(workspaceId: $workspaceId) {

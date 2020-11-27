@@ -10,11 +10,13 @@ import {
   AddCircleOutline,
   SupervisedUserCircleOutlined,
 } from '@material-ui/icons';
+import { useMutation } from '@apollo/client';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import React, { useState } from 'react';
-import { IUser } from '../../models/user-service';
+import { IUser, IWorkspace } from '../../models/user-service';
 import NewWorkspace from './NewWorkspace';
+import { DELETE_WORKSPACE, GET_CURRENT_USER } from '../../common-gql-queries';
 
 interface IDashboardProps {
   user: IUser;
@@ -23,6 +25,14 @@ interface IDashboardProps {
 function Account(props: IDashboardProps) {
   const firebaseUser = firebase.auth().currentUser;
   const [viewAddWorkspace, showAddWorkspace] = useState(false);
+  const [deleteWorkspace] = useMutation(DELETE_WORKSPACE, {
+    refetchQueries: [
+      {
+        query: GET_CURRENT_USER,
+      },
+    ],
+    awaitRefetchQueries: true,
+  });
 
   if (!firebaseUser) {
     // this shouldn't happen
@@ -35,6 +45,12 @@ function Account(props: IDashboardProps) {
     { title: 'Workspace Name', field: 'name' },
     { title: 'Workspace Id', field: 'id' },
   ];
+
+  const handleDeleteWorkspace = (rowData: IWorkspace) => {
+    deleteWorkspace({
+      variables: { workspaceId: rowData.id },
+    });
+  };
 
   return (
     <div className={'page-container'}>
@@ -50,6 +66,10 @@ function Account(props: IDashboardProps) {
               data={{
                 columns,
                 rowsData: workspaces || [],
+              }}
+              editable={{
+                isDeleteable: true,
+                onRowDelete: handleDeleteWorkspace,
               }}
               components={{
                 Toolbar: () => (
