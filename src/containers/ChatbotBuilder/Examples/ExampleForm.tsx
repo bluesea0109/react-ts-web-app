@@ -136,11 +136,11 @@ const ExampleForm: React.FC<ExampleFormProps> = ({
           <DropDown
             fullWidth={true}
             label="Selected Tag Type"
+            labelType="Typography"
             labelPosition="top"
             menuItems={tagTypes}
             current={tagType || ''}
             padding="12px"
-            variant="Typography"
             onChange={updateTagType}
           />
         </Grid>

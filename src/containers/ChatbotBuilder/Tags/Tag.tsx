@@ -1,5 +1,5 @@
 import { AgentConfig } from '@bavard/agent-config';
-import { Grid, Paper, Typography } from '@material-ui/core';
+import { Box, Grid, Paper, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import _ from 'lodash';
 import React from 'react';
@@ -48,17 +48,14 @@ const TagSection: React.FC = () => {
   };
 
   return (
-    <div className={classes.root}>
-      <Grid item={true} xs={12} sm={12}>
-        <Grid className={classes.pageTitle}>Tag Type Manager</Grid>
-        <NewTag onAdd={onAddTagType} />
-      </Grid>
+    <Box className={classes.root}>
+      <NewTag onAdd={onAddTagType} />
       <Grid item={true} xs={12} sm={12}>
         <Paper className={classes.paper}>
           <TagsTable tagTypes={tagTypes} onDeleteTagType={onDeleteTagType} />
         </Paper>
       </Grid>
-    </div>
+    </Box>
   );
 };
 

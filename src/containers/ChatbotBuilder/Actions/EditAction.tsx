@@ -167,10 +167,10 @@ const EditAction = ({
             <DropDown
               fullWidth={true}
               label="Action Type"
+              labelType="Typography"
               labelPosition="top"
               menuItems={ActionTypes}
               current={currentAction?.type}
-              variant="Typography"
               padding="12px"
               onChange={(actionType) => handleUpdateActionType(actionType)}
             />

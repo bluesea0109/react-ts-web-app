@@ -89,8 +89,8 @@ const Workspaces: React.FC<WorkspacesProps> = ({
   return workspaces.length !== 0 ? (
     <DropDown
       label="Workspace:"
+      labelType="InputLabel"
       labelPosition="top"
-      variant="InputLabel"
       current={user.activeWorkspace?.id || ''}
       menuItems={workspaces}
       onChange={(id) => setActiveWorkspace(id)}
