@@ -1,4 +1,4 @@
-import { CommonTable } from '@bavard/react-components';
+import { CommonTable, Switch } from '@bavard/react-components';
 import {
   Button,
   CardHeader,
@@ -42,8 +42,19 @@ function Account(props: IDashboardProps) {
 
   const workspaces = props.user.workspaces;
   const columns = [
-    { title: 'Workspace Name', field: 'name' },
-    { title: 'Workspace Id', field: 'id' },
+    { title: 'Name', field: 'name' },
+    {
+      title: 'Status',
+      field: 'billingEnabled',
+      renderRow: (workspace: IWorkspace) => (
+        <Switch
+          checked={workspace.billingEnabled}
+          onChange={(billingEnabled: boolean) => {
+            // onUpdateBilling(workspace, billingEnabled);
+          }}
+        />
+      ),
+    },
   ];
 
   const handleDeleteWorkspace = (rowData: IWorkspace) => {
