@@ -1,12 +1,12 @@
 import { TextInput } from '@bavard/react-components';
 import {
   Button,
+  Box,
   createStyles,
   Grid,
   LinearProgress,
   makeStyles,
   Theme,
-  Typography,
 } from '@material-ui/core';
 import clsx from 'clsx';
 import React, { useState } from 'react';
@@ -56,38 +56,35 @@ const NewAgent: React.FC<INewAgentProps> = ({ user, loading, onAddAgent }) => {
   };
 
   return (
-    <Grid className={classes.root}>
-      <Grid xs={12} item={true}>
-        <Typography variant="subtitle1" className={classes.formHeading}>
-          Create New Assistant
-        </Typography>
-      </Grid>
-      <Grid xs={12} md={4} item={true}>
-        {loading && <LinearProgress />}
+    <Grid className={classes.root} container={true} item={true} xs={12} md={4}>
+      {loading && <LinearProgress />}
+      <Box width={1} mb={1}>
         <TextInput
           id="name"
-          label="Unique Name"
+          label="Create New Assistant"
+          labelType="Typography"
+          labelPosition="top"
           value={uname}
+          fullWidth={true}
           onChange={(e: any) => setUname(e.target.value as string)}
         />
-        <br />
-        <Button
-          className={clsx([classes.button])}
-          variant="contained"
-          color="primary"
-          disabled={loading || !uname}
-          onClick={onAdd}>
-          Create Without Data
-        </Button>
-        <UploadDataDialog
-          uname={uname}
-          workspaceId={workspaceId}
-          buttonsDisabled={loading || !uname}
-          onSuccess={onUploadComplete}
-          onError={onUploadComplete}
-          onCancel={onUploadComplete}
-        />
-      </Grid>
+      </Box>
+      <Button
+        className={clsx([classes.button])}
+        variant="contained"
+        color="primary"
+        disabled={loading || !uname}
+        onClick={onAdd}>
+        Create Without Data
+      </Button>
+      <UploadDataDialog
+        uname={uname}
+        workspaceId={workspaceId}
+        buttonsDisabled={loading || !uname}
+        onSuccess={onUploadComplete}
+        onError={onUploadComplete}
+        onCancel={onUploadComplete}
+      />
     </Grid>
   );
 };
