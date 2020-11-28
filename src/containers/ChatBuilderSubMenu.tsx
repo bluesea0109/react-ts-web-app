@@ -54,7 +54,10 @@ const BotSubMenu = ({
   const selectedCategory = () => {
     if (
       botSubMenuData.configure.items.findIndex((item) => {
-        return item.path === selectedPath;
+        return (
+          item.path === selectedPath ||
+          item.pathes?.findIndex((path) => path === selectedPath) !== -1
+        );
       }) !== -1
     ) {
       return 'Configure';
@@ -77,8 +80,8 @@ const BotSubMenu = ({
     <ListItem
       component={Link}
       key={index}
-      to={getAgentPath(item.path)}
-      selected={location.pathname.includes(item.path)}
+      to={getAgentPath(item.path || item.pathes[0])}
+      selected={location.pathname.includes(item.path || item.pathes[0])}
       button={true}
       className={classes.listItem}>
       <ListItemIcon style={{ color: 'white' }}>
@@ -87,7 +90,8 @@ const BotSubMenu = ({
       <ListItemText
         primary={item.title}
         style={
-          location.pathname.includes(item.path)
+          // prettier-ignore
+          location.pathname.includes(item.path) || item.pathes?.find((path: string) => location.pathname.includes(path))
             ? selectedStyle
             : { paddingLeft: '20px' }
         }
