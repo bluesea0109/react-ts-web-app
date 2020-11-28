@@ -188,7 +188,7 @@ const ConversationPanel = ({
         />
         <IconButton
           variant="text"
-          title="Add Agent Action"
+          title="Add Assistant Action"
           iconPosition="right"
           Icon={AddCircleOutline}
           onClick={() => handleAddField(ACTION_TYPE.AGENT_ACTION)}

@@ -116,7 +116,7 @@ export default function CreateTrainingJobDialog(props: IProps) {
         color="primary"
         size="small"
         onClick={handleOpen}>
-        {'Train Agent'}
+        {'Train Assistant'}
       </Button>
     </div>
   );

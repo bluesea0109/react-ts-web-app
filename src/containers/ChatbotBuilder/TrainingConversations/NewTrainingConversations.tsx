@@ -199,6 +199,7 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
           userActions.map((i: any) => i.isUser && delete i.isUser);
 
           const updatedUserActions = userActions.map((item) => {
+            // @TODO: Fix this
             const result = omitDeep(item, '__typename');
             return result;
           });
@@ -371,7 +372,7 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
                   container={true}
                   item={true}
                   className={classes.ActionsHeading}>
-                  <Typography> Agent Actions </Typography>
+                  <Typography> Assistant Actions </Typography>
                   <IconButton onClick={() => handleAddFields('agent')}>
                     <AddCircleOutline fontSize="large" />
                   </IconButton>
@@ -496,7 +497,7 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
                           container={true}
                           className={classes.actionsWrapper}>
                           <span className={classes.agentTagText}>
-                            Agent Action
+                            Assistant Action
                           </span>
                           <Grid container={true} item={true}>
                             <Grid

@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
 
     customDrawer: {},
-    allAgentBtn: {
+    allAssistantButton: {
       padding: '10px',
       borderRadius: '5px',
       backgroundColor: 'rgba(74, 144, 226)',
@@ -319,7 +319,7 @@ const CloseDrawer = ({ handleClose, path }: CloseDrawerProps) => {
         <img src="/back.png" width="30px" height="30px" alt="backbutton" />
       </Box>
       <Box display="flex" justifyContent="flex-start" onClick={openAllAgent}>
-        <Grid className={classes.allAgentBtn}>All Agents</Grid>
+        <Grid className={classes.allAssistantButton}>All Assistants</Grid>
       </Box>
     </Grid>
   );

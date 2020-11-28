@@ -30,7 +30,7 @@ const TagSection: React.FC = () => {
   );
 
   if (!config) {
-    return <Typography>Agent config is empty.</Typography>;
+    return null;
   }
 
   const tagTypes = config.getTagTypes();

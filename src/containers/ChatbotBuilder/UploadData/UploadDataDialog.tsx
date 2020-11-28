@@ -69,7 +69,7 @@ interface IError {
 
 type stepStatus = 'queued' | 'importing' | 'completed' | 'error';
 type stepName =
-  | 'Create Agent'
+  | 'Create Assistant'
   | 'Widget Config'
   | 'Examples'
   | 'URO Images'
@@ -196,7 +196,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     let done = 0;
     try {
       if (!this.state.agentId) {
-        throw new Error('Agent does not exist');
+        throw new Error('Assistant does not exist');
       }
       const length = trainingConversations.length;
       for (const tc of trainingConversations) {
@@ -253,7 +253,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     if (!uname) {
       return this.addToErrors(
         'Could not update settings',
-        'Agent uname was not found',
+        'Assistant uname was not found',
       );
     }
 
@@ -369,7 +369,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
   ensureAgentExists = async (data: IAgentDataExport) => {
     // Returns a promise to await the state
     return new Promise<void>(async (resolve) => {
-      this.setStepStatus('Create Agent', 'importing');
+      this.setStepStatus('Create Assistant', 'importing');
       try {
         if (this.props.uname) {
           data.config.uname = this.props.uname;
@@ -406,13 +406,13 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
               resolve();
             },
           );
-          this.setStepStatus('Create Agent', 'completed');
+          this.setStepStatus('Create Assistant', 'completed');
         } else {
-          throw new Error('Agent was not created');
+          throw new Error('Assistant was not created');
         }
       } catch (e) {
-        this.addToErrors('Error Creating Agent', JSON.stringify(e));
-        this.setStepStatus('Create Agent', 'error');
+        this.addToErrors('Error Creating Assistant', JSON.stringify(e));
+        this.setStepStatus('Create Assistant', 'error');
         resolve();
       }
     });
@@ -421,7 +421,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
   updateAgentConfig = async (config: IAgentConfig) => {
     // Returns a promise to await the state
 
-    this.setStepStatus('Create Agent', 'importing');
+    this.setStepStatus('Create Assistant', 'importing');
     try {
       if (this.props.uname) {
         config.uname = this.props.uname;
@@ -451,10 +451,10 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
         throw new Error(JSON.stringify(updateAgentResult));
       }
 
-      this.setStepStatus('Create Agent', 'completed');
+      this.setStepStatus('Create Assistant', 'completed');
     } catch (e) {
-      this.addToErrors('Error Creating Agent', JSON.stringify(e));
-      this.setStepStatus('Create Agent', 'error');
+      this.addToErrors('Error Creating Assistant', JSON.stringify(e));
+      this.setStepStatus('Create Assistant', 'error');
     }
   };
 
@@ -676,7 +676,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     return (
       <React.Fragment>
         <Dialog open={state.open} onClose={this.handleClose} fullWidth={true}>
-          <DialogTitle>{'Upload Agent Data'}</DialogTitle>
+          <DialogTitle>{'Upload Assistant Data'}</DialogTitle>
           {dialogContent}
           <DialogActions>
             {state.numCompleted === this.totalSteps ? (

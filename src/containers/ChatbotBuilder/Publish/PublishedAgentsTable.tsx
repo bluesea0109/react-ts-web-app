@@ -48,7 +48,7 @@ function PublishedAgentsTable({
   const columns = useMemo(() => {
     return [
       { title: 'Version ID', field: 'id' },
-      { title: 'Agent ID', field: 'agentId' },
+      { title: 'Assistant ID', field: 'agentId' },
       {
         title: 'Status',
         field: 'status',

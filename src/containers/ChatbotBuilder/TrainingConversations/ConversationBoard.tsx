@@ -389,7 +389,7 @@ export const ConversationBoard = ({
   const validateAgentActions = (actions: any[]): boolean => {
     for (const action of actions) {
       if (!action.actionName) {
-        setErrStatus('Agent action Name is required.');
+        setErrStatus('Assistant action Name is required.');
         return false;
       }
     }
@@ -518,10 +518,7 @@ export const ConversationBoard = ({
               container={true}
               item={true}
               className={classes.UserActionsHeading}>
-              <Typography style={{ color: 'blue' }}>
-                {' '}
-                Add User Action{' '}
-              </Typography>
+              <Typography style={{ color: 'blue' }}>Add User Action</Typography>
               <IconButton onClick={() => handleAddFields('user')}>
                 <AddCircleOutline
                   fontSize="large"
@@ -535,8 +532,7 @@ export const ConversationBoard = ({
               className={classes.AgentActionsHeading}
               justify="flex-end">
               <Typography style={{ color: 'blue' }}>
-                {' '}
-                Add Agent Action{' '}
+                Add Assistant Action
               </Typography>
               <IconButton onClick={() => handleAddFields('agent')}>
                 <AddCircleOutline

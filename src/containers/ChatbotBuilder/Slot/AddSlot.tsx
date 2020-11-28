@@ -51,7 +51,7 @@ const AddSlot = ({ onAddSlotClose }: AddSlotProps) => {
   const { enqueueSnackbar } = useSnackbar();
 
   if (!config) {
-    return <Typography>Agent config is empty.</Typography>;
+    return null;
   }
 
   const saveChanges = () => {

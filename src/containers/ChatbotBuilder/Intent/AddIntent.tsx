@@ -79,7 +79,7 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
   const [createExamples] = useMutation(createExamplesMutation);
 
   if (!config) {
-    return <p>Agent config is empty.</p>;
+    return null;
   }
 
   const onExampleUpdate = (updatedExample: INLUExample) => {

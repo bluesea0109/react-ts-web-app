@@ -33,7 +33,7 @@ export default function UploadDataTab() {
   if (!config) {
     return (
       <div className={classes.root}>
-        <Typography variant={'h4'}>No Agent Selected</Typography>
+        <Typography variant={'h4'}>No Assistant Selected</Typography>
       </div>
     );
   }
@@ -52,7 +52,7 @@ export default function UploadDataTab() {
         <Grid item={true} xs={12}>
           <Typography>
             {
-              'You may upload agent data as a JSON file with the following format'
+              'You may upload assistant data as a JSON file with the following format'
             }
           </Typography>
         </Grid>
