@@ -1,14 +1,15 @@
 import { useMutation } from '@apollo/client';
+import { TextInput, IconButton } from '@bavard/react-components';
 import {
   Button,
-  Card,
+  Box,
   createStyles,
   LinearProgress,
   makeStyles,
-  TextField,
   Theme,
+  Typography,
 } from '@material-ui/core';
-import clsx from 'clsx';
+import CloseIcon from '@material-ui/icons/Close';
 import React, { useState } from 'react';
 import { resetApolloContext } from '../../apollo-client';
 import {
@@ -23,20 +24,29 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       padding: theme.spacing(3),
     },
-    inputBox: {
-      margin: theme.spacing(1),
+    textInput: {
+      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(1),
     },
     button: {
-      margin: theme.spacing(1),
+      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(1),
+    },
+    closeIcon: {
+      top: 2,
+      right: 2,
+      position: 'absolute',
+      cursor: 'pointer',
     },
   }),
 );
 
 interface INewWorkspaceProps {
-  onSuccess?: () => void;
+  onCancel: () => void;
+  onSuccess: () => void;
 }
 
-function NewWorkspace({ onSuccess }: INewWorkspaceProps) {
+function NewWorkspace({ onCancel, onSuccess }: INewWorkspaceProps) {
   const classes = useStyles();
   const [state, setState] = useState({
     name: '',
@@ -86,33 +96,30 @@ function NewWorkspace({ onSuccess }: INewWorkspaceProps) {
     }
 
     setState({ name: '' });
-    onSuccess?.();
+    onSuccess();
   };
 
   return (
-    <Card className={clsx(classes.root)}>
+    <Box display="flex" flexDirection="column" justifyContent="center" p={8}>
+      <CloseIcon className={classes.closeIcon} onClick={onCancel} />
       {(loading || activateResult.loading) && <LinearProgress />}
-      <h4>{'New Workspace'}</h4>
-      <br />
-      <TextField
-        id="name"
-        label="Workspace Name"
-        type="string"
+      <Typography variant="h6">Add a New Workspace</Typography>
+      <TextInput
+        label=""
         value={state.name || ''}
-        variant="outlined"
+        fullWidth={true}
+        className={classes.textInput}
         onChange={(e: any) => setState({ ...state, name: e.target.value })}
-        className={clsx(classes.inputBox)}
       />
-      <br />
       <Button
-        className={clsx(classes.button)}
-        disabled={loading || activateResult.loading || !state.name}
-        variant="contained"
         color="primary"
+        variant="contained"
+        disabled={loading || activateResult.loading || !state.name}
+        className={classes.button}
         onClick={submit}>
         {'Submit'}
       </Button>
-    </Card>
+    </Box>
   );
 }
 

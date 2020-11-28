@@ -1,6 +1,7 @@
 import { CommonTable, BasicButton } from '@bavard/react-components';
 import {
   Button,
+  Box,
   CardHeader,
   makeStyles,
   Dialog,
@@ -50,12 +51,14 @@ function Account(props: IDashboardProps) {
       title: 'Actions',
       field: '',
       renderRow: (workspace: IWorkspace) => (
-        <BasicButton
-          title="Delete Workspace"
-          variant="text"
-          className={classes.redButton}
-          onClick={() => handleDeleteWorkspace(workspace)}
-        />
+        <Box display="flex" justifyContent="flex-end">
+          <BasicButton
+            title="Delete Workspace"
+            variant="text"
+            className={classes.redButton}
+            onClick={() => handleDeleteWorkspace(workspace)}
+          />
+        </Box>
       ),
     },
   ];
@@ -110,7 +113,10 @@ function Account(props: IDashboardProps) {
                 title="Add an Workspace"
                 open={true}
                 onClose={() => showAddWorkspace(false)}>
-                <NewWorkspace onSuccess={() => showAddWorkspace(false)} />
+                <NewWorkspace
+                  onCancel={() => showAddWorkspace(false)}
+                  onSuccess={() => showAddWorkspace(false)}
+                />
               </Dialog>
             )}
           </Grid>
