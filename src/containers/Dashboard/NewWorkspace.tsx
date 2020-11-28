@@ -1,14 +1,13 @@
 import { useMutation } from '@apollo/client';
+import { TextInput } from '@bavard/react-components';
 import {
   Button,
-  Card,
-  createStyles,
+  Box,
   LinearProgress,
   makeStyles,
-  TextField,
   Theme,
+  Typography,
 } from '@material-ui/core';
-import clsx from 'clsx';
 import React, { useState } from 'react';
 import { resetApolloContext } from '../../apollo-client';
 import {
@@ -18,22 +17,22 @@ import {
 } from '../../common-gql-queries';
 import ApolloErrorPage from '../ApolloErrorPage';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(3),
-    },
-    inputBox: {
-      margin: theme.spacing(1),
-    },
-    button: {
-      margin: theme.spacing(1),
-    },
-  }),
-);
+const useStyles = makeStyles((theme: Theme) => ({
+  root: {
+    padding: theme.spacing(3),
+  },
+  textInput: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+  },
+  button: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+  },
+}));
 
 interface INewWorkspaceProps {
-  onSuccess?: () => void;
+  onSuccess: () => void;
 }
 
 function NewWorkspace({ onSuccess }: INewWorkspaceProps) {
@@ -86,33 +85,29 @@ function NewWorkspace({ onSuccess }: INewWorkspaceProps) {
     }
 
     setState({ name: '' });
-    onSuccess?.();
+    onSuccess();
   };
 
   return (
-    <Card className={clsx(classes.root)}>
+    <Box display="flex" flexDirection="column" justifyContent="center" p={8}>
       {(loading || activateResult.loading) && <LinearProgress />}
-      <h4>{'New Workspace'}</h4>
-      <br />
-      <TextField
-        id="name"
-        label="Workspace Name"
-        type="string"
+      <Typography variant="h6">Add a New Workspace</Typography>
+      <TextInput
+        label=""
         value={state.name || ''}
-        variant="outlined"
+        fullWidth={true}
+        className={classes.textInput}
         onChange={(e: any) => setState({ ...state, name: e.target.value })}
-        className={clsx(classes.inputBox)}
       />
-      <br />
       <Button
-        className={clsx(classes.button)}
-        disabled={loading || activateResult.loading || !state.name}
-        variant="contained"
         color="primary"
+        variant="contained"
+        disabled={loading || activateResult.loading || !state.name}
+        className={classes.button}
         onClick={submit}>
         {'Submit'}
       </Button>
-    </Card>
+    </Box>
   );
 }
 
