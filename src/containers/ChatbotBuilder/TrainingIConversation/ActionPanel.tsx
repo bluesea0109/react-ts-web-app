@@ -184,7 +184,7 @@ const ActionPanel = ({
                 <KeyboardArrowRight color="primary" className={classes.arrow} />
               )}
               <Typography className={classes.heading}>
-                {isUserAction ? 'User Action' : 'Agent Action'}
+                {isUserAction ? 'User Action' : 'Assistant Action'}
               </Typography>
             </Box>
             <Box>

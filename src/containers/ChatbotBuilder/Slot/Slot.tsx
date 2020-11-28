@@ -33,7 +33,7 @@ const SlotSection: React.FC = () => {
   );
 
   if (!config) {
-    return <p>Agent config is empty.</p>;
+    return null;
   }
 
   const slots = config.getSlots();

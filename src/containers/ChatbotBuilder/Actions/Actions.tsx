@@ -27,7 +27,7 @@ const Actions = () => {
   );
 
   if (!config) {
-    return <p>Agent config is empty.</p>;
+    return null;
   }
 
   const actions: BaseAgentAction[] = config.getActions();

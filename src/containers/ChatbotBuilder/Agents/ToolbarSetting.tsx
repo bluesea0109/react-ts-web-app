@@ -79,7 +79,7 @@ export const ToolBarSetting = ({
             height="25px"
             style={{ marginRight: '5px' }}
           />
-          <div>Save Agent</div>
+          <div>Save Assistant</div>
         </div>
       </div>
       <div className={classes.button}>

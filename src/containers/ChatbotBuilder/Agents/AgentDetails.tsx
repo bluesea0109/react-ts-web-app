@@ -27,7 +27,6 @@ import Intent from '../Intent/Intent';
 import PublishAgent from '../Publish';
 import Slot from '../Slot/Slot';
 import Tag from '../Tags/Tag';
-import TrainingConversations from '../TrainingConversations';
 import TrainingIConversations from '../TrainingIConversation';
 import TrainingJobsTab from '../TrainingJobs/TrainingJobsTab';
 import UploadDataTab from '../UploadData/UploadDataTab';

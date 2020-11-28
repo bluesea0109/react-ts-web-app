@@ -54,12 +54,12 @@ export default function AgentModelTable() {
     <CommonTable
       data={{ columns, rowsData: agentModel ? [agentModel] : [] }}
       localization={{
-        nonRecordError: 'No model has been deployed yet for this agent.',
+        nonRecordError: 'No model has been deployed yet for this assistant.',
       }}
       components={{
         Toolbar: () => (
           <Toolbar>
-            <Typography variant="h6">Agent Models</Typography>
+            <Typography variant="h6">Assistant Models</Typography>
           </Toolbar>
         ),
       }}

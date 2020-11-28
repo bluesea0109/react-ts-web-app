@@ -25,7 +25,7 @@ const Intents: React.FC = () => {
   );
 
   if (!config) {
-    return <p>Agent config is empty.</p>;
+    return null;
   }
 
   const intents = config.getIntents();

@@ -29,7 +29,7 @@ interface IDashboardProps {
   user: IUser;
 }
 
-function Account(props: IDashboardProps) {
+const Dashboard: React.FC<IDashboardProps> = ({ user }) => {
   const firebaseUser = firebase.auth().currentUser;
   const classes = useStyles();
   const [currentWorkspace, setCurrentWorkspace] = useState<IWorkspace>();
@@ -50,7 +50,7 @@ function Account(props: IDashboardProps) {
     return <Typography>{'No user is signed in.'}</Typography>;
   }
 
-  const workspaces = props.user.workspaces;
+  const workspaces = user.workspaces;
   const columns = [
     { title: 'Name', field: 'name' },
     {
@@ -148,7 +148,7 @@ function Account(props: IDashboardProps) {
       </Grid>
     </div>
   );
-}
+};
 
 const useStyles = makeStyles((theme: Theme) => ({
   redButton: {
@@ -156,4 +156,4 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-export default Account;
+export default Dashboard;

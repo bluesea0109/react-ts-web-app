@@ -298,7 +298,9 @@ export const DialogueForm = ({
                   style={{ fontSize: '30px', color: 'white' }}
                 />
               )}
-              <Typography className={classes.heading}>Agent Action</Typography>
+              <Typography className={classes.heading}>
+                Assistant Action
+              </Typography>
             </Grid>
             <Grid container={true} justify="flex-end">
               <Typography className={classes.heading}>{value}</Typography>
