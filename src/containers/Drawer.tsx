@@ -96,7 +96,7 @@ export const botSubMenuData = {
       },
       {
         title: 'Visual Graphs V2.0',
-        path: 'graph-policies',
+        pathes: ['graph-policies', 'graph-editor'],
       },
     ],
   },
