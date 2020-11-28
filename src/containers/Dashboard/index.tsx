@@ -1,10 +1,13 @@
-import { CommonTable, BasicButton } from '@bavard/react-components';
+import {
+  ActionDialog,
+  BasicButton,
+  CommonTable,
+} from '@bavard/react-components';
 import {
   Button,
   Box,
   CardHeader,
   makeStyles,
-  Dialog,
   Grid,
   Theme,
   Typography,
@@ -18,8 +21,9 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import React, { useState } from 'react';
 import { IUser, IWorkspace } from '../../models/user-service';
-import NewWorkspace from './NewWorkspace';
 import { DELETE_WORKSPACE, GET_CURRENT_USER } from '../../common-gql-queries';
+import NewWorkspace from './NewWorkspace';
+import DeleteWorkspace from './DeleteWorkspace';
 
 interface IDashboardProps {
   user: IUser;
@@ -28,7 +32,9 @@ interface IDashboardProps {
 function Account(props: IDashboardProps) {
   const firebaseUser = firebase.auth().currentUser;
   const classes = useStyles();
-  const [viewAddWorkspace, showAddWorkspace] = useState(false);
+  const [currentWorkspace, setCurrentWorkspace] = useState<IWorkspace>();
+  const [showAddWorkspace, setShowAddWorkspace] = useState(false);
+  const [showDeleteWorkspace, setShowDeleteWorkspace] = useState(false);
   const [deleteWorkspace] = useMutation(DELETE_WORKSPACE, {
     refetchQueries: [
       {
@@ -56,17 +62,28 @@ function Account(props: IDashboardProps) {
             title="Delete Workspace"
             variant="text"
             className={classes.redButton}
-            onClick={() => handleDeleteWorkspace(workspace)}
+            onClick={() => handleShowWorkspace(workspace)}
           />
         </Box>
       ),
     },
   ];
 
+  const handleCloseWorkspace = () => {
+    setCurrentWorkspace(undefined);
+    setShowDeleteWorkspace(false);
+  };
+
+  const handleShowWorkspace = (workspace: IWorkspace) => {
+    setCurrentWorkspace(workspace);
+    setShowDeleteWorkspace(true);
+  };
+
   const handleDeleteWorkspace = (rowData: IWorkspace) => {
     deleteWorkspace({
       variables: { workspaceId: rowData.id },
     });
+    handleCloseWorkspace();
   };
 
   return (
@@ -95,7 +112,7 @@ function Account(props: IDashboardProps) {
                     action={
                       <Button
                         color="primary"
-                        onClick={() => showAddWorkspace(true)}
+                        onClick={() => setShowAddWorkspace(true)}
                         endIcon={<AddCircleOutline />}
                         disabled={(workspaces?.length || 0) >= 3}>
                         Add New Workspace
@@ -108,16 +125,23 @@ function Account(props: IDashboardProps) {
           </Grid>
 
           <Grid item={true} xs={12} sm={6}>
-            {viewAddWorkspace && (
-              <Dialog
-                title="Add an Workspace"
-                open={true}
-                onClose={() => showAddWorkspace(false)}>
-                <NewWorkspace
-                  onCancel={() => showAddWorkspace(false)}
-                  onSuccess={() => showAddWorkspace(false)}
+            {showAddWorkspace && (
+              <ActionDialog
+                isOpen={true}
+                onClose={() => setShowAddWorkspace(false)}>
+                <NewWorkspace onSuccess={() => setShowAddWorkspace(false)} />
+              </ActionDialog>
+            )}
+            {showDeleteWorkspace && currentWorkspace && (
+              <ActionDialog
+                isOpen={true}
+                onClose={() => setShowDeleteWorkspace(false)}>
+                <DeleteWorkspace
+                  workspace={currentWorkspace}
+                  onCancel={handleCloseWorkspace}
+                  onConfirm={() => handleDeleteWorkspace(currentWorkspace)}
                 />
-              </Dialog>
+              </ActionDialog>
             )}
           </Grid>
         </Grid>

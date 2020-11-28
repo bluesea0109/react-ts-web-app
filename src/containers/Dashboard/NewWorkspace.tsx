@@ -1,15 +1,13 @@
 import { useMutation } from '@apollo/client';
-import { TextInput, IconButton } from '@bavard/react-components';
+import { TextInput } from '@bavard/react-components';
 import {
   Button,
   Box,
-  createStyles,
   LinearProgress,
   makeStyles,
   Theme,
   Typography,
 } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
 import React, { useState } from 'react';
 import { resetApolloContext } from '../../apollo-client';
 import {
@@ -19,34 +17,25 @@ import {
 } from '../../common-gql-queries';
 import ApolloErrorPage from '../ApolloErrorPage';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(3),
-    },
-    textInput: {
-      marginTop: theme.spacing(1),
-      marginBottom: theme.spacing(1),
-    },
-    button: {
-      marginTop: theme.spacing(1),
-      marginBottom: theme.spacing(1),
-    },
-    closeIcon: {
-      top: 2,
-      right: 2,
-      position: 'absolute',
-      cursor: 'pointer',
-    },
-  }),
-);
+const useStyles = makeStyles((theme: Theme) => ({
+  root: {
+    padding: theme.spacing(3),
+  },
+  textInput: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+  },
+  button: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+  },
+}));
 
 interface INewWorkspaceProps {
-  onCancel: () => void;
   onSuccess: () => void;
 }
 
-function NewWorkspace({ onCancel, onSuccess }: INewWorkspaceProps) {
+function NewWorkspace({ onSuccess }: INewWorkspaceProps) {
   const classes = useStyles();
   const [state, setState] = useState({
     name: '',
@@ -101,7 +90,6 @@ function NewWorkspace({ onCancel, onSuccess }: INewWorkspaceProps) {
 
   return (
     <Box display="flex" flexDirection="column" justifyContent="center" p={8}>
-      <CloseIcon className={classes.closeIcon} onClick={onCancel} />
       {(loading || activateResult.loading) && <LinearProgress />}
       <Typography variant="h6">Add a New Workspace</Typography>
       <TextInput
