@@ -1,23 +1,18 @@
 import { useQuery } from '@apollo/client';
 import {
-  Button,
   Card,
-  CardHeader,
   createStyles,
   Grid,
   makeStyles,
   Theme,
   Typography,
 } from '@material-ui/core';
-import { AddCircleOutline, Group, PersonAdd } from '@material-ui/icons';
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
 import { GET_WORKSPACES } from '../../../common-gql-queries';
 import { IWorkspace, IUser } from '../../../models/user-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
-import DisablePaymentDialog from './DisablePaymentDialog';
-import EnablePaymentDialog from './EnablePaymentDialog';
 import InviteDialog from './InviteDialog';
 import WorkspaceInvitedMember from './WorkspaceInvitedMember';
 import WorkspaceMembersTable from './WorkspaceMembersTable';
@@ -78,43 +73,15 @@ export default function WorkspaceSettings(props: IWorkspaceSettingsProps) {
       <Grid item={true} container={true} xs={10} spacing={2}>
         <Grid item={true} xs={12} sm={12}>
           <Card>
-            <CardHeader
-              avatar={<Group />}
-              title={<h4>Workspace Members</h4>}
-              action={
-                <React.Fragment>
-                  {workspace.billingEnabled === true && (
-                    <DisablePaymentDialog />
-                  )}
-                  {workspace.billingEnabled === false && (
-                    <EnablePaymentDialog />
-                  )}
-                </React.Fragment>
-              }
-            />
             <WorkspaceMembersTable
-              members={workspace.members || []}
               user={props.user}
+              workspace={workspace}
               refetchWorkspaces={refetch}
             />
           </Card>
         </Grid>
         <Grid item={true} xs={12} sm={12}>
-          <Card>
-            <CardHeader
-              avatar={<PersonAdd />}
-              title={<h4>Invited Workspace Members</h4>}
-              action={
-                <Button
-                  color="primary"
-                  onClick={() => showInviteDialog(true)}
-                  endIcon={<AddCircleOutline />}>
-                  Invite a Member
-                </Button>
-              }
-            />
-            <WorkspaceInvitedMember />
-          </Card>
+          <WorkspaceInvitedMember onShowInvite={() => showInviteDialog(true)} />
           {viewInviteDialog && (
             <InviteDialog
               open={viewInviteDialog}

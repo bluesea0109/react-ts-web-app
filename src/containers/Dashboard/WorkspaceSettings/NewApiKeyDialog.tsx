@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/client';
+import { ActionDialog } from '@bavard/react-components';
 import { Box, CircularProgress, Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
@@ -63,51 +63,57 @@ const NewApiKeyDialog = ({
   };
 
   return (
-    <Dialog open={isOpen} onClose={onClose} aria-labelledby="form-dialog-title">
+    <ActionDialog
+      isOpen={isOpen}
+      onClose={onClose}
+      aria-labelledby="form-dialog-title">
       <DialogTitle id="form-dialog-title">Create API Key</DialogTitle>
-      <DialogContent>
-        <DialogContentText>
-          Create your own API key or leave it blank to generate a random key.
-        </DialogContentText>
-        <Box py={4}>
-          <TextField
-            label={'Text (Required)'}
-            disabled={loading}
-            fullWidth={true}
-            multiline={true}
-            variant="outlined"
-            rows={2}
-            value={apiKey}
-            onChange={(e) => setApiKey(e.target.value)}
-            placeholder="Enter example text"
-            error={!!error}
-          />
-          <Box mt={1}>
-            <Typography
-              variant="caption"
-              color={error ? 'error' : 'primary'}
-              style={{ textTransform: 'capitalize' }}>
-              {!!error && error?.message.replace('GraphQL error: ', '')}
-              {!error &&
-                'API Keys must be between 8 to 32 characters long and can only contain alphanumeric characters'}
-            </Typography>
+      <Box
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+        width={500}
+        p={1}>
+        <DialogContent>
+          <DialogContentText>
+            Create your own API key or leave it blank to generate a random key.
+          </DialogContentText>
+          <Box py={2}>
+            <TextField
+              label={''}
+              disabled={loading}
+              fullWidth={true}
+              multiline={true}
+              variant="outlined"
+              rows={1}
+              value={apiKey}
+              onChange={(e) => setApiKey(e.target.value)}
+              placeholder="API Key"
+              error={!!error}
+            />
+            <Box mt={1}>
+              <Typography
+                variant="caption"
+                color={error ? 'error' : 'primary'}
+                style={{ textTransform: 'capitalize' }}>
+                {!!error && error?.message.replace('GraphQL error: ', '')}
+                {!error &&
+                  'API Keys must be between 8 to 32 characters long and can only contain alphanumeric characters'}
+              </Typography>
+            </Box>
           </Box>
-        </Box>
-      </DialogContent>
-      <DialogActions>
-        {!loading && (
-          <>
-            <Button onClick={onClose} color="primary">
-              Cancel
-            </Button>
+        </DialogContent>
+        <DialogActions>
+          {!loading && (
             <Button disabled={loading} onClick={createAPIKey} color="primary">
               Create
             </Button>
-          </>
-        )}
-        {loading && <CircularProgress size={20} color="primary" />}
-      </DialogActions>
-    </Dialog>
+          )}
+          {loading && <CircularProgress size={20} color="primary" />}
+        </DialogActions>
+      </Box>
+    </ActionDialog>
   );
 };
 

@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { CommonTable } from '@bavard/react-components';
-import { Button } from '@material-ui/core';
+import { Button, CardHeader, Typography } from '@material-ui/core';
+import { AddCircleOutline, PersonAdd } from '@material-ui/icons';
 
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
@@ -13,7 +14,13 @@ interface IInvitedMemberProps {
   workspaceMemberInvites: IInvitedMember[] | undefined;
 }
 
-function InvitedMemberTable() {
+interface IInvitedMemberTableProps {
+  onShowInvite: () => void;
+}
+
+const InvitedMemberTable: React.FC<IInvitedMemberTableProps> = ({
+  onShowInvite,
+}) => {
   const { workspaceId } = useParams<{ workspaceId: string }>();
   const [item, setInvite] = useState<{
     workspaceId: string;
@@ -86,8 +93,26 @@ function InvitedMemberTable() {
         columns,
         rowsData: invitedMembers,
       }}
+      components={{
+        Toolbar: () => (
+          <CardHeader
+            avatar={<PersonAdd />}
+            title={
+              <Typography variant="h6">Invited Workspace Members</Typography>
+            }
+            action={
+              <Button
+                color="primary"
+                onClick={onShowInvite}
+                endIcon={<AddCircleOutline />}>
+                Invite a Member
+              </Button>
+            }
+          />
+        ),
+      }}
     />
   );
-}
+};
 
 export default InvitedMemberTable;

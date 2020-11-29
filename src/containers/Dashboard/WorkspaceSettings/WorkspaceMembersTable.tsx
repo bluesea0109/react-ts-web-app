@@ -2,17 +2,22 @@ import { useMutation } from '@apollo/client';
 import { CommonTable, ConfirmDialog } from '@bavard/react-components';
 import {
   Box,
+  CardHeader,
   Snackbar,
   TableCell,
   TableContainer,
   TableRow,
+  Typography,
 } from '@material-ui/core';
+import { Group } from '@material-ui/icons';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import MuiAlert from '@material-ui/lab/Alert';
+import DisablePaymentDialog from './DisablePaymentDialog';
+import EnablePaymentDialog from './EnablePaymentDialog';
 import _ from 'lodash';
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 
-import { IMember, IUser } from '../../../models/user-service';
+import { IMember, IUser, IWorkspace } from '../../../models/user-service';
 import ContentLoading from '../../ContentLoading';
 import IconButtonDelete from '../../IconButtons/IconButtonDelete';
 import IconButtonEdit from '../../IconButtons/IconButtonEdit';
@@ -48,12 +53,14 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface IWorkspaceMembersTableProps {
   user: IUser;
-  members: IMember[];
+  workspace: IWorkspace;
   refetchWorkspaces: () => void;
 }
-export default function WorkspaceMembersTable(
-  props: IWorkspaceMembersTableProps,
-) {
+const WorkspaceMembersTable: React.FC<IWorkspaceMembersTableProps> = ({
+  user,
+  workspace,
+  refetchWorkspaces,
+}) => {
   const classes = useStyles();
   const [openSnackBar, setOpenSnackBar] = useState(false);
   const [selectedMember, setSelectedMember] = useState({
@@ -67,11 +74,12 @@ export default function WorkspaceMembersTable(
     REMOVE_WORKSPACE_MEMBER,
     {
       onCompleted() {
-        props.refetchWorkspaces();
+        refetchWorkspaces();
         setOpenSnackBar(true);
       },
     },
   );
+  const members = workspace.members || [];
 
   const onRemoveMember = () => {
     removeWorkspaceMember({
@@ -86,15 +94,15 @@ export default function WorkspaceMembersTable(
     setOpenSnackBar(false);
   };
 
-  const role = props.user.activeWorkspace?.currentUserMember?.role || null;
+  const role = user.activeWorkspace?.currentUserMember?.role || null;
 
   const onUpdateCallback = () => {
-    props.refetchWorkspaces();
+    refetchWorkspaces();
     setChangeConfirm(false);
   };
 
   const MemberRow = ({ rowData: member }: { rowData: IMember }) => {
-    if (member.uid === props.user.uid) {
+    if (member.uid === user.uid) {
       return (
         <TableRow>
           <TableCell align="left">
@@ -113,7 +121,7 @@ export default function WorkspaceMembersTable(
               <IconButtonEdit
                 tooltip="Change Role"
                 onClick={() => null}
-                disabled={member.uid === props.user.uid || role !== 'owner'}
+                disabled={member.uid === user.uid || role !== 'owner'}
               />
             </Box>
           </TableCell>
@@ -121,7 +129,7 @@ export default function WorkspaceMembersTable(
             <IconButtonDelete
               tooltip="Remove User"
               onClick={() => null}
-              disabled={member.uid === props.user.uid || role !== 'owner'}
+              disabled={member.uid === user.uid || role !== 'owner'}
             />
           </TableCell>
         </TableRow>
@@ -190,7 +198,7 @@ export default function WorkspaceMembersTable(
           <CommonTable
             data={{
               columns,
-              rowsData: _.cloneDeep(props.members),
+              rowsData: _.cloneDeep(members),
             }}
             pagination={{
               colSpan: 3,
@@ -198,6 +206,24 @@ export default function WorkspaceMembersTable(
             }}
             components={{
               TableRow: MemberRow,
+              Toolbar: () => (
+                <CardHeader
+                  avatar={<Group />}
+                  title={
+                    <Typography variant="h6">Workspace Members</Typography>
+                  }
+                  action={
+                    <Fragment>
+                      {workspace.billingEnabled === true && (
+                        <DisablePaymentDialog />
+                      )}
+                      {workspace.billingEnabled === false && (
+                        <EnablePaymentDialog />
+                      )}
+                    </Fragment>
+                  }
+                />
+              ),
             }}
           />
         </TableContainer>
@@ -218,4 +244,6 @@ export default function WorkspaceMembersTable(
       </Snackbar>
     </React.Fragment>
   );
-}
+};
+
+export default WorkspaceMembersTable;
