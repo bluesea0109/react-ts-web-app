@@ -1,25 +1,22 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { CommonTable, KeyValueArrayInput } from '@bavard/react-components';
+import { CommonTable, IconButton } from '@bavard/react-components';
 import {
   Box,
+  CardHeader,
   createStyles,
-  Grid,
-  IconButton,
   Theme,
   Typography,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { Add } from '@material-ui/icons';
+import VpnKeyIcon from '@material-ui/icons/VpnKey';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
 
 import { IAPIKey } from '../../../models/user-service';
-import {
-  deleteApiKeyMutation,
-  getApiKeysQuery,
-  updateDomainsMutation,
-} from './gql';
+import { deleteApiKeyMutation, getApiKeysQuery } from './gql';
 import NewApiKeyDialog from './NewApiKeyDialog';
+import UpdateApiKeyDialog from './UpdateApikeyDialog';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -41,16 +38,13 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-interface UpdateDomainsMutationResult {
-  updateAllowedDomains: IAPIKey;
-}
-
 export default function Project() {
   const classes = useStyles();
   const { workspaceId } = useParams<{ workspaceId: string }>();
   const [apiKeys, setAPIKeys] = useState<IAPIKey[]>([]);
   const [currentKey, setCurrentKey] = useState<IAPIKey | null>(null);
-  const [showCreateKeyDialog, setShowCreateKeyDialog] = useState(false);
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [showUpdateDialog, setShowUpdateDialog] = useState(false);
 
   const { loading } = useQuery<any>(getApiKeysQuery, {
     variables: {
@@ -62,12 +56,6 @@ export default function Project() {
   });
 
   const [deleteKey] = useMutation(deleteApiKeyMutation, {
-    refetchQueries: [{ query: getApiKeysQuery, variables: { workspaceId } }],
-  });
-  const [
-    updateAllowedDomains,
-    updateAllowedDomainsMutation,
-  ] = useMutation<UpdateDomainsMutationResult>(updateDomainsMutation, {
     refetchQueries: [{ query: getApiKeysQuery, variables: { workspaceId } }],
   });
 
@@ -83,49 +71,37 @@ export default function Project() {
     } catch (e) {}
   };
 
-  const updateDomains = async (e: any) => {
-    const domains = e.target.value;
-
-    try {
-      const { data } = await updateAllowedDomains({
-        variables: {
-          keyId: Number(currentKey?.id),
-          domains,
-        },
-      });
-
-      const updatedKey = data?.updateAllowedDomains ?? null;
-      setCurrentKey(updatedKey);
-    } catch (e) {}
-  };
-
   const columns = [
     { title: 'API Key', field: 'key' },
     {
-      title: 'Domain',
+      title: 'Domains',
       field: 'domains',
       renderRow: (rowData: IAPIKey) => rowData.domains.join(', '),
     },
   ];
 
+  const handleToggleCreateDialog = () => {
+    setShowCreateDialog(!showCreateDialog);
+  };
+
+  const handleShowUpdateDialog = (key: IAPIKey) => {
+    setCurrentKey(key);
+    setShowUpdateDialog(!showUpdateDialog);
+  };
+
+  const handleCloseUpdateDialog = () => {
+    setShowUpdateDialog(!showUpdateDialog);
+  };
+
+  const handleUpdateApiKey = (key: IAPIKey | null) => {
+    setCurrentKey(key);
+  };
+
   return (
-    <Box width={1} mx={1}>
-      <Grid container={true} alignItems="center">
-        <Grid item={true}>
-          <Typography style={{ fontSize: '26px' }}>API Keys</Typography>
-        </Grid>
-        <Grid item={true}>
-          <IconButton
-            style={{ marginLeft: 16 }}
-            onClick={() => setShowCreateKeyDialog(true)}
-            disabled={loading}>
-            <Add />
-          </IconButton>
-        </Grid>
-      </Grid>
+    <Box width={1} mx={1} mt={2}>
       <NewApiKeyDialog
-        isOpen={showCreateKeyDialog}
-        onClose={() => setShowCreateKeyDialog(false)}
+        isOpen={showCreateDialog}
+        onClose={handleToggleCreateDialog}
         onCreateKey={setCurrentKey}
       />
       <CommonTable
@@ -140,28 +116,40 @@ export default function Project() {
         }}
         editable={{
           isDeleteable: true,
+          isEditable: true,
           onRowDelete: (rowData: IAPIKey) => {
             deleteApiKey(rowData);
           },
+          onRowUpdate: (rowData: IAPIKey) => {
+            handleShowUpdateDialog(rowData);
+          },
+        }}
+        components={{
+          Toolbar: () => (
+            <CardHeader
+              avatar={<VpnKeyIcon />}
+              title={<Typography variant="h6">API Keys</Typography>}
+              action={
+                <IconButton
+                  color="primary"
+                  title="Create a new key"
+                  variant="text"
+                  onClick={handleToggleCreateDialog}
+                  Icon={AddCircleOutlineIcon}
+                  iconPosition="right"
+                />
+              }
+            />
+          ),
         }}
       />
       {currentKey && (
-        <Box width={1}>
-          <Grid
-            item={true}
-            container={true}
-            className={classes.domainsContainer}
-            justify="space-between"
-            alignItems="center">
-            <KeyValueArrayInput
-              disabled={updateAllowedDomainsMutation.loading}
-              name="domains"
-              label="Allowed Domains"
-              value={currentKey?.domains}
-              onChange={updateDomains}
-            />
-          </Grid>
-        </Box>
+        <UpdateApiKeyDialog
+          isOpen={showUpdateDialog}
+          currentKey={currentKey}
+          onUpdate={handleUpdateApiKey}
+          onClose={handleCloseUpdateDialog}
+        />
       )}
     </Box>
   );
