@@ -56,12 +56,18 @@ const NewAgent: React.FC<INewAgentProps> = ({ user, loading, onAddAgent }) => {
   };
 
   return (
-    <Grid className={classes.root} container={true} item={true} xs={12} md={4}>
+    <Grid
+      className={classes.root}
+      container={true}
+      item={true}
+      xs={8}
+      sm={6}
+      md={4}>
       {loading && <LinearProgress />}
       <Box width={1} mb={1}>
         <TextInput
           id="name"
-          label="Create New Assistant"
+          label="Create a New Assistant"
           labelType="Typography"
           labelPosition="top"
           value={uname}
