@@ -1,6 +1,6 @@
 import { ISlot } from '@bavard/agent-config';
-import { UpTransition } from '@bavard/react-components';
-import { Box, DialogContent, Grid, TextField } from '@material-ui/core';
+import { TextInput, UpTransition } from '@bavard/react-components';
+import { Box, DialogContent, Grid } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -74,9 +74,11 @@ const EditSlot = ({ slot, onEditSlotClose, onSaveSlot }: EditSlotProps) => {
           <Grid container={true}>
             <Grid item={true} xs={6}>
               <Box p={2}>
-                <TextField
+                <TextInput
                   fullWidth={true}
                   label="Slot Name"
+                  labelType="Typography"
+                  labelPosition="top"
                   variant="outlined"
                   value={currentSlot?.name}
                   onChange={(e) =>
@@ -92,11 +94,13 @@ const EditSlot = ({ slot, onEditSlotClose, onSaveSlot }: EditSlotProps) => {
           <Grid container={true}>
             <Grid item={true} xs={6}>
               <Box p={2}>
-                <TextField
-                  fullWidth={true}
+                <TextInput
                   label="Slot Type"
+                  labelType="Typography"
+                  labelPosition="top"
                   variant="outlined"
                   value={currentSlot?.type}
+                  fullWidth={true}
                   onChange={(e) =>
                     setCurrentSlot({
                       ...currentSlot,

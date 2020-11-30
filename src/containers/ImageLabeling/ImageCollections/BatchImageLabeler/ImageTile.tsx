@@ -1,9 +1,9 @@
+import { TextInput } from '@bavard/react-components';
 import {
   createStyles,
   FormControl,
   FormGroup,
   makeStyles,
-  TextField,
   Theme,
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -154,7 +154,13 @@ function ImageTile(props: IImageTileProps) {
               getOptionSelected={(a, b) => a.value === b.value}
               getOptionLabel={(option) => option.label}
               renderInput={(params) => (
-                <TextField {...params} label="Category Set" variant="filled" />
+                <TextInput
+                  {...params}
+                  label="Category Set"
+                  labelType="Typography"
+                  labelPosition="top"
+                  variant="filled"
+                />
               )}
             />
           </FormControl>
@@ -169,7 +175,13 @@ function ImageTile(props: IImageTileProps) {
               options={categoryOptions}
               getOptionLabel={(option) => option.label}
               renderInput={(params) => (
-                <TextField {...params} label="Category" variant="filled" />
+                <TextInput
+                  {...params}
+                  label="Category"
+                  labelType="Typography"
+                  labelPosition="top"
+                  variant="filled"
+                />
               )}
             />
           </FormControl>

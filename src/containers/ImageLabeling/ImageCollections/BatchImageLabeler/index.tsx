@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
+import { TextInput } from '@bavard/react-components';
 import {
   Button,
   createStyles,
@@ -6,7 +7,6 @@ import {
   FormGroup,
   makeStyles,
   Paper,
-  TextField,
   Theme,
   Toolbar,
   Typography,
@@ -238,9 +238,11 @@ export default function BatchImageLabeler() {
                   getOptionSelected={(a, b) => a.value === b.value}
                   getOptionLabel={(option) => option.label}
                   renderInput={(params) => (
-                    <TextField
+                    <TextInput
                       {...params}
                       label="Category Set"
+                      labelType="Typography"
+                      labelPosition="top"
                       variant="outlined"
                     />
                   )}
@@ -253,9 +255,11 @@ export default function BatchImageLabeler() {
                   getOptionSelected={(a, b) => a.value === b.value}
                   getOptionLabel={(option) => option.label}
                   renderInput={(params) => (
-                    <TextField
+                    <TextInput
                       {...params}
                       label="Category"
+                      labelType="Typography"
+                      labelPosition="top"
                       variant="outlined"
                     />
                   )}

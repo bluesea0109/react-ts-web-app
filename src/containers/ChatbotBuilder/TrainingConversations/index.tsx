@@ -136,40 +136,38 @@ export default function TrainingConversations() {
           Create New Conversation
         </Button>
         {loading && <LinearProgress />}
-        <>
-          {records.length > 0 && records ? (
-            records
-              .sort((a: any, b: any) => parseInt(a.id) + parseInt(b.id))
-              .map((item, index) => {
-                return (
-                  <ConversationBoard
-                    key={index}
-                    isUpdate={true}
-                    currentPage={currentPage}
-                    docsInPage={docsInPage}
-                    index={index}
-                    conversation={item}
-                    conversationLastindex={
-                      (currentPage - 1) * docsInPage + index + 1
-                    }
-                    onSaveCallback={onSaveCallBack}
-                    confirmOpen={confirmOpen}
-                    onEditConversation={onEditConversation}
-                    deleteConfirm={deleteConfirm}
-                    setConfirmOpen={setConfirmOpen}
-                    deleteConversationHandler={deleteConversationHandler}
-                  />
-                );
-              })
-          ) : (
-            <Typography align="center" variant="h6">
-              {'No Conversation found'}
-            </Typography>
-          )}
-          <Grid className={classes.cetnerPagination}>
-            <BavardPagination total={totalPages} onChange={handlePageChange} />
-          </Grid>
-        </>
+        {records.length > 0 && records ? (
+          records
+            .sort((a: any, b: any) => parseInt(a.id) + parseInt(b.id))
+            .map((item, index) => {
+              return (
+                <ConversationBoard
+                  key={index}
+                  isUpdate={true}
+                  currentPage={currentPage}
+                  docsInPage={docsInPage}
+                  index={index}
+                  conversation={item}
+                  conversationLastindex={
+                    (currentPage - 1) * docsInPage + index + 1
+                  }
+                  onSaveCallback={onSaveCallBack}
+                  confirmOpen={confirmOpen}
+                  onEditConversation={onEditConversation}
+                  deleteConfirm={deleteConfirm}
+                  setConfirmOpen={setConfirmOpen}
+                  deleteConversationHandler={deleteConversationHandler}
+                />
+              );
+            })
+        ) : (
+          <Typography align="center" variant="h6">
+            {'No Conversation found'}
+          </Typography>
+        )}
+        <Grid className={classes.cetnerPagination}>
+          <BavardPagination total={totalPages} onChange={handlePageChange} />
+        </Grid>
       </Paper>
       {createConversation && (
         <CreateConversation

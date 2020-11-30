@@ -1,5 +1,6 @@
 import { useLazyQuery } from '@apollo/client';
 import { ImageOption, TextOption } from '@bavard/agent-config';
+import { TextInput } from '@bavard/react-components';
 import {
   BaseEdge,
   ConfirmEdge,
@@ -23,7 +24,6 @@ import {
   Radio,
   RadioGroup,
   Select,
-  TextField,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import _ from 'lodash';
@@ -415,9 +415,11 @@ export default function UpsertEdgeForm({
         </FormControl>
 
         <FormControl variant="outlined" className={classes.formControl}>
-          <TextField
+          <TextInput
             name="intent"
             label="Intent"
+            labelType="Typography"
+            labelPosition="top"
             variant="outlined"
             required={true}
             error={showFormErrors && intent === ''}
@@ -427,9 +429,11 @@ export default function UpsertEdgeForm({
         </FormControl>
 
         <FormControl variant="outlined" className={classes.formControl}>
-          <TextField
+          <TextInput
             name="text"
             label={'Text'}
+            labelType="Typography"
+            labelPosition="top"
             variant="outlined"
             required={true}
             error={showFormErrors && actionText === ''}
@@ -441,17 +445,22 @@ export default function UpsertEdgeForm({
         <FormControl variant="outlined" className={classes.formControl}>
           {optionType === 'IMAGE' ? (
             existingImg ? (
-              <TextField
+              <TextInput
                 name="imgNameExisting"
+                label="Existing Image Name"
+                labelType="Typography"
+                labelPosition="top"
                 variant="outlined"
                 disabled={true}
                 required={true}
                 value={existingImg}
               />
             ) : (
-              <TextField
+              <TextInput
                 name="imgNameNew"
                 label={'New Image Name'}
+                labelType="Typography"
+                labelPosition="top"
                 variant="outlined"
                 value={imageName}
                 required={true}
@@ -468,9 +477,11 @@ export default function UpsertEdgeForm({
         </FormControl>
 
         <FormControl variant="outlined" className={classes.formControl}>
-          <TextField
+          <TextInput
             name="imageCaption"
             label={'Image Caption'}
+            labelType="Typography"
+            labelPosition="top"
             variant="outlined"
             required={false}
             onChange={(e) => setImgCaption(e.target.value as string)}

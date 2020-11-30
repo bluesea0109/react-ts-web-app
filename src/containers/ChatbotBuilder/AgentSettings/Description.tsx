@@ -1,5 +1,6 @@
 import { IWidgetSettings } from '@bavard/agent-config';
-import { Grid, TextField, Typography } from '@material-ui/core';
+import { TextInput } from '@bavard/react-components';
+import { Grid } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
 
@@ -36,9 +37,10 @@ export const Description = ({
   return (
     <div>
       <Grid className={classes.inputField}>
-        <Typography style={{ marginBottom: '10px' }}>Assistant Name</Typography>
-        <TextField
-          label=""
+        <TextInput
+          label="Assistant Name"
+          labelType="Typography"
+          labelPosition="top"
           disabled={loading || mode === 'published'}
           fullWidth={true}
           variant="outlined"
@@ -48,9 +50,10 @@ export const Description = ({
         />
       </Grid>
       <Grid className={classes.inputField}>
-        <Typography style={{ marginBottom: '10px' }}>Greeting Title</Typography>
-        <TextField
-          label=""
+        <TextInput
+          label="Greeting Title"
+          labelType="Typography"
+          labelPosition="top"
           disabled={loading || mode === 'published'}
           fullWidth={true}
           variant="outlined"
@@ -60,11 +63,10 @@ export const Description = ({
         />
       </Grid>
       <Grid className={classes.inputField}>
-        <Typography style={{ marginBottom: '10px' }}>
-          Greeting Subtitle
-        </Typography>
-        <TextField
-          label=""
+        <TextInput
+          label="Greeting Subtitle"
+          labelType="Typography"
+          labelPosition="top"
           disabled={loading || mode === 'published'}
           fullWidth={true}
           multiline={true}

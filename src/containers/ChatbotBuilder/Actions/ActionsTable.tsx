@@ -18,7 +18,6 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       padding: theme.spacing(3),
     },
-    filterBoxContainer: { paddingRight: 32 },
   }),
 );
 
@@ -73,21 +72,17 @@ const ActionsTable = ({
       </Box>
 
       <Grid container={true} item={true} justify="space-between">
-        <Grid item={true} xs={6} sm={6} className={classes.filterBoxContainer}>
+        <Grid item={true} xs={6} sm={6}>
           <FilterBox
             name="Action Name"
             filter={nameFilter}
-            labelWidth={150}
-            fullWidth={true}
             onChange={setNameFilter}
           />
         </Grid>
-        <Grid item={true} xs={6} sm={6} className={classes.filterBoxContainer}>
+        <Grid item={true} xs={6} sm={6}>
           <FilterBox
             name="Action Type"
             filter={typeFilter}
-            labelWidth={150}
-            fullWidth={true}
             onChange={setTypeFilter}
           />
         </Grid>

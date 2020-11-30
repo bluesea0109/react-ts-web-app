@@ -1,13 +1,7 @@
 import { useMutation } from '@apollo/client';
 import { GraphPolicy, UtteranceNode } from '@bavard/agent-config';
-import { RichTextInput } from '@bavard/react-components';
-import {
-  Button,
-  FormControl,
-  Paper,
-  TextField,
-  Typography,
-} from '@material-ui/core';
+import { TextInput, RichTextInput } from '@bavard/react-components';
+import { Button, FormControl, Paper, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
@@ -104,10 +98,12 @@ export default function CreatePolicyForm({
     <Paper className={classes.nodePaper}>
       <Typography variant={'h6'}>Create Policy</Typography>
       <FormControl variant="outlined" className={classes.formControl}>
-        <TextField
-          disabled={loading}
+        <TextInput
           name="policyName"
+          disabled={loading}
           label="Policy Name"
+          labelType="Typography"
+          labelPosition="top"
           variant="outlined"
           onChange={(e) => setPolicyName(e.target.value as string)}
         />
@@ -115,10 +111,12 @@ export default function CreatePolicyForm({
 
       <Typography variant={'subtitle2'}>Root Node</Typography>
       <FormControl variant="outlined" className={classes.formControl}>
-        <TextField
+        <TextInput
           disabled={loading}
           name="actionName"
           label="Action Name"
+          labelType="Typography"
+          labelPosition="top"
           variant="outlined"
           onChange={(e) => setActionName(e.target.value as string)}
         />

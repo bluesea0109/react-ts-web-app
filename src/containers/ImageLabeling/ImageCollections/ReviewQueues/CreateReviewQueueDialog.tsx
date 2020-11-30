@@ -1,10 +1,10 @@
 import { useMutation } from '@apollo/client';
+import { TextInput } from '@bavard/react-components';
 import { Button } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import TextField from '@material-ui/core/TextField';
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
 import ApolloErrorPage from '../../../ApolloErrorPage';
@@ -61,14 +61,16 @@ function CreateReviewQueueDialog() {
 
   let dialogContent = (
     <DialogContent>
-      <TextField
-        autoFocus={true}
-        margin="dense"
+      <TextInput
         id="name"
         label="Name"
+        labelType="Typography"
+        labelPosition="top"
         type="string"
-        fullWidth={true}
+        margin="dense"
+        autoFocus={true}
         value={state.name}
+        fullWidth={true}
         onChange={handleChange('name')}
       />
     </DialogContent>

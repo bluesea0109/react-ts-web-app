@@ -1,5 +1,6 @@
 import { useApolloClient } from '@apollo/client';
-import { Button, Grid, TextField, Typography } from '@material-ui/core';
+import { TextInput } from '@bavard/react-components';
+import { Button, Grid, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import gql from 'graphql-tag';
 import React, { useState } from 'react';
@@ -67,14 +68,16 @@ export default function QuestionAnswering() {
     answer = (
       <React.Fragment>
         <Grid item={true} xs={12} sm={6}>
-          <TextField
-            className={classes.textArea}
+          <TextInput
             id="answer"
             label="Answer"
+            labelType="Typography"
+            labelPosition="top"
             multiline={true}
             rows={8}
             value={state.answer}
             variant="outlined"
+            className={classes.textArea}
           />
         </Grid>
         <Grid item={true} xs={12} sm={6} />
@@ -89,27 +92,27 @@ export default function QuestionAnswering() {
           <Typography variant="h4">{'Question Answering'}</Typography>
         </Grid>
         <Grid item={true} xs={12} sm={12}>
-          <TextField
-            className={classes.textArea}
+          <TextInput
             id="context"
             label="Context"
             multiline={true}
             rows={8}
             variant="outlined"
-            onChange={(e) => setState({ ...state, context: e.target.value })}
             value={state.context}
+            className={classes.textArea}
+            onChange={(e) => setState({ ...state, context: e.target.value })}
           />
         </Grid>
         <Grid container={true} item={true} xs={12} sm={12}>
-          <TextField
-            className={classes.textArea}
+          <TextInput
             id="question"
             label="Question"
             multiline={true}
             rows={4}
             variant="outlined"
-            onChange={(e) => setState({ ...state, question: e.target.value })}
             value={state.question}
+            className={classes.textArea}
+            onChange={(e) => setState({ ...state, question: e.target.value })}
           />
         </Grid>
         <Grid item={true} xs={12}>

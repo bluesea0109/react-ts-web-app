@@ -1,4 +1,5 @@
 import { EFormFieldTypes } from '@bavard/agent-config/dist/enums';
+import { TextInput } from '@bavard/react-components';
 import {
   Checkbox,
   FormControl,
@@ -8,7 +9,6 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  TextField,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Add from '@material-ui/icons/Add';
@@ -84,12 +84,12 @@ export const AddFieldForm = ({ handleChange }: AddFormFieldProps) => {
     <div className={classes.niceform}>
       <Grid container={true} spacing={2} className={classes.baseLine}>
         <Grid item={true} xs={true} md={12}>
-          <TextField
-            className={classes.formControl}
+          <TextInput
             id="standard-basic"
             name="text"
             label="Field Name"
             style={{ width: '100%' }}
+            className={classes.formControl}
             onChange={handleFieldChange}
           />
         </Grid>

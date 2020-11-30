@@ -16,12 +16,12 @@ import {
   UserTextOptionNode,
 } from '@bavard/agent-config/dist/graph-policy-v2';
 
-import { RichTextInput } from '@bavard/react-components';
+import { RichTextInput, TextInput } from '@bavard/react-components';
 
 import clsx from 'clsx';
 import { ENodeActor } from './types';
 
-import { Button, FormControl, TextField, Typography } from '@material-ui/core';
+import { Button, FormControl, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Alert, Autocomplete } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
@@ -193,14 +193,15 @@ export default function UpsertNodeForm({
               onChange={(value: string) => setFormField('prompt', value)}
             />
           </FormControl>
-          <TextField
-            className={classes.formControl}
-            size="small"
+          <TextInput
             name="to"
             defaultValue={editingNode?.to}
             required={true}
             label="To"
+            labelType="Typography"
+            labelPosition="top"
             variant="outlined"
+            className={classes.formControl}
             onChange={(e) => setFormField('to', e.target.value as string)}
           />
           {renderSubmitButton(submitAgentEmail)}
@@ -248,29 +249,30 @@ export default function UpsertNodeForm({
               onChange={(value: string) => setFormField('text', value)}
             />
           </FormControl>
-          <TextField
-            className={classes.formControl}
-            size="small"
+          <TextInput
             name="targetLink"
             defaultValue={editingNode?.targetLink}
             label="Target Link"
+            labelType="Typography"
+            labelPosition="top"
             variant="outlined"
+            className={classes.formControl}
             onChange={(e) =>
               setFormField('targetLink', e.target.value as string)
             }
           />
 
           <Autocomplete
-            className={classes.formControl}
-            size="small"
-            defaultValue={editingNode?.intent}
             freeSolo={true}
+            defaultValue={editingNode?.intent}
+            className={classes.formControl}
             options={(intents || []).map((option) => option)}
             renderInput={(params) => (
-              <TextField
+              <TextInput
                 {...params}
                 label="Intent"
-                margin="normal"
+                labelType="Typography"
+                labelPosition="top"
                 variant="outlined"
                 onChange={(e) =>
                   setFormField('intent', e.target.value as string)

@@ -1,4 +1,5 @@
 import { useMutation } from '@apollo/client';
+import { TextInput } from '@bavard/react-components';
 import {
   Button,
   createStyles,
@@ -12,7 +13,6 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import FormControl from '@material-ui/core/FormControl';
 import IconButton from '@material-ui/core/IconButton';
-import TextField from '@material-ui/core/TextField';
 import Tooltip from '@material-ui/core/Tooltip';
 import AddIcon from '@material-ui/icons/Add';
 import { useState } from 'react';
@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: theme.spacing(1),
       marginRight: theme.spacing(1),
     },
-    textField: {
+    textInput: {
       minWidth: 120,
       width: 200,
     },
@@ -159,10 +159,12 @@ function CreateCategorySetDialog() {
   let dialogContent = (
     <DialogContent>
       <FormControl className={classes.formControl}>
-        <TextField
+        <TextInput
           label="Name"
+          labelType="Typography"
+          labelPosition="top"
           required={true}
-          className={classes.textField}
+          className={classes.textInput}
           margin="normal"
           variant="outlined"
           value={state.categorySetName}
@@ -170,15 +172,17 @@ function CreateCategorySetDialog() {
         />
       </FormControl>
       <FormControl className={classes.formControl}>
-        <TextField
+        <TextInput
           id="outlined-multiline-static"
           label="Categories"
+          labelType="Typography"
+          labelPosition="top"
           value={state.txt}
           onChange={handleCategoriesChange}
           multiline={true}
-          rows="10"
+          rows={10}
           required={true}
-          className={classes.textField}
+          className={classes.textInput}
           margin="normal"
           variant="outlined"
         />

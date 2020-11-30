@@ -3,14 +3,18 @@ import {
   IUserImageOptionNode,
   UserImageOptionNode,
 } from '@bavard/agent-config/dist/graph-policy-v2';
-import { RichTextInput, ImageSelectorGrid } from '@bavard/react-components';
+import {
+  RichTextInput,
+  TextInput,
+  ImageSelectorGrid,
+} from '@bavard/react-components';
 
 import { useLazyQuery } from '@apollo/client';
 import { useSnackbar } from 'notistack';
 import { useParams } from 'react-router-dom';
 
 import { useQuery } from '@apollo/client';
-import { Button, FormControl, TextField } from '@material-ui/core';
+import { Button, FormControl } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Alert, Autocomplete } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
@@ -211,24 +215,26 @@ export default function UpsertNodeForm({
         />
       </FormControl>
 
-      <TextField
-        className={classes.formControl}
+      <TextInput
         name="imageName"
         value={imageName}
-        size="small"
         required={true}
         label="Image Name"
+        labelType="Typography"
+        labelPosition="top"
         variant="outlined"
         disabled={true}
-      />
-      <TextField
         className={classes.formControl}
+      />
+      <TextInput
         name="targetLink"
         defaultValue={targetLink}
         label="Target Link"
-        size="small"
+        labelType="Typography"
+        labelPosition="top"
         variant="outlined"
         onChange={(e) => setTargetLink(e.target.value as string)}
+        className={classes.formControl}
       />
 
       <Autocomplete
@@ -238,22 +244,25 @@ export default function UpsertNodeForm({
         freeSolo={true}
         options={(intents || []).map((option) => option)}
         renderInput={(params) => (
-          <TextField
+          <TextInput
             {...params}
             label="Intent"
-            margin="normal"
+            labelType="Typography"
+            labelPosition="top"
             variant="outlined"
-            onChange={(e) => setIntent(e.target.value as string)}
+            onChange={(e: any) => setIntent(e.target.value as string)}
           />
         )}
       />
 
-      {/* <TextField
+      {/* <TextInput
         className={classes.formControl}
         name="intent"
         defaultValue={intent}
         size="small"
         label="Intent"
+        labelType="Typography"
+        labelPosition="top"
         variant="outlined"
         onChange={(e) => setIntent(e.target.value as string)}
       /> */}

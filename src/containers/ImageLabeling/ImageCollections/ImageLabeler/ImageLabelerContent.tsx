@@ -1,12 +1,7 @@
 import { ApolloError } from '@apollo/client';
 import { useApolloClient } from '@apollo/client';
-import {
-  createStyles,
-  makeStyles,
-  TextField,
-  Theme,
-  Typography,
-} from '@material-ui/core';
+import { TextInput } from '@bavard/react-components';
+import { createStyles, makeStyles, Theme, Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -610,7 +605,12 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
                   options={categorySetOptions}
                   getOptionLabel={(option) => option.label}
                   renderInput={(params) => (
-                    <TextField {...params} label="Category Sets" />
+                    <TextInput
+                      {...params}
+                      label="Category Sets"
+                      labelType="Typography"
+                      labelPosition="top"
+                    />
                   )}
                 />
               </FormControl>
@@ -620,7 +620,12 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
                   options={categoryOptions}
                   getOptionLabel={(option) => option.label}
                   renderInput={(params) => (
-                    <TextField {...params} label="Category" />
+                    <TextInput
+                      {...params}
+                      label="Category"
+                      labelType="Typography"
+                      labelPosition="top"
+                    />
                   )}
                 />
               </FormControl>

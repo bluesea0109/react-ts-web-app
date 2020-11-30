@@ -57,7 +57,6 @@ const EditIntentForm: React.FC<EditIntentFormProps> = ({
         <TextInput
           fullWidth={true}
           label="Intent*"
-          labelPosition="top"
           value={currentIntent?.name || ''}
           className={classes.input}
           onChange={(e) =>

@@ -72,7 +72,6 @@ export const GroupField: React.FC<GroupFieldProps> = ({
           label={
             fieldType === FIELD_TYPE.INTENT ? 'Utterance (optional)' : 'Value'
           }
-          labelPosition="top"
           className={classes.input}
           onChange={handleTextChange}
         />
