@@ -44,7 +44,6 @@ const NewTag: React.FC<NewTagProps> = ({ onAdd }: NewTagProps) => {
         display="flex"
         flexDirection="column"
         justifyContent="stretch">
-        <Typography variant="h5">Create a New Tag Type</Typography>
         <TextInput
           id="name"
           label="Tag Type Name"

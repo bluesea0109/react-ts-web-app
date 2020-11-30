@@ -100,9 +100,11 @@ const EditOption = ({
       {isHyperLinkOption && (
         <Grid container={true} className={classes.formField}>
           <TextInput
-            fullWidth={true}
             label="Hyperlink Target"
+            labelType="Typography"
+            labelPosition="top"
             value={(option as IHyperlinkOption).targetLink || ''}
+            fullWidth={true}
             className={classes.input}
             onChange={(e) =>
               onUpdateOption({
@@ -136,9 +138,11 @@ const EditOption = ({
         <>
           <Grid container={true} className={classes.formField}>
             <TextInput
-              fullWidth={true}
               label="Image Name"
+              labelType="Typography"
+              labelPosition="top"
               value={(option as IImageOption).imageName || ''}
+              fullWidth={true}
               className={classes.input}
               onChange={(e) =>
                 onUpdateOption({
@@ -152,6 +156,8 @@ const EditOption = ({
             <TextInput
               fullWidth={true}
               label="Image Caption"
+              labelType="Typography"
+              labelPosition="top"
               value={(option as IImageOption).caption || ''}
               className={classes.input}
               onChange={(e) =>
