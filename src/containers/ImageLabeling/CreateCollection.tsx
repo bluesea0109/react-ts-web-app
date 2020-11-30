@@ -87,7 +87,7 @@ function CreateCollection(props: ICreateCollectionProps) {
     }
   }
 
-  let dialogConent = (
+  let dialogContent = (
     <DialogContent>
       <TextField
         autoFocus={true}
@@ -103,7 +103,7 @@ function CreateCollection(props: ICreateCollectionProps) {
   );
 
   if (loading) {
-    dialogConent = (
+    dialogContent = (
       <DialogContent>
         <ContentLoading />
       </DialogContent>
@@ -112,7 +112,7 @@ function CreateCollection(props: ICreateCollectionProps) {
 
   if (error) {
     console.error(error);
-    dialogConent = (
+    dialogContent = (
       <DialogContent>
         <Typography>{'Error'}</Typography>
       </DialogContent>
@@ -127,7 +127,7 @@ function CreateCollection(props: ICreateCollectionProps) {
         onClose={handleClose}
         aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">{'New Collection'}</DialogTitle>
-        {dialogConent}
+        {dialogContent}
         <DialogActions>
           <Button color="primary" disabled={loading} onClick={handleClose}>
             {'Cancel'}

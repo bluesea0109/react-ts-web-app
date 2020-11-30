@@ -91,9 +91,10 @@ function NewWorkspace({ onSuccess }: INewWorkspaceProps) {
   return (
     <Box display="flex" flexDirection="column" justifyContent="center" p={8}>
       {(loading || activateResult.loading) && <LinearProgress />}
-      <Typography variant="h6">Add a New Workspace</Typography>
       <TextInput
-        label=""
+        label="Add a New Workspace"
+        labelType="Typography"
+        labelPosition="top"
         value={state.name || ''}
         fullWidth={true}
         className={classes.textInput}

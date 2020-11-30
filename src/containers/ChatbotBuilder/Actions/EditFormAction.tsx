@@ -88,9 +88,11 @@ const EditFormAction = ({ action, onChangeAction }: EditFormActionProps) => {
     <>
       <Grid container={true} item={true} sm={12} className={classes.formField}>
         <TextInput
-          fullWidth={true}
           label="Form Url"
+          labelType="Typography"
+          labelPosition="top"
           value={action.url || ''}
+          fullWidth={true}
           className={classes.input}
           onChange={(e) => onChangeAction({ ...action, url: e.target.value })}
         />

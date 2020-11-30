@@ -146,6 +146,8 @@ const EditAction = ({
             <TextInput
               fullWidth={true}
               label="Action Name"
+              labelType="Typography"
+              labelPosition="top"
               value={currentAction?.name}
               className={classes.input}
               onChange={
