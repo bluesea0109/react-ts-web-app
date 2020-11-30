@@ -1,10 +1,9 @@
-import { DropDown } from '@bavard/react-components';
+import { DropDown, TextInput } from '@bavard/react-components';
 import {
   AccordionDetails,
   Grid,
   IconButton,
   makeStyles,
-  TextField,
   Typography,
 } from '@material-ui/core';
 import MuiAccordion from '@material-ui/core/Accordion';
@@ -164,7 +163,7 @@ const useStyles = makeStyles((theme) => ({
     flexFlow: 'vertical',
     padding: '10px 20px 20px',
   },
-  textField: {
+  textInput: {
     width: '100%',
     float: 'right',
     marginLeft: 'auto',
@@ -329,11 +328,13 @@ export const DialogueForm = ({
             </Grid>
             <Grid item={true} xs={1} />
             <Grid item={true} xs={7}>
-              <Typography>Intent</Typography>
-              <TextField
+              <TextInput
                 variant="outlined"
+                label="Intent"
+                labelType="Typography"
+                labelPosition="top"
                 size="small"
-                className={classes.textField}
+                className={classes.textInput}
               />
             </Grid>
           </Grid>
@@ -353,11 +354,13 @@ export const DialogueForm = ({
                 </Grid>
                 <Grid item={true} xs={1} />
                 <Grid item={true} xs={7}>
-                  <Typography>Intent</Typography>
-                  <TextField
+                  <TextInput
+                    label="Intent"
+                    labelType="Typography"
+                    labelPosition="top"
                     variant="outlined"
                     size="small"
-                    className={classes.textField}
+                    className={classes.textInput}
                   />
                 </Grid>
               </Grid>

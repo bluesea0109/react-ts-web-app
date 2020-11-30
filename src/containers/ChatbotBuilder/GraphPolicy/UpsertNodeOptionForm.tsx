@@ -1,5 +1,6 @@
 import { IHyperlinkOption, IResponseOption } from '@bavard/agent-config';
 import { GraphPolicy } from '@bavard/agent-config/dist/graph-policy';
+import { TextInput } from '@bavard/react-components';
 import {
   Button,
   FormControl,
@@ -8,7 +9,6 @@ import {
   Paper,
   Radio,
   RadioGroup,
-  TextField,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { useSnackbar } from 'notistack';
@@ -113,25 +113,29 @@ export default function UpsertNodeOptionForm({
         </FormControl>
 
         <FormControl variant="outlined" className={classes.formControl}>
-          <TextField
+          <TextInput
             name="text"
             label="Text"
+            labelType="Typography"
+            labelPosition="top"
             variant="outlined"
             required={true}
             error={showFormErrors && text === ''}
             defaultValue={text}
-            onChange={(e) => setText(e.target.value as string)}
+            onChange={(e: any) => setText(e.target.value as string)}
           />
         </FormControl>
 
         <FormControl variant="outlined" className={classes.formControl}>
-          <TextField
+          <TextInput
             name="targetLink"
             label={'Target Link'}
+            labelType="Typography"
+            labelPosition="top"
             variant="outlined"
             required={true}
             error={showFormErrors && !validateUrl(targetLink)}
-            onChange={(e) => setTargetLink(e.target.value as string)}
+            onChange={(e: any) => setTargetLink(e.target.value as string)}
             defaultValue={targetLink}
           />
         </FormControl>

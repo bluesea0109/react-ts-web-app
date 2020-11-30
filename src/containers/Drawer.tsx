@@ -108,10 +108,6 @@ export const botSubMenuData = {
         path: 'training-jobs',
       },
       {
-        title: 'NLU Examples',
-        path: 'nluExamples',
-      },
-      {
         title: 'Training Conversations',
         path: 'training-conversations',
       },

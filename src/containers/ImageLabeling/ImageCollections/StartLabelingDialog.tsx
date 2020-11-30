@@ -1,4 +1,5 @@
 import { useMutation } from '@apollo/client';
+import { TextInput } from '@bavard/react-components';
 import {
   Button,
   FormControl,
@@ -6,7 +7,6 @@ import {
   FormLabel,
   Radio,
   RadioGroup,
-  TextField,
 } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -123,14 +123,16 @@ function StartLabelingDialog() {
             label="Batch - label batches of images (supports category labeling only)"
           />
           <FormControl component="fieldset">
-            <TextField
-              disabled={state.mode !== 'batch'}
-              onChange={handleChangeBatchSize}
-              value={state.batchSize}
+            <TextInput
               id="standard-number"
               label="Batch Size"
+              labelType="Typography"
+              labelPosition="top"
               type="number"
               size="small"
+              value={state.batchSize}
+              disabled={state.mode !== 'batch'}
+              onChange={handleChangeBatchSize}
             />
           </FormControl>
         </RadioGroup>

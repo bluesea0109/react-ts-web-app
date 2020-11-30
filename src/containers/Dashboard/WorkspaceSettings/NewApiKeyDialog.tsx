@@ -1,12 +1,11 @@
 import { useMutation } from '@apollo/client';
-import { ActionDialog } from '@bavard/react-components';
+import { ActionDialog, TextInput } from '@bavard/react-components';
 import { Box, CircularProgress, Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import TextField from '@material-ui/core/TextField';
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
 import { IAPIKey } from '../../../models/user-service';
@@ -80,8 +79,7 @@ const NewApiKeyDialog = ({
             Create your own API key or leave it blank to generate a random key.
           </DialogContentText>
           <Box py={2}>
-            <TextField
-              label={''}
+            <TextInput
               disabled={loading}
               fullWidth={true}
               multiline={true}

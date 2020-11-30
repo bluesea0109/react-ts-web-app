@@ -1,11 +1,11 @@
 import { useMutation } from '@apollo/client';
+import { TextInput } from '@bavard/react-components';
 import {
   Button,
   Card,
   createStyles,
   LinearProgress,
   makeStyles,
-  TextField,
   Theme,
   Typography,
 } from '@material-ui/core';
@@ -68,20 +68,22 @@ const NewUtteranceAction: React.FC = () => {
     <Card className={clsx(classes.root)}>
       {loading && <LinearProgress />}
       <Typography variant="h4">New Utterance Action</Typography>
-      <br />
-      <TextField
+      <TextInput
         id="name"
         label="Action Name"
+        labelType="Typography"
+        labelPosition="top"
         type="text"
         value={text}
         variant="outlined"
         onChange={(e: any) => setText(e.target.value as string)}
         className={clsx(classes.inputBox)}
       />
-      <br />
-      <TextField
+      <TextInput
         id="value"
         label="Action Value"
+        labelType="Typography"
+        labelPosition="top"
         type="text"
         value={name}
         variant="outlined"

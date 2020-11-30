@@ -1,5 +1,6 @@
 import { useApolloClient } from '@apollo/client';
-import { Button, Grid, TextField, Typography } from '@material-ui/core';
+import { TextInput } from '@bavard/react-components';
+import { Button, Grid, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import gql from 'graphql-tag';
 import React, { useState } from 'react';
@@ -63,14 +64,16 @@ export default function TextSummarization() {
     summary = (
       <React.Fragment>
         <Grid item={true} xs={12} sm={12}>
-          <TextField
-            className={classes.textArea}
+          <TextInput
             id="summary"
             label="Summary"
-            multiline={true}
-            rows={8}
+            labelType="Typography"
+            labelPosition="top"
             value={state.summary}
+            rows={8}
+            multiline={true}
             variant="outlined"
+            className={classes.textArea}
           />
         </Grid>
       </React.Fragment>
@@ -86,10 +89,12 @@ export default function TextSummarization() {
           </Typography>
         </Grid>
         <Grid item={true} xs={12} sm={12}>
-          <TextField
+          <TextInput
             className={classes.textArea}
             id="article"
             label="Text"
+            labelType="Typography"
+            labelPosition="top"
             multiline={true}
             rows={12}
             variant="outlined"
@@ -98,9 +103,11 @@ export default function TextSummarization() {
           />
         </Grid>
         <Grid item={true} xs={12} sm={12}>
-          <TextField
+          <TextInput
             id="max-words"
             label="Max Words"
+            labelType="Typography"
+            labelPosition="top"
             type="number"
             InputLabelProps={{
               shrink: true,

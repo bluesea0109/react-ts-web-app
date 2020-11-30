@@ -4,7 +4,8 @@ import {
   GraphPolicySchema,
   IGraphPolicy,
 } from '@bavard/agent-config';
-import { Box, Button, TextField, Typography } from '@material-ui/core';
+import { TextInput } from '@bavard/react-components';
+import { Box, Button, Typography } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
 import React, { ChangeEvent, useState } from 'react';
 import { useParams } from 'react-router';
@@ -13,8 +14,8 @@ import { CHATBOT_UPDATE_AGENT } from '../../../common-gql-queries';
 import { currentAgentConfig } from '../atoms';
 
 interface IGraphPolicyUploadProps {
-  onSuccess?: () => void;
   onError?: (error: Error) => void;
+  onSuccess?: () => void;
 }
 
 const GraphPolicyUpload = ({ onSuccess, onError }: IGraphPolicyUploadProps) => {
@@ -120,8 +121,10 @@ const GraphPolicyUpload = ({ onSuccess, onError }: IGraphPolicyUploadProps) => {
   return (
     <Box p={4}>
       <Box my={2}>
-        <TextField
+        <TextInput
           label="Policy Name"
+          labelType="Typography"
+          labelPosition="top"
           disabled={isLoading}
           fullWidth={true}
           variant="outlined"

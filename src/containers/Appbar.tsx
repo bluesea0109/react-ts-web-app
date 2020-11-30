@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/client';
-import { BasicButton, DropDown } from '@bavard/react-components';
-import { Box, createStyles, TextField, Theme } from '@material-ui/core';
+import { BasicButton, DropDown, TextInput } from '@bavard/react-components';
+import { Box, createStyles, Theme } from '@material-ui/core';
 import AppBar, { AppBarProps } from '@material-ui/core/AppBar';
 import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -96,11 +96,13 @@ const Workspaces: React.FC<WorkspacesProps> = ({
       onChange={(id) => setActiveWorkspace(id)}
     />
   ) : (
-    <TextField
-      className={classes.noWorkspace}
+    <TextInput
       id="no-workspace"
       label="Workspace"
-      defaultValue=" No Workspace"
+      labelType="InputLabel"
+      labelPosition="top"
+      defaultValue="No Workspace"
+      className={classes.noWorkspace}
       InputProps={{
         readOnly: true,
       }}

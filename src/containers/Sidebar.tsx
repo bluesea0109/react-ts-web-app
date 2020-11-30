@@ -66,7 +66,7 @@ const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
       'g',
     );
     const createBotSubMenuRegx = RegExp(
-      '/workspaces/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+',
+      '^/workspaces/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+',
       'g',
     );
 
@@ -92,10 +92,6 @@ const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
     );
     const createBot_training = RegExp(
       '^/workspaces/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/training$',
-      'g',
-    );
-    const createBot_examples = RegExp(
-      '^/workspaces/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/nluExamples$',
       'g',
     );
     const createBot_Launch = RegExp(
@@ -151,7 +147,6 @@ const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
       setSelected(MenuName.OPEN_CONFIG);
     } else if (
       createBot_training.test(currentLocation) ||
-      createBot_examples.test(currentLocation) ||
       createBot_Training_Conversations.test(currentLocation)
     ) {
       setOpenSubItem(true);

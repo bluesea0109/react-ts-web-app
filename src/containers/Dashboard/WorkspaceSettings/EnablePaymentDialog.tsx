@@ -1,7 +1,8 @@
 import React from 'react';
 import { useParams } from 'react-router';
 
-import { Button, TextField, Typography } from '@material-ui/core';
+import { TextInput } from '@bavard/react-components';
+import { Button, Typography } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -64,7 +65,7 @@ function CheckoutForm() {
   };
 
   const handleChange = (name: string) => (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     setState({
       ...state,
@@ -172,13 +173,15 @@ function CheckoutForm() {
       <React.Fragment>
         <DialogContent>
           <form noValidate={true} autoComplete="off">
-            <TextField
+            <TextInput
               value={state.email}
               onChange={handleChange('email')}
               autoFocus={true}
               margin="dense"
               id="email"
               label="Billing Email"
+              labelType="Typography"
+              labelPosition="top"
               type="email"
               fullWidth={true}
             />

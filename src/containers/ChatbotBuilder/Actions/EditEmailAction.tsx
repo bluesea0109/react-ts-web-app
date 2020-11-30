@@ -29,12 +29,10 @@ const EditEmailAction = ({ action, onChangeAction }: EditEmailActionProps) => {
     <>
       <Grid container={true} item={true} sm={12} className={classes.formField}>
         <TextInput
-          type="email"
-          label="Email To"
-          labelType="Typography"
-          labelPosition="top"
-          value={action.to || ''}
           fullWidth={true}
+          label="Email To"
+          type="email"
+          value={action.to || ''}
           className={classes.input}
           onChange={(e) => onChangeAction({ ...action, to: e.target.value })}
         />

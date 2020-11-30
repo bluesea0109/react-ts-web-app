@@ -1,4 +1,5 @@
 import { useMutation } from '@apollo/client';
+import { TextInput } from '@bavard/react-components';
 import { Button, Typography } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -10,7 +11,6 @@ import FormLabel from '@material-ui/core/FormLabel';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
 import * as EmailValidator from 'email-validator';
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
@@ -78,12 +78,12 @@ export default function InviteDialog(props: IProps) {
     props.onClose?.();
   };
 
-  const handleChange = (name: string) => (
-    event: React.ChangeEvent<HTMLInputElement>,
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     setState({
       ...state,
-      [name]: event.target.value,
+      [event.target.name]: event.target.value,
     });
   };
 
@@ -128,9 +128,9 @@ export default function InviteDialog(props: IProps) {
       <React.Fragment>
         <DialogContent>
           <form noValidate={true} autoComplete="off">
-            <TextField
+            <TextInput
               value={state.email}
-              onChange={handleChange('email')}
+              onChange={handleChange}
               autoFocus={true}
               margin="dense"
               id="email"
@@ -144,7 +144,7 @@ export default function InviteDialog(props: IProps) {
             <RadioGroup
               name="role"
               value={state.role}
-              onChange={handleChange('role')}
+              onChange={handleChange}
               row={true}>
               {role === 'owner' ? (
                 <FormControlLabel

@@ -7,12 +7,12 @@ import {
 import { IFormField } from '@bavard/agent-config/dist';
 
 import { EFormFieldTypes } from '@bavard/agent-config/dist/enums';
+import { TextInput } from '@bavard/react-components';
 import {
   Button,
   FormControl,
   IconButton,
   InputAdornment,
-  TextField,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { CancelOutlined } from '@material-ui/icons';
@@ -94,12 +94,13 @@ export default function UpsertAgentFormNode({
 
   const formContent = (
     <React.Fragment>
-      <TextField
+      <TextInput
         name={'url'}
         label={'Url'}
+        labelType="Typography"
+        labelPosition="top"
         variant="outlined"
         className={classes.formControl}
-        size="small"
         defaultValue={node?.url}
         onChange={(e) => setUrl(e.target.value as string)}
       />
@@ -109,7 +110,12 @@ export default function UpsertAgentFormNode({
             key={key}
             variant="outlined"
             className={classes.formControl}>
-            <TextField
+            <TextInput
+              name={item.name}
+              label={`${item.name} [${item.type}]`}
+              labelType="Typography"
+              labelPosition="top"
+              variant="outlined"
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
@@ -119,10 +125,6 @@ export default function UpsertAgentFormNode({
                   </InputAdornment>
                 ),
               }}
-              name={item.name}
-              label={`${item.name} [${item.type}]`}
-              variant="outlined"
-              size="small"
             />
           </FormControl>
         ))}

@@ -1,4 +1,5 @@
 import { useMutation } from '@apollo/client';
+import { TextInput } from '@bavard/react-components';
 import { GraphPolicyV2 } from '@bavard/agent-config/dist/graph-policy-v2';
 import { AgentUtteranceNode } from '@bavard/agent-config/dist/graph-policy-v2';
 import { FullDialog, RichTextInput } from '@bavard/react-components';
@@ -6,7 +7,6 @@ import {
   Button,
   FormControl,
   Grid,
-  TextField,
   Theme,
   Typography,
 } from '@material-ui/core';
@@ -124,7 +124,7 @@ const CreateGraphPolicyDialog = ({ open, agentId, onSuccess }: IProps) => {
           <Typography className={classes.formControl}>
             Create a new graph policy
           </Typography>
-          <TextField
+          <TextInput
             onChange={(e) => {
               setPolicyName(e.currentTarget.value);
               onFormChange();
@@ -132,6 +132,8 @@ const CreateGraphPolicyDialog = ({ open, agentId, onSuccess }: IProps) => {
             size="small"
             className={classes.formControl}
             label="Policy Name"
+            labelType="Typography"
+            labelPosition="top"
             variant="outlined"
           />
 

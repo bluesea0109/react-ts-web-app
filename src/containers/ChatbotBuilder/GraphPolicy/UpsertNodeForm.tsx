@@ -4,7 +4,7 @@ import {
   GraphPolicyNode,
   UtteranceNode,
 } from '@bavard/agent-config/dist/graph-policy';
-import { RichTextInput } from '@bavard/react-components';
+import { RichTextInput, TextInput } from '@bavard/react-components';
 import {
   FormControl,
   FormControlLabel,
@@ -12,7 +12,6 @@ import {
   IconButton,
   Radio,
   RadioGroup,
-  TextField,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
@@ -180,12 +179,14 @@ export default function UpsertNodeForm({
         </RadioGroup>
       </FormControl>
       <FormControl variant="outlined" className={classes.formControl}>
-        <TextField
+        <TextInput
           name="actionName"
           error={showFormErrors && actionName === ''}
           defaultValue={actionName}
           required={true}
           label="Action Name"
+          labelType="Typography"
+          labelPosition="top"
           variant="outlined"
           onChange={(e) => setActionName(e.target.value as string)}
         />
@@ -193,23 +194,27 @@ export default function UpsertNodeForm({
       {nodeType === EmailNode.typename && (
         <React.Fragment>
           <FormControl variant="outlined" className={classes.formControl}>
-            <TextField
+            <TextInput
               name="fromEmail"
               error={showFormErrors && !validateEmail(fromEmail)}
               defaultValue={fromEmail}
               required={true}
               label="From Email"
+              labelType="Typography"
+              labelPosition="top"
               variant="outlined"
               onChange={(e) => setFromEmail(e.target.value as string)}
             />
           </FormControl>
           <FormControl variant="outlined" className={classes.formControl}>
-            <TextField
+            <TextInput
               name="toEmail"
               error={showFormErrors && !validateEmail(toEmail)}
               defaultValue={toEmail}
               required={true}
               label="To Email"
+              labelType="Typography"
+              labelPosition="top"
               variant="outlined"
               onChange={(e) => setToEmail(e.target.value as string)}
             />
@@ -219,7 +224,7 @@ export default function UpsertNodeForm({
       {nodeType === FormNode.typename && (
         <React.Fragment>
           <FormControl variant="outlined" className={classes.formControl}>
-            <TextField
+            <TextInput
               name="url"
               error={showFormErrors && !url.length}
               defaultValue={url}
@@ -237,9 +242,11 @@ export default function UpsertNodeForm({
                   <FormControl
                     variant="outlined"
                     className={classes.formControl}>
-                    <TextField
+                    <TextInput
                       name={item.name}
                       label={`${item.name} [${item.type}]`}
+                      labelType="Typography"
+                      labelPosition="top"
                       variant="outlined"
                       style={
                         item.required ? { backgroundColor: '#fff8d9' } : {}

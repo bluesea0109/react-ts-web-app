@@ -1,12 +1,11 @@
 import { AgentConfig, ISlot } from '@bavard/agent-config';
-import { UpTransition } from '@bavard/react-components';
+import { TextInput, UpTransition } from '@bavard/react-components';
 import {
   Box,
   CircularProgress,
   DialogContent,
   Grid,
   LinearProgress,
-  TextField,
 } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
@@ -108,12 +107,14 @@ const AddSlot = ({ onAddSlotClose }: AddSlotProps) => {
           <Grid container={true}>
             <Grid item={true} xs={6}>
               <Box p={2}>
-                <TextField
-                  fullWidth={true}
+                <TextInput
                   label="Slot Name"
+                  labelType="Typography"
+                  labelPosition="top"
                   disabled={loading}
                   variant="outlined"
                   value={newSlot.name}
+                  fullWidth={true}
                   onChange={(e) =>
                     setNewSlot({
                       ...newSlot,
@@ -125,11 +126,13 @@ const AddSlot = ({ onAddSlotClose }: AddSlotProps) => {
             </Grid>
             <Grid item={true} xs={6}>
               <Box p={2}>
-                <TextField
-                  fullWidth={true}
+                <TextInput
                   label="Slot Type"
+                  labelType="Typography"
+                  labelPosition="top"
                   disabled={loading}
                   variant="outlined"
+                  fullWidth={true}
                   value={newSlot.type}
                   onChange={(e) =>
                     setNewSlot({

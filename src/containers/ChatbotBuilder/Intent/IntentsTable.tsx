@@ -30,7 +30,6 @@ const useStyles = makeStyles((theme: Theme) =>
     boldTypography: {
       fontWeight: 'bold',
     },
-    filterBoxContainer: { paddingRight: 32 },
   }),
 );
 
@@ -80,12 +79,10 @@ function IntentsTable({
         item={true}
         justify="space-between"
         alignItems="center">
-        <Grid item={true} xs={6} sm={6} className={classes.filterBoxContainer}>
+        <Grid item={true} xs={6} sm={6}>
           <FilterBox
             name="Intent Name"
             filter={nameFilter}
-            labelWidth={150}
-            fullWidth={true}
             onChange={setNameFilter}
           />
         </Grid>

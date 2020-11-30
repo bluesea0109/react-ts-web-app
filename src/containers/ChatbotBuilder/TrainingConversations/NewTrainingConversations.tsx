@@ -1,4 +1,5 @@
 import { useMutation } from '@apollo/client';
+import { TextInput } from '@bavard/react-components';
 import {
   Accordion,
   AccordionDetails,
@@ -12,7 +13,6 @@ import {
   IconButton,
   LinearProgress,
   Paper,
-  TextField,
   Toolbar,
   Typography,
 } from '@material-ui/core';
@@ -429,9 +429,11 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
                                     a.value === userAction?.intent
                                   }
                                   renderInput={(params) => (
-                                    <TextField
+                                    <TextInput
                                       {...params}
                                       label="Intent"
+                                      labelType="Typography"
+                                      labelPosition="top"
                                       variant="outlined"
                                     />
                                   )}
@@ -441,9 +443,11 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
                               <Grid
                                 item={true}
                                 className={classes.UtteranceControlsWidth}>
-                                <TextField
+                                <TextInput
                                   id="Utterance"
                                   label="Utterance [Optional]"
+                                  labelType="Typography"
+                                  labelPosition="top"
                                   variant="outlined"
                                   size="small"
                                   value={userAction?.utterance}
@@ -520,9 +524,11 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
                                       handleOnSelect(index, event, value)
                                     }
                                     renderInput={(params) => (
-                                      <TextField
+                                      <TextInput
                                         {...params}
                                         label="Action"
+                                        labelType="Typography"
+                                        labelPosition="top"
                                         variant="outlined"
                                       />
                                     )}
@@ -532,8 +538,10 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
                                 <Grid
                                   item={true}
                                   className={classes.controlsWidth}>
-                                  <TextField
+                                  <TextInput
                                     label="Utterance"
+                                    labelType="Typography"
+                                    labelPosition="top"
                                     variant="outlined"
                                     id="agentUtterance"
                                     size="small"

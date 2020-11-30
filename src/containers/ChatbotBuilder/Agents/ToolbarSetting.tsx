@@ -15,7 +15,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   root: {
     display: 'flex',
     flexDirection: 'row',
-    padding: '0px',
   },
   label: {
     padding: '7px 10px 5px 0px',

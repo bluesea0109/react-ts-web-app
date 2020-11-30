@@ -1,4 +1,4 @@
-import { TextField } from '@material-ui/core';
+import { TextInput } from '@bavard/react-components';
 import IconButton from '@material-ui/core/IconButton';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -100,7 +100,7 @@ export const AddExampleItem = ({
         </IconButton>
       </div>
       <>
-        <TextField
+        <TextInput
           disabled={loading}
           fullWidth={true}
           multiline={true}

@@ -1,5 +1,6 @@
 import { useMutation } from '@apollo/client';
-import { Button, TextField, Typography } from '@material-ui/core';
+import { TextInput } from '@bavard/react-components';
+import { Button, Typography } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -87,14 +88,16 @@ function CreateCollection(props: ICreateCollectionProps) {
     }
   }
 
-  let dialogContent = (
+  let dialogConent = (
     <DialogContent>
-      <TextField
-        autoFocus={true}
-        margin="dense"
+      <TextInput
         id="name"
         label="Collection Name"
+        labelType="Typography"
+        labelPosition="top"
         type="string"
+        margin="dense"
+        autoFocus={true}
         fullWidth={true}
         value={state.name}
         onChange={handleChange('name')}
@@ -103,7 +106,7 @@ function CreateCollection(props: ICreateCollectionProps) {
   );
 
   if (loading) {
-    dialogContent = (
+    dialogConent = (
       <DialogContent>
         <ContentLoading />
       </DialogContent>
@@ -112,7 +115,7 @@ function CreateCollection(props: ICreateCollectionProps) {
 
   if (error) {
     console.error(error);
-    dialogContent = (
+    dialogConent = (
       <DialogContent>
         <Typography>{'Error'}</Typography>
       </DialogContent>
@@ -127,7 +130,7 @@ function CreateCollection(props: ICreateCollectionProps) {
         onClose={handleClose}
         aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">{'New Collection'}</DialogTitle>
-        {dialogContent}
+        {dialogConent}
         <DialogActions>
           <Button color="primary" disabled={loading} onClick={handleClose}>
             {'Cancel'}

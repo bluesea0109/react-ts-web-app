@@ -1,4 +1,5 @@
-import { Button, Grid, TextField } from '@material-ui/core';
+import { TextInput } from '@bavard/react-components';
+import { Button, Grid } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import React, { Fragment, useState } from 'react';
@@ -55,19 +56,27 @@ const TagTypeSelection: React.FC<ITagSelection> = ({
               setTagSelectedValue(newValue)
             }
             renderInput={(params) => (
-              <TextField {...params} label="Tag Types" variant="outlined" />
+              <TextInput
+                {...params}
+                label="Tag Types"
+                labelType="Typography"
+                labelPosition="top"
+                variant="outlined"
+              />
             )}
             size="small"
           />
         </Grid>
         <Grid item={true} className={classes.controlsWidth}>
-          <TextField
+          <TextInput
             label="Values"
+            labelType="Typography"
+            labelPosition="top"
             variant="outlined"
             id="tagValues"
             value={tagValue}
-            onChange={(event: any) => setTagValues(event.target.value)}
             size="small"
+            onChange={(event: any) => setTagValues(event.target.value)}
           />
         </Grid>
         <Button variant="contained" color="primary" onClick={_onTagAdd}>
