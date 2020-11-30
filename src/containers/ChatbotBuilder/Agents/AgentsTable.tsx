@@ -32,28 +32,26 @@ const AgentsTable = ({ agents, onDeleteAgent }: IAgentsTableProps) => {
   ];
 
   return (
-    <React.Fragment>
-      <Grid>
-        {agents && (
-          <CommonTable
-            data={{
-              columns,
-              rowsData: agents,
-            }}
-            pagination={{
-              rowsPerPage: 10,
-            }}
-            editable={{
-              isDeleteable: true,
-              onRowDelete: onDeleteAgent,
-            }}
-            localization={{
-              nonRecordError: 'No Agents Found',
-            }}
-          />
-        )}
-      </Grid>
-    </React.Fragment>
+    <Grid>
+      {agents && (
+        <CommonTable
+          data={{
+            columns,
+            rowsData: agents,
+          }}
+          pagination={{
+            rowsPerPage: 10,
+          }}
+          editable={{
+            isDeleteable: true,
+            onRowDelete: onDeleteAgent,
+          }}
+          localization={{
+            nonRecordError: 'No Agents Found',
+          }}
+        />
+      )}
+    </Grid>
   );
 };
 
