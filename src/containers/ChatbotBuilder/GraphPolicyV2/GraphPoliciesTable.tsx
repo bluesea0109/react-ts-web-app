@@ -46,7 +46,6 @@ function GraphPoliciesTable({
       },
       {
         title: 'Status',
-        field: 'name',
         renderRow: (rowData: GraphPolicyV2) => {
           return (
             <Box>
