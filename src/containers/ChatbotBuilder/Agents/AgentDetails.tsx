@@ -20,7 +20,6 @@ import AssistDemo from '../AssistDemo';
 import { currentAgentConfig, currentWidgetSettings } from '../atoms';
 import ConversationsTab from '../Conversations';
 import DataExportsTab from '../DataExports/DataExportsTab';
-import GraphPolicyV1 from '../GraphPolicy';
 import GraphPolicy from '../GraphPolicyV2';
 import GraphEditorPage from '../GraphPolicyV2/GraphEditorPage';
 import Intent from '../Intent/Intent';
@@ -208,7 +207,6 @@ const AgentDetails = () => {
         <TabPanel className={classes.tabPanel} value={agentTab} index="Slots">
           <Slot />
         </TabPanel>
-        {agentTab === 'graph-policy-v1' && <GraphPolicyV1 />}
         {agentTab === 'graph-policies' && <GraphPolicy />}
         {agentTab === 'graph-editor' && <GraphEditorPage />}
         {agentTab === 'exports' && <DataExportsTab />}
