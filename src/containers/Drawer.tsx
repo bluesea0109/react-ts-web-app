@@ -91,11 +91,7 @@ export const botSubMenuData = {
         path: 'Slots',
       },
       {
-        title: 'Visual Graphs V1.0',
-        path: 'graph-policy-v1',
-      },
-      {
-        title: 'Visual Graphs V2.0',
+        title: 'Visual Graphs',
         pathes: ['graph-policies', 'graph-editor'],
       },
     ],

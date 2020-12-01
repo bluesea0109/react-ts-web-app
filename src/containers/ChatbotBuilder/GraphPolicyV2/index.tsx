@@ -14,7 +14,7 @@ import {
 import { exportJsonFileFromObj } from '../../../utils/exports';
 import { createAgentPath } from '../../../utils/string';
 import { currentAgentConfig } from '../atoms';
-import UploadGraphPolicyDialog from '../GraphPolicy/UploadGraphPolicyDialog';
+import UploadGraphPolicyDialog from './UploadGraphPolicyDialog';
 import CreateGraphPolicyDialog from './CreateGraphPolicyDialog';
 import GraphPoliciesTable from './GraphPoliciesTable';
 
@@ -184,7 +184,7 @@ export default function GraphPolicies() {
     <Grid container={true} style={{ padding: '50px' }}>
       <Grid item={true} xs={12}>
         <Grid style={{ fontSize: '26px', marginBottom: '24px' }}>
-          Graph Policy v 2.0
+          Graph Policy
         </Grid>
         <GraphPoliciesTable
           loading={loading}

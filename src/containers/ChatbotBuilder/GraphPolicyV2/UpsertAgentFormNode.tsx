@@ -18,7 +18,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { CancelOutlined } from '@material-ui/icons';
 import { Alert } from '@material-ui/lab';
 import React, { useState } from 'react';
-import { AddFieldForm } from '../GraphPolicy/AddActionField';
+import { AddFieldForm } from './AddActionField';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
