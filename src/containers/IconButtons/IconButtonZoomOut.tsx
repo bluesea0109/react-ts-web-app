@@ -4,9 +4,9 @@ import ZoomOutIcon from '@material-ui/icons/ZoomOut';
 import React from 'react';
 
 interface IIconButtonProps {
-  onClick(): any;
   tooltip?: string;
   disabled?: false;
+  onClick(): any;
 }
 
 export default function IconButtonZoomOut(props: IIconButtonProps) {

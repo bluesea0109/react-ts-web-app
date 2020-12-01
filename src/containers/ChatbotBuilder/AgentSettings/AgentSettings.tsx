@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
+import { Button } from '@bavard/react-components';
 import { AgentConfig } from '@bavard/agent-config';
-import { Button, Grid } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab/';
 import { useSnackbar } from 'notistack';
@@ -185,13 +186,13 @@ const AgentSettings = () => {
         <Grid className={classes.submitBtn}>
           {mode === 'dev' && (
             <Button
-              disabled={loading}
+              title="Update Settings"
               variant="contained"
               color="primary"
+              disabled={loading}
               style={{ marginTop: '25px', marginBottom: '80px' }}
-              onClick={onUpdateSettingsClicked}>
-              Update Settings
-            </Button>
+              onClick={onUpdateSettingsClicked}
+            />
           )}
         </Grid>
       </Grid>

@@ -2,14 +2,8 @@ import { useMutation } from '@apollo/client';
 import { TextInput } from '@bavard/react-components';
 import { GraphPolicyV2 } from '@bavard/agent-config/dist/graph-policy-v2';
 import { AgentUtteranceNode } from '@bavard/agent-config/dist/graph-policy-v2';
-import { FullDialog, RichTextInput } from '@bavard/react-components';
-import {
-  Button,
-  FormControl,
-  Grid,
-  Theme,
-  Typography,
-} from '@material-ui/core';
+import { Button, FullDialog, RichTextInput } from '@bavard/react-components';
+import { FormControl, Grid, Theme, Typography } from '@material-ui/core';
 import { createStyles, makeStyles } from '@material-ui/styles';
 import React, { useState } from 'react';
 import ContentLoading from '../../ContentLoading';
@@ -153,12 +147,12 @@ const CreateGraphPolicyDialog = ({ open, agentId, onSuccess }: IProps) => {
             </Alert>
           )}
           <Button
-            disabled={loading}
+            title="Submit"
             variant="contained"
             color="primary"
-            onClick={handleSubmit}>
-            Submit
-          </Button>
+            disabled={loading}
+            onClick={handleSubmit}
+          />
           {loading && <ContentLoading />}
         </Grid>
       </Grid>

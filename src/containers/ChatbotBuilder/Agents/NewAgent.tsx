@@ -1,6 +1,5 @@
-import { TextInput } from '@bavard/react-components';
+import { Button, TextInput } from '@bavard/react-components';
 import {
-  Button,
   Box,
   createStyles,
   Grid,
@@ -76,13 +75,13 @@ const NewAgent: React.FC<INewAgentProps> = ({ user, loading, onAddAgent }) => {
         />
       </Box>
       <Button
-        className={clsx([classes.button])}
+        title="Create Without Data"
         variant="contained"
         color="primary"
         disabled={loading || !uname}
-        onClick={onAdd}>
-        Create Without Data
-      </Button>
+        className={clsx([classes.button])}
+        onClick={onAdd}
+      />
       <UploadDataDialog
         uname={uname}
         workspaceId={workspaceId}

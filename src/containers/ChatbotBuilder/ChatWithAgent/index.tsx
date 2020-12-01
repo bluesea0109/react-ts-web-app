@@ -1,5 +1,6 @@
 import { useQuery } from '@apollo/client';
-import { Button, createStyles, makeStyles, Theme } from '@material-ui/core';
+import { Button } from '@bavard/react-components';
+import { createStyles, makeStyles, Theme } from '@material-ui/core';
 import gql from 'graphql-tag';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
@@ -133,12 +134,12 @@ export default function ChatWithAgent() {
       />
 
       <Button
+        title={isActive ? 'Hide' : 'Show'}
         color="primary"
         variant="contained"
+        disabled={!isLoaded}
         onClick={toggleContentWindow}
-        disabled={!isLoaded}>
-        {isActive ? 'Hide' : 'Show'}
-      </Button>
+      />
     </div>
   );
 }

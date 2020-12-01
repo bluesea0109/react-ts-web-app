@@ -1,5 +1,5 @@
 import { AgentConfig, IResponseOption } from '@bavard/agent-config';
-import { IconButton } from '@bavard/react-components';
+import { Button } from '@bavard/react-components';
 import {
   createStyles,
   Grid,
@@ -61,11 +61,10 @@ const Options = ({ options, onCreateOption, onBulkUpdate }: OptionsProps) => {
         />
       </Grid>
       <Grid container={true} item={true} justify="flex-end">
-        <IconButton
+        <Button
           title={options.length ? 'Add Another Option' : 'Add an Option'}
           variant="text"
-          Icon={AddCircleOutlineIcon}
-          iconPosition="right"
+          RightIcon={AddCircleOutlineIcon}
           onClick={onCreateOption}
         />
       </Grid>

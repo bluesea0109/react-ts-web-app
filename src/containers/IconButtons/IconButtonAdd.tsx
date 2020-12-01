@@ -4,9 +4,9 @@ import AddIcon from '@material-ui/icons/Add';
 import React from 'react';
 
 interface IconButtonAddProps {
-  onClick(): any;
   tooltip: string;
   disabled?: false;
+  onClick(): any;
 }
 
 export default function IconButtonAdd(props: IconButtonAddProps) {

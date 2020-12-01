@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { CommonTable, IconButton } from '@bavard/react-components';
+import { CommonTable, Button } from '@bavard/react-components';
 import {
   Box,
   CardHeader,
@@ -120,7 +120,7 @@ export default function Project() {
           onRowDelete: (rowData: IAPIKey) => {
             deleteApiKey(rowData);
           },
-          onRowUpdate: (rowData: IAPIKey) => {
+          onRowEdit: (rowData: IAPIKey) => {
             handleShowUpdateDialog(rowData);
           },
         }}
@@ -130,13 +130,12 @@ export default function Project() {
               avatar={<VpnKeyIcon />}
               title={<Typography variant="h6">API Keys</Typography>}
               action={
-                <IconButton
+                <Button
                   color="primary"
                   title="Create a new key"
                   variant="text"
+                  RightIcon={AddCircleOutlineIcon}
                   onClick={handleToggleCreateDialog}
-                  Icon={AddCircleOutlineIcon}
-                  iconPosition="right"
                 />
               }
             />

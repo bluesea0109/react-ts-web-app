@@ -1,4 +1,4 @@
-import { BasicButton } from '@bavard/react-components';
+import { Button } from '@bavard/react-components';
 import { Box, makeStyles, Theme, Typography } from '@material-ui/core';
 import WarningIcon from '@material-ui/icons/Warning';
 import React from 'react';
@@ -49,14 +49,14 @@ const DeleteWorkspace: React.FC<IDeleteWorkspaceProps> = ({
       <Typography variant="subtitle1" align="center">
         {`Do you really want to delete ${workspace.name} Workspace? This cannot be undone.`}
       </Typography>
-      <BasicButton
+      <Button
         title="Delete Workspace"
         color="primary"
         variant="contained"
         className={classes.deleteButton}
         onClick={onConfirm}
       />
-      <BasicButton
+      <Button
         title="Cancel"
         color="inherit"
         variant="contained"

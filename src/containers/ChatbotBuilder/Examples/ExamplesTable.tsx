@@ -1,4 +1,4 @@
-import { CommonTable, IconButton } from '@bavard/react-components';
+import { CommonTable, Button } from '@bavard/react-components';
 import AddCircleOutline from '@material-ui/icons/AddCircleOutline';
 import React, { useMemo } from 'react';
 import randomcolor from 'randomcolor';
@@ -120,14 +120,14 @@ const ExamplesTable = ({
         isEditable: true,
         isDeleteable: true,
         onRowDelete: (example) => onDelete(example),
-        onRowUpdate: (example) => onEdit(example),
+        onRowEdit: (example) => onEdit(example),
       }}
       localization={{
         actionsText: '',
       }}
       components={{
         TableFooter: () => (
-          <IconButton
+          <Button
             color="primary"
             title="Add New Example"
             variant="text"

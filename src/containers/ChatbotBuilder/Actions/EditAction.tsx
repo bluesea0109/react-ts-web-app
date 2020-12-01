@@ -11,9 +11,13 @@ import {
   EAgentActionTypes,
   EFormFieldTypes,
 } from '@bavard/agent-config/dist/enums';
-import { DropDown, FullDialog, TextInput } from '@bavard/react-components';
 import {
   Button,
+  DropDown,
+  FullDialog,
+  TextInput,
+} from '@bavard/react-components';
+import {
   createStyles,
   Grid,
   makeStyles,
@@ -206,12 +210,12 @@ const EditAction = ({
           </Grid>
           <Grid container={true} item={true} xs={12} justify="center">
             <Button
-              autoFocus={true}
+              title={isNewAction ? 'Add Action' : 'Update Action'}
               color="primary"
               variant="contained"
-              onClick={saveChanges}>
-              {isNewAction ? 'Add Action' : 'Update Action'}
-            </Button>
+              autoFocus={true}
+              onClick={saveChanges}
+            />
           </Grid>
         </Grid>
       </Grid>

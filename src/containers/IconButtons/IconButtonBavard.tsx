@@ -4,9 +4,9 @@ import Tooltip from '@material-ui/core/Tooltip';
 import React from 'react';
 
 interface IconButtonBavardProps {
-  onClick?(): any;
   tooltip: string;
   disabled?: false;
+  onClick?(): any;
 }
 
 export default function IconButtonBavard(props: IconButtonBavardProps) {

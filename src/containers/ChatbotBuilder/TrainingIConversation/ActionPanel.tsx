@@ -18,7 +18,7 @@ import {
 } from '@material-ui/icons';
 import { IUserUtteranceAction } from '@bavard/agent-config/dist/actions/user';
 import { IAgentUtteranceAction, ITagValue } from '@bavard/agent-config';
-import { IconButton } from '@bavard/react-components';
+import { Button } from '@bavard/react-components';
 import { FIELD_TYPE, IUtternaceAction, Field } from './type';
 import { GroupField } from './GroupField';
 
@@ -219,11 +219,10 @@ const ActionPanel = ({
                 />
               ))}
               <Box width={1} display="flex" justifyContent="flex-end">
-                <IconButton
-                  variant="text"
+                <Button
                   title="Add Tag"
-                  iconPosition="right"
-                  Icon={AddCircleOutline}
+                  variant="text"
+                  RightIcon={AddCircleOutline}
                   onClick={onAddTag}
                 />
               </Box>

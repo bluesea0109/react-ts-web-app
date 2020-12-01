@@ -1,10 +1,5 @@
+import { ActionDialog, Button, CommonTable } from '@bavard/react-components';
 import {
-  ActionDialog,
-  BasicButton,
-  CommonTable,
-} from '@bavard/react-components';
-import {
-  Button,
   Box,
   CardHeader,
   makeStyles,
@@ -58,7 +53,7 @@ const Dashboard: React.FC<IDashboardProps> = ({ user }) => {
       field: '',
       renderRow: (workspace: IWorkspace) => (
         <Box display="flex" justifyContent="flex-end">
-          <BasicButton
+          <Button
             title="Delete Workspace"
             variant="text"
             className={classes.redButton}
@@ -112,11 +107,12 @@ const Dashboard: React.FC<IDashboardProps> = ({ user }) => {
                     action={
                       <Button
                         color="primary"
+                        title="Add New Workspace"
+                        variant="text"
+                        disabled={(workspaces?.length || 0) >= 3}
+                        RightIcon={AddCircleOutline}
                         onClick={() => setShowAddWorkspace(true)}
-                        endIcon={<AddCircleOutline />}
-                        disabled={(workspaces?.length || 0) >= 3}>
-                        Add New Workspace
-                      </Button>
+                      />
                     }
                   />
                 ),
