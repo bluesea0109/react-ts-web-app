@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { BasicButton, DropDown, TextInput } from '@bavard/react-components';
+import { Button, DropDown, TextInput } from '@bavard/react-components';
 import { Box, createStyles, Theme } from '@material-ui/core';
 import AppBar, { AppBarProps } from '@material-ui/core/AppBar';
 import { makeStyles } from '@material-ui/core/styles';
@@ -156,7 +156,7 @@ const CustomAppbar: React.FC<CustomAppbarProps> = ({
           />
         </Box>
         <Box>
-          <BasicButton
+          <Button
             title="Log out"
             textTransform="none"
             onClick={onLogoutClick}

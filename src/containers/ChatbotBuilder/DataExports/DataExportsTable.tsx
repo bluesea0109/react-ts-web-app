@@ -1,6 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { CommonTable } from '@bavard/react-components';
-import Button from '@material-ui/core/Button';
+import { Button, CommonTable } from '@bavard/react-components';
 import IconButton from '@material-ui/core/IconButton';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -142,15 +141,16 @@ function DataExportsTable() {
       components={{
         Toolbar: () => (
           <Toolbar variant="dense">
-            <Button onClick={() => onExportClick('JSON')}>
-              {'Export to JSON'}
-              <TableIcon className={classes.rightIcon} color="secondary" />
-            </Button>
-            <Button onClick={() => onExportClick('ZIP')}>
-              {'Export to Zip'}
-              <FolderIcon className={classes.rightIcon} color="secondary" />
-            </Button>
-            {/* <IconButtonRefresh onClick={this.reload} /> */}
+            <Button
+              title="Export to JSON"
+              RightIcon={TableIcon}
+              onClick={() => onExportClick('JSON')}
+            />
+            <Button
+              title="'Export to Zip'"
+              RightIcon={FolderIcon}
+              onClick={() => onExportClick('ZIP')}
+            />
           </Toolbar>
         ),
       }}

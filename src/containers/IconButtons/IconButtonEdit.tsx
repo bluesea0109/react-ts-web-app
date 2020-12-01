@@ -4,9 +4,9 @@ import EditIcon from '@material-ui/icons/Edit';
 import React from 'react';
 
 interface IconButtonEditProps {
-  onClick(): any;
   tooltip: string;
   disabled?: boolean;
+  onClick(): any;
 }
 
 export default function IconButtonEdit(props: IconButtonEditProps) {

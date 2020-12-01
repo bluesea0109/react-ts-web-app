@@ -1,8 +1,7 @@
 import { useMutation } from '@apollo/client';
 import { AgentConfig, BaseAgentAction, IIntent } from '@bavard/agent-config';
-import { FullDialog, IconButton } from '@bavard/react-components';
+import { FullDialog, Button } from '@bavard/react-components';
 import { DialogContent, Grid, Typography } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { AddCircleOutline } from '@material-ui/icons';
 
@@ -238,19 +237,21 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
             ))}
 
             <Grid item={true} xs={12} className={classes.fields}>
-              <IconButton
+              <Button
                 title="Add a New Example"
                 variant="text"
-                iconPosition="left"
-                Icon={AddCircleOutline}
+                LeftIcon={AddCircleOutline}
                 onClick={handleAddExample}
               />
             </Grid>
 
             <Grid item={true} md={4} xs={12} className={classes.fields}>
-              <Button color="primary" variant="contained" onClick={saveChanges}>
-                Add Intent
-              </Button>
+              <Button
+                title="Add Intent"
+                color="primary"
+                variant="contained"
+                onClick={saveChanges}
+              />
             </Grid>
           </Grid>
         </Grid>

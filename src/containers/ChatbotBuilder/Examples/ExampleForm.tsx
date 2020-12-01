@@ -1,7 +1,6 @@
 import { IIntent } from '@bavard/agent-config';
-import { DropDown, TextInput } from '@bavard/react-components';
+import { Button, DropDown, TextInput } from '@bavard/react-components';
 import {
-  Button,
   createStyles,
   Grid,
   makeStyles,
@@ -182,12 +181,12 @@ const ExampleForm: React.FC<ExampleFormProps> = ({
         {isNew !== undefined && (
           <Grid container={true} item={true} xs={12} justify="center">
             <Button
+              title={isNew ? 'Add Example' : 'Update Example'}
               autoFocus={true}
               color="primary"
               variant="contained"
-              onClick={onSaveChanges}>
-              {isNew ? 'Add Example' : 'Update Example'}
-            </Button>
+              onClick={onSaveChanges}
+            />
           </Grid>
         )}
       </Paper>

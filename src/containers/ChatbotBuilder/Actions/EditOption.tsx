@@ -7,7 +7,7 @@ import {
 } from '@bavard/agent-config';
 import {
   DropDown,
-  IconButton,
+  Button,
   RichTextInput,
   TextInput,
 } from '@bavard/react-components';
@@ -171,11 +171,10 @@ const EditOption = ({
         </>
       )}
       <Grid container={true} justify="flex-end">
-        <IconButton
+        <Button
           title="Delete"
-          iconPosition="left"
           variant="text"
-          Icon={Delete}
+          LeftIcon={Delete}
           onClick={onDeleteOption}
         />
       </Grid>

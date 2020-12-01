@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { BasicButton, IconButton } from '@bavard/react-components';
+import { Button } from '@bavard/react-components';
 import { EUserActionType } from '@bavard/agent-config/dist/actions/user';
 import { EAgentActionTypes } from '@bavard/agent-config/dist/enums';
 import {
@@ -179,23 +179,21 @@ const ConversationPanel = ({
         })}
       </Grid>
       <Box display="flex" justifyContent="space-between" px={5}>
-        <IconButton
-          variant="text"
+        <Button
           title="Add User Action"
-          iconPosition="right"
-          Icon={AddCircleOutline}
+          variant="text"
+          RightIcon={AddCircleOutline}
           onClick={() => handleAddField(ACTION_TYPE.USER_ACTION)}
         />
-        <IconButton
-          variant="text"
+        <Button
           title="Add Assistant Action"
-          iconPosition="right"
-          Icon={AddCircleOutline}
+          variant="text"
+          RightIcon={AddCircleOutline}
           onClick={() => handleAddField(ACTION_TYPE.AGENT_ACTION)}
         />
       </Box>
       <Box display="flex" justifyContent="center" mb={2}>
-        <BasicButton
+        <Button
           variant="outlined"
           title="Save Conversation"
           onClick={onSubmit}

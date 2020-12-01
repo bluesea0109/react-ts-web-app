@@ -4,9 +4,9 @@ import PlayIcon from '@material-ui/icons/PlayArrow';
 import React from 'react';
 
 interface IconButtonPlayProps {
-  onClick(): any;
   tooltip: string;
   disabled?: false;
+  onClick(): any;
 }
 
 export default function IconButtonPlay(props: IconButtonPlayProps) {

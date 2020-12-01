@@ -1,8 +1,7 @@
 import { BaseAgentAction } from '@bavard/agent-config';
-import { FilterBox } from '@bavard/react-components';
+import { FilterBox, Button } from '@bavard/react-components';
 import {
   Box,
-  Button,
   createStyles,
   Grid,
   makeStyles,
@@ -66,9 +65,12 @@ const ActionsTable = ({
             {"Select an Action below to change the Assistant's behavior:"}
           </Typography>
         </Box>
-        <Button variant="contained" color="primary" onClick={onAddAction}>
-          Add New Action
-        </Button>
+        <Button
+          title="Add New Action"
+          variant="contained"
+          color="primary"
+          onClick={onAddAction}
+        />
       </Box>
 
       <Grid container={true} item={true} justify="space-between">

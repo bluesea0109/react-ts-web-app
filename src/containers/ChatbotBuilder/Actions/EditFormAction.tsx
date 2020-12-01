@@ -1,8 +1,7 @@
 import { IAgentFormAction, IFormField } from '@bavard/agent-config';
 import { EFormFieldTypes } from '@bavard/agent-config/dist/enums';
-import { TextInput, CommonTable } from '@bavard/react-components';
+import { Button, TextInput, CommonTable } from '@bavard/react-components';
 import {
-  Button,
   createStyles,
   Grid,
   makeStyles,
@@ -102,12 +101,12 @@ const EditFormAction = ({ action, onChangeAction }: EditFormActionProps) => {
         className={classes.formField}
         justify="flex-end">
         <Button
-          autoFocus={true}
+          title="Add Field"
           color="primary"
           variant="contained"
-          onClick={onAddField}>
-          Add Field
-        </Button>
+          autoFocus={true}
+          onClick={onAddField}
+        />
       </Grid>
       <Grid container={true} className={classes.formField}>
         <CommonTable

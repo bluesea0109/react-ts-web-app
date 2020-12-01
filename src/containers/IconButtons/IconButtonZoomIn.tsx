@@ -4,9 +4,9 @@ import ZoomInIcon from '@material-ui/icons/ZoomIn';
 import React from 'react';
 
 interface IIconButtonProps {
-  onClick(): any;
   tooltip?: string;
   disabled?: false;
+  onClick(): any;
 }
 
 export default function IconButtonZoomIn(props: IIconButtonProps) {

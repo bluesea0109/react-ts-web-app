@@ -1,4 +1,4 @@
-import { BasicButton, TextInput } from '@bavard/react-components';
+import { Button, TextInput } from '@bavard/react-components';
 import {
   Box,
   Card,
@@ -56,7 +56,7 @@ const NewTag: React.FC<NewTagProps> = ({ onAdd }: NewTagProps) => {
           onChange={(e: any) => setTagName(e.target.value as string)}
           className={classes.textInput}
         />
-        <BasicButton
+        <Button
           title="Create Tag"
           textTransform="none"
           disabled={!tagName}

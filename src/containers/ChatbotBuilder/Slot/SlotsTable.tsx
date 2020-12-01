@@ -50,7 +50,7 @@ function SlotsTable({
         editable={{
           isEditable: true,
           isDeleteable: true,
-          onRowUpdate: (rowData: ISlot) => onEditSlot(rowData),
+          onRowEdit: (rowData: ISlot) => onEditSlot(rowData),
           onRowDelete: (rowData: ISlot) => onDeleteSlot(rowData),
         }}
       />
