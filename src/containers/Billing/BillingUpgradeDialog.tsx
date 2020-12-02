@@ -32,15 +32,17 @@ const BillingUpgradeDialog: React.FC<BillingUpgradeDialogProps> = ({
   const handleMaybeLater = () => {};
 
   return (
-    <Dialog open={isOpen} fullWidth={true}>
-      <DialogTitle>
-        <Box className={classes.topBorder} />
+    <Dialog open={isOpen}>
+      <Box className={classes.topBorder} />
+      <DialogTitle className={classes.dialogTitle}>
+        Upgrade To Bavard Premium
+      </DialogTitle>
+      <Box>
         <Box display="flex" flexDirection="column" alignItems="center">
-          <Typography variant="h5">Upgrade To Bavard Premium</Typography>
           <Typography variant="subtitle1">$300</Typography>
           <Typography variant="subtitle2">per month, per Assistant</Typography>
         </Box>
-      </DialogTitle>
+      </Box>
       <DialogContent>
         <hr />
         {currentPage === BillingPage.PREMIMUM_PLAN_INTRO && (
@@ -58,7 +60,20 @@ const BillingUpgradeDialog: React.FC<BillingUpgradeDialogProps> = ({
 export default BillingUpgradeDialog;
 
 const useStyles = makeStyles(() => ({
+  billingDialog: {
+    '& .MuiDialog-paperWidthSm': {
+      maxWidth: 400,
+    },
+  },
+  dialogTitle: {
+    '& .MuiTypography-root': {
+      fontSize: '1.5rem',
+      fontWeight: 600,
+      textAlign: 'center',
+    },
+  },
   topBorder: {
     background: 'linear-gradient(89.88deg, #00B5FF -2.57%, #504DBA 100.2%)',
+    height: 12,
   },
 }));

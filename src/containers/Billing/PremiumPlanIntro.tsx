@@ -15,59 +15,84 @@ interface PremiumPlanIntroProps {
   onMaybeLater: () => void;
 }
 
+interface PremiumTextProps {
+  Icon: JSX.Element;
+  text: string;
+}
+
+const PremiumText: React.FC<PremiumTextProps> = ({ Icon, text }) => {
+  return (
+    <Box display="flex" flexDirection="row" alignItems="center" paddingX={1}>
+      <Box padding={1}>{Icon}</Box>
+      <Typography variant="subtitle1">{text}</Typography>
+    </Box>
+  );
+};
+
 const PremiumPlanIntro: React.FC<PremiumPlanIntroProps> = ({
   onUpgradeNow,
   onMaybeLater,
 }) => {
-  const classes = useStyles();
+  const classes = useMainStyles();
 
   return (
     <Box
       display="flex"
       flexDirection="column"
       alignItems="flex-start"
-      padding={4}>
-      <Typography variant="subtitle1">
-        <NLPUsageIcon />
-        Unlimited NLP Usage
-      </Typography>
-      <Typography variant="subtitle1">
-        <LiveChatIcon />
-        Live Chat capabilities
-      </Typography>
-      <Typography variant="subtitle1">
-        <ConversationFlowIcon />
-        Unrestricted use of the Conversion Flow visualizer
-      </Typography>
-      <Typography variant="subtitle1">
-        <LiveConversationIcon />
-        Live Conversation Monitoring
-      </Typography>
-      <Typography variant="subtitle1">
-        <CustomerAnalyticsIcon />
-        Customer Analytics
-      </Typography>
+      padding={2}
+      paddingLeft={4}>
+      <Box paddingY={2}>
+        <PremiumText Icon={<NLPUsageIcon />} text="Unlimited NLP Usage" />
+        <PremiumText Icon={<LiveChatIcon />} text="Live Chat capabilities" />
+        <PremiumText
+          Icon={<ConversationFlowIcon />}
+          text="Unrestricted use of the Conversion Flow visualizer"
+        />
+        <PremiumText
+          Icon={<LiveConversationIcon />}
+          text="Live Conversation Monitoring"
+        />
+        <PremiumText
+          Icon={<CustomerAnalyticsIcon />}
+          text="Customer Analytics"
+        />
+      </Box>
 
-      <Box>
+      <Box display="flex" flexDirection="column" alignSelf="center" width="80%">
         <Button
           title="Upgrade Now"
           onClick={onUpgradeNow}
           className={classes.upgradeNowButton}
         />
-        <Button title="Maybe Later" onClick={onMaybeLater} />
+        <Button
+          title="Maybe Later"
+          onClick={onMaybeLater}
+          className={classes.maybeLaterButton}
+        />
       </Box>
     </Box>
   );
 };
 
 export default PremiumPlanIntro;
-const useStyles = makeStyles(() => ({
+
+const useMainStyles = makeStyles(() => ({
   upgradeNowButton: {
-    background: 'linear-gradient(91.71deg, #03B3FD 0.54%, #4F4FBB 86.24%)',
     color: 'white',
+    background: 'linear-gradient(91.71deg, #03B3FD 0.54%, #4F4FBB 86.24%)',
+    margin: 5,
   },
-  maybeLaterbutton: {
+  maybeLaterButton: {
+    color: '#727272',
     background: 'rgba(0, 0, 0, 0)',
     textDecoration: 'underline',
+    boxShadow: 'none',
+    margin: 5,
+
+    '&:hover': {
+      background: 'rgba(0, 0, 0, 0)',
+      textDecoration: 'underline',
+    },
   },
 }));

@@ -48,6 +48,7 @@ function NewWorkspace({ onSuccess }: INewWorkspaceProps) {
       },
     ],
     awaitRefetchQueries: true,
+    onError: () => {},
   });
 
   const [activateWorkspace, activateResult] = useMutation(
@@ -73,6 +74,8 @@ function NewWorkspace({ onSuccess }: INewWorkspaceProps) {
     });
     // This should happen before activating, otherwise it fails
     resetApolloContext();
+
+    if (!workspace || !workspace.data) return;
 
     const workspaceId = workspace.data.createWorkspace?.id;
 

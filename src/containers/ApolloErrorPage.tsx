@@ -4,6 +4,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import { GraphQLError } from 'graphql';
 import React from 'react';
+import BillingUpgradeDialog from './Billing/BillingUpgradeDialog';
 
 const styles = makeStyles((theme: Theme) =>
   createStyles({
@@ -17,12 +18,10 @@ interface IErrorPageProps {
   error: ApolloError;
 }
 
-export default function ApolloErrorPage(props: IErrorPageProps) {
-  const { error } = props;
+const ApolloErrorPage: React.FC<IErrorPageProps> = ({ error }) => {
   const classes = styles();
-  console.error(error);
 
-  const defaultMessage = (
+  const DefaultMessage = () => (
     <Typography variant="body1">
       {
         'An unexpected error occurred. Please refresh the page and try again. If the problem persists, please email support@bavard.ai.'
@@ -33,35 +32,28 @@ export default function ApolloErrorPage(props: IErrorPageProps) {
   return (
     <Grid container={true} className={classes.root}>
       <Grid item={true} xs={12}>
-        {error && error.graphQLErrors.length
-          ? error.graphQLErrors.map((e: GraphQLError) => {
-              if (!e.extensions) {
-                return defaultMessage;
-              }
+        {error && error.graphQLErrors.length ? (
+          error.graphQLErrors.map((e: GraphQLError, index: number) => {
+            if (!e.extensions) return <DefaultMessage key={index} />;
 
-              switch (e.extensions.code) {
-                case 'INTERNAL_SERVER_ERROR': {
-                  return defaultMessage;
-                }
-                case 'FORBIDDEN': {
-                  return <Typography variant="body1">{e.message}</Typography>;
-                }
-                case 'BILLING_REQUIRED': {
-                  return <Typography variant="body1">{e.message}</Typography>;
-                }
-                default: {
-                  return (
-                    <Typography variant="body1">
-                      {
-                        'An unexpected error occurred. Please refresh the page and try again. If the problem persists, please email support@bavard.ai.'
-                      }
-                    </Typography>
-                  );
-                }
-              }
-            })
-          : defaultMessage}
+            switch (e.extensions.code) {
+              case 'INTERNAL_SERVER_ERROR':
+                return <DefaultMessage key={index} />;
+              case 'FORBIDDEN':
+                return <Typography variant="body1">{e.message}</Typography>;
+              case 'BILLING_REQUIRED':
+              case 'WORKSPACE_LIMIT_REACHED':
+                return <BillingUpgradeDialog isOpen={true} />;
+              default:
+                return <DefaultMessage key={index} />;
+            }
+          })
+        ) : (
+          <DefaultMessage />
+        )}
       </Grid>
     </Grid>
   );
-}
+};
+
+export default ApolloErrorPage;
