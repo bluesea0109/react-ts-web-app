@@ -255,17 +255,6 @@ export default function UpsertNodeForm({
         )}
       />
 
-      {/* <TextInput
-        className={classes.formControl}
-        name="intent"
-        defaultValue={intent}
-        size="small"
-        label="Intent"
-        labelType="Typography"
-        labelPosition="top"
-        variant="outlined"
-        onChange={(e) => setIntent(e.target.value as string)}
-      /> */}
       {renderSubmitButton(submitUserImage)}
       {(loading || signedImgUploadResult.loading) && <ContentLoading />}
     </React.Fragment>

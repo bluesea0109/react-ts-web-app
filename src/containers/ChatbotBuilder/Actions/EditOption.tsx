@@ -102,6 +102,7 @@ const EditOption = ({
           <TextInput
             fullWidth={true}
             label="Hyperlink Target"
+            labelPosition="top"
             value={(option as IHyperlinkOption).targetLink || ''}
             className={classes.input}
             onChange={(e) =>
@@ -138,6 +139,7 @@ const EditOption = ({
             <TextInput
               fullWidth={true}
               label="Image Name"
+              labelPosition="top"
               value={(option as IImageOption).imageName || ''}
               className={classes.input}
               onChange={(e) =>
@@ -152,6 +154,7 @@ const EditOption = ({
             <TextInput
               fullWidth={true}
               label="Image Caption"
+              labelPosition="top"
               value={(option as IImageOption).caption || ''}
               className={classes.input}
               onChange={(e) =>

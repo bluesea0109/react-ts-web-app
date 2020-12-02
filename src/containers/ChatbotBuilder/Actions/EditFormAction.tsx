@@ -89,6 +89,7 @@ const EditFormAction = ({ action, onChangeAction }: EditFormActionProps) => {
         <TextInput
           fullWidth={true}
           label="Form Url"
+          labelPosition="top"
           value={action.url || ''}
           className={classes.input}
           onChange={(e) => onChangeAction({ ...action, url: e.target.value })}

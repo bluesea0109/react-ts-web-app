@@ -3,7 +3,6 @@ import { CollapsibleTable } from '@bavard/react-components';
 import React from 'react';
 import {
   Grid,
-  Box,
   Typography,
   makeStyles,
   createStyles,
@@ -13,7 +12,6 @@ import ConversationPanel from './ConversationPanel';
 
 import {
   Delete,
-  Edit,
   KeyboardArrowDown,
   KeyboardArrowRight,
 } from '@material-ui/icons';
@@ -27,13 +25,13 @@ interface ConversationListProps {
 const ConversationList: React.FC<ConversationListProps> = ({
   conversations,
   onDelete,
-  onSave,
 }: ConversationListProps) => {
   return (
     <Grid>
       <CollapsibleTable
         items={conversations}
         defaultCollapsed={true}
+        isMultiExpandable={false}
         onDeleteItem={onDelete}
         ItemHeader={ConversationHeader}
         ItemDetail={ConversationDetail}
