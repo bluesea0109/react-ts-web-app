@@ -70,8 +70,9 @@ export const GroupField: React.FC<GroupFieldProps> = ({
           fullWidth={true}
           value={textValue}
           label={
-            fieldType === FIELD_TYPE.INTENT ? 'Utterance (optional)' : 'Value'
+            fieldType !== FIELD_TYPE.TAG ? 'Utterance (optional)' : 'Value'
           }
+          labelPosition="top"
           className={classes.input}
           onChange={handleTextChange}
         />

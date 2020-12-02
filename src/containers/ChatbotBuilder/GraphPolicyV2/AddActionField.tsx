@@ -88,6 +88,7 @@ export const AddFieldForm = ({ handleChange }: AddFormFieldProps) => {
             id="standard-basic"
             name="text"
             label="Field Name"
+            labelPosition="top"
             style={{ width: '100%' }}
             className={classes.formControl}
             onChange={handleFieldChange}

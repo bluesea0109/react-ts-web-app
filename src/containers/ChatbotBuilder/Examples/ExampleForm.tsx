@@ -124,6 +124,7 @@ const ExampleForm: React.FC<ExampleFormProps> = ({
           <TextInput
             fullWidth={true}
             label={`NLU Example ${example?.id || 1}*`}
+            labelPosition="top"
             rows={4}
             value={exampleText}
             className={classes.input}
