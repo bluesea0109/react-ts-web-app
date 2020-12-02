@@ -7,7 +7,7 @@ import {
   Typography,
   Grid,
 } from '@material-ui/core';
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import { withStyles } from '@material-ui/core/styles';
 import {
@@ -104,6 +104,7 @@ const ActionPanel = ({
 
   const classes = useStyle();
   const [isOpened, setOpen] = useState(false);
+  const actionList = config?.getActions();
   const intentList = config?.getIntents();
   const tagList = config?.getTagTypes();
 
@@ -126,24 +127,25 @@ const ActionPanel = ({
     } as IDialogueTurn);
   };
   const onUpdateIntent = (field: Field) => {
-    if (isUserAction) {
-      handleUpdate({
-        actor,
-        userAction: {
-          ...action,
-          intent: field.name,
-          utterance: field.value,
-        } as IUserUtteranceAction,
-      } as IDialogueTurn);
-    } else {
-      handleUpdate({
-        actor,
-        agentAction: {
-          ...action,
-          utterance: field.value,
-        } as IAgentUtteranceAction,
-      } as IDialogueTurn);
-    }
+    handleUpdate({
+      actor,
+      userAction: {
+        ...action,
+        intent: field.name,
+        utterance: field.value,
+      } as IUserUtteranceAction,
+    } as IDialogueTurn);
+  };
+
+  const onUpdateAction = (field: Field) => {
+    handleUpdate({
+      actor,
+      agentAction: {
+        ...action,
+        name: field.name,
+        utterance: field.value,
+      } as IAgentUtteranceAction,
+    } as IDialogueTurn);
   };
 
   const onUpdateTag = (field: Field, index: number) => {
@@ -160,6 +162,8 @@ const ActionPanel = ({
       } as IUserUtteranceAction,
     } as IDialogueTurn);
   };
+
+  const actions = (actionList || []).map((action) => action.name);
 
   const intents = (intentList || []).map((item) => item.name);
 
@@ -229,13 +233,13 @@ const ActionPanel = ({
             </>
           ) : (
             <GroupField
-              fieldType={FIELD_TYPE.INTENT}
+              fieldType={FIELD_TYPE.NAME}
               field={{
-                name: (action as any).intent || '',
+                name: (action as IAgentUtteranceAction).name || '',
                 value: action.utterance || '',
               }}
-              options={intents}
-              onUpdate={onUpdateIntent}
+              options={actions}
+              onUpdate={onUpdateAction}
             />
           )}
         </Box>

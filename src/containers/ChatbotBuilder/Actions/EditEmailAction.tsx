@@ -31,6 +31,7 @@ const EditEmailAction = ({ action, onChangeAction }: EditEmailActionProps) => {
         <TextInput
           fullWidth={true}
           label="Email To"
+          labelPosition="top"
           type="email"
           value={action.to || ''}
           className={classes.input}
