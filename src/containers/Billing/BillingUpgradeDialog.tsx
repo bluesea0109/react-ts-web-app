@@ -10,24 +10,26 @@ import makeStyles from '@material-ui/styles/makeStyles';
 import BillingDetails from './BillingDetails';
 import PremiumPlanIntro from './PremiumPlanIntro';
 
-enum BillingPage {
+export enum BillingPage {
   PREMIMUM_PLAN_INTRO = 'PREMIMUM_PLAN_INTRO',
   BILLING_DETAILS = 'BILLING_DETAILS',
 }
 
 interface BillingUpgradeDialogProps {
+  page?: BillingPage;
   isOpen: boolean;
   onClose: () => void;
 }
 
 const BillingUpgradeDialog: React.FC<BillingUpgradeDialogProps> = ({
+  page,
   isOpen,
   onClose,
 }) => {
   const classes = useStyles();
 
   const [currentPage, setCurrentPage] = useState<BillingPage>(
-    BillingPage.PREMIMUM_PLAN_INTRO,
+    page || BillingPage.PREMIMUM_PLAN_INTRO,
   );
 
   const handleUpgradeNow = () => {

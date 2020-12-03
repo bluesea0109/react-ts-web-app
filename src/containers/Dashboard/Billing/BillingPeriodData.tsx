@@ -1,38 +1,18 @@
 import React from 'react';
-import { CommonTable } from '@bavard/react-components';
-import {
-  Box,
-  Grid,
-  IconButton,
-  makeStyles,
-  Typography,
-} from '@material-ui/core';
+import { Button, CommonTable } from '@bavard/react-components';
+import { Box, Grid, makeStyles, Theme, Typography } from '@material-ui/core';
 import { AddCircleOutline } from '@material-ui/icons';
+import BillingBagIcon from '../../../icons/BillingBagIcon';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   root: {
     color: 'black',
-    height: '320px',
-    marginBottom: '16px',
     backgroundColor: 'white',
-    borderRadius: '5px',
+    marginBottom: theme.spacing(2),
+    borderRadius: theme.spacing(1),
   },
-  header: {
-    width: 'calc(100% - 40px)',
-    padding: '10px 20px 10px',
-    borderBottom: '2px solid lightgray',
-    height: '50px',
-  },
-  table: {
-    width: '100%',
-  },
-  addButton: {
-    display: 'flex',
-    flexFlow: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    marginRight: '20px',
-    alignSelf: 'flex-end',
+  toolBar: {
+    borderBottom: '2px solid gray',
   },
 }));
 
@@ -59,6 +39,7 @@ const BillingPeriodData = () => {
       paymentMethod: 'Visa ending in 3217',
     },
   ];
+
   return (
     <Grid className={classes.root}>
       <Box display="flex" style={{ width: '100%' }} flexDirection="column">
@@ -67,36 +48,42 @@ const BillingPeriodData = () => {
             columns,
             rowsData: rows,
           }}
+          editable={{
+            isEditable: true,
+            onRowEdit: () => {},
+          }}
           components={{
             Toolbar: () => (
               <Box
                 p={1}
-                className={classes.header}
                 display="flex"
-                alignContent="flex-start"
                 flexDirection="row"
-                alignItems="center">
-                <img
-                  src="/card.svg"
-                  alt="card"
-                  width="25px"
-                  height="25px"
-                  style={{ marginRight: '5px' }}
+                alignItems="center"
+                justifyContent="space-between"
+                className={classes.toolBar}>
+                <Box
+                  display="flex"
+                  flexDirection="row"
+                  alignItems="center"
+                  px={1}>
+                  <Box px={1}>
+                    <BillingBagIcon />
+                  </Box>
+                  <Typography>
+                    Current Billing Period (9/16/20 - 10/15/2020)
+                  </Typography>
+                </Box>
+                <Button
+                  title="Add New Payment Method"
+                  color="primary"
+                  variant="text"
+                  RightIcon={AddCircleOutline}
+                  onClick={() => {}}
                 />
-                <Typography>Current Billing Period</Typography>
               </Box>
             ),
           }}
         />
-        <Grid className={classes.addButton}>
-          <Typography style={{ color: 'blue' }}>
-            {' '}
-            Add New Payment Method{' '}
-          </Typography>
-          <IconButton>
-            <AddCircleOutline fontSize="large" style={{ color: '#5867ca' }} />
-          </IconButton>
-        </Grid>
       </Box>
     </Grid>
   );

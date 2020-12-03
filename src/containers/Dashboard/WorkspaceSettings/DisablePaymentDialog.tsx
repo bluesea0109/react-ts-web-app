@@ -22,9 +22,14 @@ const useStyles = makeStyles((theme: Theme) =>
       flexWrap: 'wrap',
       padding: theme.spacing(1),
     },
-    button: {
-      backgroundColor: '#FF0000',
+    disableBillingButton: {
       color: '#FFFFFF',
+      backgroundColor: '#FF0000',
+
+      '&:hover': {
+        color: '#FFFFFF',
+        backgroundColor: '#EE0000',
+      },
     },
   }),
 );
@@ -127,7 +132,7 @@ export default function PaymentDialog() {
       <Button
         size="small"
         variant="contained"
-        className={classes.button}
+        className={classes.disableBillingButton}
         onClick={handleOpen}>
         {'Disable Billing'}
       </Button>

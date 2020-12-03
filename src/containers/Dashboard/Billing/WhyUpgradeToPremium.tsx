@@ -50,10 +50,14 @@ const PremiumText: React.FC<PremiumTextProps> = ({ Icon, text }) => {
   );
 };
 
-const WhyUpgradeToPremium = () => {
-  const classes = useStyles();
+interface WhyUpgradeToPremiumProps {
+  onUpgradeToPremium: () => void;
+}
 
-  const handleUpgradeToPremium = () => {};
+const WhyUpgradeToPremium: React.FC<WhyUpgradeToPremiumProps> = ({
+  onUpgradeToPremium,
+}) => {
+  const classes = useStyles();
 
   return (
     <Grid className={classes.root}>
@@ -84,7 +88,7 @@ const WhyUpgradeToPremium = () => {
         <Button
           title="Make the Switch"
           className={classes.switchButton}
-          onClick={handleUpgradeToPremium}
+          onClick={onUpgradeToPremium}
         />
       </Box>
     </Grid>

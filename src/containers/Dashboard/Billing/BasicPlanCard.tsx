@@ -29,6 +29,10 @@ interface PremiumTextProps {
   text: string;
 }
 
+interface BasicPlanCardProps {
+  onUpgradeToPremium: () => void;
+}
+
 const PremiumText: React.FC<PremiumTextProps> = ({ Icon, text }) => {
   return (
     <Box display="flex" flexDirection="row" alignItems="center">
@@ -38,10 +42,10 @@ const PremiumText: React.FC<PremiumTextProps> = ({ Icon, text }) => {
   );
 };
 
-const BasicPlanCard = () => {
+const BasicPlanCard: React.FC<BasicPlanCardProps> = ({
+  onUpgradeToPremium,
+}) => {
   const classes = useStyles();
-
-  const handleUpgradeToPremium = () => {};
 
   return (
     <Grid className={classes.root}>
@@ -76,7 +80,7 @@ const BasicPlanCard = () => {
           <Button
             title="Upgrade to Premium"
             color="primary"
-            onClick={handleUpgradeToPremium}
+            onClick={onUpgradeToPremium}
           />
         </Box>
       </Box>
