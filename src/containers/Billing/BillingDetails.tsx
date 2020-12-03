@@ -1,19 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router';
+import { useRecoilState } from 'recoil';
+import { useMutation } from '@apollo/client';
 import { Button } from '@bavard/react-components';
 import { TextInput } from '@bavard/react-components';
 import Box from '@material-ui/core/Box';
-import Checkbox from '@material-ui/core/Checkbox';
 import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import makeStyles from '@material-ui/styles/makeStyles';
+import { currentUser } from '../../atoms';
+
+import { ENABLE_BILLING } from '../Dashboard/WorkspaceSettings/gql';
+import config from '../../config';
 
 const BillingDetails = () => {
   const classes = useStyles();
+  const { workspaceId } = useParams<{ workspaceId: string }>();
+  const [user] = useRecoilState(currentUser);
 
+  const [userName, setUserName] = useState('');
   const [creditNumber, setCreditNumber] = useState('');
   const [expDate, setExpDate] = useState('');
   const [cvv, setCVV] = useState('');
-  const [isSaveCard, setIsSaveCard] = useState(false);
+
+  const [doEnableBilling, enableBillingResp] = useMutation(ENABLE_BILLING);
 
   const handleCreditCardChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -33,57 +42,102 @@ const BillingDetails = () => {
     setCVV(e.target.value);
   };
 
-  const handleIsSaveCardChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setIsSaveCard(e.target.checked);
+  const handleUserNameChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    setUserName(e.target.value);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const expirations = expDate.split('/');
+    (window.Stripe as any)?.card.createToken(
+      {
+        name: userName,
+        number: creditNumber,
+        cvc: cvv,
+        exp_month: expirations[0],
+        exp_year: expirations[1],
+      },
+      async (status: any, response: any) => {
+        if (response.error) {
+          // handle error response
+          return;
+        }
+
+        const stripeToken: string = response ? response.id : '';
+        // enable billing
+        doEnableBilling({
+          variables: {
+            workspaceId,
+            stripeToken,
+            billingEmail: user?.email || '',
+          },
+        });
+      },
+    );
   };
+
+  useEffect(() => {
+    (window.Stripe as any)?.setPublishableKey(config.stripePublicKey);
+  });
 
   return (
-    <Box>
+    <Box paddingX={4}>
       <form onSubmit={handleSubmit}>
-        <TextInput
-          label="Credit Card Number"
-          labelType="Typography"
-          labelPosition="top"
-          value={creditNumber}
-          onChange={handleCreditCardChange}
-        />
         <FormGroup row>
           <TextInput
-            label="Exp Date"
+            label="User Name"
             labelType="Typography"
             labelPosition="top"
-            value={expDate}
-            onChange={handleExpDateChange}
-          />
-          <TextInput
-            label="Exp Date"
-            labelType="Typography"
-            labelPosition="top"
-            value={cvv}
-            onChange={handleCVVChange}
+            fullWidth={true}
+            value={userName}
+            onChange={handleUserNameChange}
           />
         </FormGroup>
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={isSaveCard}
-              onChange={handleIsSaveCardChange}
-              name="save card"
-              color="primary"
-            />
-          }
-          label="Primary"
-        />
-        <Button
-          type="submit"
-          title="Submit Payment"
-          className={classes.submitPaymentButton}
-          onClick={() => {}}
-        />
+        <FormGroup row>
+          <TextInput
+            label="Credit Card Number"
+            labelType="Typography"
+            labelPosition="top"
+            fullWidth={true}
+            value={creditNumber}
+            onChange={handleCreditCardChange}
+          />
+        </FormGroup>
+        <FormGroup row>
+          <Box display="flex" flexDirection="row" marginX={-1} marginY={1}>
+            <Box paddingX={1}>
+              <TextInput
+                label="Exp Date"
+                labelType="Typography"
+                labelPosition="top"
+                fullWidth={true}
+                value={expDate}
+                onChange={handleExpDateChange}
+              />
+            </Box>
+            <Box paddingX={1}>
+              <TextInput
+                label="CVV"
+                labelType="Typography"
+                labelPosition="top"
+                fullWidth={true}
+                value={cvv}
+                onChange={handleCVVChange}
+              />
+            </Box>
+          </Box>
+        </FormGroup>
+        <Box marginTop={4} marginBottom={1} width={1}>
+          <Button
+            type="submit"
+            title="Submit Payment"
+            className={classes.submitPaymentButton}
+            onClick={() => {}}
+          />
+        </Box>
       </form>
     </Box>
   );
@@ -93,7 +147,8 @@ export default BillingDetails;
 
 const useStyles = makeStyles(() => ({
   submitPaymentButton: {
-    background: 'linear-gradient(91.71deg, #03B3FD 0.54%, #4F4FBB 86.24%)',
     color: 'white',
+    width: '100%',
+    background: 'linear-gradient(91.71deg, #03B3FD 0.54%, #4F4FBB 86.24%)',
   },
 }));

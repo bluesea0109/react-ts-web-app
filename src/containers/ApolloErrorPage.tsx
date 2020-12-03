@@ -4,6 +4,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import { GraphQLError } from 'graphql';
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import BillingUpgradeDialog from './Billing/BillingUpgradeDialog';
 
 const styles = makeStyles((theme: Theme) =>
@@ -16,10 +17,12 @@ const styles = makeStyles((theme: Theme) =>
 
 interface IErrorPageProps {
   error: ApolloError;
+  onClose?: () => void;
 }
 
-const ApolloErrorPage: React.FC<IErrorPageProps> = ({ error }) => {
+const ApolloErrorPage: React.FC<IErrorPageProps> = ({ error, onClose }) => {
   const classes = styles();
+  const history = useHistory();
 
   const DefaultMessage = () => (
     <Typography variant="body1">
@@ -28,6 +31,10 @@ const ApolloErrorPage: React.FC<IErrorPageProps> = ({ error }) => {
       }
     </Typography>
   );
+
+  const handleCloseBillingUpgradeDialog = () => {
+    onClose?.();
+  };
 
   return (
     <Grid container={true} className={classes.root}>
@@ -43,7 +50,12 @@ const ApolloErrorPage: React.FC<IErrorPageProps> = ({ error }) => {
                 return <Typography variant="body1">{e.message}</Typography>;
               case 'BILLING_REQUIRED':
               case 'WORKSPACE_LIMIT_REACHED':
-                return <BillingUpgradeDialog isOpen={true} />;
+                return (
+                  <BillingUpgradeDialog
+                    isOpen={true}
+                    onClose={handleCloseBillingUpgradeDialog}
+                  />
+                );
               default:
                 return <DefaultMessage key={index} />;
             }

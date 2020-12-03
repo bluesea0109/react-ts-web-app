@@ -4,6 +4,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography';
+import { Theme } from '@material-ui/core';
 import makeStyles from '@material-ui/styles/makeStyles';
 
 import BillingDetails from './BillingDetails';
@@ -16,10 +17,12 @@ enum BillingPage {
 
 interface BillingUpgradeDialogProps {
   isOpen: boolean;
+  onClose: () => void;
 }
 
 const BillingUpgradeDialog: React.FC<BillingUpgradeDialogProps> = ({
   isOpen,
+  onClose,
 }) => {
   const classes = useStyles();
 
@@ -27,12 +30,16 @@ const BillingUpgradeDialog: React.FC<BillingUpgradeDialogProps> = ({
     BillingPage.PREMIMUM_PLAN_INTRO,
   );
 
-  const handleUpgradeNow = () => {};
+  const handleUpgradeNow = () => {
+    setCurrentPage(BillingPage.BILLING_DETAILS);
+  };
 
-  const handleMaybeLater = () => {};
+  const handleMaybeLater = () => {
+    onClose();
+  };
 
   return (
-    <Dialog open={isOpen}>
+    <Dialog open={isOpen} className={classes.billingDialog} onClose={onClose}>
       <Box className={classes.topBorder} />
       <DialogTitle className={classes.dialogTitle}>
         Upgrade To Bavard Premium
@@ -44,7 +51,7 @@ const BillingUpgradeDialog: React.FC<BillingUpgradeDialogProps> = ({
         </Box>
       </Box>
       <DialogContent>
-        <hr />
+        <hr className={classes.hrSplitter} />
         {currentPage === BillingPage.PREMIMUM_PLAN_INTRO && (
           <PremiumPlanIntro
             onUpgradeNow={handleUpgradeNow}
@@ -59,7 +66,7 @@ const BillingUpgradeDialog: React.FC<BillingUpgradeDialogProps> = ({
 
 export default BillingUpgradeDialog;
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme: Theme) => ({
   billingDialog: {
     '& .MuiDialog-paperWidthSm': {
       maxWidth: 400,
@@ -75,5 +82,8 @@ const useStyles = makeStyles(() => ({
   topBorder: {
     background: 'linear-gradient(89.88deg, #00B5FF -2.57%, #504DBA 100.2%)',
     height: 12,
+  },
+  hrSplitter: {
+    margin: `${theme.spacing(3)}px auto`,
   },
 }));
