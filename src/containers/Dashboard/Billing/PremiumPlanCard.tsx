@@ -1,4 +1,4 @@
-import { Box, Theme, makeStyles, Typography } from '@material-ui/core';
+import { Box, Grid, Theme, makeStyles, Typography } from '@material-ui/core';
 import React from 'react';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -8,7 +8,6 @@ const useStyles = makeStyles((theme: Theme) => ({
       'linear-gradient(110.32deg, #1C1C87 14.45%, #183399 61.75%, #115FBD 95.22%)',
     borderRadius: '5px',
     padding: theme.spacing(1),
-    margin: `0 ${theme.spacing(-1)}px`,
 
     '& *': {
       boxSizing: 'border-box',
@@ -20,7 +19,7 @@ const PremiumPlanCard = () => {
   const classes = useStyles();
 
   return (
-    <Box className={classes.root} width={1}>
+    <Grid className={classes.root}>
       <Box width={1}>Your Current Plan</Box>
       <Box display="flex" flexDirection="column" alignItems="center" width={1}>
         <Box padding={2}>
@@ -40,7 +39,7 @@ const PremiumPlanCard = () => {
           <Typography>per Month, per Assistant</Typography>
         </Box>
       </Box>
-    </Box>
+    </Grid>
   );
 };
 

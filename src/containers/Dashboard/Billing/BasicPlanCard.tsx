@@ -1,13 +1,12 @@
-import { Box, Theme, makeStyles, Typography } from '@material-ui/core';
+import { Box, Grid, Theme, makeStyles, Typography } from '@material-ui/core';
 import React from 'react';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     color: 'black',
     background: 'white',
-    borderRadius: '5px',
+    borderRadius: theme.spacing(1),
     padding: theme.spacing(1),
-    margin: `0 ${theme.spacing(-1)}px`,
 
     '& *': {
       boxSizing: 'border-box',
@@ -19,7 +18,7 @@ const BasicPlanCard = () => {
   const classes = useStyles();
 
   return (
-    <Box className={classes.root} width={1}>
+    <Grid className={classes.root}>
       <Box width={1}>Your Current Plan</Box>
       <Box display="flex" flexDirection="column" alignItems="center" width={1}>
         <Box padding={2}>
@@ -40,7 +39,7 @@ const BasicPlanCard = () => {
           <Typography>per Month, per Assistant</Typography>
         </Box>
       </Box>
-    </Box>
+    </Grid>
   );
 };
 
