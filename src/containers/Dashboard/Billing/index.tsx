@@ -37,22 +37,27 @@ const Billing = () => {
       <Typography variant="h5" className={classes.pageTitle}>
         Billing
       </Typography>
-      <Grid container={true} spacing={2}>
-        <Grid item={true} sm={5} xs={5}>
-          {workspace.billingEnabled ? <PremiumPlanCard /> : <BasicPlanCard />}
-        </Grid>
+      {workspace.billingEnabled ? (
+        <Grid container={true} spacing={2}>
+          <Grid item={true} sm={5} xs={5}>
+            <PremiumPlanCard />
+          </Grid>
 
-        <Grid item={true} sm={7} xs={7} className={classes.billData}>
-          {workspace.billingEnabled ? (
-            <>
-              <BillingPeriodData />
-              <PaymentHistory />
-            </>
-          ) : (
-            <WhyUpgradeToPremium />
-          )}
+          <Grid item={true} sm={7} xs={7} className={classes.billData}>
+            <BillingPeriodData />
+            <PaymentHistory />
+          </Grid>
         </Grid>
-      </Grid>
+      ) : (
+        <Grid container={true} spacing={2}>
+          <Grid item={true} sm={6}>
+            <BasicPlanCard />
+          </Grid>
+          <Grid item={true} sm={6}>
+            <WhyUpgradeToPremium />
+          </Grid>
+        </Grid>
+      )}
     </Grid>
   );
 };

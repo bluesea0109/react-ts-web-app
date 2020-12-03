@@ -1,3 +1,4 @@
+import React from 'react';
 import { CommonTable } from '@bavard/react-components';
 import {
   Box,
@@ -7,7 +8,6 @@ import {
   Typography,
 } from '@material-ui/core';
 import { AddCircleOutline } from '@material-ui/icons';
-import React from 'react';
 
 const useStyles = makeStyles((theme) => ({
   root: {

@@ -1,5 +1,7 @@
-import { Box, Theme, makeStyles, Typography } from '@material-ui/core';
 import React from 'react';
+import { Button } from '@bavard/react-components';
+import { Box, Grid, Theme, makeStyles, Typography } from '@material-ui/core';
+
 import NLPUsageIcon from '../../../icons/NLPUsageIcon';
 import LiveChatIcon from '../../../icons/LiveChatIcon';
 import ConversationFlowIcon from '../../../icons/ConversationFlowIcon';
@@ -12,11 +14,24 @@ const useStyles = makeStyles((theme: Theme) => ({
     background:
       'linear-gradient(109.22deg, #1C1C87 14.47%, #1B228C 49.84%, #1060BD 97.26%);',
     borderRadius: '5px',
-    padding: theme.spacing(1),
-    margin: `0 ${theme.spacing(-1)}px`,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: `${theme.spacing(4)}px ${theme.spacing(5)}px`,
 
     '& *': {
       boxSizing: 'border-box',
+    },
+  },
+  switchButton: {
+    width: 200,
+    color: '#0021FF',
+    backgroundColor: 'white',
+
+    '&:hover': {
+      color: '#0000CC',
+      backgroundColor: '#EEEEEE',
     },
   },
 }));
@@ -38,29 +53,41 @@ const PremiumText: React.FC<PremiumTextProps> = ({ Icon, text }) => {
 const WhyUpgradeToPremium = () => {
   const classes = useStyles();
 
+  const handleUpgradeToPremium = () => {};
+
   return (
-    <Box className={classes.root} width={1}>
-      <Box width={1}>Your Current Plan</Box>
+    <Grid className={classes.root}>
+      <Typography variant="h5">Why Upgrade to Bavard Premium?</Typography>
       <Box paddingY={2}>
         <PremiumText
-          Icon={<NLPUsageIcon />}
+          Icon={<NLPUsageIcon color="white" />}
           text="Unlimited Natural Language Processing"
         />
-        <PremiumText Icon={<LiveChatIcon />} text="Live Chat capabilities" />
         <PremiumText
-          Icon={<ConversationFlowIcon />}
+          Icon={<LiveChatIcon color="white" />}
+          text="Live Chat capabilities"
+        />
+        <PremiumText
+          Icon={<ConversationFlowIcon color="white" />}
           text="Unrestricted use of the Conversion Flow visualizer"
         />
         <PremiumText
-          Icon={<LiveConversationIcon />}
+          Icon={<LiveConversationIcon color="white" />}
           text="Live Conversation Monitoring"
         />
         <PremiumText
-          Icon={<CustomerAnalyticsIcon />}
+          Icon={<CustomerAnalyticsIcon color="white" />}
           text="Customer Analytics"
         />
       </Box>
-    </Box>
+      <Box display="flex" justifyContent="center">
+        <Button
+          title="Make the Switch"
+          className={classes.switchButton}
+          onClick={handleUpgradeToPremium}
+        />
+      </Box>
+    </Grid>
   );
 };
 

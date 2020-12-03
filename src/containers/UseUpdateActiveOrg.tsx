@@ -12,7 +12,7 @@ export interface IUpdateactiveWorkspace {
   workspaceId: string | null;
 }
 
-export const useUpdateactiveWorkspace = (): IUpdateactiveWorkspace => {
+export const useUpdateActiveWorkspace = (): IUpdateactiveWorkspace => {
   const history = useHistory();
   const location = useLocation();
   const { loading, error, data } = useQuery(GET_CURRENT_USER);

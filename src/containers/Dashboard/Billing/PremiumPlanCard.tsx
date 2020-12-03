@@ -1,5 +1,5 @@
-import { Box, Grid, Theme, makeStyles, Typography } from '@material-ui/core';
 import React from 'react';
+import { Box, Grid, Theme, makeStyles, Typography } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {

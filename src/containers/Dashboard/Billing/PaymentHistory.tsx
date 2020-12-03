@@ -1,6 +1,6 @@
+import React, { useMemo } from 'react';
 import { CommonTable } from '@bavard/react-components';
 import { Box, Grid, makeStyles, Typography } from '@material-ui/core';
-import React, { useMemo } from 'react';
 
 const useStyles = makeStyles((theme) => ({
   root: {
