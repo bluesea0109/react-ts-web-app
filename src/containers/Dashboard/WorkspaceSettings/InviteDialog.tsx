@@ -129,13 +129,16 @@ export default function InviteDialog(props: IProps) {
         <DialogContent>
           <form noValidate={true} autoComplete="off">
             <TextInput
-              value={state.email}
-              onChange={handleChange}
-              autoFocus={true}
               margin="dense"
               id="email"
-              label="Email"
+              name="email"
               type="email"
+              label="Email"
+              labelType="Typography"
+              labelPosition="top"
+              autoFocus={true}
+              onChange={handleChange}
+              value={state.email}
               fullWidth={true}
             />
           </form>
