@@ -8,7 +8,7 @@ import {
   Theme,
   Typography,
 } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { resetApolloContext } from '../../apollo-client';
 import {
   CREATE_WORKSPACE,
@@ -40,14 +40,19 @@ function NewWorkspace({ onSuccess }: INewWorkspaceProps) {
   const [state, setState] = useState({
     name: '',
   });
+  const [error, setError] = useState<any>();
 
-  const [createWorkspace, { loading, error }] = useMutation(CREATE_WORKSPACE, {
+  const [
+    createWorkspace,
+    { loading, error: createWorkspaceError },
+  ] = useMutation(CREATE_WORKSPACE, {
     refetchQueries: [
       {
         query: GET_CURRENT_USER,
       },
     ],
     awaitRefetchQueries: true,
+    onError: () => {},
   });
 
   const [activateWorkspace, activateResult] = useMutation(
@@ -62,9 +67,17 @@ function NewWorkspace({ onSuccess }: INewWorkspaceProps) {
     },
   );
 
+  const handleCloseErrorPage = () => {
+    setError(null);
+  };
+
+  useEffect(() => {
+    setError(createWorkspaceError);
+  }, [createWorkspaceError]);
+
   if (error) {
     // TODO: handle errors
-    return <ApolloErrorPage error={error} />;
+    return <ApolloErrorPage error={error} onClose={handleCloseErrorPage} />;
   }
 
   const submit = async () => {
@@ -73,6 +86,8 @@ function NewWorkspace({ onSuccess }: INewWorkspaceProps) {
     });
     // This should happen before activating, otherwise it fails
     resetApolloContext();
+
+    if (!workspace || !workspace.data) return;
 
     const workspaceId = workspace.data.createWorkspace?.id;
 

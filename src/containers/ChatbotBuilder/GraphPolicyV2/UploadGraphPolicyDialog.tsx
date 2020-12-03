@@ -72,23 +72,21 @@ class UploadGraphPolicyDialog extends React.Component<
     );
 
     return (
-      <React.Fragment>
-        <Dialog open={this.props.open} fullWidth={true}>
-          <DialogTitle>{'Import Graph Policy File'}</DialogTitle>
-          {dialogContent}
-          <DialogActions>
-            {state.policySaved ? (
-              <Button color="secondary" onClick={this.onClose}>
-                {'Close'}
-              </Button>
-            ) : (
-              <Button color="secondary" onClick={this.onCancel}>
-                {'Cancel'}
-              </Button>
-            )}
-          </DialogActions>
-        </Dialog>
-      </React.Fragment>
+      <Dialog open={this.props.open} fullWidth={true}>
+        <DialogTitle>{'Import Graph Policy File'}</DialogTitle>
+        {dialogContent}
+        <DialogActions>
+          {state.policySaved ? (
+            <Button color="secondary" onClick={this.onClose}>
+              {'Close'}
+            </Button>
+          ) : (
+            <Button color="secondary" onClick={this.onCancel}>
+              {'Cancel'}
+            </Button>
+          )}
+        </DialogActions>
+      </Dialog>
     );
   }
 }
