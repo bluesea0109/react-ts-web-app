@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const BasicPlanCard = () => {
+const PremiumPlanCard = () => {
   const classes = useStyles();
 
   return (
@@ -44,4 +44,4 @@ const BasicPlanCard = () => {
   );
 };
 
-export default BasicPlanCard;
+export default PremiumPlanCard;

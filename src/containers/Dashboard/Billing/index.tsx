@@ -6,6 +6,7 @@ import BasicPlanCard from './BasicPlanCard';
 import PremiumPlanCard from './PremiumPlanCard';
 import { currentUser } from '../../../atoms';
 import { useRecoilState } from 'recoil';
+import WhyUpgradeToPremium from './WhyUpgradeToPremium';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,12 +41,17 @@ const Billing = () => {
         <Grid item={true} sm={5} xs={5}>
           {workspace.billingEnabled ? <PremiumPlanCard /> : <BasicPlanCard />}
         </Grid>
-        {workspace.billingEnabled && (
-          <Grid item={true} sm={7} xs={7} className={classes.billData}>
-            <BillingPeriodData />
-            <PaymentHistory />
-          </Grid>
-        )}
+
+        <Grid item={true} sm={7} xs={7} className={classes.billData}>
+          {workspace.billingEnabled ? (
+            <>
+              <BillingPeriodData />
+              <PaymentHistory />
+            </>
+          ) : (
+            <WhyUpgradeToPremium />
+          )}
+        </Grid>
       </Grid>
     </Grid>
   );

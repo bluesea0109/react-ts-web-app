@@ -4,11 +4,11 @@ import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import makeStyles from '@material-ui/styles/makeStyles';
 
-import NLPUsageIcon from './icons/NLPUsageIcon';
-import LiveChatIcon from './icons/LiveChatIcon';
-import ConversationFlowIcon from './icons/ConversationFlowIcon';
-import LiveConversationIcon from './icons/LiveConversationIcon';
-import CustomerAnalyticsIcon from './icons/CustomerAnalyticsIcon';
+import NLPUsageIcon from '../../icons/NLPUsageIcon';
+import LiveChatIcon from '../../icons/LiveChatIcon';
+import ConversationFlowIcon from '../../icons/ConversationFlowIcon';
+import LiveConversationIcon from '../../icons/LiveConversationIcon';
+import CustomerAnalyticsIcon from '../../icons/CustomerAnalyticsIcon';
 
 interface PremiumPlanIntroProps {
   onUpgradeNow: () => void;
