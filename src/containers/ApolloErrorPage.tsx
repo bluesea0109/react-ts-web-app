@@ -48,8 +48,9 @@ const ApolloErrorPage: React.FC<IErrorPageProps> = ({ error, onClose }) => {
                 return <DefaultMessage key={index} />;
               case 'FORBIDDEN':
                 return <Typography variant="body1">{e.message}</Typography>;
-              case 'BILLING_REQUIRED':
               case 'WORKSPACE_LIMIT_REACHED':
+                return <Typography variant="body1">{e.message}</Typography>;
+              case 'BILLING_REQUIRED':
                 return (
                   <BillingUpgradeDialog
                     isOpen={true}

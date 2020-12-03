@@ -12,7 +12,11 @@ import { currentUser } from '../../atoms';
 import { ENABLE_BILLING } from '../Dashboard/WorkspaceSettings/gql';
 import config from '../../config';
 
-const BillingDetails = () => {
+interface BillingDetailsProps {
+  closeDialog: () => void;
+}
+
+const BillingDetails: React.FC<BillingDetailsProps> = ({ closeDialog }) => {
   const classes = useStyles();
   const { workspaceId } = useParams<{ workspaceId: string }>();
   const [user] = useRecoilState(currentUser);
@@ -48,9 +52,7 @@ const BillingDetails = () => {
     setUserName(e.target.value);
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
+  const handleSubmit = async () => {
     const expirations = expDate.split('/');
     (window.Stripe as any)?.card.createToken(
       {
@@ -68,13 +70,15 @@ const BillingDetails = () => {
 
         const stripeToken: string = response ? response.id : '';
         // enable billing
-        doEnableBilling({
+        await doEnableBilling({
           variables: {
             workspaceId,
             stripeToken,
             billingEmail: user?.email || '',
           },
         });
+
+        closeDialog();
       },
     );
   };
@@ -85,7 +89,7 @@ const BillingDetails = () => {
 
   return (
     <Box paddingX={4}>
-      <form onSubmit={handleSubmit}>
+      <form>
         <FormGroup row>
           <TextInput
             label="User Name"
@@ -135,7 +139,7 @@ const BillingDetails = () => {
             type="submit"
             title="Submit Payment"
             className={classes.submitPaymentButton}
-            onClick={() => {}}
+            onClick={handleSubmit}
           />
         </Box>
       </form>

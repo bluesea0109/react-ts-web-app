@@ -3,7 +3,7 @@ import { checkNameSchema } from '@bavard/agent-config/dist/utils';
 import { Card, Grid, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { useSnackbar } from 'notistack';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import {
   CHATBOT_CREATE_AGENT,
@@ -39,6 +39,7 @@ interface IChatbotBuilderAgentProps {
 
 const AllAgents: React.FC<IChatbotBuilderAgentProps> = ({ user }) => {
   const classes = useStyles();
+  const [error, setError] = useState<any>(null);
   const activeWorkspace = user.activeWorkspace;
   const { enqueueSnackbar } = useSnackbar();
 
@@ -46,12 +47,16 @@ const AllAgents: React.FC<IChatbotBuilderAgentProps> = ({ user }) => {
     workspaceId: string;
   }>();
 
-  const agentsData = useQuery<IGetAgents>(CHATBOT_GET_AGENTS, {
+  const {
+    data: agentsData,
+    error: agentsDataError,
+    loading: agentsDataLoading,
+  } = useQuery<IGetAgents>(CHATBOT_GET_AGENTS, {
     variables: { workspaceId },
   });
 
   const agents: IAgent[] | undefined =
-    agentsData && agentsData.data && agentsData.data.ChatbotService_agents;
+    agentsData && agentsData.ChatbotService_agents;
 
   const [
     deleteAgent,
@@ -72,16 +77,20 @@ const AllAgents: React.FC<IChatbotBuilderAgentProps> = ({ user }) => {
     },
   });
 
-  if (agentsData.loading || createAgentLoading || deleteAgentLoading) {
+  useEffect(() => {
+    setError(agentsDataError || deleteAgentError || createAgentError);
+  }, [agentsDataError, deleteAgentError, createAgentError]);
+
+  if (agentsDataLoading || createAgentLoading || deleteAgentLoading) {
     return <ContentLoading shrinked={true} />;
   }
 
-  const commonError = agentsData.error
-    ? agentsData.error
-    : deleteAgentError || createAgentError;
-  if (commonError) {
-    // TODO: handle errors
-    return <ApolloErrorPage error={commonError} />;
+  const handleCloseErrorPage = () => {
+    setError(null);
+  };
+
+  if (error) {
+    return <ApolloErrorPage error={error} onClose={handleCloseErrorPage} />;
   }
 
   const onDeleteAgent = (agent: IAgent) => {

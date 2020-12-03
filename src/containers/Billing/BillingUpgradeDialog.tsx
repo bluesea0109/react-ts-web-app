@@ -58,7 +58,9 @@ const BillingUpgradeDialog: React.FC<BillingUpgradeDialogProps> = ({
             onMaybeLater={handleMaybeLater}
           />
         )}
-        {currentPage === BillingPage.BILLING_DETAILS && <BillingDetails />}
+        {currentPage === BillingPage.BILLING_DETAILS && (
+          <BillingDetails closeDialog={onClose} />
+        )}
       </DialogContent>
     </Dialog>
   );
