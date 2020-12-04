@@ -52,9 +52,20 @@ export default function TrainingIConversations() {
   const agentId = parseInt(params.agentId, 10);
 
   const [
-    deleteConversations,
+    deleteConversation,
     { loading: deleteConversationLoading, error: deleteConversationError },
-  ] = useMutation(DELETE_TRAINING_CONVERSATION);
+  ] = useMutation(DELETE_TRAINING_CONVERSATION, {
+    refetchQueries: [
+      {
+        query: GET_TRAINING_CONVERSATIONS,
+        variables: { agentId: Number(agentId) },
+      },
+    ],
+    awaitRefetchQueries: true,
+    onError: (error) => {
+      enqueueSnackbar(error.message, { variant: 'error' });
+    },
+  });
   const [
     createConversation,
     { loading: createConversationLoading, error: createConversationError },
@@ -117,7 +128,13 @@ export default function TrainingIConversations() {
 
   const handleSaveConversation = () => {};
 
-  const handleDeleteConversation = () => {};
+  const handleDeleteConversation = (conversation: ITrainingConversation) => {
+    deleteConversation({
+      variables: {
+        id: conversation.id,
+      },
+    });
+  };
 
   return (
     <Grid className={classes.root}>

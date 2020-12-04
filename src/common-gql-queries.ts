@@ -457,8 +457,8 @@ export const UPDATE_TRAINING_CONVERSATION = gql`
 `;
 
 export const DELETE_TRAINING_CONVERSATION = gql`
-  mutation($conversationId: Int!) {
-    ChatbotService_deleteTrainingConversation(conversationId: $conversationId)
+  mutation($id: Int!) {
+    ChatbotService_deleteTrainingConversation(id: $id)
   }
 `;
 
