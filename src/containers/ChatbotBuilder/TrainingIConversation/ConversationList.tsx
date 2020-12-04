@@ -18,7 +18,7 @@ import {
 
 interface ConversationListProps {
   conversations: ITrainingConversation[];
-  onDelete: () => void;
+  onDelete: (conversation: ITrainingConversation) => void;
   onSave: () => void;
 }
 
@@ -44,7 +44,7 @@ interface ConversationHeaderProps {
   item: ITrainingConversation;
   isCollapsed: boolean;
   onClickItem: () => void;
-  onDelete: () => void;
+  onDeleteRow: (item: ITrainingConversation) => void;
   onToggleCollapse: () => void;
 }
 
@@ -70,7 +70,7 @@ const ConversationDetail = ({ item }: IConversationDetailProps) => (
 export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
   item: conversation,
   isCollapsed,
-  onDelete,
+  onDeleteRow,
   onToggleCollapse,
 }) => {
   const classes = useStyles();
@@ -95,7 +95,7 @@ export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
         </Typography>
       </Grid>
       <Grid item={true} container={true} xs={4} justify="flex-end">
-        <Delete onClick={onDelete} />
+        <Delete onClick={() => onDeleteRow(conversation)} />
       </Grid>
     </Grid>
   );
