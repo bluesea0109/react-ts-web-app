@@ -155,9 +155,14 @@ const ConversationPanel = ({
       <Grid container={true} direction={'column'} className={classes.paper}>
         {data?.turns.map((turn: IDialogueTurn, index) => {
           const isUserAction = turn.actor === EDialogueActor.USER;
+
           return (
             <Grid
-              key={index}
+              key={`${
+                (turn as any).userAction?.utterance ||
+                (turn as any).agentAction?.utterance ||
+                index
+              }-${index}`}
               className={clsx({
                 [classes.userAction]: isUserAction,
                 [classes.agentAction]: !isUserAction,
