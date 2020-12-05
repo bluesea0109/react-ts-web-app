@@ -481,3 +481,23 @@ export const GET_OPTION_IMAGES_QUERY = gql`
     }
   }
 `;
+
+export const ENABLE_BILLING = gql`
+  mutation(
+    $workspaceId: String!
+    $stripeToken: String!
+    $billingEmail: String!
+  ) {
+    enableBilling(
+      workspaceId: $workspaceId
+      stripeToken: $stripeToken
+      billingEmail: $billingEmail
+    )
+  }
+`;
+
+export const DISABLE_BILLING = gql`
+  mutation($workspaceId: String!) {
+    disableBilling(workspaceId: $workspaceId)
+  }
+`;

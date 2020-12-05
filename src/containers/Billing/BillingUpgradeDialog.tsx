@@ -9,6 +9,7 @@ import makeStyles from '@material-ui/styles/makeStyles';
 
 import BillingDetails from './BillingDetails';
 import PremiumPlanIntro from './PremiumPlanIntro';
+import { IWorkspace } from '../../models/user-service';
 
 export enum BillingPage {
   PREMIMUM_PLAN_INTRO = 'PREMIMUM_PLAN_INTRO',
