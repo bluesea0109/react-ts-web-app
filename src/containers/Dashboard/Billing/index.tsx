@@ -67,10 +67,12 @@ const Billing = () => {
             <PremiumPlanCard />
           </Grid>
 
-          <Grid item={true} sm={7} xs={7} className={classes.billData}>
-            <BillingPeriodData />
-            <PaymentHistory />
-          </Grid>
+          {false && (
+            <Grid item={true} sm={7} xs={7} className={classes.billData}>
+              <BillingPeriodData />
+              <PaymentHistory />
+            </Grid>
+          )}
         </Grid>
       ) : (
         <Grid container={true} spacing={2}>
