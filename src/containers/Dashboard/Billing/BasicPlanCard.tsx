@@ -17,6 +17,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    height: '100%',
+    boxSizing: 'border-box',
 
     '& *': {
       boxSizing: 'border-box',
@@ -76,13 +79,18 @@ const BasicPlanCard: React.FC<BasicPlanCardProps> = ({
             text="Customer Analytics"
           />
         </Box>
-        <Box display="flex" flexDirection="column" alignSelf="center" width={1}>
-          <Button
-            title="Upgrade to Premium"
-            color="primary"
-            onClick={onUpgradeToPremium}
-          />
-        </Box>
+      </Box>
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignSelf="center"
+        mb={1}
+        width="50%">
+        <Button
+          title="Upgrade to Premium"
+          color="primary"
+          onClick={onUpgradeToPremium}
+        />
       </Box>
     </Grid>
   );

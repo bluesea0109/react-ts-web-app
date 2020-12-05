@@ -5,6 +5,8 @@ body {
   width: 100%;
   overflow: 'auto';
   margin: 0;
+
+  box-sizing: border-box;
 }
 
 .App {
