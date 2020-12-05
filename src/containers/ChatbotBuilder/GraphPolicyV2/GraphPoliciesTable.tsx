@@ -9,7 +9,7 @@ import React, { useMemo } from 'react';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     title: {
-      width: '100%',
+      paddingLeft: '20px',
     },
   }),
 );
