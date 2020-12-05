@@ -1,7 +1,9 @@
-import { Button } from '@bavard/react-components';
+import React, { useState } from 'react';
+import { Button, TextInput } from '@bavard/react-components';
 import { Box, makeStyles, Theme, Typography } from '@material-ui/core';
 import WarningIcon from '@material-ui/icons/Warning';
-import React from 'react';
+import { useSnackbar } from 'notistack';
+
 import { IWorkspace } from '../../models/user-service';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -35,6 +37,24 @@ const DeleteWorkspace: React.FC<IDeleteWorkspaceProps> = ({
   onConfirm,
 }) => {
   const classes = useStyles();
+  const [workspaceName, setWorkspaceName] = useState('');
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleChangeWorkspaceName = (
+    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+  ) => {
+    setWorkspaceName(event.target.value);
+  };
+
+  const handleDeleteWorkspace = () => {
+    if (workspaceName !== workspace.name) {
+      enqueueSnackbar(`The workspace name does not match.`, {
+        variant: 'error',
+      });
+      return;
+    }
+    onConfirm();
+  };
 
   return (
     <Box
@@ -47,14 +67,23 @@ const DeleteWorkspace: React.FC<IDeleteWorkspaceProps> = ({
       <WarningIcon className={classes.warningIcon} />
       <Typography variant="h6">Delete Workspace?</Typography>
       <Typography variant="subtitle1" align="center">
-        {`Do you really want to delete ${workspace.name} Workspace? This cannot be undone.`}
+        {`This action cannot be undone.`}
       </Typography>
+      <Box width={300}>
+        <TextInput
+          value={workspaceName}
+          label={workspace.name}
+          labelPosition="top"
+          fullWidth={true}
+          onChange={handleChangeWorkspaceName}
+        />
+      </Box>
       <Button
         title="Delete Workspace"
         color="primary"
         variant="contained"
         className={classes.deleteButton}
-        onClick={onConfirm}
+        onClick={handleDeleteWorkspace}
       />
       <Button
         title="Cancel"
