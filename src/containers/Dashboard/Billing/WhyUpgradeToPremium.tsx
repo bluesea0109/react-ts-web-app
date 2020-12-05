@@ -13,19 +13,21 @@ const useStyles = makeStyles((theme: Theme) => ({
     color: 'white',
     background:
       'linear-gradient(109.22deg, #1C1C87 14.47%, #1B228C 49.84%, #1060BD 97.26%);',
-    borderRadius: '5px',
+    borderRadius: theme.spacing(1),
+    padding: theme.spacing(1),
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'center',
     alignItems: 'center',
-    padding: `${theme.spacing(4)}px ${theme.spacing(5)}px`,
+    justifyContent: 'space-between',
+    paddingTop: theme.spacing(5),
+    height: '100%',
+    boxSizing: 'border-box',
 
     '& *': {
       boxSizing: 'border-box',
     },
   },
   switchButton: {
-    width: 200,
     color: '#0021FF',
     backgroundColor: 'white',
 
@@ -61,8 +63,16 @@ const WhyUpgradeToPremium: React.FC<WhyUpgradeToPremiumProps> = ({
 
   return (
     <Grid className={classes.root}>
-      <Typography variant="h5">Why Upgrade to Bavard Premium?</Typography>
-      <Box paddingY={2}>
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="flex-start"
+        justifyContent="center"
+        mt={1}
+        width="70%">
+        <Box textAlign="center" mb={2}>
+          <Typography variant="h5">Why Upgrade to Bavard Premium?</Typography>
+        </Box>
         <PremiumText
           Icon={<NLPUsageIcon color="white" />}
           text="Unlimited Natural Language Processing"
@@ -84,7 +94,12 @@ const WhyUpgradeToPremium: React.FC<WhyUpgradeToPremiumProps> = ({
           text="Customer Analytics"
         />
       </Box>
-      <Box display="flex" justifyContent="center">
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignSelf="center"
+        mb={1}
+        width="50%">
         <Button
           title="Make the Switch"
           className={classes.switchButton}

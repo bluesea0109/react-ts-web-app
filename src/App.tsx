@@ -7,7 +7,6 @@ import 'firebase/auth';
 import React, { useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
-import './App.css';
 import { currentUser } from './atoms';
 import { GET_CURRENT_USER } from './common-gql-queries';
 import AppBar from './containers/Appbar';
@@ -26,6 +25,7 @@ import MySidebar from './containers/Sidebar';
 import TextLabeling from './containers/TextLabeling';
 import { IUser } from './models/user-service';
 import { MenuName } from './utils/enums';
+import './App.css';
 
 const drawerWidth = 300;
 
