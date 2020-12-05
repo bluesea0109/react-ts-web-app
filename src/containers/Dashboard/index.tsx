@@ -1,4 +1,9 @@
-import { ActionDialog, Button, CommonTable } from '@bavard/react-components';
+import {
+  ActionDialog,
+  Button,
+  CommonTable,
+  Switch,
+} from '@bavard/react-components';
 import {
   Box,
   CardHeader,
@@ -15,21 +20,31 @@ import { useMutation } from '@apollo/client';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import React, { useState } from 'react';
-import { IUser, IWorkspace } from '../../models/user-service';
-import { DELETE_WORKSPACE, GET_CURRENT_USER } from '../../common-gql-queries';
+import { useHistory } from 'react-router-dom';
+
 import NewWorkspace from './NewWorkspace';
 import DeleteWorkspace from './DeleteWorkspace';
+
+import { IUser, IWorkspace } from '../../models/user-service';
+import {
+  DELETE_WORKSPACE,
+  GET_CURRENT_USER,
+  UPDATE_ACTIVE_WORKSPACE,
+} from '../../common-gql-queries';
 
 interface IDashboardProps {
   user: IUser;
 }
 
 const Dashboard: React.FC<IDashboardProps> = ({ user }) => {
-  const firebaseUser = firebase.auth().currentUser;
   const classes = useStyles();
+  const firebaseUser = firebase.auth().currentUser;
+  const history = useHistory();
+
   const [currentWorkspace, setCurrentWorkspace] = useState<IWorkspace>();
   const [showAddWorkspace, setShowAddWorkspace] = useState(false);
   const [showDeleteWorkspace, setShowDeleteWorkspace] = useState(false);
+
   const [deleteWorkspace] = useMutation(DELETE_WORKSPACE, {
     refetchQueries: [
       {
@@ -39,15 +54,62 @@ const Dashboard: React.FC<IDashboardProps> = ({ user }) => {
     awaitRefetchQueries: true,
   });
 
+  const [updateActiveWorkspace] = useMutation(UPDATE_ACTIVE_WORKSPACE, {
+    refetchQueries: [{ query: GET_CURRENT_USER }],
+    awaitRefetchQueries: true,
+    onCompleted: ({ updateUserActiveWorkspace }) => {
+      history.push(
+        `/workspaces/${updateUserActiveWorkspace.activeWorkspace.id}/settings`,
+      );
+    },
+  });
+
   if (!firebaseUser) {
     // this shouldn't happen
     console.error('No user signed in');
     return <Typography>{'No user is signed in.'}</Typography>;
   }
 
+  const handleCloseWorkspace = () => {
+    setCurrentWorkspace(undefined);
+    setShowDeleteWorkspace(false);
+  };
+
+  const handleShowWorkspace = (workspace: IWorkspace) => {
+    setCurrentWorkspace(workspace);
+    setShowDeleteWorkspace(true);
+  };
+
+  const handleDeleteWorkspace = (workspace: IWorkspace) => {
+    deleteWorkspace({
+      variables: { workspaceId: workspace.id },
+    });
+    handleCloseWorkspace();
+  };
+
+  const handleActivateWorkspace = (workspace: IWorkspace) => {
+    updateActiveWorkspace({
+      variables: {
+        workspaceId: workspace.id,
+      },
+    });
+  };
+
   const workspaces = user.workspaces;
   const columns = [
     { title: 'Name', field: 'name' },
+    {
+      title: 'Status',
+      field: 'billingEnabled',
+      renderRow: (workspace: IWorkspace) => (
+        <Switch
+          checked={user.activeWorkspace?.id === workspace.id}
+          defaultActiveText=" "
+          defaultInactiveText=" "
+          onChange={() => handleActivateWorkspace(workspace)}
+        />
+      ),
+    },
     {
       title: 'Actions',
       field: '',
@@ -63,23 +125,6 @@ const Dashboard: React.FC<IDashboardProps> = ({ user }) => {
       ),
     },
   ];
-
-  const handleCloseWorkspace = () => {
-    setCurrentWorkspace(undefined);
-    setShowDeleteWorkspace(false);
-  };
-
-  const handleShowWorkspace = (workspace: IWorkspace) => {
-    setCurrentWorkspace(workspace);
-    setShowDeleteWorkspace(true);
-  };
-
-  const handleDeleteWorkspace = (rowData: IWorkspace) => {
-    deleteWorkspace({
-      variables: { workspaceId: rowData.id },
-    });
-    handleCloseWorkspace();
-  };
 
   return (
     <div className={'page-container'}>

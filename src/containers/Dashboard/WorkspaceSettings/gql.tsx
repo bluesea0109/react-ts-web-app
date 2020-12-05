@@ -45,26 +45,6 @@ export const INVITE_WORKSPACE_MEMBER = gql`
   }
 `;
 
-export const ENABLE_BILLING = gql`
-  mutation(
-    $workspaceId: String!
-    $stripeToken: String!
-    $billingEmail: String!
-  ) {
-    enableBilling(
-      workspaceId: $workspaceId
-      stripeToken: $stripeToken
-      billingEmail: $billingEmail
-    )
-  }
-`;
-
-export const DISABLE_BILLING = gql`
-  mutation($workspaceId: String!) {
-    disableBilling(workspaceId: $workspaceId)
-  }
-`;
-
 export const getApiKeysQuery = gql`
   query($workspaceId: String!) {
     apiKeys(workspaceId: $workspaceId) {
