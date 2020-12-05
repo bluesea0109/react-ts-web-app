@@ -36,7 +36,7 @@ export default function ChatWithAgent() {
     skip: !workspaceId,
   });
 
-  const loadedKey = apiKeysQuery.data?.apiKeys?.[0].key ?? null;
+  const loadedKey = apiKeysQuery.data?.apiKeys?.[0]?.key ?? null;
   useEffect(() => {
     if (!apiKeysQuery.loading) {
       setApiKey(loadedKey);
