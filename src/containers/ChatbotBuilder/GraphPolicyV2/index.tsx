@@ -200,7 +200,9 @@ export default function GraphPolicies() {
                 variant={'contained'}
                 className={classes.createButton}
                 color="primary"
-                onClick={() => setUpsertDialogOpen(true)}>
+                onClick={() => {
+                  setUpsertDialogOpen(true);
+                }}>
                 Create Policy
               </Button>
               <Button
@@ -217,6 +219,9 @@ export default function GraphPolicies() {
           <CreateGraphPolicyDialog
             open={upsertDialogOpen}
             onSuccess={() => {
+              setUpsertDialogOpen(false);
+            }}
+            onCancel={() => {
               setUpsertDialogOpen(false);
             }}
             agentId={agentId}
