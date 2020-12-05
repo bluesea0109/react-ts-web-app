@@ -7,10 +7,11 @@ import { TextInput } from '@bavard/react-components';
 import Box from '@material-ui/core/Box';
 import FormGroup from '@material-ui/core/FormGroup';
 import makeStyles from '@material-ui/styles/makeStyles';
+
+import config from '../../config';
 import { currentUser } from '../../atoms';
 
-import { ENABLE_BILLING } from '../Dashboard/WorkspaceSettings/gql';
-import config from '../../config';
+import { ENABLE_BILLING } from '../../common-gql-queries';
 
 interface BillingDetailsProps {
   closeDialog: () => void;

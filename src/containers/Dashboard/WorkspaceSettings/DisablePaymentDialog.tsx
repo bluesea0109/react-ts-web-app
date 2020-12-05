@@ -1,6 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router';
 
+import { useMutation } from '@apollo/client';
 import { Button, Typography } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -8,12 +9,10 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
-import { useMutation } from '@apollo/client';
-
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 
-import { DISABLE_BILLING } from './gql';
+import { DISABLE_BILLING } from '../../../common-gql-queries';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
