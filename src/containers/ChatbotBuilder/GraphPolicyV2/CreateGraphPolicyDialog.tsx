@@ -31,9 +31,15 @@ interface IProps {
   agentId: number;
   open?: boolean;
   onSuccess?: (policy: GraphPolicyV2) => void;
+  onCancel?: () => void;
 }
 
-const CreateGraphPolicyDialog = ({ open, agentId, onSuccess }: IProps) => {
+const CreateGraphPolicyDialog = ({
+  open,
+  agentId,
+  onSuccess,
+  onCancel,
+}: IProps) => {
   const [agentConfig, setAgentConfig] = useRecoilState(currentAgentConfig);
 
   const [isOpen, setOpen] = useState(open || false);
@@ -48,7 +54,8 @@ const CreateGraphPolicyDialog = ({ open, agentId, onSuccess }: IProps) => {
 
   const closeDialog = () => {
     clearForm();
-    setOpen(false);
+    onCancel?.();
+    setOpen(open || false);
   };
 
   const onFormChange = () => {
