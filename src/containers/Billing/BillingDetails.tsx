@@ -1,3 +1,5 @@
+import firebase from 'firebase/app';
+import 'firebase/auth';
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { useRecoilState } from 'recoil';
@@ -9,6 +11,7 @@ import FormGroup from '@material-ui/core/FormGroup';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import makeStyles from '@material-ui/styles/makeStyles';
 
+import { getIdToken } from '../../apollo-client';
 import config from '../../config';
 import { currentUser } from '../../atoms';
 
@@ -38,6 +41,8 @@ const BillingDetails: React.FC<BillingDetailsProps> = ({ closeDialog }) => {
       refetchQueries: [{ query: GET_CURRENT_USER }, { query: GET_WORKSPACES }],
       awaitRefetchQueries: true,
       onCompleted: () => {
+        sessionStorage.removeItem('token');
+        getIdToken();
         closeDialog();
       },
     },
@@ -92,8 +97,6 @@ const BillingDetails: React.FC<BillingDetailsProps> = ({ closeDialog }) => {
             billingEmail: user?.email || '',
           },
         });
-
-        // closeDialog();
       },
     );
   };
