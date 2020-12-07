@@ -14,7 +14,8 @@ interface NewApiKeyDialogProps {
   isOpen: boolean;
   workspaceId?: String;
   onClose: () => void;
-  onCreateKey: (key: IAPIKey) => void;
+  apiKeys: IAPIKey[];
+  onCreateKey: (key: IAPIKey[]) => void;
 }
 
 interface CreateApiKeyMutationResult {
@@ -25,6 +26,7 @@ const NewApiKeyDialog = ({
   isOpen,
   workspaceId,
   onClose,
+  apiKeys,
   onCreateKey,
 }: NewApiKeyDialogProps) => {
   const [apiKey, setApiKey] = useState('');
@@ -55,7 +57,7 @@ const NewApiKeyDialog = ({
       });
 
       if (data.data) {
-        onCreateKey(data.data.generateApiKey);
+        onCreateKey([...apiKeys, data.data.generateApiKey]);
         onClose();
       }
     } catch (e) {}

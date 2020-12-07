@@ -42,7 +42,7 @@ interface IProps {
   workspaceId?: String;
 }
 
-export default function Project(props: IProps) {
+export default function Project({ workspaceId }: IProps) {
   const classes = useStyles();
   const [apiKeys, setAPIKeys] = useState<IAPIKey[]>([]);
   const [currentKey, setCurrentKey] = useState<IAPIKey | null>(null);
@@ -51,27 +51,41 @@ export default function Project(props: IProps) {
 
   const { loading } = useQuery<any>(getApiKeysQuery, {
     variables: {
-      workspaceId: props.workspaceId,
+      workspaceId,
     },
     onCompleted: (data) => {
       setAPIKeys(data.apiKeys);
     },
   });
 
-  const [deleteKey] = useMutation(deleteApiKeyMutation, {
+  const [deleteKey, apiKeysResponse] = useMutation(deleteApiKeyMutation, {
+    variables: {
+      workspaceId,
+      keyId: Number(currentKey?.id),
+    },
     refetchQueries: [
-      { query: getApiKeysQuery, variables: { workspaceId: props.workspaceId } },
+      {
+        query: getApiKeysQuery,
+        variables: { workspaceId },
+      },
     ],
   });
 
-  const deleteApiKey = async (apiKey: IAPIKey) => {
+  const deleteApiKey = (apiKey: IAPIKey) => {
     try {
-      await deleteKey({
+      setCurrentKey(apiKey);
+      deleteKey({
         variables: {
+          workspaceId,
           keyId: Number(apiKey.id),
         },
       });
 
+      const filteredApiKeys = apiKeys.filter((apiKey) => {
+        return Number(apiKey.id) !== Number(currentKey?.id);
+      });
+
+      setAPIKeys(filteredApiKeys);
       setCurrentKey(null);
     } catch (e) {}
   };
@@ -99,16 +113,26 @@ export default function Project(props: IProps) {
   };
 
   const handleUpdateApiKey = (key: IAPIKey | null) => {
+    const updatedApiKeys = apiKeys.map((apiKey) => {
+      if (apiKey.key === key?.key) {
+        return Object.assign({}, apiKey, key);
+      } else {
+        return apiKey;
+      }
+    });
+
     setCurrentKey(key);
+    setAPIKeys(updatedApiKeys);
   };
 
   return (
     <Box width={1} mx={1} mt={2}>
       <NewApiKeyDialog
         isOpen={showCreateDialog}
-        workspaceId={props.workspaceId}
+        workspaceId={workspaceId}
         onClose={handleToggleCreateDialog}
-        onCreateKey={setCurrentKey}
+        apiKeys={apiKeys}
+        onCreateKey={setAPIKeys}
       />
       <CommonTable
         data={{
@@ -151,7 +175,7 @@ export default function Project(props: IProps) {
       {currentKey && (
         <UpdateApiKeyDialog
           isOpen={showUpdateDialog}
-          workspaceId={props.workspaceId}
+          workspaceId={workspaceId}
           currentKey={currentKey}
           onUpdate={handleUpdateApiKey}
           onClose={handleCloseUpdateDialog}
