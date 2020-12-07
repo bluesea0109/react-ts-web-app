@@ -19,7 +19,6 @@ import {
 interface ConversationListProps {
   conversations: ITrainingConversation[];
   onDelete: (conversation: ITrainingConversation) => void;
-  onSave: () => void;
 }
 
 const ConversationList: React.FC<ConversationListProps> = ({
@@ -70,10 +69,16 @@ const ConversationDetail = ({ item }: IConversationDetailProps) => (
 export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
   item: conversation,
   isCollapsed,
-  onDeleteRow,
+  onDeleteRow: handleDeleteRow,
   onToggleCollapse,
 }) => {
   const classes = useStyles();
+
+  const onDeleteRow = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    handleDeleteRow(conversation);
+  };
+
   return (
     <Grid container={true} className={classes.header} alignItems="center">
       <Grid item={true} container={true} xs={8} alignItems="center">
@@ -95,7 +100,7 @@ export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
         </Typography>
       </Grid>
       <Grid item={true} container={true} xs={4} justify="flex-end">
-        <Delete onClick={() => onDeleteRow(conversation)} />
+        <Delete onClick={onDeleteRow} />
       </Grid>
     </Grid>
   );
