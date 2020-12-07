@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { ActionDialog, TextInput } from '@bavard/react-components';
 import { Box, CircularProgress, Typography } from '@material-ui/core';
@@ -6,13 +7,12 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import React, { useState } from 'react';
-import { useParams } from 'react-router';
 import { IAPIKey } from '../../../models/user-service';
 import { createApiKeyMutation, getApiKeysQuery } from './gql';
 
 interface NewApiKeyDialogProps {
   isOpen: boolean;
+  workspaceId?: String;
   onClose: () => void;
   onCreateKey: (key: IAPIKey) => void;
 }
@@ -23,10 +23,10 @@ interface CreateApiKeyMutationResult {
 
 const NewApiKeyDialog = ({
   isOpen,
+  workspaceId,
   onClose,
   onCreateKey,
 }: NewApiKeyDialogProps) => {
-  const { workspaceId } = useParams<{ workspaceId: string }>();
   const [apiKey, setApiKey] = useState('');
   const [
     createKey,

@@ -38,9 +38,12 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-export default function Project() {
+interface IProps {
+  workspaceId?: String;
+}
+
+export default function Project(props: IProps) {
   const classes = useStyles();
-  const { workspaceId } = useParams<{ workspaceId: string }>();
   const [apiKeys, setAPIKeys] = useState<IAPIKey[]>([]);
   const [currentKey, setCurrentKey] = useState<IAPIKey | null>(null);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -48,7 +51,7 @@ export default function Project() {
 
   const { loading } = useQuery<any>(getApiKeysQuery, {
     variables: {
-      workspaceId,
+      workspaceId: props.workspaceId,
     },
     onCompleted: (data) => {
       setAPIKeys(data.apiKeys);
@@ -56,7 +59,9 @@ export default function Project() {
   });
 
   const [deleteKey] = useMutation(deleteApiKeyMutation, {
-    refetchQueries: [{ query: getApiKeysQuery, variables: { workspaceId } }],
+    refetchQueries: [
+      { query: getApiKeysQuery, variables: { workspaceId: props.workspaceId } },
+    ],
   });
 
   const deleteApiKey = async (apiKey: IAPIKey) => {
@@ -101,6 +106,7 @@ export default function Project() {
     <Box width={1} mx={1} mt={2}>
       <NewApiKeyDialog
         isOpen={showCreateDialog}
+        workspaceId={props.workspaceId}
         onClose={handleToggleCreateDialog}
         onCreateKey={setCurrentKey}
       />
@@ -145,6 +151,7 @@ export default function Project() {
       {currentKey && (
         <UpdateApiKeyDialog
           isOpen={showUpdateDialog}
+          workspaceId={props.workspaceId}
           currentKey={currentKey}
           onUpdate={handleUpdateApiKey}
           onClose={handleCloseUpdateDialog}
