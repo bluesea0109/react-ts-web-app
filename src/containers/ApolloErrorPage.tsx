@@ -16,7 +16,7 @@ const styles = makeStyles((theme: Theme) =>
 );
 
 interface IErrorPageProps {
-  error: ApolloError;
+  error?: ApolloError;
   onClose?: () => void;
 }
 
@@ -36,11 +36,13 @@ const ApolloErrorPage: React.FC<IErrorPageProps> = ({ error, onClose }) => {
     onClose?.();
   };
 
+  const qlErrors = error?.graphQLErrors || [];
+
   return (
     <Grid container={true} className={classes.root}>
       <Grid item={true} xs={12}>
-        {error && error.graphQLErrors.length ? (
-          error.graphQLErrors.map((e: GraphQLError, index: number) => {
+        {qlErrors.length ? (
+          qlErrors.map((e: GraphQLError, index: number) => {
             if (!e.extensions) return <DefaultMessage key={index} />;
 
             switch (e.extensions.code) {
