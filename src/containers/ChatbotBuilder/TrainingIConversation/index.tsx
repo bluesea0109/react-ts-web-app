@@ -3,7 +3,8 @@ import {
   IConversation,
   IDialogueTurn,
 } from '@bavard/agent-config/dist/conversations';
-import { Button, Grid, Paper, Typography, Box } from '@material-ui/core';
+import { Button } from '@bavard/react-components';
+import { Grid, Paper, Typography, Box } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
@@ -142,11 +143,11 @@ export default function TrainingIConversations() {
       <Paper className={classes.paper}>
         <Box display="flex" justifyContent="flex-end">
           <Button
+            title="Create New Conversation"
             variant="contained"
             color="primary"
-            onClick={onCreateNewConversation}>
-            Create New Conversation
-          </Button>
+            onClick={onCreateNewConversation}
+          />
         </Box>
 
         {sortedConversations.length > 0 ? (

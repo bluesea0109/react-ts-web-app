@@ -1,7 +1,8 @@
 import { ApolloQueryResult } from '@apollo/client';
 import { withApollo, WithApolloClient } from '@apollo/client/react/hoc';
 import { IAgentConfig } from '@bavard/agent-config';
-import { Button, Typography } from '@material-ui/core';
+import { Button } from '@bavard/react-components';
+import { Typography } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -681,28 +682,29 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
           <DialogActions>
             {state.numCompleted === this.totalSteps ? (
               <Button
+                title="Close"
                 variant="contained"
                 color="secondary"
-                onClick={this.handleClose}>
-                {'Close'}
-              </Button>
+                onClick={this.handleClose}
+              />
             ) : (
               <Button
+                title="Cancel"
                 color="secondary"
                 onClick={this.onCancel}
-                disabled={state.steps.length >= 1}>
-                {'Cancel'}
-              </Button>
+                disabled={state.steps.length >= 1}
+              />
             )}
           </DialogActions>
         </Dialog>
         <Button
+          title="Upload JSON File"
           variant="contained"
           component="label"
           className={classes.uploadButton}
           disabled={this.props.buttonsDisabled}
-          color="primary">
-          {'Upload JSON File'}
+          color="primary"
+          onClick={() => {}}>
           <input
             name="json"
             id="json"
@@ -714,12 +716,13 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
           />
         </Button>
         <Button
+          title="Upload Zip File"
           variant="contained"
           component="label"
           className={classes.uploadButton}
           disabled={this.props.buttonsDisabled}
-          color="primary">
-          {'Upload Zip File'}
+          color="primary"
+          onClick={() => {}}>
           <input
             name="zipfile"
             id="zipfile"

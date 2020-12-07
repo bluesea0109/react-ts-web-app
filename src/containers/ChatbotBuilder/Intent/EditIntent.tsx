@@ -1,7 +1,6 @@
 import { BaseAgentAction, IIntent } from '@bavard/agent-config';
-import { FullDialog } from '@bavard/react-components';
+import { FullDialog, Button } from '@bavard/react-components';
 import { Grid } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { useEffect, useState } from 'react';
 import { Maybe } from '../../../utils/types';
@@ -70,12 +69,12 @@ const EditIntent = ({
             justify="center"
             className={classes.buttonGrid}>
             <Button
+              title="Save Intent"
               autoFocus={true}
               color="primary"
               variant="contained"
-              onClick={saveChanges}>
-              Save Intent
-            </Button>
+              onClick={saveChanges}
+            />
           </Grid>
         </Grid>
       </Grid>

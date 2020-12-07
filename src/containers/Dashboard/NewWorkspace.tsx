@@ -1,7 +1,6 @@
 import { useMutation } from '@apollo/client';
-import { TextInput } from '@bavard/react-components';
+import { TextInput, Button } from '@bavard/react-components';
 import {
-  Button,
   Box,
   LinearProgress,
   makeStyles,
@@ -115,13 +114,13 @@ function NewWorkspace({ onSuccess }: INewWorkspaceProps) {
         onChange={(e: any) => setState({ ...state, name: e.target.value })}
       />
       <Button
+        title="Submit"
         color="primary"
         variant="contained"
         disabled={loading || activateResult.loading || !state.name}
         className={classes.button}
-        onClick={submit}>
-        {'Submit'}
-      </Button>
+        onClick={submit}
+      />
     </Box>
   );
 }

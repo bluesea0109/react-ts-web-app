@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { CommonTable } from '@bavard/react-components';
-import { Button, CardHeader, Typography } from '@material-ui/core';
+import { CommonTable, Button } from '@bavard/react-components';
+import { CardHeader, Typography } from '@material-ui/core';
 import { AddCircleOutline, PersonAdd } from '@material-ui/icons';
 
 import React, { useState } from 'react';
@@ -80,9 +80,11 @@ const InvitedMemberTable: React.FC<IInvitedMemberTableProps> = ({
     {
       title: 'Revoke Invitation',
       renderRow: (rowData: IInvitedMember) => (
-        <Button variant="contained" onClick={() => revokeInvitation(rowData)}>
-          Revoke
-        </Button>
+        <Button
+          title="Revoke"
+          variant="contained"
+          onClick={() => revokeInvitation(rowData)}
+        />
       ),
     },
   ];
@@ -102,11 +104,11 @@ const InvitedMemberTable: React.FC<IInvitedMemberTableProps> = ({
             }
             action={
               <Button
+                title="Invite A Member"
                 color="primary"
                 onClick={onShowInvite}
-                endIcon={<AddCircleOutline />}>
-                Invite a Member
-              </Button>
+                endIcon={<AddCircleOutline />}
+              />
             }
           />
         ),

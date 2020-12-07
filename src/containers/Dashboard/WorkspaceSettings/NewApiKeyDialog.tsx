@@ -1,7 +1,6 @@
 import { useMutation } from '@apollo/client';
-import { ActionDialog, TextInput } from '@bavard/react-components';
+import { ActionDialog, TextInput, Button } from '@bavard/react-components';
 import { Box, CircularProgress, Typography } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
@@ -104,9 +103,12 @@ const NewApiKeyDialog = ({
         </DialogContent>
         <DialogActions>
           {!loading && (
-            <Button disabled={loading} onClick={createAPIKey} color="primary">
-              Create
-            </Button>
+            <Button
+              title="Create"
+              disabled={loading}
+              onClick={createAPIKey}
+              color="primary"
+            />
           )}
           {loading && <CircularProgress size={20} color="primary" />}
         </DialogActions>

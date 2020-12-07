@@ -7,13 +7,8 @@ import {
 import { IFormField } from '@bavard/agent-config/dist';
 
 import { EFormFieldTypes } from '@bavard/agent-config/dist/enums';
-import { TextInput } from '@bavard/react-components';
-import {
-  Button,
-  FormControl,
-  IconButton,
-  InputAdornment,
-} from '@material-ui/core';
+import { TextInput, Button } from '@bavard/react-components';
+import { FormControl, IconButton, InputAdornment } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { CancelOutlined } from '@material-ui/icons';
 import { Alert } from '@material-ui/lab';
@@ -83,12 +78,12 @@ export default function UpsertAgentFormNode({
         </Alert>
       )}
       <Button
+        title="Submit"
         className={classes.formControl}
         onClick={submitFunc}
         variant="contained"
-        color="primary">
-        Submit
-      </Button>
+        color="primary"
+      />
     </React.Fragment>
   );
 

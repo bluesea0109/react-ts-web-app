@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { Button } from '@material-ui/core';
+import { Button } from '@bavard/react-components';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -106,12 +106,18 @@ function DeleteCategorySetDialog(props: IDeleteCategorySetProps) {
         </DialogTitle>
         {dialogContent}
         <DialogActions>
-          <Button color="primary" disabled={loading} onClick={handleClose}>
-            {'Cancel'}
-          </Button>
-          <Button color="secondary" disabled={loading} onClick={handleDelete}>
-            {'Delete'}
-          </Button>
+          <Button
+            title="Cancel"
+            color="primary"
+            disabled={loading}
+            onClick={handleClose}
+          />
+          <Button
+            title="Delete"
+            color="secondary"
+            disabled={loading}
+            onClick={handleDelete}
+          />
         </DialogActions>
       </Dialog>
       <IconButton className={classes.button} onClick={handleOpen}>

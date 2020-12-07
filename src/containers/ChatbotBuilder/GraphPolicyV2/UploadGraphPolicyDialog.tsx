@@ -1,5 +1,5 @@
 import { withApollo, WithApolloClient } from '@apollo/client/react/hoc';
-import Button from '@material-ui/core/Button';
+import { Button } from '@bavard/react-components';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -77,13 +77,9 @@ class UploadGraphPolicyDialog extends React.Component<
         {dialogContent}
         <DialogActions>
           {state.policySaved ? (
-            <Button color="secondary" onClick={this.onClose}>
-              {'Close'}
-            </Button>
+            <Button title="Close" color="secondary" onClick={this.onClose} />
           ) : (
-            <Button color="secondary" onClick={this.onCancel}>
-              {'Cancel'}
-            </Button>
+            <Button title="Cancel" color="secondary" onClick={this.onCancel} />
           )}
         </DialogActions>
       </Dialog>

@@ -1,5 +1,6 @@
 import { useMutation } from '@apollo/client';
-import { Button, Typography } from '@material-ui/core';
+import { Button } from '@bavard/react-components';
+import { Typography } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import {
   createStyles,
@@ -276,15 +277,16 @@ function ImageReviewerContent(props: IImageReviewerContentProps) {
   );
 
   const approveButton = (
-    <Button className={classes.marginRight} size="small" onClick={approve}>
-      {'Approve'}
-    </Button>
+    <Button
+      title="Approve"
+      className={classes.marginRight}
+      size="small"
+      onClick={approve}
+    />
   );
 
   const disapproveButton = (
-    <Button size="small" onClick={disapprove}>
-      {'Disapprove'}
-    </Button>
+    <Button title="Disapprove" size="small" onClick={disapprove} />
   );
 
   return (

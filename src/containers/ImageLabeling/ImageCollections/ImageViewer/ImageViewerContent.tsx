@@ -6,7 +6,7 @@ import {
   Typography,
   useTheme,
 } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
+import { Button } from '@bavard/react-components';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Paper from '@material-ui/core/Paper';
 import Switch from '@material-ui/core/Switch';
@@ -356,55 +356,59 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
         <div className={classes.middle}>
           <Toolbar variant="dense" disableGutters={true}>
             <Button
+              title=""
               size="small"
               variant="contained"
               className={classes.marginRight}
               onClick={zoomIn}
-              color="secondary">
-              <ZoomInIcon />
-            </Button>
+              LeftIcon={ZoomInIcon}
+              color="secondary"
+            />
             <Button
+              title=""
               size="small"
               variant="contained"
               className={classes.marginRight}
               onClick={zoomOut}
-              color="secondary">
-              <ZoomOutIcon />
-            </Button>
+              LeftIcon={ZoomOutIcon}
+              color="secondary"
+            />
             <Button
+              title=""
               size="small"
               color="secondary"
               className={classes.marginRight}
               variant="contained"
-              onClick={() => prevImage()}>
-              <NavigateBeforeIcon />
-            </Button>
+              LeftIcon={NavigateBeforeIcon}
+              onClick={() => prevImage()}
+            />
             <Button
+              title=""
               color="secondary"
               size="small"
               className={classes.marginRight}
               variant="contained"
-              onClick={() => nextImage()}>
-              <NavigateNextIcon />
-            </Button>
+              LeftIcon={NavigateNextIcon}
+              onClick={() => nextImage()}
+            />
             <Button
+              title="Unlabeled"
               color="secondary"
               size="small"
               className={classes.marginRight}
               variant="contained"
-              onClick={() => prevImage(true)}>
-              <NavigateBeforeIcon />
-              {'Unlabeled'}
-            </Button>
+              LeftIcon={NavigateBeforeIcon}
+              onClick={() => prevImage(true)}
+            />
             <Button
+              title="Unlabeled"
               color="secondary"
               size="small"
               className={classes.marginRight}
               variant="contained"
-              onClick={() => nextImage(true)}>
-              {'Unlabeled'}
-              <NavigateNextIcon />
-            </Button>
+              LeftIcon={NavigateNextIcon}
+              onClick={() => nextImage(true)}
+            />
             <FormControlLabel
               control={
                 <Switch
@@ -417,9 +421,12 @@ const ImageViewerContent: React.FC<IImageViewerContentProps> = (props) => {
               label="View Mask"
             />
             <Typography className={classes.grow} />
-            <Button color="secondary" size="small" onClick={labelThisImage}>
-              {'Label this Image'}
-            </Button>
+            <Button
+              title="Label this Image"
+              color="secondary"
+              size="small"
+              onClick={labelThisImage}
+            />
           </Toolbar>
           <div className={classes.canvasHeader}>
             <Typography>{`Zoom Level: ${state.zoom.toFixed(1)}`}</Typography>

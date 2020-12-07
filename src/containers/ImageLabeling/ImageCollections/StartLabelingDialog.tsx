@@ -1,7 +1,6 @@
 import { useMutation } from '@apollo/client';
-import { TextInput } from '@bavard/react-components';
+import { TextInput, Button } from '@bavard/react-components';
 import {
-  Button,
   FormControl,
   FormControlLabel,
   FormLabel,
@@ -162,15 +161,13 @@ function StartLabelingDialog() {
         <DialogTitle>{'Start Labeling Images'}</DialogTitle>
         {dialogContent}
         <DialogActions>
-          <Button color="primary" onClick={handleClose}>
-            {'Cancel'}
-          </Button>
+          <Button title="Cancel" color="primary" onClick={handleClose} />
           <Button
+            title="Begin"
             color="secondary"
             onClick={beginLabeling}
-            disabled={beginDisabled()}>
-            {'Begin'}
-          </Button>
+            disabled={beginDisabled()}
+          />
         </DialogActions>
       </Dialog>
       <IconButtonPlay tooltip="Start Labeling" onClick={handleOpen} />
