@@ -12,7 +12,11 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 
-import { DISABLE_BILLING } from '../../../common-gql-queries';
+import {
+  DISABLE_BILLING,
+  GET_CURRENT_USER,
+  GET_WORKSPACES,
+} from '../../../common-gql-queries';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -41,7 +45,10 @@ export default function PaymentDialog() {
   });
   const { workspaceId } = useParams<{ workspaceId: string }>();
 
-  const [doDisableBilling, disableBillingResp] = useMutation(DISABLE_BILLING);
+  const [doDisableBilling, disableBillingResp] = useMutation(DISABLE_BILLING, {
+    refetchQueries: [{ query: GET_CURRENT_USER }, { query: GET_WORKSPACES }],
+    awaitRefetchQueries: true,
+  });
 
   const handleOpen = () => {
     setState({ ...state, modalOpen: true });

@@ -6,12 +6,17 @@ import { Button } from '@bavard/react-components';
 import { TextInput } from '@bavard/react-components';
 import Box from '@material-ui/core/Box';
 import FormGroup from '@material-ui/core/FormGroup';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import makeStyles from '@material-ui/styles/makeStyles';
 
 import config from '../../config';
 import { currentUser } from '../../atoms';
 
-import { ENABLE_BILLING } from '../../common-gql-queries';
+import {
+  ENABLE_BILLING,
+  GET_CURRENT_USER,
+  GET_WORKSPACES,
+} from '../../common-gql-queries';
 
 interface BillingDetailsProps {
   closeDialog: () => void;
@@ -27,7 +32,16 @@ const BillingDetails: React.FC<BillingDetailsProps> = ({ closeDialog }) => {
   const [expDate, setExpDate] = useState('');
   const [cvv, setCVV] = useState('');
 
-  const [doEnableBilling, enableBillingResp] = useMutation(ENABLE_BILLING);
+  const [doEnableBilling, { loading: enablingBilling }] = useMutation(
+    ENABLE_BILLING,
+    {
+      refetchQueries: [{ query: GET_CURRENT_USER }, { query: GET_WORKSPACES }],
+      awaitRefetchQueries: true,
+      onCompleted: () => {
+        closeDialog();
+      },
+    },
+  );
 
   const handleCreditCardChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -79,7 +93,7 @@ const BillingDetails: React.FC<BillingDetailsProps> = ({ closeDialog }) => {
           },
         });
 
-        closeDialog();
+        // closeDialog();
       },
     );
   };
@@ -90,6 +104,7 @@ const BillingDetails: React.FC<BillingDetailsProps> = ({ closeDialog }) => {
 
   return (
     <Box paddingX={4}>
+      {enablingBilling && <LinearProgress color="secondary" />}
       <form>
         <FormGroup row>
           <TextInput
