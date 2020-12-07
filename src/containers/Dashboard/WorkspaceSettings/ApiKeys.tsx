@@ -78,11 +78,11 @@ export default function Project() {
         },
       });
 
-      const temp = apiKeys.filter((apiKey) => {
+      const filteredApiKeys = apiKeys.filter((apiKey) => {
         return Number(apiKey.id) !== Number(currentKey?.id);
       });
 
-      setAPIKeys(temp);
+      setAPIKeys(filteredApiKeys);
       setCurrentKey(null);
     } catch (e) {}
   };
@@ -110,7 +110,7 @@ export default function Project() {
   };
 
   const handleUpdateApiKey = (key: IAPIKey | null) => {
-    const temp = apiKeys.map((apiKey) => {
+    const updatedApiKeys = apiKeys.map((apiKey) => {
       if (apiKey.key === key?.key) {
         return Object.assign({}, apiKey, key);
       } else {
@@ -119,7 +119,7 @@ export default function Project() {
     });
 
     setCurrentKey(key);
-    setAPIKeys(temp);
+    setAPIKeys(updatedApiKeys);
   };
 
   return (
