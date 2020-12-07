@@ -55,18 +55,34 @@ export default function Project() {
     },
   });
 
-  const [deleteKey] = useMutation(deleteApiKeyMutation, {
-    refetchQueries: [{ query: getApiKeysQuery, variables: { workspaceId } }],
+  const [deleteKey, apiKeysResponse] = useMutation(deleteApiKeyMutation, {
+    variables: {
+      workspaceId,
+      keyId: Number(currentKey?.id),
+    },
+    refetchQueries: [
+      {
+        query: getApiKeysQuery,
+        variables: { workspaceId },
+      },
+    ],
   });
 
-  const deleteApiKey = async (apiKey: IAPIKey) => {
+  const deleteApiKey = (apiKey: IAPIKey) => {
     try {
-      await deleteKey({
+      setCurrentKey(apiKey);
+      deleteKey({
         variables: {
+          workspaceId,
           keyId: Number(apiKey.id),
         },
       });
 
+      const temp = apiKeys.filter((apiKey) => {
+        return Number(apiKey.id) !== Number(currentKey?.id);
+      });
+
+      setAPIKeys(temp);
       setCurrentKey(null);
     } catch (e) {}
   };
@@ -94,7 +110,16 @@ export default function Project() {
   };
 
   const handleUpdateApiKey = (key: IAPIKey | null) => {
+    const temp = apiKeys.map((apiKey) => {
+      if (apiKey.key === key?.key) {
+        return Object.assign({}, apiKey, key);
+      } else {
+        return apiKey;
+      }
+    });
+
     setCurrentKey(key);
+    setAPIKeys(temp);
   };
 
   return (
@@ -102,7 +127,8 @@ export default function Project() {
       <NewApiKeyDialog
         isOpen={showCreateDialog}
         onClose={handleToggleCreateDialog}
-        onCreateKey={setCurrentKey}
+        apiKeys={apiKeys}
+        onCreateKey={setAPIKeys}
       />
       <CommonTable
         data={{
