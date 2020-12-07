@@ -60,6 +60,7 @@ export const getApiKeysQuery = gql`
 export const createApiKeyMutation = gql`
   mutation($workspaceId: String!, $apiKey: String) {
     generateApiKey(workspaceId: $workspaceId, key: $apiKey) {
+      id
       key
       workspaceId
       workspaceName

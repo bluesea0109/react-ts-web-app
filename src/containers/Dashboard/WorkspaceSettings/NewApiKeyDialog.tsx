@@ -14,7 +14,8 @@ import { createApiKeyMutation, getApiKeysQuery } from './gql';
 interface NewApiKeyDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onCreateKey: (key: IAPIKey) => void;
+  apiKeys: IAPIKey[];
+  onCreateKey: (key: IAPIKey[]) => void;
 }
 
 interface CreateApiKeyMutationResult {
@@ -24,6 +25,7 @@ interface CreateApiKeyMutationResult {
 const NewApiKeyDialog = ({
   isOpen,
   onClose,
+  apiKeys,
   onCreateKey,
 }: NewApiKeyDialogProps) => {
   const { workspaceId } = useParams<{ workspaceId: string }>();
@@ -55,7 +57,7 @@ const NewApiKeyDialog = ({
       });
 
       if (data.data) {
-        onCreateKey(data.data.generateApiKey);
+        onCreateKey([...apiKeys, data.data.generateApiKey]);
         onClose();
       }
     } catch (e) {}
