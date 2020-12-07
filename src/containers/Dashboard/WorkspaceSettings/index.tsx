@@ -49,6 +49,14 @@ const theme = createMuiTheme({
       wrapper: {
         flexDirection: 'row',
         width: '100%',
+        textTransform: 'lowercase',
+        fontSize: '20px',
+        '& > :first-letter': {
+          textTransform: 'capitalize',
+        },
+        '& > span': {
+          padding: '2px',
+        },
       },
     },
   },
@@ -127,15 +135,18 @@ export default function WorkspaceSettings(props: IWorkspaceSettingsProps) {
                   <Tab
                     icon={<Group style={{ padding: '10px' }} />}
                     label={
-                      <Typography variant="h6">Organization Members</Typography>
+                      <>
+                        <span>Organization</span> <span>Members</span>
+                      </>
                     }
                   />
                   <Tab
                     icon={<PersonAdd style={{ padding: '10px' }} />}
                     label={
-                      <Typography variant="h6">
-                        Invited Organization Members
-                      </Typography>
+                      <>
+                        <span>Invited</span> <span>Organization</span>{' '}
+                        <span>Members</span>
+                      </>
                     }
                   />
                 </Tabs>
