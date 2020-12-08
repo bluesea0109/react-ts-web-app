@@ -4,7 +4,7 @@ import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab/';
 import gql from 'graphql-tag';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import config from '../../../config';
+import { dev, prod } from '../../../config';
 import { getApiKeysQuery } from '../../Dashboard/WorkspaceSettings/gql';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -61,7 +61,9 @@ export default function ChatWithAgent() {
         })('${agentData.data.ChatbotService_agent.uname}', '${apiKey}', true, ${
         mode === 'PREVIEW'
       })
-        (window, document, 'script', '${config.bundleUrl}')
+        (window, document, 'script', '${
+          mode === 'PREVIEW' ? dev.bundleUrl : prod.bundleUrl
+        }')
       `;
       document.body.appendChild(script);
     }
