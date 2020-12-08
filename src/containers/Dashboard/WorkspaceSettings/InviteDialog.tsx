@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { TextInput } from '@bavard/react-components';
 import { Button, Typography } from '@material-ui/core';
@@ -12,8 +13,6 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import * as EmailValidator from 'email-validator';
-import React, { useState } from 'react';
-import { useParams } from 'react-router';
 import { IUser } from '../../../models/user-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
@@ -33,6 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface IProps {
   user: IUser;
+  workspaceId?: String;
   open?: boolean;
   onClose?: () => void;
   onSuccess?: () => void;
@@ -45,20 +45,19 @@ export default function InviteDialog(props: IProps) {
     role: 'editor',
     email: '',
   });
-  const { workspaceId } = useParams<{ workspaceId: string }>();
 
   const [inviteWorkspaceMember, inviteWorkspaceMemberResp] = useMutation(
     INVITE_WORKSPACE_MEMBER,
     {
       variables: {
-        workspaceId,
+        workspaceId: props.workspaceId,
         recipientEmail: state.email,
         role: state.role,
       },
       refetchQueries: [
         {
           query: GET_INVITED_WORKSPACE_MEMBERS,
-          variables: { workspaceId },
+          variables: { workspaceId: props.workspaceId },
         },
       ],
       awaitRefetchQueries: true,
@@ -90,7 +89,7 @@ export default function InviteDialog(props: IProps) {
   const handleInvite = async () => {
     inviteWorkspaceMember({
       variables: {
-        workspaceId,
+        workspaceId: props.workspaceId,
         recipientEmail: state.email,
         role: state.role,
       },

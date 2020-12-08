@@ -15,7 +15,6 @@ import ContentLoading from './containers/ContentLoading';
 import Dashboard from './containers/Dashboard';
 import Billing from './containers/Dashboard/Billing';
 import AcceptInvite from './containers/Dashboard/Invites/AcceptInvite';
-import WorkspaceSettings from './containers/Dashboard/WorkspaceSettings';
 import CustomDrawer from './containers/Drawer';
 import FAQService from './containers/FAQService';
 import ImageLabeling from './containers/ImageLabeling';
@@ -226,9 +225,6 @@ function App() {
             </Route>
             <Route exact={true} path="/invites/:inviteId">
               <AcceptInvite />
-            </Route>
-            <Route exact={true} path="/workspaces/:workspaceId/settings">
-              <WorkspaceSettings user={data.currentUser} />
             </Route>
             <Route path="/workspaces/:workspaceId/qa">
               <FAQService />

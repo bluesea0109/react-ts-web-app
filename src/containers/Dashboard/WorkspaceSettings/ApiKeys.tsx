@@ -38,9 +38,12 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-export default function Project() {
+interface IProps {
+  workspaceId?: String;
+}
+
+export default function Project({ workspaceId }: IProps) {
   const classes = useStyles();
-  const { workspaceId } = useParams<{ workspaceId: string }>();
   const [apiKeys, setAPIKeys] = useState<IAPIKey[]>([]);
   const [currentKey, setCurrentKey] = useState<IAPIKey | null>(null);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -126,6 +129,7 @@ export default function Project() {
     <Box width={1} mx={1} mt={2}>
       <NewApiKeyDialog
         isOpen={showCreateDialog}
+        workspaceId={workspaceId}
         onClose={handleToggleCreateDialog}
         apiKeys={apiKeys}
         onCreateKey={setAPIKeys}
@@ -171,6 +175,7 @@ export default function Project() {
       {currentKey && (
         <UpdateApiKeyDialog
           isOpen={showUpdateDialog}
+          workspaceId={workspaceId}
           currentKey={currentKey}
           onUpdate={handleUpdateApiKey}
           onClose={handleCloseUpdateDialog}

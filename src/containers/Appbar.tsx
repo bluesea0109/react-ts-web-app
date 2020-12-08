@@ -89,7 +89,6 @@ const Workspaces: React.FC<WorkspacesProps> = ({
 
   return workspaces.length !== 0 ? (
     <DropDown
-      label="Workspace:"
       labelType="InputLabel"
       labelPosition="top"
       current={user.activeWorkspace?.id || ''}
@@ -123,6 +122,9 @@ const CustomAppbar: React.FC<CustomAppbarProps> = ({
 
   const onLogoutClick = () => {
     firebase.auth().signOut();
+
+    localStorage.clear();
+    sessionStorage.clear();
   };
 
   const [updateActiveWorkspace, { loading: loadingWorkspace }] = useMutation(
@@ -135,9 +137,7 @@ const CustomAppbar: React.FC<CustomAppbarProps> = ({
         sessionStorage.clear();
         getIdToken();
 
-        history.push(
-          `/workspaces/${updateUserActiveWorkspace.activeWorkspace.id}/settings`,
-        );
+        history.push('/');
         closeDrawer();
       },
     },

@@ -208,27 +208,9 @@ function CustomDrawer(props: CustomDrawerProps) {
                 <SubMenuIcon title="Workspace" active={false} />
               </ListItemIcon>
               <ListItemText
-                primary="Overview"
-                style={
-                  location.pathname === '/'
-                    ? selectedStyle
-                    : { paddingLeft: '20px' }
-                }
-              />
-            </ListItem>
-            <ListItem
-              component={Link}
-              to={createWorkspacePath('settings')}
-              selected={location.pathname.includes('settings')}
-              button={true}
-              className={classes.listItem}>
-              <ListItemIcon style={{ color: 'white' }}>
-                <SubMenuIcon title="Workspace" active={false} />
-              </ListItemIcon>
-              <ListItemText
                 primary="Workspace"
                 style={
-                  location.pathname.includes('settings')
+                  location.pathname === '/'
                     ? selectedStyle
                     : { paddingLeft: '20px' }
                 }
