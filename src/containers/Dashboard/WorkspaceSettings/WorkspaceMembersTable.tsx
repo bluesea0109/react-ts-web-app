@@ -202,7 +202,6 @@ const WorkspaceMembersTable: React.FC<IWorkspaceMembersTableProps> = ({
             }}
             components={{
               TableRow: MemberRow,
-              Toolbar: () => <CardHeader />,
             }}
           />
         </TableContainer>

@@ -138,7 +138,7 @@ export default function WorkspaceSettings(props: IWorkspaceSettingsProps) {
                     icon={<Group style={{ padding: '10px' }} />}
                     label={
                       <>
-                        <span>Organization</span> <span>Members</span>
+                        <span>Team</span> <span>Members</span>
                       </>
                     }
                   />
@@ -172,8 +172,11 @@ export default function WorkspaceSettings(props: IWorkspaceSettingsProps) {
                   top: '13px',
                   display: tabValue === 1 ? 'none' : '',
                 }}>
-                {workspace.billingEnabled === true && <DisablePaymentDialog />}
-                {workspace.billingEnabled === false && <EnablePaymentDialog />}
+                {workspace.billingEnabled === true ? (
+                  <DisablePaymentDialog />
+                ) : (
+                  <EnablePaymentDialog />
+                )}
               </div>
             </div>
           </ThemeProvider>

@@ -92,9 +92,6 @@ const InvitedMemberTable: React.FC<IInvitedMemberTableProps> = ({
         columns,
         rowsData: invitedMembers,
       }}
-      components={{
-        Toolbar: () => <CardHeader />,
-      }}
     />
   );
 };
