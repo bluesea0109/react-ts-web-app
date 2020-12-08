@@ -9,7 +9,7 @@ import makeStyles from '@material-ui/styles/makeStyles';
 
 import BillingDetails from './BillingDetails';
 import PremiumPlanIntro from './PremiumPlanIntro';
-import { IWorkspace } from '../../models/user-service';
+import { getIdToken } from '../../apollo-client';
 
 export enum BillingPage {
   PREMIMUM_PLAN_INTRO = 'PREMIMUM_PLAN_INTRO',
@@ -35,6 +35,10 @@ const BillingUpgradeDialog: React.FC<BillingUpgradeDialogProps> = ({
 
   const handleUpgradeNow = () => {
     setCurrentPage(BillingPage.BILLING_DETAILS);
+
+    localStorage.clear();
+    sessionStorage.clear();
+    getIdToken();
   };
 
   const handleMaybeLater = () => {
