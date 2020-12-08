@@ -17,6 +17,7 @@ import {
   SupervisedUserCircleOutlined,
 } from '@material-ui/icons';
 import { useMutation } from '@apollo/client';
+import { getIdToken } from '../../apollo-client';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import React, { useState } from 'react';
@@ -58,6 +59,11 @@ const Dashboard: React.FC<IDashboardProps> = ({ user }) => {
   const [updateActiveWorkspace] = useMutation(UPDATE_ACTIVE_WORKSPACE, {
     refetchQueries: [{ query: GET_CURRENT_USER }],
     awaitRefetchQueries: true,
+    onCompleted: ({ updateUserActiveWorkspace }) => {
+      localStorage.clear();
+      sessionStorage.clear();
+      getIdToken();
+    },
   });
 
   if (!firebaseUser) {

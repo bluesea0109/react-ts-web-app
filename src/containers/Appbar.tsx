@@ -1,4 +1,5 @@
 import { useMutation } from '@apollo/client';
+import { getIdToken } from '../apollo-client';
 import { Button, DropDown, TextInput } from '@bavard/react-components';
 import { Box, createStyles, Theme } from '@material-ui/core';
 import AppBar, { AppBarProps } from '@material-ui/core/AppBar';
@@ -132,6 +133,10 @@ const CustomAppbar: React.FC<CustomAppbarProps> = ({
       refetchQueries: [{ query: GET_CURRENT_USER }],
       awaitRefetchQueries: true,
       onCompleted: ({ updateUserActiveWorkspace }) => {
+        localStorage.clear();
+        sessionStorage.clear();
+        getIdToken();
+
         history.push('/');
         closeDrawer();
       },
