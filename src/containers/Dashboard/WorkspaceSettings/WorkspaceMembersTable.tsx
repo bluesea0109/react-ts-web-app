@@ -11,8 +11,6 @@ import {
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import MuiAlert from '@material-ui/lab/Alert';
-// import DisablePaymentDialog from './DisablePaymentDialog';
-// import EnablePaymentDialog from './EnablePaymentDialog';
 import _ from 'lodash';
 
 import { IMember, IUser, IWorkspace } from '../../../models/user-service';
@@ -204,20 +202,7 @@ const WorkspaceMembersTable: React.FC<IWorkspaceMembersTableProps> = ({
             }}
             components={{
               TableRow: MemberRow,
-              Toolbar: () => (
-                <CardHeader
-                // action={
-                // <Fragment>
-                //   {workspace.billingEnabled === true && (
-                //     <DisablePaymentDialog />
-                //   )}
-                //   {workspace.billingEnabled === false && (
-                //     <EnablePaymentDialog />
-                //   )}
-                // </Fragment>
-                // }
-                />
-              ),
+              Toolbar: () => <CardHeader />,
             }}
           />
         </TableContainer>
