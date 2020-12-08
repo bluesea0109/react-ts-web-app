@@ -1,6 +1,6 @@
 import firebase from 'firebase/app';
 
-export const dev = {
+const dev = {
   projectId: 'bavard-dev',
   apiBaseUrl: 'https://api.dev.bavard.ai',
   apiUrl: 'https://api.dev.bavard.ai/graphql',
@@ -20,7 +20,7 @@ export const dev = {
   },
 };
 
-export const prod = {
+const prod = {
   projectId: 'bavard-prod',
   apiBaseUrl: 'https://api.prod.bavard.ai',
   apiUrl: 'https://api.prod.bavard.ai/graphql',
