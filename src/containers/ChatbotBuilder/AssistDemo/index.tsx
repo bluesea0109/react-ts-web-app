@@ -67,6 +67,7 @@ export default function ChatWithAgent() {
     }
 
     return () => {
+      (window as any).unloadBavard?.();
       if (script) {
         document.body.removeChild(script);
       }
@@ -87,7 +88,7 @@ export default function ChatWithAgent() {
         exclusive={true}
         size="small"
         onChange={(_, newAlignment) => {
-          setMode(newAlignment === 'left' ? 'PREVIEW' : 'published');
+          setMode(newAlignment === 'left' ? 'PREVIEW' : 'PUBLISHED');
         }}
         aria-label="text alignment">
         <ToggleButton size="small" value="left" aria-label="left aligned">
