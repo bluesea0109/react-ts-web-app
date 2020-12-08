@@ -660,46 +660,41 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
         />
       );
     }
-    console.log(error);
-
-    const dialogContent = (
-      <DialogContent>
-        <Typography variant="subtitle2">
-          {numCompleted < this.totalSteps ? (
-            <span>
-              Step {numCompleted + 1} of {this.totalSteps}
-            </span>
-          ) : (
-            'All steps executed'
-          )}
-        </Typography>
-        <Grid container={true}>
-          <Grid item={true} sm={12} md={6}>
-            {evenSteps.map((s) => this.renderStep(s))}
-          </Grid>
-          <Grid item={true} sm={12} md={6}>
-            {oddSteps.map((s) => this.renderStep(s))}
-          </Grid>
-        </Grid>
-
-        {error.map((e, index) => {
-          return (
-            <Alert severity="error" key={index} className={classes.alert}>
-              <Typography variant="subtitle1" color="error">
-                {e.title}
-              </Typography>
-              {e.details}
-            </Alert>
-          );
-        })}
-      </DialogContent>
-    );
 
     return (
       <React.Fragment>
         <Dialog open={open} onClose={this.handleClose} fullWidth={true}>
           <DialogTitle>{'Upload Assistant Data'}</DialogTitle>
-          {dialogContent}
+          <DialogContent>
+            <Typography variant="subtitle2">
+              {numCompleted < this.totalSteps ? (
+                <span>
+                  Step {numCompleted + 1} of {this.totalSteps}
+                </span>
+              ) : (
+                'All steps executed'
+              )}
+            </Typography>
+            <Grid container={true}>
+              <Grid item={true} sm={12} md={6}>
+                {evenSteps.map((s) => this.renderStep(s))}
+              </Grid>
+              <Grid item={true} sm={12} md={6}>
+                {oddSteps.map((s) => this.renderStep(s))}
+              </Grid>
+            </Grid>
+
+            {error.map((e, index) => {
+              return (
+                <Alert severity="error" key={index} className={classes.alert}>
+                  <Typography variant="subtitle1" color="error">
+                    {e.title}
+                  </Typography>
+                  {e.details}
+                </Alert>
+              );
+            })}
+          </DialogContent>
           <DialogActions>
             {numCompleted === this.totalSteps ? (
               <Button
@@ -713,7 +708,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
                 title="Cancel"
                 color="secondary"
                 onClick={this.onCancel}
-                disabled={state.steps.length >= 1}
+                disabled={steps.length >= 1}
               />
             )}
           </DialogActions>

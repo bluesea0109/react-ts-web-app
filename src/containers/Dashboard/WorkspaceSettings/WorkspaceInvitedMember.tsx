@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import { CommonTable, Button } from '@bavard/react-components';
-import { CardHeader, Typography } from '@material-ui/core';
-import { AddCircleOutline, PersonAdd } from '@material-ui/icons';
 import { CardHeader } from '@material-ui/core';
 
 import { IInvitedMember } from '../../../models/user-service';
