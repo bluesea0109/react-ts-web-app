@@ -70,6 +70,7 @@ export default function ChatWithAgent() {
       if (script) {
         document.body.removeChild(script);
       }
+      (window as any).unloadBavard?.();
     };
   }, [apiKey, agentData, mode]);
 
@@ -80,35 +81,20 @@ export default function ChatWithAgent() {
     };
   }, []);
 
-  const handleClickPreview = () => {
-    (window as any).unloadBavard?.();
-    setMode('PREVIEW');
-  };
-
-  const handleClickPublished = () => {
-    (window as any).unloadBavard?.();
-    setMode('PUBLISHED');
-  };
-
   return (
     <div className={classes.root} id="chatbot">
       <ToggleButtonGroup
         value={mode === 'PREVIEW' ? 'left' : 'right'}
         exclusive={true}
         size="small"
+        onChange={(_, newAlignment) => {
+          setMode(newAlignment === 'left' ? 'PREVIEW' : 'PUBLISHED');
+        }}
         aria-label="text alignment">
-        <ToggleButton
-          size="small"
-          value="left"
-          aria-label="left aligned"
-          onClick={handleClickPreview}>
+        <ToggleButton size="small" value="left" aria-label="left aligned">
           PREVIEW
         </ToggleButton>
-        <ToggleButton
-          size="small"
-          value="right"
-          aria-label="right aligned"
-          onClick={handleClickPublished}>
+        <ToggleButton size="small" value="right" aria-label="right aligned">
           PUBLISHED
         </ToggleButton>
       </ToggleButtonGroup>
