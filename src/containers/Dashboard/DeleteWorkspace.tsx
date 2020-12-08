@@ -18,6 +18,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     '&:hover': {
       backgroundColor: '#CA1913',
     },
+    '&:disabled': {
+      backgroundColor: '#B11913',
+      color: 'rgba(0,0,0,0.8)',
+    },
   },
   cancelButton: {
     width: 300,
@@ -56,6 +60,8 @@ const DeleteWorkspace: React.FC<IDeleteWorkspaceProps> = ({
     onConfirm();
   };
 
+  console.log(workspaceName, workspace.name);
+
   return (
     <Box
       display="flex"
@@ -82,6 +88,7 @@ const DeleteWorkspace: React.FC<IDeleteWorkspaceProps> = ({
         title="Delete Workspace"
         color="primary"
         variant="contained"
+        disabled={workspaceName !== workspace.name}
         className={classes.deleteButton}
         onClick={handleDeleteWorkspace}
       />
