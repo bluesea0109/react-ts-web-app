@@ -22,6 +22,8 @@ import ContentLoading from '../../ContentLoading';
 import InviteDialog from './InviteDialog';
 import WorkspaceInvitedMember from './WorkspaceInvitedMember';
 import WorkspaceMembersTable from './WorkspaceMembersTable';
+import DisablePaymentDialog from './DisablePaymentDialog';
+import EnablePaymentDialog from './EnablePaymentDialog';
 import ApiKeys from './ApiKeys';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -136,7 +138,7 @@ export default function WorkspaceSettings(props: IWorkspaceSettingsProps) {
                     icon={<Group style={{ padding: '10px' }} />}
                     label={
                       <>
-                        <span>Organization</span> <span>Members</span>
+                        <span>Team</span> <span>Members</span>
                       </>
                     }
                   />
@@ -163,6 +165,19 @@ export default function WorkspaceSettings(props: IWorkspaceSettingsProps) {
                 endIcon={<AddCircleOutline />}>
                 Invite a Member
               </Button>
+              <div
+                style={{
+                  position: 'absolute',
+                  right: '10px',
+                  top: '13px',
+                  display: tabValue === 1 ? 'none' : '',
+                }}>
+                {workspace.billingEnabled === true ? (
+                  <DisablePaymentDialog />
+                ) : (
+                  <EnablePaymentDialog />
+                )}
+              </div>
             </div>
           </ThemeProvider>
           <TabPanel value={tabValue} index={0}>
