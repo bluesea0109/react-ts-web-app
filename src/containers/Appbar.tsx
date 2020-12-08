@@ -121,6 +121,9 @@ const CustomAppbar: React.FC<CustomAppbarProps> = ({
 
   const onLogoutClick = () => {
     firebase.auth().signOut();
+
+    localStorage.clear();
+    sessionStorage.clear();
   };
 
   const [updateActiveWorkspace, { loading: loadingWorkspace }] = useMutation(
