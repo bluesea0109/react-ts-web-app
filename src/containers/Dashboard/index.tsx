@@ -167,12 +167,14 @@ const Dashboard: React.FC<IDashboardProps> = ({ user }) => {
             />
           </Grid>
 
-          <Grid item={true} xs={12} sm={12}>
-            <WorkspaceSettings
-              user={user}
-              workspaceId={user.activeWorkspace?.id}
-            />
-          </Grid>
+          {workspaces?.length && (
+            <Grid item={true} xs={12} sm={12}>
+              <WorkspaceSettings
+                user={user}
+                workspaceId={user.activeWorkspace?.id}
+              />
+            </Grid>
+          )}
 
           <Grid item={true} xs={12} sm={6}>
             {showAddWorkspace && (

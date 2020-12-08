@@ -98,7 +98,6 @@ const Workspaces: React.FC<WorkspacesProps> = ({
   ) : (
     <TextInput
       id="no-workspace"
-      label="Workspace"
       labelType="InputLabel"
       labelPosition="top"
       defaultValue="No Workspace"
