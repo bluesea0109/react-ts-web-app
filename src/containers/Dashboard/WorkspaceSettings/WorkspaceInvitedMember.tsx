@@ -1,10 +1,10 @@
+import React, { useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import { CommonTable, Button } from '@bavard/react-components';
 import { CardHeader, Typography } from '@material-ui/core';
 import { AddCircleOutline, PersonAdd } from '@material-ui/icons';
+import { CardHeader } from '@material-ui/core';
 
-import React, { useState } from 'react';
-import { useParams } from 'react-router';
 import { IInvitedMember } from '../../../models/user-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
@@ -15,13 +15,12 @@ interface IInvitedMemberProps {
 }
 
 interface IInvitedMemberTableProps {
-  onShowInvite: () => void;
+  workspaceId?: String;
 }
 
 const InvitedMemberTable: React.FC<IInvitedMemberTableProps> = ({
-  onShowInvite,
+  workspaceId,
 }) => {
-  const { workspaceId } = useParams<{ workspaceId: string }>();
   const [item, setInvite] = useState<{
     workspaceId: string;
     id: string;
@@ -96,22 +95,7 @@ const InvitedMemberTable: React.FC<IInvitedMemberTableProps> = ({
         rowsData: invitedMembers,
       }}
       components={{
-        Toolbar: () => (
-          <CardHeader
-            avatar={<PersonAdd />}
-            title={
-              <Typography variant="h6">Invited Workspace Members</Typography>
-            }
-            action={
-              <Button
-                title="Invite A Member"
-                color="primary"
-                onClick={onShowInvite}
-                endIcon={<AddCircleOutline />}
-              />
-            }
-          />
-        ),
+        Toolbar: () => <CardHeader />,
       }}
     />
   );

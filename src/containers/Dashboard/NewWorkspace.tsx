@@ -8,7 +8,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import React, { useState, useEffect } from 'react';
-import { resetApolloContext } from '../../apollo-client';
+import { resetApolloContext, getIdToken } from '../../apollo-client';
 import {
   CREATE_WORKSPACE,
   GET_CURRENT_USER,
@@ -100,6 +100,10 @@ function NewWorkspace({ onSuccess }: INewWorkspaceProps) {
 
     setState({ name: '' });
     onSuccess();
+
+    localStorage.clear();
+    sessionStorage.clear();
+    getIdToken();
   };
 
   return (

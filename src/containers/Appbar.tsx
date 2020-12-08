@@ -1,4 +1,5 @@
 import { useMutation } from '@apollo/client';
+import { getIdToken } from '../apollo-client';
 import { Button, DropDown, TextInput } from '@bavard/react-components';
 import { Box, createStyles, Theme } from '@material-ui/core';
 import AppBar, { AppBarProps } from '@material-ui/core/AppBar';
@@ -88,7 +89,6 @@ const Workspaces: React.FC<WorkspacesProps> = ({
 
   return workspaces.length !== 0 ? (
     <DropDown
-      label="Workspace:"
       labelType="InputLabel"
       labelPosition="top"
       current={user.activeWorkspace?.id || ''}
@@ -98,7 +98,6 @@ const Workspaces: React.FC<WorkspacesProps> = ({
   ) : (
     <TextInput
       id="no-workspace"
-      label="Workspace"
       labelType="InputLabel"
       labelPosition="top"
       defaultValue="No Workspace"
@@ -122,6 +121,9 @@ const CustomAppbar: React.FC<CustomAppbarProps> = ({
 
   const onLogoutClick = () => {
     firebase.auth().signOut();
+
+    localStorage.clear();
+    sessionStorage.clear();
   };
 
   const [updateActiveWorkspace, { loading: loadingWorkspace }] = useMutation(
@@ -130,9 +132,11 @@ const CustomAppbar: React.FC<CustomAppbarProps> = ({
       refetchQueries: [{ query: GET_CURRENT_USER }],
       awaitRefetchQueries: true,
       onCompleted: ({ updateUserActiveWorkspace }) => {
-        history.push(
-          `/workspaces/${updateUserActiveWorkspace.activeWorkspace.id}/settings`,
-        );
+        localStorage.clear();
+        sessionStorage.clear();
+        getIdToken();
+
+        history.push('/');
         closeDrawer();
       },
     },

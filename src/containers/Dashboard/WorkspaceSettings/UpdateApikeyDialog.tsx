@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/client';
 import { ActionDialog, KeyValueArrayInput } from '@bavard/react-components';
-import { Box, DialogTitle, Typography } from '@material-ui/core';
+import { Box, Typography } from '@material-ui/core';
 import React from 'react';
 import { useParams } from 'react-router';
 import { IAPIKey } from '../../../models/user-service';
@@ -8,6 +8,7 @@ import { getApiKeysQuery, updateDomainsMutation } from './gql';
 
 interface UpdateApiKeyDialogProps {
   isOpen: boolean;
+  workspaceId?: String;
   currentKey: IAPIKey;
   onClose: () => void;
   onUpdate: (key: IAPIKey | null) => void;
@@ -19,12 +20,11 @@ interface UpdateDomainsMutationResult {
 
 const UpdateApiKeyDialog: React.FC<UpdateApiKeyDialogProps> = ({
   isOpen,
+  workspaceId,
   currentKey,
   onClose,
   onUpdate: handleUpdateApiKey,
 }) => {
-  const { workspaceId } = useParams<{ workspaceId: string }>();
-
   const [
     updateAllowedDomains,
     updateAllowedDomainsMutation,
