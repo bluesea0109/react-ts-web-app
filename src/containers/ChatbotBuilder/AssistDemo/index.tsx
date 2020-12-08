@@ -67,10 +67,10 @@ export default function ChatWithAgent() {
     }
 
     return () => {
+      (window as any).unloadBavard?.();
       if (script) {
         document.body.removeChild(script);
       }
-      (window as any).unloadBavard?.();
     };
   }, [apiKey, agentData, mode]);
 
