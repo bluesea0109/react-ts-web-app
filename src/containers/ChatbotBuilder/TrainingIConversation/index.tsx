@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
+import { ConfirmDialog } from '@bavard/react-components';
 import {
   IConversation,
   IDialogueTurn,
@@ -6,7 +7,7 @@ import {
 import { Button } from '@bavard/react-components';
 import { Grid, Paper, Typography, Box } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 
@@ -51,6 +52,10 @@ export default function TrainingIConversations() {
   const params = useParams<{ agentId: string }>();
   const { enqueueSnackbar } = useSnackbar();
   const agentId = parseInt(params.agentId, 10);
+  const [currentConversation, setCurrentConversation] = useState<
+    ITrainingConversation | undefined
+  >();
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const [
     deleteConversation,
@@ -127,14 +132,28 @@ export default function TrainingIConversations() {
     });
   };
 
-  const handleSaveConversation = () => {};
-
   const handleDeleteConversation = (conversation: ITrainingConversation) => {
-    deleteConversation({
-      variables: {
-        id: conversation.id,
-      },
-    });
+    setShowDeleteDialog(true);
+    setCurrentConversation(conversation);
+  };
+
+  const hideDeleteConversation = () => {
+    setShowDeleteDialog(false);
+    setCurrentConversation(undefined);
+  };
+
+  const handleCloseConversation = () => {
+    hideDeleteConversation();
+  };
+
+  const handleConfirmConversationDelete = () => {
+    if (currentConversation)
+      deleteConversation({
+        variables: {
+          id: currentConversation.id,
+        },
+      });
+    hideDeleteConversation();
   };
 
   return (
@@ -154,13 +173,20 @@ export default function TrainingIConversations() {
           <ConversationList
             conversations={sortedConversations ?? []}
             onDelete={handleDeleteConversation}
-            onSave={handleSaveConversation}
           />
         ) : (
           <Typography align="center" variant="h6">
             {'No Conversation found'}
           </Typography>
         )}
+
+        <ConfirmDialog
+          isOpen={!!currentConversation && showDeleteDialog}
+          title="Delete Training Conversations?"
+          onReject={handleCloseConversation}
+          onConfirm={handleConfirmConversationDelete}>
+          Are you sure to delete this training conversation?
+        </ConfirmDialog>
       </Paper>
     </Grid>
   );

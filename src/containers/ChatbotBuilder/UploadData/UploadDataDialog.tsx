@@ -1,4 +1,4 @@
-import { ApolloQueryResult } from '@apollo/client';
+import { ApolloQueryResult, ApolloError } from '@apollo/client';
 import { withApollo, WithApolloClient } from '@apollo/client/react/hoc';
 import { IAgentConfig } from '@bavard/agent-config';
 import { Button } from '@bavard/react-components';
@@ -16,6 +16,7 @@ import Alert from '@material-ui/lab/Alert';
 import gql from 'graphql-tag';
 import _ from 'lodash';
 import React from 'react';
+import ApolloErrorPage from '../../ApolloErrorPage';
 import {
   CHATBOT_CREATE_AGENT,
   CHATBOT_GET_AGENT,
@@ -87,6 +88,7 @@ interface IUploadDataDialogState {
   agentId: number | undefined;
   open: boolean;
   error: IError[];
+  graphQLError?: ApolloError;
   steps: IStep[];
   numCompleted: number;
 }
@@ -113,6 +115,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     this.state = {
       agentId: this.props.agentId,
       open: false,
+      graphQLError: undefined,
       error: [],
       steps: [],
       numCompleted: 0,
@@ -139,21 +142,19 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       ...s,
     }));
 
-    const res = await this.props.client?.mutate({
-      mutation: UPLOAD_EXAMPLES,
-      variables: {
-        agentId: this.state.agentId,
-        examples,
-        upsert: true,
-      },
-    });
-
-    if (res?.errors?.[0]) {
-      this.addToErrors(
-        `Errors in uploading examples`,
-        JSON.stringify(res.errors[0].message),
-      );
-      return;
+    try {
+      await this.props.client?.mutate({
+        mutation: UPLOAD_EXAMPLES,
+        variables: {
+          agentId: this.state.agentId,
+          examples,
+          upsert: true,
+        },
+      });
+    } catch (error) {
+      this.setState({
+        graphQLError: error,
+      });
     }
   };
 
@@ -195,26 +196,27 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     }
 
     let done = 0;
+    if (!this.state.agentId) {
+      this.setStepStatus('Training Conversations', 'error');
+      this.addToErrors(
+        'Error in uploading Training Conversations',
+        'Assistant does not exist',
+      );
+      return;
+    }
+
     try {
-      if (!this.state.agentId) {
-        throw new Error('Assistant does not exist');
-      }
       const length = trainingConversations.length;
       for (const tc of trainingConversations) {
         const tcInput: ITrainingConversationMutationInput = {
           agentId: this.state.agentId,
           ...tc,
         };
-        const result = await this.props.client?.mutate({
+        await this.props.client?.mutate({
           mutation: CREATE_TRAINING_CONVERSATION,
-          variables: {
-            conversation: tcInput,
-          },
+          variables: tcInput,
         });
 
-        if (result?.errors) {
-          throw new Error(JSON.stringify(result.errors));
-        }
         done++;
         this.setStepStatus(
           'Training Conversations',
@@ -224,6 +226,9 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       }
       this.setStepStatus('Training Conversations', 'completed');
     } catch (e) {
+      this.setState({
+        graphQLError: e,
+      });
       this.setStepStatus('Training Conversations', 'error');
       this.addToErrors(
         'Error in uploading Training Conversations',
@@ -261,19 +266,18 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     this.setStepStatus('Widget Config', 'importing');
 
     try {
-      const result = await this.props.client?.mutate({
+      await this.props.client?.mutate({
         mutation: updateBotSettingsMutation,
         variables: {
           uname,
           settings,
         },
       });
-      if (result?.errors) {
-        throw new Error(JSON.stringify(result.errors));
-      }
-
       this.setStepStatus('Widget Config', 'completed');
     } catch (e) {
+      this.setState({
+        graphQLError: e,
+      });
       this.addToErrors('Error updating settings', JSON.stringify(e));
       this.setStepStatus('Widget Config', 'error');
     }
@@ -369,72 +373,21 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
 
   ensureAgentExists = async (data: IAgentDataExport) => {
     // Returns a promise to await the state
-    return new Promise<void>(async (resolve) => {
-      this.setStepStatus('Create Assistant', 'importing');
-      try {
-        if (this.props.uname) {
-          data.config.uname = this.props.uname;
-          data.config.workspaceId = this.props.workspaceId;
-        }
-
-        const createAgentResult = await this.props.client?.mutate<ICreateAgentMutationResult>(
-          {
-            mutation: CHATBOT_CREATE_AGENT,
-            variables: {
-              uname: this.props.uname || data.config.uname,
-              workspaceId: this.props.workspaceId,
-              language: 'EN_US',
-              config: data.config,
-            },
-            refetchQueries: [
-              {
-                query: CHATBOT_GET_AGENTS,
-                variables: {
-                  workspaceId: this.props.workspaceId,
-                },
-              },
-            ],
-            awaitRefetchQueries: false,
-          },
-        );
-
-        if (createAgentResult?.data?.ChatbotService_createAgent?.id) {
-          this.setState(
-            {
-              agentId: createAgentResult.data.ChatbotService_createAgent.id,
-            },
-            () => {
-              resolve();
-            },
-          );
-          this.setStepStatus('Create Assistant', 'completed');
-        } else {
-          throw new Error('Assistant was not created');
-        }
-      } catch (e) {
-        this.addToErrors('Error Creating Assistant', JSON.stringify(e));
-        this.setStepStatus('Create Assistant', 'error');
-        resolve();
-      }
-    });
-  };
-
-  updateAgentConfig = async (config: IAgentConfig) => {
-    // Returns a promise to await the state
-
     this.setStepStatus('Create Assistant', 'importing');
     try {
       if (this.props.uname) {
-        config.uname = this.props.uname;
-        config.workspaceId = this.props.workspaceId;
+        data.config.uname = this.props.uname;
+        data.config.workspaceId = this.props.workspaceId;
       }
 
-      const updateAgentResult = await this.props.client?.mutate<IUpdateAgentMutationResult>(
+      const createAgentResult = await this.props.client?.mutate<ICreateAgentMutationResult>(
         {
-          mutation: CHATBOT_UPDATE_AGENT,
+          mutation: CHATBOT_CREATE_AGENT,
           variables: {
-            agentId: this.state.agentId,
-            config,
+            uname: this.props.uname || data.config.uname,
+            workspaceId: this.props.workspaceId,
+            language: 'EN_US',
+            config: data.config,
           },
           refetchQueries: [
             {
@@ -448,12 +401,54 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
         },
       );
 
-      if (updateAgentResult?.errors?.length) {
-        throw new Error(JSON.stringify(updateAgentResult));
+      if (createAgentResult?.data?.ChatbotService_createAgent?.id) {
+        this.setState({
+          agentId: createAgentResult.data.ChatbotService_createAgent.id,
+        });
+        this.setStepStatus('Create Assistant', 'completed');
       }
+    } catch (e) {
+      this.setState({
+        graphQLError: e,
+      });
+      this.setStepStatus('Create Assistant', 'error');
+      this.addToErrors('Error Creating Assistant', JSON.stringify(e));
+      throw e;
+    }
+  };
+
+  updateAgentConfig = async (config: IAgentConfig) => {
+    // Returns a promise to await the state
+
+    this.setStepStatus('Create Assistant', 'importing');
+    try {
+      if (this.props.uname) {
+        config.uname = this.props.uname;
+        config.workspaceId = this.props.workspaceId;
+      }
+
+      await this.props.client?.mutate<IUpdateAgentMutationResult>({
+        mutation: CHATBOT_UPDATE_AGENT,
+        variables: {
+          agentId: this.state.agentId,
+          config,
+        },
+        refetchQueries: [
+          {
+            query: CHATBOT_GET_AGENTS,
+            variables: {
+              workspaceId: this.props.workspaceId,
+            },
+          },
+        ],
+        awaitRefetchQueries: false,
+      });
 
       this.setStepStatus('Create Assistant', 'completed');
     } catch (e) {
+      this.setState({
+        graphQLError: e,
+      });
       this.addToErrors('Error Creating Assistant', JSON.stringify(e));
       this.setStepStatus('Create Assistant', 'error');
     }
@@ -470,7 +465,11 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     // JSON config file
     if (zipContents.agentConfig) {
       const data = this.formatJsonData(zipContents.agentConfig);
-      await this.processJsonData(data);
+      try {
+        await this.processJsonData(data);
+      } catch {
+        return;
+      }
     }
     // URO Images
     if (zipContents.uroImages.length >= 1) {
@@ -535,7 +534,11 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
 
     const data = this.formatJsonData(json);
 
-    await this.processJsonData(data);
+    try {
+      await this.processJsonData(data);
+    } catch (error) {
+      return;
+    }
     // No images on json file
 
     this.setStepStatus('URO Images', 'completed');
@@ -627,22 +630,44 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     );
   };
 
+  handleCloseApolloError = () => {
+    this.setState({ graphQLError: undefined });
+    this.handleClose();
+  };
+
+  hasBillingRequiredError = () => {
+    const { graphQLError } = this.state;
+    return !!(graphQLError?.graphQLErrors || []).find(
+      (error) => error.extensions?.code === 'BILLING_REQUIRED',
+    );
+  };
+
   render() {
-    const state = this.state;
+    const { error, graphQLError, numCompleted, steps, open } = this.state;
     const { classes } = this.props;
-    const evenSteps = _.filter(state.steps, (s, index) => {
+    const evenSteps = _.filter(steps, (s, index) => {
       return index % 2 === 0;
     });
-    const oddSteps = _.filter(state.steps, (s, index) => {
+    const oddSteps = _.filter(steps, (s, index) => {
       return index % 2 !== 0;
     });
+
+    if (this.hasBillingRequiredError()) {
+      return (
+        <ApolloErrorPage
+          error={graphQLError}
+          onClose={this.handleCloseApolloError}
+        />
+      );
+    }
+    console.log(error);
 
     const dialogContent = (
       <DialogContent>
         <Typography variant="subtitle2">
-          {state.numCompleted < this.totalSteps ? (
+          {numCompleted < this.totalSteps ? (
             <span>
-              Step {state.numCompleted + 1} of {this.totalSteps}
+              Step {numCompleted + 1} of {this.totalSteps}
             </span>
           ) : (
             'All steps executed'
@@ -650,18 +675,14 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
         </Typography>
         <Grid container={true}>
           <Grid item={true} sm={12} md={6}>
-            {evenSteps.map((s) => {
-              return this.renderStep(s);
-            })}
+            {evenSteps.map((s) => this.renderStep(s))}
           </Grid>
           <Grid item={true} sm={12} md={6}>
-            {oddSteps.map((s) => {
-              return this.renderStep(s);
-            })}
+            {oddSteps.map((s) => this.renderStep(s))}
           </Grid>
         </Grid>
 
-        {state.error.map((e, index) => {
+        {error.map((e, index) => {
           return (
             <Alert severity="error" key={index} className={classes.alert}>
               <Typography variant="subtitle1" color="error">
@@ -676,11 +697,11 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
 
     return (
       <React.Fragment>
-        <Dialog open={state.open} onClose={this.handleClose} fullWidth={true}>
+        <Dialog open={open} onClose={this.handleClose} fullWidth={true}>
           <DialogTitle>{'Upload Assistant Data'}</DialogTitle>
           {dialogContent}
           <DialogActions>
-            {state.numCompleted === this.totalSteps ? (
+            {numCompleted === this.totalSteps ? (
               <Button
                 title="Close"
                 variant="contained"
