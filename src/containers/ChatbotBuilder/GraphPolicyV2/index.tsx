@@ -1,6 +1,7 @@
 import { useMutation } from '@apollo/client';
 
-import { Button, Grid } from '@material-ui/core';
+import { Button } from '@bavard/react-components';
+import { Grid } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
@@ -197,21 +198,21 @@ export default function GraphPolicies() {
           toolbarChildren={
             <React.Fragment>
               <Button
+                title="Create Policy"
                 variant={'contained'}
                 className={classes.createButton}
                 color="primary"
                 onClick={() => {
                   setUpsertDialogOpen(true);
-                }}>
-                Create Policy
-              </Button>
+                }}
+              />
               <Button
+                title="Upload Policy"
                 variant={'contained'}
                 className={classes.createButton}
                 color="primary"
-                onClick={() => setUploadDialogOpen(true)}>
-                Upload Policy
-              </Button>
+                onClick={() => setUploadDialogOpen(true)}
+              />
             </React.Fragment>
           }
         />

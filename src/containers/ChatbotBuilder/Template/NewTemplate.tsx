@@ -1,7 +1,6 @@
 import { useMutation } from '@apollo/client';
-import { TextInput } from '@bavard/react-components';
+import { TextInput, Button } from '@bavard/react-components';
 import {
-  Button,
   Card,
   createStyles,
   LinearProgress,
@@ -92,13 +91,13 @@ const NewUtteranceAction: React.FC = () => {
       />
       <br />
       <Button
+        title="Submit"
         className={clsx(classes.button)}
         variant="contained"
         color="primary"
         disabled={loading || !text}
-        onClick={onSubmit}>
-        Submit
-      </Button>
+        onClick={onSubmit}
+      />
     </Card>
   );
 };

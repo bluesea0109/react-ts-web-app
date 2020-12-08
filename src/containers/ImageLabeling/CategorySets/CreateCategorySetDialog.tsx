@@ -1,12 +1,6 @@
 import { useMutation } from '@apollo/client';
-import { TextInput } from '@bavard/react-components';
-import {
-  Button,
-  createStyles,
-  makeStyles,
-  Theme,
-  Typography,
-} from '@material-ui/core';
+import { TextInput, Button } from '@bavard/react-components';
+import { createStyles, makeStyles, Theme, Typography } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -188,8 +182,11 @@ function CreateCategorySetDialog() {
         />
       </FormControl>
       <FormControl className={classes.formControl}>
-        <Button className={classes.button} component="label">
-          {'Browse'}
+        <Button
+          title="Browse"
+          className={classes.button}
+          component="label"
+          onClick={() => {}}>
           <input
             name="categories-file"
             id="categories-file"
@@ -229,15 +226,18 @@ function CreateCategorySetDialog() {
         </DialogTitle>
         {dialogContent}
         <DialogActions>
-          <Button color="primary" onClick={handleClose} disabled={loading}>
-            {'Cancel'}
-          </Button>
           <Button
+            title="Cancel"
+            color="primary"
+            onClick={handleClose}
+            disabled={loading}
+          />
+          <Button
+            title="Create"
             color="secondary"
             disabled={createDisabled()}
-            onClick={handleCreate}>
-            {'Create'}
-          </Button>
+            onClick={handleCreate}
+          />
         </DialogActions>
       </Dialog>
       <IconButton onClick={handleOpen} style={{ padding: 6 }}>

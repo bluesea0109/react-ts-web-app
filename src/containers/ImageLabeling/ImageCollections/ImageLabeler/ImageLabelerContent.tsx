@@ -1,8 +1,7 @@
 import { ApolloError } from '@apollo/client';
 import { useApolloClient } from '@apollo/client';
-import { TextInput } from '@bavard/react-components';
+import { TextInput, Button } from '@bavard/react-components';
 import { createStyles, makeStyles, Theme, Typography } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormGroup from '@material-ui/core/FormGroup';
@@ -487,17 +486,15 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
 
   let approveButton = (
     <Button
+      title="Complete"
       size="small"
       onClick={markComplete}
-      disabled={markCompleteDisabled()}>
-      {'Complete'}
-    </Button>
+      disabled={markCompleteDisabled()}
+    />
   );
   if (labelQueueImage.status === 'complete') {
     approveButton = (
-      <Button size="small" onClick={markInProgress}>
-        {'In Progress'}
-      </Button>
+      <Button title="IN PROGRESS" size="small" onClick={markInProgress} />
     );
   }
 
@@ -637,12 +634,12 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
           <br />
           {/* <ImageLabelCreate categorySets={categorySets} onNewLabel={onNewLabel} /> */}
           <Button
+            title="Add Label"
             variant="contained"
             color="secondary"
             size="small"
-            onClick={addLabel}>
-            Add Label
-          </Button>
+            onClick={addLabel}
+          />
           <br />
         </Paper>
         <Paper className={classes.labelListContainer}>
@@ -654,14 +651,14 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
                 <Typography variant="h6">{'Labels'}</Typography>
                 <Typography className={classes.grow} />
                 <Button
+                  title="Save"
                   variant="contained"
                   size="small"
                   onClick={saveLabels}
                   disabled={saveDisabled()}
-                  color="secondary">
-                  {'Save'}
-                  <SaveIcon />
-                </Button>
+                  LeftIcon={SaveIcon}
+                  color="secondary"
+                />
               </Toolbar>
               <div className={classes.labelList}>
                 <ImageLabelList editable={true} />
@@ -674,21 +671,23 @@ const ImageLabelerContent: React.FC<IImageLabelerContentProps> = (props) => {
         <Paper className={classes.toolbar}>
           <Toolbar variant="dense" disableGutters={true}>
             <Button
+              title=""
               size="small"
               variant="contained"
               className={classes.marginRight}
               onClick={zoomIn}
-              color="secondary">
-              <ZoomInIcon />
-            </Button>
+              LeftIcon={ZoomInIcon}
+              color="secondary"
+            />
             <Button
+              title=""
               size="small"
               variant="contained"
               className={classes.marginRight}
               onClick={zoomOut}
-              color="secondary">
-              <ZoomOutIcon />
-            </Button>
+              LeftIcon={ZoomOutIcon}
+              color="secondary"
+            />
             <ClosePolygonButton />
             <FormControlLabel
               control={

@@ -1,6 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { CommonTable } from '@bavard/react-components';
-import Button from '@material-ui/core/Button';
+import { CommonTable, Button } from '@bavard/react-components';
 import IconButton from '@material-ui/core/IconButton';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -135,8 +134,7 @@ function ExportsTable() {
       components={{
         Toolbar: () => (
           <Toolbar variant="dense">
-            <Button onClick={onExportClick}>
-              {'Export to CSV'}
+            <Button title="Export to CSV" onClick={onExportClick}>
               <TableIcon className={classes.rightIcon} color="secondary" />
             </Button>
           </Toolbar>

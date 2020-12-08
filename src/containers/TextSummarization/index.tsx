@@ -1,6 +1,6 @@
 import { useApolloClient } from '@apollo/client';
-import { TextInput } from '@bavard/react-components';
-import { Button, Grid, Typography } from '@material-ui/core';
+import { TextInput, Button } from '@bavard/react-components';
+import { Grid, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import gql from 'graphql-tag';
 import React, { useState } from 'react';
@@ -120,9 +120,7 @@ export default function TextSummarization() {
           />
         </Grid>
         <Grid item={true} xs={12}>
-          <Button variant="contained" onClick={onSubmitClick}>
-            {'Submit'}
-          </Button>
+          <Button title="Submit" variant="contained" onClick={onSubmitClick} />
         </Grid>
         {summary}
       </Grid>

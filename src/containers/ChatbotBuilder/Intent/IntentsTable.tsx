@@ -1,8 +1,7 @@
 import { BaseAgentAction, IIntent } from '@bavard/agent-config';
-import { FilterBox } from '@bavard/react-components';
+import { FilterBox, Button } from '@bavard/react-components';
 import {
   Box,
-  Button,
   createStyles,
   Grid,
   makeStyles,
@@ -68,9 +67,12 @@ function IntentsTable({
           display="flex"
           justifyContent="flex-end"
           alignItems="flex-start">
-          <Button variant="contained" color="primary" onClick={onAddIntent}>
-            Add New Intent
-          </Button>
+          <Button
+            title="Add New Intent"
+            variant="contained"
+            color="primary"
+            onClick={onAddIntent}
+          />
         </Box>
       </Box>
 

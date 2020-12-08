@@ -16,12 +16,12 @@ import {
   UserTextOptionNode,
 } from '@bavard/agent-config/dist/graph-policy-v2';
 
-import { RichTextInput, TextInput } from '@bavard/react-components';
+import { RichTextInput, TextInput, Button } from '@bavard/react-components';
 
 import clsx from 'clsx';
 import { ENodeActor } from './types';
 
-import { Button, FormControl, Typography } from '@material-ui/core';
+import { FormControl, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Alert, Autocomplete } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
@@ -136,21 +136,21 @@ export default function UpsertNodeForm({
 
       {onDelete && (
         <Button
+          title="Delete"
           className={clsx([classes.formControl, classes.deleteButton])}
           variant="outlined"
           color="secondary"
-          onClick={() => onDelete?.()}>
-          Delete
-        </Button>
+          onClick={() => onDelete?.()}
+        />
       )}
 
       <Button
+        title="Submit"
         className={clsx([classes.formControl, classes.submitButton])}
         onClick={submitFunc}
         variant="contained"
-        color="primary">
-        Submit
-      </Button>
+        color="primary"
+      />
     </React.Fragment>
   );
 

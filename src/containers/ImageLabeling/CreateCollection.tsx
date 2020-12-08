@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/client';
-import { TextInput } from '@bavard/react-components';
-import { Button, Typography } from '@material-ui/core';
+import { TextInput, Button } from '@bavard/react-components';
+import { Typography } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -132,15 +132,18 @@ function CreateCollection(props: ICreateCollectionProps) {
         <DialogTitle id="form-dialog-title">{'New Collection'}</DialogTitle>
         {dialogConent}
         <DialogActions>
-          <Button color="primary" disabled={loading} onClick={handleClose}>
-            {'Cancel'}
-          </Button>
           <Button
+            title="Cancel"
+            color="primary"
+            disabled={loading}
+            onClick={handleClose}
+          />
+          <Button
+            title="Create"
             color="secondary"
             disabled={loading || error != null}
-            onClick={handleCreate}>
-            {'Create'}
-          </Button>
+            onClick={handleCreate}
+          />
         </DialogActions>
       </Dialog>
       <IconButtonAdd tooltip="New Collection" onClick={handleOpen} />

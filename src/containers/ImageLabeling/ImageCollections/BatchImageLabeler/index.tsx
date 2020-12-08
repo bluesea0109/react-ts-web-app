@@ -1,7 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { TextInput } from '@bavard/react-components';
+import { TextInput, Button } from '@bavard/react-components';
 import {
-  Button,
   createStyles,
   FormControl,
   FormGroup,
@@ -278,11 +277,11 @@ export default function BatchImageLabeler() {
         <Paper>
           <Toolbar variant="dense">
             <Button
+              title="Submit Batch"
               variant="contained"
               onClick={submitBatch}
-              disabled={!allImagesLabeled(batchImages)}>
-              {'Submit Batch'}
-            </Button>
+              disabled={!allImagesLabeled(batchImages)}
+            />
           </Toolbar>
         </Paper>
         <form />
