@@ -1,5 +1,6 @@
 import { useQuery } from '@apollo/client';
 import { createStyles, makeStyles, Theme } from '@material-ui/core';
+import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab/';
 import gql from 'graphql-tag';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
@@ -24,6 +25,7 @@ export default function ChatWithAgent() {
   }>();
 
   const [apiKey, setApiKey] = useState<string | null>(null);
+  const [mode, setMode] = useState('PREVIEW');
   const classes = useStyles();
   const agentData = useQuery<IGetAgent>(GET_AGENT, {
     variables: { agentId: Number(agentId) },
@@ -56,7 +58,9 @@ export default function ChatWithAgent() {
             a.onload = function () { i['loadBavard']({uname, apiKey, debug, dev}) };
             a.async = 1; a.src = g; m.appendChild(a), a.type = "application/javascript";
           }
-        })('${agentData.data.ChatbotService_agent.uname}', '${apiKey}', true, true)
+        })('${agentData.data.ChatbotService_agent.uname}', '${apiKey}', true, ${
+        mode === 'PREVIEW'
+      })
         (window, document, 'script', '${config.bundleUrl}')
       `;
       document.body.appendChild(script);
@@ -67,7 +71,7 @@ export default function ChatWithAgent() {
         document.body.removeChild(script);
       }
     };
-  }, [apiKey, agentData]);
+  }, [apiKey, agentData, mode]);
 
   useEffect(() => {
     return () => {
@@ -76,7 +80,25 @@ export default function ChatWithAgent() {
     };
   }, []);
 
-  return <div className={classes.root} id="chatbot" />;
+  return (
+    <div className={classes.root} id="chatbot">
+      <ToggleButtonGroup
+        value={mode === 'PREVIEW' ? 'left' : 'right'}
+        exclusive={true}
+        size="small"
+        onChange={(_, newAlignment) => {
+          setMode(newAlignment === 'left' ? 'PREVIEW' : 'published');
+        }}
+        aria-label="text alignment">
+        <ToggleButton size="small" value="left" aria-label="left aligned">
+          PREVIEW
+        </ToggleButton>
+        <ToggleButton size="small" value="right" aria-label="right aligned">
+          PUBLISHED
+        </ToggleButton>
+      </ToggleButtonGroup>
+    </div>
+  );
 }
 
 interface IGetAgent {
