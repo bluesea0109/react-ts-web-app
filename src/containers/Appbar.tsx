@@ -88,7 +88,6 @@ const Workspaces: React.FC<WorkspacesProps> = ({
 
   return workspaces.length !== 0 ? (
     <DropDown
-      label="Workspace:"
       labelType="InputLabel"
       labelPosition="top"
       current={user.activeWorkspace?.id || ''}
@@ -133,9 +132,7 @@ const CustomAppbar: React.FC<CustomAppbarProps> = ({
       refetchQueries: [{ query: GET_CURRENT_USER }],
       awaitRefetchQueries: true,
       onCompleted: ({ updateUserActiveWorkspace }) => {
-        history.push(
-          `/workspaces/${updateUserActiveWorkspace.activeWorkspace.id}/settings`,
-        );
+        history.push('/');
         closeDrawer();
       },
     },

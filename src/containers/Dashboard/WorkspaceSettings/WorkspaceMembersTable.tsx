@@ -1,3 +1,4 @@
+import React, { Fragment, useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { CommonTable, ConfirmDialog } from '@bavard/react-components';
 import {
@@ -7,15 +8,12 @@ import {
   TableCell,
   TableContainer,
   TableRow,
-  Typography,
 } from '@material-ui/core';
-import { Group } from '@material-ui/icons';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import MuiAlert from '@material-ui/lab/Alert';
-import DisablePaymentDialog from './DisablePaymentDialog';
-import EnablePaymentDialog from './EnablePaymentDialog';
+// import DisablePaymentDialog from './DisablePaymentDialog';
+// import EnablePaymentDialog from './EnablePaymentDialog';
 import _ from 'lodash';
-import React, { Fragment, useState } from 'react';
 
 import { IMember, IUser, IWorkspace } from '../../../models/user-service';
 import ContentLoading from '../../ContentLoading';
@@ -208,20 +206,16 @@ const WorkspaceMembersTable: React.FC<IWorkspaceMembersTableProps> = ({
               TableRow: MemberRow,
               Toolbar: () => (
                 <CardHeader
-                  avatar={<Group />}
-                  title={
-                    <Typography variant="h6">Workspace Members</Typography>
-                  }
-                  action={
-                    <Fragment>
-                      {workspace.billingEnabled === true && (
-                        <DisablePaymentDialog />
-                      )}
-                      {workspace.billingEnabled === false && (
-                        <EnablePaymentDialog />
-                      )}
-                    </Fragment>
-                  }
+                // action={
+                // <Fragment>
+                //   {workspace.billingEnabled === true && (
+                //     <DisablePaymentDialog />
+                //   )}
+                //   {workspace.billingEnabled === false && (
+                //     <EnablePaymentDialog />
+                //   )}
+                // </Fragment>
+                // }
                 />
               ),
             }}
