@@ -61,7 +61,6 @@ export default function ChatWithAgent() {
       const isDevMode = mode === 'PREVIEW';
       const isProdMode = mode === 'PUBLISHED';
 
-      console.log(agentData.ChatbotService_agent);
       if (
         (isDevMode && !agentData.ChatbotService_agent.hasDevMLModel) ||
         (isProdMode && !agentData.ChatbotService_agent.hasPublishedMLModel)
