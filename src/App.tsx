@@ -1,7 +1,6 @@
 import { useQuery } from '@apollo/client';
 import { Drawer } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import assert from 'assert';
 import clsx from 'clsx';
 import 'firebase/auth';
 import React, { useState } from 'react';
@@ -18,13 +17,13 @@ import AcceptInvite from './containers/Dashboard/Invites/AcceptInvite';
 import CustomDrawer from './containers/Drawer';
 import FAQService from './containers/FAQService';
 import ImageLabeling from './containers/ImageLabeling';
-import InternalServerErrorPage from './containers/InternalServerErrorpage';
 import NoWorkspacePage from './containers/NoWorkspacePage';
 import MySidebar from './containers/Sidebar';
 import TextLabeling from './containers/TextLabeling';
 import { IUser } from './models/user-service';
 import { MenuName } from './utils/enums';
 import './App.css';
+import ApolloErrorPage from './containers/ApolloErrorPage';
 
 const drawerWidth = 300;
 
@@ -127,14 +126,11 @@ function App() {
   const [loadingAppBar, setLoadingAppBar] = useState(false);
   const [, setCurrentUser] = useRecoilState(currentUser);
 
-  const { loading: loadingUser, error, data } = useQuery<IGetCurrentUser>(
-    GET_CURRENT_USER,
-    {
-      onCompleted: (data) => {
-        setCurrentUser(data.currentUser);
-      },
+  const { loading, error, data } = useQuery<IGetCurrentUser>(GET_CURRENT_USER, {
+    onCompleted: (data) => {
+      setCurrentUser(data.currentUser);
     },
-  );
+  });
 
   const [state, setState] = React.useState({
     drawerOpen: false,
@@ -157,17 +153,15 @@ function App() {
     setState({ ...state, drawerOpen: false });
   };
 
-  if (loadingUser) {
+  if (loading || !data) {
     return <ContentLoading />;
   }
 
-  if (error || !data) {
-    return <InternalServerErrorPage />;
+  if (error) {
+    return <ApolloErrorPage error={error} />;
   }
 
-  assert.notEqual(data, null);
-
-  return !data && loadingUser ? (
+  return !data && loading ? (
     <ContentLoading />
   ) : (
     <div className={classes.root}>

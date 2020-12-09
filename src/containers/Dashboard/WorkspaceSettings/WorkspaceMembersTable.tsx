@@ -1,9 +1,8 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { CommonTable, ConfirmDialog } from '@bavard/react-components';
 import {
   Box,
-  CardHeader,
   Snackbar,
   TableCell,
   TableContainer,
@@ -19,6 +18,7 @@ import IconButtonDelete from '../../IconButtons/IconButtonDelete';
 import IconButtonEdit from '../../IconButtons/IconButtonEdit';
 import ChangeRoleDialog from './changeRoleDialog';
 import { REMOVE_WORKSPACE_MEMBER } from './gql';
+import ApolloErrorPage from '../../ApolloErrorPage';
 
 interface IAlertProps {
   severity: 'error' | 'success';
@@ -66,15 +66,15 @@ const WorkspaceMembersTable: React.FC<IWorkspaceMembersTableProps> = ({
   });
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [changeConfirm, setChangeConfirm] = useState(false);
-  const [removeWorkspaceMember, { loading, data: removedMember }] = useMutation(
-    REMOVE_WORKSPACE_MEMBER,
-    {
-      onCompleted() {
-        refetchWorkspaces();
-        setOpenSnackBar(true);
-      },
+  const [
+    removeWorkspaceMember,
+    { loading, data: removedMember, error: removeMemberError },
+  ] = useMutation(REMOVE_WORKSPACE_MEMBER, {
+    onCompleted() {
+      refetchWorkspaces();
+      setOpenSnackBar(true);
     },
-  );
+  });
   const members = workspace.members || [];
 
   const onRemoveMember = () => {
@@ -96,6 +96,10 @@ const WorkspaceMembersTable: React.FC<IWorkspaceMembersTableProps> = ({
     refetchWorkspaces();
     setChangeConfirm(false);
   };
+
+  if (removeMemberError) {
+    return <ApolloErrorPage error={removeMemberError} />;
+  }
 
   const MemberRow = ({ rowData: member }: { rowData: IMember }) => {
     if (member.uid === user.uid) {

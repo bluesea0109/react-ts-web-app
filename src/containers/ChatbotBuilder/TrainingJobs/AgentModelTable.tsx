@@ -1,7 +1,6 @@
 import { useQuery } from '@apollo/client';
 import { CommonTable, StatusChip } from '@bavard/react-components';
 import { Typography } from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import gql from 'graphql-tag';
 import React from 'react';
@@ -10,31 +9,22 @@ import { IAgentModelInfo } from '../../../models/chatbot-service';
 import { removeSpecialChars } from '../../../utils/string';
 import ApolloErrorPage from '../../ApolloErrorPage';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    rightIcon: {
-      marginLeft: theme.spacing(1),
-    },
-  }),
-);
-
 export default function AgentModelTable() {
-  const classes = useStyles();
   const params = useParams<{ agentId: string }>();
   const agentId = parseInt(params.agentId, 10);
 
   interface IGetAgentModel {
     ChatbotService_agentModelInfo: IAgentModelInfo | null;
   }
-  const getModel = useQuery<IGetAgentModel>(GET_AGENT_MODEL_INFO, {
+  const { data, error } = useQuery<IGetAgentModel>(GET_AGENT_MODEL_INFO, {
     variables: { agentId },
   });
 
-  if (getModel.error) {
-    return <ApolloErrorPage error={getModel.error} />;
+  if (error) {
+    return <ApolloErrorPage error={error} />;
   }
 
-  const agentModel = getModel.data?.ChatbotService_agentModelInfo || null;
+  const agentModel = data?.ChatbotService_agentModelInfo || null;
 
   const columns = [
     {

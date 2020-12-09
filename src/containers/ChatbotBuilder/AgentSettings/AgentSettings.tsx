@@ -18,6 +18,7 @@ import { getBotSettingsQuery, updateBotSettingsMutation } from './gql';
 import { Avatars } from './Avatars';
 import { Description } from './Description';
 import { ColorPalett } from './Palets';
+import ApolloErrorPage from '../../ApolloErrorPage';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -68,21 +69,26 @@ const AgentSettings = () => {
 
   const agentUname = config?.toJsonObj()?.uname;
 
-  const [updateBotSettings, updateBotSettingsMutationData] = useMutation(
-    updateBotSettingsMutation,
-  );
+  const [
+    updateBotSettings,
+    { loading: updateBotSettingsLoading, error: updateBotSettingsError },
+  ] = useMutation(updateBotSettingsMutation);
 
-  const agentsData = useQuery<{ ChatbotService_agent: IAgent }>(
-    CHATBOT_GET_AGENT,
-    {
-      variables: { agentId },
-      onCompleted: (data) => {
-        setConfig(AgentConfig.fromJsonObj(data.ChatbotService_agent.config));
-      },
+  const {
+    error: agentsError,
+    loading: agentsLoading,
+    refetch: agentsRefetch,
+  } = useQuery<{ ChatbotService_agent: IAgent }>(CHATBOT_GET_AGENT, {
+    variables: { agentId },
+    onCompleted: (data) => {
+      setConfig(AgentConfig.fromJsonObj(data.ChatbotService_agent.config));
     },
-  );
+  });
 
-  const widgetSettingsData = useQuery<{
+  const {
+    error: widgetSettingsError,
+    refetch: widgetSettingsRefetch,
+  } = useQuery<{
     ChatbotService_widgetSettings: IWidgetSettings;
   }>(getBotSettingsQuery, {
     skip: !agentUname,
@@ -121,8 +127,8 @@ const AgentSettings = () => {
           },
         },
       });
-      await agentsData.refetch();
-      const result = await widgetSettingsData.refetch();
+      await agentsRefetch();
+      const result = await widgetSettingsRefetch();
       setWidgetSettings(result?.data?.ChatbotService_widgetSettings);
     } catch (e) {
       enqueueSnackbar('An error occurred while updating settings', {
@@ -131,7 +137,13 @@ const AgentSettings = () => {
     }
   };
 
-  const loading = agentsData.loading || updateBotSettingsMutationData.loading;
+  const commonError =
+    agentsError || widgetSettingsError || updateBotSettingsError;
+  if (commonError) {
+    return <ApolloErrorPage error={commonError} />;
+  }
+
+  const loading = agentsLoading || updateBotSettingsLoading;
 
   return (
     <Grid className={classes.spanOfPanel}>

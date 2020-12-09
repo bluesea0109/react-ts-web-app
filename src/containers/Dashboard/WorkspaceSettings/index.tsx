@@ -138,7 +138,8 @@ export default function WorkspaceSettings(props: IWorkspaceSettingsProps) {
                     icon={<Group style={{ padding: '10px' }} />}
                     label={
                       <>
-                        <span>Team</span> <span>Members</span>
+                        <span>Team</span>
+                        <span>Members</span>
                       </>
                     }
                   />
@@ -146,25 +147,13 @@ export default function WorkspaceSettings(props: IWorkspaceSettingsProps) {
                     icon={<PersonAdd style={{ padding: '10px' }} />}
                     label={
                       <>
-                        <span>Invited</span> <span>Organization</span>{' '}
+                        <span>Invited</span> <span>Organization</span>
                         <span>Members</span>
                       </>
                     }
                   />
                 </Tabs>
               </Paper>
-              <Button
-                style={{
-                  position: 'absolute',
-                  right: '10px',
-                  top: '20px',
-                  display: !tabValue ? 'none' : '',
-                }}
-                color="primary"
-                onClick={() => showInviteDialog(true)}
-                endIcon={<AddCircleOutline />}>
-                Invite a Member
-              </Button>
               <div
                 style={{
                   position: 'absolute',

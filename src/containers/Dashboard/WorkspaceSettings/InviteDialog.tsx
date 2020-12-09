@@ -46,7 +46,7 @@ export default function InviteDialog(props: IProps) {
     email: '',
   });
 
-  const [inviteWorkspaceMember, inviteWorkspaceMemberResp] = useMutation(
+  const [inviteWorkspaceMember, inviteWorkspaceMemberResult] = useMutation(
     INVITE_WORKSPACE_MEMBER,
     {
       variables: {
@@ -106,22 +106,10 @@ export default function InviteDialog(props: IProps) {
         <Typography>{'Error: User member type unknown.'}</Typography>
       </DialogContent>
     );
-  } else if (inviteWorkspaceMemberResp.error) {
-    dialogContent = (
-      <React.Fragment>
-        <DialogContent>
-          <ApolloErrorPage error={inviteWorkspaceMemberResp.error} />
-        </DialogContent>
-      </React.Fragment>
-    );
-  } else if (inviteWorkspaceMemberResp.loading) {
-    dialogContent = (
-      <React.Fragment>
-        <DialogContent>
-          <ContentLoading />
-        </DialogContent>
-      </React.Fragment>
-    );
+  } else if (inviteWorkspaceMemberResult.error) {
+    return <ApolloErrorPage error={inviteWorkspaceMemberResult.error} />;
+  } else if (inviteWorkspaceMemberResult.loading) {
+    return <ContentLoading />;
   } else if (state.modalOpen) {
     dialogContent = (
       <React.Fragment>

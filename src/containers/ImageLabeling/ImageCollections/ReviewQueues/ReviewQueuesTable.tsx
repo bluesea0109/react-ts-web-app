@@ -41,12 +41,6 @@ function ReviewQueuesTable() {
   const [nextReviewQueueImage, nextReviewQueueImageResult] = useMutation(
     NEXT_REVIEW_QUEUE_IMAGE,
   );
-  const handleChangePage = (
-    event: React.MouseEvent<HTMLButtonElement> | null,
-    page: number,
-  ) => {
-    setState({ ...state, page });
-  };
 
   const getPage = (queues: IReviewQueue[]) => {
     const { page } = state;

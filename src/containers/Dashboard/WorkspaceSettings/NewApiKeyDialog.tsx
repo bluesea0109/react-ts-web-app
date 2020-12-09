@@ -8,6 +8,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { IAPIKey } from '../../../models/user-service';
 import { createApiKeyMutation, getApiKeysQuery } from './gql';
+import ApolloErrorPage from '../../ApolloErrorPage';
 
 interface NewApiKeyDialogProps {
   isOpen: boolean;
@@ -62,6 +63,10 @@ const NewApiKeyDialog = ({
     } catch (e) {}
   };
 
+  if (error) {
+    return <ApolloErrorPage error={error} />;
+  }
+
   return (
     <ActionDialog
       isOpen={isOpen}
@@ -89,16 +94,15 @@ const NewApiKeyDialog = ({
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
               placeholder="API Key"
-              error={!!error}
             />
             <Box mt={1}>
               <Typography
                 variant="caption"
                 color={error ? 'error' : 'primary'}
                 style={{ textTransform: 'capitalize' }}>
-                {!!error && error?.message.replace('GraphQL error: ', '')}
-                {!error &&
-                  'API Keys must be between 8 to 32 characters long and can only contain alphanumeric characters'}
+                {
+                  'API Keys must be between 8 to 32 characters long and can only contain alphanumeric characters'
+                }
               </Typography>
             </Box>
           </Box>

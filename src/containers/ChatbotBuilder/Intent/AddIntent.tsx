@@ -25,6 +25,7 @@ import {
   CHATBOT_GET_AGENT,
   CHATBOT_SAVE_CONFIG_AND_SETTINGS,
 } from '../../../common-gql-queries';
+import ApolloErrorPage from '../../ApolloErrorPage';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -70,15 +71,20 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
     },
   ]);
 
-  const [updateAgent] = useMutation(CHATBOT_SAVE_CONFIG_AND_SETTINGS, {
-    refetchQueries: [{ query: CHATBOT_GET_AGENT, variables: { agentId } }],
-    awaitRefetchQueries: true,
-  });
+  const [updateAgent, updateAgentResult] = useMutation(
+    CHATBOT_SAVE_CONFIG_AND_SETTINGS,
+    {
+      refetchQueries: [{ query: CHATBOT_GET_AGENT, variables: { agentId } }],
+      awaitRefetchQueries: true,
+    },
+  );
 
-  const [createExamples] = useMutation(createExamplesMutation);
+  const [createExamples, createExamplesResult] = useMutation(
+    createExamplesMutation,
+  );
 
   if (!config) {
-    return null;
+    return <Typography>There is no configuration.</Typography>;
   }
 
   const onExampleUpdate = (updatedExample: INLUExample) => {
@@ -189,6 +195,11 @@ const AddIntent = ({ actions, onAddIntentClose }: AddIntentProps) => {
       setLoading(false);
     }
   };
+
+  const commonError = updateAgentResult.error || createExamplesResult.error;
+  if (commonError) {
+    return <ApolloErrorPage error={commonError} />;
+  }
 
   return (
     <FullDialog

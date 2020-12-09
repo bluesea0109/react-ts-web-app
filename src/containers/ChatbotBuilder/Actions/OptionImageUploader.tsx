@@ -12,6 +12,7 @@ import {
 import { IOptionImage } from '../../../models/chatbot-service';
 import { IGetOptionImagesQueryResult } from '../../../models/common-service';
 import { uploadImageFile } from '../../../utils/file-uploads';
+import ApolloErrorPage from '../../ApolloErrorPage';
 
 interface OptionImageUploaderProps {
   option: IImageOption;
@@ -26,13 +27,18 @@ const OptionImageUploader = ({
   const agentId = parseInt(params.agentId, 10);
   const { enqueueSnackbar } = useSnackbar();
   const client = useApolloClient();
-  const getImagesQuery = useQuery<IGetOptionImagesQueryResult>(
-    GET_OPTION_IMAGES_QUERY,
-    {
-      variables: { agentId },
-    },
-  );
-  const optionImages = getImagesQuery.data?.ChatbotService_optionImages || [];
+  const {
+    data: imageData,
+    error: imageError,
+  } = useQuery<IGetOptionImagesQueryResult>(GET_OPTION_IMAGES_QUERY, {
+    variables: { agentId },
+  });
+
+  if (imageError) {
+    return <ApolloErrorPage error={imageError} />;
+  }
+
+  const optionImages = imageData?.ChatbotService_optionImages || [];
 
   const handleNewImg = async (file: File) => {
     // Get a signed upload url

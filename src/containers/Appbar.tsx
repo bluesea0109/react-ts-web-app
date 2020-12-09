@@ -14,6 +14,7 @@ import {
   UPDATE_ACTIVE_WORKSPACE,
 } from '../common-gql-queries';
 import { IUser } from '../models/user-service';
+import ApolloErrorPage from './ApolloErrorPage';
 
 interface CustomAppbarProps extends AppBarProps {
   user: IUser;
@@ -126,25 +127,29 @@ const CustomAppbar: React.FC<CustomAppbarProps> = ({
     sessionStorage.clear();
   };
 
-  const [updateActiveWorkspace, { loading: loadingWorkspace }] = useMutation(
-    UPDATE_ACTIVE_WORKSPACE,
-    {
-      refetchQueries: [{ query: GET_CURRENT_USER }],
-      awaitRefetchQueries: true,
-      onCompleted: ({ updateUserActiveWorkspace }) => {
-        localStorage.clear();
-        sessionStorage.clear();
-        getIdToken();
+  const [
+    updateActiveWorkspace,
+    { loading: loadingWorkspace, error: activeWorkspaceError },
+  ] = useMutation(UPDATE_ACTIVE_WORKSPACE, {
+    refetchQueries: [{ query: GET_CURRENT_USER }],
+    awaitRefetchQueries: true,
+    onCompleted: ({ updateUserActiveWorkspace }) => {
+      localStorage.clear();
+      sessionStorage.clear();
+      getIdToken();
 
-        history.push('/');
-        closeDrawer();
-      },
+      history.push('/');
+      closeDrawer();
     },
-  );
+  });
 
   useEffect(() => {
     handleChangeLoadingStatus(loadingWorkspace);
   }, [loadingWorkspace, handleChangeLoadingStatus]);
+
+  if (activeWorkspaceError) {
+    return <ApolloErrorPage error={activeWorkspaceError} />;
+  }
 
   return (
     <AppBar

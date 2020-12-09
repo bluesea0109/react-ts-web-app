@@ -48,7 +48,6 @@ const NewUtteranceAction: React.FC = () => {
   );
 
   if (error) {
-    // TODO: handle errors
     return <ApolloErrorPage error={error} />;
   }
 

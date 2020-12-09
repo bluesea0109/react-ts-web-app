@@ -71,8 +71,8 @@ function NewWorkspace({ onSuccess }: INewWorkspaceProps) {
   };
 
   useEffect(() => {
-    setError(createWorkspaceError);
-  }, [createWorkspaceError]);
+    setError(createWorkspaceError || activateResult.error);
+  }, [createWorkspaceError, activateResult.error]);
 
   if (error) {
     // TODO: handle errors

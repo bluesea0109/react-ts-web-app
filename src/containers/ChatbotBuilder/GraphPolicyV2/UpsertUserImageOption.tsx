@@ -27,6 +27,7 @@ import { getOptionImagesQuery } from './gql';
 import { getSignedImgUploadUrlQuery } from './gql';
 import { IGetImageUploadSignedUrlQueryResult } from './types';
 import { IGetOptionImagesQueryResult } from './types';
+import ApolloErrorPage from '../../ApolloErrorPage';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -71,11 +72,15 @@ export default function UpsertNodeForm({
 
   const { agentId }: IParams = useParams();
 
-  const imgQuery = useQuery<IGetOptionImagesQueryResult>(getOptionImagesQuery, {
+  const {
+    data: optionImagesData,
+    error: optionImagesError,
+    refetch: optionImagesRefetch,
+  } = useQuery<IGetOptionImagesQueryResult>(getOptionImagesQuery, {
     variables: { agentId: parseInt(agentId) },
   });
 
-  const optionImages = imgQuery.data?.ChatbotService_optionImages || [];
+  const optionImages = optionImagesData?.ChatbotService_optionImages || [];
 
   const [
     getSignedImgUploadUrl,
@@ -138,7 +143,7 @@ export default function UpsertNodeForm({
 
         await uploadImageFile(imgFile, uploadUrl);
 
-        imgQuery.refetch();
+        await optionImagesRefetch();
 
         setLoading(false);
       } catch (e) {
@@ -171,6 +176,10 @@ export default function UpsertNodeForm({
     setImageName(img.name);
     setExistingImg(img.name);
   };
+
+  if (optionImagesError) {
+    return <ApolloErrorPage error={optionImagesError} />;
+  }
 
   const renderSubmitButton = (submitFunc: () => void) => (
     <React.Fragment>

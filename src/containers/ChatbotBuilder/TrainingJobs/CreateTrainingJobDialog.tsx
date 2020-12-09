@@ -12,6 +12,7 @@ import {
   GET_TRAINING_JOBS,
 } from '../../../common-gql-queries';
 import ContentLoading from '../../ContentLoading';
+import ApolloErrorPage from '../../ApolloErrorPage';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -74,20 +75,13 @@ export default function CreateTrainingJobDialog(props: IProps) {
   };
 
   if (error) {
-    dialogContent = (
-      <React.Fragment>
-        <DialogContent>{error.graphQLErrors[0].message} </DialogContent>
-      </React.Fragment>
-    );
-  } else if (loading) {
-    dialogContent = (
-      <React.Fragment>
-        <DialogContent>
-          <ContentLoading />
-        </DialogContent>
-      </React.Fragment>
-    );
+    return <ApolloErrorPage error={error} />;
   }
+
+  if (loading) {
+    return <ContentLoading />;
+  }
+
   return (
     <div className={clsx([classes.root, props.className])} color="inherit">
       <Dialog

@@ -33,6 +33,7 @@ import {
   GET_CURRENT_USER,
   UPDATE_ACTIVE_WORKSPACE,
 } from '../../common-gql-queries';
+import ApolloErrorPage from '../ApolloErrorPage';
 
 interface IDashboardProps {
   user: IUser;
@@ -41,34 +42,37 @@ interface IDashboardProps {
 const Dashboard: React.FC<IDashboardProps> = ({ user }) => {
   const classes = useStyles();
   const firebaseUser = firebase.auth().currentUser;
-  const history = useHistory();
 
   const [currentWorkspace, setCurrentWorkspace] = useState<IWorkspace>();
   const [showAddWorkspace, setShowAddWorkspace] = useState(false);
   const [showDeleteWorkspace, setShowDeleteWorkspace] = useState(false);
 
-  const [deleteWorkspace] = useMutation(DELETE_WORKSPACE, {
-    refetchQueries: [
-      {
-        query: GET_CURRENT_USER,
-      },
-    ],
-    awaitRefetchQueries: true,
-  });
-
-  const [updateActiveWorkspace] = useMutation(UPDATE_ACTIVE_WORKSPACE, {
-    refetchQueries: [{ query: GET_CURRENT_USER }],
-    awaitRefetchQueries: true,
-    onCompleted: ({ updateUserActiveWorkspace }) => {
-      localStorage.clear();
-      sessionStorage.clear();
-      getIdToken();
+  const [deleteWorkspace, deleteWorkspaceResult] = useMutation(
+    DELETE_WORKSPACE,
+    {
+      refetchQueries: [
+        {
+          query: GET_CURRENT_USER,
+        },
+      ],
+      awaitRefetchQueries: true,
     },
-  });
+  );
+
+  const [updateActiveWorkspace, updateWorkspaceResult] = useMutation(
+    UPDATE_ACTIVE_WORKSPACE,
+    {
+      refetchQueries: [{ query: GET_CURRENT_USER }],
+      awaitRefetchQueries: true,
+      onCompleted: ({ updateUserActiveWorkspace }) => {
+        localStorage.clear();
+        sessionStorage.clear();
+        getIdToken();
+      },
+    },
+  );
 
   if (!firebaseUser) {
-    // this shouldn't happen
-    console.error('No user signed in');
     return <Typography>{'No user is signed in.'}</Typography>;
   }
 
@@ -127,6 +131,12 @@ const Dashboard: React.FC<IDashboardProps> = ({ user }) => {
       ),
     },
   ];
+
+  const commonError =
+    deleteWorkspaceResult.error || updateWorkspaceResult.error;
+  if (commonError) {
+    return <ApolloErrorPage error={commonError} />;
+  }
 
   return (
     <div className={'page-container'}>

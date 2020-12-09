@@ -13,6 +13,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { IImageCollection } from '../../models/image-labeling-service';
 import ContentLoading from '../ContentLoading';
 import CreateCollection from './CreateCollection';
+import ApolloErrorPage from '../ApolloErrorPage';
 
 const GET_COLLECTIONS = gql`
   query($workspaceId: String!) {
@@ -58,17 +59,18 @@ function CollectionsList(props: ICollectionsListProps) {
     ImageLabelingService_collections: IImageCollection[];
   }
 
-  const { loading, error, data } = useQuery<GetImageCollections>(
+  const { data, error, loading } = useQuery<GetImageCollections>(
     GET_COLLECTIONS,
-    { variables: { workspaceId: props.workspaceId } },
+    {
+      variables: { workspaceId: props.workspaceId },
+    },
   );
   const { workspaceId } = useParams<{
     workspaceId: string;
   }>();
 
   if (error) {
-    console.error(error);
-    return <Typography>{'Unknown error occured'}</Typography>;
+    return <ApolloErrorPage error={error} />;
   }
 
   if (loading || !data) {

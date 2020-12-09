@@ -14,6 +14,7 @@ import BillingUpgradeDialog, {
 
 import { IWorkspace } from '../../../models/user-service';
 import { GET_WORKSPACES } from '../../../common-gql-queries';
+import ApolloErrorPage from '../../ApolloErrorPage';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,7 +39,7 @@ const Billing = () => {
   const classes = useStyles();
   const [showBillingDialog, setShowBillingDialog] = useState(false);
   const { workspaceId } = useParams<{ workspaceId: string }>();
-  const { data } = useQuery<IGetWorkspaces>(GET_WORKSPACES, {
+  const { data, error } = useQuery<IGetWorkspaces>(GET_WORKSPACES, {
     variables: { id: workspaceId },
   });
 
@@ -55,6 +56,10 @@ const Billing = () => {
   const handleCloseBillingDialog = () => {
     setShowBillingDialog(false);
   };
+
+  if (error) {
+    return <ApolloErrorPage error={error} />;
+  }
 
   return (
     <Grid container={true} className={classes.root}>

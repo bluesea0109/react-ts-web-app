@@ -25,6 +25,7 @@ import {
   ExamplesQueryResults,
 } from './types';
 import { EXAMPLES_LIMIT } from './constants';
+import ApolloErrorPage from '../../ApolloErrorPage';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -97,7 +98,8 @@ const Examples: React.FC<ExamplesProps> = ({ intent }) => {
   const commonError =
     examplesData.error ||
     deleteExampleMutation.error ||
-    updateExampleMutation.error;
+    updateExampleMutation.error ||
+    createExampleMutationData.error;
 
   const examples = examplesData?.data?.ChatbotService_examples.data || [];
   const exampleCount = examplesData?.data?.ChatbotService_examples.total || 0;
@@ -105,10 +107,7 @@ const Examples: React.FC<ExamplesProps> = ({ intent }) => {
   const intents = Array.from(config?.getIntents().map((x) => x.name) || []);
 
   if (commonError) {
-    enqueueSnackbar('An error occurred while loading NLU Examples.', {
-      variant: 'error',
-    });
-    return <div />;
+    return <ApolloErrorPage error={commonError} />;
   }
 
   if (!config) {

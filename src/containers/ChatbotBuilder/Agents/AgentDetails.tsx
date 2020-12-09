@@ -112,18 +112,24 @@ const AgentDetails = () => {
   }>();
 
   const history = useHistory();
-  const agentsData = useQuery<IGetAgents>(CHATBOT_GET_AGENTS, {
-    variables: { workspaceId },
-  });
-  const agents: IAgent[] | undefined =
-    agentsData && agentsData.data && agentsData.data.ChatbotService_agents;
+  const { data: agentsData, error: agentsError } = useQuery<IGetAgents>(
+    CHATBOT_GET_AGENTS,
+    {
+      variables: { workspaceId },
+    },
+  );
+  const agents: IAgent[] | undefined = agentsData?.ChatbotService_agents;
   const [widgetSettings, setWidgetSettings] = useRecoilState(
     currentWidgetSettings,
   );
 
   const [config, setConfig] = useRecoilState(currentAgentConfig);
 
-  const { error, loading, data } = useQuery<IGetAgent>(CHATBOT_GET_AGENT, {
+  const {
+    error: agentError,
+    loading: agentLoading,
+    data: agentData,
+  } = useQuery<IGetAgent>(CHATBOT_GET_AGENT, {
     variables: { agentId: Number(agentId) },
     onCompleted: (data) => {
       setConfig(AgentConfig.fromJsonObj(data.ChatbotService_agent.config));
@@ -131,21 +137,22 @@ const AgentDetails = () => {
     },
   });
 
-  const [updateAgent, updateAgentData] = useMutation(
-    CHATBOT_SAVE_CONFIG_AND_SETTINGS,
-    {
-      refetchQueries: [
-        { query: CHATBOT_GET_AGENT, variables: { agentId: Number(agentId) } },
-      ],
-      awaitRefetchQueries: true,
-    },
-  );
+  const [
+    updateAgent,
+    { loading: updateAgentLoading, error: updateAgentError },
+  ] = useMutation(CHATBOT_SAVE_CONFIG_AND_SETTINGS, {
+    refetchQueries: [
+      { query: CHATBOT_GET_AGENT, variables: { agentId: Number(agentId) } },
+    ],
+    awaitRefetchQueries: true,
+  });
 
-  if (error) {
-    return <ApolloErrorPage error={error} />;
+  const commonError = agentsError || agentError || updateAgentError;
+  if (commonError) {
+    return <ApolloErrorPage error={commonError} />;
   }
 
-  if (loading || updateAgentData?.loading || !data) {
+  if (agentLoading || updateAgentLoading || !agentData) {
     return <ContentLoading shrinked={true} />;
   }
   const saveAgent = () => {

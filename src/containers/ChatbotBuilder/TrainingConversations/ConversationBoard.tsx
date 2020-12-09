@@ -25,6 +25,7 @@ import {
 import { currentAgentConfig } from '../atoms';
 import { ACTION, DialogueForm } from './DialogueForm';
 import { EDialogueActor } from '@bavard/agent-config/dist/conversations';
+import ApolloErrorPage from '../../ApolloErrorPage';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -218,8 +219,12 @@ export const ConversationBoard = ({
   const [, setActionType] = useState<string>('UTTER'); // actionType
   const [, setLoding] = useState<boolean>(false); // loading
 
-  const [createConversation] = useMutation(CREATE_TRAINING_CONVERSATION);
-  const [updateConversation] = useMutation(UPDATE_TRAINING_CONVERSATION);
+  const [createConversation, createConversationResult] = useMutation(
+    CREATE_TRAINING_CONVERSATION,
+  );
+  const [updateConversation, updateConversationResult] = useMutation(
+    UPDATE_TRAINING_CONVERSATION,
+  );
 
   const config = useRecoilValue(currentAgentConfig);
 
@@ -418,6 +423,12 @@ export const ConversationBoard = ({
       setErrStatus('Please Add tagValues');
     }
   };
+
+  const commonError =
+    createConversationResult.error || updateConversationResult.error;
+  if (commonError) {
+    return <ApolloErrorPage error={commonError} />;
+  }
 
   return (
     <Accordion className={classes.listItemWrapper} key={index} square={true}>

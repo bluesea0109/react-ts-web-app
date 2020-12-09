@@ -26,6 +26,7 @@ import {
   UPDATE_TRAINING_CONVERSATION,
   GET_TRAINING_CONVERSATIONS,
 } from '../../../common-gql-queries';
+import ApolloErrorPage from '../../ApolloErrorPage';
 
 const useStyles = makeStyles({
   paper: {
@@ -149,6 +150,10 @@ const ConversationPanel = ({
       },
     });
   };
+
+  if (error) {
+    return <ApolloErrorPage error={error} />;
+  }
 
   return (
     <Grid>

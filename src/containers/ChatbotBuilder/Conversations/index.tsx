@@ -19,6 +19,7 @@ import ContentLoading from '../../ContentLoading';
 import ConversationFull from './ConversationFull';
 import { getLiveConversationsQuery } from './gql';
 import { GetLiveConversationsQueryResult } from './types';
+import ApolloErrorPage from '../../ApolloErrorPage';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -54,7 +55,7 @@ export default function ConversationsTab() {
 
   const [selectedConversationId, selectConversation] = useState(0);
 
-  const queryResult = useQuery<GetLiveConversationsQueryResult>(
+  const { data, error, loading } = useQuery<GetLiveConversationsQueryResult>(
     getLiveConversationsQuery,
     {
       fetchPolicy: 'no-cache',
@@ -62,11 +63,14 @@ export default function ConversationsTab() {
     },
   );
 
-  const { data, loading } = queryResult;
   const conversations = data?.ChatbotService_liveConversations || [];
   const selectedConv = _.find(conversations, {
     id: selectedConversationId || conversations[0]?.id,
   });
+
+  if (error) {
+    return <ApolloErrorPage error={error} />;
+  }
 
   return (
     <div className={classes.root}>

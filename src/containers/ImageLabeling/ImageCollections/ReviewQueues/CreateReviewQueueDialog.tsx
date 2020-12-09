@@ -58,44 +58,32 @@ function CreateReviewQueueDialog() {
     });
   };
 
-  let dialogContent = (
-    <DialogContent>
-      <TextInput
-        id="name"
-        label="Name"
-        labelType="Typography"
-        labelPosition="top"
-        type="string"
-        margin="dense"
-        autoFocus={true}
-        value={state.name}
-        fullWidth={true}
-        onChange={handleChange('name')}
-      />
-    </DialogContent>
-  );
-
-  if (createQueueResult.loading) {
-    dialogContent = (
-      <DialogContent>
-        <ContentLoading />
-      </DialogContent>
-    );
+  if (createQueueResult.error) {
+    return <ApolloErrorPage error={createQueueResult.error} />;
   }
 
-  if (createQueueResult.error) {
-    dialogContent = (
-      <DialogContent>
-        <ApolloErrorPage error={createQueueResult.error} />
-      </DialogContent>
-    );
+  if (createQueueResult.loading) {
+    return <ContentLoading />;
   }
 
   return (
     <React.Fragment>
       <Dialog fullWidth={true} open={state.open} onClose={handleClose}>
         <DialogTitle>{'Create Review Queue'}</DialogTitle>
-        {dialogContent}
+        <DialogContent>
+          <TextInput
+            id="name"
+            label="Name"
+            labelType="Typography"
+            labelPosition="top"
+            type="string"
+            margin="dense"
+            autoFocus={true}
+            value={state.name}
+            fullWidth={true}
+            onChange={handleChange('name')}
+          />
+        </DialogContent>
         <DialogActions>
           <Button
             title="Cancel"

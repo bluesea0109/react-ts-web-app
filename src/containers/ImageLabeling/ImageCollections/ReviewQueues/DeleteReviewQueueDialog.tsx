@@ -49,29 +49,18 @@ function DeleteReviewQueueDialog(props: IDeleteReviewQueueProps) {
     });
   };
 
-  let dialogContent = null;
-
-  if (deleteQueueResult.loading) {
-    dialogContent = (
-      <DialogContent>
-        <ContentLoading />
-      </DialogContent>
-    );
+  if (deleteQueueResult.error) {
+    return <ApolloErrorPage error={deleteQueueResult.error} />;
   }
 
-  if (deleteQueueResult.error) {
-    dialogContent = (
-      <DialogContent>
-        <ApolloErrorPage error={deleteQueueResult.error} />
-      </DialogContent>
-    );
+  if (deleteQueueResult.loading) {
+    return <ContentLoading />;
   }
 
   return (
     <React.Fragment>
       <Dialog fullWidth={true} open={state.open} onClose={handleClose}>
         <DialogTitle>{'Delete Review Queue'}</DialogTitle>
-        {dialogContent}
         <DialogActions>
           <Button
             title="Cancel"

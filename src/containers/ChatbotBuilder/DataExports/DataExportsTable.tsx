@@ -76,16 +76,11 @@ function DataExportsTable() {
     });
   };
 
-  if (getExports.error) {
-    return <ApolloErrorPage error={getExports.error} />;
-  }
+  const commonError =
+    getExports.error || createExportResult.error || deleteExportResult.error;
 
-  if (createExportResult.error) {
-    return <ApolloErrorPage error={createExportResult.error} />;
-  }
-
-  if (deleteExportResult.error) {
-    return <ApolloErrorPage error={deleteExportResult.error} />;
+  if (commonError) {
+    return <ApolloErrorPage error={commonError} />;
   }
 
   if (

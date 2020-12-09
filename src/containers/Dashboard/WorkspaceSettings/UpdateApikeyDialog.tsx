@@ -5,6 +5,7 @@ import React from 'react';
 import { useParams } from 'react-router';
 import { IAPIKey } from '../../../models/user-service';
 import { getApiKeysQuery, updateDomainsMutation } from './gql';
+import ApolloErrorPage from '../../ApolloErrorPage';
 
 interface UpdateApiKeyDialogProps {
   isOpen: boolean;
@@ -27,7 +28,7 @@ const UpdateApiKeyDialog: React.FC<UpdateApiKeyDialogProps> = ({
 }) => {
   const [
     updateAllowedDomains,
-    updateAllowedDomainsMutation,
+    updateAllowedDomainsResult,
   ] = useMutation<UpdateDomainsMutationResult>(updateDomainsMutation, {
     refetchQueries: [{ query: getApiKeysQuery, variables: { workspaceId } }],
   });
@@ -48,6 +49,10 @@ const UpdateApiKeyDialog: React.FC<UpdateApiKeyDialogProps> = ({
     } catch (e) {}
   };
 
+  if (updateAllowedDomainsResult.error) {
+    return <ApolloErrorPage error={updateAllowedDomainsResult.error} />;
+  }
+
   return (
     <ActionDialog
       isOpen={isOpen}
@@ -66,7 +71,7 @@ const UpdateApiKeyDialog: React.FC<UpdateApiKeyDialogProps> = ({
           </Typography>
         </Box>
         <KeyValueArrayInput
-          disabled={updateAllowedDomainsMutation.loading}
+          disabled={updateAllowedDomainsResult.loading}
           name="domains"
           label="Domains"
           value={currentKey?.domains}

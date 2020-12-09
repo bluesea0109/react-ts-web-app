@@ -12,6 +12,7 @@ import { GET_CATEGORY_SETS } from '../../../common-gql-queries';
 import ContentLoading from '../../ContentLoading';
 import CreateCategorySetDialog from './CreateCategorySetDialog';
 import DeleteCategorySetDialog from './DeleteCategorySetDialog';
+import ApolloErrorPage from '../../ApolloErrorPage';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -28,19 +29,19 @@ const useStyles = makeStyles((theme: Theme) =>
 function CategorySets() {
   const classes = useStyles();
   const { workspaceId } = useParams<{ workspaceId: string }>();
-  const categorySets = useQuery(GET_CATEGORY_SETS, {
+  const { data, error, loading } = useQuery(GET_CATEGORY_SETS, {
     variables: { workspaceId },
   });
-  if (categorySets.loading) {
+
+  if (loading) {
     return <ContentLoading />;
   }
 
-  if (categorySets.error) {
-    console.error(categorySets.error);
-    return <Typography>{'Unknown error occurred'}</Typography>;
+  if (error) {
+    return <ApolloErrorPage error={error} />;
   }
 
-  const catSets = categorySets.data.ImageLabelingService_categorySets;
+  const catSets = data.ImageLabelingService_categorySets;
 
   const columns = [
     { title: 'Name', field: 'name' },
