@@ -1,20 +1,17 @@
 import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
+import { Button } from '@bavard/react-components';
 import {
-  Card,
-  createStyles,
+  Box,
   Grid,
   makeStyles,
   Theme,
   Typography,
-  Box,
   Paper,
   Tabs,
   Tab,
-  Button,
 } from '@material-ui/core';
-import { PersonAdd, Group, AddCircleOutline } from '@material-ui/icons';
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import { AddCircleOutline, PersonAdd, Group } from '@material-ui/icons';
 import { GET_WORKSPACES } from '../../../common-gql-queries';
 import { IWorkspace, IUser } from '../../../models/user-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
@@ -26,43 +23,45 @@ import DisablePaymentDialog from './DisablePaymentDialog';
 import EnablePaymentDialog from './EnablePaymentDialog';
 import ApiKeys from './ApiKeys';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      margin: theme.spacing(2),
-    },
-    tableWrapper: {
-      display: 'flex',
-    },
-    pageTitle: {
-      fontSize: '26px',
-      marginTop: '20px',
-      marginBottom: theme.spacing(3),
-    },
-  }),
-);
-
-const theme = createMuiTheme({
-  overrides: {
-    MuiTab: {
-      root: {
-        maxWidth: '100%',
-      },
-      wrapper: {
-        flexDirection: 'row',
-        width: '100%',
-        textTransform: 'lowercase',
-        fontSize: '20px',
-        '& > :first-letter': {
-          textTransform: 'capitalize',
-        },
-        '& > span': {
-          padding: '2px',
-        },
-      },
+const useStyles = makeStyles((theme: Theme) => ({
+  root: {
+    margin: theme.spacing(2),
+  },
+  tableWrapper: {
+    display: 'flex',
+  },
+  paper: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingRight: theme.spacing(1),
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+  },
+  pageTitle: {
+    fontSize: '26px',
+    marginTop: '20px',
+    marginBottom: theme.spacing(3),
+  },
+  tabRoot: {
+    maxWidth: '100%',
+  },
+  tabIcon: {
+    paddingRight: theme.spacing(1),
+  },
+  tabWrapper: {
+    textTransform: 'none',
+    '& .MuiTab-wrapper': {
+      flexDirection: 'row',
     },
   },
-});
+  roundCornerResolver: {
+    '& .MuiPaper-rounded': {
+      borderTopLeftRadius: 0,
+      borderTopRightRadius: 0,
+    },
+  },
+}));
 
 interface IWorkspaceSettingsProps {
   user: IUser;
@@ -106,8 +105,12 @@ export default function WorkspaceSettings(props: IWorkspaceSettingsProps) {
   const [viewInviteDialog, showInviteDialog] = useState(false);
   const [tabValue, setTabValue] = useState(0);
 
-  const handleChangeTab = (event: React.ChangeEvent<{}>, newValue: number) => {
+  const handleChangeTab = (_: React.ChangeEvent<{}>, newValue: number) => {
     setTabValue(newValue);
+  };
+
+  const handleShowInviteDialog = () => {
+    showInviteDialog(true);
   };
 
   if (error) {
@@ -127,60 +130,50 @@ export default function WorkspaceSettings(props: IWorkspaceSettingsProps) {
     <div>
       <Grid item={true} container={true} xs={10} spacing={2}>
         <Grid item={true} xs={12} sm={12}>
-          <ThemeProvider theme={theme}>
-            <div style={{ position: 'relative' }}>
-              <Paper>
-                <Tabs
-                  value={tabValue}
-                  onChange={handleChangeTab}
-                  indicatorColor="primary">
-                  <Tab
-                    icon={<Group style={{ padding: '10px' }} />}
-                    label={
-                      <>
-                        <span>Team</span>
-                        <span>Members</span>
-                      </>
-                    }
-                  />
-                  <Tab
-                    icon={<PersonAdd style={{ padding: '10px' }} />}
-                    label={
-                      <>
-                        <span>Invited</span> <span>Organization</span>
-                        <span>Members</span>
-                      </>
-                    }
-                  />
-                </Tabs>
-              </Paper>
-              <div
-                style={{
-                  position: 'absolute',
-                  right: '10px',
-                  top: '13px',
-                  display: tabValue === 1 ? 'none' : '',
-                }}>
-                {workspace.billingEnabled === true ? (
-                  <DisablePaymentDialog />
-                ) : (
-                  <EnablePaymentDialog />
-                )}
-              </div>
-            </div>
-          </ThemeProvider>
+          <Paper className={classes.paper}>
+            <Tabs
+              value={tabValue}
+              onChange={handleChangeTab}
+              className={classes.tabRoot}>
+              <Tab
+                icon={<Group className={classes.tabIcon} />}
+                label="Team Members"
+                className={classes.tabWrapper}
+              />
+              <Tab
+                icon={<PersonAdd className={classes.tabIcon} />}
+                label={<span>Invited Organization Members</span>}
+                className={classes.tabWrapper}
+              />
+            </Tabs>
+            {tabValue === 1 ? (
+              <Button
+                color="primary"
+                title="Invite a Member"
+                variant="text"
+                RightIcon={AddCircleOutline}
+                onClick={handleShowInviteDialog}
+              />
+            ) : workspace.billingEnabled === true ? (
+              <DisablePaymentDialog />
+            ) : (
+              <EnablePaymentDialog />
+            )}
+          </Paper>
           <TabPanel value={tabValue} index={0}>
-            <Card>
+            <Box className={classes.roundCornerResolver}>
               <WorkspaceMembersTable
                 user={props.user}
                 workspace={workspace}
                 refetchWorkspaces={refetch}
               />
-            </Card>
+            </Box>
           </TabPanel>
 
           <TabPanel value={tabValue} index={1}>
-            <WorkspaceInvitedMember workspaceId={props.workspaceId} />
+            <Box className={classes.roundCornerResolver}>
+              <WorkspaceInvitedMember workspaceId={props.workspaceId} />
+            </Box>
             {viewInviteDialog && (
               <InviteDialog
                 open={viewInviteDialog}

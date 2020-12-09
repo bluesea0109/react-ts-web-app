@@ -15,6 +15,7 @@ loadStripe(config.stripePublicKey);
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
+      height: '2rem',
       display: 'flex',
       flexWrap: 'wrap',
       padding: theme.spacing(1),
