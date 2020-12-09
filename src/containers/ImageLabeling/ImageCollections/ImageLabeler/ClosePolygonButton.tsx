@@ -1,4 +1,4 @@
-import Button from '@material-ui/core/Button';
+import { Button } from '@bavard/react-components';
 import { cloneDeep } from 'lodash';
 import React from 'react';
 import { connect, ConnectedProps, useSelector } from 'react-redux';
@@ -55,9 +55,11 @@ const ClosePolygonButton: React.FC<ConnectedProps<typeof connector>> = (
   };
 
   return (
-    <Button disabled={closePolygonDisabled()} onClick={closePolygon}>
-      {'Close Polygon'}
-    </Button>
+    <Button
+      title="Close Polygon"
+      disabled={closePolygonDisabled()}
+      onClick={closePolygon}
+    />
   );
 };
 

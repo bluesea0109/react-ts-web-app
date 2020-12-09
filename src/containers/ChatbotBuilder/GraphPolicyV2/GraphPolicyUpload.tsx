@@ -4,8 +4,8 @@ import {
   GraphPolicySchema,
   IGraphPolicy,
 } from '@bavard/agent-config';
-import { TextInput } from '@bavard/react-components';
-import { Box, Button, Typography } from '@material-ui/core';
+import { TextInput, Button } from '@bavard/react-components';
+import { Box, Typography } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
 import React, { ChangeEvent, useState } from 'react';
 import { useParams } from 'react-router';
@@ -139,11 +139,12 @@ const GraphPolicyUpload = ({ onSuccess, onError }: IGraphPolicyUploadProps) => {
       </Box>
       <Box mt={5}>
         <Button
+          title="Upload JSON File"
           disabled={isLoading}
           variant="contained"
           component="label"
-          style={{ padding: 6 }}>
-          {'Upload JSON File'}
+          style={{ padding: 6 }}
+          onClick={() => {}}>
           <input
             name="json"
             id="json"
@@ -162,12 +163,12 @@ const GraphPolicyUpload = ({ onSuccess, onError }: IGraphPolicyUploadProps) => {
       </Box>
       <Box mt={5}>
         <Button
+          title="Submit"
           disabled={isLoading || !config}
           variant="contained"
           color="primary"
-          onClick={createGraphPolicy}>
-          Submit
-        </Button>
+          onClick={createGraphPolicy}
+        />
       </Box>
     </Box>
   );

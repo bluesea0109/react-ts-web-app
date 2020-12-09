@@ -1,11 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
-import {
-  Button,
-  Grid,
-  LinearProgress,
-  Paper,
-  Typography,
-} from '@material-ui/core';
+import { Button } from '@bavard/react-components';
+import { Grid, LinearProgress, Paper, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -131,12 +126,12 @@ export default function TrainingConversations() {
       <Grid className={classes.pageTitle}>Training Conversations</Grid>
       <Paper className={classes.paper}>
         <Button
+          title="Create New Conversation"
           className={classes.button}
           variant="contained"
           color="primary"
-          onClick={onCreateNewConversation}>
-          Create New Conversation
-        </Button>
+          onClick={onCreateNewConversation}
+        />
         {deleteConversationsResult.loading && <LinearProgress />}
         {records.length > 0 && records ? (
           records

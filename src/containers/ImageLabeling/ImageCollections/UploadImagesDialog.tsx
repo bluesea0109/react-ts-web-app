@@ -1,5 +1,6 @@
 import { withApollo, WithApolloClient } from '@apollo/client/react/hoc';
-import { Button, Typography } from '@material-ui/core';
+import { Button } from '@bavard/react-components';
+import { Typography } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -157,9 +158,7 @@ class UploadImagesDialog extends React.Component<
           <DialogTitle>{'Uploading Images'}</DialogTitle>
           {dialogContent}
           <DialogActions>
-            <Button color="secondary" onClick={this.onCancel}>
-              {'Cancel'}
-            </Button>
+            <Button title="Cancel" color="secondary" onClick={this.onCancel} />
           </DialogActions>
         </Dialog>
         <IconButton component="label" style={{ padding: 6 }}>

@@ -1,7 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
 import {
   Box,
-  Button,
   Card,
   CardContent,
   CardHeader,
@@ -14,6 +13,7 @@ import {
   Grid,
   Typography,
 } from '@material-ui/core';
+import { Button } from '@bavard/react-components';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
@@ -153,9 +153,12 @@ export default function PublishAgent() {
           publishedAgents={agents}
           loading={queryResult.loading || state.loading}
           toolbarChildren={
-            <Button variant="contained" color="primary" onClick={handlePublish}>
-              Publish Assistant
-            </Button>
+            <Button
+              title="Publish Assistant"
+              variant="contained"
+              color="primary"
+              onClick={handlePublish}
+            />
           }
         />
       </Grid>
@@ -199,12 +202,13 @@ export default function PublishAgent() {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleConfirm} color="primary">
-            CONFIRM
-          </Button>
-          <Button onClick={handleCancel} color="primary" autoFocus={true}>
-            CANCEL
-          </Button>
+          <Button title="Confirm" onClick={handleConfirm} color="primary" />
+          <Button
+            title="Cancel"
+            onClick={handleCancel}
+            color="primary"
+            autoFocus={true}
+          />
         </DialogActions>
       </Dialog>
     </Grid>

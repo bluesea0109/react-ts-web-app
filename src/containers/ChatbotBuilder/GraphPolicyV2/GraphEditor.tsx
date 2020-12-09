@@ -6,7 +6,8 @@ import {
 } from '@bavard/agent-config/dist/graph-policy-v2';
 import GraphEditorHistory from './GraphEditorHistory';
 
-import { Button, IconButton, Tooltip } from '@material-ui/core';
+import { Button } from '@bavard/react-components';
+import { IconButton, Tooltip } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Add, Delete, Redo, Remove, Save, Undo } from '@material-ui/icons';
 import clsx from 'clsx';
@@ -103,7 +104,7 @@ const useStyles = makeStyles((theme: Theme) =>
       minWidth: 30,
       width: 30,
       height: 30,
-      padding: 2,
+      paddingLeft: theme.spacing(1),
       background: theme.palette.background.default,
       display: 'block',
       marginBottom: theme.spacing(1),
@@ -775,54 +776,59 @@ const GraphEditor = ({ agentId, policy, onSave, onPolicyChanged }: IProps) => {
         <Tooltip title={`Zoom: ${gp.zoom}%`}>
           <div>
             <Button
+              title=""
               variant="outlined"
               color="default"
               size="small"
               className={classes.controlButton}
-              onClick={() => doZoom('in')}>
-              <Add />
-            </Button>
+              LeftIcon={Add}
+              onClick={() => doZoom('in')}
+            />
 
             <Button
+              title=""
               variant="outlined"
               color="default"
               size="small"
+              LeftIcon={Remove}
               className={classes.controlButton}
-              onClick={() => doZoom('out')}>
-              <Remove />
-            </Button>
+              onClick={() => doZoom('out')}
+            />
           </div>
         </Tooltip>
         <Tooltip title="Undo Changes">
           <Button
+            title=""
             variant="outlined"
             color="default"
             size="small"
+            LeftIcon={Undo}
             className={classes.controlButton}
-            onClick={undoChanges}>
-            <Undo />
-          </Button>
+            onClick={undoChanges}
+          />
         </Tooltip>
         <Tooltip title="Redo Changes">
           <Button
+            title=""
             variant="outlined"
             color="default"
             size="small"
+            LeftIcon={Redo}
             className={classes.controlButton}
-            onClick={redoChanges}>
-            <Redo />
-          </Button>
+            onClick={redoChanges}
+          />
         </Tooltip>
         {onSave && (
           <Tooltip title="Save Changes">
             <Button
+              title=""
               variant="outlined"
               color="default"
               size="small"
+              LeftIcon={Save}
               className={classes.controlButton}
-              onClick={() => onSave?.(gp)}>
-              <Save />
-            </Button>
+              onClick={() => onSave?.(gp)}
+            />
           </Tooltip>
         )}
       </div>

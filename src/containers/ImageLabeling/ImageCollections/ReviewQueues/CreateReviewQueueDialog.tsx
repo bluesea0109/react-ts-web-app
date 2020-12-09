@@ -1,6 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { TextInput } from '@bavard/react-components';
-import { Button } from '@material-ui/core';
+import { TextInput, Button } from '@bavard/react-components';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -87,17 +86,17 @@ function CreateReviewQueueDialog() {
         </DialogContent>
         <DialogActions>
           <Button
+            title="Cancel"
             color="primary"
             onClick={handleClose}
-            disabled={createQueueResult.loading}>
-            {'Cancel'}
-          </Button>
+            disabled={createQueueResult.loading}
+          />
           <Button
+            title="Save"
             color="secondary"
             onClick={handleCreate}
-            disabled={state.name === '' || createQueueResult.loading}>
-            {'Save'}
-          </Button>
+            disabled={state.name === '' || createQueueResult.loading}
+          />
         </DialogActions>
       </Dialog>
       <IconButtonAdd tooltip="Create Review Queue" onClick={handleOpen} />

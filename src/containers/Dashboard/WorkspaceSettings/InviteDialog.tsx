@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
-import { TextInput } from '@bavard/react-components';
-import { Button, Typography } from '@material-ui/core';
+import { TextInput, Button } from '@bavard/react-components';
+import { Typography } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -174,20 +174,16 @@ export default function InviteDialog(props: IProps) {
         </DialogTitle>
         {dialogContent}
         <DialogActions>
-          <Button color="primary" onClick={handleClose}>
-            {'Cancel'}
-          </Button>
+          <Button title="Cancel" color="primary" onClick={handleClose} />
           <Button
+            title="Send Invite"
             color="secondary"
             onClick={handleInvite}
-            disabled={!validateInput()}>
-            {'Send Invite'}
-          </Button>
+            disabled={!validateInput()}
+          />
         </DialogActions>
       </Dialog>
-      <Button size="small" onClick={handleOpen}>
-        {'Invite Member'}
-      </Button>
+      <Button title="Invite Member" size="small" onClick={handleOpen} />
     </div>
   );
 }

@@ -7,6 +7,7 @@ import {
   RichTextInput,
   TextInput,
   ImageSelectorGrid,
+  Button,
 } from '@bavard/react-components';
 
 import { useLazyQuery } from '@apollo/client';
@@ -14,7 +15,7 @@ import { useSnackbar } from 'notistack';
 import { useParams } from 'react-router-dom';
 
 import { useQuery } from '@apollo/client';
-import { Button, FormControl } from '@material-ui/core';
+import { FormControl } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Alert, Autocomplete } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
@@ -188,12 +189,12 @@ export default function UpsertNodeForm({
         </Alert>
       )}
       <Button
+        title="Submit"
         className={classes.formControl}
         onClick={submitFunc}
         variant="contained"
-        color="primary">
-        Submit
-      </Button>
+        color="primary"
+      />
     </React.Fragment>
   );
 

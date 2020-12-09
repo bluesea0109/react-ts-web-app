@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Button } from '@material-ui/core';
+import { Button } from '@bavard/react-components';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
 import BillingUpgradeDialog, {
@@ -46,12 +46,12 @@ export default function CheckoutForm() {
   return (
     <div className={classes.root} color="inherit">
       <Button
+        title="Enable Billing"
         size="small"
         variant="contained"
         className={classes.enableBillingButton}
-        onClick={handleOpen}>
-        {'Enable Billing'}
-      </Button>
+        onClick={handleOpen}
+      />
       <BillingUpgradeDialog
         page={BillingPage.BILLING_DETAILS}
         isOpen={isOpen}

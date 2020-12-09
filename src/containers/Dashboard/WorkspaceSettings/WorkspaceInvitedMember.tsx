@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
-import { CommonTable } from '@bavard/react-components';
-import { Button, CardHeader } from '@material-ui/core';
+import { CommonTable, Button } from '@bavard/react-components';
 
 import { IInvitedMember } from '../../../models/user-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
@@ -73,9 +72,11 @@ const InvitedMemberTable: React.FC<IInvitedMemberTableProps> = ({
     {
       title: 'Revoke Invitation',
       renderRow: (rowData: IInvitedMember) => (
-        <Button variant="contained" onClick={() => revokeInvitation(rowData)}>
-          Revoke
-        </Button>
+        <Button
+          title="Revoke"
+          variant="contained"
+          onClick={() => revokeInvitation(rowData)}
+        />
       ),
     },
   ];
@@ -85,9 +86,6 @@ const InvitedMemberTable: React.FC<IInvitedMemberTableProps> = ({
       data={{
         columns,
         rowsData: invitedMembers,
-      }}
-      components={{
-        Toolbar: () => <CardHeader />,
       }}
     />
   );

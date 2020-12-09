@@ -1,8 +1,10 @@
 import React from 'react';
 import { useParams } from 'react-router';
 
+import { Button } from '@bavard/react-components';
+import { Typography } from '@material-ui/core';
 import { useMutation } from '@apollo/client';
-import { Button, Typography } from '@material-ui/core';
+import { getIdToken } from '../../../apollo-client';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -67,16 +69,21 @@ export default function PaymentDialog() {
         workspaceId,
       },
     });
+
+    localStorage.clear();
+    sessionStorage.clear();
+    getIdToken();
   };
 
   let dialogActions = (
     <DialogActions>
-      <Button color="primary" onClick={handleClose}>
-        {'NO'}
-      </Button>
-      <Button color="secondary" onClick={handleDisableClick} disabled={false}>
-        {'YES'}
-      </Button>
+      <Button title="No" color="primary" onClick={handleClose} />
+      <Button
+        title="Yes"
+        color="secondary"
+        onClick={handleDisableClick}
+        disabled={false}
+      />
     </DialogActions>
   );
 
@@ -103,9 +110,7 @@ export default function PaymentDialog() {
     dialogActions = (
       <React.Fragment>
         <DialogActions>
-          <Button color="primary" onClick={handleClose}>
-            {'Close'}
-          </Button>
+          <Button title="Close" color="primary" onClick={handleClose} />
         </DialogActions>
       </React.Fragment>
     );
@@ -130,12 +135,12 @@ export default function PaymentDialog() {
         {dialogActions}
       </Dialog>
       <Button
+        title="Disable Billing"
         size="small"
         variant="contained"
         className={classes.disableBillingButton}
-        onClick={handleOpen}>
-        {'Disable Billing'}
-      </Button>
+        onClick={handleOpen}
+      />
     </div>
   );
 }

@@ -1,5 +1,5 @@
-import { TextInput } from '@bavard/react-components';
-import { Button, Grid } from '@material-ui/core';
+import { TextInput, Button } from '@bavard/react-components';
+import { Grid } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import React, { Fragment, useState } from 'react';
@@ -79,9 +79,12 @@ const TagTypeSelection: React.FC<ITagSelection> = ({
             onChange={(event: any) => setTagValues(event.target.value)}
           />
         </Grid>
-        <Button variant="contained" color="primary" onClick={_onTagAdd}>
-          Add Tag
-        </Button>
+        <Button
+          title="Add Tag"
+          variant="contained"
+          color="primary"
+          onClick={_onTagAdd}
+        />
       </Grid>
     </Fragment>
   );

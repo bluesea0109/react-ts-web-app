@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { Button } from '@material-ui/core';
+import { Button } from '@bavard/react-components';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -63,17 +63,17 @@ function DeleteReviewQueueDialog(props: IDeleteReviewQueueProps) {
         <DialogTitle>{'Delete Review Queue'}</DialogTitle>
         <DialogActions>
           <Button
+            title="Cancel"
             color="primary"
             onClick={handleClose}
-            disabled={deleteQueueResult.loading}>
-            {'Cancel'}
-          </Button>
+            disabled={deleteQueueResult.loading}
+          />
           <Button
+            title="Delete"
             color="secondary"
             onClick={handleDelete}
-            disabled={deleteQueueResult.loading}>
-            {'Delete'}
-          </Button>
+            disabled={deleteQueueResult.loading}
+          />
         </DialogActions>
       </Dialog>
       <IconButtonDelete tooltip="Delete Review Queue" onClick={handleOpen} />

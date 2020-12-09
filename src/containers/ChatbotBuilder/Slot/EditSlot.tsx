@@ -1,8 +1,7 @@
 import { ISlot } from '@bavard/agent-config';
-import { TextInput, UpTransition } from '@bavard/react-components';
+import { TextInput, UpTransition, Button } from '@bavard/react-components';
 import { Box, DialogContent, Grid } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
-import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import IconButton from '@material-ui/core/IconButton';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -64,9 +63,12 @@ const EditSlot = ({ slot, onEditSlotClose, onSaveSlot }: EditSlotProps) => {
               ? 'Create New Slot'
               : `Edit Slot "${currentSlot.name}"`}
           </Typography>
-          <Button autoFocus={true} color="inherit" onClick={saveChanges}>
-            {!currentSlot ? 'Create' : 'Save'}
-          </Button>
+          <Button
+            title={!currentSlot ? 'Create' : 'Save'}
+            autoFocus={true}
+            color="inherit"
+            onClick={saveChanges}
+          />
         </Toolbar>
       </AppBar>
       <DialogContent>

@@ -42,7 +42,6 @@ interface IDashboardProps {
 const Dashboard: React.FC<IDashboardProps> = ({ user }) => {
   const classes = useStyles();
   const firebaseUser = firebase.auth().currentUser;
-  const history = useHistory();
 
   const [currentWorkspace, setCurrentWorkspace] = useState<IWorkspace>();
   const [showAddWorkspace, setShowAddWorkspace] = useState(false);

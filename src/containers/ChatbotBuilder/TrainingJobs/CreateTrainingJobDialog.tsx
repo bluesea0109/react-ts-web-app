@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { Button } from '@material-ui/core';
+import { Button } from '@bavard/react-components';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -94,24 +94,22 @@ export default function CreateTrainingJobDialog(props: IProps) {
         </DialogTitle>
         {dialogContent}
         <DialogActions>
-          <Button color="primary" onClick={handleClose}>
-            {'Cancel'}
-          </Button>
+          <Button title="Cancel" color="primary" onClick={handleClose} />
           <Button
+            title="Create"
             color="secondary"
             onClick={handleCreateTrainingJob}
-            disabled={loading || error != null}>
-            {'Create'}
-          </Button>
+            disabled={loading || error != null}
+          />
         </DialogActions>
       </Dialog>
       <Button
+        title="Train Assistant"
         variant="contained"
         color="primary"
         size="small"
-        onClick={handleOpen}>
-        {'Train Assistant'}
-      </Button>
+        onClick={handleOpen}
+      />
     </div>
   );
 }

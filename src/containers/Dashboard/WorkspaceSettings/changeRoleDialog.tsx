@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import Button from '@material-ui/core/Button';
+import { Button } from '@bavard/react-components';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -113,20 +113,20 @@ const ChangeRoleDialog: React.FC<IChangeRoleDialogProps> = (props) => {
       </DialogContent>
       <DialogActions>
         <Button
+          title="Cancel"
           variant="contained"
           onClick={() => props.setOpen(false)}
-          color="default">
-          Cancel
-        </Button>
+          color="default"
+        />
         <Button
+          title="Update"
           variant="contained"
           disabled={loading}
           onClick={() => {
             onChangeMemberRole();
           }}
-          color="secondary">
-          Update
-        </Button>
+          color="secondary"
+        />
       </DialogActions>
     </Dialog>
   );

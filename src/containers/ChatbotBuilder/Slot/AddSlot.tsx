@@ -1,5 +1,5 @@
 import { AgentConfig, ISlot } from '@bavard/agent-config';
-import { TextInput, UpTransition } from '@bavard/react-components';
+import { TextInput, UpTransition, Button } from '@bavard/react-components';
 import {
   Box,
   CircularProgress,
@@ -8,7 +8,6 @@ import {
   LinearProgress,
 } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
-import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import IconButton from '@material-ui/core/IconButton';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -92,12 +91,12 @@ const AddSlot = ({ onAddSlotClose }: AddSlotProps) => {
             Create New Slot
           </Typography>
           <Button
+            title="Create"
             disabled={loading}
             autoFocus={true}
             color="inherit"
             onClick={saveChanges}>
             {loading && <CircularProgress color="secondary" size={20} />}
-            Create
           </Button>
         </Toolbar>
         {loading && <LinearProgress color="secondary" />}

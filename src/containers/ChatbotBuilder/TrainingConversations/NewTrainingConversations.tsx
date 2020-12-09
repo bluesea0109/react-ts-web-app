@@ -1,11 +1,10 @@
 import { useMutation } from '@apollo/client';
-import { TextInput } from '@bavard/react-components';
+import { TextInput, Button } from '@bavard/react-components';
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
   AppBar,
-  Button,
   Chip,
   CircularProgress,
   Dialog,
@@ -333,12 +332,12 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
             Create a New Conversation
           </Typography>
           <Button
+            title="Save"
             disabled={loading}
             autoFocus={true}
             color="inherit"
             onClick={onSubmit}>
             {loading && <CircularProgress color="secondary" size={20} />}
-            Save
           </Button>
         </Toolbar>
         {loading && <LinearProgress color="secondary" />}
@@ -579,21 +578,21 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
             </Grid>
             <Grid container={true} justify={'flex-end'}>
               <Button
+                title={isUpdate ? 'Update' : 'Save'}
                 className={clsx(classes.saveButton, classes.buttonMargin)}
                 variant="contained"
                 color="primary"
                 onClick={onSubmit}
-                disabled={loading || actionData.length <= 0}>
-                {isUpdate ? 'Update' : 'Save'}
-              </Button>
+                disabled={loading || actionData.length <= 0}
+              />
               {isUpdate && (
                 <Button
+                  title="Cancel"
                   className={classes.saveButton}
                   variant="contained"
                   color="primary"
-                  onClick={handleClose}>
-                  Cancel
-                </Button>
+                  onClick={handleClose}
+                />
               )}
             </Grid>
           </AccordionDetails>

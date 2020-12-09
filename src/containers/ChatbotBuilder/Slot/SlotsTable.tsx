@@ -1,6 +1,6 @@
 import { ISlot } from '@bavard/agent-config';
-import { CommonTable } from '@bavard/react-components';
-import { Button, Paper } from '@material-ui/core';
+import { CommonTable, Button } from '@bavard/react-components';
+import { Paper } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
 
@@ -36,9 +36,12 @@ function SlotsTable({
 
   return (
     <Paper className={classes.paper}>
-      <Button variant="contained" color="primary" onClick={onAdd}>
-        Add New Slot
-      </Button>
+      <Button
+        title="Add New Slot"
+        variant="contained"
+        color="primary"
+        onClick={onAdd}
+      />
       <CommonTable
         data={{
           columns,
