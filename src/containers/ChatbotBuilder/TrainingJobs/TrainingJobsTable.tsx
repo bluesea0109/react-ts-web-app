@@ -24,19 +24,22 @@ export default function TrainingJobsTable({
   interface IGetTrainingJobs {
     ChatbotService_trainingJobs: ITrainingJob[];
   }
-  const getTrainingJobs = useQuery<IGetTrainingJobs>(GET_TRAINING_JOBS, {
-    variables: { agentId },
-  });
+  const { data, error, loading } = useQuery<IGetTrainingJobs>(
+    GET_TRAINING_JOBS,
+    {
+      variables: { agentId },
+    },
+  );
 
-  if (getTrainingJobs.error) {
-    return <ApolloErrorPage error={getTrainingJobs.error} />;
+  if (error) {
+    return <ApolloErrorPage error={error} />;
   }
 
-  if (getTrainingJobs.loading) {
+  if (loading) {
     return <ContentLoading shrinked={true} />;
   }
 
-  const jobs = getTrainingJobs.data?.ChatbotService_trainingJobs || [];
+  const jobs = data?.ChatbotService_trainingJobs || [];
 
   const columns = [
     { title: 'Job Id', field: 'jobId' },

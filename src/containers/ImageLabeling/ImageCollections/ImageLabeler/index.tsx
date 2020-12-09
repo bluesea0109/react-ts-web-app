@@ -37,7 +37,7 @@ function ImageLabeler(props: ConnectedProps<typeof connector>) {
     ImageLabelingService_categorySets: ICategorySet[];
   }
 
-  const { loading, error, data } = useQuery<IGetData>(GET_IMAGE_DATA, {
+  const { data, error, loading } = useQuery<IGetData>(GET_IMAGE_DATA, {
     variables: {
       workspaceId,
       imageId,

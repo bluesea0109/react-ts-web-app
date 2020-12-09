@@ -9,12 +9,12 @@ import { useParams } from 'react-router-dom';
 import { Maybe } from '../../../utils/types';
 import { botIconUploadQuery } from './gql';
 import { IBotIconUploadUrlQueryResult } from './types';
+import ApolloErrorPage from '../../ApolloErrorPage';
 
 const ImageUploader = ({
   onImageUpload,
   isLoading,
   currentImage,
-  label,
   iconType,
 }: any) => {
   const params = useParams<{ agentId: string }>();
@@ -35,7 +35,7 @@ const ImageUploader = ({
     }
   }, [currentImage]);
 
-  const imageUploadUrlQuery = useQuery<IBotIconUploadUrlQueryResult>(
+  const { data, error } = useQuery<IBotIconUploadUrlQueryResult>(
     botIconUploadQuery,
     {
       variables: {
@@ -48,7 +48,7 @@ const ImageUploader = ({
 
   useEffect(() => {
     if (file) {
-      const url = imageUploadUrlQuery.data?.ChatbotService_botIconUploadUrl.url;
+      const url = data?.ChatbotService_botIconUploadUrl.url;
       if (url) {
         (async () => {
           try {
@@ -76,7 +76,11 @@ const ImageUploader = ({
       }
     }
     // eslint-disable-next-line
-  }, [imageUploadUrlQuery.data]);
+  }, [data]);
+
+  if (error) {
+    return <ApolloErrorPage error={error} />;
+  }
 
   const loading = isLoading || isFileLoading;
 

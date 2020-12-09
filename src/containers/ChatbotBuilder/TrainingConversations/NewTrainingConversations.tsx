@@ -35,6 +35,7 @@ import { EUserActionType } from '@bavard/agent-config/dist/actions/user';
 import { currentAgentConfig } from '../atoms';
 import TagTypeSelection from './TagTypeSelection';
 import { EAgentActionTypes } from '@bavard/agent-config/dist/enums';
+import ApolloErrorPage from '../../ApolloErrorPage';
 
 interface IConversationProps {
   conversationLastindex: number;
@@ -75,8 +76,12 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
   const [actionType, setActionType] = useState<string>('UTTER');
   const [loading, setLoding] = useState<boolean>(false);
 
-  const [createConversation] = useMutation(CREATE_TRAINING_CONVERSATION);
-  const [updateConversation] = useMutation(UPDATE_TRAINING_CONVERSATION);
+  const [createConversation, createConversationResult] = useMutation(
+    CREATE_TRAINING_CONVERSATION,
+  );
+  const [updateConversation, updateConversationResult] = useMutation(
+    UPDATE_TRAINING_CONVERSATION,
+  );
 
   const config = useRecoilValue(currentAgentConfig);
 
@@ -305,6 +310,12 @@ const CreateTrainingConversations: React.FC<IConversationProps> = ({
       onCloseCallback();
     }
   };
+
+  const commonError =
+    createConversationResult.error || updateConversationResult.error;
+  if (commonError) {
+    return <ApolloErrorPage error={commonError} />;
+  }
 
   return (
     <Dialog fullScreen={true} open={true}>

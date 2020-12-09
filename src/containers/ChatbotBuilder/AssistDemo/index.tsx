@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import config from '../../../config';
 import { getApiKeysQuery } from '../../Dashboard/WorkspaceSettings/gql';
+import ApolloErrorPage from '../../ApolloErrorPage';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,27 +26,34 @@ export default function ChatWithAgent() {
 
   const [apiKey, setApiKey] = useState<string | null>(null);
   const classes = useStyles();
-  const agentData = useQuery<IGetAgent>(GET_AGENT, {
-    variables: { agentId: Number(agentId) },
-  });
+  const { data: agentData, error: agentError } = useQuery<IGetAgent>(
+    GET_AGENT,
+    {
+      variables: { agentId: Number(agentId) },
+    },
+  );
 
-  const apiKeysQuery = useQuery(getApiKeysQuery, {
+  const {
+    data: apiKeysData,
+    error: apiKeysError,
+    loading: apiKeysLoading,
+  } = useQuery(getApiKeysQuery, {
     variables: {
       workspaceId,
     },
     skip: !workspaceId,
   });
 
-  const loadedKey = apiKeysQuery.data?.apiKeys?.[0]?.key ?? null;
+  const loadedKey = apiKeysData?.apiKeys?.[0]?.key ?? null;
   useEffect(() => {
-    if (!apiKeysQuery.loading) {
+    if (!apiKeysLoading) {
       setApiKey(loadedKey);
     }
-  }, [loadedKey, apiKeysQuery.loading]);
+  }, [loadedKey, apiKeysLoading]);
 
   useEffect(() => {
     let script: HTMLScriptElement | null = null;
-    if (apiKey && agentData && agentData.data) {
+    if (apiKey && agentData) {
       script = document.createElement('script');
       script.type = 'text/javascript';
       script.async = true;
@@ -56,7 +64,7 @@ export default function ChatWithAgent() {
             a.onload = function () { i['loadBavard']({uname, apiKey, debug, dev}) };
             a.async = 1; a.src = g; m.appendChild(a), a.type = "application/javascript";
           }
-        })('${agentData.data.ChatbotService_agent.uname}', '${apiKey}', true, true)
+        })('${agentData.ChatbotService_agent.uname}', '${apiKey}', true, true)
         (window, document, 'script', '${config.bundleUrl}')
       `;
       document.body.appendChild(script);
@@ -75,6 +83,10 @@ export default function ChatWithAgent() {
       document.getElementById('bavard-chatbot-trigger')?.remove();
     };
   }, []);
+
+  if (agentError || apiKeysError) {
+    return <ApolloErrorPage error={agentError || apiKeysError} />;
+  }
 
   return <div className={classes.root} id="chatbot" />;
 }

@@ -5,6 +5,7 @@ import WarningIcon from '@material-ui/icons/Warning';
 import { useSnackbar } from 'notistack';
 
 import { IWorkspace } from '../../models/user-service';
+import { getIdToken } from '../../apollo-client';
 
 const useStyles = makeStyles((theme: Theme) => ({
   warningIcon: {
@@ -57,7 +58,12 @@ const DeleteWorkspace: React.FC<IDeleteWorkspaceProps> = ({
       });
       return;
     }
+
     onConfirm();
+
+    localStorage.clear();
+    sessionStorage.clear();
+    getIdToken();
   };
 
   console.log(workspaceName, workspace.name);

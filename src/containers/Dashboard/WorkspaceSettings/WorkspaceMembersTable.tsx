@@ -1,3 +1,4 @@
+import React, { Fragment, useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { CommonTable, ConfirmDialog } from '@bavard/react-components';
 import {
@@ -7,15 +8,12 @@ import {
   TableCell,
   TableContainer,
   TableRow,
-  Typography,
 } from '@material-ui/core';
-import { Group } from '@material-ui/icons';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import MuiAlert from '@material-ui/lab/Alert';
-import DisablePaymentDialog from './DisablePaymentDialog';
-import EnablePaymentDialog from './EnablePaymentDialog';
+// import DisablePaymentDialog from './DisablePaymentDialog';
+// import EnablePaymentDialog from './EnablePaymentDialog';
 import _ from 'lodash';
-import React, { Fragment, useState } from 'react';
 
 import { IMember, IUser, IWorkspace } from '../../../models/user-service';
 import ContentLoading from '../../ContentLoading';
@@ -23,6 +21,7 @@ import IconButtonDelete from '../../IconButtons/IconButtonDelete';
 import IconButtonEdit from '../../IconButtons/IconButtonEdit';
 import ChangeRoleDialog from './changeRoleDialog';
 import { REMOVE_WORKSPACE_MEMBER } from './gql';
+import ApolloErrorPage from '../../ApolloErrorPage';
 
 interface IAlertProps {
   severity: 'error' | 'success';
@@ -70,15 +69,15 @@ const WorkspaceMembersTable: React.FC<IWorkspaceMembersTableProps> = ({
   });
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [changeConfirm, setChangeConfirm] = useState(false);
-  const [removeWorkspaceMember, { loading, data: removedMember }] = useMutation(
-    REMOVE_WORKSPACE_MEMBER,
-    {
-      onCompleted() {
-        refetchWorkspaces();
-        setOpenSnackBar(true);
-      },
+  const [
+    removeWorkspaceMember,
+    { loading, data: removedMember, error: removeMemberError },
+  ] = useMutation(REMOVE_WORKSPACE_MEMBER, {
+    onCompleted() {
+      refetchWorkspaces();
+      setOpenSnackBar(true);
     },
-  );
+  });
   const members = workspace.members || [];
 
   const onRemoveMember = () => {
@@ -100,6 +99,10 @@ const WorkspaceMembersTable: React.FC<IWorkspaceMembersTableProps> = ({
     refetchWorkspaces();
     setChangeConfirm(false);
   };
+
+  if (removeMemberError) {
+    return <ApolloErrorPage error={removeMemberError} />;
+  }
 
   const MemberRow = ({ rowData: member }: { rowData: IMember }) => {
     if (member.uid === user.uid) {
@@ -208,20 +211,16 @@ const WorkspaceMembersTable: React.FC<IWorkspaceMembersTableProps> = ({
               TableRow: MemberRow,
               Toolbar: () => (
                 <CardHeader
-                  avatar={<Group />}
-                  title={
-                    <Typography variant="h6">Workspace Members</Typography>
-                  }
-                  action={
-                    <Fragment>
-                      {workspace.billingEnabled === true && (
-                        <DisablePaymentDialog />
-                      )}
-                      {workspace.billingEnabled === false && (
-                        <EnablePaymentDialog />
-                      )}
-                    </Fragment>
-                  }
+                // action={
+                // <Fragment>
+                //   {workspace.billingEnabled === true && (
+                //     <DisablePaymentDialog />
+                //   )}
+                //   {workspace.billingEnabled === false && (
+                //     <EnablePaymentDialog />
+                //   )}
+                // </Fragment>
+                // }
                 />
               ),
             }}

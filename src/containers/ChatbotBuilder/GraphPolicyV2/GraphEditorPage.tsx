@@ -23,6 +23,7 @@ import GraphEditor from './GraphEditor';
 import GraphEditorMenu from './GraphEditorMenu';
 import { IGetOptionImagesQueryResult } from './types';
 import ContentLoading from '../../ContentLoading';
+import ApolloErrorPage from '../../ApolloErrorPage';
 
 interface IParams {
   entityId: string;
@@ -110,16 +111,6 @@ const GraphEditorPage = () => {
     gp = agentConfig?.getGraphPolicyV2(entityId);
   }
 
-  const getEditorWidth = () => {
-    const left = containerRef.current?.offsetLeft;
-    return `calc(100vw - ${left ? left + 1 : 412}px)`;
-  };
-
-  const getEditorHeight = () => {
-    const top = containerRef.current?.offsetTop;
-    return `calc(100vh - ${top ? top : 120}px)`;
-  };
-
   const handlePolicyChanged = async (policy: GraphPolicyV2) => {
     if (agentConfig) {
       try {
@@ -156,6 +147,10 @@ const GraphEditorPage = () => {
       }
     }
   };
+
+  if (updateAgentData.error) {
+    return <ApolloErrorPage error={updateAgentData.error} />;
+  }
 
   return (
     <React.Fragment>

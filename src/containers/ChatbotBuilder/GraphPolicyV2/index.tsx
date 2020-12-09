@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/client';
 
-import { Button, Grid } from '@material-ui/core';
+import { Button, Grid, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
@@ -17,6 +17,7 @@ import { currentAgentConfig } from '../atoms';
 import UploadGraphPolicyDialog from './UploadGraphPolicyDialog';
 import CreateGraphPolicyDialog from './CreateGraphPolicyDialog';
 import GraphPoliciesTable from './GraphPoliciesTable';
+import ApolloErrorPage from '../../ApolloErrorPage';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -75,10 +76,10 @@ export default function GraphPolicies() {
   const [user] = useRecoilState(currentUser);
   const history = useHistory();
 
-  const [updateAgent] = useMutation(CHATBOT_UPDATE_AGENT);
+  const [updateAgent, updateAgentResult] = useMutation(CHATBOT_UPDATE_AGENT);
 
   if (!config || !user) {
-    return <></>;
+    return <Typography>No Data Available</Typography>;
   }
 
   const refetchQueries = [
@@ -179,6 +180,10 @@ export default function GraphPolicies() {
   };
 
   const policies = config.getGraphPoliciesV2() || [];
+
+  if (updateAgentResult.error) {
+    return <ApolloErrorPage error={updateAgentResult.error} />;
+  }
 
   return (
     <Grid container={true} style={{ padding: '50px' }}>

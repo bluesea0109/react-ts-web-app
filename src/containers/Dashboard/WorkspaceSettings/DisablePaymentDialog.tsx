@@ -45,10 +45,13 @@ export default function PaymentDialog() {
   });
   const { workspaceId } = useParams<{ workspaceId: string }>();
 
-  const [doDisableBilling, disableBillingResp] = useMutation(DISABLE_BILLING, {
-    refetchQueries: [{ query: GET_CURRENT_USER }, { query: GET_WORKSPACES }],
-    awaitRefetchQueries: true,
-  });
+  const [doDisableBilling, disableBillingResult] = useMutation(
+    DISABLE_BILLING,
+    {
+      refetchQueries: [{ query: GET_CURRENT_USER }, { query: GET_WORKSPACES }],
+      awaitRefetchQueries: true,
+    },
+  );
 
   const handleOpen = () => {
     setState({ ...state, modalOpen: true });
@@ -78,26 +81,17 @@ export default function PaymentDialog() {
   );
 
   let dialogContent;
-  if (disableBillingResp.error) {
-    dialogContent = (
-      <React.Fragment>
-        <DialogContent>
-          <ApolloErrorPage error={disableBillingResp.error} />
-        </DialogContent>
-      </React.Fragment>
-    );
-  } else if (disableBillingResp.loading) {
-    dialogContent = (
-      <React.Fragment>
-        <DialogContent>
-          <ContentLoading />
-        </DialogContent>
-      </React.Fragment>
-    );
-  } else if (
-    disableBillingResp.called &&
-    disableBillingResp.data &&
-    disableBillingResp.data.disableBilling
+  if (disableBillingResult.error) {
+    return <ApolloErrorPage error={disableBillingResult.error} />;
+  }
+  if (disableBillingResult.loading) {
+    return <ContentLoading />;
+  }
+
+  if (
+    disableBillingResult.called &&
+    disableBillingResult.data &&
+    disableBillingResult.data.disableBilling
   ) {
     dialogContent = (
       <React.Fragment>

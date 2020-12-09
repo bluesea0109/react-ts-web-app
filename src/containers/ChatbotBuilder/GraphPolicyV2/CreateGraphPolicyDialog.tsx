@@ -14,6 +14,7 @@ import { CHATBOT_UPDATE_AGENT } from '../../../common-gql-queries';
 import { currentAgentConfig } from '../atoms';
 
 import { Alert } from '@material-ui/lab';
+import ApolloErrorPage from '../../ApolloErrorPage';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -47,7 +48,7 @@ const CreateGraphPolicyDialog = ({
   const [startUtterance, setStartUtterance] = useState<string | undefined>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>();
-  const [updateAgent] = useMutation(CHATBOT_UPDATE_AGENT);
+  const [updateAgent, updateAgentResult] = useMutation(CHATBOT_UPDATE_AGENT);
   const { enqueueSnackbar } = useSnackbar();
 
   const classes = useStyles();
@@ -109,6 +110,10 @@ const CreateGraphPolicyDialog = ({
 
     onSuccess?.(policy);
   };
+
+  if (updateAgentResult.error) {
+    return <ApolloErrorPage error={updateAgentResult.error} />;
+  }
 
   return (
     <FullDialog

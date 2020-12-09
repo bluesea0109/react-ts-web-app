@@ -58,7 +58,7 @@ function ImageViewer(props: ConnectedProps<typeof connector>) {
     imageId: string;
     workspaceId: string;
   }>();
-  const { loading, error, data } = useQuery(GET_DATA, {
+  const { data, error, loading } = useQuery(GET_DATA, {
     variables: {
       workspaceId,
       imageId: parseInt(imageId, 10),

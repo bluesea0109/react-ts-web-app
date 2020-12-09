@@ -1,52 +1,27 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { CommonTable, Button } from '@bavard/react-components';
-import {
-  Box,
-  CardHeader,
-  createStyles,
-  Theme,
-  Typography,
-} from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { Box, CardHeader, Typography } from '@material-ui/core';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import React, { useState } from 'react';
-import { useParams } from 'react-router';
 
 import { IAPIKey } from '../../../models/user-service';
 import { deleteApiKeyMutation, getApiKeysQuery } from './gql';
 import NewApiKeyDialog from './NewApiKeyDialog';
 import UpdateApiKeyDialog from './UpdateApikeyDialog';
+import ApolloErrorPage from '../../ApolloErrorPage';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    keyItem: {
-      margin: theme.spacing(2, 0),
-    },
-    domainsContainer: {
-      margin: theme.spacing(2, 0),
-      maxWidth: 800,
-    },
-    deleteBtn: {
-      background: theme.palette.error.main,
-      color: '#fff',
+interface IProps {
+  workspaceId?: String;
+}
 
-      '&:hover': {
-        background: theme.palette.error.light,
-      },
-    },
-  }),
-);
-
-export default function Project() {
-  const classes = useStyles();
-  const { workspaceId } = useParams<{ workspaceId: string }>();
+export default function Project({ workspaceId }: IProps) {
   const [apiKeys, setAPIKeys] = useState<IAPIKey[]>([]);
   const [currentKey, setCurrentKey] = useState<IAPIKey | null>(null);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showUpdateDialog, setShowUpdateDialog] = useState(false);
 
-  const { loading } = useQuery<any>(getApiKeysQuery, {
+  const { error: apiKeysError } = useQuery<any>(getApiKeysQuery, {
     variables: {
       workspaceId,
     },
@@ -122,10 +97,16 @@ export default function Project() {
     setAPIKeys(updatedApiKeys);
   };
 
+  const error = apiKeysError || apiKeysResponse.error;
+  if (error) {
+    return <ApolloErrorPage error={error} />;
+  }
+
   return (
     <Box width={1} mx={1} mt={2}>
       <NewApiKeyDialog
         isOpen={showCreateDialog}
+        workspaceId={workspaceId}
         onClose={handleToggleCreateDialog}
         apiKeys={apiKeys}
         onCreateKey={setAPIKeys}
@@ -171,6 +152,7 @@ export default function Project() {
       {currentKey && (
         <UpdateApiKeyDialog
           isOpen={showUpdateDialog}
+          workspaceId={workspaceId}
           currentKey={currentKey}
           onUpdate={handleUpdateApiKey}
           onClose={handleCloseUpdateDialog}

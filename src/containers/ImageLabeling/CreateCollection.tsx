@@ -10,6 +10,7 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router';
 import ContentLoading from '../ContentLoading';
 import IconButtonAdd from '../IconButtons/IconButtonAdd';
+import ApolloErrorPage from '../ApolloErrorPage';
 
 const CREATE_COLLECTION = gql`
   mutation($workspaceId: String!, $name: String!) {
@@ -88,7 +89,7 @@ function CreateCollection(props: ICreateCollectionProps) {
     }
   }
 
-  let dialogConent = (
+  const dialogConent = (
     <DialogContent>
       <TextInput
         id="name"
@@ -105,21 +106,12 @@ function CreateCollection(props: ICreateCollectionProps) {
     </DialogContent>
   );
 
-  if (loading) {
-    dialogConent = (
-      <DialogContent>
-        <ContentLoading />
-      </DialogContent>
-    );
+  if (error) {
+    return <ApolloErrorPage error={error} />;
   }
 
-  if (error) {
-    console.error(error);
-    dialogConent = (
-      <DialogContent>
-        <Typography>{'Error'}</Typography>
-      </DialogContent>
-    );
+  if (loading) {
+    return <ContentLoading />;
   }
 
   return (

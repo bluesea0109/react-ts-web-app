@@ -21,7 +21,7 @@ function ImageReviewer(props: ConnectedProps<typeof connector>) {
     imageId: string;
     queueId: string;
   }>();
-  const { loading, error, data } = useQuery(GET_DATA, {
+  const { data, error, loading } = useQuery(GET_DATA, {
     variables: {
       workspaceId,
       imageId: parseInt(imageId, 10),

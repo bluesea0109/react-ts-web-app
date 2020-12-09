@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { ActionDialog, TextInput } from '@bavard/react-components';
 import { Box, CircularProgress, Typography } from '@material-ui/core';
@@ -6,13 +7,13 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import React, { useState } from 'react';
-import { useParams } from 'react-router';
 import { IAPIKey } from '../../../models/user-service';
 import { createApiKeyMutation, getApiKeysQuery } from './gql';
+import ApolloErrorPage from '../../ApolloErrorPage';
 
 interface NewApiKeyDialogProps {
   isOpen: boolean;
+  workspaceId?: String;
   onClose: () => void;
   apiKeys: IAPIKey[];
   onCreateKey: (key: IAPIKey[]) => void;
@@ -24,11 +25,11 @@ interface CreateApiKeyMutationResult {
 
 const NewApiKeyDialog = ({
   isOpen,
+  workspaceId,
   onClose,
   apiKeys,
   onCreateKey,
 }: NewApiKeyDialogProps) => {
-  const { workspaceId } = useParams<{ workspaceId: string }>();
   const [apiKey, setApiKey] = useState('');
   const [
     createKey,
@@ -63,6 +64,10 @@ const NewApiKeyDialog = ({
     } catch (e) {}
   };
 
+  if (error) {
+    return <ApolloErrorPage error={error} />;
+  }
+
   return (
     <ActionDialog
       isOpen={isOpen}
@@ -90,16 +95,15 @@ const NewApiKeyDialog = ({
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
               placeholder="API Key"
-              error={!!error}
             />
             <Box mt={1}>
               <Typography
                 variant="caption"
                 color={error ? 'error' : 'primary'}
                 style={{ textTransform: 'capitalize' }}>
-                {!!error && error?.message.replace('GraphQL error: ', '')}
-                {!error &&
-                  'API Keys must be between 8 to 32 characters long and can only contain alphanumeric characters'}
+                {
+                  'API Keys must be between 8 to 32 characters long and can only contain alphanumeric characters'
+                }
               </Typography>
             </Box>
           </Box>

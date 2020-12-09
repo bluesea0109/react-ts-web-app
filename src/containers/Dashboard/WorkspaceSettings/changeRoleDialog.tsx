@@ -68,26 +68,23 @@ const ChangeRoleDialog: React.FC<IChangeRoleDialogProps> = (props) => {
     });
   };
 
-  let dialogContent;
   if (error) {
-    dialogContent = (
-      <React.Fragment>
-        <DialogContent>
-          <ApolloErrorPage error={error} />
-        </DialogContent>
-      </React.Fragment>
-    );
-  } else if (loading) {
-    dialogContent = (
-      <React.Fragment>
-        <DialogContent className={classes.dialogContent}>
-          <ContentLoading />
-        </DialogContent>
-      </React.Fragment>
-    );
-  } else {
-    dialogContent = (
-      <React.Fragment>
+    return <ApolloErrorPage error={error} />;
+  }
+
+  if (loading) {
+    return <ContentLoading />;
+  }
+
+  return (
+    <Dialog
+      open={props.open}
+      onClose={() => props.setOpen(false)}
+      aria-labelledby="confirm-dialog">
+      <DialogTitle id="confirm-dialog" className={classes.dialogTitle}>
+        Change Member Role
+      </DialogTitle>
+      <DialogContent>
         <DialogContent className={classes.dialogContent}>
           <FormControl component="fieldset">
             <RadioGroup
@@ -113,19 +110,7 @@ const ChangeRoleDialog: React.FC<IChangeRoleDialogProps> = (props) => {
             </RadioGroup>
           </FormControl>
         </DialogContent>
-      </React.Fragment>
-    );
-  }
-
-  return (
-    <Dialog
-      open={props.open}
-      onClose={() => props.setOpen(false)}
-      aria-labelledby="confirm-dialog">
-      <DialogTitle id="confirm-dialog" className={classes.dialogTitle}>
-        Change Member Role
-      </DialogTitle>
-      <DialogContent>{dialogContent}</DialogContent>
+      </DialogContent>
       <DialogActions>
         <Button
           variant="contained"

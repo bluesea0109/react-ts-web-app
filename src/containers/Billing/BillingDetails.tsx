@@ -20,6 +20,7 @@ import {
   GET_CURRENT_USER,
   GET_WORKSPACES,
 } from '../../common-gql-queries';
+import ApolloErrorPage from '../ApolloErrorPage';
 
 interface BillingDetailsProps {
   closeDialog: () => void;
@@ -35,18 +36,18 @@ const BillingDetails: React.FC<BillingDetailsProps> = ({ closeDialog }) => {
   const [expDate, setExpDate] = useState('');
   const [cvv, setCVV] = useState('');
 
-  const [doEnableBilling, { loading: enablingBilling }] = useMutation(
-    ENABLE_BILLING,
-    {
-      refetchQueries: [{ query: GET_CURRENT_USER }, { query: GET_WORKSPACES }],
-      awaitRefetchQueries: true,
-      onCompleted: () => {
-        sessionStorage.removeItem('token');
-        getIdToken();
-        closeDialog();
-      },
+  const [
+    doEnableBilling,
+    { loading: enablingBilling, error: billingError },
+  ] = useMutation(ENABLE_BILLING, {
+    refetchQueries: [{ query: GET_CURRENT_USER }, { query: GET_WORKSPACES }],
+    awaitRefetchQueries: true,
+    onCompleted: () => {
+      sessionStorage.removeItem('token');
+      getIdToken();
+      closeDialog();
     },
-  );
+  });
 
   const handleCreditCardChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -104,6 +105,10 @@ const BillingDetails: React.FC<BillingDetailsProps> = ({ closeDialog }) => {
   useEffect(() => {
     (window.Stripe as any)?.setPublishableKey(config.stripePublicKey);
   });
+
+  if (billingError) {
+    return <ApolloErrorPage error={billingError} />;
+  }
 
   return (
     <Box paddingX={4}>

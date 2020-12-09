@@ -60,44 +60,32 @@ function EditReviewQueueDialog(props: IEditReviewQueueDialogProps) {
     });
   };
 
-  let dialogContent = (
-    <DialogContent>
-      <TextInput
-        id="name"
-        label="Name"
-        labelType="Typography"
-        labelPosition="top"
-        type="string"
-        value={state.name}
-        margin="dense"
-        autoFocus={true}
-        fullWidth={true}
-        onChange={handleChange('name')}
-      />
-    </DialogContent>
-  );
-
-  if (updateQueueResult.loading) {
-    dialogContent = (
-      <DialogContent>
-        <ContentLoading />
-      </DialogContent>
-    );
+  if (updateQueueResult.error) {
+    return <ApolloErrorPage error={updateQueueResult.error} />;
   }
 
-  if (updateQueueResult.error) {
-    dialogContent = (
-      <DialogContent>
-        <ApolloErrorPage error={updateQueueResult.error} />
-      </DialogContent>
-    );
+  if (updateQueueResult.loading) {
+    return <ContentLoading />;
   }
 
   return (
     <React.Fragment>
       <Dialog fullWidth={true} open={state.open} onClose={handleClose}>
         <DialogTitle>{'Edit Review Queue'}</DialogTitle>
-        {dialogContent}
+        <DialogContent>
+          <TextInput
+            id="name"
+            label="Name"
+            labelType="Typography"
+            labelPosition="top"
+            type="string"
+            value={state.name}
+            margin="dense"
+            autoFocus={true}
+            fullWidth={true}
+            onChange={handleChange('name')}
+          />
+        </DialogContent>
         <DialogActions>
           <Button
             color="primary"

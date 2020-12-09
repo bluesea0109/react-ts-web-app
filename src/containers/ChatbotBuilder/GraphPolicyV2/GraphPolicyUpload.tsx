@@ -12,6 +12,7 @@ import { useParams } from 'react-router';
 import { useRecoilState } from 'recoil';
 import { CHATBOT_UPDATE_AGENT } from '../../../common-gql-queries';
 import { currentAgentConfig } from '../atoms';
+import ApolloErrorPage from '../../ApolloErrorPage';
 
 interface IGraphPolicyUploadProps {
   onError?: (error: Error) => void;
@@ -115,6 +116,10 @@ const GraphPolicyUpload = ({ onSuccess, onError }: IGraphPolicyUploadProps) => {
       setLoading(false);
     }
   };
+
+  if (updateAgentData.error) {
+    return <ApolloErrorPage error={updateAgentData.error} />;
+  }
 
   const isLoading = updateAgentData.loading || loading;
 

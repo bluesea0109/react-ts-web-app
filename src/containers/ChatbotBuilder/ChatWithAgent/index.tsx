@@ -7,6 +7,7 @@ import { useParams } from 'react-router';
 import config from '../../../config';
 import ContentLoading from '../../ContentLoading';
 import { getApiKeysQuery } from '../../Dashboard/WorkspaceSettings/gql';
+import ApolloErrorPage from '../../ApolloErrorPage';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -30,22 +31,30 @@ export default function ChatWithAgent() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [iframeFirstOpened, setIFrameFirstOpened] = useState(true);
   const iframe = useRef<HTMLIFrameElement | null>(null);
-  const agentData = useQuery<IGetAgent>(GET_AGENT, {
+  const {
+    data: agentData,
+    error: agentError,
+    loading: agentLoading,
+  } = useQuery<IGetAgent>(GET_AGENT, {
     variables: { agentId: Number(agentId) },
   });
-  const apiKeysQuery = useQuery(getApiKeysQuery, {
+  const {
+    data: apiKeysData,
+    error: apiKeysError,
+    loading: apiKeysLoading,
+  } = useQuery(getApiKeysQuery, {
     variables: {
       workspaceId,
     },
     skip: !workspaceId,
   });
 
-  const loadedKey = apiKeysQuery.data?.apiKey.key ?? null;
+  const loadedKey = apiKeysData?.apiKey.key ?? null;
   useEffect(() => {
-    if (!apiKeysQuery.loading) {
+    if (!apiKeysLoading) {
       setApiKey(loadedKey);
     }
-  }, [loadedKey, apiKeysQuery.loading]);
+  }, [loadedKey, apiKeysLoading]);
 
   const onMessage = useCallback((e: any) => {
     if (e.data.hasOwnProperty('loaded')) {
@@ -83,14 +92,14 @@ export default function ChatWithAgent() {
     iframe.current?.contentWindow?.postMessage(
       {
         apiKey,
-        uname: agentData.data?.ChatbotService_agent.uname,
+        uname: agentData?.ChatbotService_agent.uname,
         isActive: false,
         debug: true,
         dev: true,
       },
       '*',
     );
-  }, [apiKey, agentData.data]);
+  }, [apiKey, agentData]);
 
   useEffect(() => {
     iframe.current?.contentWindow?.postMessage(
@@ -101,7 +110,11 @@ export default function ChatWithAgent() {
     );
   }, [isActive]);
 
-  if (agentData.loading) {
+  if (agentError || apiKeysError) {
+    return <ApolloErrorPage error={apiKeysError} />;
+  }
+
+  if (agentLoading || apiKeysLoading) {
     return <ContentLoading shrinked={true} />;
   }
 

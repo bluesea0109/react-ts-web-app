@@ -23,6 +23,7 @@ import {
   GET_CATEGORY_SETS,
 } from '../../../common-gql-queries';
 import ContentLoading from '../../ContentLoading';
+import ApolloErrorPage from '../../ApolloErrorPage';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -156,65 +157,10 @@ function CreateCategorySetDialog() {
     });
   };
 
-  let dialogContent = (
-    <DialogContent>
-      <FormControl className={classes.formControl}>
-        <TextInput
-          label="Name"
-          labelType="Typography"
-          labelPosition="top"
-          required={true}
-          className={classes.textInput}
-          margin="normal"
-          variant="outlined"
-          value={state.categorySetName}
-          onChange={handleChange('categorySetName')}
-        />
-      </FormControl>
-      <FormControl className={classes.formControl}>
-        <TextInput
-          id="outlined-multiline-static"
-          label="Categories"
-          labelType="Typography"
-          labelPosition="top"
-          value={state.txt}
-          onChange={handleCategoriesChange}
-          multiline={true}
-          rows={10}
-          required={true}
-          className={classes.textInput}
-          margin="normal"
-          variant="outlined"
-        />
-      </FormControl>
-      <FormControl className={classes.formControl}>
-        <Button className={classes.button} component="label">
-          {'Browse'}
-          <input
-            name="categories-file"
-            id="categories-file"
-            accept="text/plain"
-            type="file"
-            style={{ display: 'none' }}
-            onChange={handleFile}
-          />
-        </Button>
-      </FormControl>
-    </DialogContent>
-  );
-
   if (error) {
-    dialogContent = (
-      <DialogContent>
-        <Typography>{'Unkown error occurred'}</Typography>
-      </DialogContent>
-    );
+    return <ApolloErrorPage error={error} />;
   } else if (loading) {
-    dialogContent = (
-      <DialogContent>
-        <ContentLoading />
-      </DialogContent>
-    );
+    return <ContentLoading />;
   }
 
   return (
@@ -227,7 +173,50 @@ function CreateCategorySetDialog() {
         <DialogTitle disableTypography={true}>
           <Typography variant="h6">{'New Category Set'}</Typography>
         </DialogTitle>
-        {dialogContent}
+        <DialogContent>
+          <FormControl className={classes.formControl}>
+            <TextInput
+              label="Name"
+              labelType="Typography"
+              labelPosition="top"
+              required={true}
+              className={classes.textInput}
+              margin="normal"
+              variant="outlined"
+              value={state.categorySetName}
+              onChange={handleChange('categorySetName')}
+            />
+          </FormControl>
+          <FormControl className={classes.formControl}>
+            <TextInput
+              id="outlined-multiline-static"
+              label="Categories"
+              labelType="Typography"
+              labelPosition="top"
+              value={state.txt}
+              onChange={handleCategoriesChange}
+              multiline={true}
+              rows={10}
+              required={true}
+              className={classes.textInput}
+              margin="normal"
+              variant="outlined"
+            />
+          </FormControl>
+          <FormControl className={classes.formControl}>
+            <Button className={classes.button} component="label">
+              {'Browse'}
+              <input
+                name="categories-file"
+                id="categories-file"
+                accept="text/plain"
+                type="file"
+                style={{ display: 'none' }}
+                onChange={handleFile}
+              />
+            </Button>
+          </FormControl>
+        </DialogContent>
         <DialogActions>
           <Button color="primary" onClick={handleClose} disabled={loading}>
             {'Cancel'}

@@ -103,64 +103,52 @@ function StartLabelingDialog() {
     }
   };
 
-  let dialogContent = (
-    <DialogContent>
-      <FormControl component="fieldset">
-        <FormLabel component="legend">{'Mode'}</FormLabel>
-        <RadioGroup
-          aria-label="mode"
-          name="gender1"
-          value={state.mode}
-          onChange={handleChange}>
-          <FormControlLabel
-            value="single"
-            control={<Radio />}
-            label="Single - label one image at a time"
-          />
-          <FormControlLabel
-            value="batch"
-            control={<Radio />}
-            label="Batch - label batches of images (supports category labeling only)"
-          />
-          <FormControl component="fieldset">
-            <TextInput
-              id="standard-number"
-              label="Batch Size"
-              labelType="Typography"
-              labelPosition="top"
-              type="number"
-              size="small"
-              value={state.batchSize}
-              disabled={state.mode !== 'batch'}
-              onChange={handleChangeBatchSize}
-            />
-          </FormControl>
-        </RadioGroup>
-      </FormControl>
-    </DialogContent>
-  );
-
   if (nextImageResult.error) {
-    dialogContent = (
-      <DialogContent>
-        <ApolloErrorPage error={nextImageResult.error} />
-      </DialogContent>
-    );
+    return <ApolloErrorPage error={nextImageResult.error} />;
   }
 
   if (nextImageResult.loading) {
-    dialogContent = (
-      <DialogContent>
-        <ContentLoading />
-      </DialogContent>
-    );
+    return <ContentLoading />;
   }
 
   return (
     <React.Fragment>
       <Dialog open={state.open} onClose={handleClose} fullWidth={true}>
         <DialogTitle>{'Start Labeling Images'}</DialogTitle>
-        {dialogContent}
+        <DialogContent>
+          <FormControl component="fieldset">
+            <FormLabel component="legend">{'Mode'}</FormLabel>
+            <RadioGroup
+              aria-label="mode"
+              name="gender1"
+              value={state.mode}
+              onChange={handleChange}>
+              <FormControlLabel
+                value="single"
+                control={<Radio />}
+                label="Single - label one image at a time"
+              />
+              <FormControlLabel
+                value="batch"
+                control={<Radio />}
+                label="Batch - label batches of images (supports category labeling only)"
+              />
+              <FormControl component="fieldset">
+                <TextInput
+                  id="standard-number"
+                  label="Batch Size"
+                  labelType="Typography"
+                  labelPosition="top"
+                  type="number"
+                  size="small"
+                  value={state.batchSize}
+                  disabled={state.mode !== 'batch'}
+                  onChange={handleChangeBatchSize}
+                />
+              </FormControl>
+            </RadioGroup>
+          </FormControl>
+        </DialogContent>
         <DialogActions>
           <Button color="primary" onClick={handleClose}>
             {'Cancel'}

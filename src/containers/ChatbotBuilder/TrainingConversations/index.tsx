@@ -52,13 +52,13 @@ export default function TrainingConversations() {
   const classes = useStyles();
 
   const params = useParams<{ agentId: string }>();
-  const [createConversation, setcreateConversation] = useState(false);
+  const [createConversation, setCreateConversation] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [, seteditConversation] = useState(0); // editConversation
   const [currentPage, setCurrentPage] = useState(1);
   const agentId = parseInt(params.agentId, 10);
 
-  const [deleteConversations, { loading }] = useMutation(
+  const [deleteConversations, deleteConversationsResult] = useMutation(
     DELETE_TRAINING_CONVERSATION,
   );
   const getTrainingConversations = useQuery<IGetTrainingConversation>(
@@ -79,23 +79,25 @@ export default function TrainingConversations() {
     currentPage * docsInPage,
   );
 
-  if (getTrainingConversations.error) {
-    return <ApolloErrorPage error={getTrainingConversations.error} />;
+  const commonError =
+    getTrainingConversations.error || deleteConversationsResult.error;
+  if (commonError) {
+    return <ApolloErrorPage error={commonError} />;
   }
 
-  if (getTrainingConversations.loading) {
+  if (getTrainingConversations.loading || deleteConversationsResult.loading) {
     return <ContentLoading shrinked={true} />;
   }
 
   const onCreateNewConversation = () => {
-    setcreateConversation(true);
+    setCreateConversation(true);
   };
 
   const onSaveCallBack = async () => {
     const refetchData = await refetchConversations();
     conversations =
       refetchData.data?.ChatbotService_trainingConversations || [];
-    setcreateConversation(false);
+    setCreateConversation(false);
     seteditConversation(0);
   };
 
@@ -115,7 +117,7 @@ export default function TrainingConversations() {
   };
 
   const handleClose = () => {
-    setcreateConversation(false);
+    setCreateConversation(false);
   };
 
   const handlePageChange = (value: number) => {
@@ -135,7 +137,7 @@ export default function TrainingConversations() {
           onClick={onCreateNewConversation}>
           Create New Conversation
         </Button>
-        {loading && <LinearProgress />}
+        {deleteConversationsResult.loading && <LinearProgress />}
         {records.length > 0 && records ? (
           records
             .sort((a: any, b: any) => parseInt(a.id) + parseInt(b.id))

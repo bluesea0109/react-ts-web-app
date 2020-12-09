@@ -26,6 +26,7 @@ import PublishedAgentsTable from './PublishedAgentsTable';
 import { IGetPublishedAgentsQueryResult } from './types';
 
 import AgentEmbedCode from './AgentEmbedCode';
+import ApolloErrorPage from '../../ApolloErrorPage';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -57,7 +58,7 @@ export default function PublishAgent() {
     modalOpen: false,
     forceRetrain: false,
   });
-  const apiKeyQueryResult = useQuery(getApiKeysQuery, {
+  const { data: apiKeysData, error: apiKeysError } = useQuery(getApiKeysQuery, {
     fetchPolicy: 'cache-and-network',
     variables: {
       workspaceId: params.workspaceId,
@@ -71,7 +72,7 @@ export default function PublishAgent() {
 
   const agentUname = agentQueryResult.data?.ChatbotService_agent.uname;
 
-  const [publishAgent] = useMutation(publishAgentMutation, {
+  const [publishAgent, publishAgentResult] = useMutation(publishAgentMutation, {
     refetchQueries: [
       {
         query: getPublishedAgentsQuery,
@@ -136,6 +137,11 @@ export default function PublishAgent() {
   };
   const agents = queryResult.data?.ChatbotService_getPublishedAgents;
 
+  const commonError = apiKeysError || publishAgentResult.error;
+  if (commonError) {
+    return <ApolloErrorPage error={commonError} />;
+  }
+
   return (
     <Grid container={true} className={classes.root}>
       <Grid
@@ -168,7 +174,7 @@ export default function PublishAgent() {
             <Box className={classes.embedCodeContainer}>
               <AgentEmbedCode
                 agentUname={agentUname || '<your-agent-uname>'}
-                apiKey={apiKeyQueryResult.data?.apiKey?.key || '<your-api-key>'}
+                apiKey={apiKeysData?.apiKey?.key || '<your-api-key>'}
               />
             </Box>
           </CardContent>

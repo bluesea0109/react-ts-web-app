@@ -15,6 +15,7 @@ import {
   GET_CATEGORY_SETS,
 } from '../../../common-gql-queries';
 import ContentLoading from '../../ContentLoading';
+import ApolloErrorPage from '../../ApolloErrorPage';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -74,28 +75,12 @@ function DeleteCategorySetDialog(props: IDeleteCategorySetProps) {
     });
   };
 
-  let dialogContent = (
-    <DialogContent>
-      <Typography variant="h6">{'Category Set'}</Typography>
-      <Typography>{`Name: ${props.name}`}</Typography>
-      <Typography>{`Id: ${props.categorySetId}`}</Typography>
-    </DialogContent>
-  );
-
   if (loading) {
-    dialogContent = (
-      <DialogContent>
-        <ContentLoading />
-      </DialogContent>
-    );
+    return <ContentLoading />;
   }
 
   if (error) {
-    dialogContent = (
-      <DialogContent>
-        <Typography>{'An unexpected error occurred.'}</Typography>
-      </DialogContent>
-    );
+    return <ApolloErrorPage error={error} />;
   }
 
   return (
@@ -104,7 +89,11 @@ function DeleteCategorySetDialog(props: IDeleteCategorySetProps) {
         <DialogTitle>
           {'Are you sure you want to delete this category set?'}
         </DialogTitle>
-        {dialogContent}
+        <DialogContent>
+          <Typography variant="h6">{'Category Set'}</Typography>
+          <Typography>{`Name: ${props.name}`}</Typography>
+          <Typography>{`Id: ${props.categorySetId}`}</Typography>
+        </DialogContent>
         <DialogActions>
           <Button color="primary" disabled={loading} onClick={handleClose}>
             {'Cancel'}
