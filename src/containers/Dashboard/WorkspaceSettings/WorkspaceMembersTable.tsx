@@ -37,9 +37,6 @@ const useStyles = makeStyles((theme: Theme) =>
     grow: {
       flexGrow: 1,
     },
-    tableContainer: {
-      maxHeight: '75vh',
-    },
     iconWrapper: {
       display: 'flex',
       alignItems: 'center',
@@ -186,7 +183,7 @@ const WorkspaceMembersTable: React.FC<IWorkspaceMembersTableProps> = ({
     { title: 'Name', field: 'name' },
     { title: 'Email', field: 'email' },
     { title: 'Role', field: 'role' },
-    { title: 'Options', field: 'option' },
+    { title: '', field: 'option' },
   ];
 
   return (
@@ -194,21 +191,19 @@ const WorkspaceMembersTable: React.FC<IWorkspaceMembersTableProps> = ({
       {loading ? (
         <ContentLoading shrinked={true} />
       ) : (
-        <TableContainer className={classes.tableContainer}>
-          <CommonTable
-            data={{
-              columns,
-              rowsData: _.cloneDeep(members),
-            }}
-            pagination={{
-              colSpan: 3,
-              rowsPerPage: 5,
-            }}
-            components={{
-              TableRow: MemberRow,
-            }}
-          />
-        </TableContainer>
+        <CommonTable
+          data={{
+            columns,
+            rowsData: _.cloneDeep(members),
+          }}
+          pagination={{
+            colSpan: 3,
+            rowsPerPage: 5,
+          }}
+          components={{
+            TableRow: MemberRow,
+          }}
+        />
       )}
       <Snackbar
         open={openSnackBar}

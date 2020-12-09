@@ -110,8 +110,6 @@ const Dashboard: React.FC<IDashboardProps> = ({ user }) => {
       renderRow: (workspace: IWorkspace) => (
         <Switch
           checked={user.activeWorkspace?.id === workspace.id}
-          defaultActiveText=" "
-          defaultInactiveText=" "
           onChange={() => handleActivateWorkspace(workspace)}
         />
       ),
@@ -160,7 +158,9 @@ const Dashboard: React.FC<IDashboardProps> = ({ user }) => {
                 Toolbar: () => (
                   <CardHeader
                     avatar={<SupervisedUserCircleOutlined />}
-                    title={<h4>Your Workspaces</h4>}
+                    title={
+                      <Typography variant="h6">Your Workspaces</Typography>
+                    }
                     action={
                       <Button
                         color="primary"
@@ -171,6 +171,7 @@ const Dashboard: React.FC<IDashboardProps> = ({ user }) => {
                         onClick={() => setShowAddWorkspace(true)}
                       />
                     }
+                    className={classes.cardHeader}
                   />
                 ),
               }}
@@ -215,6 +216,11 @@ const Dashboard: React.FC<IDashboardProps> = ({ user }) => {
 const useStyles = makeStyles((theme: Theme) => ({
   redButton: {
     color: '#FF0000',
+  },
+  cardHeader: {
+    '& .MuiCardHeader-action': {
+      marginTop: 0,
+    },
   },
 }));
 
