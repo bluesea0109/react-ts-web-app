@@ -1,15 +1,15 @@
-import firebase from 'firebase/app';
 import 'firebase/auth';
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { useRecoilState } from 'recoil';
 import { useMutation } from '@apollo/client';
-import { Button } from '@bavard/react-components';
-import { TextInput } from '@bavard/react-components';
+import { Button, TextInput } from '@bavard/react-components';
 import Box from '@material-ui/core/Box';
 import FormGroup from '@material-ui/core/FormGroup';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import makeStyles from '@material-ui/styles/makeStyles';
+import Typography from '@material-ui/core/Typography';
+import InputMask from 'react-input-mask';
 
 import { getIdToken } from '../../apollo-client';
 import config from '../../config';
@@ -114,45 +114,53 @@ const BillingDetails: React.FC<BillingDetailsProps> = ({ closeDialog }) => {
     <Box paddingX={4}>
       {enablingBilling && <LinearProgress color="secondary" />}
       <form>
-        <FormGroup row>
-          <TextInput
-            label="User Name"
-            labelType="Typography"
-            labelPosition="top"
-            fullWidth={true}
+        <FormGroup className={classes.formGroup}>
+          <Typography variant="subtitle1" className={classes.label}>
+            User Name
+          </Typography>
+          <InputMask
+            mask={[/[*]/]}
             value={userName}
+            maskPlaceholder=" "
+            className={classes.textInput}
             onChange={handleUserNameChange}
           />
         </FormGroup>
-        <FormGroup row>
-          <TextInput
-            label="Credit Card Number"
-            labelType="Typography"
-            labelPosition="top"
-            fullWidth={true}
+        <FormGroup className={classes.formGroup}>
+          <Typography variant="subtitle1" className={classes.label}>
+            Credit Card Number
+          </Typography>
+          <InputMask
+            mask="9999 9999 9999 9999"
             value={creditNumber}
+            maskPlaceholder=" "
+            className={classes.textInput}
             onChange={handleCreditCardChange}
           />
         </FormGroup>
-        <FormGroup row>
-          <Box display="flex" flexDirection="row" marginX={-1} marginY={1}>
+        <FormGroup className={classes.formGroup}>
+          <Box display="flex" flexDirection="row" marginX={-1}>
             <Box paddingX={1}>
-              <TextInput
-                label="Exp Date"
-                labelType="Typography"
-                labelPosition="top"
-                fullWidth={true}
+              <Typography variant="subtitle1" className={classes.label}>
+                Exp Date
+              </Typography>
+              <InputMask
+                mask="99/99"
                 value={expDate}
+                maskPlaceholder=" "
+                className={classes.textInput}
                 onChange={handleExpDateChange}
               />
             </Box>
             <Box paddingX={1}>
-              <TextInput
-                label="CVV"
-                labelType="Typography"
-                labelPosition="top"
-                fullWidth={true}
+              <Typography variant="subtitle1" className={classes.label}>
+                CVV
+              </Typography>
+              <InputMask
+                mask="999"
                 value={cvv}
+                maskPlaceholder=" "
+                className={classes.textInput}
                 onChange={handleCVVChange}
               />
             </Box>
@@ -174,6 +182,17 @@ const BillingDetails: React.FC<BillingDetailsProps> = ({ closeDialog }) => {
 export default BillingDetails;
 
 const useStyles = makeStyles(() => ({
+  formGroup: {
+    margin: '1rem 0px',
+  },
+  label: {
+    marginRight: 4,
+    fontWeight: 'bold',
+  },
+  textInput: {
+    padding: '0.5rem',
+    fontSize: '1rem',
+  },
   submitPaymentButton: {
     color: 'white',
     width: '100%',
