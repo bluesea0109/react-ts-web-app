@@ -89,8 +89,9 @@ export default function ChatWithAgent() {
     };
   }, []);
 
-  if (agentError || apiKeysError) {
-    return <ApolloErrorPage error={agentError || apiKeysError} />;
+  const commonError = agentError || apiKeysError;
+  if (commonError) {
+    return <ApolloErrorPage error={commonError} />;
   }
 
   return (

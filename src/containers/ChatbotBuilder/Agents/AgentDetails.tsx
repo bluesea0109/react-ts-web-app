@@ -147,10 +147,9 @@ const AgentDetails = () => {
     awaitRefetchQueries: true,
   });
 
-  if (agentsError || agentError || updateAgentError) {
-    return (
-      <ApolloErrorPage error={agentsError || agentError || updateAgentError} />
-    );
+  const commonError = agentsError || agentError || updateAgentError;
+  if (commonError) {
+    return <ApolloErrorPage error={commonError} />;
   }
 
   if (agentLoading || updateAgentLoading || !agentData) {

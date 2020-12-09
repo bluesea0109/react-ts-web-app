@@ -137,12 +137,10 @@ const AgentSettings = () => {
     }
   };
 
-  if (agentsError || widgetSettingsError || updateBotSettingsError) {
-    return (
-      <ApolloErrorPage
-        error={agentsError || widgetSettingsError || updateBotSettingsError}
-      />
-    );
+  const commonError =
+    agentsError || widgetSettingsError || updateBotSettingsError;
+  if (commonError) {
+    return <ApolloErrorPage error={commonError} />;
   }
 
   const loading = agentsLoading || updateBotSettingsLoading;

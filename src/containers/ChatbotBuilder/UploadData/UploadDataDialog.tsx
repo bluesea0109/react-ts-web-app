@@ -635,13 +635,6 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
     this.handleClose();
   };
 
-  hasBillingRequiredError = () => {
-    const { graphQLError } = this.state;
-    return !!(graphQLError?.graphQLErrors || []).find(
-      (error) => error.extensions?.code === 'BILLING_REQUIRED',
-    );
-  };
-
   render() {
     const { error, graphQLError, numCompleted, steps, open } = this.state;
     const { classes } = this.props;
@@ -652,7 +645,7 @@ class UploadDataDialog extends React.Component<IProps, IUploadDataDialogState> {
       return index % 2 !== 0;
     });
 
-    if (this.hasBillingRequiredError()) {
+    if (graphQLError) {
       return (
         <ApolloErrorPage
           error={graphQLError}

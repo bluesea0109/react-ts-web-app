@@ -110,8 +110,9 @@ export default function ChatWithAgent() {
     );
   }, [isActive]);
 
-  if (agentError || apiKeysError) {
-    return <ApolloErrorPage error={apiKeysError} />;
+  const commonError = agentError || apiKeysError;
+  if (commonError) {
+    return <ApolloErrorPage error={commonError} />;
   }
 
   if (agentLoading || apiKeysLoading) {

@@ -57,7 +57,7 @@ const Billing = () => {
     setShowBillingDialog(false);
   };
 
-  if (!error) {
+  if (error) {
     return <ApolloErrorPage error={error} />;
   }
 

@@ -55,7 +55,7 @@ const InvitedMemberTable: React.FC<IInvitedMemberTableProps> = ({
   };
 
   const commonError = invitedMemberData.error || revokeInvitationResult.error;
-  if (revokeInvitationResult.error) {
+  if (commonError) {
     return <ApolloErrorPage error={commonError} />;
   }
 
