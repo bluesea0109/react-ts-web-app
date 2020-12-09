@@ -1,6 +1,7 @@
 import { IWidgetSettings } from '@bavard/agent-config';
 import { GradientPicker } from '@bavard/react-components';
 import { Box, Grid, Typography } from '@material-ui/core';
+import { size } from 'lodash';
 import React from 'react';
 import { AlphaPicker, TwitterPicker } from 'react-color';
 
@@ -41,6 +42,17 @@ export const ColorPalett = ({
                 <TwitterPicker
                   triangle="hide"
                   color={settings.primaryColor}
+                  colors={[
+                    '#FD6A21',
+                    '#FBB82B',
+                    '#7FDBB6',
+                    '#21CF86',
+                    '#91D2FA',
+                    '#1B95E0',
+                    '#979797',
+                    '#DB2317',
+                    '#127D78',
+                  ]}
                   onChange={(color) =>
                     updateSettings('primaryColor', color.rgb)
                   }
@@ -51,10 +63,17 @@ export const ColorPalett = ({
         </Grid>
         <Box mt={4} mb={4} mx="auto">
           {mode === 'dev' && (
-            <AlphaPicker
-              color={settings.primaryColor}
-              onChange={(color) => updateSettings('primaryColor', color.rgb)}
-            />
+            <Box
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+              }}>
+              <Typography style={{ marginRight: '10px' }}>Opacity: </Typography>
+              <AlphaPicker
+                color={settings.primaryColor}
+                onChange={(color) => updateSettings('primaryColor', color.rgb)}
+              />
+            </Box>
           )}
         </Box>
 
