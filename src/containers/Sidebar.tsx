@@ -86,6 +86,10 @@ const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
       '^/workspaces/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/Slots$',
       'g',
     );
+    const createBot_Configurations = RegExp(
+      '^/workspaces/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/Configurations$',
+      'g',
+    );
     const createBot_Graph = RegExp(
       '^/workspaces/[A-Z,a-z,0-9-]+/chatbot-builder/agents/[0-9]+/graph-policy$',
       'g',
@@ -140,7 +144,8 @@ const Sidebar = ({ onClick, onClose, user, onSetAgentID }: ISidebarProps) => {
       createBot_Intents.test(currentLocation) ||
       createBot_Tags.test(currentLocation) ||
       createBot_Slots.test(currentLocation) ||
-      createBot_Graph.test(currentLocation)
+      createBot_Graph.test(currentLocation) ||
+      createBot_Configurations.test(currentLocation)
     ) {
       setOpenSubItem(true);
       onClick(MenuName.OPEN_CONFIG);

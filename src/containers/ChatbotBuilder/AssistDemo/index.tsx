@@ -1,5 +1,11 @@
 import { useQuery } from '@apollo/client';
-import { createStyles, makeStyles, Theme, Typography } from '@material-ui/core';
+import {
+  Box,
+  createStyles,
+  makeStyles,
+  Theme,
+  Typography,
+} from '@material-ui/core';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab/';
 import gql from 'graphql-tag';
 import React, { useEffect, useState } from 'react';
@@ -113,7 +119,7 @@ export default function ChatWithAgent() {
   }
 
   return (
-    <div className={classes.root} id="chatbot">
+    <Box width={1} height="calc(100% - 16)" overflow="auto" padding={2}>
       <ToggleButtonGroup
         value={mode === 'PREVIEW' ? 'left' : 'right'}
         exclusive={true}
@@ -132,7 +138,7 @@ export default function ChatWithAgent() {
       <Typography align="center" variant="h5" color="error">
         {warning}
       </Typography>
-    </div>
+    </Box>
   );
 }
 

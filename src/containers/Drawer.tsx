@@ -94,6 +94,10 @@ export const botSubMenuData = {
         title: 'Visual Graphs',
         pathes: ['graph-policies', 'graph-editor'],
       },
+      {
+        title: 'Settings',
+        path: 'configurations',
+      },
     ],
   },
   training: {
