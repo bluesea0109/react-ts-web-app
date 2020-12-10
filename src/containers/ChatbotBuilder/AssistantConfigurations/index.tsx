@@ -29,6 +29,9 @@ const PrettoSlider = withStyles({
     height: 8,
     borderRadius: 4,
   },
+  mark: {
+    display: 'none',
+  },
   rail: {
     height: 8,
     borderRadius: 4,
@@ -37,15 +40,25 @@ const PrettoSlider = withStyles({
 
 const AssistantConfigurations = () => {
   const onSaveSettings = () => {};
+  let marks = new Array(10).fill(0);
+  marks = marks.map((_, index: number) => ({
+    value: index / 10,
+    label: index / 10,
+  }));
+
   return (
     <Box width={1} height="calc(100% - 16)" overflow="hidden" padding={2}>
       <Typography id="discrete-slider-always" align="left" gutterBottom>
         Confidence Threshold
       </Typography>
       <PrettoSlider
-        valueLabelDisplay="auto"
+        min={0}
+        max={1}
+        step={0.01}
         aria-label="pretto slider"
-        defaultValue={100}
+        valueLabelDisplay="auto"
+        marks={marks}
+        defaultValue={1}
       />
       <Box width={1} display="flex" flexDirection="column" alignItems="center">
         <Button title="Save" onClick={onSaveSettings} />
