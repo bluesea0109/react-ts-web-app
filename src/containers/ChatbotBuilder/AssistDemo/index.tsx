@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { createStyles, makeStyles, Theme } from '@material-ui/core';
+import { createStyles, makeStyles, Theme, Typography } from '@material-ui/core';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab/';
 import gql from 'graphql-tag';
 import React, { useEffect, useState } from 'react';
@@ -27,8 +27,9 @@ export default function ChatWithAgent() {
     workspaceId: string;
   }>();
 
-  const [apiKey, setApiKey] = useState<string | null>(null);
   const [mode, setMode] = useState('PREVIEW');
+  const [warning, setWarning] = useState<string | undefined>();
+  const [apiKey, setApiKey] = useState<string | undefined>();
   const { enqueueSnackbar } = useSnackbar();
   const { data: agentData, error: agentError } = useQuery<IGetAgent>(
     GET_AGENT,
@@ -65,17 +66,14 @@ export default function ChatWithAgent() {
         (isDevMode && !agentData.ChatbotService_agent.hasDevMLModel) ||
         (isProdMode && !agentData.ChatbotService_agent.hasPublishedMLModel)
       ) {
-        enqueueSnackbar('The Assistant is not trained yet.', {
-          variant: 'warning',
-        });
-        return;
+        setWarning('The Assistant is not trained yet.');
       } else if (
         isProdMode &&
         !agentData.ChatbotService_agent.isPublishedAgentReady
       ) {
-        enqueueSnackbar('The Assistant is not ready for publishing.', {
-          variant: 'warning',
-        });
+        setWarning('The Assistant is not ready for publishing.');
+      } else {
+        setWarning('');
       }
 
       script = document.createElement('script');
@@ -131,6 +129,9 @@ export default function ChatWithAgent() {
           PUBLISHED
         </ToggleButton>
       </ToggleButtonGroup>
+      <Typography align="center" variant="h5" color="error">
+        {warning}
+      </Typography>
     </div>
   );
 }
