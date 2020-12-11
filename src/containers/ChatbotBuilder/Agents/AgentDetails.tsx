@@ -16,6 +16,7 @@ import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 import Actions from '../Actions/Actions';
 import AgentSettings from '../AgentSettings/AgentSettings';
+import AssistantConfigurations from '../AssistantConfigurations';
 import AssistDemo from '../AssistDemo';
 import { currentAgentConfig, currentWidgetSettings } from '../atoms';
 import ConversationsTab from '../Conversations';
@@ -216,6 +217,7 @@ const AgentDetails = () => {
         </TabPanel>
         {agentTab === 'graph-policies' && <GraphPolicy />}
         {agentTab === 'graph-editor' && <GraphEditorPage />}
+        {agentTab === 'configurations' && <AssistantConfigurations />}
         {agentTab === 'exports' && <DataExportsTab />}
         {agentTab === 'training-jobs' && <TrainingJobsTab />}
         {agentTab === 'chats' && <AssistDemo />}
