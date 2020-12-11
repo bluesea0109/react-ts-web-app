@@ -41,6 +41,9 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       alignItems: 'center',
     },
+    tableCell: {
+      padding: '7px 16px',
+    },
   }),
 );
 
@@ -102,17 +105,17 @@ const WorkspaceMembersTable: React.FC<IWorkspaceMembersTableProps> = ({
     if (member.uid === user.uid) {
       return (
         <TableRow>
-          <TableCell align="left">
+          <TableCell align="left" className={classes.tableCell}>
             <Box fontWeight="fontWeightBold">
               {member.user?.name || 'unknown'}
             </Box>
           </TableCell>
-          <TableCell align="left">
+          <TableCell align="left" className={classes.tableCell}>
             <Box fontWeight="fontWeightBold">
               {member.user?.email || 'unknown'}
             </Box>
           </TableCell>
-          <TableCell align="left">
+          <TableCell align="left" className={classes.tableCell}>
             <Box className={classes.iconWrapper}>
               <Box fontWeight="fontWeightBold">{member.role}</Box>
               <IconButtonEdit
@@ -122,7 +125,7 @@ const WorkspaceMembersTable: React.FC<IWorkspaceMembersTableProps> = ({
               />
             </Box>
           </TableCell>
-          <TableCell align="left">
+          <TableCell align="left" className={classes.tableCell}>
             <IconButtonDelete
               tooltip="Remove User"
               onClick={() => null}
@@ -134,9 +137,13 @@ const WorkspaceMembersTable: React.FC<IWorkspaceMembersTableProps> = ({
     }
     return (
       <TableRow>
-        <TableCell align="left">{member.user?.name || 'unknown'}</TableCell>
-        <TableCell align="left">{member.user?.email || 'unknown'}</TableCell>
-        <TableCell align="left">
+        <TableCell align="left" className={classes.tableCell}>
+          {member.user?.name || 'unknown'}
+        </TableCell>
+        <TableCell align="left" className={classes.tableCell}>
+          {member.user?.email || 'unknown'}
+        </TableCell>
+        <TableCell align="left" className={classes.tableCell}>
           {member.role}
           <IconButtonEdit
             tooltip="Change Role"
@@ -153,7 +160,7 @@ const WorkspaceMembersTable: React.FC<IWorkspaceMembersTableProps> = ({
             onUpdateCallback={onUpdateCallback}
           />
         </TableCell>
-        <TableCell align="left">
+        <TableCell align="left" className={classes.tableCell}>
           <IconButtonDelete
             tooltip="Remove User"
             onClick={() => {
@@ -197,7 +204,7 @@ const WorkspaceMembersTable: React.FC<IWorkspaceMembersTableProps> = ({
             rowsData: _.cloneDeep(members),
           }}
           pagination={{
-            colSpan: 3,
+            colSpan: 4,
             rowsPerPage: 5,
           }}
           components={{

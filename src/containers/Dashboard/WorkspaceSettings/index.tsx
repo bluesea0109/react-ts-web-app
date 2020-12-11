@@ -13,7 +13,11 @@ import {
 } from '@material-ui/core';
 import { AddCircleOutline, PersonAdd, Group } from '@material-ui/icons';
 import { GET_WORKSPACES } from '../../../common-gql-queries';
-import { IWorkspace, IUser } from '../../../models/user-service';
+import {
+  IWorkspace,
+  IUser,
+  IInvitedMember,
+} from '../../../models/user-service';
 import ApolloErrorPage from '../../ApolloErrorPage';
 import ContentLoading from '../../ContentLoading';
 import InviteDialog from './InviteDialog';
@@ -22,6 +26,7 @@ import WorkspaceMembersTable from './WorkspaceMembersTable';
 import DisablePaymentDialog from './DisablePaymentDialog';
 import EnablePaymentDialog from './EnablePaymentDialog';
 import ApiKeys from './ApiKeys';
+import { GET_INVITED_WORKSPACE_MEMBERS } from './gql';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -78,6 +83,10 @@ interface TabPanelProps {
   value: any;
 }
 
+interface IInvitedMemberProps {
+  workspaceMemberInvites: IInvitedMember[] | undefined;
+}
+
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
 
@@ -94,6 +103,14 @@ function TabPanel(props: TabPanelProps) {
 
 export default function WorkspaceSettings(props: IWorkspaceSettingsProps) {
   const classes = useStyles();
+
+  const invitedMemberData = useQuery<IInvitedMemberProps>(
+    GET_INVITED_WORKSPACE_MEMBERS,
+    { variables: { workspaceId: props.workspaceId } },
+  );
+
+  const invitedMembers: IInvitedMember[] | undefined =
+    invitedMemberData.data?.workspaceMemberInvites;
 
   const { error, loading, data, refetch } = useQuery<IGetWorkspaces>(
     GET_WORKSPACES,
@@ -142,7 +159,7 @@ export default function WorkspaceSettings(props: IWorkspaceSettingsProps) {
               />
               <Tab
                 icon={<PersonAdd className={classes.tabIcon} />}
-                label={<span>Invited Organization Members</span>}
+                label={<span>Invited Team Members</span>}
                 className={classes.tabWrapper}
               />
             </Tabs>
@@ -172,7 +189,10 @@ export default function WorkspaceSettings(props: IWorkspaceSettingsProps) {
 
           <TabPanel value={tabValue} index={1}>
             <Box className={classes.roundCornerResolver}>
-              <WorkspaceInvitedMember workspaceId={props.workspaceId} />
+              <WorkspaceInvitedMember
+                workspaceId={props.workspaceId}
+                invitedMembers={invitedMembers}
+              />
             </Box>
             {viewInviteDialog && (
               <InviteDialog
