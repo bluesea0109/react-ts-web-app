@@ -30,7 +30,7 @@ import { GET_INVITED_WORKSPACE_MEMBERS } from './gql';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
-    margin: theme.spacing(2),
+    paddingRight: '50px',
   },
   tableWrapper: {
     display: 'flex',
@@ -145,7 +145,12 @@ export default function WorkspaceSettings(props: IWorkspaceSettingsProps) {
   const workspace = data.workspaces[0];
   return (
     <div>
-      <Grid item={true} container={true} xs={10} spacing={2}>
+      <Grid
+        item={true}
+        container={true}
+        xs={12}
+        spacing={2}
+        className={classes.root}>
         <Grid item={true} xs={12} sm={12}>
           <Paper className={classes.paper}>
             <Tabs
@@ -206,7 +211,13 @@ export default function WorkspaceSettings(props: IWorkspaceSettingsProps) {
           </TabPanel>
         </Grid>
       </Grid>
-      <Grid item={true} container={true} xs={10} spacing={2}>
+      <Grid
+        item={true}
+        container={true}
+        xs={12}
+        sm={12}
+        spacing={2}
+        className={classes.root}>
         <ApiKeys workspaceId={props.workspaceId} />
       </Grid>
     </div>

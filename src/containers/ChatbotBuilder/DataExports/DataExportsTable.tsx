@@ -130,7 +130,7 @@ function DataExportsTable() {
         onRowDelete: (rowData: IDataExport) => onDeleteExportClick(rowData.id),
       }}
       pagination={{
-        colSpan: 3,
+        colSpan: 8,
         rowsPerPage: 10,
       }}
       components={{

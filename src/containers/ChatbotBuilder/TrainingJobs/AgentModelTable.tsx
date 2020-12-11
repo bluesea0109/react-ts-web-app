@@ -46,6 +46,10 @@ export default function AgentModelTable() {
       localization={{
         nonRecordError: 'No model has been deployed yet for this assistant.',
       }}
+      pagination={{
+        colSpan: 3,
+        rowsPerPage: 10,
+      }}
       components={{
         Toolbar: () => (
           <Toolbar>
