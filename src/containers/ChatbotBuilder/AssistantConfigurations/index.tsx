@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { AgentConfig } from '@bavard/agent-config';
 import { Button } from '@bavard/react-components';
 import Box from '@material-ui/core/Box';
 import Slider from '@material-ui/core/Slider';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
+import { useRecoilState } from 'recoil';
+import { currentAgentConfig } from '../atoms';
 
 const PrettoSlider = withStyles({
   root: {
@@ -39,12 +42,26 @@ const PrettoSlider = withStyles({
 })(Slider);
 
 const AssistantConfigurations = () => {
-  const onSaveSettings = () => {};
+  const [config, setConfig] = useRecoilState<AgentConfig | undefined>(
+    currentAgentConfig,
+  );
+
   let marks = new Array(10).fill(0);
   marks = marks.map((_, index: number) => ({
     value: index / 10,
     label: index / 10,
   }));
+
+  if (!config) {
+    return <Typography>No Assistant Configuration at the moment.</Typography>;
+  }
+
+  const onChangeThreshold = (_: any, value: number | number[]) => {
+    const threshold = Array.isArray(value) ? value[0] : value;
+    const newConfig = config.copy();
+    newConfig.intentConfidenceThreshold = threshold;
+    setConfig(newConfig);
+  };
 
   return (
     <Box width={1} height="calc(100% - 16)" overflow="hidden" padding={2}>
@@ -57,12 +74,11 @@ const AssistantConfigurations = () => {
         step={0.01}
         aria-label="pretto slider"
         valueLabelDisplay="auto"
+        value={config.intentConfidenceThreshold}
         marks={marks}
         defaultValue={1}
+        onChange={onChangeThreshold}
       />
-      <Box width={1} display="flex" flexDirection="column" alignItems="center">
-        <Button title="Save" onClick={onSaveSettings} />
-      </Box>
     </Box>
   );
 };
