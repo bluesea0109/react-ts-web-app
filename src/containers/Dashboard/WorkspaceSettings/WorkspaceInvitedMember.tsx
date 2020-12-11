@@ -69,7 +69,7 @@ const InvitedMemberTable: React.FC<IInvitedMemberTableProps> = ({
         rowsData: invitedMembers,
       }}
       pagination={{
-        colSpan: 5,
+        colSpan: 6,
         rowsPerPage: 5,
       }}
     />

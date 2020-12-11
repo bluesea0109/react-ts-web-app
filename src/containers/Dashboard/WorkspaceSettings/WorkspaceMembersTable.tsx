@@ -204,7 +204,7 @@ const WorkspaceMembersTable: React.FC<IWorkspaceMembersTableProps> = ({
             rowsData: _.cloneDeep(members),
           }}
           pagination={{
-            colSpan: 3,
+            colSpan: 4,
             rowsPerPage: 5,
           }}
           components={{
