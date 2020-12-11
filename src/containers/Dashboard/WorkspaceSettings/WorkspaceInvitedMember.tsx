@@ -1,33 +1,23 @@
 import React, { useState } from 'react';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { CommonTable, Button } from '@bavard/react-components';
 
 import { IInvitedMember } from '../../../models/user-service';
-import ApolloErrorPage from '../../ApolloErrorPage';
-import ContentLoading from '../../ContentLoading';
 import { GET_INVITED_WORKSPACE_MEMBERS, REVOKE_INVITATION } from './gql';
-
-interface IInvitedMemberProps {
-  workspaceMemberInvites: IInvitedMember[] | undefined;
-}
 
 interface IInvitedMemberTableProps {
   workspaceId?: String;
+  invitedMembers?: IInvitedMember[];
 }
 
 const InvitedMemberTable: React.FC<IInvitedMemberTableProps> = ({
   workspaceId,
+  invitedMembers,
 }) => {
   const [item, setInvite] = useState<{
     workspaceId: string;
     id: string;
   }>();
-  const invitedMemberData = useQuery<IInvitedMemberProps>(
-    GET_INVITED_WORKSPACE_MEMBERS,
-    { variables: { workspaceId } },
-  );
-  const invitedMembers: IInvitedMember[] | undefined =
-    invitedMemberData.data?.workspaceMemberInvites;
 
   const [doRevokeInvitation, revokeInvitationResult] = useMutation(
     REVOKE_INVITATION,
@@ -54,15 +44,6 @@ const InvitedMemberTable: React.FC<IInvitedMemberTableProps> = ({
     });
   };
 
-  const commonError = invitedMemberData.error || revokeInvitationResult.error;
-  if (commonError) {
-    return <ApolloErrorPage error={commonError} />;
-  }
-
-  if (invitedMemberData.loading || revokeInvitationResult.loading) {
-    return <ContentLoading shrinked={true} />;
-  }
-
   const columns = [
     { title: 'Email', field: 'email' },
     { title: 'Workspace Name', field: 'workspaceName' },
@@ -86,6 +67,10 @@ const InvitedMemberTable: React.FC<IInvitedMemberTableProps> = ({
       data={{
         columns,
         rowsData: invitedMembers,
+      }}
+      pagination={{
+        colSpan: 5,
+        rowsPerPage: 5,
       }}
     />
   );
