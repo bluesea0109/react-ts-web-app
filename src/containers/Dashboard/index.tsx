@@ -140,7 +140,7 @@ const Dashboard: React.FC<IDashboardProps> = ({ user }) => {
     <div className={'page-container'}>
       <Grid style={{ marginTop: '20px' }}>
         <Grid item={true} container={true} xs={12} spacing={4}>
-          <Grid item={true} sm={10} md={8}>
+          <Grid item={true} xs={12} sm={10}>
             <Grid
               item={true}
               style={{ fontSize: '26px', marginBottom: '24px' }}>

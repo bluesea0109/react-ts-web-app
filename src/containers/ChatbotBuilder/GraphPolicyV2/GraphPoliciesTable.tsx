@@ -71,6 +71,7 @@ function GraphPoliciesTable({
         rowsData: policies,
       }}
       pagination={{
+        colSpan: 3,
         rowsPerPage: 10,
       }}
       actions={[
