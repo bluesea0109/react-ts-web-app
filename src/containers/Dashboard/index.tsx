@@ -178,7 +178,7 @@ const Dashboard: React.FC<IDashboardProps> = ({ user }) => {
             />
           </Grid>
 
-          {workspaces?.length && (
+          {workspaces && workspaces.length > 0 && (
             <Grid item={true} xs={12} sm={12}>
               <WorkspaceSettings
                 user={user}
